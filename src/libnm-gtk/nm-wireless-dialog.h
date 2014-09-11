@@ -31,11 +31,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include <NetworkManager.h>
 #include <nm-connection.h>
-#include <nm-device.h>
-#include <nm-access-point.h>
-#include <nm-remote-settings.h>
-#include <nm-wireless-dialog.h>
 
 #define NMA_TYPE_WIRELESS_DIALOG            (nma_wireless_dialog_get_type ())
 #define NMA_WIRELESS_DIALOG(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), NMA_TYPE_WIRELESS_DIALOG, NMAWirelessDialog))

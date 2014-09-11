@@ -31,18 +31,11 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 
-#include <dbus/dbus-glib.h>
 #include <net/ethernet.h>
 
 #include <libnotify/notify.h>
 
-#include <nm-connection.h>
-#include <nm-client.h>
-#include <nm-access-point.h>
-#include <nm-device.h>
 #include <NetworkManager.h>
-#include <nm-active-connection.h>
-#include <nm-remote-settings.h>
 #include "applet-agent.h"
 #include "shell-watcher.h"
 
@@ -85,7 +78,7 @@ typedef struct
 	GObject parent_instance;
 
 	GMainLoop *loop;
-	DBusGConnection *session_bus;
+	GDBusConnection *session_bus;
 
 	NMShellWatcher *shell_watcher;
 	guint agent_start_id;
@@ -220,7 +213,7 @@ struct _SecretsRequest {
 void applet_secrets_request_set_free_func (SecretsRequest *req,
                                            SecretsRequestFreeFunc free_func);
 void applet_secrets_request_complete (SecretsRequest *req,
-                                      GHashTable *settings,
+                                      GVariant *secrets,
                                       GError *error);
 void applet_secrets_request_complete_setting (SecretsRequest *req,
                                               const char *setting_name,

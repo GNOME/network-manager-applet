@@ -21,8 +21,8 @@
  */
 
 #include <string.h>
-#include <nm-setting-wireless.h>
 
+#include <NetworkManager.h>
 #include "wireless-security.h"
 #include "helpers.h"
 #include "utils.h"

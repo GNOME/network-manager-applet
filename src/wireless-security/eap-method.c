@@ -32,8 +32,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include <nm-setting-connection.h>
-#include <nm-setting-8021x.h>
+#include <NetworkManager.h>
 #include "eap-method.h"
 #include "nm-utils.h"
 

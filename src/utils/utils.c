@@ -27,9 +27,6 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#include <nm-setting-connection.h>
-#include <nm-utils.h>
-
 #include "utils.h"
 
 /*

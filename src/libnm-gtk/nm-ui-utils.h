@@ -25,7 +25,7 @@
 #ifndef NMA_UI_UTILS_H
 #define NMA_UI_UTILS_H
 
-#include <nm-device.h>
+#include <NetworkManager.h>
 
 const char *nma_utils_get_device_vendor (NMDevice *device);
 const char *nma_utils_get_device_product (NMDevice *device);

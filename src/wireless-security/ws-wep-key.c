@@ -23,9 +23,7 @@
 #include <string.h>
 #include <glib.h>
 
-#include <nm-setting-wireless.h>
-#include <nm-setting-wireless-security.h>
-
+#include <NetworkManager.h>
 #include "wireless-security.h"
 #include "utils.h"
 

@@ -28,12 +28,7 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
-#include <nm-setting-connection.h>
-#include <nm-setting-wired.h>
-#include <nm-setting-wireless.h>
-#include <nm-setting-wireless-security.h>
-#include <nm-setting-8021x.h>
-
+#include <NetworkManager.h>
 #include "wireless-security.h"
 #include "eap-method.h"
 

@@ -26,7 +26,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-#include <nm-connection.h>
+#include <NetworkManager.h>
 
 typedef struct _WirelessSecurity WirelessSecurity;
 

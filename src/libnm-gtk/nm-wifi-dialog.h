@@ -31,11 +31,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <nm-client.h>
+#include <NetworkManager.h>
 #include <nm-connection.h>
-#include <nm-device.h>
-#include <nm-access-point.h>
-#include <nm-remote-settings.h>
 
 #define NMA_TYPE_WIFI_DIALOG            (nma_wifi_dialog_get_type ())
 #define NMA_WIFI_DIALOG(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), NMA_TYPE_WIFI_DIALOG, NMAWifiDialog))

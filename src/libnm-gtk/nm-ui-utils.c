@@ -27,7 +27,7 @@
 #include <glib/gi18n.h>
 #include <gudev/gudev.h>
 
-#include <nm-device.h>
+#include <NetworkManager.h>
 
 #include "nm-ui-utils.h"
 
@@ -551,7 +551,7 @@ nma_utils_get_connection_device_name (NMConnection *connection)
 	const char *iface, *type, *display_type;
 	NMSettingConnection *s_con;
 
-	iface = nm_connection_get_virtual_iface_name (connection);
+	iface = nm_connection_get_interface_name (connection);
 	g_return_val_if_fail (iface != NULL, NULL);
 
 	s_con = nm_connection_get_setting_connection (connection);

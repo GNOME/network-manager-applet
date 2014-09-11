@@ -23,8 +23,8 @@
 #include <glib/gi18n.h>
 #include <ctype.h>
 #include <string.h>
-#include <nm-setting-wireless.h>
 
+#include <NetworkManager.h>
 #include "wireless-security.h"
 #include "eap-method.h"
 

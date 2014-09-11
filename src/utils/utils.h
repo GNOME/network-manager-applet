@@ -25,10 +25,8 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <nm-connection.h>
-#include <nm-device.h>
 #include <net/ethernet.h>
-#include <nm-access-point.h>
+#include <NetworkManager.h>
 
 guint32 utils_freq_to_channel (guint32 freq);
 guint32 utils_channel_to_freq (guint32 channel, char *band);

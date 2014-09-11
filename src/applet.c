@@ -41,33 +41,8 @@
 #include <stdlib.h>
 
 #include <gio/gio.h>
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
 
-#include <NetworkManagerVPN.h>
-#include <nm-device-bond.h>
-#include <nm-device-team.h>
-#include <nm-device-bridge.h>
-#include <nm-device-bt.h>
-#include <nm-device-ethernet.h>
-#include <nm-device-infiniband.h>
-#include <nm-device-modem.h>
-#include <nm-device-vlan.h>
-#include <nm-device-wifi.h>
-#include <nm-device-wimax.h>
-#include <nm-utils.h>
-#include <nm-connection.h>
-#include <nm-vpn-connection.h>
-#include <nm-setting-connection.h>
-#include <nm-setting-wired.h>
-#include <nm-setting-wireless.h>
-#include <nm-setting-pppoe.h>
-#include <nm-setting-gsm.h>
-#include <nm-setting-cdma.h>
-#include <nm-setting-bluetooth.h>
-#include <nm-setting-vpn.h>
-#include <nm-active-connection.h>
-#include <nm-secret-agent.h>
+#include <NetworkManager.h>
 
 #include <libnotify/notify.h>
 
@@ -1013,7 +988,7 @@ applet_is_any_vpn_activating (NMApplet *applet)
 	connections = nm_client_get_active_connections (applet->nm_client);
 	for (i = 0; connections && (i < connections->len); i++) {
 		NMActiveConnection *candidate = NM_ACTIVE_CONNECTION (g_ptr_array_index (connections, i));
-		NMVPNConnectionState vpn_state;
+		NMVpnConnectionState vpn_state;
 
 		if (NM_IS_VPN_CONNECTION (candidate)) {
 			vpn_state = nm_vpn_connection_get_vpn_state (NM_VPN_CONNECTION (candidate));
@@ -1029,8 +1004,8 @@ applet_is_any_vpn_activating (NMApplet *applet)
 }
 
 static char *
-make_vpn_failure_message (NMVPNConnection *vpn,
-                          NMVPNConnectionStateReason reason,
+make_vpn_failure_message (NMVpnConnection *vpn,
+                          NMVpnConnectionStateReason reason,
                           NMApplet *applet)
 {
 	NMConnection *connection;
@@ -1075,8 +1050,8 @@ make_vpn_failure_message (NMVPNConnection *vpn,
 }
 
 static char *
-make_vpn_disconnection_message (NMVPNConnection *vpn,
-                                NMVPNConnectionStateReason reason,
+make_vpn_disconnection_message (NMVpnConnection *vpn,
+                                NMVpnConnectionStateReason reason,
                                 NMApplet *applet)
 {
 	NMConnection *connection;
@@ -1102,9 +1077,9 @@ make_vpn_disconnection_message (NMVPNConnection *vpn,
 }
 
 static void
-vpn_connection_state_changed (NMVPNConnection *vpn,
-                              NMVPNConnectionState state,
-                              NMVPNConnectionStateReason reason,
+vpn_connection_state_changed (NMVpnConnection *vpn,
+                              NMVpnConnectionState state,
+                              NMVpnConnectionStateReason reason,
                               gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
@@ -1284,7 +1259,7 @@ nma_menu_configure_vpn_item_activate (GtkMenuItem *item, gpointer user_data)
 
 static NMActiveConnection *
 applet_get_first_active_vpn_connection (NMApplet *applet,
-                                        NMVPNConnectionState *out_state)
+                                        NMVpnConnectionState *out_state)
 {
 	const GPtrArray *active_list;
 	int i;
@@ -1325,7 +1300,7 @@ nma_menu_disconnect_vpn_item_activate (GtkMenuItem *item, gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
 	NMActiveConnection *active_vpn = NULL;
-	NMVPNConnectionState state = NM_VPN_CONNECTION_STATE_UNKNOWN;
+	NMVpnConnectionState state = NM_VPN_CONNECTION_STATE_UNKNOWN;
 
 	active_vpn = applet_get_first_active_vpn_connection (applet, &state);
 	if (active_vpn)
@@ -1469,7 +1444,7 @@ applet_find_active_connection_for_virtual_device (const char *iface,
 		if (!tmp)
 			continue;
 
-		if (!g_strcmp0 (nm_connection_get_virtual_iface_name (NM_CONNECTION (tmp)), iface)) {
+		if (!g_strcmp0 (nm_connection_get_interface_name (NM_CONNECTION (tmp)), iface)) {
 			connection = NM_CONNECTION (tmp);
 			if (out_active)
 				*out_active = active;
@@ -1623,8 +1598,8 @@ sort_connections_by_ifname (gconstpointer a, gconstpointer b)
 	NMConnection *aa = NM_CONNECTION (a);
 	NMConnection *bb = NM_CONNECTION (b);
 
-	return strcmp (nm_connection_get_virtual_iface_name (aa),
-	               nm_connection_get_virtual_iface_name (bb));
+	return strcmp (nm_connection_get_interface_name (aa),
+	               nm_connection_get_interface_name (bb));
 }
 
 static int
@@ -1637,7 +1612,7 @@ add_virtual_items (const char *type, const GPtrArray *all_devices,
 	for (iter = all_connections; iter; iter = iter->next) {
 		NMConnection *connection = iter->data;
 
-		if (!nm_connection_get_virtual_iface_name (connection))
+		if (!nm_connection_get_interface_name (connection))
 			continue;
 
 		if (nm_connection_is_type (connection, type))
@@ -1667,7 +1642,7 @@ add_virtual_items (const char *type, const GPtrArray *all_devices,
 	while (iter) {
 		NMConnection *connection = iter->data;
 		NMDevice *device = NULL;
-		const char *iface = nm_connection_get_virtual_iface_name (connection);
+		const char *iface = nm_connection_get_interface_name (connection);
 		GSList *iface_connections = NULL;
 		NMADeviceClass *dclass;
 		NMConnection *active;
@@ -1961,7 +1936,7 @@ static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 
 	gtk_status_icon_set_tooltip_text (applet->status_icon, NULL);
 
-	if (!nm_client_get_manager_running (applet->nm_client)) {
+	if (!nm_client_get_nm_running (applet->nm_client)) {
 		nma_menu_add_text_item (menu, _("NetworkManager is not running..."));
 		return;
 	}
@@ -2582,7 +2557,7 @@ foo_manager_running_cb (NMClient *client,
 {
 	NMApplet *applet = NM_APPLET (user_data);
 
-	if (nm_client_get_manager_running (client)) {
+	if (nm_client_get_nm_running (client)) {
 		g_debug ("NM appeared");
 	} else {
 		g_debug ("NM disappeared");
@@ -2655,10 +2630,14 @@ static void
 foo_client_setup (NMApplet *applet)
 {
 	NMClientPermission perm;
+	GError *error = NULL;
 
-	applet->nm_client = nm_client_new ();
-	if (!applet->nm_client)
+	applet->nm_client = nm_client_new (NULL, &error);
+	if (!applet->nm_client) {
+		g_warning ("Failed to connect to NetworkManager: %s", error->message);
+		g_clear_error (&error);
 		return;
+	}
 
 	g_signal_connect (applet->nm_client, "notify::state",
 	                  G_CALLBACK (foo_client_state_changed_cb),
@@ -2682,7 +2661,7 @@ foo_client_setup (NMApplet *applet)
 		applet->permissions[perm] = nm_client_get_permission_result (applet->nm_client, perm);
 	}
 
-	if (nm_client_get_manager_running (applet->nm_client))
+	if (nm_client_get_nm_running (applet->nm_client))
 		g_idle_add (foo_set_initial_state, applet);
 
 	applet_schedule_update_icon (applet);
@@ -2871,7 +2850,7 @@ out:
 }
 
 static char *
-get_tip_for_vpn (NMActiveConnection *active, NMVPNConnectionState state, NMApplet *applet)
+get_tip_for_vpn (NMActiveConnection *active, NMVpnConnectionState state, NMApplet *applet)
 {
 	char *tip = NULL;
 	const char *path, *id = NULL;
@@ -2924,13 +2903,13 @@ applet_update_icon (gpointer user_data)
 	GdkPixbuf *pixbuf = NULL;
 	NMState state;
 	char *dev_tip = NULL, *vpn_tip = NULL;
-	NMVPNConnectionState vpn_state = NM_VPN_SERVICE_STATE_UNKNOWN;
+	NMVpnConnectionState vpn_state = NM_VPN_SERVICE_STATE_UNKNOWN;
 	gboolean nm_running;
 	NMActiveConnection *active_vpn = NULL;
 
 	applet->update_icon_id = 0;
 
-	nm_running = nm_client_get_manager_running (applet->nm_client);
+	nm_running = nm_client_get_nm_running (applet->nm_client);
 
 	/* Handle device state first */
 
@@ -3067,10 +3046,10 @@ applet_secrets_request_set_free_func (SecretsRequest *req,
 
 void
 applet_secrets_request_complete (SecretsRequest *req,
-                                 GHashTable *settings,
+                                 GVariant *secrets,
                                  GError *error)
 {
-	req->callback (req->applet->agent, error ? NULL : settings, error, req->callback_data);
+	req->callback (req->applet->agent, error ? NULL : secrets, error, req->callback_data);
 }
 
 void
@@ -3079,38 +3058,39 @@ applet_secrets_request_complete_setting (SecretsRequest *req,
                                          GError *error)
 {
 	NMSetting *setting;
-	GHashTable *settings = NULL, *secrets;
+	GVariant *dict = NULL;
+	GError *local = NULL;
 
-	if (setting_name && !error) {
-		setting = nm_connection_get_setting_by_name (req->connection, setting_name);
-		if (setting) {
-			secrets = nm_setting_to_hash (NM_SETTING (setting), NM_SETTING_HASH_FLAG_ALL);
-			if (secrets) {
-				/* Returned secrets are a{sa{sv}}; this is the outer a{s...} hash that
-				 * will contain all the individual settings hashes.
-				 */
-				settings = g_hash_table_new_full (g_str_hash,
-				                                  g_str_equal,
-				                                  g_free,
-				                                  (GDestroyNotify) g_hash_table_destroy);
-				g_hash_table_insert (settings, g_strdup (setting_name), secrets);
-			} else {
-				g_set_error (&error,
-						     NM_SECRET_AGENT_ERROR,
-						     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
-						     "%s.%d (%s): failed to hash setting '%s'.",
-						     __FILE__, __LINE__, __func__, setting_name);
-			}
-		} else {
-			g_set_error (&error,
-				         NM_SECRET_AGENT_ERROR,
-				         NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
-				         "%s.%d (%s): unhandled setting '%s'",
-				         __FILE__, __LINE__, __func__, setting_name);
-		}
+	if (!setting_name || error)
+		goto done;
+
+	setting = nm_connection_get_setting_by_name (req->connection, setting_name);
+	if (!setting) {
+		g_set_error (&error,
+			         NM_SECRET_AGENT_ERROR,
+			         NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+			         "%s.%d (%s): unhandled setting '%s'",
+			         __FILE__, __LINE__, __func__, setting_name);
+		goto done;
 	}
 
-	req->callback (req->applet->agent, settings, error, req->callback_data);
+	dict = nm_connection_to_dbus (req->connection, NM_CONNECTION_SERIALIZE_ONLY_SECRETS);
+	if (!g_variant_lookup_value (dict, setting_name, NM_VARIANT_TYPE_SETTING)) {
+		g_set_error (&error,
+		             NM_SECRET_AGENT_ERROR,
+		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+		             "%s.%d (%s): failed to hash setting '%s'.",
+		             __FILE__, __LINE__, __func__, setting_name);
+		goto done;
+	}
+
+done:
+	req->callback (req->applet->agent,
+	               (error || local) ? NULL : dict,
+	               error ? error : local,
+	               req->callback_data);
+	g_clear_pointer (&dict, g_variant_unref);
+	g_clear_error (&local);
 }
 
 void
@@ -3133,7 +3113,7 @@ applet_secrets_request_free (SecretsRequest *req)
 static void
 get_existing_secrets_cb (NMSecretAgent *agent,
                          NMConnection *connection,
-                         GHashTable *secrets,
+                         GVariant *secrets,
                          GError *secrets_error,
                          gpointer user_data)
 {
@@ -3142,7 +3122,7 @@ get_existing_secrets_cb (NMSecretAgent *agent,
 	GError *error = NULL;
 
 	/* Merge existing secrets into connection; ignore errors */
-	nm_connection_update_secrets (connection, req->setting_name, secrets, NULL);
+	(void) nm_connection_update_secrets (connection, req->setting_name, secrets, NULL);
 
 	dclass = get_device_class_from_connection (connection, req->applet);
 	g_assert (dclass);
@@ -3560,7 +3540,7 @@ shell_version_changed_cb (NMShellWatcher *watcher, GParamSpec *pspec, gpointer u
 			g_signal_handlers_disconnect_by_func (applet->agent,
 			                                      G_CALLBACK (applet_agent_cancel_secrets_cb),
 			                                      applet);
-			nm_secret_agent_unregister (NM_SECRET_AGENT (applet->agent));
+			nm_secret_agent_unregister (NM_SECRET_AGENT (applet->agent), NULL, NULL);
 			g_clear_object (&applet->agent);
 		}
 
@@ -3583,7 +3563,7 @@ dbus_setup (NMApplet *applet, GError **error)
 	guint result;
 	gboolean success;
 
-	applet->session_bus = dbus_g_bus_get (DBUS_BUS_SESSION, error);
+	applet->session_bus = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, error);
 	if (!applet->session_bus)
 		return FALSE;
 

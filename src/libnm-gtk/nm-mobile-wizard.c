@@ -30,10 +30,6 @@
 #include <gtk/gtk.h>
 
 #include <NetworkManager.h>
-#include <nm-setting-gsm.h>
-#include <nm-setting-cdma.h>
-#include <nm-client.h>
-#include <nm-device-modem.h>
 
 #include "nm-mobile-wizard.h"
 #include "nm-mobile-providers.h"
@@ -1304,7 +1300,7 @@ intro_remove_all_devices (NMAMobileWizard *self)
 static void
 intro_manager_running_cb (NMClient *client, GParamSpec *pspec, NMAMobileWizard *self)
 {
-	if (nm_client_get_manager_running (client))
+	if (nm_client_get_nm_running (client))
 		intro_add_initial_devices (self);
 	else
 		intro_remove_all_devices (self);
@@ -1395,8 +1391,9 @@ intro_setup (NMAMobileWizard *self)
 	/* Device combo; only built if the wizard's caller didn't pass one in */
 	if (!self->initial_family) {
 		GtkTreeIter iter;
+		GError *error = NULL;
 
-		self->client = nm_client_new ();
+		self->client = nm_client_new (NULL, &error);
 		if (self->client) {
 			g_signal_connect (self->client, "device-added",
 			                  G_CALLBACK (intro_device_added_cb), self);
@@ -1404,6 +1401,9 @@ intro_setup (NMAMobileWizard *self)
 			                  G_CALLBACK (intro_device_removed_cb), self);
 			g_signal_connect (self->client, "notify::manager-running",
 			                  G_CALLBACK (intro_manager_running_cb), self);
+		} else {
+			g_warning ("Failed to connect to NetworkManager: %s", error->message);
+			g_clear_error (&error);
 		}
 
 		self->dev_store = gtk_tree_store_new (3, G_TYPE_STRING, NM_TYPE_DEVICE, G_TYPE_BOOLEAN);

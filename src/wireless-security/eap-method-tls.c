@@ -26,9 +26,7 @@
 #include <ctype.h>
 #include <string.h>
 
-#include <nm-setting-connection.h>
-#include <nm-setting-8021x.h>
-
+#include <NetworkManager.h>
 #include "eap-method.h"
 #include "wireless-security.h"
 #include "helpers.h"

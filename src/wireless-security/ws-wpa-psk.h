@@ -23,6 +23,8 @@
 #ifndef WS_WPA_PSK_H
 #define WS_WPA_PSK_H
 
+#include <NetworkManager.h>
+
 typedef struct _WirelessSecurityWPAPSK WirelessSecurityWPAPSK;
 
 WirelessSecurityWPAPSK * ws_wpa_psk_new (NMConnection *connection, gboolean secrets_only);

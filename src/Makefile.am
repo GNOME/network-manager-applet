@@ -1,4 +1,4 @@
-SUBDIRS = marshallers utils wireless-security libnm-gtk connection-editor gnome-bluetooth
+SUBDIRS = marshallers utils wireless-security libnm-gtk # connection-editor gnome-bluetooth
 
 bin_PROGRAMS = nm-applet
 

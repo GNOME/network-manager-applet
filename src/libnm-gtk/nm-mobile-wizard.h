@@ -29,7 +29,6 @@
 
 #include <glib.h>
 #include <NetworkManager.h>
-#include <nm-device.h>
 
 typedef struct NMAMobileWizard NMAMobileWizard;
 

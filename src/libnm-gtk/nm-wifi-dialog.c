@@ -28,12 +28,7 @@
 #include <gtk/gtk.h>
 #include <netinet/ether.h>
 
-#include <nm-client.h>
-#include <nm-utils.h>
-#include <nm-device-wifi.h>
-#include <nm-setting-connection.h>
-#include <nm-setting-wireless.h>
-#include <nm-setting-ip4-config.h>
+#include <NetworkManager.h>
 
 #include "nm-wifi-dialog.h"
 #include "wireless-security.h"
@@ -49,6 +44,7 @@ G_DEFINE_TYPE (NMAWifiDialog, nma_wifi_dialog, GTK_TYPE_DIALOG)
 typedef struct {
 	NMAWifiDialog *self;
 	NMConnection *connection;
+	char *setting_name;
 	gboolean canceled;
 } GetSecretsInfo;
 
@@ -356,11 +352,11 @@ connection_combo_changed (GtkWidget *combo,
 
 	widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "network_name_entry"));
 	if (priv->connection) {
-		const GByteArray *ssid;
+		GBytes *ssid;
 
 		s_wireless = nm_connection_get_setting_wireless (priv->connection);
 		ssid = nm_setting_wireless_get_ssid (s_wireless);
-		utf8_ssid = nm_utils_ssid_to_utf8 (ssid);
+		utf8_ssid = nm_utils_ssid_to_utf8 (g_bytes_get_data (ssid, NULL), g_bytes_get_size (ssid));
 		gtk_entry_set_text (GTK_ENTRY (widget), utf8_ssid);
 		g_free (utf8_ssid);
 	} else {
@@ -450,7 +446,7 @@ connection_combo_init (NMAWifiDialog *self, NMConnection *connection)
 			NMSettingWireless *s_wireless;
 			const char *connection_type;
 			const char *mode;
-			const GByteArray *setting_mac;
+			const char *setting_mac;
 
 			s_con = nm_connection_get_setting_connection (candidate);
 			connection_type = s_con ? nm_setting_connection_get_connection_type (s_con) : NULL;
@@ -489,10 +485,7 @@ connection_combo_init (NMAWifiDialog *self, NMConnection *connection)
 
 				hw_addr = nm_device_wifi_get_hw_address (NM_DEVICE_WIFI (priv->device));
 				if (hw_addr) {
-					struct ether_addr *ether;
-
-					ether = ether_aton (hw_addr);
-					if (ether && memcmp (setting_mac->data, ether->ether_addr_octet, ETH_ALEN))
+					if (!nm_utils_hwaddr_matches (setting_mac, -1, hw_addr, -1))
 						continue;
 				}
 			}
@@ -730,15 +723,22 @@ add_security_item (NMAWifiDialog *self,
 }
 
 static void
+free_get_secrets_info (GetSecretsInfo *info)
+{
+	g_object_unref (info->connection);
+	g_free (info->setting_name);
+	g_free (info);
+}
+
+static void
 get_secrets_cb (NMRemoteConnection *connection,
-                GHashTable *secrets,
+                GVariant *secrets,
                 GError *error,
                 gpointer user_data)
 {
 	GetSecretsInfo *info = user_data;
 	NMAWifiDialogPrivate *priv;
-	GHashTableIter hash_iter;
-	gpointer key, value;
+	GError *update_error = NULL;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 
@@ -768,28 +768,19 @@ get_secrets_cb (NMRemoteConnection *connection,
 	 * progress, so don't try to update the wrong connection with the secrets
 	 * we just received.
 	 */
-	if (   (priv->connection != info->connection)
-	    || !secrets
-	    || !g_hash_table_size (secrets))
+	if ((priv->connection != info->connection) || !secrets)
 		goto out;
 
 	/* Try to update the connection's secrets; log errors but we don't care */
-	g_hash_table_iter_init (&hash_iter, secrets);
-	while (g_hash_table_iter_next (&hash_iter, &key, &value)) {
-		GError *update_error = NULL;
-		const char *setting_name = key;
-		GHashTable *setting_hash = value;
-
-		if (!nm_connection_update_secrets (priv->connection,
-		                                   setting_name,
-		                                   setting_hash,
-		                                   &update_error)) {
-			g_warning ("%s: error updating connection secrets: (%d) %s",
-			           __func__,
-			           update_error ? update_error->code : -1,
-			           update_error && update_error->message ? update_error->message : "(unknown)");
-			g_clear_error (&update_error);
-		}
+	if (!nm_connection_update_secrets (priv->connection,
+	                                   info->setting_name,
+	                                   secrets,
+	                                   &update_error)) {
+		g_warning ("%s: error updating connection secrets: (%d) %s",
+		           __func__,
+		           update_error ? update_error->code : -1,
+		           update_error && update_error->message ? update_error->message : "(unknown)");
+		g_clear_error (&update_error);
 	}
 
 	/* Update each security method's UI elements with the new secrets */
@@ -807,8 +798,7 @@ get_secrets_cb (NMRemoteConnection *connection,
 	}
 
 out:
-	g_object_unref (info->connection);
-	g_free (info);
+	free_get_secrets_info (info);
 }
 
 static gboolean
@@ -990,6 +980,7 @@ security_combo_init (NMAWifiDialog *self, gboolean secrets_only)
 		info = g_malloc0 (sizeof (GetSecretsInfo));
 		info->self = self;
 		info->connection = g_object_ref (priv->connection);
+		info->setting_name = g_strdup (setting_name);
 		priv->secrets_info = info;
 
 		nm_remote_connection_get_secrets (NM_REMOTE_CONNECTION (priv->connection),
@@ -1125,12 +1116,12 @@ internal_init (NMAWifiDialog *self,
 		char *tmp;
 		char *esc_ssid = NULL;
 		NMSettingWireless *s_wireless;
-		const GByteArray *ssid;
+		GBytes *ssid;
 
 		s_wireless = nm_connection_get_setting_wireless (priv->connection);
 		ssid = s_wireless ? nm_setting_wireless_get_ssid (s_wireless) : NULL;
 		if (ssid)
-			esc_ssid = nm_utils_ssid_to_utf8 (ssid);
+			esc_ssid = nm_utils_ssid_to_utf8 (g_bytes_get_data (ssid, NULL), g_bytes_get_size (ssid));
 
 		tmp = g_strdup_printf (_("Passwords or encryption keys are required to access the Wi-Fi network '%s'."),
 		                       esc_ssid ? esc_ssid : "<unknown>");
@@ -1194,7 +1185,7 @@ nma_wifi_dialog_get_connection (NMAWifiDialog *self,
 		NMSettingConnection *s_con;
 		char *uuid;
 
-		connection = nm_connection_new ();
+		connection = nm_simple_connection_new ();
 
 		s_con = (NMSettingConnection *) nm_setting_connection_new ();
 		uuid = nm_utils_uuid_generate ();

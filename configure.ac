@@ -72,12 +72,9 @@ fi
 PKG_CHECK_MODULES(GOBJECT, gobject-2.0)
 
 PKG_CHECK_MODULES(NMA,
-		[dbus-glib-1 >= 0.74
-		 gio-2.0 >= 2.32
-		 NetworkManager >= 0.9.9.95
-		 libnm-glib >= 0.9.9.95
-		 libnm-util >= 0.9.9.95
-		 libnm-glib-vpn >= 0.9.9.95
+		[gio-2.0 >= 2.32
+		 NetworkManager >= 0.9.11
+		 libnm >= 0.9.11
 		 gmodule-export-2.0])
 
 NMA_CFLAGS="$NMA_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_32"
@@ -140,7 +137,6 @@ case "${with_bluetooth}" in
 		PKG_CHECK_MODULES(GNOME_BLUETOOTH,
 				  gnome-bluetooth-1.0 >= 2.27.6
 				  gnome-bluetooth-1.0 < 3.11.0
-				  libnm-util libnm-glib,
 				  have_gbt=yes, have_gbt=no)
 		;;
 esac

@@ -39,7 +39,7 @@ typedef struct {
 } AppletAgent;
 
 typedef void (*AppletAgentSecretsCallback) (AppletAgent *self,
-                                            GHashTable *secrets,
+                                            GVariant *dict,
                                             GError *error,
                                             gpointer user_data);
 
