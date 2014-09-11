@@ -268,7 +268,7 @@ struct NMADeviceClass {
 
 GType nma_get_type (void);
 
-NMApplet *nm_applet_new (GMainLoop *loop);
+NMApplet *nm_applet_new (void);
 
 void applet_schedule_update_icon (NMApplet *applet);
 

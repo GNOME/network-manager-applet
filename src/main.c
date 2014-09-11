@@ -98,7 +98,7 @@ int main (int argc, char *argv[])
 
 	loop = g_main_loop_new (NULL, FALSE);
 
-	applet = nm_applet_new (loop);
+	applet = nm_applet_new ();
 	if (applet == NULL)
 		exit (1);
 

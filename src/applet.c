@@ -3821,38 +3821,11 @@ static void nma_init (NMApplet *applet)
 	applet->icon_size = 16;
 }
 
-enum {
-	PROP_0,
-	PROP_LOOP,
-	LAST_PROP
-};
-
-static void
-set_property (GObject *object, guint prop_id,
-              const GValue *value, GParamSpec *pspec)
-{
-	NMApplet *applet = NM_APPLET (object);
-
-	switch (prop_id) {
-	case PROP_LOOP:
-		applet->loop = g_value_get_pointer (value);
-		break;
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-		break;
-	}
-}
-
 static void nma_class_init (NMAppletClass *klass)
 {
 	GObjectClass *oclass = G_OBJECT_CLASS (klass);
-	GParamSpec *pspec;
 
-	oclass->set_property = set_property;
 	oclass->finalize = finalize;
-
-	pspec = g_param_spec_pointer ("loop", "Loop", "Applet mainloop", G_PARAM_CONSTRUCT | G_PARAM_WRITABLE);
-	g_object_class_install_property (oclass, PROP_LOOP, pspec);
 
 	dbus_g_object_type_install_info (NM_TYPE_APPLET, &dbus_glib_nma_object_info);
 }
@@ -3864,19 +3837,16 @@ nma_initable_interface_init (GInitableIface *iface, gpointer iface_data)
 }
 
 NMApplet *
-nm_applet_new (GMainLoop *loop)
+nm_applet_new (void)
 {
 	NMApplet *applet;
 	GError *error = NULL;
 
-	applet = g_initable_new (NM_TYPE_APPLET, NULL, &error,
-	                         "loop", loop,
-	                         NULL);
+	applet = g_initable_new (NM_TYPE_APPLET, NULL, &error, NULL);
 	if (!applet) {
 		g_warning ("%s", error->message);
 		g_error_free (error);
 	}
-
 	return applet;
 }
 
