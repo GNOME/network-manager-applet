@@ -571,7 +571,6 @@ page_initialized (CEPage *page, GError *error, gpointer user_data)
 		nm_connection_editor_error (editor->parent_window,
 		                            _("Error initializing editor"),
 		                            "%s", error->message);
-		g_error_free (error);
 		g_signal_emit (editor, editor_signals[EDITOR_DONE], 0, GTK_RESPONSE_NONE);
 		return;
 	}
