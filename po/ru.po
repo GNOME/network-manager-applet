@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: NetworkManager-applet\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2014-09-10 22:10+0000\n"
-"PO-Revision-Date: 2014-09-16 01:09+0300\n"
+"POT-Creation-Date: 2014-09-17 16:48+0000\n"
+"PO-Revision-Date: 2014-09-23 01:32+0300\n"
 "Last-Translator: Stas Solovey <whats_up@tut.by>\n"
 "Language-Team: Русский <gnome-cyr@gnome.org>\n"
 "Language: \n"
@@ -77,9 +77,6 @@ msgid "Suppress networks available notifications"
 msgstr "Не показывать уведомления о доступных сетях"
 
 #: ../org.gnome.nm-applet.gschema.xml.in.h:8
-#| msgid ""
-#| "Set this to true to disable notifications when wireless networks are "
-#| "available."
 msgid ""
 "Set this to true to disable notifications when Wi-Fi networks are available."
 msgstr ""
@@ -396,7 +393,6 @@ msgstr "Управление _сетью"
 
 #. 'Enable Wi-Fi' item
 #: ../src/applet.c:2199
-#| msgid "Enable _Wireless"
 msgid "Enable _Wi-Fi"
 msgstr "Включить _Wi-Fi"
 
@@ -515,41 +511,40 @@ msgstr "Доступные"
 msgid "Connection Established"
 msgstr "Соединение установлено"
 
+# есть bond и есть team, принцип работы один, и то и другое переводится как "агрегированное", но нужно уточнять что имелось ввиду
 #: ../src/applet-device-bond.c:90
 msgid "You are now connected to the bonded network."
-msgstr "Вы подключены к агрегированной проводной сети."
+msgstr "Вы подключены к агрегированной сети (bond)."
 
+# есть bond и есть team, принцип работы один, и то и другое переводится как "агрегированное", но нужно уточнять что имелось ввиду
 #: ../src/applet-device-bond.c:114
 #, c-format
-#| msgid "Preparing network connection '%s'..."
 msgid "Preparing bond connection '%s'..."
-msgstr "Подготовка агрегированного сетевого соединения «%s»…"
+msgstr "Подготовка агрегированного (bond) соединения «%s»…"
 
+# есть bond и есть team, принцип работы один, и то и другое переводится как "агрегированное", но нужно уточнять что имелось ввиду
 #: ../src/applet-device-bond.c:117
 #, c-format
-#| msgid "Configuring mobile broadband connection '%s'..."
 msgid "Configuring bond connection '%s'..."
-msgstr "Настройка агрегированного соединения «%s»…"
+msgstr "Настройка агрегированного (bond) соединения «%s»…"
 
+# есть bond и есть team, принцип работы один, и то и другое переводится как "агрегированное", но нужно уточнять что имелось ввиду
 #: ../src/applet-device-bond.c:120
 #, c-format
-#| msgid "User authentication required for VPN connection '%s'..."
 msgid "User authentication required for bond connection '%s'..."
-msgstr "Для агрегированного соединения «%s» требуется аутентификация…"
+msgstr "Для агрегированного (bond) соединения «%s» требуется аутентификация…"
 
 #: ../src/applet-device-bond.c:123 ../src/applet-device-bridge.c:123
 #: ../src/applet-device-infiniband.c:176 ../src/applet-device-team.c:119
 #: ../src/applet-device-vlan.c:237
 #, c-format
-#| msgid "Requesting a VPN address for '%s'..."
 msgid "Requesting address for '%s'..."
 msgstr "Получение адреса для «%s»…"
 
 #: ../src/applet-device-bond.c:127
 #, c-format
-#| msgid "VPN connection '%s' active"
 msgid "Bond connection '%s' active"
-msgstr "Агрегированное соединение «%s» установлено"
+msgstr "Агрегированное (bond) соединение «%s» установлено"
 
 #: ../src/applet-device-bridge.c:90
 #, fuzzy
@@ -610,17 +605,14 @@ msgstr "Мобильные"
 
 #. Default connection item
 #: ../src/applet-device-broadband.c:783
-#| msgid "New Mobile Broadband Connection"
 msgid "New Mobile Broadband connection..."
 msgstr "Новое мобильное соединение…"
 
 #: ../src/applet-device-broadband.c:798
-#| msgid "You are now connected to the mobile broadband network."
 msgid "You are now connected to the Mobile Broadband network."
 msgstr "Вы подключены к мобильной сети."
 
 #: ../src/applet-device-broadband.c:933 ../src/applet-device-broadband.c:939
-#| msgid "Mobile broadband network password"
 msgid "Mobile Broadband network."
 msgstr "Мобильная сеть"
 
@@ -748,112 +740,104 @@ msgstr "InfiniBand (автоматически)"
 
 #: ../src/applet-device-infiniband.c:92
 #, c-format
-#| msgid "Wired Networks (%s)"
 msgid "InfiniBand Networks (%s)"
 msgstr "Сети InfiniBand (%s)"
 
 #: ../src/applet-device-infiniband.c:94
 #, c-format
-#| msgid "Wired Network (%s)"
 msgid "InfiniBand Network (%s)"
 msgstr "Сеть InfiniBand (%s)"
 
 #: ../src/applet-device-infiniband.c:97
-#| msgid "Wired Networks"
 msgid "InfiniBand Networks"
 msgstr "Сети InfiniBand"
 
 #: ../src/applet-device-infiniband.c:99
-#| msgid "Wired Network"
 msgid "InfiniBand Network"
 msgstr "Сеть InfiniBand"
 
 #: ../src/applet-device-infiniband.c:143
-#| msgid "You are now connected to the wired network."
 msgid "You are now connected to the InfiniBand network."
 msgstr "Вы подключены к сети InfiniBand."
 
 #: ../src/applet-device-infiniband.c:167
-#, fuzzy, c-format
+#, c-format
 #| msgid "Preparing network connection '%s'..."
 msgid "Preparing InfiniBand connection '%s'..."
-msgstr "Подготовка сетевого соединения «%s»…"
+msgstr "Подготовка соединения InfiniBand «%s»…"
 
 #: ../src/applet-device-infiniband.c:170
-#, fuzzy, c-format
+#, c-format
 #| msgid "Configuring mobile broadband connection '%s'..."
 msgid "Configuring InfiniBand connection '%s'..."
-msgstr "Настройка мобильного соединения «%s»…"
+msgstr "Настройка соединения InfiniBand «%s»…"
 
 #: ../src/applet-device-infiniband.c:173
-#, fuzzy, c-format
+#, c-format
 #| msgid "User authentication required for VPN connection '%s'..."
 msgid "User authentication required for InfiniBand connection '%s'..."
-msgstr "Для VPN-соединения «%s» требуется аутентификация…"
+msgstr "Для InfiniBand-соединения «%s» требуется аутентификация…"
 
 #: ../src/applet-device-infiniband.c:180
-#, fuzzy, c-format
+#, c-format
 #| msgid "VPN connection '%s' active"
 msgid "InfiniBand connection '%s' active"
-msgstr "VPN-соединение «%s» установлено"
+msgstr "InfiniBand-соединение «%s» установлено"
 
 #: ../src/applet-device-team.c:86
-#, fuzzy
 #| msgid "You are now connected to the ethernet network."
 msgid "You are now connected to the teamed network."
-msgstr "Вы подключены к проводной сети."
+msgstr "Вы подключены к агрегированной сети (team)."
 
 #: ../src/applet-device-team.c:110
-#, fuzzy, c-format
+#, c-format
 #| msgid "Preparing network connection '%s'..."
 msgid "Preparing team connection '%s'..."
-msgstr "Подготовка сетевого соединения «%s»…"
+msgstr "Подготовка агрегированного (team) соединения «%s»…"
 
 #: ../src/applet-device-team.c:113
-#, fuzzy, c-format
+#, c-format
 #| msgid "Configuring wired network connection '%s'..."
 msgid "Configuring team connection '%s'..."
-msgstr "Настройка проводного сетевого соединения «%s»…"
+msgstr "Настройка агрегированного (team) соединения «%s»…"
 
 #: ../src/applet-device-team.c:116
-#, fuzzy, c-format
+#, c-format
 #| msgid "User authentication required for VPN connection '%s'..."
 msgid "User authentication required for team connection '%s'..."
-msgstr "Для VPN-соединения «%s» требуется аутентификация…"
+msgstr "Для агрегированного (team) соединения «%s» требуется аутентификация…"
 
 #: ../src/applet-device-team.c:123
-#, fuzzy, c-format
+#, c-format
 #| msgid "VPN connection '%s' active"
 msgid "Team connection '%s' active"
-msgstr "VPN-соединение «%s» установлено"
+msgstr "Агрегированное (team) соединение «%s» установлено"
 
 #: ../src/applet-device-vlan.c:204
-#, fuzzy
 #| msgid "You are now connected to the CDMA network."
 msgid "You are now connected to the VLAN."
-msgstr "Вы подключены к сети CDMA."
+msgstr "Вы подключены к сети VLAN."
 
 #: ../src/applet-device-vlan.c:228
-#, fuzzy, c-format
+#, c-format
 #| msgid "Starting VPN connection '%s'..."
 msgid "Preparing VLAN connection '%s'..."
-msgstr "Устанавливается соединение VPN «%s»…"
+msgstr "Подготовка соединения VLAN «%s»…"
 
 #: ../src/applet-device-vlan.c:231
-#, fuzzy, c-format
+#, c-format
 #| msgid "Starting VPN connection '%s'..."
 msgid "Configuring VLAN connection '%s'..."
-msgstr "Устанавливается соединение VPN «%s»…"
+msgstr "Настройка соединения VLAN «%s»…"
 
 #: ../src/applet-device-vlan.c:234
-#, fuzzy, c-format
+#, c-format
 #| msgid "User authentication required for VPN connection '%s'..."
 msgid "User authentication required for VLAN connection '%s'..."
-msgstr "Для VPN-соединения «%s» требуется аутентификация…"
+msgstr "Для VLAN-соединения «%s» требуется аутентификация…"
 
 #: ../src/applet-device-vlan.c:241
 #, c-format
-#| msgid "VPN connection '%s' active"
 msgid "VLAN connection '%s' active"
 msgstr "VLAN-соединение «%s» установлено"
 
@@ -1367,9 +1351,10 @@ msgstr "MII (рекомендуется)"
 msgid "ARP"
 msgstr "ARP"
 
+# есть bond и есть team, принцип работы один, но нужно уточнять что имелось ввиду
 #: ../src/connection-editor/ce-page-bond.ui.h:10
 msgid "Bonded _connections:"
-msgstr "Объединённые _подключения:"
+msgstr "Агрегированные (bond) _соединения:"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:11
 msgid "_Mode:"
@@ -1430,7 +1415,6 @@ msgid "Link _down delay:"
 msgstr "Задержка _разрыва соединения:"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:22
-#| msgid "Primary DNS:"
 msgid "_Primary:"
 msgstr "_Первичный:"
 
@@ -1506,15 +1490,15 @@ msgstr "Использовать защиту 802.1_X для этого соед
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:2
 msgid "FCoE"
-msgstr ""
+msgstr "FCoE"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:3
 msgid "iSCSI"
-msgstr ""
+msgstr "iSCSI"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:4
 msgid "FIP"
-msgstr ""
+msgstr "FIP"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:5
 msgid "Flow Control"
@@ -1525,7 +1509,6 @@ msgid "Feature"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:7
-#| msgid "Enable _Wireless"
 msgid "Enable"
 msgstr "Включить"
 
@@ -1590,7 +1573,7 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:23
 msgid "VN2VN"
-msgstr ""
+msgstr "VN2VN"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:24
 msgid "Priority Flow Control"
@@ -1613,17 +1596,14 @@ msgid "1:"
 msgstr "1:"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:29
-#| msgid "2"
 msgid "2:"
 msgstr "2:"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:30
-#| msgid "3"
 msgid "3:"
 msgstr "3:"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:31
-#| msgid "4"
 msgid "4:"
 msgstr "4:"
 
@@ -1659,7 +1639,7 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:39
 msgid "Group ID:"
-msgstr ""
+msgstr "ID группы:"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:40
 msgid "15"
@@ -1943,7 +1923,7 @@ msgstr "_Маршруты…"
 #: ../src/connection-editor/ce-page-ip6.ui.h:6
 #: ../src/connection-editor/page-ip4.c:197
 msgid "Disabled"
-msgstr "Не указывать адрес"
+msgstr "Выключено"
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:7
 msgid "Enabled (prefer public address)"
@@ -2105,22 +2085,19 @@ msgid "_JSON config:"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:2
-#, fuzzy
 #| msgid "Import a saved VPN configuration..."
 msgid "_Import team configuration from a file..."
-msgstr "Импортировать сохранённые параметры VPN…"
+msgstr "_Импортировать параметры агрегированного подключения (Team) из файла…"
 
 #: ../src/connection-editor/ce-page-team.ui.h:1
-#, fuzzy
 #| msgid "Bonded _connections:"
 msgid "_Teamed connections:"
-msgstr "Объединённые _подключения:"
+msgstr "_Агрегированные подключения (Team):"
 
 #: ../src/connection-editor/ce-page-team.ui.h:3
-#, fuzzy
 #| msgid "Import a saved VPN configuration..."
 msgid "I_mport team configuration from a file..."
-msgstr "Импортировать сохранённые параметры VPN…"
+msgstr "И_мпортировать параметры агрегированного подключения (Team) из файла…"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:1
 msgid "_Parent interface:"
@@ -2318,13 +2295,13 @@ msgstr "InfiniBand"
 #: ../src/connection-editor/page-bond.c:433 ../src/libnm-gtk/nm-ui-utils.c:337
 #: ../src/libnm-gtk/nm-ui-utils.c:562
 msgid "Bond"
-msgstr "Агрегированное"
+msgstr "Агрегированное (Bond)"
 
 #: ../src/connection-editor/new-connection.c:144
 #: ../src/connection-editor/page-team.c:244 ../src/libnm-gtk/nm-ui-utils.c:339
 #: ../src/libnm-gtk/nm-ui-utils.c:564
 msgid "Team"
-msgstr ""
+msgstr "Агрегированное (Team)"
 
 #: ../src/connection-editor/new-connection.c:150
 #: ../src/connection-editor/page-bridge.c:208
@@ -2893,7 +2870,7 @@ msgstr "Не удалось загрузить диалог настройки �
 #: ../src/connection-editor/page-vlan.c:323
 #, c-format
 msgid "%s (via \"%s\")"
-msgstr "%s (посредством \"%s\")"
+msgstr "%s (посредством «%s»)"
 
 #: ../src/connection-editor/page-vlan.c:489
 msgid "Could not load vlan user interface."
@@ -3659,7 +3636,6 @@ msgstr "С_ертификат УЦ:"
 #: ../src/wireless-security/eap-method-peap.ui.h:7
 #: ../src/wireless-security/eap-method-tls.ui.h:4
 #: ../src/wireless-security/eap-method-ttls.ui.h:4
-#| msgid "Ignore CA certificate"
 msgid "No CA certificate is _required"
 msgstr "Сертификат УЦ не _требуется"
 
