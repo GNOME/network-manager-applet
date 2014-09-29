@@ -67,6 +67,7 @@
 #include "page-ip6.h"
 #include "page-dsl.h"
 #include "page-mobile.h"
+#include "page-bluetooth.h"
 #include "page-ppp.h"
 #include "page-vpn.h"
 #include "page-wimax.h"
@@ -778,6 +779,19 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 			goto out;
 		if (!add_page (editor, ce_page_ppp_new, editor->connection, error))
 			goto out;
+	} else if (!strcmp (connection_type, NM_SETTING_BLUETOOTH_SETTING_NAME)) {
+		NMSettingBluetooth *s_bt = nm_connection_get_setting_bluetooth (editor->connection);
+		const char *type = nm_setting_bluetooth_get_connection_type (s_bt);
+		g_assert (type);
+
+		if (!add_page (editor, ce_page_bluetooth_new, editor->connection, error))
+			goto out;
+		if (!g_strcmp0 (type, "dun")) {
+			if (!add_page (editor, ce_page_mobile_new, editor->connection, error))
+				goto out;
+			if (!add_page (editor, ce_page_ppp_new, editor->connection, error))
+				goto out;
+		}
 	} else if (!strcmp (connection_type, NM_SETTING_WIMAX_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_wimax_new, editor->connection, error))
 			goto out;

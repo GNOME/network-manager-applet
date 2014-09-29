@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <!-- interface-requires gtk+ 3.0 -->
+  <!-- interface-naming-policy toplevel-contextual -->
+  <object class="GtkTable" id="BluetoothPage">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="border_width">12</property>
+    <property name="n_columns">2</property>
+    <property name="column_spacing">12</property>
+    <property name="row_spacing">6</property>
+    <child>
+      <object class="GtkEntry" id="bluetooth_bdaddr">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="primary_icon_activatable">False</property>
+        <property name="secondary_icon_activatable">False</property>
+        <property name="primary_icon_sensitive">True</property>
+        <property name="secondary_icon_sensitive">True</property>
+      </object>
+      <packing>
+        <property name="left_attach">1</property>
+        <property name="right_attach">2</property>
+        <property name="y_options"/>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="label1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="xalign">0</property>
+        <property name="label" translatable="yes">_Device:</property>
+        <property name="use_underline">True</property>
+        <property name="mnemonic_widget">bluetooth_bdaddr</property>
+      </object>
+      <packing>
+        <property name="x_options">GTK_FILL</property>
+        <property name="y_options"/>
+      </packing>
+    </child>
+  </object>
+</interface>
