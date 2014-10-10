@@ -59,8 +59,6 @@ typedef struct {
 
 	GtkWindowGroup *window_group;
 	gboolean window_added;
-
-	gboolean disposed;
 } CEPageMobilePrivate;
 
 #define NET_TYPE_ANY         0
@@ -473,11 +471,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 static void
 dispose (GObject *object)
 {
-	CEPageMobile *self = CE_PAGE_MOBILE (object);
-	CEPageMobilePrivate *priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
-
-	if (priv->window_group)
-		g_object_unref (priv->window_group);
+	g_clear_object (&CE_PAGE_MOBILE_GET_PRIVATE (object)->window_group);
 
 	G_OBJECT_CLASS (ce_page_mobile_parent_class)->dispose (object);
 }

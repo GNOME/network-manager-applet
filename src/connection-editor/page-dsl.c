@@ -45,8 +45,6 @@ typedef struct {
 	GtkEntry *username;
 	GtkEntry *password;
 	GtkEntry *service;
-
-	gboolean disposed;
 } CEPageDslPrivate;
 
 static void

@@ -75,8 +75,6 @@ typedef struct {
 	GtkWindowGroup *window_group;
 	gboolean window_added;
 	char *connection_id;
-
-	gboolean disposed;
 } CEPagePppPrivate;
 
 static void
@@ -378,13 +376,10 @@ ce_page_ppp_init (CEPagePpp *self)
 static void
 dispose (GObject *object)
 {
-	CEPagePpp *self = CE_PAGE_PPP (object);
-	CEPagePppPrivate *priv = CE_PAGE_PPP_GET_PRIVATE (self);
+	CEPagePppPrivate *priv = CE_PAGE_PPP_GET_PRIVATE (object);
 
-	if (priv->window_group)
-		g_object_unref (priv->window_group);
-
-	g_free (priv->connection_id);
+	g_clear_object (&priv->window_group);
+	g_clear_pointer (&priv->connection_id, g_free);
 
 	G_OBJECT_CLASS (ce_page_ppp_parent_class)->dispose (object);
 }

@@ -76,8 +76,6 @@ typedef struct {
 	GtkWindow *parent_window;
 	NMClient *client;
 	NMRemoteSettings *settings;
-
-	gboolean disposed;
 } CEPage;
 
 typedef struct {

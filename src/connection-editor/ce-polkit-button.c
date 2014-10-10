@@ -32,8 +32,6 @@ G_DEFINE_TYPE (CEPolkitButton, ce_polkit_button, GTK_TYPE_BUTTON)
 #define CE_POLKIT_BUTTON_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CE_TYPE_POLKIT_BUTTON, CEPolkitButtonPrivate))
 
 typedef struct {
-	gboolean disposed;
-
 	char *tooltip;
 	char *auth_tooltip;
 	gboolean master_sensitive;
@@ -190,16 +188,14 @@ dispose (GObject *object)
 {
 	CEPolkitButtonPrivate *priv = CE_POLKIT_BUTTON_GET_PRIVATE (object);
 
-	if (priv->disposed == FALSE) {
-		priv->disposed = TRUE;
-
-		if (priv->perm_id)
-			g_signal_handler_disconnect (priv->client, priv->perm_id);
-
-		g_object_unref (priv->client);
-		g_object_unref (priv->auth);
-		g_object_unref (priv->stock);
+	if (priv->perm_id) {
+		g_signal_handler_disconnect (priv->client, priv->perm_id);
+		priv->perm_id = 0;
 	}
+
+	g_clear_object (&priv->client);
+	g_clear_object (&priv->auth);
+	g_clear_object (&priv->stock);
 
 	G_OBJECT_CLASS (ce_polkit_button_parent_class)->dispose (object);
 }

@@ -49,8 +49,6 @@ typedef struct {
 	WirelessSecurity *security;
 
 	gboolean initial_have_8021x;
-
-	gboolean disposed;
 } CEPage8021xSecurityPrivate;
 
 static void
@@ -195,13 +193,10 @@ dispose (GObject *object)
 {
 	CEPage8021xSecurityPrivate *priv = CE_PAGE_8021X_SECURITY_GET_PRIVATE (object);
 
-	if (priv->disposed)
-		return;
-
-	priv->disposed = TRUE;
-
-	if (priv->security)
+	if (priv->security) {
 		wireless_security_unref (priv->security);
+		priv->security = NULL;
+	}
 
 	G_OBJECT_CLASS (ce_page_8021x_security_parent_class)->dispose (object);
 }

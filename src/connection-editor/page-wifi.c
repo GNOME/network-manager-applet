@@ -56,7 +56,6 @@ typedef struct {
 	GtkSizeGroup *group;
 
 	int last_channel;
-	gboolean disposed;
 } CEPageWifiPrivate;
 
 static void

@@ -50,8 +50,6 @@ typedef struct {
 
 	NMVpnPluginUiInterface *plugin;
 	NMVpnPluginUiWidgetInterface *ui;
-
-	gboolean disposed;
 } CEPageVpnPrivate;
 
 static void
@@ -166,15 +164,8 @@ dispose (GObject *object)
 {
 	CEPageVpnPrivate *priv = CE_PAGE_VPN_GET_PRIVATE (object);
 
-	if (priv->disposed)
-		return;
-
-	priv->disposed = TRUE;
-
-	if (priv->ui)
-		g_object_unref (priv->ui);
-
-	g_free (priv->service_type);
+	g_clear_object (&priv->ui);
+	g_clear_pointer (&priv->service_type, g_free);
 
 	G_OBJECT_CLASS (ce_page_vpn_parent_class)->dispose (object);
 }

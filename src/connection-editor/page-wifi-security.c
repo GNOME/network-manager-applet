@@ -435,7 +435,6 @@ ce_page_wifi_security_new (NMConnection *connection,
 static void
 ce_page_wifi_security_init (CEPageWifiSecurity *self)
 {
-	self->disposed = FALSE;
 }
 
 static void
@@ -443,13 +442,7 @@ dispose (GObject *object)
 {
 	CEPageWifiSecurity *self = CE_PAGE_WIFI_SECURITY (object);
 
-	if (self->disposed)
-		return;
-
-	self->disposed = TRUE;
-
-	if (self->group)
-		g_object_unref (self->group);
+	g_clear_object (&self->group);
 
 	G_OBJECT_CLASS (ce_page_wifi_security_parent_class)->dispose (object);
 }

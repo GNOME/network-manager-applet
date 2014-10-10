@@ -1245,14 +1245,13 @@ dispose (GObject *object)
 	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
 	int i;
 
-	if (priv->window_group)
-		g_object_unref (priv->window_group);
+	g_clear_object (&priv->window_group);
 
 	/* Mark CEPageIP4 object as invalid; store this indication to cells to be usable in callbacks */
 	for (i = 0; i <= COL_LAST; i++)
 		g_object_set_data (G_OBJECT (priv->addr_cells[i]), "ce-page-not-valid", GUINT_TO_POINTER (1));
 
-	g_free (priv->connection_id);
+	g_clear_pointer (&priv->connection_id, g_free);
 
 	G_OBJECT_CLASS (ce_page_ip4_parent_class)->dispose (object);
 }

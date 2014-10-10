@@ -49,8 +49,6 @@ typedef struct {
 	GtkToggleButton *duplex;
 	GtkToggleButton *autonegotiate;
 	GtkSpinButton *mtu;
-
-	gboolean disposed;
 } CEPageEthernetPrivate;
 
 #define PORT_DEFAULT  0

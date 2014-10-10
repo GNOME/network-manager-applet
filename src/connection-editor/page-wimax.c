@@ -39,8 +39,6 @@ typedef struct {
 
 	GtkEntry *name;
 	GtkComboBoxText *device_mac;  /* Permanent MAC of the device */
-
-	gboolean disposed;
 } CEPageWimaxPrivate;
 
 static void

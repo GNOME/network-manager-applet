@@ -151,16 +151,10 @@ general_private_init (CEPageGeneral *self)
 static void
 dispose (GObject *object)
 {
-	CEPageGeneral *self = CE_PAGE_GENERAL (object);
-	CEPageGeneralPrivate *priv = CE_PAGE_GENERAL_GET_PRIVATE (self);
+	CEPageGeneralPrivate *priv = CE_PAGE_GENERAL_GET_PRIVATE (object);
 
-	if (priv->remote_settings) {
-		g_object_unref (priv->remote_settings);
-		priv->remote_settings = NULL;
-	}
-
-	g_strfreev (priv->zones);
-	priv->zones = NULL;
+	g_clear_object (&priv->remote_settings);
+	g_clear_pointer (&priv->zones, g_strfreev);
 
 	G_OBJECT_CLASS (ce_page_general_parent_class)->dispose (object);
 }
