@@ -39,9 +39,15 @@
 #include "page-wifi-security.h"
 #include "nm-connection-editor.h"
 
-
 G_DEFINE_TYPE (CEPageWifiSecurity, ce_page_wifi_security, CE_TYPE_PAGE)
 
+#define CE_PAGE_WIFI_SECURITY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CE_TYPE_PAGE_WIFI_SECURITY, CEPageWifiSecurityPrivate))
+
+typedef struct {
+	GtkSizeGroup *group;
+	GtkComboBox *security_combo;
+	gboolean adhoc;
+} CEPageWifiSecurityPrivate;
 
 #define S_NAME_COLUMN   0
 #define S_SEC_COLUMN    1
@@ -123,12 +129,13 @@ wsec_size_group_clear (GtkSizeGroup *group)
 static WirelessSecurity *
 wireless_security_combo_get_active (CEPageWifiSecurity *self)
 {
+	CEPageWifiSecurityPrivate *priv = CE_PAGE_WIFI_SECURITY_GET_PRIVATE (self);
 	GtkTreeIter iter;
 	GtkTreeModel *model;
 	WirelessSecurity *sec = NULL;
 
-	model = gtk_combo_box_get_model (self->security_combo);
-	gtk_combo_box_get_active_iter (self->security_combo, &iter);
+	model = gtk_combo_box_get_model (priv->security_combo);
+	gtk_combo_box_get_active_iter (priv->security_combo, &iter);
 	gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
 
 	return sec;
@@ -139,6 +146,7 @@ wireless_security_combo_changed (GtkComboBox *combo,
                                  gpointer user_data)
 {
 	CEPageWifiSecurity *self = CE_PAGE_WIFI_SECURITY (user_data);
+	CEPageWifiSecurityPrivate *priv = CE_PAGE_WIFI_SECURITY_GET_PRIVATE (self);
 	GtkWidget *vbox;
 	GList *elt, *children;
 	WirelessSecurity *sec;
@@ -146,7 +154,7 @@ wireless_security_combo_changed (GtkComboBox *combo,
 	vbox = GTK_WIDGET (gtk_builder_get_object (CE_PAGE (self)->builder, "wifi_security_vbox"));
 	g_assert (vbox);
 
-	wsec_size_group_clear (self->group);
+	wsec_size_group_clear (priv->group);
 
 	/* Remove any previous wifi security widgets */
 	children = gtk_container_get_children (GTK_CONTAINER (vbox));
@@ -165,8 +173,8 @@ wireless_security_combo_changed (GtkComboBox *combo,
 			gtk_container_remove (GTK_CONTAINER (parent), sec_widget);
 
 		widget = GTK_WIDGET (gtk_builder_get_object (CE_PAGE (self)->builder, "wifi_security_combo_label"));
-		gtk_size_group_add_widget (self->group, widget);
-		wireless_security_add_to_size_group (sec, self->group);
+		gtk_size_group_add_widget (priv->group, widget);
+		wireless_security_add_to_size_group (sec, priv->group);
 
 		gtk_container_add (GTK_CONTAINER (vbox), sec_widget);
 		wireless_security_unref (sec);
@@ -214,6 +222,7 @@ static void
 finish_setup (CEPageWifiSecurity *self, gpointer unused, GError *error, gpointer user_data)
 {
 	CEPage *parent = CE_PAGE (self);
+	CEPageWifiSecurityPrivate *priv = CE_PAGE_WIFI_SECURITY_GET_PRIVATE (self);
 	NMSettingWireless *s_wireless;
 	NMSettingWirelessSecurity *s_wireless_sec;
 	NMConnection *connection = parent->connection;
@@ -246,7 +255,7 @@ finish_setup (CEPageWifiSecurity *self, gpointer unused, GError *error, gpointer
 	mode = nm_setting_wireless_get_mode (s_wireless);
 	if (mode && !strcmp (mode, "adhoc"))
 		is_adhoc = TRUE;
-	self->adhoc = is_adhoc;
+	priv->adhoc = is_adhoc;
 
 	s_wireless_sec = nm_connection_get_setting_wireless_security (connection);
 
@@ -360,12 +369,12 @@ finish_setup (CEPageWifiSecurity *self, gpointer unused, GError *error, gpointer
 	renderer = gtk_cell_renderer_text_new ();
 	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combo), renderer, TRUE);
 	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (combo), renderer, "text", S_NAME_COLUMN, NULL);
-	gtk_cell_layout_set_cell_data_func (GTK_CELL_LAYOUT (combo), renderer, set_sensitive, &self->adhoc, NULL);
+	gtk_cell_layout_set_cell_data_func (GTK_CELL_LAYOUT (combo), renderer, set_sensitive, &priv->adhoc, NULL);
 
 	gtk_combo_box_set_active (combo, active < 0 ? 0 : (guint32) active);
 	g_object_unref (G_OBJECT (sec_model));
 
-	self->security_combo = combo;
+	priv->security_combo = combo;
 
 	wireless_security_combo_changed (combo, self);
 	g_signal_connect (combo, "changed",
@@ -405,7 +414,7 @@ ce_page_wifi_security_new (NMConnection *connection,
 		return NULL;
 	}
 
-	self->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+	CE_PAGE_WIFI_SECURITY_GET_PRIVATE (self)->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
 	s_wsec = nm_connection_get_setting_wireless_security (connection);
 
@@ -440,9 +449,9 @@ ce_page_wifi_security_init (CEPageWifiSecurity *self)
 static void
 dispose (GObject *object)
 {
-	CEPageWifiSecurity *self = CE_PAGE_WIFI_SECURITY (object);
+	CEPageWifiSecurityPrivate *priv = CE_PAGE_WIFI_SECURITY_GET_PRIVATE (object);
 
-	g_clear_object (&self->group);
+	g_clear_object (&priv->group);
 
 	G_OBJECT_CLASS (ce_page_wifi_security_parent_class)->dispose (object);
 }
@@ -451,6 +460,7 @@ static gboolean
 validate (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageWifiSecurity *self = CE_PAGE_WIFI_SECURITY (page);
+	CEPageWifiSecurityPrivate *priv = CE_PAGE_WIFI_SECURITY_GET_PRIVATE (self);
 	NMSettingWireless *s_wireless;
 	WirelessSecurity *sec;
 	gboolean valid = FALSE;
@@ -460,14 +470,14 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	g_assert (s_wireless);
 
 	/* Kernel Ad-Hoc WPA support is busted; it creates open networks.  Disable
-	 * WPA when Ad-Hoc is selected.  set_sensitive() will pick up self->adhoc
+	 * WPA when Ad-Hoc is selected.  set_sensitive() will pick up priv->adhoc
 	 * and do the right thing.
 	 */
 	mode = nm_setting_wireless_get_mode (s_wireless);
 	if (g_strcmp0 (mode, NM_SETTING_WIRELESS_MODE_ADHOC) == 0)
-		self->adhoc = TRUE;
+		priv->adhoc = TRUE;
 	else
-		self->adhoc = FALSE;
+		priv->adhoc = FALSE;
 
 	sec = wireless_security_combo_get_active (self);
 	if (sec) {
@@ -485,7 +495,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 			valid = FALSE;
 		}
 
-		if (self->adhoc) {
+		if (priv->adhoc) {
 			if (!wireless_security_adhoc_compatible (sec)) {
 				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, "Security not compatible with Ad-Hoc mode");
 				valid = FALSE;
@@ -508,6 +518,8 @@ ce_page_wifi_security_class_init (CEPageWifiSecurityClass *wireless_security_cla
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (wireless_security_class);
 	CEPageClass *parent_class = CE_PAGE_CLASS (wireless_security_class);
+
+	g_type_class_add_private (object_class, sizeof (CEPageWifiSecurityPrivate));
 
 	/* virtual methods */
 	object_class->dispose = dispose;

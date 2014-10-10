@@ -42,10 +42,6 @@
 
 typedef struct {
 	CEPage parent;
-
-	GtkSizeGroup *group;
-	GtkComboBox *security_combo;
-	gboolean adhoc;
 } CEPageWifiSecurity;
 
 typedef struct {
