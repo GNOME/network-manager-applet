@@ -388,7 +388,6 @@ pg_enabled (CEPageDcb *self, gboolean enabled)
 		}
 	}
 
-g_message ("*** set default PG BW %d", set_default);
 	if (set_default)
 		nm_setting_dcb_set_priority_group_bandwidth (priv->options, 0, 100);
 
