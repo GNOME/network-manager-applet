@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: NetworkManager-applet\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2014-09-17 16:48+0000\n"
-"PO-Revision-Date: 2014-09-23 01:32+0300\n"
+"POT-Creation-Date: 2014-10-09 16:50+0000\n"
+"PO-Revision-Date: 2014-10-17 00:02+0300\n"
 "Last-Translator: Stas Solovey <whats_up@tut.by>\n"
 "Language-Team: Русский <gnome-cyr@gnome.org>\n"
 "Language: \n"
@@ -762,77 +762,64 @@ msgstr "Вы подключены к сети InfiniBand."
 
 #: ../src/applet-device-infiniband.c:167
 #, c-format
-#| msgid "Preparing network connection '%s'..."
 msgid "Preparing InfiniBand connection '%s'..."
 msgstr "Подготовка соединения InfiniBand «%s»…"
 
 #: ../src/applet-device-infiniband.c:170
 #, c-format
-#| msgid "Configuring mobile broadband connection '%s'..."
 msgid "Configuring InfiniBand connection '%s'..."
 msgstr "Настройка соединения InfiniBand «%s»…"
 
 #: ../src/applet-device-infiniband.c:173
 #, c-format
-#| msgid "User authentication required for VPN connection '%s'..."
 msgid "User authentication required for InfiniBand connection '%s'..."
 msgstr "Для InfiniBand-соединения «%s» требуется аутентификация…"
 
 #: ../src/applet-device-infiniband.c:180
 #, c-format
-#| msgid "VPN connection '%s' active"
 msgid "InfiniBand connection '%s' active"
 msgstr "InfiniBand-соединение «%s» установлено"
 
 #: ../src/applet-device-team.c:86
-#| msgid "You are now connected to the ethernet network."
 msgid "You are now connected to the teamed network."
 msgstr "Вы подключены к агрегированной сети (team)."
 
 #: ../src/applet-device-team.c:110
 #, c-format
-#| msgid "Preparing network connection '%s'..."
 msgid "Preparing team connection '%s'..."
 msgstr "Подготовка агрегированного (team) соединения «%s»…"
 
 #: ../src/applet-device-team.c:113
 #, c-format
-#| msgid "Configuring wired network connection '%s'..."
 msgid "Configuring team connection '%s'..."
 msgstr "Настройка агрегированного (team) соединения «%s»…"
 
 #: ../src/applet-device-team.c:116
 #, c-format
-#| msgid "User authentication required for VPN connection '%s'..."
 msgid "User authentication required for team connection '%s'..."
 msgstr "Для агрегированного (team) соединения «%s» требуется аутентификация…"
 
 #: ../src/applet-device-team.c:123
 #, c-format
-#| msgid "VPN connection '%s' active"
 msgid "Team connection '%s' active"
 msgstr "Агрегированное (team) соединение «%s» установлено"
 
 #: ../src/applet-device-vlan.c:204
-#| msgid "You are now connected to the CDMA network."
 msgid "You are now connected to the VLAN."
 msgstr "Вы подключены к сети VLAN."
 
 #: ../src/applet-device-vlan.c:228
 #, c-format
-#| msgid "Starting VPN connection '%s'..."
 msgid "Preparing VLAN connection '%s'..."
 msgstr "Подготовка соединения VLAN «%s»…"
 
 #: ../src/applet-device-vlan.c:231
 #, c-format
-#| msgid "Starting VPN connection '%s'..."
 msgid "Configuring VLAN connection '%s'..."
 msgstr "Настройка соединения VLAN «%s»…"
 
 #: ../src/applet-device-vlan.c:234
 #, c-format
-#| msgid "User authentication required for VPN connection '%s'..."
 msgid "User authentication required for VLAN connection '%s'..."
 msgstr "Для VLAN-соединения «%s» требуется аутентификация…"
 
@@ -1423,6 +1410,8 @@ msgid ""
 "The interface name of the primary device. If set, this device will always be "
 "the active slave when it is available."
 msgstr ""
+"Имя интерфейса первичного устройства. Если установлено, это устройство "
+"всегда будет активным слейвом, когда оно доступно."
 
 #: ../src/connection-editor/ce-page-bridge-port.ui.h:1
 msgid "Path _cost:"
@@ -2082,20 +2071,17 @@ msgstr "Посылать _эхо-пакеты PPP"
 #: ../src/connection-editor/ce-page-team-port.ui.h:1
 #: ../src/connection-editor/ce-page-team.ui.h:2
 msgid "_JSON config:"
-msgstr ""
+msgstr "Конфигурация _JSON"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:2
-#| msgid "Import a saved VPN configuration..."
 msgid "_Import team configuration from a file..."
 msgstr "_Импортировать параметры агрегированного подключения (Team) из файла…"
 
 #: ../src/connection-editor/ce-page-team.ui.h:1
-#| msgid "Bonded _connections:"
 msgid "_Teamed connections:"
 msgstr "_Агрегированные подключения (Team):"
 
 #: ../src/connection-editor/ce-page-team.ui.h:3
-#| msgid "Import a saved VPN configuration..."
 msgid "I_mport team configuration from a file..."
 msgstr "И_мпортировать параметры агрегированного подключения (Team) из файла…"
 
@@ -2123,7 +2109,7 @@ msgstr "Имя устройства + номер"
 #. LEAVE "vlan" UNTRANSLATED. In context, this means "concatenate the string 'vlan' and the VLAN ID number together".
 #: ../src/connection-editor/ce-page-vlan.ui.h:10
 msgid "\"vlan\" + number"
-msgstr "\"vlan\" + номер"
+msgstr "«vlan» + «номер»"
 
 #: ../src/connection-editor/ce-page-wifi-security.ui.h:1
 msgid "S_ecurity:"
@@ -2401,15 +2387,15 @@ msgstr "Ошибка создания диалога для изменения �
 msgid "Error initializing editor"
 msgstr "Ошибка инициализации редактора"
 
-#: ../src/connection-editor/nm-connection-editor.c:905
+#: ../src/connection-editor/nm-connection-editor.c:904
 msgid "Connection add failed"
 msgstr "Сбой добавления соединения"
 
-#: ../src/connection-editor/nm-connection-editor.c:945
+#: ../src/connection-editor/nm-connection-editor.c:944
 msgid "Error saving connection"
 msgstr "Ошибка сохранения соединения"
 
-#: ../src/connection-editor/nm-connection-editor.c:946
+#: ../src/connection-editor/nm-connection-editor.c:945
 #, c-format
 msgid "The property '%s' / '%s' is invalid: %d"
 msgstr "Неверное свойство «%s» / «%s»: %d"
@@ -2561,13 +2547,12 @@ msgstr "Не удалось загрузить диалог настройки �
 
 #: ../src/connection-editor/page-dcb.c:606
 msgid "DCB"
-msgstr ""
+msgstr "DCB"
 
 #: ../src/connection-editor/page-dcb.c:608
-#, fuzzy
 #| msgid "Could not load DSL user interface."
 msgid "Could not load DCB user interface."
-msgstr "Не удалось загрузить диалог настройки DSL."
+msgstr "Не удалось загрузить диалог настройки DCB."
 
 #: ../src/connection-editor/page-dsl.c:139
 msgid "Could not load DSL user interface."
@@ -2726,12 +2711,12 @@ msgstr "Не удалось загрузить диалог настройки I
 #: ../src/connection-editor/page-master.c:244
 #: ../src/connection-editor/page-master.c:255
 msgid "Duplicate slaves"
-msgstr ""
+msgstr "Дублированные слейвы"
 
 #: ../src/connection-editor/page-master.c:245
 #, c-format
 msgid "Slaves '%s' and '%s' both apply to device '%s'"
-msgstr ""
+msgstr "Слейвы «%s» и «%s» используют одно устройство «%s»"
 
 #: ../src/connection-editor/page-master.c:256
 #, c-format
@@ -2739,11 +2724,13 @@ msgid ""
 "Slaves '%s' and '%s' apply to different virtual ports ('%s' and '%s') of the "
 "same physical device."
 msgstr ""
+"Слейвы «%s» и «%s» используют разные виртуальные порты («%s» и «%s») одного "
+"физического устройства."
 
 #: ../src/connection-editor/page-master.c:373
 #, c-format
 msgid "%s slave %d"
-msgstr "Подчинённое %s %d"
+msgstr "%s слейв %d"
 
 #: ../src/connection-editor/page-mobile.c:353
 msgid "Could not load mobile broadband user interface."
@@ -2835,34 +2822,34 @@ msgstr "Выбор файла для импортирования"
 #: ../src/connection-editor/page-team.c:112
 #: ../src/connection-editor/page-team-port.c:97
 msgid "Error: file doesn't contain a valid JSON configuration"
-msgstr ""
+msgstr "Ошибка: файл не содержит правильную конфигурацию JSON"
 
 #: ../src/connection-editor/page-team.c:247
-#, fuzzy
 #| msgid "Could not load vlan user interface."
 msgid "Could not load team user interface."
-msgstr "Не удалось загрузить диалог настройки vlan."
+msgstr ""
+"Не удалось загрузить диалог настройки агрегированного соединения (Team)."
 
 #: ../src/connection-editor/page-team.c:342
-#, fuzzy, c-format
+#, c-format
 #| msgid "DSL connection %d"
 msgid "Team connection %d"
-msgstr "DSL-соединение %d"
+msgstr "Агрегированное соединение (Team) %d"
 
 #. Translators: a "Team Port" is a network
 #. * device that is part of a team.
 #.
 #: ../src/connection-editor/page-team-port.c:157
-#, fuzzy
 #| msgid "Bridge Port"
 msgid "Team Port"
-msgstr "Порт моста"
+msgstr "Порт агрегированного соединения (Team)"
 
 #: ../src/connection-editor/page-team-port.c:159
-#, fuzzy
 #| msgid "Could not load bridge port user interface."
 msgid "Could not load team port user interface."
-msgstr "Не удалось загрузить диалог настройки порта мостового соединения."
+msgstr ""
+"Не удалось загрузить диалог настройки порта агрегированного соединения "
+"(Team)."
 
 #. Translators: the first %s is a device name (eg, "em1"), the
 #. * second is a connection name (eg, "Auto Ethernet").
@@ -3176,8 +3163,9 @@ msgid ""
 "Preferences menu."
 msgstr ""
 "После указания параметров доступа к мобильной сети будет установлено "
-"соединение с этой сетью. Чтобы изменить параметры соединения, дважды "
-"щёлкните на соединении."
+"соединение. Если подключиться не удалось или нет доступа к ресурсам сети, "
+"откройте параметры системы. Для изменения настроек соединения, выберите "
+"«Сеть» в параметрах системы."
 
 #: ../src/libnm-gtk/nm-mobile-wizard.c:267
 msgid "Confirm Mobile Broadband Settings"
@@ -3565,7 +3553,7 @@ msgstr "GTC"
 
 #: ../src/wireless-security/eap-method-fast.c:404
 msgid "Choose a PAC file..."
-msgstr "Выберите файл PAC..."
+msgstr "Выберите файл PAC…"
 
 #: ../src/wireless-security/eap-method-fast.c:411
 msgid "PAC files (*.pac)"
@@ -3694,7 +3682,7 @@ msgstr "TLS"
 
 #: ../src/wireless-security/wireless-security.c:454
 msgid "PWD"
-msgstr ""
+msgstr "PWD"
 
 # Метод аутентификации
 #: ../src/wireless-security/wireless-security.c:465
