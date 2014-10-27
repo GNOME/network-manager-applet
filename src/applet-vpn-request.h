@@ -20,7 +20,7 @@
  * (C) Copyright 2004 - 2011 Red Hat, Inc.
  */
 
-#ifndef APPLET_VPN_REQEUST_H
+#ifndef APPLET_VPN_REQUEST_H
 #define APPLET_VPN_REQUEST_H
 
 #include "applet.h"
