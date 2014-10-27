@@ -25,9 +25,13 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 	unset SAVE_CFLAGS
 
 	for option in -Wshadow -Wmissing-declarations -Wmissing-prototypes \
-		      -Wdeclaration-after-statement -Wstrict-prototypes \
+		      -Wdeclaration-after-statement -Wformat-security \
+		      -Wstrict-prototypes \
 		      -Wfloat-equal -Wno-unused-parameter -Wno-sign-compare \
-		      -fno-strict-aliasing -Wno-unused-but-set-variable; do
+		      -fno-strict-aliasing -Wno-unused-but-set-variable \
+		      -Wundef -Wimplicit-function-declaration \
+		      -Wpointer-arith -Winit-self \
+		      -Wmissing-include-dirs -Waggregate-return; do
 		SAVE_CFLAGS="$CFLAGS"
 		CFLAGS="$CFLAGS $EXTRA_CFLAGS $option"
 		AC_MSG_CHECKING([whether gcc understands $option])
