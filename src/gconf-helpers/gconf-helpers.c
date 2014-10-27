@@ -53,7 +53,7 @@
 
 #include "gconf-helpers.h"
 #include "gconf-upgrade.h"
-#include "nm-gvaluearray-compat.h"
+#include "nm-glib-compat.h"
 
 #define S390_OPT_KEY_PREFIX "s390-opt-"
 
