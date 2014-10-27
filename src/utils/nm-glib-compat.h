@@ -15,13 +15,18 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2013 Red Hat, Inc.
+ * Copyright 2013-2014 Red Hat, Inc.
  */
 
-#ifndef NM_GVALUEARRAY_COMPAT_H
-#define NM_GVALUEARRAY_COMPAT_H
+#ifndef NM_GLIB_COMPAT_H
+#define NM_GLIB_COMPAT_H
 
 #include <glib.h>
+
+
+/*************************************************************
+ * undeprecate GValueArray
+ *************************************************************/
 
 #define g_value_array_get_type() \
   G_GNUC_EXTENSION ({ \
@@ -100,4 +105,7 @@
     G_GNUC_END_IGNORE_DEPRECATIONS \
   })
 
-#endif  /* NM_GVALUEARRAY_COMPAT_H */
+/*************************************************************/
+
+
+#endif  /* NM_GLIB_COMPAT_H */
