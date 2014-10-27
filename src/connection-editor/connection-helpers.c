@@ -29,6 +29,7 @@
 #include "page-wifi.h"
 #include "page-mobile.h"
 #include "page-wimax.h"
+#include "page-bluetooth.h"
 #include "page-dsl.h"
 #include "page-infiniband.h"
 #include "page-bond.h"
@@ -128,6 +129,7 @@ get_connection_type_list (void)
 	                    NM_TYPE_SETTING_CDMA,
 	                    NM_TYPE_SETTING_BLUETOOTH,
 	                    FALSE);
+	add_type_data_real (array, _("Bluetooth"), bluetooth_connection_new, NM_TYPE_SETTING_BLUETOOTH);
 	add_type_data_real (array, _("WiMAX"), wimax_connection_new, NM_TYPE_SETTING_WIMAX);
 	add_type_data_real (array, _("DSL"), dsl_connection_new, NM_TYPE_SETTING_PPPOE);
 	add_type_data_real (array, _("InfiniBand"), infiniband_connection_new, NM_TYPE_SETTING_INFINIBAND);
