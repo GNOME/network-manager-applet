@@ -253,12 +253,6 @@ nm_gconf_read_0_6_wep_settings (GConfClient *client,
 	return s_wireless_sec;
 }
 
-static const struct flagnames wpa_versions[] = {
-	{ "wpa", IW_AUTH_WPA_VERSION_WPA },
-	{ "rsn", IW_AUTH_WPA_VERSION_WPA2 },
-	{ NULL, 0 }
-};
-
 static NMSettingWirelessSecurity *
 nm_gconf_read_0_6_wpa_settings (GConfClient *client,
                                 const char *path,
