@@ -493,14 +493,9 @@ wizard_done_cb (NMAMobileWizard *wizard,
 static void
 start_wizard (NmaBtDevice *self,
               const gchar *path,
-              NMDeviceType devtype)
+              NMDeviceModemCapabilities caps)
 {
 	NmaBtDevicePrivate *priv = NMA_BT_DEVICE_GET_PRIVATE (self);
-
-	if (devtype == NM_DEVICE_TYPE_UNKNOWN) {
-		dun_error (self, __func__, NULL, _("unknown modem type."));
-		return;
-	}
 
 	if (priv->wizard) {
 		g_message ("%s: (%s) oops! not starting Wizard as one is already in progress", __func__, path);
@@ -515,7 +510,7 @@ start_wizard (NmaBtDevice *self,
 	/* Start the mobile wizard */
 	priv->wizard = nma_mobile_wizard_new (priv->parent_window,
 	                                      priv->window_group,
-	                                      devtype,
+	                                      caps,
 	                                      FALSE,
 	                                      wizard_done_cb,
 	                                      self);
@@ -531,7 +526,7 @@ modem_get_all_cb (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 	GHashTable *properties = NULL;
 	GError *error = NULL;
 	GValue *value;
-	NMDeviceType devtype = NM_DEVICE_TYPE_UNKNOWN;
+	NMDeviceModemCapabilities caps = NM_DEVICE_MODEM_CAPABILITY_NONE;
 
 	path = dbus_g_proxy_get_path (proxy);
 	g_message ("%s: (%s) processing GetAll reply", __func__, path);
@@ -561,10 +556,10 @@ modem_get_all_cb (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 			if (value && G_VALUE_HOLDS_UINT (value)) {
 				switch (g_value_get_uint (value)) {
 				case 1:
-					devtype = NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS;
+					caps = NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS;
 					break;
 				case 2:
-					devtype = NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO;
+					caps = NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO;
 					break;
 				default:
 					g_message ("%s: (%s) unknown modem type", __func__, path);
@@ -583,7 +578,7 @@ modem_get_all_cb (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
 	g_hash_table_unref (properties);
 
 	/* Launch wizard! */
-	start_wizard (self, path, devtype);
+	start_wizard (self, path, caps);
 
 out:
 	g_message ("%s: finished", __func__);
@@ -646,12 +641,12 @@ check_modem (NmaBtDevice *self,
              MMObject *modem_object)
 {
 	NmaBtDevicePrivate *priv = NMA_BT_DEVICE_GET_PRIVATE (self);
-	NMDeviceType devtype = NM_DEVICE_TYPE_UNKNOWN;
+	NMDeviceModemCapabilities caps = NM_DEVICE_MODEM_CAPABILITY_NONE;
 	MMModem *modem_iface;
 	const gchar *path;
 	const gchar *primary_port;
 	const gchar *iface_basename;
-	MMModemCapability caps;
+	MMModemCapability mm_caps;
 
 	path = mm_object_get_path (modem_object);
 	g_message ("%s: (%s) modem found", __func__, path);
@@ -675,21 +670,21 @@ check_modem (NmaBtDevice *self,
 	}
 
 	/* This is the modem we were waiting for, so keep on */
-	caps = mm_modem_get_current_capabilities (modem_iface);
+	mm_caps = mm_modem_get_current_capabilities (modem_iface);
 	/* CDMA-only? */
-	if (caps == MM_MODEM_CAPABILITY_CDMA_EVDO)
-		devtype = NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO;
+	if (mm_caps == MM_MODEM_CAPABILITY_CDMA_EVDO)
+		caps = NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO;
 	/* GSM/UMTS-only? */
-	else if (caps == MM_MODEM_CAPABILITY_GSM_UMTS)
-		devtype = NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS;
+	else if (mm_caps == MM_MODEM_CAPABILITY_GSM_UMTS)
+		caps = NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS;
 	/* LTE? */
-	else if (caps & MM_MODEM_CAPABILITY_LTE)
-		devtype = NM_DEVICE_MODEM_CAPABILITY_LTE;
+	else if (mm_caps & MM_MODEM_CAPABILITY_LTE)
+		caps = NM_DEVICE_MODEM_CAPABILITY_LTE;
 	else
 		g_message ("%s: (%s) unknown modem type", __func__, path);
 
 	/* Launch wizard! */
-	start_wizard (self, path, devtype);
+	start_wizard (self, path, caps);
 
 	return TRUE;
 }

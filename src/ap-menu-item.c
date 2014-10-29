@@ -185,7 +185,7 @@ nm_network_menu_item_best_strength (NMNetworkMenuItem * item,
 	g_object_unref (pixbuf);
 }
 
-const const char *
+const char *
 nm_network_menu_item_get_hash (NMNetworkMenuItem * item)
 {
 	g_return_val_if_fail (item != NULL, NULL);
