@@ -53,7 +53,7 @@
 
 #include "gconf-helpers.h"
 #include "gconf-upgrade.h"
-#include "nm-gvaluearray-compat.h"
+#include "nm-glib-compat.h"
 
 #define S390_OPT_KEY_PREFIX "s390-opt-"
 
@@ -502,90 +502,6 @@ out:
 	g_free (gc_key);
 	return success;
 }
-
-#if UNUSED
-static void
-property_value_destroy (gpointer data)
-{
-	GValue *value = (GValue *) data;
-
-	g_value_unset (value);
-	g_slice_free (GValue, data);
-}
-
-
-static void
-add_property (GHashTable *properties, const char *key, GConfValue *gconf_value)
-{
-	GValue *value = NULL;
-
-	if (!gconf_value)
-		return;
-
-	switch (gconf_value->type) {
-	case GCONF_VALUE_STRING:
-		value = g_slice_new0 (GValue);
-		g_value_init (value, G_TYPE_STRING);
-		g_value_set_string (value, gconf_value_get_string (gconf_value));
-		break;
-	case GCONF_VALUE_INT:
-		value = g_slice_new0 (GValue);
-		g_value_init (value, G_TYPE_INT);
-		g_value_set_int (value, gconf_value_get_int (gconf_value));
-		break;
-	case GCONF_VALUE_BOOL:
-		value = g_slice_new0 (GValue);
-		g_value_init (value, G_TYPE_BOOLEAN);
-		g_value_set_boolean (value, gconf_value_get_bool (gconf_value));
-		break;
-	default:
-		break;
-	}
-
-	if (value)
-		g_hash_table_insert (properties, gconf_unescape_key (key, -1), value);
-}
-
-gboolean
-nm_gconf_get_valuehash_helper (GConfClient *client,
-                               const char *path,
-                               const char *setting,
-                               GHashTable **value)
-{
-	char *gc_key;
-	GSList *gconf_entries;
-	GSList *iter;
-	int prefix_len;
-
-	g_return_val_if_fail (setting != NULL, FALSE);
-	g_return_val_if_fail (value != NULL, FALSE);
-
-	gc_key = g_strdup_printf ("%s/%s", path, setting);
-	prefix_len = strlen (gc_key);
-	gconf_entries = gconf_client_all_entries (client, gc_key, NULL);
-	g_free (gc_key);
-
-	if (!gconf_entries)
-		return FALSE;
-
-	*value = g_hash_table_new_full (g_str_hash, g_str_equal,
-	                                (GDestroyNotify) g_free,
-	                                property_value_destroy);
-
-	for (iter = gconf_entries; iter; iter = iter->next) {
-		GConfEntry *entry = (GConfEntry *) iter->data;
-
-		gc_key = (char *) gconf_entry_get_key (entry);
-		gc_key += prefix_len + 1; /* get rid of the full path */
-
-		add_property (*value, gc_key, gconf_entry_get_value (entry));
-		gconf_entry_unref (entry);
-	}
-
-	g_slist_free (gconf_entries);
-	return TRUE;
-}
-#endif
 
 gboolean
 nm_gconf_get_stringhash_helper (GConfClient *client,
@@ -1252,59 +1168,6 @@ typedef struct {
 	char *path;
 } WritePropertiesInfo;
 
-#if UNUSED
-static void
-write_properties_valuehash (gpointer key, gpointer val, gpointer user_data)
-{
-	GValue *value = (GValue *) val;
-	WritePropertiesInfo *info = (WritePropertiesInfo *) user_data;
-	char *esc_key;
-	char *full_key;
-
-	esc_key = gconf_escape_key ((char *) key, -1);
-	full_key = g_strconcat (info->path, "/", esc_key, NULL);
-	g_free (esc_key);
-
-	if (G_VALUE_HOLDS_STRING (value))
-		gconf_client_set_string (info->client, full_key, g_value_get_string (value), NULL);
-	else if (G_VALUE_HOLDS_INT (value))
-		gconf_client_set_int (info->client, full_key, g_value_get_int (value), NULL);
-	else if (G_VALUE_HOLDS_BOOLEAN (value))
-		gconf_client_set_bool (info->client, full_key, g_value_get_boolean (value), NULL);
-	else
-		g_warning ("Don't know how to write '%s' to gconf", G_VALUE_TYPE_NAME (value));
-
-	g_free (full_key);
-}
-
-gboolean
-nm_gconf_set_valuehash_helper (GConfClient *client,
-                               const char *path,
-                               const char *setting,
-                               GHashTable *value)
-{
-	char *gc_key;
-	WritePropertiesInfo info;
-
-	g_return_val_if_fail (setting != NULL, FALSE);
-	g_return_val_if_fail (value != NULL, FALSE);
-
-	gc_key = g_strdup_printf ("%s/%s", path, setting);
-	if (!gc_key) {
-		g_warning ("Not enough memory to create gconf path");
-		return FALSE;
-	}
-
-	info.client = client;
-	info.path = gc_key;
-
-	g_hash_table_foreach (value, write_properties_valuehash, &info);
-
-	g_free (gc_key);
-	return TRUE;
-}
-#endif
-
 gboolean
 nm_gconf_set_stringhash_helper (GConfClient *client,
                                 const char *path,
@@ -1956,15 +1819,6 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 			g_slist_foreach (sa_val, (GFunc) g_free, NULL);
 			g_slist_free (sa_val);
 		}
-#if UNUSED
-	} else if (type == DBUS_TYPE_G_MAP_OF_VARIANT) {
-		GHashTable *vh_val = NULL;
-
-		if (nm_gconf_get_valuehash_helper (info->client, info->dir, setting_name, &vh_val)) {
-			g_object_set (setting, key, vh_val, NULL);
-			g_hash_table_destroy (vh_val);
-		}
-#endif
 	} else if (type == DBUS_TYPE_G_MAP_OF_STRING) {
 		GHashTable *sh_val = NULL;
 
@@ -2697,12 +2551,6 @@ copy_one_setting_value_to_gconf (NMSetting *setting,
 		nm_gconf_set_stringlist_helper (info->client, info->dir,
 								  key, setting_name,
 								  (GSList *) g_value_get_boxed (value));
-#if UNUSED
-	} else if (type == DBUS_TYPE_G_MAP_OF_VARIANT) {
-		nm_gconf_set_valuehash_helper (info->client, info->dir,
-								 setting_name,
-								 (GHashTable *) g_value_get_boxed (value));
-#endif
 	} else if (type == DBUS_TYPE_G_MAP_OF_STRING) {
 		nm_gconf_set_stringhash_helper (info->client, info->dir, key,
 		                                setting_name,

@@ -15,13 +15,35 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2013 Red Hat, Inc.
+ * Copyright 2013-2014 Red Hat, Inc.
  */
 
-#ifndef NM_GVALUEARRAY_COMPAT_H
-#define NM_GVALUEARRAY_COMPAT_H
+#ifndef NM_GLIB_COMPAT_H
+#define NM_GLIB_COMPAT_H
 
 #include <glib.h>
+
+
+/*************************************************************/
+
+#ifdef __clang__
+
+#undef G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+#undef G_GNUC_END_IGNORE_DEPRECATIONS
+
+#define G_GNUC_BEGIN_IGNORE_DEPRECATIONS \
+    _Pragma("clang diagnostic push") \
+    _Pragma("clang diagnostic ignored \"-Wdeprecated-declarations\"")
+
+#define G_GNUC_END_IGNORE_DEPRECATIONS \
+    _Pragma("clang diagnostic pop")
+
+#endif
+
+
+/*************************************************************
+ * undeprecate GValueArray
+ *************************************************************/
 
 #define g_value_array_get_type() \
   G_GNUC_EXTENSION ({ \
@@ -100,4 +122,7 @@
     G_GNUC_END_IGNORE_DEPRECATIONS \
   })
 
-#endif  /* NM_GVALUEARRAY_COMPAT_H */
+/*************************************************************/
+
+
+#endif  /* NM_GLIB_COMPAT_H */
