@@ -25,7 +25,11 @@
 #include <stdarg.h>
 #include <glib.h>
 
+/* libgnome-keyring is deprecated. */
+#include "utils.h"
+NM_PRAGMA_WARNING_DISABLE("-Wdeprecated-declarations")
 #include <gnome-keyring.h>
+
 #include "fake-keyring.h"
 
 static GSList *secrets = NULL;

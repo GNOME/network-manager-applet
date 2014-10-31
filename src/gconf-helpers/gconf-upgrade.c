@@ -30,7 +30,11 @@
 #include <errno.h>
 #include <arpa/inet.h>
 
+/* libgnome-keyring is deprecated. */
+#include "utils.h"
+NM_PRAGMA_WARNING_DISABLE("-Wdeprecated-declarations")
 #include <gnome-keyring.h>
+
 #include <nm-setting-connection.h>
 #include <nm-setting-wireless.h>
 #include <nm-setting-wireless-security.h>

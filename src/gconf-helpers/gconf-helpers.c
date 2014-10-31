@@ -34,8 +34,12 @@
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
 #include <glib.h>
-#include <gnome-keyring.h>
 #include <dbus/dbus-glib.h>
+
+/* libgnome-keyring is deprecated. */
+#include "utils.h"
+NM_PRAGMA_WARNING_DISABLE("-Wdeprecated-declarations")
+#include <gnome-keyring.h>
 
 #include <nm-setting-bluetooth.h>
 #include <nm-setting-connection.h>
