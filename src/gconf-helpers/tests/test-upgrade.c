@@ -22,6 +22,10 @@
 
 #include <glib.h>
 #include <string.h>
+
+/* libgnome-keyring is deprecated. */
+#include "utils.h"
+NM_PRAGMA_WARNING_DISABLE("-Wdeprecated-declarations")
 #include <gnome-keyring.h>
 
 #include <nm-setting-wireless-security.h>
