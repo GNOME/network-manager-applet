@@ -30,6 +30,42 @@
 #include <net/ethernet.h>
 #include <nm-access-point.h>
 
+
+#if defined (__GNUC__)
+#define _NM_PRAGMA_WARNING_DO(warning)       G_STRINGIFY(GCC diagnostic ignored warning)
+#elif defined (__clang__)
+#define _NM_PRAGMA_WARNING_DO(warning)       G_STRINGIFY(clang diagnostic ignored warning)
+#endif
+
+/* you can only suppress a specific warning that the compiler
+ * understands. Otherwise you will get another compiler warning
+ * about invalid pragma option.
+ * It's not that bad however, because gcc and clang often have the
+ * same name for the same warning. */
+
+#if defined (__GNUC__)
+#define NM_PRAGMA_WARNING_DISABLE(warning) \
+        _Pragma("GCC diagnostic push"); \
+        _Pragma(_NM_PRAGMA_WARNING_DO(warning))
+#elif defined (__clang__)
+#define NM_PRAGMA_WARNING_DISABLE(warning) \
+        _Pragma("clang diagnostic push"); \
+        _Pragma(_NM_PRAGMA_WARNING_DO(warning))
+#else
+#define NM_PRAGMA_WARNING_DISABLE(warning)
+#endif
+
+#if defined (__GNUC__)
+#define NM_PRAGMA_WARNING_REENABLE \
+    _Pragma("GCC diagnostic pop")
+#elif defined (__clang__)
+#define NM_PRAGMA_WARNING_REENABLE \
+    _Pragma("clang diagnostic pop")
+#else
+#define NM_PRAGMA_WARNING_REENABLE
+#endif
+
+
 guint32 utils_freq_to_channel (guint32 freq);
 guint32 utils_channel_to_freq (guint32 channel, char *band);
 guint32 utils_find_next_channel (guint32 channel, int direction, char *band);
