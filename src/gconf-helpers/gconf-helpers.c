@@ -1789,6 +1789,17 @@ read_one_setting_value_from_gconf (NMSetting *setting,
 				g_object_set (setting, key, uint_val, NULL);
 			g_free (tmp_str);
 		}
+	} else if (type == G_TYPE_INT64) {
+		char *tmp_str = NULL;
+
+		/* GConf doesn't do 64-bit values, so use strings instead */
+		if (nm_gconf_get_string_helper (info->client, info->dir, key, setting_name, &tmp_str) && tmp_str) {
+			gint64 int_val = g_ascii_strtoll (tmp_str, NULL, 10);
+			
+			if (!(int_val == G_MAXUINT64 && errno == ERANGE))
+				g_object_set (setting, key, int_val, NULL);
+			g_free (tmp_str);
+		}
 	} else if (type == G_TYPE_BOOLEAN) {
 		gboolean bool_val;
 
