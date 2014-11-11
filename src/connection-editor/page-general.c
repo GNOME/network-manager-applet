@@ -26,6 +26,7 @@
 #include <nm-setting-connection.h>
 
 #include "page-general.h"
+#include "nm-glib-compat.h"
 
 G_DEFINE_TYPE (CEPageGeneral, ce_page_general, CE_TYPE_PAGE)
 
