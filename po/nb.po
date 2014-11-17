@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager 0.9.10.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-23 13:34+0200\n"
-"PO-Revision-Date: 2014-07-23 14:52+0200\n"
+"POT-Creation-Date: 2014-11-17 17:19+0100\n"
+"PO-Revision-Date: 2014-11-17 17:49+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb\n"
@@ -475,7 +475,7 @@ msgstr "VPN-tilkobling «%s» er aktiv"
 msgid "No network connection"
 msgstr "Ingen nettverksforbindelse"
 
-#: ../src/applet.c:3628
+#: ../src/applet.c:3629
 msgid "NetworkManager Applet"
 msgstr "NetworkManager panelprogram"
 
@@ -573,8 +573,8 @@ msgstr "Mobilt bredbånd (%s)"
 
 #: ../src/applet-device-broadband.c:718 ../src/applet-device-cdma.c:249
 #: ../src/applet-device-gsm.c:305
-#: ../src/connection-editor/new-connection.c:114
-#: ../src/connection-editor/page-mobile.c:351
+#: ../src/connection-editor/connection-helpers.c:114
+#: ../src/connection-editor/page-mobile.c:350
 #: ../src/libnm-gtk/nm-ui-utils.c:333
 msgid "Mobile Broadband"
 msgstr "Mobilt bredbånd"
@@ -757,29 +757,28 @@ msgid "InfiniBand connection '%s' active"
 msgstr "InfiniBand-tilkobling «%s» er aktiv"
 
 #: ../src/applet-device-team.c:86
-#, fuzzy
 msgid "You are now connected to the teamed network."
-msgstr "Du er nå koblet til det nettverket."
+msgstr "Du er nå koblet til det sammenslåtte nettverket."
 
 #: ../src/applet-device-team.c:110
-#, fuzzy, c-format
+#, c-format
 msgid "Preparing team connection '%s'..."
-msgstr "Forbereder samlet tilkobling «%s» …"
+msgstr "Forbereder sammenslått tilkobling «%s» …"
 
 #: ../src/applet-device-team.c:113
-#, fuzzy, c-format
+#, c-format
 msgid "Configuring team connection '%s'..."
-msgstr "Konfigurerer bro-tilkobling «%s» …"
+msgstr "Konfigurerer sammenslått tilkobling «%s» …"
 
 #: ../src/applet-device-team.c:116
-#, fuzzy, c-format
+#, c-format
 msgid "User authentication required for team connection '%s'..."
-msgstr "Brukerautentisering kreves for VPN-tilkobling «%s» …"
+msgstr "Brukerautentisering kreves for sammenslått tilkobling «%s» …"
 
 #: ../src/applet-device-team.c:123
-#, fuzzy, c-format
+#, c-format
 msgid "Team connection '%s' active"
-msgstr "VPN-tilkobling «%s» er aktiv"
+msgstr "Sammenslått tilkobling «%s» er aktiv"
 
 #: ../src/applet-device-vlan.c:204
 msgid "You are now connected to the VLAN."
@@ -931,7 +930,7 @@ msgid "Error displaying connection information:"
 msgstr "Feil under visning av tilkoblingsinformasjon:"
 
 #: ../src/applet-dialogs.c:109
-#: ../src/connection-editor/page-wifi-security.c:309
+#: ../src/connection-editor/page-wifi-security.c:318
 #: ../src/libnm-gtk/nm-wifi-dialog.c:924
 #: ../src/wireless-security/wireless-security.c:442
 msgid "LEAP"
@@ -951,7 +950,7 @@ msgid "WEP"
 msgstr "WEP"
 
 #: ../src/applet-dialogs.c:248 ../src/applet-dialogs.c:257
-#: ../src/connection-editor/page-wifi-security.c:261
+#: ../src/connection-editor/page-wifi-security.c:270
 msgctxt "Wi-Fi/Ethernet security"
 msgid "None"
 msgstr "Ingen"
@@ -1041,7 +1040,7 @@ msgstr "WiMAX (%s)"
 
 #. --- General ---
 #: ../src/applet-dialogs.c:552 ../src/applet-dialogs.c:809
-#: ../src/connection-editor/page-general.c:327
+#: ../src/connection-editor/page-general.c:322
 msgid "General"
 msgstr "Generelt"
 
@@ -1431,9 +1430,9 @@ msgstr "automatisk"
 
 #: ../src/connection-editor/ce-page.c:92
 #: ../src/connection-editor/ce-page-dcb.ui.h:13
-#: ../src/connection-editor/page-wifi.c:172
-#: ../src/connection-editor/page-wifi.c:176
-#: ../src/connection-editor/page-wifi.c:197
+#: ../src/connection-editor/page-wifi.c:171
+#: ../src/connection-editor/page-wifi.c:175
+#: ../src/connection-editor/page-wifi.c:196
 #, c-format
 msgid "default"
 msgstr "forvalg"
@@ -1662,7 +1661,8 @@ msgstr "_Passord:"
 #: ../src/connection-editor/ce-page-ip4.ui.h:1
 #: ../src/connection-editor/ce-page-ip6.ui.h:1
 #: ../src/connection-editor/ce-page-wifi.ui.h:1
-#: ../src/connection-editor/page-ip6.c:150
+#: ../src/connection-editor/page-ip4.c:139
+#: ../src/connection-editor/page-ip6.c:147
 #: ../src/wireless-security/eap-method-peap.ui.h:2
 msgid "Automatic"
 msgstr "Automatisk"
@@ -1789,8 +1789,8 @@ msgstr "Automatisk med manuelle DNS-innstillinger"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:3
 #: ../src/connection-editor/ce-page-ip6.ui.h:3
-#: ../src/connection-editor/page-ip4.c:169
-#: ../src/connection-editor/page-ip6.c:199
+#: ../src/connection-editor/page-ip4.c:171
+#: ../src/connection-editor/page-ip6.c:196
 msgid "Manual"
 msgstr "Manuelt"
 
@@ -1801,8 +1801,8 @@ msgstr "Link-lokal"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:5
 #: ../src/connection-editor/ce-page-ip6.ui.h:5
-#: ../src/connection-editor/page-ip4.c:187
-#: ../src/connection-editor/page-ip6.c:219
+#: ../src/connection-editor/page-ip4.c:189
+#: ../src/connection-editor/page-ip6.c:216
 msgid "Shared to other computers"
 msgstr "Delt med andre datamaskiner"
 
@@ -1841,15 +1841,15 @@ msgstr "Klient-ID for D_HCP:"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:12
 #: ../src/connection-editor/ce-page-ip6.ui.h:13
-#: ../src/connection-editor/page-ip4.c:308
-#: ../src/connection-editor/page-ip6.c:321
+#: ../src/connection-editor/page-ip4.c:309
+#: ../src/connection-editor/page-ip6.c:318
 msgid "S_earch domains:"
 msgstr "Søk_edomener:"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:13
 #: ../src/connection-editor/ce-page-ip6.ui.h:14
-#: ../src/connection-editor/page-ip4.c:299
-#: ../src/connection-editor/page-ip6.c:312
+#: ../src/connection-editor/page-ip4.c:300
+#: ../src/connection-editor/page-ip6.c:309
 msgid "DNS ser_vers:"
 msgstr "_DNS-tjenere"
 
@@ -1879,17 +1879,17 @@ msgid "_Routes…"
 msgstr "_Ruter …"
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:6
-#: ../src/connection-editor/page-ip4.c:197
+#: ../src/connection-editor/page-ip4.c:198
 msgid "Disabled"
 msgstr "Slått av"
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:7
 msgid "Enabled (prefer public address)"
-msgstr ""
+msgstr "Slått på (foretrekk offentlig adresse)"
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:8
 msgid "Enabled (prefer temporary address)"
-msgstr ""
+msgstr "Slått på (foretrekk midlertidig adresse)"
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:15
 #, fuzzy
@@ -2189,22 +2189,113 @@ msgstr ""
 "autentiseringsmetoder. Hvis tilkoblinger feiler kan du prøve å slå av støtte "
 "for noen metoder."
 
+#: ../src/connection-editor/connection-helpers.c:102
+#: ../src/connection-editor/page-ethernet.c:240
+#: ../src/libnm-gtk/nm-ui-utils.c:323
+msgid "Ethernet"
+msgstr "Ethernet"
+
+#: ../src/connection-editor/connection-helpers.c:108
+#: ../src/connection-editor/page-wifi.c:464 ../src/libnm-gtk/nm-ui-utils.c:325
+msgid "Wi-Fi"
+msgstr "Wi-Fi"
+
+#: ../src/connection-editor/connection-helpers.c:120
+#: ../src/connection-editor/page-wimax.c:123
+#: ../src/libnm-gtk/nm-ui-utils.c:331 ../src/mb-menu-item.c:74
+msgid "WiMAX"
+msgstr "WiMAX"
+
+#: ../src/connection-editor/connection-helpers.c:126
+#: ../src/connection-editor/page-dsl.c:135
+msgid "DSL"
+msgstr "DSL"
+
+#: ../src/connection-editor/connection-helpers.c:132
+#: ../src/connection-editor/page-infiniband.c:159
+#: ../src/libnm-gtk/nm-ui-utils.c:335
+msgid "InfiniBand"
+msgstr "InfiniBand"
+
+#: ../src/connection-editor/connection-helpers.c:138
+#: ../src/connection-editor/page-bond.c:433 ../src/libnm-gtk/nm-ui-utils.c:337
+#: ../src/libnm-gtk/nm-ui-utils.c:562
+msgid "Bond"
+msgstr "Koble sammen"
+
+#: ../src/connection-editor/connection-helpers.c:144
+#: ../src/connection-editor/page-team.c:244 ../src/libnm-gtk/nm-ui-utils.c:339
+#: ../src/libnm-gtk/nm-ui-utils.c:564
+msgid "Team"
+msgstr ""
+
+#: ../src/connection-editor/connection-helpers.c:150
+#: ../src/connection-editor/page-bridge.c:208
+#: ../src/libnm-gtk/nm-ui-utils.c:341 ../src/libnm-gtk/nm-ui-utils.c:566
+msgid "Bridge"
+msgstr "Bro"
+
+#: ../src/connection-editor/connection-helpers.c:156
+#: ../src/connection-editor/page-vlan.c:487 ../src/libnm-gtk/nm-ui-utils.c:343
+#: ../src/libnm-gtk/nm-ui-utils.c:568
+msgid "VLAN"
+msgstr "VLAN"
+
+#: ../src/connection-editor/connection-helpers.c:169
+#: ../src/connection-editor/connection-helpers.c:309
+#: ../src/connection-editor/page-vpn.c:112
+msgid "VPN"
+msgstr "VPN"
+
+#: ../src/connection-editor/connection-helpers.c:259
+msgid "Hardware"
+msgstr "Maskinvare"
+
+#: ../src/connection-editor/connection-helpers.c:279
+msgid "Virtual"
+msgstr "Virtuell"
+
+#: ../src/connection-editor/connection-helpers.c:347
+#: ../src/connection-editor/connection-helpers.c:349
+msgid "Import a saved VPN configuration..."
+msgstr "Importer en lagret VPN-tilkobling …"
+
+#: ../src/connection-editor/connection-helpers.c:378
+msgid ""
+"The connection editor dialog could not be initialized due to an unknown "
+"error."
+msgstr ""
+"Dialog for redigering av tilkobling kunne ikke startes pga en ukjent feil."
+
+#: ../src/connection-editor/connection-helpers.c:387
+msgid "Could not create new connection"
+msgstr "Kunne ikke lage en ny tilkobling"
+
+#: ../src/connection-editor/connection-helpers.c:522
+msgid "Connection delete failed"
+msgstr "Sletting av tilkobling feilet"
+
+#: ../src/connection-editor/connection-helpers.c:569
+#, c-format
+msgid "Are you sure you wish to delete the connection %s?"
+msgstr "Sikker på at du vil slette denne tilkoblingen %s?"
+
 #: ../src/connection-editor/ip4-routes-dialog.c:724
 #: ../src/connection-editor/ip6-routes-dialog.c:666
-#: ../src/connection-editor/page-ip4.c:924
-#: ../src/connection-editor/page-ip6.c:924
+#: ../src/connection-editor/page-ip4.c:925
+#: ../src/connection-editor/page-ip6.c:921
 msgid "Address"
 msgstr "Adresse"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:741
-#: ../src/connection-editor/page-ip4.c:941
+#: ../src/connection-editor/page-ip4.c:942
 msgid "Netmask"
 msgstr "Nettmaske"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:758
 #: ../src/connection-editor/ip6-routes-dialog.c:700
-#: ../src/connection-editor/page-ip4.c:958
-#: ../src/connection-editor/page-ip6.c:958
+#: ../src/connection-editor/page-ip4.c:959
+#: ../src/connection-editor/page-ip6.c:955
 msgid "Gateway"
 msgstr "Gateway"
 
@@ -2214,111 +2305,20 @@ msgid "Metric"
 msgstr "Metrisk"
 
 #: ../src/connection-editor/ip6-routes-dialog.c:683
-#: ../src/connection-editor/page-ip6.c:941
+#: ../src/connection-editor/page-ip6.c:938
 msgid "Prefix"
 msgstr "Prefiks"
 
-#: ../src/connection-editor/new-connection.c:102
-#: ../src/connection-editor/page-ethernet.c:242
-#: ../src/libnm-gtk/nm-ui-utils.c:323
-msgid "Ethernet"
-msgstr "Ethernet"
-
-#: ../src/connection-editor/new-connection.c:108
-#: ../src/connection-editor/page-wifi.c:465 ../src/libnm-gtk/nm-ui-utils.c:325
-msgid "Wi-Fi"
-msgstr "Wi-Fi"
-
-#: ../src/connection-editor/new-connection.c:120
-#: ../src/connection-editor/page-wimax.c:125
-#: ../src/libnm-gtk/nm-ui-utils.c:331 ../src/mb-menu-item.c:74
-msgid "WiMAX"
-msgstr "WiMAX"
-
-#: ../src/connection-editor/new-connection.c:126
-#: ../src/connection-editor/page-dsl.c:137
-msgid "DSL"
-msgstr "DSL"
-
-#: ../src/connection-editor/new-connection.c:132
-#: ../src/connection-editor/page-infiniband.c:159
-#: ../src/libnm-gtk/nm-ui-utils.c:335
-msgid "InfiniBand"
-msgstr "InfiniBand"
-
-#: ../src/connection-editor/new-connection.c:138
-#: ../src/connection-editor/page-bond.c:433 ../src/libnm-gtk/nm-ui-utils.c:337
-#: ../src/libnm-gtk/nm-ui-utils.c:562
-msgid "Bond"
-msgstr "Koble sammen"
-
-#: ../src/connection-editor/new-connection.c:144
-#: ../src/connection-editor/page-team.c:244 ../src/libnm-gtk/nm-ui-utils.c:339
-#: ../src/libnm-gtk/nm-ui-utils.c:564
-msgid "Team"
-msgstr ""
-
-#: ../src/connection-editor/new-connection.c:150
-#: ../src/connection-editor/page-bridge.c:208
-#: ../src/libnm-gtk/nm-ui-utils.c:341 ../src/libnm-gtk/nm-ui-utils.c:566
-msgid "Bridge"
-msgstr "Bro"
-
-#: ../src/connection-editor/new-connection.c:156
-#: ../src/connection-editor/page-vlan.c:487 ../src/libnm-gtk/nm-ui-utils.c:343
-#: ../src/libnm-gtk/nm-ui-utils.c:568
-msgid "VLAN"
-msgstr "VLAN"
-
-#: ../src/connection-editor/new-connection.c:169
-#: ../src/connection-editor/new-connection.c:309
-#: ../src/connection-editor/page-vpn.c:113
-msgid "VPN"
-msgstr "VPN"
-
-#: ../src/connection-editor/new-connection.c:259
-msgid "Hardware"
-msgstr "Maskinvare"
-
-#: ../src/connection-editor/new-connection.c:279
-msgid "Virtual"
-msgstr "Virtuell"
-
-#: ../src/connection-editor/new-connection.c:347
-#: ../src/connection-editor/new-connection.c:349
-msgid "Import a saved VPN configuration..."
-msgstr "Importer en lagret VPN-tilkobling …"
-
-#: ../src/connection-editor/new-connection.c:378
-msgid ""
-"The connection editor dialog could not be initialized due to an unknown "
-"error."
-msgstr ""
-"Dialog for redigering av tilkobling kunne ikke startes pga en ukjent feil."
-
-#: ../src/connection-editor/new-connection.c:387
-msgid "Could not create new connection"
-msgstr "Kunne ikke lage en ny tilkobling"
-
-#: ../src/connection-editor/new-connection.c:522
-msgid "Connection delete failed"
-msgstr "Sletting av tilkobling feilet"
-
-#: ../src/connection-editor/new-connection.c:569
-#, c-format
-msgid "Are you sure you wish to delete the connection %s?"
-msgstr "Sikker på at du vil slette denne tilkoblingen %s?"
-
-#: ../src/connection-editor/nm-connection-editor.c:123
+#: ../src/connection-editor/nm-connection-editor.c:124
 #, c-format
 msgid "Editing %s"
 msgstr "Redigerer %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:127
+#: ../src/connection-editor/nm-connection-editor.c:128
 msgid "Editing un-named connection"
 msgstr "Redigerer tilkobling uten navn"
 
-#: ../src/connection-editor/nm-connection-editor.c:287
+#: ../src/connection-editor/nm-connection-editor.c:288
 msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
@@ -2326,44 +2326,44 @@ msgstr ""
 "Redigering av tilkobling fant ikke alle nødvendige ressurser (.ui-fil ble "
 "ikke funnet)."
 
-#: ../src/connection-editor/nm-connection-editor.c:418
+#: ../src/connection-editor/nm-connection-editor.c:419
 msgid "_Save"
 msgstr "_Lagre"
 
-#: ../src/connection-editor/nm-connection-editor.c:419
+#: ../src/connection-editor/nm-connection-editor.c:420
 msgid "Save any changes made to this connection."
 msgstr "Lagre alle endringer som er gjort på denne tilkoblingen."
 
-#: ../src/connection-editor/nm-connection-editor.c:420
+#: ../src/connection-editor/nm-connection-editor.c:421
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Autentiser for å lagre denne tilkoblingen for alle brukere på denne maskinen."
 
-#: ../src/connection-editor/nm-connection-editor.c:436
+#: ../src/connection-editor/nm-connection-editor.c:437
 msgid "Could not create connection"
 msgstr "Kunne ikke lage tilkobling"
 
-#: ../src/connection-editor/nm-connection-editor.c:436
+#: ../src/connection-editor/nm-connection-editor.c:437
 msgid "Could not edit connection"
 msgstr "Kunne ikke redigere tilkobling"
 
-#: ../src/connection-editor/nm-connection-editor.c:438
+#: ../src/connection-editor/nm-connection-editor.c:439
 msgid "Unknown error creating connection editor dialog."
 msgstr "Ukjent feil under oppretting av dialog for redigering av tilkobling."
 
-#: ../src/connection-editor/nm-connection-editor.c:572
+#: ../src/connection-editor/nm-connection-editor.c:573
 msgid "Error initializing editor"
 msgstr "Feil under initiering av redigering"
 
-#: ../src/connection-editor/nm-connection-editor.c:905
+#: ../src/connection-editor/nm-connection-editor.c:912
 msgid "Connection add failed"
 msgstr "Klarte ikke å legge til tilkobling"
 
-#: ../src/connection-editor/nm-connection-editor.c:945
+#: ../src/connection-editor/nm-connection-editor.c:952
 msgid "Error saving connection"
 msgstr "Feil under lagring av tilkobling"
 
-#: ../src/connection-editor/nm-connection-editor.c:946
+#: ../src/connection-editor/nm-connection-editor.c:953
 #, c-format
 msgid "The property '%s' / '%s' is invalid: %d"
 msgstr "Egenskap «%s» / «%s» er ugyldig: %d"
@@ -2467,17 +2467,27 @@ msgstr "Feil under redigering av tilkobling"
 msgid "Did not find a connection with UUID '%s'"
 msgstr "Fant ingen tilkobling med UUID «%s»"
 
-#: ../src/connection-editor/page-8021x-security.c:121
+#: ../src/connection-editor/page-8021x-security.c:119
 msgid "802.1x Security"
 msgstr "802.1x sikkerhet"
 
-#: ../src/connection-editor/page-8021x-security.c:123
+#: ../src/connection-editor/page-8021x-security.c:121
 msgid "Could not load 802.1x Security user interface."
 msgstr "Kunne ikke laste brukergrensesnitt for 802.1x-sikkerhet."
 
-#: ../src/connection-editor/page-8021x-security.c:137
+#: ../src/connection-editor/page-8021x-security.c:135
 msgid "Use 802.1_X security for this connection"
 msgstr "Bruk 802.1_X-sikkerhet for denne tilkoblingen"
+
+#: ../src/connection-editor/page-bluetooth.c:108
+#: ../src/libnm-gtk/nm-ui-utils.c:327
+msgid "Bluetooth"
+msgstr "Bluetooth"
+
+#: ../src/connection-editor/page-bluetooth.c:110
+#, fuzzy
+msgid "Could not load Bluetooth user interface."
+msgstr "Kunne ikke laste brukergrensesnitt for DSB."
 
 #: ../src/connection-editor/page-bond.c:436
 msgid "Could not load bond user interface."
@@ -2508,27 +2518,27 @@ msgstr "Port for sammenkobling"
 msgid "Could not load bridge port user interface."
 msgstr "Kunne ikke laste brukergrensesnitt for port for sammenkobling."
 
-#: ../src/connection-editor/page-dcb.c:606
+#: ../src/connection-editor/page-dcb.c:605
 msgid "DCB"
 msgstr "DCB"
 
-#: ../src/connection-editor/page-dcb.c:608
+#: ../src/connection-editor/page-dcb.c:607
 msgid "Could not load DCB user interface."
 msgstr "Kunne ikke laste brukergrensesnitt for DSB."
 
-#: ../src/connection-editor/page-dsl.c:139
+#: ../src/connection-editor/page-dsl.c:137
 msgid "Could not load DSL user interface."
 msgstr "Kunne ikke laste brukergrensesnitt for DSL."
 
-#: ../src/connection-editor/page-dsl.c:231
+#: ../src/connection-editor/page-dsl.c:229
 #, c-format
 msgid "DSL connection %d"
 msgstr "DSL-tilkobling %d"
 
-#: ../src/connection-editor/page-ethernet.c:81
+#: ../src/connection-editor/page-ethernet.c:79
 #: ../src/connection-editor/page-infiniband.c:65
-#: ../src/connection-editor/page-wifi.c:95
-#: ../src/connection-editor/page-wimax.c:61
+#: ../src/connection-editor/page-wifi.c:94
+#: ../src/connection-editor/page-wimax.c:59
 msgid ""
 "This option locks this connection to the network device specified by its "
 "permanent MAC address entered here.  Example: 00:11:22:33:44:55"
@@ -2536,22 +2546,22 @@ msgstr ""
 "Dette valget låser denne tilkoblingen til nettverksenheten spesifisert av "
 "den permanente MAC-adressen som oppgis her. Eksempel: 00:11:22:33:44:55"
 
-#: ../src/connection-editor/page-ethernet.c:244
+#: ../src/connection-editor/page-ethernet.c:242
 msgid "Could not load ethernet user interface."
 msgstr "Kunne ikke laste brukergrensesnitt for ethernet."
 
-#: ../src/connection-editor/page-ethernet.c:387
+#: ../src/connection-editor/page-ethernet.c:385
 #, c-format
 msgid "Ethernet connection %d"
 msgstr "Ethernet-tilkobling %d"
 
 #. TRANSLATORS: Default zone set for firewall, when no zone is selected
-#: ../src/connection-editor/page-general.c:55
+#: ../src/connection-editor/page-general.c:56
 #: ../src/libnm-gtk/nm-mobile-providers.c:808
 msgid "Default"
 msgstr "Forvalg"
 
-#: ../src/connection-editor/page-general.c:56
+#: ../src/connection-editor/page-general.c:57
 msgid ""
 "The zone defines the trust level of the connection. Default is not a regular "
 "zone, selecting it results in the use of the default zone set in the "
@@ -2561,11 +2571,11 @@ msgstr ""
 "vanlig sone. Hvis du velger den får du forvalgt sone som er satt i brannmur. "
 "Kan kun brukes hvis firewalld er aktiv."
 
-#: ../src/connection-editor/page-general.c:57
+#: ../src/connection-editor/page-general.c:58
 msgid "FirewallD is not running."
 msgstr "FirewallD kjører ikke."
 
-#: ../src/connection-editor/page-general.c:330
+#: ../src/connection-editor/page-general.c:325
 msgid "Could not load General user interface."
 msgstr "Kunne ikke laste generelt brukergrensesnitt."
 
@@ -2578,94 +2588,85 @@ msgstr "Kunne ikke laste brukergrensesnitt for InfiniBand."
 msgid "InfiniBand connection %d"
 msgstr "InfiniBand-tilkobling %d"
 
-#: ../src/connection-editor/page-ip4.c:133
-#: ../src/connection-editor/page-ip6.c:140
+#: ../src/connection-editor/page-ip4.c:135
+#: ../src/connection-editor/page-ip6.c:141
 msgid "Automatic (VPN)"
 msgstr "Automatisk (VPN)"
 
-#: ../src/connection-editor/page-ip4.c:134
-#: ../src/connection-editor/page-ip6.c:141
+#: ../src/connection-editor/page-ip4.c:136
+#: ../src/connection-editor/page-ip6.c:142
 msgid "Automatic (VPN) addresses only"
 msgstr "Kun automatiske (VPN) adresser"
 
-#: ../src/connection-editor/page-ip4.c:137
-#: ../src/connection-editor/page-ip6.c:144
-msgid "Automatic (PPP)"
-msgstr "Automatisk (PPP)"
-
-#: ../src/connection-editor/page-ip4.c:138
-#: ../src/connection-editor/page-ip6.c:145
-msgid "Automatic (PPP) addresses only"
-msgstr "Kun automatiske (PPP) adresser"
-
 #: ../src/connection-editor/page-ip4.c:140
-#: ../src/connection-editor/page-ip6.c:147
+#: ../src/connection-editor/page-ip6.c:148
+msgid "Automatic, addresses only"
+msgstr "Automatisk, kun adresser"
+
+#: ../src/connection-editor/page-ip4.c:142
+#: ../src/connection-editor/page-ip6.c:144
 msgid "Automatic (PPPoE)"
 msgstr "Automatisk (PPPoE)"
 
-#: ../src/connection-editor/page-ip4.c:141
-#: ../src/connection-editor/page-ip6.c:148
+#: ../src/connection-editor/page-ip4.c:143
+#: ../src/connection-editor/page-ip6.c:145
 msgid "Automatic (PPPoE) addresses only"
 msgstr "Kunn automatiske (PPPoE) adresser"
 
-#: ../src/connection-editor/page-ip4.c:143
+#: ../src/connection-editor/page-ip4.c:145
 msgid "Automatic (DHCP)"
 msgstr "Automatisk (DHCP)"
 
-#: ../src/connection-editor/page-ip4.c:144
+#: ../src/connection-editor/page-ip4.c:146
 msgid "Automatic (DHCP) addresses only"
 msgstr "Kun automatiske (DHCP) adresser"
 
-#: ../src/connection-editor/page-ip4.c:181
-#: ../src/connection-editor/page-ip6.c:212
+#: ../src/connection-editor/page-ip4.c:183
+#: ../src/connection-editor/page-ip6.c:209
 msgid "Link-Local Only"
 msgstr "Kun lokal link"
 
-#: ../src/connection-editor/page-ip4.c:297
-#: ../src/connection-editor/page-ip6.c:310
+#: ../src/connection-editor/page-ip4.c:298
+#: ../src/connection-editor/page-ip6.c:307
 msgid "Additional DNS ser_vers:"
 msgstr "Flere _DNS-tjenere:"
 
-#: ../src/connection-editor/page-ip4.c:306
-#: ../src/connection-editor/page-ip6.c:319
+#: ../src/connection-editor/page-ip4.c:307
+#: ../src/connection-editor/page-ip6.c:316
 msgid "Additional s_earch domains:"
 msgstr "Flere søk_edomener:"
 
-#: ../src/connection-editor/page-ip4.c:856
+#: ../src/connection-editor/page-ip4.c:857
 #, c-format
 msgid "Editing IPv4 routes for %s"
 msgstr "Rediger IPv4-ruter for %s"
 
-#: ../src/connection-editor/page-ip4.c:1008
+#: ../src/connection-editor/page-ip4.c:1009
 msgid "IPv4 Settings"
 msgstr "IPv4-innstillinger"
 
-#: ../src/connection-editor/page-ip4.c:1010
+#: ../src/connection-editor/page-ip4.c:1011
 msgid "Could not load IPv4 user interface."
 msgstr "Kunne ikke laste brukergrensesnitt for IPv4"
 
-#: ../src/connection-editor/page-ip6.c:151
-msgid "Automatic, addresses only"
-msgstr "Automatisk, kun adresser"
-
-#: ../src/connection-editor/page-ip6.c:163
+#: ../src/connection-editor/page-ip6.c:160
 msgid "Ignore"
 msgstr "Ignorer"
 
-#: ../src/connection-editor/page-ip6.c:187
+#: ../src/connection-editor/page-ip6.c:184
 msgid "Automatic, DHCP only"
 msgstr "Automatisk. Kun DHCP"
 
-#: ../src/connection-editor/page-ip6.c:856
+#: ../src/connection-editor/page-ip6.c:853
 #, c-format
 msgid "Editing IPv6 routes for %s"
 msgstr "Rediger IPv6-ruter for %s"
 
-#: ../src/connection-editor/page-ip6.c:1007
+#: ../src/connection-editor/page-ip6.c:1004
 msgid "IPv6 Settings"
 msgstr "IPv6-innstillinger"
 
-#: ../src/connection-editor/page-ip6.c:1009
+#: ../src/connection-editor/page-ip6.c:1006
 msgid "Could not load IPv6 user interface."
 msgstr "Kunne ikke laste brukergrensesnitt for IPv6."
 
@@ -2691,20 +2692,20 @@ msgstr ""
 msgid "%s slave %d"
 msgstr "%s slave %d"
 
-#: ../src/connection-editor/page-mobile.c:353
+#: ../src/connection-editor/page-mobile.c:352
 msgid "Could not load mobile broadband user interface."
 msgstr "Kunne ikke laste brukergrensesnitt for mobilt bredbånd."
 
-#: ../src/connection-editor/page-mobile.c:370
+#: ../src/connection-editor/page-mobile.c:369
 msgid "Unsupported mobile broadband connection type."
 msgstr "Ikke støttet type mobil bredbåndsforbindelse."
 
 #. Fall back to just asking for GSM vs. CDMA
-#: ../src/connection-editor/page-mobile.c:620
+#: ../src/connection-editor/page-mobile.c:615
 msgid "Select Mobile Broadband Provider Type"
 msgstr "Velg type tilbyder for mobilt bredbånd"
 
-#: ../src/connection-editor/page-mobile.c:647
+#: ../src/connection-editor/page-mobile.c:642
 msgid ""
 "Select the technology your mobile broadband provider uses.  If you are "
 "unsure, ask your provider."
@@ -2712,66 +2713,66 @@ msgstr ""
 "Velg tekonlogien din bredbåndstilbyder for mobil bruker. Spør tilbyderen "
 "hvis du er usikker."
 
-#: ../src/connection-editor/page-mobile.c:652
+#: ../src/connection-editor/page-mobile.c:647
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr ""
 "Min tilbyder bruker _GSM-basert teknologi (f.eks GPRS, EDGE, UMTS, HSDPA)"
 
-#: ../src/connection-editor/page-mobile.c:659
+#: ../src/connection-editor/page-mobile.c:654
 msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr "Min tilbyder bruker C_DMA-basert teknologi (f.eks 1xRTT, EVDO)"
 
-#: ../src/connection-editor/page-mobile.c:669 ../src/mb-menu-item.c:54
+#: ../src/connection-editor/page-mobile.c:664 ../src/mb-menu-item.c:54
 #: ../src/mobile-helpers.c:270
 msgid "CDMA"
 msgstr "CDMA"
 
-#: ../src/connection-editor/page-mobile.c:672 ../src/mb-menu-item.c:58
+#: ../src/connection-editor/page-mobile.c:667 ../src/mb-menu-item.c:58
 #: ../src/mobile-helpers.c:268
 msgid "GSM"
 msgstr "GSM"
 
-#: ../src/connection-editor/page-ppp.c:137
+#: ../src/connection-editor/page-ppp.c:136
 msgid "EAP"
 msgstr "EAP"
 
-#: ../src/connection-editor/page-ppp.c:138
+#: ../src/connection-editor/page-ppp.c:137
 #: ../src/wireless-security/eap-method-ttls.c:255
 msgid "PAP"
 msgstr "PAP"
 
-#: ../src/connection-editor/page-ppp.c:139
+#: ../src/connection-editor/page-ppp.c:138
 #: ../src/wireless-security/eap-method-ttls.c:300
 msgid "CHAP"
 msgstr "CHAP"
 
-#: ../src/connection-editor/page-ppp.c:140
+#: ../src/connection-editor/page-ppp.c:139
 #: ../src/wireless-security/eap-method-fast.c:281
 #: ../src/wireless-security/eap-method-peap.c:269
 #: ../src/wireless-security/eap-method-ttls.c:285
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
-#: ../src/connection-editor/page-ppp.c:141
+#: ../src/connection-editor/page-ppp.c:140
 #: ../src/wireless-security/eap-method-ttls.c:270
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
 #. Translators: "none" refers to authentication methods
-#: ../src/connection-editor/page-ppp.c:144
+#: ../src/connection-editor/page-ppp.c:143
 msgid "none"
 msgstr "ingen"
 
-#: ../src/connection-editor/page-ppp.c:204
+#: ../src/connection-editor/page-ppp.c:203
 #, c-format
 msgid "Editing PPP authentication methods for %s"
 msgstr "Rediger PPP-autentiseringsmetoder for %s"
 
-#: ../src/connection-editor/page-ppp.c:287
+#: ../src/connection-editor/page-ppp.c:286
 msgid "PPP Settings"
 msgstr "PPP-innstillinger"
 
-#: ../src/connection-editor/page-ppp.c:289
+#: ../src/connection-editor/page-ppp.c:288
 msgid "Could not load PPP user interface."
 msgstr "Kunne ikke laste brukergrensesnitt for PPP."
 
@@ -2826,22 +2827,22 @@ msgstr "Kunne ikke laste brukergrensesnitt for vlan."
 msgid "VLAN connection %d"
 msgstr "VLAN-tilkobling %d"
 
-#: ../src/connection-editor/page-vpn.c:115
+#: ../src/connection-editor/page-vpn.c:114
 msgid "Could not load VPN user interface."
 msgstr "Klarte ikke å laste brukergrensesnitt for VPN."
 
-#: ../src/connection-editor/page-vpn.c:130
+#: ../src/connection-editor/page-vpn.c:129
 #, c-format
 msgid "Could not find VPN plugin service for '%s'."
 msgstr "Fant ikke tjeneste for VPN-tillegg «%s»."
 
-#: ../src/connection-editor/page-vpn.c:224
-#: ../src/connection-editor/page-vpn.c:321
+#: ../src/connection-editor/page-vpn.c:216
+#: ../src/connection-editor/page-vpn.c:313
 #, c-format
 msgid "VPN connection %d"
 msgstr "VPN-tilkobling %d"
 
-#: ../src/connection-editor/page-vpn.c:250
+#: ../src/connection-editor/page-vpn.c:242
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
@@ -2851,11 +2852,11 @@ msgstr ""
 "\n"
 "Feil: ingen type for VPN-tjeneste."
 
-#: ../src/connection-editor/page-vpn.c:275
+#: ../src/connection-editor/page-vpn.c:267
 msgid "Choose a VPN Connection Type"
 msgstr "Velg type VPN-tilkobling"
 
-#: ../src/connection-editor/page-vpn.c:276
+#: ../src/connection-editor/page-vpn.c:268
 msgid ""
 "Select the type of VPN you wish to use for the new connection.  If the type "
 "of VPN connection you wish to create does not appear in the list, you may "
@@ -2865,7 +2866,7 @@ msgstr ""
 "finner riktig type VPN-tilkobling i listen er det mulig at du ikke har "
 "korrekt VPN-tillegg installert."
 
-#: ../src/connection-editor/page-wifi.c:85
+#: ../src/connection-editor/page-wifi.c:84
 msgid ""
 "This option locks this connection to the Wi-Fi access point (AP) specified "
 "by the BSSID entered here.  Example: 00:11:22:33:44:55"
@@ -2873,64 +2874,64 @@ msgstr ""
 "Dette valget låser denne tilkoblingen til Wi-Fi-aksesspunkt (AP) som "
 "spesifiseres av BSSID som oppgis her. Eksempel: 00:11:22:33:44:55"
 
-#: ../src/connection-editor/page-wifi.c:201
+#: ../src/connection-editor/page-wifi.c:200
 #, c-format
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wifi.c:467
+#: ../src/connection-editor/page-wifi.c:466
 msgid "Could not load Wi-Fi user interface."
 msgstr "Kunne ikke laste brukergrensesnitt for Wi-Fi."
 
-#: ../src/connection-editor/page-wifi.c:638
+#: ../src/connection-editor/page-wifi.c:637
 #, c-format
 msgid "Wi-Fi connection %d"
 msgstr "Wi-Fi-tilkobling %d"
 
-#: ../src/connection-editor/page-wifi-security.c:286
+#: ../src/connection-editor/page-wifi-security.c:295
 #: ../src/libnm-gtk/nm-wifi-dialog.c:898
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "WEP 40/128-bit nøkkel (Heksadesimal eller ASCII)"
 
-#: ../src/connection-editor/page-wifi-security.c:296
+#: ../src/connection-editor/page-wifi-security.c:305
 #: ../src/libnm-gtk/nm-wifi-dialog.c:907
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128-bit passord"
 
-#: ../src/connection-editor/page-wifi-security.c:322
+#: ../src/connection-editor/page-wifi-security.c:331
 #: ../src/libnm-gtk/nm-wifi-dialog.c:937
 msgid "Dynamic WEP (802.1x)"
 msgstr "Dynamisk WEP (802.1x)"
 
-#: ../src/connection-editor/page-wifi-security.c:336
+#: ../src/connection-editor/page-wifi-security.c:345
 #: ../src/libnm-gtk/nm-wifi-dialog.c:951
 msgid "WPA & WPA2 Personal"
 msgstr "WPA & WPA2 personlig"
 
-#: ../src/connection-editor/page-wifi-security.c:350
+#: ../src/connection-editor/page-wifi-security.c:359
 #: ../src/libnm-gtk/nm-wifi-dialog.c:965
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA og WPA2 enterprise"
 
-#: ../src/connection-editor/page-wifi-security.c:391
+#: ../src/connection-editor/page-wifi-security.c:400
 msgid "Could not load Wi-Fi security user interface; missing Wi-Fi setting."
 msgstr ""
 "Kunne ikke laste brukergrensesnitt for Wi-Fi-sikkerhet; mangler WiFi-"
 "innstilling."
 
-#: ../src/connection-editor/page-wifi-security.c:402
+#: ../src/connection-editor/page-wifi-security.c:411
 msgid "Wi-Fi Security"
 msgstr "Wi-Fi-sikkerhet"
 
-#: ../src/connection-editor/page-wifi-security.c:404
+#: ../src/connection-editor/page-wifi-security.c:413
 msgid "Could not load Wi-Fi security user interface."
 msgstr "Kunne ikke laste brukergrensesnitt for Wi-Fi-sikkerhet."
 
-#: ../src/connection-editor/page-wimax.c:128
+#: ../src/connection-editor/page-wimax.c:126
 msgid "Could not load WiMAX user interface."
 msgstr "Kunne ikke laste brukergrensesnitt for WiMAX."
 
-#: ../src/connection-editor/page-wimax.c:224
+#: ../src/connection-editor/page-wimax.c:222
 #, c-format
 msgid "WiMAX connection %d"
 msgstr "WiMAX-tilkobling %d"
@@ -3027,7 +3028,7 @@ msgid "Failed to create DUN connection: %s"
 msgstr "Kunne ikke lage en DUN-tilkobling: %s"
 
 #: ../src/gnome-bluetooth/nma-bt-device.c:433
-#: ../src/gnome-bluetooth/nma-bt-device.c:957
+#: ../src/gnome-bluetooth/nma-bt-device.c:952
 msgid "Your phone is now ready to use!"
 msgstr "Telefonen er klar til bruk!"
 
@@ -3039,32 +3040,28 @@ msgstr "Veiviser for mobil ble avbrutt"
 msgid "Unknown phone device type (not GSM or CDMA)"
 msgstr "Ukjent enhetstype for telefon (ikke GSM eller CDMA)"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:501
-msgid "unknown modem type."
-msgstr "ukjent modemtype."
-
-#: ../src/gnome-bluetooth/nma-bt-device.c:726
-#: ../src/gnome-bluetooth/nma-bt-device.c:732
+#: ../src/gnome-bluetooth/nma-bt-device.c:721
+#: ../src/gnome-bluetooth/nma-bt-device.c:727
 msgid "failed to connect to the phone."
 msgstr "klarte ikke å koble til telefonen."
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:745
+#: ../src/gnome-bluetooth/nma-bt-device.c:740
 msgid "error getting bus connection"
 msgstr "feil ved tilkobling til buss"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:799
+#: ../src/gnome-bluetooth/nma-bt-device.c:794
 msgid "unexpectedly disconnected from the phone."
 msgstr "koblet fra telefonen uventet."
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:809
+#: ../src/gnome-bluetooth/nma-bt-device.c:804
 msgid "timed out detecting phone details."
 msgstr "tidsavbrudd under henting av detaljer om telefonen."
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:820
+#: ../src/gnome-bluetooth/nma-bt-device.c:815
 msgid "Detecting phone configuration..."
 msgstr "Gjenkjenner telefonkonfigurasjon …"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:918
+#: ../src/gnome-bluetooth/nma-bt-device.c:913
 msgid ""
 "The default Bluetooth adapter must be enabled before setting up a Dial-Up-"
 "Networking connection."
@@ -3072,12 +3069,12 @@ msgstr ""
 "Forvalgt Bluetooth-enhet må slås på før du setter opp en oppringt "
 "nettverkstilkobling."
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:955
+#: ../src/gnome-bluetooth/nma-bt-device.c:950
 #, c-format
 msgid "Failed to create PAN connection: %s"
 msgstr "Kunne ikke lage en PAN-tilkobling: %s"
 
-#: ../src/gnome-bluetooth/nma-bt-device.c:976
+#: ../src/gnome-bluetooth/nma-bt-device.c:971
 #, c-format
 msgid "%s Network"
 msgstr "%s nettverk:"
@@ -3266,10 +3263,6 @@ msgstr "Ny mobil bredbåndstilkobling"
 #: ../src/libnm-gtk/nm-ui-utils.c:304 ../src/libnm-gtk/nm-ui-utils.c:373
 msgid "Wired"
 msgstr "Kablet"
-
-#: ../src/libnm-gtk/nm-ui-utils.c:327
-msgid "Bluetooth"
-msgstr "Bluetooth"
 
 #: ../src/libnm-gtk/nm-ui-utils.c:329
 msgid "OLPC Mesh"
