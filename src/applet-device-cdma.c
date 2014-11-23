@@ -343,10 +343,12 @@ cdma_notify_connected (NMDevice *device,
 	                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
 }
 
-static GdkPixbuf *
+static void
 cdma_get_icon (NMDevice *device,
                NMDeviceState state,
                NMConnection *connection,
+               GdkPixbuf **out_pixbuf,
+               const char **out_icon_name,
                char **tip,
                NMApplet *applet)
 {
@@ -355,15 +357,17 @@ cdma_get_icon (NMDevice *device,
 	info = g_object_get_data (G_OBJECT (device), "devinfo");
 	g_assert (info);
 
-	return mobile_helper_get_icon (device,
-	                               state,
-	                               connection,
-	                               tip,
-	                               applet,
-	                               cdma_state_to_mb_state (info),
-	                               cdma_act_to_mb_act (info),
-	                               info->quality,
-	                               info->quality_valid);
+	mobile_helper_get_icon (device,
+	                        state,
+	                        connection,
+	                        out_pixbuf,
+	                        out_icon_name,
+	                        tip,
+	                        applet,
+	                        cdma_state_to_mb_state (info),
+	                        cdma_act_to_mb_act (info),
+	                        info->quality,
+	                        info->quality_valid);
 }
 
 static gboolean

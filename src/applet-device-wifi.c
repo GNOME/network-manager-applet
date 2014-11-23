@@ -1246,18 +1246,19 @@ wifi_notify_connected (NMDevice *device,
 	g_free (esc_ssid);
 }
 
-static GdkPixbuf *
+static void
 wifi_get_icon (NMDevice *device,
                NMDeviceState state,
                NMConnection *connection,
+               GdkPixbuf **out_pixbuf,
+               const char **out_icon_name,
                char **tip,
                NMApplet *applet)
 {
 	NMSettingConnection *s_con;
 	NMAccessPoint *ap;
-	GdkPixbuf *pixbuf = NULL;
 	const char *id;
-	char *ssid = NULL;
+	guint8 strength;
 
 	ap = g_object_get_data (G_OBJECT (device), ACTIVE_AP_TAG);
 
@@ -1281,37 +1282,32 @@ wifi_get_icon (NMDevice *device,
 		*tip = g_strdup_printf (_("Requesting a Wi-Fi network address for '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
+		strength = ap ? nm_access_point_get_strength (ap) : 0;
+		strength = MIN (strength, 100);
+
+		if (strength > 80)
+			*out_icon_name = "nm-signal-100";
+		else if (strength > 55)
+			*out_icon_name = "nm-signal-75";
+		else if (strength > 30)
+			*out_icon_name = "nm-signal-50";
+		else if (strength > 5)
+			*out_icon_name = "nm-signal-25";
+		else
+			*out_icon_name = "nm-signal-00";
+
 		if (ap) {
-			guint8 strength;
+			char *ssid = get_ssid_utf8 (ap);
 
-			strength = nm_access_point_get_strength (ap);
-			strength = MIN (strength, 100);
-
-			if (strength > 80)
-				pixbuf = nma_icon_check_and_load ("nm-signal-100", applet);
-			else if (strength > 55)
-				pixbuf = nma_icon_check_and_load ("nm-signal-75", applet);
-			else if (strength > 30)
-				pixbuf = nma_icon_check_and_load ("nm-signal-50", applet);
-			else if (strength > 5)
-				pixbuf = nma_icon_check_and_load ("nm-signal-25", applet);
-			else
-				pixbuf = nma_icon_check_and_load ("nm-signal-00", applet);
-
-			ssid = get_ssid_utf8 (ap);
 			*tip = g_strdup_printf (_("Wi-Fi network connection '%s' active: %s (%d%%)"),
 			                        id, ssid, strength);
 			g_free (ssid);
-		} else {
-			pixbuf = nma_icon_check_and_load ("nm-signal-00", applet);
+		} else
 			*tip = g_strdup_printf (_("Wi-Fi network connection '%s' active"), id);
-		}
 		break;
 	default:
 		break;
 	}
-
-	return pixbuf ? g_object_ref (pixbuf) : NULL;
 }
 
 

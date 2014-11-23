@@ -185,8 +185,9 @@ nm_mb_menu_item_new (const char *connection_name,
 
 	/* And the strength icon, if we have strength information at all */
 	if (enabled && strength) {
-		gtk_image_set_from_pixbuf (GTK_IMAGE (priv->strength),
-		                           mobile_helper_get_quality_icon (strength, applet));
+		GdkPixbuf *pixbuf = nma_icon_check_and_load (mobile_helper_get_quality_icon_name (strength), applet);
+
+		gtk_image_set_from_pixbuf (GTK_IMAGE (priv->strength), pixbuf);
 	}
 
 	return GTK_WIDGET (item);

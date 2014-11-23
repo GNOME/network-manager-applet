@@ -44,7 +44,7 @@ mobile_helper_get_status_pixbuf (guint32 quality,
 
 	if (!quality_valid)
 		quality = 0;
-	qual_pixbuf = mobile_helper_get_quality_icon (quality, applet);
+	qual_pixbuf = nma_icon_check_and_load (mobile_helper_get_quality_icon_name (quality), applet);
 
 	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
 	                         TRUE,
@@ -78,7 +78,7 @@ mobile_helper_get_status_pixbuf (guint32 quality,
 							  0, 0, 1.0, 1.0,
 							  GDK_INTERP_BILINEAR, 255);
 	} else {
-		tmp = mobile_helper_get_tech_icon (access_tech, applet);
+		tmp = nma_icon_check_and_load (mobile_helper_get_tech_icon_name (access_tech), applet);
 		if (tmp) {
 			gdk_pixbuf_composite (tmp, pixbuf, 0, 0,
 				                  gdk_pixbuf_get_width (tmp),
@@ -92,43 +92,43 @@ mobile_helper_get_status_pixbuf (guint32 quality,
 	return pixbuf;
 }
 
-GdkPixbuf *
-mobile_helper_get_quality_icon (guint32 quality, NMApplet *applet)
+const char *
+mobile_helper_get_quality_icon_name (guint32 quality)
 {
 	if (quality > 80)
-		return nma_icon_check_and_load ("nm-signal-100", applet);
+		return "nm-signal-100";
 	else if (quality > 55)
-		return nma_icon_check_and_load ("nm-signal-75", applet);
+		return "nm-signal-75";
 	else if (quality > 30)
-		return nma_icon_check_and_load ("nm-signal-50", applet);
+		return "nm-signal-50";
 	else if (quality > 5)
-		return nma_icon_check_and_load ("nm-signal-25", applet);
-
-	return nma_icon_check_and_load ("nm-signal-00", applet);
+		return "nm-signal-25";
+	else 
+		return "nm-signal-00";
 }
 
-GdkPixbuf *
-mobile_helper_get_tech_icon (guint32 tech, NMApplet *applet)
+const char *
+mobile_helper_get_tech_icon_name (guint32 tech)
 {
 	switch (tech) {
 	case MB_TECH_1XRTT:
-		return nma_icon_check_and_load ("nm-tech-cdma-1x", applet);
+		return "nm-tech-cdma-1x";
 	case MB_TECH_EVDO:
-		return nma_icon_check_and_load ("nm-tech-evdo", applet);
+		return "nm-tech-evdo";
 	case MB_TECH_GSM:
 	case MB_TECH_GPRS:
-		return nma_icon_check_and_load ("nm-tech-gprs", applet);
+		return "nm-tech-gprs";
 	case MB_TECH_EDGE:
-		return nma_icon_check_and_load ("nm-tech-edge", applet);
+		return "nm-tech-edge";
 	case MB_TECH_UMTS:
-		return nma_icon_check_and_load ("nm-tech-umts", applet);
+		return "nm-tech-umts";
 	case MB_TECH_HSDPA:
 	case MB_TECH_HSUPA:
 	case MB_TECH_HSPA:
 	case MB_TECH_HSPA_PLUS:
-		return nma_icon_check_and_load ("nm-tech-hspa", applet);
+		return "nm-tech-hspa";
 	case MB_TECH_LTE:
-		return nma_icon_check_and_load ("nm-tech-lte", applet);
+		return "nm-tech-lte";
 	case MB_TECH_WIMAX:
 	default:
 		return NULL;
@@ -556,10 +556,12 @@ mobile_helper_get_secrets (NMDeviceModemCapabilities capabilities,
 
 /********************************************************************/
 
-GdkPixbuf *
+void
 mobile_helper_get_icon (NMDevice *device,
                         NMDeviceState state,
                         NMConnection *connection,
+                        GdkPixbuf **out_pixbuf,
+                        const char **out_icon_name,
                         char **tip,
                         NMApplet *applet,
                         guint32 mb_state,
@@ -568,7 +570,6 @@ mobile_helper_get_icon (NMDevice *device,
                         gboolean quality_valid)
 {
 	NMSettingConnection *s_con;
-	GdkPixbuf *pixbuf = NULL;
 	const char *id;
 
 	id = nm_device_get_iface (NM_DEVICE (device));
@@ -591,12 +592,11 @@ mobile_helper_get_icon (NMDevice *device,
 		*tip = g_strdup_printf (_("Requesting a network address for '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
-		pixbuf = mobile_helper_get_status_pixbuf (quality,
-		                                          quality_valid,
-		                                          mb_state,
-		                                          mb_tech,
-		                                          applet);
-
+		*out_pixbuf = mobile_helper_get_status_pixbuf (quality,
+		                                               quality_valid,
+		                                               mb_state,
+		                                               mb_tech,
+		                                               applet);
 		if ((mb_state != MB_STATE_UNKNOWN) && quality_valid) {
 			gboolean roaming = (mb_state == MB_STATE_ROAMING);
 
@@ -610,8 +610,6 @@ mobile_helper_get_icon (NMDevice *device,
 	default:
 		break;
 	}
-
-	return pixbuf;
 }
 
 /********************************************************************/

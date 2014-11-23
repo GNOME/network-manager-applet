@@ -616,10 +616,12 @@ broadband_act_to_mb_act (BroadbandDeviceInfo *info)
 	return MB_TECH_UNKNOWN;
 }
 
-static GdkPixbuf *
+static void
 get_icon (NMDevice *device,
           NMDeviceState state,
           NMConnection *connection,
+          GdkPixbuf **out_pixbuf,
+          const char **out_icon_name,
           char **tip,
           NMApplet *applet)
 {
@@ -627,7 +629,7 @@ get_icon (NMDevice *device,
 
 	if (!applet->mm1) {
 		g_warning ("ModemManager is not available for modem at %s", nm_device_get_udi (device));
-		return NULL;
+		return;
 	}
 
 	info = g_object_get_data (G_OBJECT (device), "devinfo");
@@ -636,6 +638,8 @@ get_icon (NMDevice *device,
 	return mobile_helper_get_icon (device,
 	                               state,
 	                               connection,
+	                               out_pixbuf,
+	                               out_icon_name,
 	                               tip,
 	                               applet,
 	                               broadband_state_to_mb_state (info),
