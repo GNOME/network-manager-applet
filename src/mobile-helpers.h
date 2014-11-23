@@ -62,9 +62,8 @@ GdkPixbuf *mobile_helper_get_status_pixbuf (guint32 quality,
                                             guint32 access_tech,
                                             NMApplet *applet);
 
-GdkPixbuf *mobile_helper_get_quality_icon (guint32 quality, NMApplet *applet);
-
-GdkPixbuf *mobile_helper_get_tech_icon (guint32 tech, NMApplet *applet);
+const char *mobile_helper_get_quality_icon_name (guint32 quality);
+const char *mobile_helper_get_tech_icon_name (guint32 tech);
 
 /********************************************************************/
 
@@ -97,15 +96,17 @@ gboolean mobile_helper_get_secrets (NMDeviceModemCapabilities capabilities,
 
 /********************************************************************/
 
-GdkPixbuf *mobile_helper_get_icon (NMDevice *device,
-                                   NMDeviceState state,
-                                   NMConnection *connection,
-                                   char **tip,
-                                   NMApplet *applet,
-                                   guint32 mb_state,
-                                   guint32 mb_tech,
-                                   guint32 quality,
-                                   gboolean quality_valid);
+void mobile_helper_get_icon (NMDevice *device,
+                             NMDeviceState state,
+                             NMConnection *connection,
+                             GdkPixbuf **out_pixbuf,
+                             const char **out_icon_name,
+                             char **tip,
+                             NMApplet *applet,
+                             guint32 mb_state,
+                             guint32 mb_tech,
+                             guint32 quality,
+                             gboolean quality_valid);
 
 /********************************************************************/
 

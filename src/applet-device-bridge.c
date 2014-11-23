@@ -92,15 +92,16 @@ bridge_notify_connected (NMDevice *device,
 	                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
 }
 
-static GdkPixbuf *
+static void
 bridge_get_icon (NMDevice *device,
                  NMDeviceState state,
                  NMConnection *connection,
+                 GdkPixbuf **out_pixbuf,
+                 const char **out_icon_name,
                  char **tip,
                  NMApplet *applet)
 {
 	NMSettingConnection *s_con;
-	GdkPixbuf *pixbuf = NULL;
 	const char *id;
 
 	id = nm_device_get_iface (NM_DEVICE (device));
@@ -123,14 +124,12 @@ bridge_get_icon (NMDevice *device,
 		*tip = g_strdup_printf (_("Requesting address for '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
-		pixbuf = nma_icon_check_and_load ("nm-device-wired", applet);
+		*out_icon_name = "nm-device-wired";
 		*tip = g_strdup_printf (_("Bridge connection '%s' active"), id);
 		break;
 	default:
 		break;
 	}
-
-	return pixbuf ? g_object_ref (pixbuf) : NULL;
 }
 
 static gboolean

@@ -2378,14 +2378,11 @@ applet_add_default_connection_item (NMDevice *device,
 /*****************************************************************************/
 
 static void
-foo_set_icon (NMApplet *applet, GdkPixbuf *pixbuf, guint32 layer)
+foo_set_icon (NMApplet *applet, guint32 layer, GdkPixbuf *pixbuf, char *icon_name)
 {
 	int i;
 
-	if (layer > ICON_LAYER_MAX) {
-		g_warning ("Tried to icon to invalid layer %d", layer);
-		return;
-	}
+	g_return_if_fail (layer == ICON_LAYER_LINK || layer == ICON_LAYER_VPN);
 
 	/* Ignore setting of the same icon as is already displayed */
 	if (applet->icon_layers[layer] == pixbuf)
@@ -2420,7 +2417,6 @@ foo_set_icon (NMApplet *applet, GdkPixbuf *pixbuf, guint32 layer)
 	gtk_status_icon_set_from_pixbuf (applet->status_icon, pixbuf);
 	g_object_unref (pixbuf);
 }
-
 
 NMRemoteConnection *
 applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet)
@@ -2743,10 +2739,12 @@ mm1_client_setup (NMApplet *applet)
 
 #endif /* WITH_MODEM_MANAGER_1 */
 
-static GdkPixbuf *
-applet_common_get_device_icon (NMDeviceState state, NMApplet *applet)
+static void
+applet_common_get_device_icon (NMDeviceState state,
+				GdkPixbuf **out_pixbuf,
+				char **out_icon_name,
+				NMApplet *applet)
 {
-	GdkPixbuf *pixbuf = NULL;
 	int stage = -1;
 
 	switch (state) {
@@ -2767,15 +2765,17 @@ applet_common_get_device_icon (NMDeviceState state, NMApplet *applet)
 	if (stage >= 0) {
 		char *name = g_strdup_printf ("nm-stage%02d-connecting%02d", stage + 1, applet->animation_step + 1);
 
-		pixbuf = nma_icon_check_and_load (name, applet);
-		g_free (name);
+		if (out_pixbuf)
+			*out_pixbuf = g_object_ref (nma_icon_check_and_load (name, applet));
+		if (out_icon_name)
+			*out_icon_name = name;
+		else
+			g_free (name);
 
 		applet->animation_step++;
 		if (applet->animation_step >= NUM_CONNECTING_FRAMES)
 			applet->animation_step = 0;
 	}
-
-	return pixbuf;
 }
 
 static char *
@@ -2814,14 +2814,19 @@ get_tip_for_device_state (NMDevice *device,
 	return tip;
 }
 
-static GdkPixbuf *
-applet_get_device_icon_for_state (NMApplet *applet, char **tip)
+static void
+applet_get_device_icon_for_state (NMApplet *applet,
+                                  GdkPixbuf **out_pixbuf,
+                                  char **out_icon_name,
+                                  char **out_tip)
 {
 	NMActiveConnection *active;
 	NMDevice *device = NULL;
-	GdkPixbuf *pixbuf = NULL;
 	NMDeviceState state = NM_DEVICE_STATE_UNKNOWN;
 	NMADeviceClass *dclass;
+
+	g_assert (out_pixbuf && out_icon_name && out_tip);
+	g_assert (!*out_pixbuf && !*out_icon_name && !*out_tip);
 
 	// FIXME: handle multiple device states here
 
@@ -2841,22 +2846,24 @@ applet_get_device_icon_for_state (NMApplet *applet, char **tip)
 	dclass = get_device_class (device, applet);
 	if (dclass) {
 		NMConnection *connection;
+		const char *icon_name = NULL;
 
 		connection = applet_find_active_connection_for_device (device, applet, NULL);
-		/* device class returns a referenced pixbuf */
-		pixbuf = dclass->get_icon (device, state, connection, tip, applet);
-		if (!*tip)
-			*tip = get_tip_for_device_state (device, state, connection);
+
+		dclass->get_icon (device, state, connection, out_pixbuf, &icon_name, out_tip, applet);
+
+		if (!*out_pixbuf && icon_name)
+			*out_pixbuf = g_object_ref (nma_icon_check_and_load (icon_name, applet));
+		*out_icon_name = icon_name ? g_strdup (icon_name) : NULL;
+		if (!*out_tip)
+			*out_tip = get_tip_for_device_state (device, state, connection);
+		if (icon_name || *out_pixbuf)
+			return;
+		/* Fall through for common icons */
 	}
 
 out:
-	if (!pixbuf) {
-		pixbuf = applet_common_get_device_icon (state, applet);
-		/* reference the pixbuf to match the device class' get_icon() function behavior */
-		if (pixbuf)
-			g_object_ref (pixbuf);
-	}
-	return pixbuf;
+	applet_common_get_device_icon (state, out_pixbuf, out_icon_name, applet);
 }
 
 static char *
@@ -2912,7 +2919,7 @@ applet_update_icon (gpointer user_data)
 	NMApplet *applet = NM_APPLET (user_data);
 	GdkPixbuf *pixbuf = NULL;
 	NMState state;
-	char *dev_tip = NULL, *vpn_tip = NULL;
+	char *dev_tip = NULL, *vpn_tip = NULL, *icon_name = NULL;
 	NMVPNConnectionState vpn_state = NM_VPN_CONNECTION_STATE_UNKNOWN;
 	gboolean nm_running;
 	NMActiveConnection *active_vpn = NULL;
@@ -2932,33 +2939,37 @@ applet_update_icon (gpointer user_data)
 	switch (state) {
 	case NM_STATE_UNKNOWN:
 	case NM_STATE_ASLEEP:
-		pixbuf = nma_icon_check_and_load ("nm-no-connection", applet);
-		g_object_ref (pixbuf);
+		icon_name = g_strdup ("nm-no-connection");
+		pixbuf = g_object_ref (nma_icon_check_and_load (icon_name, applet));
 		dev_tip = g_strdup (_("Networking disabled"));
 		break;
 	case NM_STATE_DISCONNECTED:
-		pixbuf = nma_icon_check_and_load ("nm-no-connection", applet);
-		g_object_ref (pixbuf);
+		icon_name = g_strdup ("nm-no-connection");
+		pixbuf = g_object_ref (nma_icon_check_and_load (icon_name, applet));
 		dev_tip = g_strdup (_("No network connection"));
 		break;
 	default:
-		pixbuf = applet_get_device_icon_for_state (applet, &dev_tip);
+		applet_get_device_icon_for_state (applet, &pixbuf, &icon_name, &dev_tip);
 		break;
 	}
 
-	foo_set_icon (applet, pixbuf, ICON_LAYER_LINK);
+	foo_set_icon (applet, ICON_LAYER_LINK, pixbuf, icon_name);
 	if (pixbuf)
 		g_object_unref (pixbuf);
+	if (icon_name)
+		g_free (icon_name);
 
 	/* VPN state next */
 	pixbuf = NULL;
+	icon_name = NULL;
 	active_vpn = applet_get_first_active_vpn_connection (applet, &vpn_state);
 	if (active_vpn) {
 		char *name;
 
 		switch (vpn_state) {
 		case NM_VPN_CONNECTION_STATE_ACTIVATED:
-			pixbuf = nma_icon_check_and_load ("nm-vpn-active-lock", applet);
+			icon_name = g_strdup_printf ("nm-vpn-active-lock");
+			pixbuf = nma_icon_check_and_load (icon_name, applet);
 			break;
 		case NM_VPN_CONNECTION_STATE_PREPARE:
 		case NM_VPN_CONNECTION_STATE_NEED_AUTH:
@@ -2977,29 +2988,24 @@ applet_update_icon (gpointer user_data)
 		}
 
 		vpn_tip = get_tip_for_vpn (active_vpn, vpn_state, applet);
-	}
-	foo_set_icon (applet, pixbuf, ICON_LAYER_VPN);
+		if (vpn_tip && dev_tip) {
+			char *tmp;
 
+			tmp = g_strdup_printf ("%s\n%s", dev_tip, vpn_tip);
+			g_free (vpn_tip);
+			vpn_tip = tmp;
+		}
+	}
+	foo_set_icon (applet, ICON_LAYER_VPN, pixbuf, icon_name);
+	if (icon_name)
+		g_free (icon_name);
+
+	/* update tooltip */
 	g_free (applet->tip);
-	applet->tip = NULL;
-
-	if (dev_tip || vpn_tip) {
-		GString *tip;
-
-		tip = g_string_new (dev_tip);
-
-		if (vpn_tip)
-			g_string_append_printf (tip, "%s%s", tip->len ? "\n" : "", vpn_tip);
-
-		if (tip->len)
-			applet->tip = tip->str;
-
-		g_free (vpn_tip);
-		g_free (dev_tip);
-		g_string_free (tip, FALSE);
-	}
-
+	applet->tip = g_strdup (vpn_tip ? vpn_tip : dev_tip);
 	gtk_status_icon_set_tooltip_text (applet->status_icon, applet->tip);
+	g_free (vpn_tip);
+	g_free (dev_tip);
 
 	return FALSE;
 }
@@ -3273,8 +3279,8 @@ nma_icon_check_and_load (const char *name, NMApplet *applet)
 	GError *error = NULL;
 	GdkPixbuf *icon = g_hash_table_lookup (applet->icon_cache, name);
 
-	g_return_val_if_fail (name != NULL, NULL);
-	g_return_val_if_fail (applet != NULL, NULL);
+	g_assert (name != NULL);
+	g_assert (applet != NULL);
 
 	/* icon already loaded successfully */
 	if (icon)
@@ -3290,7 +3296,7 @@ nma_icon_check_and_load (const char *name, NMApplet *applet)
 			       (error && error->message) ? error->message : "(unknown)");
 		g_clear_error (&error);
 
-		return applet->fallback_icon;
+		icon = applet->fallback_icon;
 	}
 
 	g_hash_table_insert (applet->icon_cache, g_strdup (name), icon);
