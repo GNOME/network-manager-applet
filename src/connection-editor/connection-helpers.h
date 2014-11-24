@@ -26,7 +26,7 @@
 
 typedef struct {
 	const char *name;
-	GType setting_type;
+	GType setting_types[4];
 	PageNewConnectionFunc new_connection_func;
 	gboolean virtual;
 } ConnectionTypeData;

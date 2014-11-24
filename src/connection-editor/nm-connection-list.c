@@ -68,8 +68,10 @@ static guint list_signals[LIST_LAST_SIGNAL] = { 0 };
 #define COL_LAST_USED  1
 #define COL_TIMESTAMP  2
 #define COL_CONNECTION 3
-#define COL_GTYPE      4
-#define COL_ORDER      5
+#define COL_GTYPE0     4
+#define COL_GTYPE1     5
+#define COL_GTYPE2     6
+#define COL_ORDER      7
 
 static NMRemoteConnection *
 get_active_connection (GtkTreeView *treeview)
@@ -608,7 +610,14 @@ initialize_treeview (NMConnectionList *self)
 	int i;
 
 	/* Model */
-	self->model = GTK_TREE_MODEL (gtk_tree_store_new (6, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_UINT64, G_TYPE_OBJECT, G_TYPE_GTYPE, G_TYPE_INT));
+	self->model = GTK_TREE_MODEL (gtk_tree_store_new (8, G_TYPE_STRING,
+	                                                     G_TYPE_STRING,
+	                                                     G_TYPE_UINT64,
+	                                                     G_TYPE_OBJECT,
+	                                                     G_TYPE_GTYPE,
+	                                                     G_TYPE_GTYPE,
+	                                                     G_TYPE_GTYPE,
+	                                                     G_TYPE_INT));
 
 	/* Filter */
 	self->filter = GTK_TREE_MODEL_FILTER (gtk_tree_model_filter_new (self->model, NULL));
@@ -661,7 +670,9 @@ initialize_treeview (NMConnectionList *self)
 		gtk_tree_store_append (GTK_TREE_STORE (self->model), &iter, NULL);
 		gtk_tree_store_set (GTK_TREE_STORE (self->model), &iter,
 		                    COL_ID, id,
-		                    COL_GTYPE, types[i].setting_type,
+		                    COL_GTYPE0, types[i].setting_types[0],
+		                    COL_GTYPE1, types[i].setting_types[1],
+		                    COL_GTYPE2, types[i].setting_types[2],
 		                    COL_ORDER, i,
 		                    -1);
 		g_free (id);
@@ -746,7 +757,7 @@ get_parent_iter_for_connection (NMConnectionList *list,
 {
 	NMSettingConnection *s_con;
 	const char *str_type;
-	GType type, row_type;
+	GType type, row_type0, row_type1, row_type2;
 
 	s_con = nm_connection_get_setting_connection (NM_CONNECTION (connection));
 	g_assert (s_con);
@@ -756,16 +767,16 @@ get_parent_iter_for_connection (NMConnectionList *list,
 		return FALSE;
 	}
 
-	if (!strcmp (str_type, NM_SETTING_CDMA_SETTING_NAME))
-		str_type = NM_SETTING_GSM_SETTING_NAME;
 	type = nm_connection_lookup_setting_type (str_type);
 
 	if (gtk_tree_model_get_iter_first (list->model, iter)) {
 		do {
 			gtk_tree_model_get (list->model, iter,
-			                    COL_GTYPE, &row_type,
+			                    COL_GTYPE0, &row_type0,
+			                    COL_GTYPE1, &row_type1,
+			                    COL_GTYPE2, &row_type2,
 			                    -1);
-			if (row_type == type)
+			if (row_type0 == type || row_type1 == type || row_type2 == type)
 				return TRUE;
 		} while (gtk_tree_model_iter_next (list->model, iter));
 	}
@@ -803,12 +814,16 @@ connection_added (NMRemoteSettings *settings,
 	g_free (last_used);
 
 	if (self->displayed_type) {
-		GType added_type;
+		GType added_type0, added_type1, added_type2;
 
 		gtk_tree_model_get (self->model, &parent_iter,
-		                    COL_GTYPE, &added_type,
+		                    COL_GTYPE0, &added_type0,
+		                    COL_GTYPE1, &added_type1,
+		                    COL_GTYPE2, &added_type2,
 		                    -1);
-		if (added_type != self->displayed_type)
+		if (   added_type0 != self->displayed_type
+		    && added_type1 != self->displayed_type
+		    && added_type2 != self->displayed_type)
 			expand = FALSE;
 	}
 
@@ -925,7 +940,9 @@ nm_connection_list_create (NMConnectionList *self, GType ctype, const char *deta
 
 	types = get_connection_type_list ();
 	for (i = 0; types[i].name; i++) {
-		if (types[i].setting_type == ctype)
+		if (   types[i].setting_types[0] == ctype
+		    || types[i].setting_types[1] == ctype
+		    || types[i].setting_types[2] == ctype)
 			break;
 	}
 	if (!types[i].name) {
