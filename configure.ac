@@ -82,34 +82,6 @@ PKG_CHECK_MODULES(NMA,
 
 NMA_CFLAGS="$NMA_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_32"
 
-AC_MSG_CHECKING([whether to build nm-applet-migration-tool])
-AC_ARG_ENABLE([migration],
-	      [AS_HELP_STRING([--disable-migration], [Don't build migration tool for NM <= 0.8 settings])],
-	      [enable_migration="$enableval"],
-	      [if test "$UNDER_JHBUILD" = "true"; then
-	           enable_migration=no
-	       else
-	           enable_migration=yes
-	       fi])
-AC_MSG_RESULT([$enable_migration])
-if test "$enable_migration" = "yes"; then
-	PKG_CHECK_MODULES(MIGRATION, [gconf-2.0 gnome-keyring-1], :,
-			  [AC_MSG_ERROR([
-Could not find devel files needed for nm-applet-migration-tool:
-
-$MIGRATION_PKG_ERRORS
-
-You can configure with --disable-migration if you want to build
-without the code to migrate GConf settings from older (< 0.9)
-nm-applet releases.])])
-
-	AC_SUBST(MIGRATION_CFLAGS)
-	AC_SUBST(MIGRATION_LIBS)
-
-	AC_DEFINE(BUILD_MIGRATION_TOOL, 1, [Define when building nm-applet-migration-tool])
-fi
-AM_CONDITIONAL(BUILD_MIGRATION_TOOL, test "$enable_migration" = "yes")
-
 PKG_CHECK_MODULES(LIBSECRET, [libsecret-unstable])
 AC_SUBST(LIBSECRET_CFLAGS)
 AC_SUBST(LIBSECRET_LIBS)
@@ -206,8 +178,6 @@ src/libnm-gtk/examples/Makefile
 src/libnm-gtk/libnm-gtk.pc
 src/utils/Makefile
 src/utils/tests/Makefile
-src/gconf-helpers/Makefile
-src/gconf-helpers/tests/Makefile
 src/wireless-security/Makefile
 src/connection-editor/Makefile
 src/gnome-bluetooth/Makefile
