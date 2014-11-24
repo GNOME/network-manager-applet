@@ -69,9 +69,7 @@ nm_applet_SOURCES = \
 	applet-device-bridge.c \
 	applet-device-infiniband.h \
 	applet-device-infiniband.c \
-	fallback-icon.h \
-	shell-watcher.h \
-	shell-watcher.c
+	fallback-icon.h
 
 nm_applet_LDADD = \
 	-lm \
