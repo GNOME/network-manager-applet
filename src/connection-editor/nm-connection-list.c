@@ -468,8 +468,7 @@ nm_connection_list_class_init (NMConnectionListClass *klass)
 					  G_OBJECT_CLASS_TYPE (object_class),
 					  G_SIGNAL_RUN_FIRST,
 					  G_STRUCT_OFFSET (NMConnectionListClass, done),
-					  NULL, NULL,
-					  g_cclosure_marshal_VOID__INT,
+		              NULL, NULL, NULL,
 					  G_TYPE_NONE, 1, G_TYPE_INT);
 
 	list_signals[EDITING_DONE] =
@@ -477,8 +476,7 @@ nm_connection_list_class_init (NMConnectionListClass *klass)
 		              G_OBJECT_CLASS_TYPE (object_class),
 		              G_SIGNAL_RUN_FIRST,
 		              G_STRUCT_OFFSET (NMConnectionListClass, done),
-		              NULL, NULL,
-		              g_cclosure_marshal_VOID__INT,
+		              NULL, NULL, NULL,
 		              G_TYPE_NONE, 1, G_TYPE_INT);
 }
 

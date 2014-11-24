@@ -622,8 +622,7 @@ ce_page_master_class_init (CEPageMasterClass *master_class)
 		              G_OBJECT_CLASS_TYPE (object_class),
 		              G_SIGNAL_RUN_FIRST,
 		              G_STRUCT_OFFSET (CEPageMasterClass, create_connection),
-		              NULL, NULL,
-		              g_cclosure_marshal_VOID__OBJECT,
+		              NULL, NULL, NULL,
 		              G_TYPE_NONE, 1,
 		              NM_TYPE_CONNECTION);
 
@@ -632,8 +631,7 @@ ce_page_master_class_init (CEPageMasterClass *master_class)
 		              G_OBJECT_CLASS_TYPE (object_class),
 		              G_SIGNAL_RUN_FIRST,
 		              G_STRUCT_OFFSET (CEPageMasterClass, connection_added),
-		              NULL, NULL,
-		              g_cclosure_marshal_VOID__OBJECT,
+		              NULL, NULL, NULL,
 		              G_TYPE_NONE, 1,
 		              NM_TYPE_CONNECTION);
 
@@ -642,8 +640,7 @@ ce_page_master_class_init (CEPageMasterClass *master_class)
 		              G_OBJECT_CLASS_TYPE (object_class),
 		              G_SIGNAL_RUN_FIRST,
 		              G_STRUCT_OFFSET (CEPageMasterClass, connection_removed),
-		              NULL, NULL,
-		              g_cclosure_marshal_VOID__OBJECT,
+		              NULL, NULL, NULL,
 		              G_TYPE_NONE, 1,
 		              NM_TYPE_CONNECTION);
 }
