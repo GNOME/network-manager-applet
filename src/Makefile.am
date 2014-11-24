@@ -87,26 +87,6 @@ nm_applet_LDADD = \
 	${top_builddir}/src/wireless-security/libwireless-security.la \
 	${top_builddir}/src/libnm-gtk/libnm-gtk.la
 
-if BUILD_MIGRATION_TOOL
-SUBDIRS += gconf-helpers
-
-libexec_PROGRAMS = nm-applet-migration-tool
-endif
-
-nm_applet_migration_tool_CPPFLAGS = \
-	$(nm_applet_CPPFLAGS) \
-	$(MIGRATION_CFLAGS) \
-	-I${top_srcdir}/src/gconf-helpers
-
-nm_applet_migration_tool_SOURCES = \
-	migration-tool.c
-
-nm_applet_migration_tool_LDADD = \
-	$(nm_applet_LDADD) \
-	$(MIGRATION_LIBS) \
-	${top_builddir}/src/gconf-helpers/libgconf-helpers.la
-
-
 uidir = $(datadir)/nm-applet
 ui_DATA = gsm-unlock.ui info.ui 8021x.ui keyring.png
 

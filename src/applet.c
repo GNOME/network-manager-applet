@@ -3693,24 +3693,6 @@ initable_init (GInitable *initable, GCancellable *cancellable, GError **error)
 	}
 	applet->settings = nm_remote_settings_new (NULL);
 
-#ifdef BUILD_MIGRATION_TOOL
-	{
-		char *argv[2] = { LIBEXECDIR "/nm-applet-migration-tool", NULL };
-		int status;
-		GError *migrate_error = NULL;
-
-		/* Move user connections to the system */
-		if (!g_spawn_sync (NULL, argv, NULL, 0, NULL, NULL,
-		                   NULL, NULL, &status, &migrate_error)) {
-			g_warning ("Could not run nm-applet-migration-tool: %s",
-			           migrate_error->message);
-			g_error_free (migrate_error);
-		} else if (!WIFEXITED (status) || WEXITSTATUS (status) != 0) {
-			g_warning ("nm-applet-migration-tool exited with error");
-		}
-	}
-#endif
-
 	/* Initialize device classes */
 	applet->ethernet_class = applet_device_ethernet_get_class (applet);
 	g_assert (applet->ethernet_class);
