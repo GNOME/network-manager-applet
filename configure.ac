@@ -100,23 +100,6 @@ AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 GTK_CFLAGS="$GTK_CFLAGS -DGDK_VERSION_MIN_REQUIRED=GDK_VERSION_3_4"
 
-dnl Check for gnome-bluetooth
-AC_ARG_WITH([bluetooth],
-	    AS_HELP_STRING([--with-bluetooth|--without-bluetooth], [Enable Bluetooth support]),
-	    with_bluetooth="$withval",with_bluetooth=yes)
-have_gbt=no
-case "${with_bluetooth}" in
-	no)	AC_MSG_NOTICE(Bluetooth support disabled)
-		;;
-	*)
-		PKG_CHECK_MODULES(GNOME_BLUETOOTH,
-				  gnome-bluetooth-1.0 >= 2.27.6
-				  gnome-bluetooth-1.0 < 3.11.0
-				  libnm-util libnm-glib,
-				  have_gbt=yes, have_gbt=no)
-		;;
-esac
-
 AC_ARG_WITH([appindicator], AS_HELP_STRING([--with-appindicator|--without-appindicator], [Build with libappindicator support instead of xembed systray support.]))
 if test "$with_appindicator" == "yes"; then
 	PKG_CHECK_MODULES(APPINDICATOR, appindicator3-0.1)
@@ -180,7 +163,6 @@ src/utils/Makefile
 src/utils/tests/Makefile
 src/wireless-security/Makefile
 src/connection-editor/Makefile
-src/gnome-bluetooth/Makefile
 icons/Makefile
 icons/16/Makefile
 icons/22/Makefile

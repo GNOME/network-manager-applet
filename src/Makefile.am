@@ -1,4 +1,4 @@
-SUBDIRS = utils wireless-security libnm-gtk connection-editor gnome-bluetooth
+SUBDIRS = utils wireless-security libnm-gtk connection-editor
 
 bin_PROGRAMS = nm-applet
 
