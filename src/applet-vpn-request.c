@@ -33,7 +33,6 @@
 #include <glib-object.h>
 
 #include "applet-vpn-request.h"
-#include "nma-marshal.h"
 #include <nm-connection.h>
 #include <nm-setting-connection.h>
 #include <nm-setting-vpn.h>

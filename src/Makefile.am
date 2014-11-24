@@ -1,4 +1,4 @@
-SUBDIRS = marshallers utils wireless-security libnm-gtk connection-editor gnome-bluetooth
+SUBDIRS = utils wireless-security libnm-gtk connection-editor gnome-bluetooth
 
 bin_PROGRAMS = nm-applet
 
@@ -22,7 +22,6 @@ nm_applet_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\""nm-applet"\" \
 	$(DBUS_CFLAGS)										\
 	$(DISABLE_DEPRECATED)	\
-	-I${top_builddir}/src/marshallers \
 	-I${top_srcdir}/src/utils \
 	-I${top_srcdir}/src/wireless-security \
 	-I${top_srcdir}/src/libnm-gtk
@@ -84,7 +83,6 @@ nm_applet_LDADD = \
 	$(NOTIFY_LIBS) \
 	$(MM_GLIB_LIBS) \
 	$(APPINDICATOR_LIBS) \
-	${top_builddir}/src/marshallers/libmarshallers.la \
 	${top_builddir}/src/utils/libutils.la \
 	${top_builddir}/src/wireless-security/libwireless-security.la \
 	${top_builddir}/src/libnm-gtk/libnm-gtk.la

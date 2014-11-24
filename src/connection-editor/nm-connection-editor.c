@@ -55,7 +55,6 @@
 #include <nm-remote-connection.h>
 
 #include "nm-connection-editor.h"
-#include "nma-marshal.h"
 
 #include "ce-page.h"
 #include "page-general.h"
@@ -389,8 +388,7 @@ nm_connection_editor_class_init (NMConnectionEditorClass *klass)
 		              G_OBJECT_CLASS_TYPE (object_class),
 		              G_SIGNAL_RUN_FIRST,
 		              G_STRUCT_OFFSET (NMConnectionEditorClass, done),
-		              NULL, NULL,
-		              _nma_marshal_VOID__ENUM,
+		              NULL, NULL, NULL,
 		              G_TYPE_NONE, 1, GTK_TYPE_RESPONSE_TYPE);
 }
 

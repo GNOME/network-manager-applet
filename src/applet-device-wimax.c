@@ -36,7 +36,6 @@
 #include "applet.h"
 #include "applet-device-wimax.h"
 #include "applet-dialogs.h"
-#include "nma-marshal.h"
 #include "mb-menu-item.h"
 #include "nm-ui-utils.h"
 

@@ -39,7 +39,6 @@
 
 #include "applet-agent.h"
 #include "utils.h"
-#include "nma-marshal.h"
 
 #define KEYRING_UUID_TAG "connection-uuid"
 #define KEYRING_SN_TAG "setting-name"
@@ -875,8 +874,7 @@ applet_agent_class_init (AppletAgentClass *agent_class)
 		              G_OBJECT_CLASS_TYPE (object_class),
 		              G_SIGNAL_RUN_FIRST,
 		              G_STRUCT_OFFSET (AppletAgentClass, get_secrets),
-		              NULL, NULL,
-		              _nma_marshal_VOID__POINTER_POINTER_STRING_POINTER_UINT_POINTER_POINTER,
+		              NULL, NULL, NULL,
 		              G_TYPE_NONE, 7,
 		              G_TYPE_POINTER, G_TYPE_POINTER, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_UINT, G_TYPE_POINTER, G_TYPE_POINTER);
 
@@ -885,8 +883,7 @@ applet_agent_class_init (AppletAgentClass *agent_class)
 		              G_OBJECT_CLASS_TYPE (object_class),
 		              G_SIGNAL_RUN_FIRST,
 		              G_STRUCT_OFFSET (AppletAgentClass, cancel_secrets),
-		              NULL, NULL,
-		              g_cclosure_marshal_VOID__POINTER,
+		              NULL, NULL, NULL,
 		              G_TYPE_NONE, 1, G_TYPE_POINTER);
 }
 

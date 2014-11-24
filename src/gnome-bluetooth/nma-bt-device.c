@@ -38,7 +38,6 @@
 #include <nm-remote-connection.h>
 
 #include "nma-bt-device.h"
-#include "nma-marshal.h"
 #include "nm-mobile-wizard.h"
 #include "nm-utils.h"
 #include "utils.h"
@@ -689,7 +688,7 @@ dun_start (NmaBtDevice *self)
 	g_message ("%s: calling Connect...", __func__);
 
 	/* Watch for BT device property changes */
-	dbus_g_object_register_marshaller (_nma_marshal_VOID__STRING_BOXED,
+	dbus_g_object_register_marshaller (g_cclosure_marshal_generic,
 	                                   G_TYPE_NONE,
 	                                   G_TYPE_STRING, G_TYPE_VALUE,
 	                                   G_TYPE_INVALID);

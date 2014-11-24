@@ -39,7 +39,6 @@ libnm_gtk_la_CFLAGS = \
 	-DVPN_NAME_FILES_DIR=\""$(sysconfdir)/NetworkManager/VPN"\" \
 	-DNMALOCALEDIR=\"$(datadir)/locale\" \
 	$(DISABLE_DEPRECATED) \
-	-I${top_builddir}/src/marshallers \
 	-I${top_srcdir}/src/utils \
 	-I${top_srcdir}/src/wireless-security
 
@@ -47,7 +46,6 @@ libnm_gtk_la_LIBADD = \
 	$(GTK_LIBS) \
 	$(NMA_LIBS) \
 	$(GUDEV_LIBS) \
-	$(top_builddir)/src/marshallers/libmarshallers.la \
 	$(top_builddir)/src/wireless-security/libwireless-security.la
 
 libnm_gtk_la_LDFLAGS = -Wl,-no-undefined \

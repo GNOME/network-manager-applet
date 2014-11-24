@@ -33,7 +33,6 @@
 #include <nm-utils.h>
 
 #include "ce-page.h"
-#include "nma-marshal.h"
 
 G_DEFINE_ABSTRACT_TYPE (CEPage, ce_page, G_TYPE_OBJECT)
 
@@ -506,8 +505,7 @@ ce_page_class_init (CEPageClass *page_class)
 	                      G_OBJECT_CLASS_TYPE (object_class),
 	                      G_SIGNAL_RUN_FIRST,
 	                      G_STRUCT_OFFSET (CEPageClass, changed),
-	                      NULL, NULL,
-	                      g_cclosure_marshal_VOID__VOID,
+	                      NULL, NULL, NULL,
 	                      G_TYPE_NONE, 0);
 
 	signals[INITIALIZED] = 
@@ -515,8 +513,7 @@ ce_page_class_init (CEPageClass *page_class)
 	                      G_OBJECT_CLASS_TYPE (object_class),
 	                      G_SIGNAL_RUN_FIRST,
 	                      G_STRUCT_OFFSET (CEPageClass, initialized),
-	                      NULL, NULL,
-	                      g_cclosure_marshal_VOID__POINTER,
+	                      NULL, NULL, NULL,
 	                      G_TYPE_NONE, 1, G_TYPE_POINTER);
 }
 

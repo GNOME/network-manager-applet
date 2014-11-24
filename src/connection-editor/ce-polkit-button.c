@@ -230,16 +230,14 @@ ce_polkit_button_class_init (CEPolkitButtonClass *pb_class)
 	                                    G_OBJECT_CLASS_TYPE (object_class),
 	                                    G_SIGNAL_RUN_FIRST,
 	                                    G_STRUCT_OFFSET (CEPolkitButtonClass, actionable),
-	                                    NULL, NULL,
-	                                    g_cclosure_marshal_VOID__BOOLEAN,
+	                                    NULL, NULL, NULL,
 	                                    G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
 
 	signals[AUTHORIZED] = g_signal_new ("authorized",
 	                                    G_OBJECT_CLASS_TYPE (object_class),
 	                                    G_SIGNAL_RUN_FIRST,
 	                                    G_STRUCT_OFFSET (CEPolkitButtonClass, authorized),
-	                                    NULL, NULL,
-	                                    g_cclosure_marshal_VOID__BOOLEAN,
+	                                    NULL, NULL, NULL,
 	                                    G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
 }
 
