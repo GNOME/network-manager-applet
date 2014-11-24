@@ -122,35 +122,10 @@ typedef struct
 	guint			update_icon_id;
 
 	GtkIconTheme *	icon_theme;
-	GdkPixbuf *		no_connection_icon;
-	GdkPixbuf *		ethernet_icon;
-	GdkPixbuf *		adhoc_icon;
-	GdkPixbuf *		wwan_icon;
-	GdkPixbuf *		wifi_00_icon;
-	GdkPixbuf *		wifi_25_icon;
-	GdkPixbuf *		wifi_50_icon;
-	GdkPixbuf *		wifi_75_icon;
-	GdkPixbuf *		wifi_100_icon;
-	GdkPixbuf *		secure_lock_icon;
-#define NUM_CONNECTING_STAGES 3
+	GHashTable *	icon_cache;
 #define NUM_CONNECTING_FRAMES 11
-	GdkPixbuf *		network_connecting_icons[NUM_CONNECTING_STAGES][NUM_CONNECTING_FRAMES];
 #define NUM_VPN_CONNECTING_FRAMES 14
-	GdkPixbuf *		vpn_connecting_icons[NUM_VPN_CONNECTING_FRAMES];
-	GdkPixbuf *		vpn_lock_icon;
 	GdkPixbuf *		fallback_icon;
-
-	/* Mobiel Broadband icons */
-	GdkPixbuf *		wwan_tower_icon;
-	GdkPixbuf *		mb_tech_1x_icon;
-	GdkPixbuf *		mb_tech_evdo_icon;
-	GdkPixbuf *		mb_tech_gprs_icon;
-	GdkPixbuf *		mb_tech_edge_icon;
-	GdkPixbuf *		mb_tech_umts_icon;
-	GdkPixbuf *		mb_tech_hspa_icon;
-	GdkPixbuf *		mb_tech_lte_icon;
-	GdkPixbuf *		mb_roaming_icon;
-	GdkPixbuf *		mb_tech_3g_icon;
 
 	/* Active status icon pixbufs */
 	GdkPixbuf *		icon_layers[ICON_LAYER_MAX + 1];
@@ -322,7 +297,6 @@ GtkWidget * applet_new_menu_item_helper (NMConnection *connection,
                                          gboolean add_active);
 
 GdkPixbuf * nma_icon_check_and_load (const char *name,
-                                     GdkPixbuf **icon,
                                      NMApplet *applet);
 
 gboolean applet_wifi_connect_to_hidden_network (NMApplet *applet);

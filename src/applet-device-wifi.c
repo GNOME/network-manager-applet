@@ -553,8 +553,7 @@ create_new_ap_item (NMDeviceWifi *device,
 	nm_network_menu_item_set_ssid (item, (GByteArray *) ssid);
 
 	dev_caps = nm_device_wifi_get_capabilities (device);
-	nma_icon_check_and_load ("nm-adhoc", &applet->adhoc_icon, applet);
-	nm_network_menu_item_set_detail (item, ap, applet->adhoc_icon, dev_caps);
+	nm_network_menu_item_set_detail (item, ap, nma_icon_check_and_load ("nm-adhoc", applet), dev_caps);
 	nm_network_menu_item_best_strength (item, nm_access_point_get_strength (ap), applet);
 	nm_network_menu_item_add_dupe (item, ap);
 
@@ -1289,22 +1288,22 @@ wifi_get_icon (NMDevice *device,
 			strength = MIN (strength, 100);
 
 			if (strength > 80)
-				pixbuf = nma_icon_check_and_load ("nm-signal-100", &applet->wifi_100_icon, applet);
+				pixbuf = nma_icon_check_and_load ("nm-signal-100", applet);
 			else if (strength > 55)
-				pixbuf = nma_icon_check_and_load ("nm-signal-75", &applet->wifi_75_icon, applet);
+				pixbuf = nma_icon_check_and_load ("nm-signal-75", applet);
 			else if (strength > 30)
-				pixbuf = nma_icon_check_and_load ("nm-signal-50", &applet->wifi_50_icon, applet);
+				pixbuf = nma_icon_check_and_load ("nm-signal-50", applet);
 			else if (strength > 5)
-				pixbuf = nma_icon_check_and_load ("nm-signal-25", &applet->wifi_25_icon, applet);
+				pixbuf = nma_icon_check_and_load ("nm-signal-25", applet);
 			else
-				pixbuf = nma_icon_check_and_load ("nm-signal-00", &applet->wifi_00_icon, applet);
+				pixbuf = nma_icon_check_and_load ("nm-signal-00", applet);
 
 			ssid = get_ssid_utf8 (ap);
 			*tip = g_strdup_printf (_("Wi-Fi network connection '%s' active: %s (%d%%)"),
 			                        id, ssid, strength);
 			g_free (ssid);
 		} else {
-			pixbuf = nma_icon_check_and_load ("nm-signal-00", &applet->wifi_00_icon, applet);
+			pixbuf = nma_icon_check_and_load ("nm-signal-00", applet);
 			*tip = g_strdup_printf (_("Wi-Fi network connection '%s' active"), id);
 		}
 		break;

@@ -2405,8 +2405,7 @@ foo_set_icon (NMApplet *applet, GdkPixbuf *pixbuf, guint32 layer)
 		applet->icon_layers[layer] = g_object_ref (pixbuf);
 
 	if (!applet->icon_layers[0]) {
-		nma_icon_check_and_load ("nm-no-connection", &applet->no_connection_icon, applet);
-		pixbuf = g_object_ref (applet->no_connection_icon);
+		pixbuf = g_object_ref (nma_icon_check_and_load ("nm-no-connection", applet));
 	} else {
 		pixbuf = gdk_pixbuf_copy (applet->icon_layers[0]);
 
@@ -2771,19 +2770,11 @@ applet_common_get_device_icon (NMDeviceState state, NMApplet *applet)
 	}
 
 	if (stage >= 0) {
-		int i, j;
+		char *name = g_strdup_printf ("nm-stage%02d-connecting%02d", stage + 1, applet->animation_step + 1);
 
-		for (i = 0; i < NUM_CONNECTING_STAGES; i++) {
-			for (j = 0; j < NUM_CONNECTING_FRAMES; j++) {
-				char *name;
+		pixbuf = nma_icon_check_and_load (name, applet);
+		g_free (name);
 
-				name = g_strdup_printf ("nm-stage%02d-connecting%02d", i+1, j+1);
-				nma_icon_check_and_load (name, &applet->network_connecting_icons[i][j], applet);
-				g_free (name);
-			}
-		}
-
-		pixbuf = applet->network_connecting_icons[stage][applet->animation_step];
 		applet->animation_step++;
 		if (applet->animation_step >= NUM_CONNECTING_FRAMES)
 			applet->animation_step = 0;
@@ -2946,12 +2937,12 @@ applet_update_icon (gpointer user_data)
 	switch (state) {
 	case NM_STATE_UNKNOWN:
 	case NM_STATE_ASLEEP:
-		pixbuf = nma_icon_check_and_load ("nm-no-connection", &applet->no_connection_icon, applet);
+		pixbuf = nma_icon_check_and_load ("nm-no-connection", applet);
 		g_object_ref (pixbuf);
 		dev_tip = g_strdup (_("Networking disabled"));
 		break;
 	case NM_STATE_DISCONNECTED:
-		pixbuf = nma_icon_check_and_load ("nm-no-connection", &applet->no_connection_icon, applet);
+		pixbuf = nma_icon_check_and_load ("nm-no-connection", applet);
 		g_object_ref (pixbuf);
 		dev_tip = g_strdup (_("No network connection"));
 		break;
@@ -2968,25 +2959,20 @@ applet_update_icon (gpointer user_data)
 	pixbuf = NULL;
 	active_vpn = applet_get_first_active_vpn_connection (applet, &vpn_state);
 	if (active_vpn) {
-		int i;
+		char *name;
 
 		switch (vpn_state) {
 		case NM_VPN_CONNECTION_STATE_ACTIVATED:
-			pixbuf = nma_icon_check_and_load ("nm-vpn-active-lock", &applet->vpn_lock_icon, applet);
+			pixbuf = nma_icon_check_and_load ("nm-vpn-active-lock", applet);
 			break;
 		case NM_VPN_CONNECTION_STATE_PREPARE:
 		case NM_VPN_CONNECTION_STATE_NEED_AUTH:
 		case NM_VPN_CONNECTION_STATE_CONNECT:
 		case NM_VPN_CONNECTION_STATE_IP_CONFIG_GET:
-			for (i = 0; i < NUM_VPN_CONNECTING_FRAMES; i++) {
-				char *name;
+			name = g_strdup_printf ("nm-vpn-connecting%02d", applet->animation_step + 1);
+			pixbuf = nma_icon_check_and_load (name, applet);
+			g_free (name);
 
-				name = g_strdup_printf ("nm-vpn-connecting%02d", i+1);
-				nma_icon_check_and_load (name, &applet->vpn_connecting_icons[i], applet);
-				g_free (name);
-			}
-
-			pixbuf = applet->vpn_connecting_icons[applet->animation_step];
 			applet->animation_step++;
 			if (applet->animation_step >= NUM_VPN_CONNECTING_FRAMES)
 				applet->animation_step = 0;
@@ -3280,73 +3266,41 @@ nma_clear_icon (GdkPixbuf **icon, NMApplet *applet)
 
 static void nma_icons_free (NMApplet *applet)
 {
-	int i, j;
-
-	for (i = 0; i <= ICON_LAYER_MAX; i++)
-		nma_clear_icon (&applet->icon_layers[i], applet);
-
-	nma_clear_icon (&applet->no_connection_icon, applet);
-	nma_clear_icon (&applet->ethernet_icon, applet);
-	nma_clear_icon (&applet->adhoc_icon, applet);
-	nma_clear_icon (&applet->wwan_icon, applet);
-	nma_clear_icon (&applet->wwan_tower_icon, applet);
-	nma_clear_icon (&applet->vpn_lock_icon, applet);
-	nma_clear_icon (&applet->wifi_00_icon, applet);
-	nma_clear_icon (&applet->wifi_25_icon, applet);
-	nma_clear_icon (&applet->wifi_50_icon, applet);
-	nma_clear_icon (&applet->wifi_75_icon, applet);
-	nma_clear_icon (&applet->wifi_100_icon, applet);
-	nma_clear_icon (&applet->secure_lock_icon, applet);
-
-	nma_clear_icon (&applet->mb_tech_1x_icon, applet);
-	nma_clear_icon (&applet->mb_tech_evdo_icon, applet);
-	nma_clear_icon (&applet->mb_tech_gprs_icon, applet);
-	nma_clear_icon (&applet->mb_tech_edge_icon, applet);
-	nma_clear_icon (&applet->mb_tech_umts_icon, applet);
-	nma_clear_icon (&applet->mb_tech_hspa_icon, applet);
-	nma_clear_icon (&applet->mb_tech_lte_icon, applet);
-	nma_clear_icon (&applet->mb_roaming_icon, applet);
-	nma_clear_icon (&applet->mb_tech_3g_icon, applet);
-
-	for (i = 0; i < NUM_CONNECTING_STAGES; i++) {
-		for (j = 0; j < NUM_CONNECTING_FRAMES; j++)
-			nma_clear_icon (&applet->network_connecting_icons[i][j], applet);
-	}
-
-	for (i = 0; i < NUM_VPN_CONNECTING_FRAMES; i++)
-		nma_clear_icon (&applet->vpn_connecting_icons[i], applet);
+	int i;
 
 	for (i = 0; i <= ICON_LAYER_MAX; i++)
 		nma_clear_icon (&applet->icon_layers[i], applet);
 }
 
 GdkPixbuf *
-nma_icon_check_and_load (const char *name, GdkPixbuf **icon, NMApplet *applet)
+nma_icon_check_and_load (const char *name, NMApplet *applet)
 {
 	GError *error = NULL;
+	GdkPixbuf *icon = g_hash_table_lookup (applet->icon_cache, name);
 
 	g_return_val_if_fail (name != NULL, NULL);
-	g_return_val_if_fail (icon != NULL, NULL);
 	g_return_val_if_fail (applet != NULL, NULL);
 
 	/* icon already loaded successfully */
-	if (*icon && (*icon != applet->fallback_icon))
-		return *icon;
+	if (icon)
+		return icon;
 
 	/* Try to load the icon; if the load fails, log the problem, and set
 	 * the icon to the fallback icon if requested.
 	 */
-	*icon = gtk_icon_theme_load_icon (applet->icon_theme, name, applet->icon_size, GTK_ICON_LOOKUP_FORCE_SIZE, &error);
-	if (!*icon) {
+	if (!(icon = gtk_icon_theme_load_icon (applet->icon_theme, name, applet->icon_size, GTK_ICON_LOOKUP_FORCE_SIZE, &error))) {
 		g_warning ("Icon %s missing: (%d) %s",
 		           name,
 		           error ? error->code : -1,
 			       (error && error->message) ? error->message : "(unknown)");
 		g_clear_error (&error);
 
-		*icon = applet->fallback_icon;
+		return applet->fallback_icon;
 	}
-	return *icon;
+
+	g_hash_table_insert (applet->icon_cache, g_strdup (name), icon);
+
+	return icon;
 }
 
 #include "fallback-icon.h"
@@ -3359,6 +3313,7 @@ nma_icons_reload (NMApplet *applet)
 
 	g_return_val_if_fail (applet->icon_size > 0, FALSE);
 
+	g_hash_table_remove_all (applet->icon_cache);
 	nma_icons_free (applet);
 
 	loader = gdk_pixbuf_loader_new_with_type ("png", &error);
@@ -3611,12 +3566,17 @@ initable_init (GInitable *initable, GCancellable *cancellable, GError **error)
 	g_signal_connect (applet->gsettings, "changed::show-applet",
 	                  G_CALLBACK (applet_gsettings_show_changed), applet);
 
+
 	/* Load pixmaps and create applet widgets */
 	if (!setup_widgets (applet)) {
 		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC,
 		                     "Could not initialize widgets");
 		return FALSE;
 	}
+	applet->icon_cache = g_hash_table_new_full (g_str_hash,
+	                                            g_str_equal,
+	                                            g_free,
+	                                            g_object_unref);
 	nma_icons_init (applet);
 
 	if (!notify_is_initted ())
@@ -3727,6 +3687,7 @@ static void finalize (GObject *object)
 
 	if (applet->menu)
 		g_object_unref (applet->menu);
+	g_clear_pointer (&applet->icon_cache, g_hash_table_destroy);
 	nma_icons_free (applet);
 
 	g_free (applet->tip);

@@ -160,21 +160,21 @@ nm_network_menu_item_best_strength (NMNetworkMenuItem * item,
 	item->int_strength = strength;
 
 	if (strength > 80)
-		icon = nma_icon_check_and_load ("nm-signal-100", &applet->wifi_100_icon, applet);
+		icon = nma_icon_check_and_load ("nm-signal-100", applet);
 	else if (strength > 55)
-		icon = nma_icon_check_and_load ("nm-signal-75", &applet->wifi_75_icon, applet);
+		icon = nma_icon_check_and_load ("nm-signal-75", applet);
 	else if (strength > 30)
-		icon = nma_icon_check_and_load ("nm-signal-50", &applet->wifi_50_icon, applet);
+		icon = nma_icon_check_and_load ("nm-signal-50", applet);
 	else if (strength > 5)
-		icon = nma_icon_check_and_load ("nm-signal-25", &applet->wifi_25_icon, applet);
+		icon = nma_icon_check_and_load ("nm-signal-25", applet);
 	else
-		icon = nma_icon_check_and_load ("nm-signal-00", &applet->wifi_00_icon, applet);
+		icon = nma_icon_check_and_load ("nm-signal-00", applet);
 
 	pixbuf = gdk_pixbuf_copy (icon);
 
 	/* If the AP is "secure", composite the lock icon on top of the signal bars */
 	if (item->is_encrypted) {
-		top = nma_icon_check_and_load ("nm-secure-lock", &applet->secure_lock_icon, applet);
+		top = nma_icon_check_and_load ("nm-secure-lock", applet);
 		gdk_pixbuf_composite (top, pixbuf, 0, 0, gdk_pixbuf_get_width (top),
 							  gdk_pixbuf_get_height (top),
 							  0, 0, 1.0, 1.0,

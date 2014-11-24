@@ -176,7 +176,7 @@ infiniband_get_icon (NMDevice *device,
 		*tip = g_strdup_printf (_("Requesting address for '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
-		pixbuf = nma_icon_check_and_load ("nm-device-wired", &applet->ethernet_icon, applet);
+		pixbuf = nma_icon_check_and_load ("nm-device-wired", applet);
 		*tip = g_strdup_printf (_("InfiniBand connection '%s' active"), id);
 		break;
 	default:
