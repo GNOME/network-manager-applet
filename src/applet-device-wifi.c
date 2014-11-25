@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2012 Red Hat, Inc.
+ * Copyright 2008 - 2014 Red Hat, Inc.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -32,21 +32,11 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#include <nm-device.h>
-#include <nm-access-point.h>
-#include <nm-setting-connection.h>
-#include <nm-setting-wireless.h>
-#include <nm-device-wifi.h>
-#include <nm-setting-8021x.h>
-#include <nm-utils.h>
-#include <nm-secret-agent.h>
-
 #include "applet.h"
 #include "applet-device-wifi.h"
 #include "ap-menu-item.h"
 #include "utils.h"
-#include "nm-wifi-dialog.h"
-#include "nm-ui-utils.h"
+#include "nma-wifi-dialog.h"
 
 #define ACTIVE_AP_TAG "active-ap"
 
@@ -76,7 +66,7 @@ applet_wifi_connect_to_hidden_network (NMApplet *applet)
 {
 	GtkWidget *dialog;
 
-	dialog = nma_wifi_dialog_new_for_hidden (applet->nm_client, applet->settings);
+	dialog = nma_wifi_dialog_new_for_hidden (applet->nm_client);
 	if (dialog) {
 		g_signal_connect (dialog, "response",
 		                  G_CALLBACK (wifi_dialog_response_cb),
@@ -127,7 +117,7 @@ applet_wifi_create_wifi_network (NMApplet *applet)
 {
 	GtkWidget *dialog;
 
-	dialog = nma_wifi_dialog_new_for_create (applet->nm_client, applet->settings);
+	dialog = nma_wifi_dialog_new_for_create (applet->nm_client);
 	if (dialog) {
 		g_signal_connect (dialog, "response",
 		                  G_CALLBACK (wifi_dialog_response_cb),
@@ -158,14 +148,19 @@ nma_menu_add_create_network_item (GtkWidget *menu, NMApplet *applet)
 }
 
 static void
-dbus_8021x_add_and_activate_cb (NMClient *client,
-                                NMActiveConnection *active,
-                                const char *connection_path,
-                                GError *error,
+dbus_8021x_add_and_activate_cb (GObject *client,
+                                GAsyncResult *result,
                                 gpointer user_data)
 {
+	GError *error = NULL;
+	NMActiveConnection *active;
+
+	active = nm_client_add_and_activate_connection_finish (NM_CLIENT (client), result, &error);
 	if (error)
 		g_warning ("Failed to add/activate connection: (%d) %s", error->code, error->message);
+
+	g_clear_object (&active);
+	g_clear_error (&error);
 }
 
 typedef struct {
@@ -188,12 +183,13 @@ dbus_connect_8021x_cb (NMConnection *connection,
 		/* Ask NM to add the new connection and activate it; NM will fill in the
 		 * missing details based on the specific object and the device.
 		 */
-		nm_client_add_and_activate_connection (info->applet->nm_client,
-			                                   connection,
-			                                   info->device,
-			                                   nm_object_get_path (NM_OBJECT (info->ap)),
-			                                   dbus_8021x_add_and_activate_cb,
-			                                   info->applet);
+		nm_client_add_and_activate_connection_async (info->applet->nm_client,
+		                                             connection,
+			                                     info->device,
+			                                     nm_object_get_path (NM_OBJECT (info->ap)),
+		                                             NULL,
+			                                     dbus_8021x_add_and_activate_cb,
+			                                     info->applet);
 	}
 
 	g_object_unref (info->device);
@@ -258,11 +254,11 @@ static const char *manf_default_ssids[] = {
 };
 
 static gboolean
-is_ssid_in_list (const GByteArray *ssid, const char **list)
+is_ssid_in_list (GBytes *ssid, const char **list)
 {
 	while (*list) {
-		if (ssid->len == strlen (*list)) {
-			if (!memcmp (*list, ssid->data, ssid->len))
+		if (g_bytes_get_size (ssid) == strlen (*list)) {
+			if (!memcmp (*list, g_bytes_get_data (ssid, NULL), g_bytes_get_size (ssid)))
 				return TRUE;
 		}
 		list++;
@@ -271,7 +267,7 @@ is_ssid_in_list (const GByteArray *ssid, const char **list)
 }
 
 static gboolean
-is_manufacturer_default_ssid (const GByteArray *ssid)
+is_manufacturer_default_ssid (GBytes *ssid)
 {
 	return is_ssid_in_list (ssid, manf_default_ssids);
 }
@@ -280,12 +276,12 @@ static char *
 get_ssid_utf8 (NMAccessPoint *ap)
 {
 	char *ssid_utf8 = NULL;
-	const GByteArray *ssid;
+	GBytes *ssid;
 
 	if (ap) {
 		ssid = nm_access_point_get_ssid (ap);
 		if (ssid)
-			ssid_utf8 = nm_utils_ssid_to_utf8 (ssid);
+			ssid_utf8 = nm_utils_ssid_to_utf8 (g_bytes_get_data (ssid, NULL), g_bytes_get_size (ssid));
 	}
 	if (!ssid_utf8)
 		ssid_utf8 = g_strdup (_("(none)"));
@@ -301,7 +297,7 @@ static const char *blacklisted_ssids[] = {
 };
 
 static gboolean
-is_blacklisted_ssid (const GByteArray *ssid)
+is_blacklisted_ssid (GBytes *ssid)
 {
 	return is_ssid_in_list (ssid, blacklisted_ssids);
 }
@@ -385,7 +381,7 @@ _do_new_auto_connection (NMApplet *applet,
 	NMSettingWireless *s_wifi = NULL;
 	NMSettingWirelessSecurity *s_wsec = NULL;
 	NMSetting8021x *s_8021x = NULL;
-	const GByteArray *ssid;
+	GBytes *ssid;
 	NM80211ApSecurityFlags wpa_flags, rsn_flags;
 	GtkWidget *dialog;
 	MoreInfo *more_info;
@@ -395,7 +391,7 @@ _do_new_auto_connection (NMApplet *applet,
 	g_assert (device);
 	g_assert (ap);
 
-	connection = nm_connection_new ();
+	connection = nm_simple_connection_new ();
 
 	ssid = nm_access_point_get_ssid (ap);
 	if (   (nm_access_point_get_mode (ap) == NM_802_11_MODE_INFRA)
@@ -451,7 +447,7 @@ _do_new_auto_connection (NMApplet *applet,
 		more_info->callback = callback;
 		more_info->callback_data = callback_data;
 
-		dialog = nma_wifi_dialog_new (applet->nm_client, applet->settings, connection, device, ap, FALSE);
+		dialog = nma_wifi_dialog_new (applet->nm_client, connection, device, ap, FALSE);
 		if (dialog) {
 			g_signal_connect (dialog, "response",
 				              G_CALLBACK (more_info_wifi_dialog_response_cb),
@@ -529,35 +525,34 @@ static NMNetworkMenuItem *
 create_new_ap_item (NMDeviceWifi *device,
                     NMAccessPoint *ap,
                     struct dup_data *dup_data,
-                    GSList *connections,
+                    const GPtrArray *connections,
                     NMApplet *applet)
 {
 	WifiMenuItemInfo *info;
-	GSList *iter;
+	int i;
 	GtkWidget *item;
-	GSList *dev_connections = NULL;
-	GSList *ap_connections = NULL;
+	GPtrArray *dev_connections;
+	GPtrArray *ap_connections;
 
 	dev_connections = nm_device_filter_connections (NM_DEVICE (device), connections);
 	ap_connections = nm_access_point_filter_connections (ap, dev_connections);
-	g_slist_free (dev_connections);
-	dev_connections = NULL;
+	g_ptr_array_unref (dev_connections);
 
 	item = nm_network_menu_item_new (ap,
 	                                 nm_device_wifi_get_capabilities (device),
 	                                 dup_data->hash,
-	                                 !!g_slist_length (ap_connections),
+	                                 ap_connections->len != 0,
 	                                 applet);
 	g_object_set_data (G_OBJECT (item), "device", NM_DEVICE (device));
 
 	/* If there's only one connection, don't show the submenu */
-	if (g_slist_length (ap_connections) > 1) {
+	if (ap_connections->len > 1) {
 		GtkWidget *submenu;
 
 		submenu = gtk_menu_new ();
 
-		for (iter = ap_connections; iter; iter = g_slist_next (iter)) {
-			NMConnection *connection = NM_CONNECTION (iter->data);
+		for (i = 0; i < ap_connections->len; i++) {
+			NMConnection *connection = NM_CONNECTION (ap_connections->pdata[i]);
 			NMSettingConnection *s_con;
 			GtkWidget *subitem;
 
@@ -587,9 +582,9 @@ create_new_ap_item (NMDeviceWifi *device,
 		info->device = g_object_ref (G_OBJECT (device));
 		info->ap = g_object_ref (G_OBJECT (ap));
 
-		if (g_slist_length (ap_connections) == 1) {
-			connection = NM_CONNECTION (g_slist_nth_data (ap_connections, 0));
-			info->connection = g_object_ref (G_OBJECT (connection));
+		if (ap_connections->len == 1) {
+			connection = NM_CONNECTION (ap_connections->pdata[0]);
+			info->connection = g_object_ref (connection);
 		}
 
 		g_signal_connect_data (GTK_WIDGET (item),
@@ -600,24 +595,24 @@ create_new_ap_item (NMDeviceWifi *device,
 		                       0);
 	}
 
-	g_slist_free (ap_connections);
+	g_ptr_array_unref (ap_connections);
 	return NM_NETWORK_MENU_ITEM (item);
 }
 
 static NMNetworkMenuItem *
 get_menu_item_for_ap (NMDeviceWifi *device,
                       NMAccessPoint *ap,
-                      GSList *connections,
+                      const GPtrArray *connections,
                       GSList *menu_list,
                       NMApplet *applet)
 {
-	const GByteArray *ssid;
+	GBytes *ssid;
 	struct dup_data dup_data = { NULL, NULL };
 
 	/* Don't add BSSs that hide their SSID or are blacklisted */
 	ssid = nm_access_point_get_ssid (ap);
 	if (   !ssid
-	    || nm_utils_is_empty_ssid (ssid->data, ssid->len)
+	    || nm_utils_is_empty_ssid (g_bytes_get_data (ssid, NULL), g_bytes_get_size (ssid))
 	    || is_blacklisted_ssid (ssid))
 		return NULL;
 
@@ -731,7 +726,7 @@ sort_toplevel (gconstpointer tmpa, gconstpointer tmpb)
 static void
 wifi_add_menu_item (NMDevice *device,
                     gboolean multiple_devices,
-                    GSList *connections,
+                    const GPtrArray *connections,
                     NMConnection *active,
                     GtkWidget *menu,
                     NMApplet *applet)
@@ -754,7 +749,7 @@ wifi_add_menu_item (NMDevice *device,
 	if (multiple_devices) {
 		const char *desc;
 
-		desc = nma_utils_get_device_description (device);
+		desc = nm_device_get_description (device);
 		if (aps && aps->len > 1)
 			text = g_strdup_printf (_("Wi-Fi Networks (%s)"), desc);
 		else
@@ -881,7 +876,7 @@ notify_active_ap_changed_cb (NMDeviceWifi *device,
 	NMRemoteConnection *connection;
 	NMSettingWireless *s_wireless;
 	NMAccessPoint *new;
-	const GByteArray *ssid;
+	GBytes *ssid_ap, *ssid;
 	NMDeviceState state;
 
 	state = nm_device_get_state (NM_DEVICE (device));
@@ -898,8 +893,13 @@ notify_active_ap_changed_cb (NMDeviceWifi *device,
 	if (!s_wireless)
 		return;
 
-	ssid = nm_access_point_get_ssid (new);
-	if (!ssid || !nm_utils_same_ssid (nm_setting_wireless_get_ssid (s_wireless), ssid, TRUE))
+	ssid_ap = nm_access_point_get_ssid (new);
+	ssid = nm_setting_wireless_get_ssid (s_wireless);
+	if (   !ssid_ap
+	    || !ssid
+	    || !nm_utils_same_ssid (g_bytes_get_data (ssid, NULL), g_bytes_get_size (ssid),
+	                            g_bytes_get_data (ssid_ap, NULL), g_bytes_get_size (ssid_ap),
+	                            TRUE))
 		return;
 
 	applet_schedule_update_icon (applet);
@@ -973,8 +973,8 @@ idle_check_avail_access_point_notification (gpointer datap)
 	NMDeviceWifi *device = data->device;
 	int i;
 	const GPtrArray *aps;
-	GSList *all_connections;
-	GSList *connections;
+	GPtrArray *all_connections;
+	GPtrArray *connections;
 	GTimeVal timeval;
 	gboolean have_unused_access_point = FALSE;
 	gboolean have_no_autoconnect_points = TRUE;
@@ -991,18 +991,17 @@ idle_check_avail_access_point_notification (gpointer datap)
 
 	all_connections = applet_get_all_connections (applet);
 	connections = nm_device_filter_connections (NM_DEVICE (device), all_connections);
-	g_slist_free (all_connections);	
-	all_connections = NULL;
+	g_ptr_array_unref (all_connections);	
 
 	aps = nm_device_wifi_get_access_points (device);
-	for (i = 0; aps && (i < aps->len); i++) {
+	for (i = 0; i < aps->len; i++) {
 		NMAccessPoint *ap = aps->pdata[i];
-		GSList *ap_connections = nm_access_point_filter_connections (ap, connections);
-		GSList *iter;
+		GPtrArray *ap_connections = nm_access_point_filter_connections (ap, connections);
+		int a;
 		gboolean is_autoconnect = FALSE;
 
-		for (iter = ap_connections; iter; iter = g_slist_next (iter)) {
-			NMConnection *connection = NM_CONNECTION (iter->data);
+		for (a = 0; a < ap_connections->len; a++) {
+			NMConnection *connection = NM_CONNECTION (ap_connections->pdata[a]);
 			NMSettingConnection *s_con;
 
 			s_con = nm_connection_get_setting_connection (connection);
@@ -1011,14 +1010,14 @@ idle_check_avail_access_point_notification (gpointer datap)
 				break;
 			}
 		}
-		g_slist_free (ap_connections);
+		g_ptr_array_unref (ap_connections);
 
 		if (!is_autoconnect)
 			have_unused_access_point = TRUE;
 		else
 			have_no_autoconnect_points = FALSE;
 	}
-	g_slist_free (connections);
+	g_ptr_array_unref (connections);
 
 	if (!(have_unused_access_point && have_no_autoconnect_points))
 		return FALSE;
@@ -1092,7 +1091,7 @@ access_point_removed_cb (NMDeviceWifi *device,
 }
 
 static void
-on_new_connection (NMRemoteSettings *settings,
+on_new_connection (NMClient *client,
                    NMRemoteConnection *connection,
                    gpointer datap)
 {
@@ -1104,13 +1103,13 @@ static void
 free_ap_notification_data (gpointer user_data)
 {
 	struct ap_notification_data *data = user_data;
-	NMRemoteSettings *settings = applet_get_settings (data->applet);
+	NMClient *client = data->applet->nm_client;
 
 	if (data->id)
 		g_source_remove (data->id);
 
-	if (settings)
-		g_signal_handler_disconnect (settings, data->new_con_id);
+	if (client)
+		g_signal_handler_disconnect (client, data->new_con_id);
 	memset (data, 0, sizeof (*data));
 	g_free (data);
 }
@@ -1145,12 +1144,12 @@ wifi_device_added (NMDevice *device, NMApplet *applet)
 	data = g_new0 (struct ap_notification_data, 1);
 	data->applet = applet;
 	data->device = wdev;
-	/* We also need to hook up to the settings to find out when we have new connections
+	/* We also need to hook up to the client to find out when we have new connections
 	 * that might be candididates.  Keep the ID around so we can disconnect
 	 * when the device is destroyed.
 	 */ 
-	id = g_signal_connect (applet_get_settings (applet),
-	                       NM_REMOTE_SETTINGS_NEW_CONNECTION,
+	id = g_signal_connect (applet->nm_client,
+	                       NM_CLIENT_CONNECTION_ADDED,
 	                       G_CALLBACK (on_new_connection),
 	                       data);
 	data->new_con_id = id;
@@ -1305,11 +1304,15 @@ wifi_get_icon (NMDevice *device,
 
 
 static void
-activate_existing_cb (NMClient *client,
-                      NMActiveConnection *active,
-                      GError *error,
+activate_existing_cb (GObject *client,
+                      GAsyncResult *result,
                       gpointer user_data)
 {
+	GError *error = NULL;
+	NMActiveConnection *active;
+
+	active = nm_client_activate_connection_finish (NM_CLIENT (client), result, &error);
+	g_clear_object (&active);
 	if (error) {
 		const char *text = _("Failed to activate connection");
 		char *err_text = g_strdup_printf ("(%d) %s", error->code,
@@ -1318,17 +1321,21 @@ activate_existing_cb (NMClient *client,
 		g_warning ("%s: %s", text, err_text);
 		utils_show_error_dialog (_("Connection failure"), text, err_text, FALSE, NULL);
 		g_free (err_text);
+		g_error_free (error);
 	}
 	applet_schedule_update_icon (NM_APPLET (user_data));
 }
 
 static void
-activate_new_cb (NMClient *client,
-                 NMActiveConnection *active,
-                 const char *connection_path,
-                 GError *error,
+activate_new_cb (GObject *client,
+                 GAsyncResult *result,
                  gpointer user_data)
 {
+	GError *error = NULL;
+	NMActiveConnection *active;
+
+	active = nm_client_add_and_activate_connection_finish (NM_CLIENT (client), result, &error);
+	g_clear_object (&active);
 	if (error) {
 		const char *text = _("Failed to add new connection");
 		char *err_text = g_strdup_printf ("(%d) %s", error->code,
@@ -1337,6 +1344,7 @@ activate_new_cb (NMClient *client,
 		g_warning ("%s: %s", text, err_text);
 		utils_show_error_dialog (_("Connection failure"), text, err_text, FALSE, NULL);
 		g_free (err_text);
+		g_error_free (error);
 	}
 	applet_schedule_update_icon (NM_APPLET (user_data));
 }
@@ -1351,7 +1359,8 @@ wifi_dialog_response_cb (GtkDialog *foo,
 	NMConnection *connection = NULL, *fuzzy_match = NULL;
 	NMDevice *device = NULL;
 	NMAccessPoint *ap = NULL;
-	GSList *all, *iter;
+	GPtrArray *all;
+	int i;
 
 	if (response != GTK_RESPONSE_OK)
 		goto done;
@@ -1365,23 +1374,24 @@ wifi_dialog_response_cb (GtkDialog *foo,
 
 	/* Find a similar connection and use that instead */
 	all = applet_get_all_connections (applet);
-	for (iter = all; iter; iter = g_slist_next (iter)) {
+	for (i = 0; i < all->len; i++) {
 		if (nm_connection_compare (connection,
-		                           NM_CONNECTION (iter->data),
+		                           NM_CONNECTION (all->pdata[i]),
 		                           (NM_SETTING_COMPARE_FLAG_FUZZY | NM_SETTING_COMPARE_FLAG_IGNORE_ID))) {
-			fuzzy_match = NM_CONNECTION (iter->data);
+			fuzzy_match = NM_CONNECTION (all->pdata[i]);
 			break;
 		}
 	}
-	g_slist_free (all);
+	g_ptr_array_unref (all);
 
 	if (fuzzy_match) {
-		nm_client_activate_connection (applet->nm_client,
-		                               fuzzy_match,
-		                               device,
-		                               ap ? nm_object_get_path (NM_OBJECT (ap)) : NULL,
-		                               activate_existing_cb,
-		                               applet);
+		nm_client_activate_connection_async (applet->nm_client,
+		                                     fuzzy_match,
+		                                     device,
+		                                     ap ? nm_object_get_path (NM_OBJECT (ap)) : NULL,
+		                                     NULL,
+		                                     activate_existing_cb,
+		                                     applet);
 	} else {
 		NMSetting *s_con;
 		NMSettingWireless *s_wifi = NULL;
@@ -1402,12 +1412,13 @@ wifi_dialog_response_cb (GtkDialog *foo,
 			g_object_set (G_OBJECT (s_con), NM_SETTING_CONNECTION_AUTOCONNECT, FALSE, NULL);
 		}
 
-		nm_client_add_and_activate_connection (applet->nm_client,
-		                                       connection,
-		                                       device,
-		                                       ap ? nm_object_get_path (NM_OBJECT (ap)) : NULL,
-		                                       activate_new_cb,
-		                                       applet);
+		nm_client_add_and_activate_connection_async (applet->nm_client,
+		                                             connection,
+		                                             device,
+		                                             ap ? nm_object_get_path (NM_OBJECT (ap)) : NULL,
+		                                             NULL,
+		                                             activate_new_cb,
+		                                             applet);
 	}
 
 	/* Balance nma_wifi_dialog_get_connection() */
@@ -1418,33 +1429,29 @@ done:
 	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
-static gboolean
-add_one_setting (GHashTable *settings,
-                 NMConnection *connection,
-                 NMSetting *setting,
-                 GError **error)
+static GVariant *
+remove_unwanted_secrets (GVariant *secrets, gboolean keep_8021X)
 {
-	GHashTable *secrets;
+	GVariant *copy, *setting_dict;
+	const char *setting_name;
+	GVariantBuilder conn_builder;
+	GVariantIter conn_iter;
 
-	g_return_val_if_fail (settings != NULL, FALSE);
-	g_return_val_if_fail (connection != NULL, FALSE);
-	g_return_val_if_fail (setting != NULL, FALSE);
-	g_return_val_if_fail (error != NULL, FALSE);
-	g_return_val_if_fail (*error == NULL, FALSE);
+	g_variant_builder_init (&conn_builder, NM_VARIANT_TYPE_CONNECTION);
+	g_variant_iter_init (&conn_iter, secrets);
+	while (g_variant_iter_next (&conn_iter, "{&s@a{sv}}", &setting_name, &setting_dict)) {
+		if (   !strcmp (setting_name, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME)
+		    || (!strcmp (setting_name, NM_SETTING_802_1X_SETTING_NAME) && keep_8021X))
+			g_variant_builder_add (&conn_builder, "{s@a{sv}}", setting_name, setting_dict);
 
-	secrets = nm_setting_to_hash (setting, NM_SETTING_HASH_FLAG_ALL);
-	if (secrets) {
-		g_hash_table_insert (settings, g_strdup (nm_setting_get_name (setting)), secrets);
-	} else {
-		g_set_error (error,
-		             NM_SECRET_AGENT_ERROR,
-		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
-		             "%s.%d (%s): failed to hash setting '%s'.",
-		             __FILE__, __LINE__, __func__, nm_setting_get_name (setting));
+		g_variant_unref (setting_dict);
 	}
+	copy = g_variant_builder_end (&conn_builder);
+	g_variant_unref (secrets);
 
-	return secrets ? TRUE : FALSE;
+	return copy;
 }
+	
 
 typedef struct {
 	SecretsRequest req;
@@ -1473,8 +1480,9 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 	NMAWifiDialog *dialog = NMA_WIFI_DIALOG (info->dialog);
 	NMConnection *connection = NULL;
 	NMSettingWirelessSecurity *s_wireless_sec;
-	GHashTable *settings = NULL;
+	GVariant *secrets = NULL;
 	const char *key_mgmt, *auth_alg;
+	gboolean keep_8021X = FALSE;
 	GError *error = NULL;
 
 	if (response != GTK_RESPONSE_OK) {
@@ -1490,7 +1498,7 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 	if (!connection) {
 		g_set_error (&error,
 		             NM_SECRET_AGENT_ERROR,
-		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+		             NM_SECRET_AGENT_ERROR_FAILED,
 		             "%s.%d (%s): couldn't get connection from Wi-Fi dialog.",
 		             __FILE__, __LINE__, __func__);
 		goto done;
@@ -1508,20 +1516,14 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 		goto done;  /* Unencrypted */
 	}
 
-	/* Returned secrets are a{sa{sv}}; this is the outer a{s...} hash that
-	 * will contain all the individual settings hashes.
-	 */
-	settings = g_hash_table_new_full (g_str_hash, g_str_equal,
-	                                  g_free, (GDestroyNotify) g_hash_table_destroy);
-	if (!settings) {
+	secrets = nm_connection_to_dbus (connection, NM_CONNECTION_SERIALIZE_ONLY_SECRETS);
+	if (!secrets) {
 		g_set_error (&error,
 		             NM_SECRET_AGENT_ERROR,
-		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
-		             "%s.%d (%s): not enough memory to return secrets.",
-		             __FILE__, __LINE__, __func__);
-		goto done;
+		             NM_SECRET_AGENT_ERROR_FAILED,
+		             "%s.%d (%s): failed to hash connection '%s'.",
+		             __FILE__, __LINE__, __func__, nm_connection_get_id (connection));
 	}
-
 	/* If the user chose an 802.1x-based auth method, return 802.1x secrets,
 	 * not wireless secrets.  Can happen with Dynamic WEP, because NM doesn't
 	 * know the capabilities of the AP (since Dynamic WEP APs don't broadcast
@@ -1545,22 +1547,19 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 				             __FILE__, __LINE__, __func__);
 				goto done;
 			}
-
-			/* Add the 802.1x setting */
-			if (!add_one_setting (settings, connection, NM_SETTING (s_8021x), &error))
-				goto done;
+			keep_8021X = TRUE;
 		}
 	}
 
-	/* Add the 802-11-wireless-security setting no matter what */
-	add_one_setting (settings, connection, NM_SETTING (s_wireless_sec), &error);
+	/* Remove all not-relevant secrets (inner dicts) */
+	secrets = remove_unwanted_secrets (secrets, keep_8021X);
 
 done:
-	applet_secrets_request_complete (req, settings, error);
+	applet_secrets_request_complete (req, secrets, error);
 	applet_secrets_request_free (req);
 
-	if (settings)
-		g_hash_table_destroy (settings);
+	if (secrets)
+		g_variant_unref (secrets);
 	if (connection)
 		nm_connection_clear_secrets (connection);
 }
@@ -1572,7 +1571,7 @@ wifi_get_secrets (SecretsRequest *req, GError **error)
 
 	applet_secrets_request_set_free_func (req, free_wifi_info);
 
-	info->dialog = nma_wifi_dialog_new (req->applet->nm_client, req->applet->settings, req->connection, NULL, NULL, TRUE);
+	info->dialog = nma_wifi_dialog_new (req->applet->nm_client, req->connection, NULL, NULL, TRUE);
 	if (info->dialog) {
 		g_signal_connect (info->dialog, "response",
 		                  G_CALLBACK (get_secrets_dialog_response_cb),
@@ -1581,7 +1580,7 @@ wifi_get_secrets (SecretsRequest *req, GError **error)
 	} else {
 		g_set_error (error,
 		             NM_SECRET_AGENT_ERROR,
-		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+		             NM_SECRET_AGENT_ERROR_FAILED,
 		             "%s.%d (%s): couldn't display secrets UI",
 		             __FILE__, __LINE__, __func__);
 	}
