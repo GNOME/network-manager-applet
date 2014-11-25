@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2010 Red Hat, Inc.
+ * Copyright 2007 - 2014 Red Hat, Inc.
  */
 
 #ifndef WIRELESS_SECURITY_H
@@ -26,7 +26,13 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
+#if defined (LIBNM_BUILD)
+#include <NetworkManager.h>
+#elif defined (LIBNM_GLIB_BUILD)
 #include <nm-connection.h>
+#else
+#error neither LIBNM_BUILD nor LIBNM_GLIB_BUILD defined
+#endif
 
 typedef struct _WirelessSecurity WirelessSecurity;
 
@@ -36,7 +42,7 @@ typedef void (*WSAddToSizeGroupFunc) (WirelessSecurity *sec, GtkSizeGroup *group
 typedef void (*WSFillConnectionFunc) (WirelessSecurity *sec, NMConnection *connection);
 typedef void (*WSUpdateSecretsFunc)  (WirelessSecurity *sec, NMConnection *connection);
 typedef void (*WSDestroyFunc)        (WirelessSecurity *sec);
-typedef gboolean (*WSValidateFunc)   (WirelessSecurity *sec, const GByteArray *ssid);
+typedef gboolean (*WSValidateFunc)   (WirelessSecurity *sec);
 typedef GtkWidget * (*WSNagUserFunc) (WirelessSecurity *sec);
 
 struct _WirelessSecurity {
@@ -68,7 +74,7 @@ void wireless_security_set_changed_notify (WirelessSecurity *sec,
                                            WSChangedFunc func,
                                            gpointer user_data);
 
-gboolean wireless_security_validate (WirelessSecurity *sec, const GByteArray *ssid);
+gboolean wireless_security_validate (WirelessSecurity *sec);
 
 void wireless_security_add_to_size_group (WirelessSecurity *sec,
                                           GtkSizeGroup *group);

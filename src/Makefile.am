@@ -84,7 +84,7 @@ nm_applet_LDADD = \
 	$(MM_GLIB_LIBS) \
 	$(APPINDICATOR_LIBS) \
 	${top_builddir}/src/utils/libutils-libnm-glib.la \
-	${top_builddir}/src/wireless-security/libwireless-security.la \
+	${top_builddir}/src/wireless-security/libwireless-security-libnm-glib.la \
 	${top_builddir}/src/libnm-gtk/libnm-gtk.la
 
 uidir = $(datadir)/nm-applet

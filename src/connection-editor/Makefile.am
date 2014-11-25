@@ -87,7 +87,7 @@ nm-connection-editor-service-glue.h: $(top_srcdir)/src/connection-editor/nm-conn
 	$(AM_V_GEN) dbus-binding-tool --prefix=nm_connection_editor_service --mode=glib-server --output=$@ $<
 
 nm_connection_editor_LDADD = \
-	${top_builddir}/src/wireless-security/libwireless-security.la \
+	${top_builddir}/src/wireless-security/libwireless-security-libnm-glib.la \
 	${top_builddir}/src/utils/libutils-libnm-glib.la \
 	${top_builddir}/src/libnm-gtk/libnm-gtk.la \
 	$(GTK_LIBS) \

@@ -1,6 +1,8 @@
-noinst_LTLIBRARIES = libwireless-security.la
+noinst_LTLIBRARIES = \
+	libwireless-security-libnm-glib.la \
+	libwireless-security-libnm.la
 
-libwireless_security_la_SOURCES = \
+wireless_security_sources = \
 	wireless-security.h \
 	wireless-security.c \
 	ws-wep-key.h \
@@ -30,17 +32,35 @@ libwireless_security_la_SOURCES = \
 	helpers.h \
 	helpers.c
 
-libwireless_security_la_CPPFLAGS = \
+libwireless_security_libnm_glib_la_SOURCES = \
+	$(wireless_security_sources)
+
+libwireless_security_libnm_glib_la_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	-DUIDIR=\""$(uidir)"\" \
 	-DLIBNM_GLIB_BUILD \
 	$(NMA_CFLAGS) \
 	-I${top_srcdir}/src/utils
 
-libwireless_security_la_LIBADD = \
+libwireless_security_libnm_glib_la_LIBADD = \
 	$(GTK_LIBS) \
 	$(NMA_LIBS) \
 	${top_builddir}/src/utils/libutils-libnm-glib.la
+
+libwireless_security_libnm_la_SOURCES = \
+	$(wireless_security_sources)
+
+libwireless_security_libnm_la_CPPFLAGS = \
+	$(GTK_CFLAGS) \
+	-DUIDIR=\""$(uidir)"\" \
+	-DLIBNM_BUILD \
+	$(LIBNM_CFLAGS) \
+	-I${top_srcdir}/src/utils
+
+libwireless_security_libnm_la_LIBADD = \
+	$(GTK_LIBS) \
+	$(LIBNM_LIBS) \
+	${top_builddir}/src/utils/libutils-libnm.la
 
 uidir = $(datadir)/nm-applet
 ui_DATA = \
