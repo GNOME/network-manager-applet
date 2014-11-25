@@ -1420,6 +1420,10 @@ applet_find_active_connection_for_device (NMDevice *device,
 		devices = nm_active_connection_get_devices (active);
 		connection_path = nm_active_connection_get_connection (active);
 
+		/* Skip VPN connections */
+		if (nm_active_connection_get_vpn (active))
+			continue;
+
 		if (!devices || !connection_path)
 			continue;
 
