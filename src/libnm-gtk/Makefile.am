@@ -29,6 +29,7 @@ libnm_gtk_la_CFLAGS = \
 	$(NMA_CFLAGS) \
 	$(DBUS_CFLAGS) \
 	$(GUDEV_CFLAGS) \
+	-DLIBNM_GLIB_BUILD \
 	-DICONDIR=\""$(datadir)/icons"\" \
 	-DUIDIR=\""$(uidir)"\" \
 	-DBINDIR=\""$(bindir)"\" \

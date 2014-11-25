@@ -49,17 +49,12 @@ typedef struct {
 	char *asdf11_adhoc_wpa_rsn;
 } TestData;
 
-static GByteArray *
+static GBytes *
 string_to_ssid (const char *str)
 {
-	GByteArray *ssid;
-
 	g_assert (str != NULL);
 
-	ssid = g_byte_array_sized_new (strlen (str));
-	g_assert (ssid != NULL);
-	g_byte_array_append (ssid, (const guint8 *) str, strlen (str));
-	return ssid;
+	return g_bytes_new (str, strlen (str));
 }
 
 static char *
@@ -69,7 +64,7 @@ make_hash (const char *str,
            guint32 wpa_flags,
            guint32 rsn_flags)
 {
-	GByteArray *ssid;
+	GBytes *ssid;
 	char *hash, *hash2;
 
 	ssid = string_to_ssid (str);
@@ -83,7 +78,7 @@ make_hash (const char *str,
 	/* Make sure they are the same each time */
 	g_assert (!strcmp (hash, hash2));
 
-	g_byte_array_free (ssid, TRUE);
+	g_bytes_unref (ssid);
 	return hash;
 }
 

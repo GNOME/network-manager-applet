@@ -9,6 +9,7 @@ nm_applet_CPPFLAGS = \
 	$(NOTIFY_CFLAGS) \
 	$(MM_GLIB_CFLAGS) \
 	$(APPINDICATOR_CFLAGS) \
+	-DLIBNM_GLIB_BUILD \
 	-DNM_VERSION_MIN_REQUIRED=NM_VERSION_0_9_10 \
 	-DNM_VERSION_MAX_ALLOWED=NM_VERSION_0_9_10 \
 	-DICONDIR=\""$(datadir)/icons"\"						\
@@ -82,7 +83,7 @@ nm_applet_LDADD = \
 	$(NOTIFY_LIBS) \
 	$(MM_GLIB_LIBS) \
 	$(APPINDICATOR_LIBS) \
-	${top_builddir}/src/utils/libutils.la \
+	${top_builddir}/src/utils/libutils-libnm-glib.la \
 	${top_builddir}/src/wireless-security/libwireless-security.la \
 	${top_builddir}/src/libnm-gtk/libnm-gtk.la
 
