@@ -18,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2012 Red Hat, Inc.
+ * Copyright 2007 - 2014 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -32,8 +32,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include <nm-setting-connection.h>
-#include <nm-setting-8021x.h>
 #include "eap-method.h"
 #include "nm-utils.h"
 
@@ -264,6 +262,7 @@ out:
 	return success;
 }
 
+#ifdef LIBNM_GLIB_BUILD
 static const char *
 find_tag (const char *tag, const char *buf, gsize len)
 {
@@ -391,23 +390,33 @@ out:
 	close (fd);
 	return success;
 }
+#endif
 
 static gboolean
 default_filter_privkey (const GtkFileFilterInfo *filter_info, gpointer user_data)
 {
+#ifdef LIBNM_GLIB_BUILD
 	const char *extensions[] = { ".der", ".pem", ".p12", ".key", NULL };
+#endif
 	gboolean require_encrypted = !!user_data;
 	gboolean is_encrypted = TRUE;
 
 	if (!filter_info->filename)
 		return FALSE;
 
+#if defined (LIBNM_GLIB_BUILD)
 	if (!file_has_extension (filter_info->filename, extensions))
 		return FALSE;
 
 	if (   !file_is_der_or_pem (filter_info->filename, TRUE, &is_encrypted)
 	    && !nm_utils_file_is_pkcs12 (filter_info->filename))
 		return FALSE;
+#elif defined (LIBNM_BUILD)
+	if (!nm_utils_file_is_private_key (filter_info->filename, &is_encrypted))
+		return FALSE;
+#else
+#error neither LIBNM_BUILD nor LIBNM_GLIB_BUILD defined
+#endif
 
 	return require_encrypted ? is_encrypted : TRUE;
 }
@@ -415,16 +424,25 @@ default_filter_privkey (const GtkFileFilterInfo *filter_info, gpointer user_data
 static gboolean
 default_filter_cert (const GtkFileFilterInfo *filter_info, gpointer user_data)
 {
+#ifdef LIBNM_GLIB_BUILD
 	const char *extensions[] = { ".der", ".pem", ".crt", ".cer", NULL };
+#endif
 
 	if (!filter_info->filename)
 		return FALSE;
 
+#if defined (LIBNM_GLIB_BUILD)
 	if (!file_has_extension (filter_info->filename, extensions))
 		return FALSE;
 
 	if (!file_is_der_or_pem (filter_info->filename, FALSE, NULL))
 		return FALSE;
+#elif defined (LIBNM_BUILD)
+	if (!nm_utils_file_is_certificate (filter_info->filename))
+		return FALSE;
+#else
+#error neither LIBNM_BUILD nor LIBNM_GLIB_BUILD defined
+#endif
 
 	return TRUE;
 }

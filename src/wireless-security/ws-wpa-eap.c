@@ -17,13 +17,12 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2010 Red Hat, Inc.
+ * Copyright 2007 - 2014 Red Hat, Inc.
  */
 
 #include <glib/gi18n.h>
 #include <ctype.h>
 #include <string.h>
-#include <nm-setting-wireless.h>
 
 #include "wireless-security.h"
 #include "eap-method.h"
@@ -45,7 +44,7 @@ destroy (WirelessSecurity *parent)
 }
 
 static gboolean
-validate (WirelessSecurity *parent, const GByteArray *ssid)
+validate (WirelessSecurity *parent)
 {
 	return ws_802_1x_validate (parent, "wpa_eap_auth_combo");
 }

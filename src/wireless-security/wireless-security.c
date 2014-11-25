@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2012 Red Hat, Inc.
+ * Copyright 2007 - 2014 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -27,12 +27,6 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-
-#include <nm-setting-connection.h>
-#include <nm-setting-wired.h>
-#include <nm-setting-wireless.h>
-#include <nm-setting-wireless-security.h>
-#include <nm-setting-8021x.h>
 
 #include "wireless-security.h"
 #include "eap-method.h"
@@ -68,12 +62,12 @@ wireless_security_changed_cb (GtkWidget *ignored, gpointer user_data)
 }
 
 gboolean
-wireless_security_validate (WirelessSecurity *sec, const GByteArray *ssid)
+wireless_security_validate (WirelessSecurity *sec)
 {
 	g_return_val_if_fail (sec != NULL, FALSE);
 
 	g_assert (sec->validate);
-	return (*(sec->validate)) (sec, ssid);
+	return (*(sec->validate)) (sec);
 }
 
 void

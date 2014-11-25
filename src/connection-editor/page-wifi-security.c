@@ -485,7 +485,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 
 		if (ssid) {
 			/* FIXME: get failed property and error out of wifi security objects */
-			valid = wireless_security_validate (sec, ssid);
+			valid = wireless_security_validate (sec);
 			if (valid)
 				wireless_security_fill_connection (sec, connection);
 			else

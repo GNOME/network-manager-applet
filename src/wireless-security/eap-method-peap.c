@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2010 Red Hat, Inc.
+ * Copyright 2007 - 2014 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -25,9 +25,6 @@
 #include <glib/gi18n.h>
 #include <ctype.h>
 #include <string.h>
-
-#include <nm-setting-connection.h>
-#include <nm-setting-8021x.h>
 
 #include "eap-method.h"
 #include "wireless-security.h"

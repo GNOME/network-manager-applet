@@ -46,7 +46,7 @@ libnm_gtk_la_LIBADD = \
 	$(GTK_LIBS) \
 	$(NMA_LIBS) \
 	$(GUDEV_LIBS) \
-	$(top_builddir)/src/wireless-security/libwireless-security.la
+	$(top_builddir)/src/wireless-security/libwireless-security-libnm-glib.la
 
 libnm_gtk_la_LDFLAGS = -Wl,-no-undefined \
 	-export-symbols-regex '^nma_.*'
