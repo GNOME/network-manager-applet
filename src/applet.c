@@ -1391,7 +1391,7 @@ nm_g_ptr_array_contains (const GPtrArray *haystack, gpointer needle)
 	return FALSE;
 }
 
-NMConnection *
+static NMConnection *
 applet_find_active_connection_for_device (NMDevice *device,
                                           NMApplet *applet,
                                           NMActiveConnection **out_active)
