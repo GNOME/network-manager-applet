@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2013 Red Hat, Inc.
+ * Copyright 2008 - 2014 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -33,7 +33,7 @@
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
 
-#include <nm-utils.h>
+#include <NetworkManager.h>
 
 #include "ip6-routes-dialog.h"
 #include "utils.h"
@@ -86,10 +86,10 @@ get_one_addr (GtkTreeModel *model,
               GtkTreeIter *iter,
               int column,
               gboolean fail_if_missing,
-              struct in6_addr *out)
+              char **out)
 {
 	char *item = NULL;
-	gboolean success = FALSE;
+	struct in6_addr tmp_addr;
 
 	gtk_tree_model_get (model, iter, column, &item, -1);
 	if (!item || !strlen (item)) {
@@ -97,11 +97,16 @@ get_one_addr (GtkTreeModel *model,
 		return fail_if_missing ? FALSE : TRUE;
 	}
 
-	if (inet_pton (AF_INET6, item, out) > 0)
-		success = TRUE;
+	if (inet_pton (AF_INET6, item, &tmp_addr) == 0)
+		return FALSE;
 
-	g_free (item);
-	return success;
+	if (IN6_IS_ADDR_UNSPECIFIED (&tmp_addr)) {
+		g_free (item);
+		return fail_if_missing ? FALSE : TRUE;
+	}
+
+	*out = item;
+	return TRUE;
 }
 
 static void
@@ -124,12 +129,13 @@ validate (GtkWidget *dialog)
 	iter_valid = gtk_tree_model_get_iter_first (model, &tree_iter);
 
 	while (iter_valid) {
-		struct in6_addr dest, next_hop;
+		char *dest = NULL, *next_hop = NULL;
 		guint prefix = 0, metric = 0;
 
 		/* Address */
 		if (!get_one_addr (model, &tree_iter, COL_ADDRESS, TRUE, &dest))
 			goto done;
+		g_free (dest);
 
 		/* Prefix */
 		if (!get_one_int (model, &tree_iter, COL_PREFIX, 128, TRUE, &prefix))
@@ -138,6 +144,7 @@ validate (GtkWidget *dialog)
 		/* Next hop (optional) */
 		if (!get_one_addr (model, &tree_iter, COL_NEXT_HOP, FALSE, &next_hop))
 			goto done;
+		g_free (next_hop);
 
 		/* Metric (optional) */
 		if (!get_one_int (model, &tree_iter, COL_METRIC, G_MAXUINT32, FALSE, &metric))
@@ -570,7 +577,7 @@ tree_view_button_pressed_cb (GtkWidget *widget,
 }
 
 GtkWidget *
-ip6_routes_dialog_new (NMSettingIP6Config *s_ip6, gboolean automatic)
+ip6_routes_dialog_new (NMSettingIPConfig *s_ip6, gboolean automatic)
 {
 	GtkBuilder *builder;
 	GtkWidget *dialog, *widget, *ok_button;
@@ -616,37 +623,28 @@ ip6_routes_dialog_new (NMSettingIP6Config *s_ip6, gboolean automatic)
 	store = gtk_list_store_new (4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
 
 	/* Add existing routes */
-	for (i = 0; i < nm_setting_ip6_config_get_num_routes (s_ip6); i++) {
-		NMIP6Route *route = nm_setting_ip6_config_get_route (s_ip6, i);
-		const struct in6_addr *tmp_addr;
-		char ip_string[INET6_ADDRSTRLEN];
-		char *tmp;
+	for (i = 0; i < nm_setting_ip_config_get_num_routes (s_ip6); i++) {
+		NMIPRoute *route = nm_setting_ip_config_get_route (s_ip6, i);
+		char prefix[32], metric[32];
 
 		if (!route) {
 			g_warning ("%s: empty IP6 route structure!", __func__);
 			continue;
 		}
 
+		g_snprintf (prefix, sizeof (prefix), "%u", nm_ip_route_get_prefix (route));
+
+		/* FIXME */
+		g_snprintf (metric, sizeof (metric), "%u",
+		            (guint32) MIN (0, nm_ip_route_get_metric (route)));
+
 		gtk_list_store_append (store, &model_iter);
-
-		tmp_addr = nm_ip6_route_get_dest (route);
-		if (inet_ntop (AF_INET6, tmp_addr, ip_string, sizeof (ip_string)))
-			gtk_list_store_set (store, &model_iter, COL_ADDRESS, ip_string, -1);
-
-		tmp = g_strdup_printf ("%u", nm_ip6_route_get_prefix (route));
-		gtk_list_store_set (store, &model_iter, COL_PREFIX, tmp, -1);
-		g_free (tmp);
-
-		tmp_addr = nm_ip6_route_get_next_hop (route);
-		if (tmp_addr && !IN6_IS_ADDR_UNSPECIFIED (tmp_addr) &&
-			inet_ntop (AF_INET6, tmp_addr, ip_string, sizeof (ip_string)))
-			gtk_list_store_set (store, &model_iter, COL_NEXT_HOP, ip_string, -1);
-
-		if (nm_ip6_route_get_metric (route)) {
-			tmp = g_strdup_printf ("%u", nm_ip6_route_get_metric (route));
-			gtk_list_store_set (store, &model_iter, COL_METRIC, tmp, -1);
-			g_free (tmp);
-		}
+		gtk_list_store_set (store, &model_iter,
+		                    COL_ADDRESS, nm_ip_route_get_dest (route),
+		                    COL_PREFIX, prefix,
+		                    COL_NEXT_HOP, nm_ip_route_get_next_hop (route),
+		                    COL_METRIC, metric,
+		                    -1);
 	}
 
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ip6_routes"));
@@ -739,12 +737,12 @@ ip6_routes_dialog_new (NMSettingIP6Config *s_ip6, gboolean automatic)
 
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ip6_ignore_auto_routes"));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget),
-	                              nm_setting_ip6_config_get_ignore_auto_routes (s_ip6));
+	                              nm_setting_ip_config_get_ignore_auto_routes (s_ip6));
 	gtk_widget_set_sensitive (widget, automatic);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ip6_never_default"));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget),
-	                              nm_setting_ip6_config_get_never_default (s_ip6));
+	                              nm_setting_ip_config_get_never_default (s_ip6));
 
 	/* Update initial validity */
 	validate (dialog);
@@ -753,7 +751,7 @@ ip6_routes_dialog_new (NMSettingIP6Config *s_ip6, gboolean automatic)
 }
 
 void
-ip6_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIP6Config *s_ip6)
+ip6_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIPConfig *s_ip6)
 {
 	GtkBuilder *builder;
 	GtkWidget *widget;
@@ -772,12 +770,12 @@ ip6_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIP6Config *s_ip6)
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (widget));
 	iter_valid = gtk_tree_model_get_iter_first (model, &tree_iter);
 
-	nm_setting_ip6_config_clear_routes (s_ip6);
+	nm_setting_ip_config_clear_routes (s_ip6);
 
 	while (iter_valid) {
-		struct in6_addr dest, next_hop;
+		char *dest = NULL, *next_hop = NULL;
 		guint prefix = 0, metric = 0;
-		NMIP6Route *route;
+		NMIPRoute *route;
 
 		/* Address */
 		if (!get_one_addr (model, &tree_iter, COL_ADDRESS, TRUE, &dest)) {
@@ -788,6 +786,7 @@ ip6_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIP6Config *s_ip6)
 		/* Prefix */
 		if (!get_one_int (model, &tree_iter, COL_PREFIX, 128, TRUE, &prefix)) {
 			g_warning ("%s: IPv6 prefix missing or invalid!", __func__);
+			g_free (dest);
 			goto next;
 		}
 
@@ -795,34 +794,33 @@ ip6_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIP6Config *s_ip6)
 		memset (&next_hop, 0, sizeof (struct in6_addr));
 		if (!get_one_addr (model, &tree_iter, COL_NEXT_HOP, FALSE, &next_hop)) {
 			g_warning ("%s: IPv6 next hop invalid!", __func__);
+			g_free (dest);
 			goto next;
 		}
 
 		/* Metric (optional) */
 		if (!get_one_int (model, &tree_iter, COL_METRIC, G_MAXUINT32, FALSE, &metric)) {
 			g_warning ("%s: IPv6 metric invalid!", __func__);
+			g_free (dest);
+			g_free (next_hop);
 			goto next;
 		}
 
-		route = nm_ip6_route_new ();
-		nm_ip6_route_set_dest (route, &dest);
-		nm_ip6_route_set_prefix (route, prefix);
-		nm_ip6_route_set_next_hop (route, &next_hop);
-		nm_ip6_route_set_metric (route, metric);
-		nm_setting_ip6_config_add_route (s_ip6, route);
-		nm_ip6_route_unref (route);
+		route = nm_ip_route_new (AF_INET6, dest, prefix, next_hop, metric, NULL);
+		nm_setting_ip_config_add_route (s_ip6, route);
+		nm_ip_route_unref (route);
 
 	next:
 		iter_valid = gtk_tree_model_iter_next (model, &tree_iter);
 	}
 
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ip6_ignore_auto_routes"));
-	g_object_set (s_ip6, NM_SETTING_IP6_CONFIG_IGNORE_AUTO_ROUTES,
+	g_object_set (s_ip6, NM_SETTING_IP_CONFIG_IGNORE_AUTO_ROUTES,
 	              gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)),
 	              NULL);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ip6_never_default"));
-	g_object_set (s_ip6, NM_SETTING_IP6_CONFIG_NEVER_DEFAULT,
+	g_object_set (s_ip6, NM_SETTING_IP_CONFIG_NEVER_DEFAULT,
 	              gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)),
 	              NULL);
 }

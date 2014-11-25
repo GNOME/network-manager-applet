@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2011 Red Hat, Inc.
+ * Copyright 2008 - 2014 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -27,16 +27,9 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
-#include <nm-glib-compat.h>
-#include <nm-setting-connection.h>
-#include <nm-setting-gsm.h>
-#include <nm-setting-cdma.h>
-#include <nm-setting-serial.h>
-#include <nm-setting-ppp.h>
-
 #include "page-mobile.h"
 #include "nm-connection-editor.h"
-#include "nm-mobile-wizard.h"
+#include "nma-mobile-wizard.h"
 
 G_DEFINE_TYPE (CEPageMobile, ce_page_mobile, CE_TYPE_PAGE)
 
@@ -301,7 +294,6 @@ CEPage *
 ce_page_mobile_new (NMConnection *connection,
                     GtkWindow *parent_window,
                     NMClient *client,
-                    NMRemoteSettings *settings,
                     const char **out_secrets_setting_name,
                     GError **error)
 {
@@ -312,7 +304,6 @@ ce_page_mobile_new (NMConnection *connection,
 	                                    connection,
 	                                    parent_window,
 	                                    client,
-	                                    settings,
 	                                    UIDIR "/ce-page-mobile.ui",
 	                                    "MobilePage",
 	                                    _("Mobile Broadband")));
@@ -453,7 +444,7 @@ add_default_serial_setting (NMConnection *connection)
 }
 
 typedef struct {
-    NMRemoteSettings *settings;
+    NMClient *client;
     PageNewConnectionResultFunc result_func;
     gpointer user_data;
 } WizardInfo;
@@ -503,7 +494,7 @@ new_connection_mobile_wizard_done (NMAMobileWizard *wizard,
 			detail = g_strdup_printf ("%s %s %%d", method->provider_name, method->plan_name);
 		else
 			detail = g_strdup_printf ("%s connection %%d", method->provider_name);
-		connection = ce_page_new_connection (detail, ctype, FALSE, info->settings, info->user_data);
+		connection = ce_page_new_connection (detail, ctype, FALSE, info->client, info->user_data);
 		g_free (detail);
 
 		nm_connection_add_setting (connection, type_setting);
@@ -516,7 +507,7 @@ new_connection_mobile_wizard_done (NMAMobileWizard *wizard,
 	if (wizard)
 		nma_mobile_wizard_destroy (wizard);
 
-	g_object_unref (info->settings);
+	g_object_unref (info->client);
 	g_free (info);
 }
 
@@ -529,7 +520,7 @@ cancel_dialog (GtkDialog *dialog)
 void
 mobile_connection_new (GtkWindow *parent,
                        const char *detail,
-                       NMRemoteSettings *settings,
+                       NMClient *client,
                        PageNewConnectionResultFunc result_func,
                        gpointer user_data)
 {
@@ -542,7 +533,7 @@ mobile_connection_new (GtkWindow *parent,
 
 	info = g_malloc0 (sizeof (WizardInfo));
 	info->result_func = result_func;
-	info->settings = g_object_ref (settings);
+	info->client = g_object_ref (client);
 	info->user_data = user_data;
 
 	wizard = nma_mobile_wizard_new (parent, NULL, NM_DEVICE_MODEM_CAPABILITY_NONE, FALSE,

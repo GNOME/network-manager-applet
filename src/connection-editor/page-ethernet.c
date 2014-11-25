@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2011 Red Hat, Inc.
+ * Copyright 2008 - 2014 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -27,11 +27,6 @@
 
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-
-#include <nm-setting-connection.h>
-#include <nm-setting-wired.h>
-#include <nm-device-ethernet.h>
-#include <nm-utils.h>
 
 #include "page-ethernet.h"
 
@@ -111,8 +106,7 @@ populate_ui (CEPageEthernet *self)
 	int speed_idx;
 	int mtu_def;
 	char **mac_list;
-	const GByteArray *s_mac;
-	char *s_mac_str;
+	const char *s_mac_str;
 
 	/* Port */
 	port = nm_setting_wired_get_port (setting);
@@ -162,17 +156,16 @@ populate_ui (CEPageEthernet *self)
 	/* Device MAC address */
 	mac_list = ce_page_get_mac_list (CE_PAGE (self), NM_TYPE_DEVICE_ETHERNET,
 	                                 NM_DEVICE_ETHERNET_PERMANENT_HW_ADDRESS);
-	s_mac = nm_setting_wired_get_mac_address (setting);
-	s_mac_str = s_mac ? nm_utils_hwaddr_ntoa (s_mac->data, ARPHRD_ETHER) : NULL;
+	s_mac_str = nm_setting_wired_get_mac_address (setting);
 	ce_page_setup_mac_combo (CE_PAGE (self), GTK_COMBO_BOX (priv->device_mac),
 	                         s_mac_str, mac_list);
-	g_free (s_mac_str);
 	g_strfreev (mac_list);
 	g_signal_connect (priv->device_mac, "changed", G_CALLBACK (stuff_changed), self);
 
 	/* Cloned MAC address */
-	ce_page_mac_to_entry (nm_setting_wired_get_cloned_mac_address (setting),
-	                      ARPHRD_ETHER, priv->cloned_mac);
+	s_mac_str = nm_setting_wired_get_cloned_mac_address (setting);
+	if (s_mac_str)
+		gtk_entry_set_text (priv->cloned_mac, s_mac_str);
 	g_signal_connect (priv->cloned_mac, "changed", G_CALLBACK (stuff_changed), self);
 
 	/* MTU */
@@ -223,7 +216,6 @@ CEPage *
 ce_page_ethernet_new (NMConnection *connection,
                       GtkWindow *parent_window,
                       NMClient *client,
-                      NMRemoteSettings *settings,
                       const char **out_secrets_setting_name,
                       GError **error)
 {
@@ -234,7 +226,6 @@ ce_page_ethernet_new (NMConnection *connection,
 	                                      connection,
 	                                      parent_window,
 	                                      client,
-	                                      settings,
 	                                      UIDIR "/ce-page-ethernet.ui",
 	                                      "EthernetPage",
 	                                      _("Ethernet")));
@@ -263,8 +254,8 @@ ui_to_setting (CEPageEthernet *self)
 	CEPageEthernetPrivate *priv = CE_PAGE_ETHERNET_GET_PRIVATE (self);
 	const char *port;
 	guint32 speed;
-	GByteArray *device_mac = NULL;
-	GByteArray *cloned_mac = NULL;
+	char *device_mac = NULL;
+	char *cloned_mac = NULL;
 	GtkWidget *entry;
 
 	/* Port */
@@ -320,11 +311,8 @@ ui_to_setting (CEPageEthernet *self)
 	              NM_SETTING_WIRED_MTU, (guint32) gtk_spin_button_get_value_as_int (priv->mtu),
 	              NULL);
 
-	if (device_mac)
-		g_byte_array_free (device_mac, TRUE);
-	if (cloned_mac)
-		g_byte_array_free (cloned_mac, TRUE);
-
+	g_free (device_mac);
+	g_free (cloned_mac);
 }
 
 static gboolean
@@ -333,7 +321,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	CEPageEthernet *self = CE_PAGE_ETHERNET (page);
 	CEPageEthernetPrivate *priv = CE_PAGE_ETHERNET_GET_PRIVATE (self);
 	gboolean invalid = FALSE;
-	GByteArray *ignore;
+	char *ignore;
 	GtkWidget *entry;
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
@@ -341,15 +329,13 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 		ignore = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_ETHER, &invalid);
 		if (invalid)
 			return FALSE;
-		if (ignore)
-			g_byte_array_free (ignore, TRUE);
+		g_free (ignore);
 	}
 
 	ignore = ce_page_entry_to_mac (priv->cloned_mac, ARPHRD_ETHER, &invalid);
 	if (invalid)
 		return FALSE;
-	if (ignore)
-		g_byte_array_free (ignore, TRUE);
+	g_free (ignore);
 
 	ui_to_setting (self);
 	return nm_setting_verify (NM_SETTING (priv->setting), NULL, error);
@@ -376,7 +362,7 @@ ce_page_ethernet_class_init (CEPageEthernetClass *ethernet_class)
 void
 ethernet_connection_new (GtkWindow *parent,
                          const char *detail,
-                         NMRemoteSettings *settings,
+                         NMClient *client,
                          PageNewConnectionResultFunc result_func,
                          gpointer user_data)
 {
@@ -385,7 +371,7 @@ ethernet_connection_new (GtkWindow *parent,
 	connection = ce_page_new_connection (_("Ethernet connection %d"),
 	                                     NM_SETTING_WIRED_SETTING_NAME,
 	                                     TRUE,
-	                                     settings,
+	                                     client,
 	                                     user_data);
 	nm_connection_add_setting (connection, nm_setting_wired_new ());
 

@@ -15,18 +15,13 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2012 Red Hat, Inc.
+ * Copyright 2012 - 2014 Red Hat, Inc.
  */
 
 #include "config.h"
 
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-
-#include <nm-setting-connection.h>
-#include <nm-setting-wimax.h>
-#include <nm-device-wimax.h>
-#include <nm-utils.h>
 
 #include "page-wimax.h"
 
@@ -73,8 +68,7 @@ populate_ui (CEPageWimax *self)
 	CEPageWimaxPrivate *priv = CE_PAGE_WIMAX_GET_PRIVATE (self);
 	NMSettingWimax *setting = priv->setting;
 	char **mac_list;
-	const GByteArray *s_mac;
-	char *s_mac_str;
+	const char *s_mac_str;
 
 	gtk_entry_set_text (priv->name, nm_setting_wimax_get_network_name (setting));
 	g_signal_connect_swapped (priv->name, "changed", G_CALLBACK (ce_page_changed), self);
@@ -82,11 +76,9 @@ populate_ui (CEPageWimax *self)
 	/* Device MAC address */
 	mac_list = ce_page_get_mac_list (CE_PAGE (self), NM_TYPE_DEVICE_WIMAX,
 	                                 NM_DEVICE_WIMAX_HW_ADDRESS);
-	s_mac = nm_setting_wimax_get_mac_address (setting);
-	s_mac_str = s_mac ? nm_utils_hwaddr_ntoa (s_mac->data, ARPHRD_ETHER) : NULL;
+	s_mac_str = nm_setting_wimax_get_mac_address (setting);
 	ce_page_setup_mac_combo (CE_PAGE (self), GTK_COMBO_BOX (priv->device_mac),
 	                         s_mac_str, mac_list);
-	g_free (s_mac_str);
 	g_strfreev (mac_list);
 	g_signal_connect_swapped (priv->device_mac, "changed", G_CALLBACK (ce_page_changed), self);
 }
@@ -104,7 +96,6 @@ CEPage *
 ce_page_wimax_new (NMConnection *connection,
                    GtkWindow *parent_window,
                    NMClient *client,
-                   NMRemoteSettings *settings,
                    const char **out_secrets_setting_name,
                    GError **error)
 {
@@ -117,7 +108,6 @@ ce_page_wimax_new (NMConnection *connection,
 	                                   connection,
 	                                   parent_window,
 	                                   client,
-	                                   settings,
 	                                   UIDIR "/ce-page-wimax.ui",
 	                                   "WimaxPage",
 	                                   _("WiMAX")));
@@ -146,7 +136,7 @@ ui_to_setting (CEPageWimax *self)
 {
 	CEPageWimaxPrivate *priv = CE_PAGE_WIMAX_GET_PRIVATE (self);
 	const char *name;
-	GByteArray *device_mac = NULL;
+	char *device_mac = NULL;
 	GtkWidget *entry;
 
 	name = gtk_entry_get_text (priv->name);
@@ -160,8 +150,7 @@ ui_to_setting (CEPageWimax *self)
 	              NM_SETTING_WIMAX_MAC_ADDRESS, device_mac,
 	              NULL);
 
-	if (device_mac)
-		g_byte_array_free (device_mac, TRUE);
+	g_free (device_mac);
 }
 
 static gboolean
@@ -171,7 +160,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	CEPageWimaxPrivate *priv = CE_PAGE_WIMAX_GET_PRIVATE (self);
 	const char *name;
 	gboolean invalid = FALSE;
-	GByteArray *ignore;
+	char *ignore;
 	GtkWidget *entry;
 
 	name = gtk_entry_get_text (priv->name);
@@ -183,8 +172,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 		ignore = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_ETHER, &invalid);
 		if (invalid)
 			return FALSE;
-		if (ignore)
-			g_byte_array_free (ignore, TRUE);
+		g_free (ignore);
 	}
 
 	ui_to_setting (self);
@@ -212,7 +200,7 @@ ce_page_wimax_class_init (CEPageWimaxClass *wimax_class)
 void
 wimax_connection_new (GtkWindow *parent,
                       const char *detail,
-                      NMRemoteSettings *settings,
+                      NMClient *client,
                       PageNewConnectionResultFunc result_func,
                       gpointer user_data)
 {
@@ -222,7 +210,7 @@ wimax_connection_new (GtkWindow *parent,
 	connection = ce_page_new_connection (_("WiMAX connection %d"),
 	                                     NM_SETTING_WIMAX_SETTING_NAME,
 	                                     TRUE,
-	                                     settings,
+	                                     client,
 	                                     user_data);
 	s_wimax = nm_setting_wimax_new ();
 	nm_connection_add_setting (connection, s_wimax);

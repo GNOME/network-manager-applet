@@ -17,15 +17,11 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2013 Red Hat, Inc.
+ * Copyright 2013 - 2014 Red Hat, Inc.
  */
 
 #ifndef __PAGE_DCB_H__
 #define __PAGE_DCB_H__
-
-#include "nm-connection-editor.h"
-
-#include <nm-connection.h>
 
 #include <glib.h>
 #include <glib-object.h>
@@ -52,7 +48,6 @@ GType ce_page_dcb_get_type (void);
 CEPage *ce_page_dcb_new (NMConnection *connection,
                          GtkWindow *parent,
                          NMClient *client,
-                         NMRemoteSettings *settings,
                          const char **out_secrets_setting_name,
                          GError **error);
 

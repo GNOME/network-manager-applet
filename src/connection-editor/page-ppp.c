@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2012 Red Hat, Inc.
+ * Copyright 2008 - 2014 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -26,9 +26,6 @@
 
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-
-#include <nm-setting-connection.h>
-#include <nm-setting-ppp.h>
 
 #include "page-ppp.h"
 #include "ppp-auth-methods-dialog.h"
@@ -50,7 +47,7 @@ G_DEFINE_TYPE (CEPagePpp, ce_page_ppp, CE_TYPE_PAGE)
 #define TAG_MSCHAPV2 4
 
 typedef struct {
-	NMSettingPPP *setting;
+	NMSettingPpp *setting;
 
 	GtkLabel *auth_methods_label;
 	GtkButton *auth_methods_button;
@@ -213,7 +210,7 @@ static void
 populate_ui (CEPagePpp *self, NMConnection *connection)
 {
 	CEPagePppPrivate *priv = CE_PAGE_PPP_GET_PRIVATE (self);
-	NMSettingPPP *setting = priv->setting;
+	NMSettingPpp *setting = priv->setting;
 	gboolean require_mppe, require_mppe_128, mppe_stateful, nobsdcomp, nodeflate, no_vj_comp;
 
 	g_object_get (setting,
@@ -268,7 +265,6 @@ CEPage *
 ce_page_ppp_new (NMConnection *connection,
                  GtkWindow *parent_window,
                  NMClient *client,
-                 NMRemoteSettings *settings,
                  const char **out_secrets_setting_name,
                  GError **error)
 {
@@ -280,7 +276,6 @@ ce_page_ppp_new (NMConnection *connection,
 	                                 connection,
 	                                 parent_window,
 	                                 client,
-	                                 settings,
 	                                 UIDIR "/ce-page-ppp.ui",
 	                                 "PppPage",
 	                                 _("PPP Settings")));

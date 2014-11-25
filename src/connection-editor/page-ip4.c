@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2012 Red Hat, Inc.
+ * Copyright 2008 - 2014 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -32,16 +32,6 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-
-#include <nm-setting-connection.h>
-#include <nm-setting-ip4-config.h>
-#include <nm-setting-wired.h>
-#include <nm-setting-wireless.h>
-#include <nm-setting-gsm.h>
-#include <nm-setting-cdma.h>
-#include <nm-setting-pppoe.h>
-#include <nm-setting-vpn.h>
-#include <nm-utils.h>
 
 #include "page-ip4.h"
 #include "ip4-routes-dialog.h"
@@ -58,7 +48,7 @@ G_DEFINE_TYPE (CEPageIP4, ce_page_ip4, CE_TYPE_PAGE)
 #define COL_LAST COL_GATEWAY
 
 typedef struct {
-	NMSettingIP4Config *setting;
+	NMSettingIPConfig *setting;
 	char *connection_id;
 	GType connection_type;
 
@@ -129,7 +119,7 @@ ip4_private_init (CEPageIP4 *self, NMConnection *connection)
 	connection_type = nm_setting_connection_get_connection_type (s_con);
 	g_assert (connection_type);
 
-	priv->connection_type = nm_connection_lookup_setting_type (connection_type);
+	priv->connection_type = nm_setting_lookup_type (connection_type);
 
 	if (priv->connection_type == NM_TYPE_SETTING_VPN) {
 		str_auto = _("Automatic (VPN)");
@@ -346,7 +336,7 @@ static void
 populate_ui (CEPageIP4 *self)
 {
 	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
-	NMSettingIP4Config *setting = priv->setting;
+	NMSettingIPConfig *setting = priv->setting;
 	GtkListStore *store;
 	GtkTreeIter model_iter;
 	int method = IP4_METHOD_AUTO;
@@ -357,7 +347,7 @@ populate_ui (CEPageIP4 *self)
 
 	/* Method */
 	gtk_combo_box_set_active (priv->method, 0);
-	str_method = nm_setting_ip4_config_get_method (setting);
+	str_method = nm_setting_ip_config_get_method (setting);
 	if (str_method) {
 		if (!strcmp (str_method, NM_SETTING_IP4_CONFIG_METHOD_LINK_LOCAL))
 			method = IP4_METHOD_LINK_LOCAL;
@@ -369,7 +359,7 @@ populate_ui (CEPageIP4 *self)
 			method = IP4_METHOD_DISABLED;
 	}
 
-	if (method == IP4_METHOD_AUTO && nm_setting_ip4_config_get_ignore_auto_dns (setting))
+	if (method == IP4_METHOD_AUTO && nm_setting_ip_config_get_ignore_auto_dns (setting))
 		method = IP4_METHOD_AUTO_ADDRESSES;
 
 	info.method = method;
@@ -378,10 +368,8 @@ populate_ui (CEPageIP4 *self)
 
 	/* Addresses */
 	store = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
-	for (i = 0; i < nm_setting_ip4_config_get_num_addresses (setting); i++) {
-		NMIP4Address *addr = nm_setting_ip4_config_get_address (setting, i);
-		struct in_addr tmp_addr;
-		char buf[INET_ADDRSTRLEN + 1];
+	for (i = 0; i < nm_setting_ip_config_get_num_addresses (setting); i++) {
+		NMIPAddress *addr = nm_setting_ip_config_get_address (setting, i);
 
 		if (!addr) {
 			g_warning ("%s: empty IP4 Address structure!", __func__);
@@ -389,18 +377,12 @@ populate_ui (CEPageIP4 *self)
 		}
 
 		gtk_list_store_append (store, &model_iter);
-
-		tmp_addr.s_addr = nm_ip4_address_get_address (addr);
-		(void) inet_ntop (AF_INET, &tmp_addr, &buf[0], sizeof (buf));
-		gtk_list_store_set (store, &model_iter, COL_ADDRESS, buf, -1);
-
-		tmp_addr.s_addr = nm_utils_ip4_prefix_to_netmask (nm_ip4_address_get_prefix (addr));
-		(void) inet_ntop (AF_INET, &tmp_addr, &buf[0], sizeof (buf));
-		gtk_list_store_set (store, &model_iter, COL_PREFIX, buf, -1);
-
-		tmp_addr.s_addr = nm_ip4_address_get_gateway (addr);
-		(void) inet_ntop (AF_INET, &tmp_addr, &buf[0], sizeof (buf));
-		gtk_list_store_set (store, &model_iter, COL_GATEWAY, buf, -1);
+		gtk_list_store_set (store, &model_iter,
+		                    COL_ADDRESS, nm_ip_address_get_address (addr),
+		                    COL_PREFIX, nm_ip_address_get_prefix (addr),
+		                    /* FIXME */
+		                    COL_GATEWAY, i == 0 ? nm_setting_ip_config_get_gateway (setting) : NULL,
+		                    -1);
 	}
 
 	gtk_tree_view_set_model (priv->addr_list, GTK_TREE_MODEL (store));
@@ -410,42 +392,40 @@ populate_ui (CEPageIP4 *self)
 
 	/* DNS servers */
 	string = g_string_new ("");
-	for (i = 0; i < nm_setting_ip4_config_get_num_dns (setting); i++) {
-		struct in_addr tmp_addr;
-		char buf[INET_ADDRSTRLEN + 1];
+	for (i = 0; i < nm_setting_ip_config_get_num_dns (setting); i++) {
+		const char *dns;
 
-		tmp_addr.s_addr = nm_setting_ip4_config_get_dns (setting, i);
-		if (!tmp_addr.s_addr)
+		dns = nm_setting_ip_config_get_dns (setting, i);
+		if (!dns)
 			continue;
 
-		(void) inet_ntop (AF_INET, &tmp_addr, &buf[0], sizeof (buf));
 		if (string->len)
 			g_string_append (string, ", ");
-		g_string_append (string, buf);
+		g_string_append (string, dns);
 	}
 	gtk_entry_set_text (priv->dns_servers, string->str);
 	g_string_free (string, TRUE);
 
 	/* DNS searches */
 	string = g_string_new ("");
-	for (i = 0; i < nm_setting_ip4_config_get_num_dns_searches (setting); i++) {
+	for (i = 0; i < nm_setting_ip_config_get_num_dns_searches (setting); i++) {
 		if (string->len)
 			g_string_append (string, ", ");
-		g_string_append (string, nm_setting_ip4_config_get_dns_search (setting, i));
+		g_string_append (string, nm_setting_ip_config_get_dns_search (setting, i));
 	}
 	gtk_entry_set_text (priv->dns_searches, string->str);
 	g_string_free (string, TRUE);
 
 	if ((method == IP4_METHOD_AUTO) || (method == IP4_METHOD_AUTO_ADDRESSES)) {
-		if (nm_setting_ip4_config_get_dhcp_client_id (setting)) {
+		if (nm_setting_ip4_config_get_dhcp_client_id (NM_SETTING_IP4_CONFIG (setting))) {
 			gtk_entry_set_text (priv->dhcp_client_id,
-			                    nm_setting_ip4_config_get_dhcp_client_id (setting));
+			                    nm_setting_ip4_config_get_dhcp_client_id (NM_SETTING_IP4_CONFIG (setting)));
 		}
 	}
 
 	/* IPv4 required */
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->ip4_required),
-	                              !nm_setting_ip4_config_get_may_fail (setting));
+	                              !nm_setting_ip_config_get_may_fail (setting));
 }
 
 static void
@@ -837,7 +817,7 @@ routes_button_clicked_cb (GtkWidget *button, gpointer user_data)
 	toplevel = gtk_widget_get_toplevel (CE_PAGE (self)->page);
 	g_return_if_fail (gtk_widget_is_toplevel (toplevel));
 
-	method = nm_setting_ip4_config_get_method (priv->setting);
+	method = nm_setting_ip_config_get_method (priv->setting);
 	if (!method || !strcmp (method, NM_SETTING_IP4_CONFIG_METHOD_AUTO))
 		automatic = TRUE;
 
@@ -991,7 +971,6 @@ CEPage *
 ce_page_ip4_new (NMConnection *connection,
                  GtkWindow *parent_window,
                  NMClient *client,
-                 NMRemoteSettings *settings,
                  const char **out_secrets_setting_name,
                  GError **error)
 {
@@ -1003,7 +982,6 @@ ce_page_ip4_new (NMConnection *connection,
 	                                 connection,
 	                                 parent_window,
 	                                 client,
-	                                 settings,
 	                                 UIDIR "/ce-page-ip4.ui",
 	                                 "IP4Page",
 	                                 _("IPv4 Settings")));
@@ -1023,7 +1001,7 @@ ce_page_ip4_new (NMConnection *connection,
 
 	priv->setting = nm_connection_get_setting_ip4_config (connection);
 	if (!priv->setting) {
-		priv->setting = NM_SETTING_IP4_CONFIG (nm_setting_ip4_config_new ());
+		priv->setting = NM_SETTING_IP_CONFIG (nm_setting_ip4_config_new ());
 		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
 	}
 
@@ -1035,7 +1013,7 @@ ce_page_ip4_new (NMConnection *connection,
 static void
 free_one_addr (gpointer data)
 {
-	g_array_free ((GArray *) data, TRUE);
+	nm_ip_address_unref ((NMIPAddress *) data);
 }
 
 static gboolean
@@ -1046,9 +1024,11 @@ ui_to_setting (CEPageIP4 *self)
 	GtkTreeIter tree_iter;
 	int int_method = IP4_METHOD_AUTO;
 	const char *method;
-	GArray *dns_servers = NULL;
-	GSList *search_domains = NULL;
+	GPtrArray *tmp_array = NULL;
+	char **dns_servers = NULL;
+	char **search_domains = NULL;
 	GPtrArray *addresses = NULL;
+	char *gateway = NULL;
 	gboolean valid = FALSE, iter_valid;
 	const char *text;
 	gboolean ignore_auto_dns = FALSE;
@@ -1089,53 +1069,55 @@ ui_to_setting (CEPageIP4 *self)
 
 	addresses = g_ptr_array_sized_new (1);
 	while (iter_valid) {
-		char *item = NULL;
-		struct in_addr tmp_addr, tmp_gateway = { 0 };
-		GArray *addr;
-		guint32 empty_val = 0, prefix;
+		char *addr = NULL, *netmask = NULL, *addr_gw = NULL;
+		NMIPAddress *nm_addr;
+		guint32 prefix;
 
-		gtk_tree_model_get (model, &tree_iter, COL_ADDRESS, &item, -1);
-		if (!item || inet_pton (AF_INET, item, &tmp_addr) <= 0) {
+		gtk_tree_model_get (model, &tree_iter,
+		                    COL_ADDRESS, &addr,
+		                    COL_PREFIX, &netmask,
+		                    COL_GATEWAY, &addr_gw,
+		                    -1);
+
+		if (!addr || !nm_utils_ipaddr_valid (AF_INET, addr)) {
 			g_warning ("%s: IPv4 address '%s' missing or invalid!",
-			           __func__, item ? item : "<none>");
-			g_free (item);
-			goto out;
-		}
-		g_free (item);
-
-		gtk_tree_model_get (model, &tree_iter, COL_PREFIX, &item, -1);
-		if (!item) {
-			g_warning ("%s: IPv4 prefix '%s' missing!",
-			           __func__, item ? item : "<none>");
+			           __func__, addr ? addr : "<none>");
+			g_free (addr);
+			g_free (netmask);
+			g_free (addr_gw);
 			goto out;
 		}
 
-		if (!parse_netmask (item, &prefix)) {
-			g_warning ("%s: IPv4 prefix '%s' invalid!",
-			           __func__, item ? item : "<none>");
-			g_free (item);
+		if (!netmask || !parse_netmask (netmask, &prefix)) {
+			g_warning ("%s: IPv4 prefix '%s' missing or invalid!",
+			           __func__, netmask ? netmask : "<none>");
+			g_free (addr);
+			g_free (netmask);
+			g_free (addr_gw);
 			goto out;
 		}
-		g_free (item);
 
 		/* Gateway is optional... */
-		gtk_tree_model_get (model, &tree_iter, COL_GATEWAY, &item, -1);
-		if (item && strlen (item) && inet_pton (AF_INET, item, &tmp_gateway) <= 0) {
+		if (addr_gw && !nm_utils_ipaddr_valid (AF_INET, addr_gw)) {
 			g_warning ("%s: IPv4 gateway '%s' invalid!",
-			           __func__, item ? item : "<none>");
-			g_free (item);
+			           __func__, addr_gw);
+			g_free (addr);
+			g_free (netmask);
+			g_free (addr_gw);
 			goto out;
 		}
-		g_free (item);
 
-		addr = g_array_sized_new (FALSE, TRUE, sizeof (guint32), 3);
-		g_array_append_val (addr, tmp_addr.s_addr);
-		g_array_append_val (addr, prefix);
-		if (tmp_gateway.s_addr)
-			g_array_append_val (addr, tmp_gateway.s_addr);
-		else
-			g_array_append_val (addr, empty_val);
-		g_ptr_array_add (addresses, addr);
+		nm_addr = nm_ip_address_new (AF_INET, addr, prefix, NULL);
+		g_ptr_array_add (addresses, nm_addr);
+
+		if (addresses->len == 1 && addr_gw) {
+			gateway = addr_gw;
+			addr_gw = NULL;
+		}
+
+		g_free (addr);
+		g_free (netmask);
+		g_free (addr_gw);
 
 		iter_valid = gtk_tree_model_iter_next (model, &tree_iter);
 	}
@@ -1147,8 +1129,7 @@ ui_to_setting (CEPageIP4 *self)
 	}
 
 	/* DNS servers */
-	dns_servers = g_array_new (FALSE, FALSE, sizeof (guint));
-
+	tmp_array = g_ptr_array_new ();
 	text = gtk_entry_get_text (GTK_ENTRY (priv->dns_servers));
 	if (text && strlen (text)) {
 		items = g_strsplit_set (text, ", ;:", 0);
@@ -1156,20 +1137,24 @@ ui_to_setting (CEPageIP4 *self)
 			struct in_addr tmp_addr;
 			char *stripped = g_strstrip (*iter);
 
-			if (!strlen (stripped))
+			if (!*stripped)
 				continue;
 
 			if (inet_pton (AF_INET, stripped, &tmp_addr))
-				g_array_append_val (dns_servers, tmp_addr.s_addr);
+				g_ptr_array_add (tmp_array, g_strdup (stripped));
 			else {
 				g_strfreev (items);
+				g_ptr_array_free (tmp_array, TRUE);
 				goto out;
 			}
 		}
 		g_strfreev (items);
 	}
+	g_ptr_array_add (tmp_array, NULL);
+	dns_servers = (char **) g_ptr_array_free (tmp_array, FALSE);
 
 	/* Search domains */
+	tmp_array = g_ptr_array_new ();
 	text = gtk_entry_get_text (GTK_ENTRY (priv->dns_searches));
 	if (text && strlen (text)) {
 		items = g_strsplit_set (text, ", ;:", 0);
@@ -1177,12 +1162,12 @@ ui_to_setting (CEPageIP4 *self)
 			char *stripped = g_strstrip (*iter);
 
 			if (strlen (stripped))
-				search_domains = g_slist_prepend (search_domains, g_strdup (stripped));
+				g_ptr_array_add (tmp_array, g_strdup (stripped));
 		}
 		g_strfreev (items);
 	}
-
-	search_domains = g_slist_reverse (search_domains);
+	g_ptr_array_add (tmp_array, NULL);
+	search_domains = (char **) g_ptr_array_free (tmp_array, FALSE);
 
 	/* DHCP client ID */
 	if (!strcmp (method, NM_SETTING_IP4_CONFIG_METHOD_AUTO)) {
@@ -1195,13 +1180,14 @@ ui_to_setting (CEPageIP4 *self)
 
 	/* Update setting */
 	g_object_set (priv->setting,
-	              NM_SETTING_IP4_CONFIG_METHOD, method,
-	              NM_SETTING_IP4_CONFIG_ADDRESSES, addresses,
-	              NM_SETTING_IP4_CONFIG_DNS, dns_servers,
-	              NM_SETTING_IP4_CONFIG_DNS_SEARCH, search_domains,
-	              NM_SETTING_IP4_CONFIG_IGNORE_AUTO_DNS, ignore_auto_dns,
+	              NM_SETTING_IP_CONFIG_METHOD, method,
+	              NM_SETTING_IP_CONFIG_ADDRESSES, addresses,
+	              NM_SETTING_IP_CONFIG_GATEWAY, gateway,
+	              NM_SETTING_IP_CONFIG_DNS, dns_servers,
+	              NM_SETTING_IP_CONFIG_DNS_SEARCH, search_domains,
+	              NM_SETTING_IP_CONFIG_IGNORE_AUTO_DNS, ignore_auto_dns,
 	              NM_SETTING_IP4_CONFIG_DHCP_CLIENT_ID, dhcp_client_id,
-	              NM_SETTING_IP4_CONFIG_MAY_FAIL, may_fail,
+	              NM_SETTING_IP_CONFIG_MAY_FAIL, may_fail,
 	              NULL);
 	valid = TRUE;
 
@@ -1210,12 +1196,10 @@ out:
 		g_ptr_array_foreach (addresses, (GFunc) free_one_addr, NULL);
 		g_ptr_array_free (addresses, TRUE);
 	}
+	g_free (gateway);
 
-	if (dns_servers)
-		g_array_free (dns_servers, TRUE);
-
-	g_slist_foreach (search_domains, (GFunc) g_free, NULL);
-	g_slist_free (search_domains);
+	g_strfreev (dns_servers);
+	g_strfreev (search_domains);
 
 	return valid;
 }

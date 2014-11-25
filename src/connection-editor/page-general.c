@@ -15,15 +15,14 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2012 Red Hat, Inc.
+ * Copyright 2012 - 2014 Red Hat, Inc.
  */
 
 #include "config.h"
 
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-
-#include <nm-setting-connection.h>
+#include <dbus/dbus-glib.h>
 
 #include "page-general.h"
 #include "nm-glib-compat.h"
@@ -33,7 +32,6 @@ G_DEFINE_TYPE (CEPageGeneral, ce_page_general, CE_TYPE_PAGE)
 #define CE_PAGE_GENERAL_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CE_TYPE_PAGE_GENERAL, CEPageGeneralPrivate))
 
 typedef struct {
-	NMRemoteSettings *remote_settings;
 	NMSettingConnection *setting;
 
 	gboolean is_vpn;
@@ -154,7 +152,6 @@ dispose (GObject *object)
 {
 	CEPageGeneralPrivate *priv = CE_PAGE_GENERAL_GET_PRIVATE (object);
 
-	g_clear_object (&priv->remote_settings);
 	g_clear_pointer (&priv->zones, g_strfreev);
 
 	G_OBJECT_CLASS (ce_page_general_parent_class)->dispose (object);
@@ -221,7 +218,8 @@ populate_ui (CEPageGeneral *self)
 	NMSettingConnection *setting = priv->setting;
 	const char *vpn_uuid;
 	guint32 combo_idx = 0, idx;
-	GSList *con_list, *l;
+	const GPtrArray *con_list;
+	int i;
 	GtkTreeIter iter;
 	gboolean global_connection = TRUE;
 
@@ -231,12 +229,13 @@ populate_ui (CEPageGeneral *self)
 
 	/* Secondary UUID (VPN) */
 	vpn_uuid = nm_setting_connection_get_secondary (setting, 0);
-	con_list = nm_remote_settings_list_connections (priv->remote_settings);
-	for (l = con_list, idx = 0, combo_idx = 0; l; l = l->next) {
-		const char *uuid = nm_connection_get_uuid (l->data);
-		const char *id = nm_connection_get_id (l->data);
+	con_list = nm_client_get_connections (CE_PAGE (self)->client);
+	for (i = 0, idx = 0, combo_idx = 0; i < con_list->len; i++) {
+		NMConnection *conn = con_list->pdata[i];
+		const char *uuid = nm_connection_get_uuid (conn);
+		const char *id = nm_connection_get_id (conn);
 
-		if (!nm_connection_is_type (l->data, NM_SETTING_VPN_SETTING_NAME))
+		if (!nm_connection_is_type (conn, NM_SETTING_VPN_SETTING_NAME))
 			continue;
 
 		gtk_list_store_append (priv->dependent_vpn_store, &iter);
@@ -245,7 +244,6 @@ populate_ui (CEPageGeneral *self)
 			combo_idx = idx;
 		idx++;
 	}
-	g_slist_free (con_list);
 	gtk_combo_box_set_active (GTK_COMBO_BOX (priv->dependent_vpn), combo_idx);
 
 	/* We don't support multiple VPNs at the moment, so hide secondary
@@ -305,7 +303,6 @@ CEPage *
 ce_page_general_new (NMConnection *connection,
                      GtkWindow *parent_window,
                      NMClient *client,
-                     NMRemoteSettings *settings,
                      const char **out_secrets_setting_name,
                      GError **error)
 {
@@ -316,7 +313,6 @@ ce_page_general_new (NMConnection *connection,
 	                                     connection,
 	                                     parent_window,
 	                                     client,
-	                                     settings,
 	                                     UIDIR "/ce-page-general.ui",
 	                                     "GeneralPage",
 	                                     _("General")));
@@ -328,8 +324,6 @@ ce_page_general_new (NMConnection *connection,
 
 	general_private_init (self);
 	priv = CE_PAGE_GENERAL_GET_PRIVATE (self);
-
-	priv->remote_settings = g_object_ref (settings);
 
 	priv->setting = nm_connection_get_setting_connection (connection);
 	if (!priv->setting) {
