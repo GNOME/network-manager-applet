@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2011 Red Hat, Inc.
+ * Copyright 2007 - 2014 Red Hat, Inc.
  */
 
 #include <config.h>
@@ -26,9 +26,6 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-
-#include <nm-setting-connection.h>
-#include <nm-utils.h>
 
 #include "utils.h"
 
@@ -68,7 +65,12 @@ utils_ether_addr_valid (const struct ether_addr *test_addr)
 }
 
 char *
-utils_hash_ap (const GByteArray *ssid,
+utils_hash_ap (
+#ifdef LIBNM_BUILD
+               GBytes *ssid,
+#else
+               const GByteArray *ssid,
+#endif
                NM80211Mode mode,
                guint32 flags,
                guint32 wpa_flags,
@@ -78,8 +80,13 @@ utils_hash_ap (const GByteArray *ssid,
 
 	memset (&input[0], 0, sizeof (input));
 
-	if (ssid)
+	if (ssid) {
+#ifdef LIBNM_BUILD
+		memcpy (input, g_bytes_get_data (ssid, NULL), g_bytes_get_size (ssid));
+#else
 		memcpy (input, ssid->data, ssid->len);
+#endif
+	}
 
 	if (mode == NM_802_11_MODE_INFRA)
 		input[32] |= (1 << 0);

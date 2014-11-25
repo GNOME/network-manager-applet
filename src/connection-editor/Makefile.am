@@ -3,6 +3,7 @@ bin_PROGRAMS = nm-connection-editor
 nm_connection_editor_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	$(NMA_CFLAGS) \
+	-DLIBNM_GLIB_BUILD \
 	-DNM_VERSION_MIN_REQUIRED=NM_VERSION_0_9_10 \
 	-DNM_VERSION_MAX_ALLOWED=NM_VERSION_0_9_10 \
 	-DICONDIR=\""$(datadir)/icons"\" \
@@ -87,7 +88,7 @@ nm-connection-editor-service-glue.h: $(top_srcdir)/src/connection-editor/nm-conn
 
 nm_connection_editor_LDADD = \
 	${top_builddir}/src/wireless-security/libwireless-security.la \
-	${top_builddir}/src/utils/libutils.la \
+	${top_builddir}/src/utils/libutils-libnm-glib.la \
 	${top_builddir}/src/libnm-gtk/libnm-gtk.la \
 	$(GTK_LIBS) \
 	$(NMA_LIBS) \

@@ -33,13 +33,14 @@ libwireless_security_la_SOURCES = \
 libwireless_security_la_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	-DUIDIR=\""$(uidir)"\" \
+	-DLIBNM_GLIB_BUILD \
 	$(NMA_CFLAGS) \
 	-I${top_srcdir}/src/utils
 
 libwireless_security_la_LIBADD = \
 	$(GTK_LIBS) \
 	$(NMA_LIBS) \
-	${top_builddir}/src/utils/libutils.la
+	${top_builddir}/src/utils/libutils-libnm-glib.la
 
 uidir = $(datadir)/nm-applet
 ui_DATA = \
