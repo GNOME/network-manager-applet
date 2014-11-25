@@ -1,5 +1,3 @@
-INCLUDES = -I$(top_srcdir)/src/utils
-
 noinst_PROGRAMS = test-upgrade
 
 test_upgrade_SOURCES = \
@@ -10,6 +8,7 @@ test_upgrade_SOURCES = \
 	fake-gconf.c
 
 test_upgrade_CPPFLAGS = \
+	-I $(top_srcdir)/src/utils \
 	-I ${srcdir}/../ \
 	-DTESTDIR=\"$(srcdir)\" \
 	$(GTK_CFLAGS) \

@@ -1,10 +1,9 @@
-INCLUDES = -I$(top_srcdir)/src/utils
-
 noinst_PROGRAMS = test-utils
 
 test_utils_SOURCES = test-utils.c
 
 test_utils_CPPFLAGS = \
+	-I $(top_srcdir)/src/utils \
 	$(GTK_CFLAGS) \
 	$(NMA_CFLAGS)
 

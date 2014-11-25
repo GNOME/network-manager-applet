@@ -1,4 +1,4 @@
-INCLUDES = \
+AM_CPPFLAGS = \
 	-DDATADIR=\"$(datadir)\" \
 	-DICONDIR=\"$(icondir)\" \
 	-DLOCALEDIR="\"$(datadir)/locale\""	\
@@ -23,7 +23,7 @@ plugin_LTLIBRARIES = libnma.la
 libnma_la_SOURCES = $(BT_WIDGET_SOURCES)
 
 if WITH_MODEM_MANAGER_1
-libnma_la_CPPFLAGS = $(MM_GLIB_CFLAGS)
+libnma_la_CPPFLAGS = $(AM_CPPFLAGS) $(MM_GLIB_CFLAGS)
 endif
 
 libnma_la_LDFLAGS = -module -avoid-version
