@@ -317,10 +317,6 @@ void applet_do_notify_with_pref (NMApplet *applet,
                                  const char *icon,
                                  const char *pref);
 
-NMConnection * applet_find_active_connection_for_device (NMDevice *device,
-                                                         NMApplet *applet,
-                                                         NMActiveConnection **out_active);
-
 GtkWidget * applet_new_menu_item_helper (NMConnection *connection,
                                          NMConnection *active,
                                          gboolean add_active);
