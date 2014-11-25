@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2012 Red Hat, Inc.
+ * Copyright 2008 - 2014 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -32,8 +32,6 @@
 
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
-
-#include <nm-utils.h>
 
 #include "ip4-routes-dialog.h"
 #include "utils.h"
@@ -127,11 +125,10 @@ get_one_addr (GtkTreeModel *model,
               GtkTreeIter *iter,
               int column,
               gboolean fail_if_missing,
-              guint32 *out)
+              char **out)
 {
 	char *item = NULL;
 	struct in_addr tmp_addr = { 0 };
-	gboolean success = FALSE;
 
 	gtk_tree_model_get (model, iter, column, &item, -1);
 	if (!item || !strlen (item)) {
@@ -139,13 +136,16 @@ get_one_addr (GtkTreeModel *model,
 		return fail_if_missing ? FALSE : TRUE;
 	}
 
-	if (inet_pton (AF_INET, item, &tmp_addr) > 0) {
-		*out = tmp_addr.s_addr;
-		success = TRUE;
+	if (inet_pton (AF_INET, item, &tmp_addr) == 0)
+		return FALSE;
+
+	if (tmp_addr.s_addr == 0) {
+		g_free (item);
+		return fail_if_missing ? FALSE : TRUE;
 	}
 
-	g_free (item);
-	return success;
+	*out = item;
+	return TRUE;
 }
 
 static void
@@ -168,14 +168,13 @@ validate (GtkWidget *dialog)
 	iter_valid = gtk_tree_model_get_iter_first (model, &tree_iter);
 
 	while (iter_valid) {
-		guint32 addr = 0, prefix = 0, next_hop = 0, metric = 0;
+		char *addr = NULL, *next_hop = NULL;
+		guint32 prefix = 0, metric = 0;
 
 		/* Address */
 		if (!get_one_addr (model, &tree_iter, COL_ADDRESS, TRUE, &addr))
 			goto done;
-		/* Don't allow inserting 0.0.0.0 for now - that's not supported in libnm-util */
-		if (addr == 0)
-			goto done;
+		g_free (addr);
 
 		/* Prefix */
 		if (!get_one_prefix (model, &tree_iter, COL_PREFIX, TRUE, &prefix))
@@ -187,6 +186,7 @@ validate (GtkWidget *dialog)
 		/* Next hop (optional) */
 		if (!get_one_addr (model, &tree_iter, COL_NEXT_HOP, FALSE, &next_hop))
 			goto done;
+		g_free (next_hop);
 
 		/* Metric (optional) */
 		if (!get_one_int (model, &tree_iter, COL_METRIC, G_MAXUINT32, FALSE, &metric))
@@ -629,7 +629,7 @@ tree_view_button_pressed_cb (GtkWidget *widget,
 }
 
 GtkWidget *
-ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
+ip4_routes_dialog_new (NMSettingIPConfig *s_ip4, gboolean automatic)
 {
 	GtkBuilder *builder;
 	GtkWidget *dialog, *widget, *ok_button;
@@ -675,36 +675,31 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 	store = gtk_list_store_new (4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
 
 	/* Add existing routes */
-	for (i = 0; i < nm_setting_ip4_config_get_num_routes (s_ip4); i++) {
-		NMIP4Route *route = nm_setting_ip4_config_get_route (s_ip4, i);
+	for (i = 0; i < nm_setting_ip_config_get_num_routes (s_ip4); i++) {
+		NMIPRoute *route = nm_setting_ip_config_get_route (s_ip4, i);
 		struct in_addr tmp_addr;
-		char ip_string[INET_ADDRSTRLEN];
-		char *tmp;
+		char netmask[INET_ADDRSTRLEN], metric[32];
 
 		if (!route) {
 			g_warning ("%s: empty IP4 route structure!", __func__);
 			continue;
 		}
 
+		tmp_addr.s_addr = nm_utils_ip4_prefix_to_netmask (nm_ip_route_get_prefix (route));
+		if (!inet_ntop (AF_INET, &tmp_addr, netmask, sizeof (netmask)))
+			*netmask = '\0';
+
+		/* FIXME */
+		g_snprintf (metric, sizeof (metric), "%u",
+		            (guint32) MIN (0, nm_ip_route_get_metric (route)));
+
 		gtk_list_store_append (store, &model_iter);
-
-		tmp_addr.s_addr = nm_ip4_route_get_dest (route);;
-		if (inet_ntop (AF_INET, &tmp_addr, &ip_string[0], sizeof (ip_string)))
-			gtk_list_store_set (store, &model_iter, COL_ADDRESS, ip_string, -1);
-
-		tmp_addr.s_addr = nm_utils_ip4_prefix_to_netmask (nm_ip4_route_get_prefix (route));
-		if (inet_ntop (AF_INET, &tmp_addr, &ip_string[0], sizeof (ip_string)))
-			gtk_list_store_set (store, &model_iter, COL_PREFIX, ip_string, -1);
-
-		tmp_addr.s_addr = nm_ip4_route_get_next_hop (route);
-		if (tmp_addr.s_addr && inet_ntop (AF_INET, &tmp_addr, &ip_string[0], sizeof (ip_string)))
-			gtk_list_store_set (store, &model_iter, COL_NEXT_HOP, ip_string, -1);
-
-		if (nm_ip4_route_get_metric (route)) {
-			tmp = g_strdup_printf ("%d", nm_ip4_route_get_metric (route));
-			gtk_list_store_set (store, &model_iter, COL_METRIC, tmp, -1);
-			g_free (tmp);
-		}
+		gtk_list_store_set (store, &model_iter,
+		                    COL_ADDRESS, nm_ip_route_get_dest (route),
+		                    COL_PREFIX, netmask,
+		                    COL_NEXT_HOP, nm_ip_route_get_next_hop (route),
+		                    COL_METRIC, metric,
+		                    -1);
 	}
 
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ip4_routes"));
@@ -797,12 +792,12 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ip4_ignore_auto_routes"));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget),
-	                              nm_setting_ip4_config_get_ignore_auto_routes (s_ip4));
+	                              nm_setting_ip_config_get_ignore_auto_routes (s_ip4));
 	gtk_widget_set_sensitive (widget, automatic);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ip4_never_default"));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget),
-	                              nm_setting_ip4_config_get_never_default (s_ip4));
+	                              nm_setting_ip_config_get_never_default (s_ip4));
 
 	/* Update initial validity */
 	validate (dialog);
@@ -811,7 +806,7 @@ ip4_routes_dialog_new (NMSettingIP4Config *s_ip4, gboolean automatic)
 }
 
 void
-ip4_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIP4Config *s_ip4)
+ip4_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIPConfig *s_ip4)
 {
 	GtkBuilder *builder;
 	GtkWidget *widget;
@@ -830,11 +825,12 @@ ip4_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIP4Config *s_ip4)
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (widget));
 	iter_valid = gtk_tree_model_get_iter_first (model, &tree_iter);
 
-	nm_setting_ip4_config_clear_routes (s_ip4);
+	nm_setting_ip_config_clear_routes (s_ip4);
 
 	while (iter_valid) {
-		guint32 addr = 0, prefix = 0, next_hop = 0, metric = 0;
-		NMIP4Route *route;
+		char *addr = NULL, *next_hop = NULL;
+		guint32 prefix = 0, metric = 0;
+		NMIPRoute *route;
 
 		/* Address */
 		if (!get_one_addr (model, &tree_iter, COL_ADDRESS, TRUE, &addr)) {
@@ -845,40 +841,43 @@ ip4_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIP4Config *s_ip4)
 		/* Prefix */
 		if (!get_one_prefix (model, &tree_iter, COL_PREFIX, TRUE, &prefix)) {
 			g_warning ("%s: IPv4 prefix/netmask missing or invalid!", __func__);
+			g_free (addr);
 			goto next;
 		}
 
 		/* Next hop (optional) */
 		if (!get_one_addr (model, &tree_iter, COL_NEXT_HOP, FALSE, &next_hop)) {
 			g_warning ("%s: IPv4 next hop invalid!", __func__);
+			g_free (addr);
 			goto next;
 		}
 
 		/* Metric (optional) */
 		if (!get_one_int (model, &tree_iter, COL_METRIC, G_MAXUINT32, FALSE, &metric)) {
 			g_warning ("%s: IPv4 metric invalid!", __func__);
+			g_free (addr);
+			g_free (next_hop);
 			goto next;
 		}
 
-		route = nm_ip4_route_new ();
-		nm_ip4_route_set_dest (route, addr);
-		nm_ip4_route_set_prefix (route, prefix);
-		nm_ip4_route_set_next_hop (route, next_hop);
-		nm_ip4_route_set_metric (route, metric);
-		nm_setting_ip4_config_add_route (s_ip4, route);
-		nm_ip4_route_unref (route);
+		route = nm_ip_route_new (AF_INET, addr, prefix, next_hop, metric, NULL);
+		nm_setting_ip_config_add_route (s_ip4, route);
+		nm_ip_route_unref (route);
+
+		g_free (addr);
+		g_free (next_hop);
 
 	next:
 		iter_valid = gtk_tree_model_iter_next (model, &tree_iter);
 	}
 
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ip4_ignore_auto_routes"));
-	g_object_set (s_ip4, NM_SETTING_IP4_CONFIG_IGNORE_AUTO_ROUTES,
+	g_object_set (s_ip4, NM_SETTING_IP_CONFIG_IGNORE_AUTO_ROUTES,
 	              gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)),
 	              NULL);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "ip4_never_default"));
-	g_object_set (s_ip4, NM_SETTING_IP4_CONFIG_NEVER_DEFAULT,
+	g_object_set (s_ip4, NM_SETTING_IP_CONFIG_NEVER_DEFAULT,
 	              gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)),
 	              NULL);
 }

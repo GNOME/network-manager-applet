@@ -15,18 +15,13 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2012 Red Hat, Inc.
+ * Copyright 2012 - 2014 Red Hat, Inc.
  */
 
 #include "config.h"
 
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-
-#include <nm-setting-connection.h>
-#include <nm-setting-infiniband.h>
-#include <nm-device-infiniband.h>
-#include <nm-utils.h>
 
 #include <net/if_arp.h>
 #include <linux/if_infiniband.h>
@@ -91,8 +86,7 @@ populate_ui (CEPageInfiniband *self)
 	int mode_idx = TRANSPORT_MODE_DATAGRAM;
 	int mtu_def;
 	char **mac_list;
-	const GByteArray *s_mac;
-	char *s_mac_str;
+	const char *s_mac_str;
 
 	/* Port */
 	mode = nm_setting_infiniband_get_transport_mode (setting);
@@ -107,11 +101,9 @@ populate_ui (CEPageInfiniband *self)
 	/* Device MAC address */
 	mac_list = ce_page_get_mac_list (CE_PAGE (self), NM_TYPE_DEVICE_INFINIBAND,
 	                                 NM_DEVICE_INFINIBAND_HW_ADDRESS);
-	s_mac = nm_setting_infiniband_get_mac_address (setting);
-	s_mac_str = s_mac ? nm_utils_hwaddr_ntoa (s_mac->data, ARPHRD_INFINIBAND) : NULL;
+	s_mac_str = nm_setting_infiniband_get_mac_address (setting);
 	ce_page_setup_mac_combo (CE_PAGE (self), GTK_COMBO_BOX (priv->device_mac),
 	                         s_mac_str, mac_list);
-	g_free (s_mac_str);
 	g_strfreev (mac_list);
 	g_signal_connect (priv->device_mac, "changed", G_CALLBACK (stuff_changed), self);
 
@@ -142,7 +134,6 @@ CEPage *
 ce_page_infiniband_new (NMConnection *connection,
                         GtkWindow *parent_window,
                         NMClient *client,
-                        NMRemoteSettings *settings,
                         const char **out_secrets_setting_name,
                         GError **error)
 {
@@ -153,7 +144,6 @@ ce_page_infiniband_new (NMConnection *connection,
 	                                        connection,
 	                                        parent_window,
 	                                        client,
-	                                        settings,
 	                                        UIDIR "/ce-page-infiniband.ui",
 	                                        "InfinibandPage",
 	                                        _("InfiniBand")));
@@ -212,7 +202,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	CEPageInfiniband *self = CE_PAGE_INFINIBAND (page);
 	CEPageInfinibandPrivate *priv = CE_PAGE_INFINIBAND_GET_PRIVATE (self);
 	gboolean invalid = FALSE;
-	GByteArray *ignore;
+	char *ignore;
 	GtkWidget *entry;
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
@@ -220,8 +210,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 		ignore = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_INFINIBAND, &invalid);
 		if (invalid)
 			return FALSE;
-		if (ignore)
-			g_byte_array_free (ignore, TRUE);
+		g_free (ignore);
 	}
 
 	ui_to_setting (self);
@@ -249,7 +238,7 @@ ce_page_infiniband_class_init (CEPageInfinibandClass *infiniband_class)
 void
 infiniband_connection_new (GtkWindow *parent,
                            const char *detail,
-                           NMRemoteSettings *settings,
+                           NMClient *client,
                            PageNewConnectionResultFunc result_func,
                            gpointer user_data)
 {
@@ -258,7 +247,7 @@ infiniband_connection_new (GtkWindow *parent,
 	connection = ce_page_new_connection (_("InfiniBand connection %d"),
 	                                     NM_SETTING_INFINIBAND_SETTING_NAME,
 	                                     TRUE,
-	                                     settings,
+	                                     client,
 	                                     user_data);
 	nm_connection_add_setting (connection, nm_setting_infiniband_new ());
 

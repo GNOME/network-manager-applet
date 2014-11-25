@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2013 Red Hat, Inc.
+ * Copyright 2013 - 2014 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -28,11 +28,6 @@
 
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-
-#include <NetworkManager.h>
-#include <nm-setting-connection.h>
-#include <nm-setting-dcb.h>
-#include <nm-utils.h>
 
 #include "page-dcb.h"
 
@@ -586,7 +581,6 @@ CEPage *
 ce_page_dcb_new (NMConnection *connection,
                  GtkWindow *parent_window,
                  NMClient *client,
-                 NMRemoteSettings *settings,
                  const char **out_secrets_setting_name,
                  GError **error)
 {
@@ -599,7 +593,6 @@ ce_page_dcb_new (NMConnection *connection,
 	                                 connection,
 	                                 parent_window,
 	                                 client,
-	                                 settings,
 	                                 UIDIR "/ce-page-dcb.ui",
 	                                 "DcbPage",
 	                                 _("DCB")));
