@@ -698,8 +698,7 @@ applet_menu_item_activate_helper (NMDevice *device,
 void
 applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
                                                NMApplet *applet,
-                                               const gchar* label,
-                                               int pos)
+                                               const gchar* label)
 {
 	GtkWidget *menu_item = gtk_image_menu_item_new ();
 	GtkWidget *box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
@@ -719,11 +718,7 @@ applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
 	              "child", box,
 	              "sensitive", FALSE,
 	              NULL);
-	if (pos < 0)
-		gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
-	else
-		gtk_menu_shell_insert (GTK_MENU_SHELL (menu), menu_item, pos);
-	return;
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 }
 
 GtkWidget *

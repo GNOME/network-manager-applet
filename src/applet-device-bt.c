@@ -87,7 +87,7 @@ bt_add_menu_item (NMDevice *device,
 	if (!nma_menu_device_check_unusable (device)) {
 		/* Add menu items for existing bluetooth connections for this device */
 		if (g_slist_length (connections)) {
-			applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"), -1);
+			applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"));
 			applet_add_connection_items (device, connections, TRUE, active, NMA_ADD_INACTIVE, menu, applet);
 		}
 	}
