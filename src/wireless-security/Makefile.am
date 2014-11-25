@@ -34,7 +34,6 @@ libwireless_security_la_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	-DUIDIR=\""$(uidir)"\" \
 	$(NMA_CFLAGS) \
-	$(DISABLE_DEPRECATED) \
 	-I${top_srcdir}/src/utils
 
 libwireless_security_la_LIBADD = \

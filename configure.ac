@@ -69,8 +69,6 @@ else
     AC_DEFINE_UNQUOTED([ISO_CODES_PREFIX],["$prefix"],[ISO codes prefix])
 fi
 
-PKG_CHECK_MODULES(GOBJECT, gobject-2.0)
-
 PKG_CHECK_MODULES(NMA,
 		[dbus-glib-1 >= 0.74
 		 gio-2.0 >= 2.32
@@ -83,8 +81,6 @@ PKG_CHECK_MODULES(NMA,
 NMA_CFLAGS="$NMA_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_32"
 
 PKG_CHECK_MODULES(LIBSECRET, [libsecret-unstable])
-AC_SUBST(LIBSECRET_CFLAGS)
-AC_SUBST(LIBSECRET_LIBS)
 
 # Check for libnotify >= 0.7
 PKG_CHECK_MODULES(LIBNOTIFY_07, [libnotify >= 0.7], [have_libnotify_07=yes],[have_libnotify_07=no])
@@ -92,12 +88,8 @@ if test x"$have_libnotify_07" = "xyes"; then
 	AC_DEFINE(HAVE_LIBNOTIFY_07, 1, [Define if you have libnotify 0.7 or later])
 fi
 PKG_CHECK_MODULES(NOTIFY, [libnotify >= 0.4.3])
-AC_SUBST(NOTIFY_CFLAGS)
-AC_SUBST(NOTIFY_LIBS)
 
 PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 3.4)
-AC_SUBST(GTK_CFLAGS)
-AC_SUBST(GTK_LIBS)
 GTK_CFLAGS="$GTK_CFLAGS -DGDK_VERSION_MIN_REQUIRED=GDK_VERSION_3_4"
 
 AC_ARG_WITH([appindicator], AS_HELP_STRING([--with-appindicator|--without-appindicator], [Build with libappindicator support instead of xembed systray support.]))
@@ -115,8 +107,6 @@ if (test "${with_wwan}" != "no"); then
                       [mm-glib],
                       [have_libmm_glib=yes],
                       [have_libmm_glib=no])
-    AC_SUBST(MM_GLIB_CFLAGS)
-    AC_SUBST(MM_GLIB_LIBS)
 
     if (test "${have_libmm_glib}" = "no"); then
         if (test "${with_wwan}" = "yes"); then
@@ -136,8 +126,6 @@ AM_CONDITIONAL(WITH_WWAN, test "${with_wwan}" = "yes")
 
 dnl Check for gudev
 PKG_CHECK_MODULES(GUDEV, gudev-1.0 >= 147)
-AC_SUBST(GUDEV_CFLAGS)
-AC_SUBST(GUDEV_LIBS)
 
 dnl Check for gobject introspection
 GOBJECT_INTROSPECTION_CHECK([0.9.6])
@@ -148,8 +136,6 @@ dnl
 dnl Compiler flags
 dnl
 NM_COMPILER_WARNINGS
-# Use --enable-maintainer-mode to disabled deprecated symbols
-GNOME_MAINTAINER_MODE_DEFINES
 
 
 AC_CONFIG_FILES([

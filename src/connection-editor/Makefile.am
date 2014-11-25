@@ -13,7 +13,6 @@ nm_connection_editor_CPPFLAGS = \
 	-DDATADIR=\""$(datadir)"\" \
 	-DNMALOCALEDIR=\"$(datadir)/locale\" \
 	$(DBUS_CFLAGS) \
-	$(DISABLE_DEPRECATED) \
 	-I${top_srcdir}/src/utils \
 	-I${top_srcdir}/src/wireless-security \
 	-I${top_srcdir}/src/libnm-gtk

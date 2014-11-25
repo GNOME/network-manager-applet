@@ -38,7 +38,6 @@ libnm_gtk_la_CFLAGS = \
 	-DAUTOSTARTDIR=\""$(sysconfdir)/xdg/autostart"\" \
 	-DVPN_NAME_FILES_DIR=\""$(sysconfdir)/NetworkManager/VPN"\" \
 	-DNMALOCALEDIR=\"$(datadir)/locale\" \
-	$(DISABLE_DEPRECATED) \
 	-I${top_srcdir}/src/utils \
 	-I${top_srcdir}/src/wireless-security
 
