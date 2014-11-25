@@ -73,7 +73,7 @@ bond_add_menu_item (NMDevice *device,
 
 	if (!device || !nma_menu_device_check_unusable (device)) {
 		if ((!active && g_slist_length (connections)) || (active && g_slist_length (connections) > 1))
-			applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"), -1);
+			applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"));
 
 		if (g_slist_length (connections))
 			applet_add_connection_items (device, connections, TRUE, active, NMA_ADD_INACTIVE, menu, applet);

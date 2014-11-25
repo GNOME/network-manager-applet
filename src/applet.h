@@ -293,8 +293,7 @@ void applet_menu_item_disconnect_helper (NMDevice *device,
 
 void applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
                                                     NMApplet *applet,
-                                                    const gchar* label,
-                                                    int pos);
+                                                    const gchar* label);
 
 GtkWidget*
 applet_menu_item_create_device_item_helper (NMDevice *device,

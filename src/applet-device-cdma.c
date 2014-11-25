@@ -298,7 +298,7 @@ cdma_add_menu_item (NMDevice *device,
 	/* Add the default / inactive connection items */
 	if (!nma_menu_device_check_unusable (device)) {
 		if ((!active && g_slist_length (connections)) || (active && g_slist_length (connections) > 1))
-			applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"), -1);
+			applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"));
 
 		if (g_slist_length (connections)) {
 			for (iter = connections; iter; iter = g_slist_next (iter)) {

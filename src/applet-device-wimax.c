@@ -273,7 +273,7 @@ wimax_add_menu_item (NMDevice *device,
 	}
 
 	if (g_slist_length (sorted)) {
-		applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"), -1);
+		applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"));
 
 		/* And add menu items for each NSP */
 		for (iter = sorted; iter; iter = g_slist_next (iter)) {
