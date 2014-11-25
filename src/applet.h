@@ -15,8 +15,8 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2004 - 2011 Red Hat, Inc.
- * Copyright (C) 2005 - 2008 Novell, Inc.
+ * Copyright 2004 - 2014 Red Hat, Inc.
+ * Copyright 2005 - 2008 Novell, Inc.
  */
 
 #ifndef APPLET_H
@@ -40,13 +40,8 @@
 #include <libappindicator/app-indicator.h>
 #endif
 
-#include <nm-connection.h>
-#include <nm-client.h>
-#include <nm-access-point.h>
-#include <nm-device.h>
 #include <NetworkManager.h>
-#include <nm-active-connection.h>
-#include <nm-remote-settings.h>
+
 #include "applet-agent.h"
 
 #if WITH_WWAN
@@ -91,7 +86,6 @@ typedef struct
 	DBusGConnection *session_bus;
 
 	NMClient *nm_client;
-	NMRemoteSettings *settings;
 	AppletAgent *agent;
 
 	GSettings *gsettings;
@@ -198,7 +192,7 @@ struct _SecretsRequest {
 void applet_secrets_request_set_free_func (SecretsRequest *req,
                                            SecretsRequestFreeFunc free_func);
 void applet_secrets_request_complete (SecretsRequest *req,
-                                      GHashTable *settings,
+                                      GVariant *settings,
                                       GError *error);
 void applet_secrets_request_complete_setting (SecretsRequest *req,
                                               const char *setting_name,
@@ -213,7 +207,7 @@ struct NMADeviceClass {
 
 	void           (*add_menu_item)        (NMDevice *device,
 	                                        gboolean multiple_devices,
-	                                        GSList *connections,
+	                                        const GPtrArray *connections,
 	                                        NMConnection *active,
 	                                        GtkWidget *menu,
 	                                        NMApplet *applet);
@@ -253,9 +247,9 @@ NMApplet *nm_applet_new (void);
 void applet_schedule_update_icon (NMApplet *applet);
 void applet_schedule_update_menu (NMApplet *applet);
 
-NMRemoteSettings *applet_get_settings (NMApplet *applet);
+NMClient *applet_get_settings (NMApplet *applet);
 
-GSList *applet_get_all_connections (NMApplet *applet);
+GPtrArray *applet_get_all_connections (NMApplet *applet);
 
 gboolean nma_menu_device_check_unusable (NMDevice *device);
 
@@ -321,7 +315,7 @@ typedef enum {
 } NMAAddActiveInactiveEnum;
 
 void applet_add_connection_items (NMDevice *device,
-                                  GSList *connections,
+                                  const GPtrArray *connections,
                                   gboolean sensitive,
                                   NMConnection *active,
                                   NMAAddActiveInactiveEnum flag,

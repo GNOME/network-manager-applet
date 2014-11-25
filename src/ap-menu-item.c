@@ -18,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2005 - 2008 Red Hat, Inc.
+ * Copyright 2005 - 2014 Red Hat, Inc.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -29,7 +29,8 @@
 #include <glib/gi18n.h>
 #include <string.h>
 
-#include <nm-utils.h>
+#include <NetworkManager.h>
+
 #include "ap-menu-item.h"
 #include "nm-access-point.h"
 
@@ -273,7 +274,7 @@ nm_network_menu_item_new (NMAccessPoint *ap,
 	NMNetworkMenuItem *item;
 	NMNetworkMenuItemPrivate *priv;
 	guint32 ap_flags, ap_wpa, ap_rsn;
-	const GByteArray *ssid;
+	GBytes *ssid;
 
 	item = g_object_new (NM_TYPE_NETWORK_MENU_ITEM, NULL);
 	g_assert (item);
@@ -283,8 +284,10 @@ nm_network_menu_item_new (NMAccessPoint *ap,
 	nm_network_menu_item_add_dupe (item, ap);
 
 	ssid = nm_access_point_get_ssid (ap);
-	if (ssid)
-		priv->ssid_string = nm_utils_ssid_to_utf8 (ssid);
+	if (ssid) {
+		priv->ssid_string = nm_utils_ssid_to_utf8 (g_bytes_get_data (ssid, NULL),
+		                                           g_bytes_get_size (ssid));
+	}
 	if (!priv->ssid_string)
 		priv->ssid_string = g_strdup ("<unknown>");
 

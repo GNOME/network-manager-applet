@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2013 Red Hat, Inc.
+ * Copyright 2013 - 2014 Red Hat, Inc.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -27,15 +27,8 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#include <nm-device.h>
-#include <nm-setting-connection.h>
-#include <nm-setting-infiniband.h>
-#include <nm-device-infiniband.h>
-#include <nm-utils.h>
-
 #include "applet.h"
 #include "applet-device-infiniband.h"
-#include "nm-ui-utils.h"
 
 #define DEFAULT_INFINIBAND_NAME _("Auto InfiniBand")
 
@@ -50,7 +43,7 @@ infiniband_new_auto_connection (NMDevice *device,
 	NMSettingConnection *s_con;
 	char *uuid;
 
-	connection = nm_connection_new ();
+	connection = nm_simple_connection_new ();
 
 	s_infiniband = NM_SETTING_INFINIBAND (nm_setting_infiniband_new ());
 	nm_connection_add_setting (connection, NM_SETTING (s_infiniband));
@@ -74,7 +67,7 @@ infiniband_new_auto_connection (NMDevice *device,
 static void
 infiniband_add_menu_item (NMDevice *device,
                           gboolean multiple_devices,
-                          GSList *connections,
+                          const GPtrArray *connections,
                           NMConnection *active,
                           GtkWidget *menu,
                           NMApplet *applet)
@@ -86,14 +79,14 @@ infiniband_add_menu_item (NMDevice *device,
 	if (multiple_devices) {
 		const char *desc;
 
-		desc = nma_utils_get_device_description (device);
+		desc = nm_device_get_description (device);
 
-		if (g_slist_length (connections) > 1)
+		if (connections->len > 1)
 			text = g_strdup_printf (_("InfiniBand Networks (%s)"), desc);
 		else
 			text = g_strdup_printf (_("InfiniBand Network (%s)"), desc);
 	} else {
-		if (g_slist_length (connections) > 1)
+		if (connections->len > 1)
 			text = g_strdup (_("InfiniBand Networks"));
 		else
 			text = g_strdup (_("InfiniBand Network"));
@@ -112,7 +105,7 @@ infiniband_add_menu_item (NMDevice *device,
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	gtk_widget_show (item);
 
-	if (g_slist_length (connections))
+	if (connections->len)
 		applet_add_connection_items (device, connections, carrier, active, NMA_ADD_ACTIVE, menu, applet);
 
 	/* Notify user of unmanaged or unavailable device */
@@ -123,10 +116,10 @@ infiniband_add_menu_item (NMDevice *device,
 	}
 
 	if (!nma_menu_device_check_unusable (device)) {
-		if ((!active && g_slist_length (connections)) || (active && g_slist_length (connections) > 1))
+		if ((!active && connections->len) || (active && connections->len > 1))
 			applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"));
 
-		if (g_slist_length (connections))
+		if (connections->len)
 			applet_add_connection_items (device, connections, carrier, active, NMA_ADD_INACTIVE, menu, applet);
 		else
 			applet_add_default_connection_item (device, DEFAULT_INFINIBAND_NAME, carrier, menu, applet);

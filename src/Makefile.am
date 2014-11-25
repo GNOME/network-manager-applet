@@ -4,12 +4,12 @@ bin_PROGRAMS = nm-applet
 
 nm_applet_CPPFLAGS = \
 	$(GTK_CFLAGS) \
-	$(NMA_CFLAGS) \
+	$(LIBNM_CFLAGS) \
 	$(LIBSECRET_CFLAGS) \
 	$(NOTIFY_CFLAGS) \
 	$(MM_GLIB_CFLAGS) \
 	$(APPINDICATOR_CFLAGS) \
-	-DLIBNM_GLIB_BUILD \
+	-DLIBNM_BUILD \
 	-DNM_VERSION_MIN_REQUIRED=NM_VERSION_0_9_10 \
 	-DNM_VERSION_MAX_ALLOWED=NM_VERSION_0_9_10 \
 	-DICONDIR=\""$(datadir)/icons"\"						\
@@ -24,7 +24,7 @@ nm_applet_CPPFLAGS = \
 	$(DBUS_GLIB_CFLAGS) \
 	-I${top_srcdir}/src/utils \
 	-I${top_srcdir}/src/wireless-security \
-	-I${top_srcdir}/src/libnm-gtk
+	-I${top_srcdir}/src/libnma
 
 BUILT_SOURCES = applet-dbus-bindings.h
 
@@ -78,16 +78,15 @@ endif
 nm_applet_LDADD = \
 	-lm \
 	$(GTK_LIBS) \
-	$(NMA_LIBS) \
 	$(DBUS_GLIB_LIBS) \
 	$(LIBNM_LIBS) \
 	$(LIBSECRET_LIBS) \
 	$(NOTIFY_LIBS) \
 	$(MM_GLIB_LIBS) \
 	$(APPINDICATOR_LIBS) \
-	${top_builddir}/src/utils/libutils-libnm-glib.la \
-	${top_builddir}/src/wireless-security/libwireless-security-libnm-glib.la \
-	${top_builddir}/src/libnm-gtk/libnm-gtk.la
+	${top_builddir}/src/utils/libutils-libnm.la \
+	${top_builddir}/src/wireless-security/libwireless-security-libnm.la \
+	${top_builddir}/src/libnma/libnma.la
 
 uidir = $(datadir)/nm-applet
 ui_DATA = gsm-unlock.ui info.ui 8021x.ui keyring.png

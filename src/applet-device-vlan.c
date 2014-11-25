@@ -17,8 +17,8 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 Red Hat, Inc.
- * (C) Copyright 2008 Novell, Inc.
+ * Copyright 2008 - 2014 Red Hat, Inc.
+ * Copyright 2008 Novell, Inc.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -28,17 +28,8 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#include <nm-device.h>
-#include <nm-setting-connection.h>
-#include <nm-setting-wired.h>
-#include <nm-setting-vlan.h>
-#include <nm-device-ethernet.h>
-#include <nm-device-vlan.h>
-#include <nm-utils.h>
-
 #include "applet.h"
 #include "applet-device-vlan.h"
-#include "nm-ui-utils.h"
 
 static NMDevice *
 find_device_by_iface (const char *iface, const GPtrArray *devices)
@@ -62,7 +53,7 @@ find_device_by_mac (const GByteArray *mac, const GPtrArray *devices)
 	char *vlan_hw_address, *candidate_hw_address;
 	int i;
 
-	vlan_hw_address = nm_utils_hwaddr_ntoa_len (mac->data, mac->len);
+	vlan_hw_address = nm_utils_hwaddr_ntoa (mac->data, mac->len);
 
 	for (i = 0; i < devices->len && device == NULL; i++) {
 		candidate = devices->pdata[i];
@@ -84,18 +75,18 @@ find_device_by_mac (const GByteArray *mac, const GPtrArray *devices)
 }
 
 static NMDevice *
-find_vlan_parent (GSList *connections, NMApplet *applet)
+find_vlan_parent (const GPtrArray *connections, NMApplet *applet)
 {
 	const GPtrArray *devices;
 	NMDevice *parent_device;
-	GSList *iter;
+	int i;
 
 	devices = nm_client_get_devices (applet->nm_client);
 	if (!devices)
 		return NULL;
 
-	for (iter = connections; iter; iter = iter->next) {
-		NMConnection *connection = iter->data;
+	for (i = 0; i < connections->len; i++) {
+		NMConnection *connection = connections->pdata[i];
 		NMSettingVlan *s_vlan;
 		const char *parent;
 
@@ -143,7 +134,7 @@ find_vlan_parent (GSList *connections, NMApplet *applet)
 static void
 vlan_add_menu_item (NMDevice *device,
                     gboolean multiple_devices,
-                    GSList *connections,
+                    const GPtrArray *connections,
                     NMConnection *active,
                     GtkWidget *menu,
                     NMApplet *applet)
@@ -152,7 +143,7 @@ vlan_add_menu_item (NMDevice *device,
 	GtkWidget *item;
 	gboolean carrier = TRUE;
 
-	text = nma_utils_get_connection_device_name (connections->data);
+	text = nm_connection_get_virtual_device_description (connections->pdata[0]);
 	item = applet_menu_item_create_device_item_helper (device, applet, text);
 	g_free (text);
 
@@ -173,8 +164,7 @@ vlan_add_menu_item (NMDevice *device,
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	gtk_widget_show (item);
 
-	if (g_slist_length (connections))
-		applet_add_connection_items (device, connections, carrier, active, NMA_ADD_ACTIVE, menu, applet);
+	applet_add_connection_items (device, connections, carrier, active, NMA_ADD_ACTIVE, menu, applet);
 
 	/* Notify user of unmanaged or unavailable device */
 	if (device) {
@@ -186,10 +176,10 @@ vlan_add_menu_item (NMDevice *device,
 	}
 
 	if (!device || !nma_menu_device_check_unusable (device)) {
-		if ((!active && g_slist_length (connections)) || (active && g_slist_length (connections) > 1))
+		if (!active || connections->len > 1)
 			applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"));
 
-		if (g_slist_length (connections))
+		if (connections->len)
 			applet_add_connection_items (device, connections, carrier, active, NMA_ADD_INACTIVE, menu, applet);
 	}
 }
