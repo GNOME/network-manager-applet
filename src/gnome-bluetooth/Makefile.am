@@ -22,8 +22,10 @@ plugin_LTLIBRARIES = libnma.la
 
 libnma_la_SOURCES = $(BT_WIDGET_SOURCES)
 
+libnma_la_CPPFLAGS = $(AM_CPPFLAGS)
+
 if WITH_MODEM_MANAGER_1
-libnma_la_CPPFLAGS = $(AM_CPPFLAGS) $(MM_GLIB_CFLAGS)
+libnma_la_CPPFLAGS += $(MM_GLIB_CFLAGS)
 endif
 
 libnma_la_LDFLAGS = -module -avoid-version
