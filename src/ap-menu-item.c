@@ -181,6 +181,15 @@ nm_network_menu_item_best_strength (NMNetworkMenuItem * item,
 							  GDK_INTERP_NEAREST, 255);
 	}
 
+	/* Scale to menu size if larger so the menu doesn't look awful */
+	if (gdk_pixbuf_get_height (pixbuf) > 24 || gdk_pixbuf_get_width (pixbuf) > 24) {
+		GdkPixbuf *scaled;
+
+		scaled = gdk_pixbuf_scale_simple (pixbuf, 24, 24, GDK_INTERP_BILINEAR);
+		g_object_unref (pixbuf);
+		pixbuf = scaled;
+	}
+
 	gtk_image_set_from_pixbuf (GTK_IMAGE (item->strength), pixbuf);
 	g_object_unref (pixbuf);
 }
@@ -214,8 +223,16 @@ nm_network_menu_item_set_detail (NMNetworkMenuItem *item,
 		item->is_encrypted = TRUE;
 
 	if (nm_access_point_get_mode (ap) == NM_802_11_MODE_ADHOC) {
+		GdkPixbuf *scaled = NULL;
+
 		item->is_adhoc = is_adhoc = TRUE;
-		gtk_image_set_from_pixbuf (GTK_IMAGE (item->detail), adhoc_icon);
+
+		if (gdk_pixbuf_get_height (adhoc_icon) > 24 || gdk_pixbuf_get_width (adhoc_icon) > 24)
+			scaled = gdk_pixbuf_scale_simple (adhoc_icon, 24, 24, GDK_INTERP_BILINEAR);
+
+		gtk_image_set_from_pixbuf (GTK_IMAGE (item->detail), scaled ? scaled : adhoc_icon);
+
+		g_clear_object (&scaled);
 	} else
 		gtk_image_set_from_stock (GTK_IMAGE (item->detail), NULL, GTK_ICON_SIZE_MENU);
 
