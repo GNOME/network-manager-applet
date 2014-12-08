@@ -21,7 +21,8 @@ libnm_gtk_la_SOURCES = \
 	nm-mobile-wizard.c \
 	nm-ui-utils.c \
 	nm-mobile-providers.c \
-	nm-vpn-password-dialog.c
+	nm-vpn-password-dialog.c \
+	init.c
 
 libnm_gtk_la_CFLAGS = \
 	$(GTK_CFLAGS) \
