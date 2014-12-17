@@ -39,10 +39,12 @@ G_DEFINE_TYPE (NMNetworkMenuItem, nm_network_menu_item, GTK_TYPE_IMAGE_MENU_ITEM
 #define NM_NETWORK_MENU_ITEM_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), NM_TYPE_NETWORK_MENU_ITEM, NMNetworkMenuItemPrivate))
 
 typedef struct {
+#ifndef ENABLE_INDICATOR
 	GtkWidget * ssid;
 	GtkWidget * strength;
 	GtkWidget * detail;
 	GtkWidget * hbox;
+#endif
 
 	char      * ssid_string;
 	guint32     int_strength;
@@ -99,18 +101,20 @@ update_icon (NMNetworkMenuItem *item, NMApplet *applet)
 {
 	NMNetworkMenuItemPrivate *priv = NM_NETWORK_MENU_ITEM_GET_PRIVATE (item);
 	GdkPixbuf *icon = NULL, *pixbuf, *top, *scaled;
+	const char *icon_name = NULL;
 
 	if (priv->int_strength > 80)
-		icon = nma_icon_check_and_load ("nm-signal-100", applet);
+		icon_name = "nm-signal-100";
 	else if (priv->int_strength > 55)
-		icon = nma_icon_check_and_load ("nm-signal-75", applet);
+		icon_name = "nm-signal-75";
 	else if (priv->int_strength > 30)
-		icon = nma_icon_check_and_load ("nm-signal-50", applet);
+		icon_name = "nm-signal-50";
 	else if (priv->int_strength > 5)
-		icon = nma_icon_check_and_load ("nm-signal-25", applet);
+		icon_name = "nm-signal-25";
 	else
-		icon = nma_icon_check_and_load ("nm-signal-00", applet);
+		icon_name = "nm-signal-00";
 
+	icon = nma_icon_check_and_load (icon_name, applet);
 	pixbuf = gdk_pixbuf_copy (icon);
 
 	/* If the AP is "secure", composite the lock icon on top of the signal bars */
@@ -129,9 +133,16 @@ update_icon (NMNetworkMenuItem *item, NMApplet *applet)
 		pixbuf = scaled;
 	}
 
+#ifdef ENABLE_INDICATOR
+	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), gtk_image_new_from_pixbuf (pixbuf));
+	/* For some reason we must always re-set always-show after setting the image */
+	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (item), TRUE);
+#else
 	gtk_image_set_from_pixbuf (GTK_IMAGE (priv->strength), pixbuf);
+#endif
 	g_object_unref (pixbuf);
 
+#ifndef ENABLE_INDICATOR
 	if (priv->is_adhoc && !gtk_image_get_pixbuf (GTK_IMAGE (priv->detail))) {
 		scaled = NULL;
 		pixbuf = nma_icon_check_and_load ("nm-adhoc", applet);
@@ -140,6 +151,7 @@ update_icon (NMNetworkMenuItem *item, NMApplet *applet)
 		gtk_image_set_from_pixbuf (GTK_IMAGE (priv->detail), scaled ? scaled : pixbuf);
 		g_clear_object (&scaled);
 	}
+#endif
 }
 
 void
@@ -190,31 +202,30 @@ nm_network_menu_item_find_dupe (NMNetworkMenuItem *item, NMAccessPoint *ap)
 }
 
 static void
-set_label (NMNetworkMenuItem *item, const char *label, gboolean use_markup)
+update_label (NMNetworkMenuItem *item, gboolean use_bold)
 {
 	NMNetworkMenuItemPrivate *priv = NM_NETWORK_MENU_ITEM_GET_PRIVATE (item);
 
-	gtk_label_set_use_markup (GTK_LABEL (priv->ssid), use_markup);
-	if (use_markup)
-		gtk_label_set_markup (GTK_LABEL (priv->ssid), label);
-	else
-		gtk_label_set_text (GTK_LABEL (priv->ssid), label);
+#ifdef ENABLE_INDICATOR
+	gtk_menu_item_set_label (GTK_MENU_ITEM (item), priv->ssid_string);
+#else
+	gtk_label_set_use_markup (GTK_LABEL (priv->ssid), use_bold);
+	if (use_bold) {
+		char *markup = g_markup_printf_escaped ("<b>%s</b>", priv->ssid_string);
+
+		gtk_label_set_markup (GTK_LABEL (priv->ssid), markup);
+		g_free (markup);
+	} else
+		gtk_label_set_text (GTK_LABEL (priv->ssid), priv->ssid_string);
+#endif
 }
 
 void
 nm_network_menu_item_set_active (NMNetworkMenuItem *item, gboolean active)
 {
-	NMNetworkMenuItemPrivate *priv;
-	char *markup = NULL;
-
 	g_return_if_fail (NM_IS_NETWORK_MENU_ITEM (item));
 
-	priv = NM_NETWORK_MENU_ITEM_GET_PRIVATE (item);
-
-	if (active)
-		markup = g_markup_printf_escaped ("<b>%s</b>", priv->ssid_string);
-	set_label (item, markup ? markup : priv->ssid_string, !!markup);
-	g_free (markup);
+	update_label (item, active);
 }
 
 void
@@ -307,7 +318,7 @@ nm_network_menu_item_new (NMAccessPoint *ap,
 		gtk_widget_set_sensitive (GTK_WIDGET (item), FALSE);
 	}
 
-	set_label (item, priv->ssid_string, FALSE);
+	update_label (item, FALSE);
 	update_icon (item, applet);
 	update_atk_desc (item);
 
@@ -317,6 +328,7 @@ nm_network_menu_item_new (NMAccessPoint *ap,
 static void
 nm_network_menu_item_init (NMNetworkMenuItem *item)
 {
+#ifndef ENABLE_INDICATOR
 	NMNetworkMenuItemPrivate *priv = NM_NETWORK_MENU_ITEM_GET_PRIVATE (item);
 
 	priv->hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
@@ -336,6 +348,9 @@ nm_network_menu_item_init (NMNetworkMenuItem *item)
 	gtk_widget_show (priv->ssid);
 	gtk_widget_show (priv->detail);
 	gtk_widget_show (priv->hbox);
+#else
+	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (item), TRUE);
+#endif
 }
 
 static void

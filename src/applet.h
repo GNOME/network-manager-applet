@@ -36,6 +36,10 @@
 
 #include <libnotify/notify.h>
 
+#ifdef ENABLE_INDICATOR
+#include <libappindicator/app-indicator.h>
+#endif
+
 #include <nm-connection.h>
 #include <nm-client.h>
 #include <nm-access-point.h>
@@ -129,19 +133,23 @@ typedef struct
 	GtkIconTheme *	icon_theme;
 	GHashTable *	icon_cache;
 	GdkPixbuf *		fallback_icon;
+	int             icon_size;
 
 	/* Active status icon pixbufs */
 	GdkPixbuf *		icon_layers[ICON_LAYER_MAX + 1];
 
-	/* Direct UI elements */
+#ifdef ENABLE_INDICATOR
+	AppIndicator *  app_indicator;
+	guint           update_menu_id;
+#else
 	GtkStatusIcon * status_icon;
-	int             icon_size;
 
 	GtkWidget *		menu;
 	GtkWidget *		context_menu;
 
 	GtkWidget *		notifications_enabled_item;
 	guint			notifications_enabled_toggled_id;
+#endif
 
 	GtkWidget *		networking_enabled_item;
 	guint           networking_enabled_toggled_id;
