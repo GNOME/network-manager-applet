@@ -2741,9 +2741,9 @@ mm1_client_setup (NMApplet *applet)
 
 static void
 applet_common_get_device_icon (NMDeviceState state,
-				GdkPixbuf **out_pixbuf,
-				char **out_icon_name,
-				NMApplet *applet)
+                               GdkPixbuf **out_pixbuf,
+                               char **out_icon_name,
+                               NMApplet *applet)
 {
 	int stage = -1;
 
@@ -2854,7 +2854,7 @@ applet_get_device_icon_for_state (NMApplet *applet,
 
 		if (!*out_pixbuf && icon_name)
 			*out_pixbuf = g_object_ref (nma_icon_check_and_load (icon_name, applet));
-		*out_icon_name = icon_name ? g_strdup (icon_name) : NULL;
+		*out_icon_name = g_strdup (icon_name);
 		if (!*out_tip)
 			*out_tip = get_tip_for_device_state (device, state, connection);
 		if (icon_name || *out_pixbuf)
