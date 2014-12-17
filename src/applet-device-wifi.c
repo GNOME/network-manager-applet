@@ -547,12 +547,12 @@ create_new_ap_item (NMDeviceWifi *device,
 
 	item = NM_NETWORK_MENU_ITEM (nm_network_menu_item_new (dup_data->hash,
 	                                                       !!g_slist_length (ap_connections)));
-	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (item), TRUE);
 
 	ssid = nm_access_point_get_ssid (ap);
 	nm_network_menu_item_set_ssid (item, (GByteArray *) ssid);
 
 	dev_caps = nm_device_wifi_get_capabilities (device);
+	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (item), TRUE);
 	nm_network_menu_item_set_detail (item, ap, nma_icon_check_and_load ("nm-adhoc", applet), dev_caps);
 	nm_network_menu_item_best_strength (item, nm_access_point_get_strength (ap), applet);
 	nm_network_menu_item_add_dupe (item, ap);
@@ -1078,6 +1078,7 @@ access_point_added_cb (NMDeviceWifi *device,
 	                  applet);
 	
 	queue_avail_access_point_notification (NM_DEVICE (device));
+	applet_schedule_update_menu (applet);
 }
 
 static void
@@ -1095,6 +1096,7 @@ access_point_removed_cb (NMDeviceWifi *device,
 	if (old == ap) {
 		g_object_set_data (G_OBJECT (device), ACTIVE_AP_TAG, NULL);
 		applet_schedule_update_icon (applet);
+		applet_schedule_update_menu (applet);
 	}
 }
 

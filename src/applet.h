@@ -118,28 +118,31 @@ typedef struct
 
 	/* Data model elements */
 	guint			update_icon_id;
-
-	GtkIconTheme *	icon_theme;
-	GHashTable *	icon_cache;
-#define NUM_CONNECTING_FRAMES 11
-#define NUM_VPN_CONNECTING_FRAMES 14
-	GdkPixbuf *		fallback_icon;
-
-	/* Active status icon pixbufs */
-	GdkPixbuf *		icon_layers[ICON_LAYER_MAX + 1];
+	char *			tip;
 
 	/* Animation stuff */
 	int				animation_step;
 	guint			animation_id;
+#define NUM_CONNECTING_FRAMES 11
+#define NUM_VPN_CONNECTING_FRAMES 14
+
+	GtkIconTheme *	icon_theme;
+	GHashTable *	icon_cache;
+	GdkPixbuf *		fallback_icon;
+
+	/* Active status icon pixbufs */
+	GdkPixbuf *		icon_layers[ICON_LAYER_MAX + 1];
 
 	/* Direct UI elements */
 	GtkStatusIcon * status_icon;
 	int             icon_size;
 
 	GtkWidget *		menu;
-	char *          tip;
-
 	GtkWidget *		context_menu;
+
+	GtkWidget *		notifications_enabled_item;
+	guint			notifications_enabled_toggled_id;
+
 	GtkWidget *		networking_enabled_item;
 	guint           networking_enabled_toggled_id;
 	GtkWidget *		wifi_enabled_item;
@@ -148,9 +151,6 @@ typedef struct
 	guint           wwan_enabled_toggled_id;
 	GtkWidget *		wimax_enabled_item;
 	guint           wimax_enabled_toggled_id;
-
-	GtkWidget *     notifications_enabled_item;
-	guint           notifications_enabled_toggled_id;
 
 	GtkWidget *		info_menu_item;
 	GtkWidget *		connections_menu_item;
@@ -242,6 +242,7 @@ GType nma_get_type (void);
 NMApplet *nm_applet_new (void);
 
 void applet_schedule_update_icon (NMApplet *applet);
+void applet_schedule_update_menu (NMApplet *applet);
 
 NMRemoteSettings *applet_get_settings (NMApplet *applet);
 

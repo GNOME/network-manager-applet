@@ -812,6 +812,7 @@ signal_quality_updated (GObject *object,
                         BroadbandDeviceInfo *info)
 {
 	applet_schedule_update_icon (info->applet);
+	applet_schedule_update_menu (info->applet);
 }
 
 static void
@@ -820,6 +821,7 @@ access_technologies_updated (GObject *object,
                              BroadbandDeviceInfo *info)
 {
 	applet_schedule_update_icon (info->applet);
+	applet_schedule_update_menu (info->applet);
 }
 
 static void

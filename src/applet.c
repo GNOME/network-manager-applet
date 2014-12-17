@@ -537,6 +537,8 @@ add_and_activate_cb (NMClient *client,
                      GError *error,
                      gpointer user_data)
 {
+	NMApplet *applet = NM_APPLET (user_data);
+
 	if (error) {
 		const char *text = _("Failed to add/activate connection");
 		char *err_text = g_strdup_printf ("(%d) %s", error->code,
@@ -547,7 +549,8 @@ add_and_activate_cb (NMClient *client,
 		g_free (err_text);
 	}
 
-	applet_schedule_update_icon (NM_APPLET (user_data));
+	applet_schedule_update_icon (applet);
+	applet_schedule_update_menu (applet);
 }
 
 static void
@@ -581,6 +584,8 @@ applet_menu_item_activate_helper_new_connection (NMConnection *connection,
 static void
 disconnect_cb (NMDevice *device, GError *error, gpointer user_data)
 {
+	NMApplet *applet = NM_APPLET (user_data);
+
 	if (error) {
 		const char *text = _("Device disconnect failed");
 		char *err_text = g_strdup_printf ("(%d) %s", error->code,
@@ -590,6 +595,9 @@ disconnect_cb (NMDevice *device, GError *error, gpointer user_data)
 		utils_show_error_dialog (_("Disconnect failure"), text, err_text, FALSE, NULL);
 		g_free (err_text);
 	}
+
+	applet_schedule_update_icon (applet);
+	applet_schedule_update_menu (applet);
 }
 
 void
@@ -598,7 +606,7 @@ applet_menu_item_disconnect_helper (NMDevice *device,
 {
 	g_return_if_fail (NM_IS_DEVICE (device));
 
-	nm_device_disconnect (device, disconnect_cb, NULL);
+	nm_device_disconnect (device, disconnect_cb, applet);
 }
 
 static void
@@ -694,13 +702,11 @@ applet_new_menu_item_helper (NMConnection *connection,
                              NMConnection *active,
                              gboolean add_active)
 {
-	GtkWidget *item;
-	NMSettingConnection *s_con;
+	NMSettingConnection *s_con = nm_connection_get_setting_connection (connection);
+	GtkWidget *item = gtk_image_menu_item_new_with_label ("");
 	char *markup;
 	GtkWidget *label;
 
-	s_con = nm_connection_get_setting_connection (connection);
-	item = gtk_image_menu_item_new_with_label ("");
 	if (add_active && (active == connection)) {
 		/* Pure evil */
 		label = gtk_bin_get_child (GTK_BIN (item));
@@ -1126,6 +1132,7 @@ vpn_connection_state_changed (NMVPNConnection *vpn,
 		clear_animation_timeout (applet);
 
 	applet_schedule_update_icon (applet);
+	applet_schedule_update_menu (applet);
 }
 
 static const char *
@@ -1181,6 +1188,7 @@ activate_vpn_cb (NMClient *client,
 	}
 
 	applet_schedule_update_icon (info->applet);
+	applet_schedule_update_menu (info->applet);
 	g_free (info->vpn_name);
 	g_free (info);
 }
@@ -1207,9 +1215,10 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 		return;
 	}
 
-	if (applet_get_active_for_connection (applet, connection))
+	if (applet_get_active_for_connection (applet, connection)) {
 		/* Connection already active; do nothing */
 		return;
+	}
 
 	s_con = nm_connection_get_setting_connection (connection);
 	info = g_malloc0 (sizeof (VPNActivateInfo));
@@ -1769,7 +1778,6 @@ nma_menu_add_vpn_submenu (GtkWidget *menu, NMApplet *applet)
 		NMConnection *connection = NM_CONNECTION (iter->data);
 		NMActiveConnection *active;
 		const char *name;
-		GtkWidget *image;
 		NMState state;
 
 		name = get_connection_id (connection);
@@ -1794,7 +1802,8 @@ nma_menu_add_vpn_submenu (GtkWidget *menu, NMApplet *applet)
 			gtk_widget_set_sensitive (GTK_WIDGET (item), FALSE);
 
 		if (active) {
-			image = gtk_image_new_from_stock (GTK_STOCK_CONNECT, GTK_ICON_SIZE_MENU);
+			GtkWidget *image = gtk_image_new_from_stock (GTK_STOCK_CONNECT, GTK_ICON_SIZE_MENU);
+
 			gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), image);
 		}
 
@@ -2344,6 +2353,10 @@ applet_add_default_connection_item (NMDevice *device,
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 }
 
+void
+applet_schedule_update_menu (NMApplet *applet)
+{
+}
 
 /*****************************************************************************/
 
@@ -2496,6 +2509,7 @@ foo_device_state_changed_cb (NMDevice *device,
 	}
 
 	applet_schedule_update_icon (applet);
+	applet_schedule_update_menu (applet);
 }
 
 static void
@@ -2539,6 +2553,7 @@ foo_client_state_changed_cb (NMClient *client, GParamSpec *pspec, gpointer user_
 	}
 
 	applet_schedule_update_icon (applet);
+	applet_schedule_update_menu (applet);
 }
 
 static void
@@ -2556,6 +2571,7 @@ foo_manager_running_cb (NMClient *client,
 	}
 
 	applet_schedule_update_icon (applet);
+	applet_schedule_update_menu (applet);
 }
 
 #define VPN_STATE_ID_TAG "vpn-state-id"
@@ -2585,6 +2601,7 @@ foo_active_connections_changed_cb (NMClient *client,
 	}
 
 	applet_schedule_update_icon (applet);
+	applet_schedule_update_menu (applet);
 }
 
 static void
@@ -3242,13 +3259,13 @@ GdkPixbuf *
 nma_icon_check_and_load (const char *name, NMApplet *applet)
 {
 	GError *error = NULL;
-	GdkPixbuf *icon = g_hash_table_lookup (applet->icon_cache, name);
+	GdkPixbuf *icon;
 
 	g_assert (name != NULL);
 	g_assert (applet != NULL);
 
 	/* icon already loaded successfully */
-	if (icon)
+	if ((icon = g_hash_table_lookup (applet->icon_cache, name)))
 		return icon;
 
 	/* Try to load the icon; if the load fails, log the problem, and set
@@ -3312,11 +3329,6 @@ error:
 	return FALSE;
 }
 
-static void nma_icon_theme_changed (GtkIconTheme *icon_theme, NMApplet *applet)
-{
-	nma_icons_reload (applet);
-}
-
 static void nma_icons_init (NMApplet *applet)
 {
 	GdkScreen *screen;
@@ -3324,7 +3336,7 @@ static void nma_icons_init (NMApplet *applet)
 
 	if (applet->icon_theme) {
 		g_signal_handlers_disconnect_by_func (applet->icon_theme,
-						      G_CALLBACK (nma_icon_theme_changed),
+						      G_CALLBACK (nma_icons_reload),
 						      applet);
 		g_object_unref (G_OBJECT (applet->icon_theme));
 	}
@@ -3343,7 +3355,7 @@ static void nma_icons_init (NMApplet *applet)
 				   GINT_TO_POINTER (TRUE));
 	}
 
-	g_signal_connect (applet->icon_theme, "changed", G_CALLBACK (nma_icon_theme_changed), applet);
+	g_signal_connect (applet->icon_theme, "changed", G_CALLBACK (nma_icons_reload), applet);
 }
 
 static void
@@ -3352,7 +3364,7 @@ status_icon_screen_changed_cb (GtkStatusIcon *icon,
                                NMApplet *applet)
 {
 	nma_icons_init (applet);
-	nma_icon_theme_changed (NULL, applet);
+	nma_icons_reload (applet);
 }
 
 static gboolean
@@ -3421,11 +3433,9 @@ status_icon_popup_menu_cb (GtkStatusIcon *icon,
 static gboolean
 setup_widgets (NMApplet *applet)
 {
-	g_return_val_if_fail (NM_IS_APPLET (applet), FALSE);
 
 	applet->status_icon = gtk_status_icon_new ();
-	if (!applet->status_icon)
-		return FALSE;
+
 	if (shell_debug)
 		gtk_status_icon_set_name (applet->status_icon, "adsfasdfasdfadfasdf");
 
@@ -3646,9 +3656,8 @@ static void finalize (GObject *object)
 	g_clear_object (&applet->menu);
 	g_clear_pointer (&applet->icon_cache, g_hash_table_destroy);
 	g_clear_object (&applet->fallback_icon);
-	nma_icons_free (applet);
-
 	g_free (applet->tip);
+	nma_icons_free (applet);
 
 	while (g_slist_length (applet->secrets_reqs))
 		applet_secrets_request_free ((SecretsRequest *) applet->secrets_reqs->data);

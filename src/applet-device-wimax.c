@@ -296,7 +296,10 @@ wimax_add_menu_item (NMDevice *device,
 static void
 nsp_quality_changed (NMWimaxNsp *nsp, GParamSpec *pspec, gpointer user_data)
 {
-	applet_schedule_update_icon (NM_APPLET (user_data));
+	NMApplet *applet = NM_APPLET (user_data);
+
+	applet_schedule_update_icon (applet);
+	applet_schedule_update_menu (applet);
 }
 
 static NMWimaxNsp *
@@ -358,8 +361,11 @@ active_nsp_changed_cb (NMDeviceWimax *device,
 	if (!s_wimax)
 		return;
 
-	if (g_strcmp0 (nm_wimax_nsp_get_name (new), nm_setting_wimax_get_network_name (s_wimax)) != 0)
-		applet_schedule_update_icon (applet);
+	if (g_strcmp0 (nm_wimax_nsp_get_name (new), nm_setting_wimax_get_network_name (s_wimax)) == 0)
+		return;
+
+	applet_schedule_update_icon (applet);
+	applet_schedule_update_menu (applet);
 }
 
 static void
@@ -367,15 +373,16 @@ nsp_removed_cb (NMDeviceWimax *device,
                 NMWimaxNsp *nsp,
                 gpointer user_data)
 {
-	NMApplet *applet = NM_APPLET  (user_data);
-	NMWimaxNsp *old;
+	NMApplet *applet = NM_APPLET (user_data);
+
+	/* Ignore unkown nsp */
+	if (g_object_get_data (G_OBJECT (device), ACTIVE_NSP_TAG) != nsp)
+		return;
 
 	/* Clear the ACTIVE_NSP_TAG if the active NSP just got removed */
-	old = g_object_get_data (G_OBJECT (device), ACTIVE_NSP_TAG);
-	if (old == nsp) {
-		g_object_set_data (G_OBJECT (device), ACTIVE_NSP_TAG, NULL);
-		applet_schedule_update_icon (applet);
-	}
+	g_object_set_data (G_OBJECT (device), ACTIVE_NSP_TAG, NULL);
+	applet_schedule_update_icon (applet);
+	applet_schedule_update_menu (applet);
 }
 
 static void
