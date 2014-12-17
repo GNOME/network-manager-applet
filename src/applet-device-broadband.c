@@ -635,17 +635,17 @@ get_icon (NMDevice *device,
 	info = g_object_get_data (G_OBJECT (device), "devinfo");
 	g_assert (info);
 
-	return mobile_helper_get_icon (device,
-	                               state,
-	                               connection,
-	                               out_pixbuf,
-	                               out_icon_name,
-	                               tip,
-	                               applet,
-	                               broadband_state_to_mb_state (info),
-	                               broadband_act_to_mb_act (info),
-	                               mm_modem_get_signal_quality (info->mm_modem, NULL),
-	                               (mm_modem_get_state (info->mm_modem) >= MM_MODEM_STATE_ENABLED));
+	mobile_helper_get_icon (device,
+	                        state,
+	                        connection,
+	                        out_pixbuf,
+	                        out_icon_name,
+	                        tip,
+	                        applet,
+	                        broadband_state_to_mb_state (info),
+	                        broadband_act_to_mb_act (info),
+	                        mm_modem_get_signal_quality (info->mm_modem, NULL),
+	                        (mm_modem_get_state (info->mm_modem) >= MM_MODEM_STATE_ENABLED));
 }
 
 /********************************************************************/
