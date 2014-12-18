@@ -1,6 +1,6 @@
 AC_PREREQ([2.63])
 AC_INIT([nm-applet],
-        [0.995.0.0],
+        [1.0.0],
         [https://bugzilla.gnome.org/enter_bug.cgi?product=NetworkManager],
         [network-manager-applet])
 
@@ -74,10 +74,10 @@ PKG_CHECK_MODULES(GOBJECT, gobject-2.0)
 PKG_CHECK_MODULES(NMA,
 		[dbus-glib-1 >= 0.74
 		 gio-2.0 >= 2.32
-		 NetworkManager >= 0.995
-		 libnm-glib >= 0.995
-		 libnm-util >= 0.995
-		 libnm-glib-vpn >= 0.995
+		 NetworkManager >= 1.0.0
+		 libnm-glib >= 1.0.0
+		 libnm-util >= 1.0.0
+		 libnm-glib-vpn >= 1.0.0
 		 gmodule-export-2.0])
 
 NMA_CFLAGS="$NMA_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_32"
