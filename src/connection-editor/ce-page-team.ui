@@ -9,6 +9,11 @@
       <column type="gchararray"/>
     </columns>
   </object>
+  <object class="GtkAdjustment" id="team_mtu_adjustment">
+    <property name="upper">10000</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkGrid" id="TeamPage">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -26,7 +31,7 @@
       </object>
       <packing>
         <property name="left_attach">0</property>
-        <property name="top_attach">1</property>
+        <property name="top_attach">2</property>
         <property name="width">2</property>
         <property name="height">1</property>
       </packing>
@@ -42,7 +47,7 @@
       </object>
       <packing>
         <property name="left_attach">0</property>
-        <property name="top_attach">3</property>
+        <property name="top_attach">4</property>
         <property name="width">2</property>
         <property name="height">1</property>
       </packing>
@@ -63,14 +68,14 @@
       </object>
       <packing>
         <property name="left_attach">0</property>
-        <property name="top_attach">4</property>
+        <property name="top_attach">5</property>
         <property name="width">2</property>
         <property name="height">1</property>
       </packing>
     </child>
     <child>
       <object class="GtkButton" id="import_config_button">
-        <property name="label" translatable="yes">I_mport team configuration from a file...</property>
+        <property name="label" translatable="yes">Im_port team configuration from a file...</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="use_underline">True</property>
@@ -78,7 +83,7 @@
       </object>
       <packing>
         <property name="left_attach">0</property>
-        <property name="top_attach">5</property>
+        <property name="top_attach">6</property>
         <property name="width">2</property>
         <property name="height">1</property>
       </packing>
@@ -181,7 +186,7 @@
       </object>
       <packing>
         <property name="left_attach">0</property>
-        <property name="top_attach">2</property>
+        <property name="top_attach">3</property>
         <property name="width">2</property>
       </packing>
     </child>
@@ -209,6 +214,61 @@
       <packing>
         <property name="left_attach">1</property>
         <property name="top_attach">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="team_mtu_label">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="xalign">0</property>
+        <property name="label" translatable="yes">_MTU:</property>
+        <property name="use_underline">True</property>
+        <property name="mnemonic_widget">team_mtu</property>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">1</property>
+        <property name="width">1</property>
+        <property name="height">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkHBox" id="team_mtu_box">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="spacing">4</property>
+        <child>
+          <object class="GtkSpinButton" id="team_mtu">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="adjustment">team_mtu_adjustment</property>
+            <property name="climb_rate">1</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label29">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">0</property>
+            <property name="label" translatable="yes">bytes</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="left_attach">1</property>
+        <property name="top_attach">1</property>
+        <property name="width">1</property>
+        <property name="height">1</property>
       </packing>
     </child>
   </object>
