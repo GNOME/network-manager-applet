@@ -37,6 +37,7 @@ G_DEFINE_TYPE (CEPageTeam, ce_page_team, CE_TYPE_PAGE_MASTER)
 
 typedef struct {
 	NMSettingTeam *setting;
+	NMSettingWired *wired;
 
 	int slave_arptype;
 
@@ -44,6 +45,7 @@ typedef struct {
 
 	GtkTextView *json_config_widget;
 	GtkWidget *import_config_button;
+	GtkSpinButton *mtu;
 } CEPageTeamPrivate;
 
 static void
@@ -67,9 +69,16 @@ team_private_init (CEPageTeam *self)
 
 	priv->json_config_widget = GTK_TEXT_VIEW (gtk_builder_get_object (builder, "team_json_config"));
 	priv->import_config_button = GTK_WIDGET (gtk_builder_get_object (builder, "import_config_button"));
+	priv->mtu = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "team_mtu"));
 
 	/* Wait for widget to be realized to get toplevel window */
 	g_signal_connect (priv->json_config_widget, "realize", G_CALLBACK (widget_realized_cb), self);
+}
+
+static void
+stuff_changed (GtkWidget *w, gpointer user_data)
+{
+	ce_page_changed (CE_PAGE (user_data));
 }
 
 static void
@@ -129,6 +138,7 @@ populate_ui (CEPageTeam *self)
 	NMSettingTeam *s_team = priv->setting;
 	GtkTextBuffer *buffer;
 	const char *json_config;
+	guint32 mtu_def, mtu_val;
 
 	buffer = gtk_text_view_get_buffer (priv->json_config_widget);
 	json_config = nm_setting_team_get_config (s_team);
@@ -136,6 +146,18 @@ populate_ui (CEPageTeam *self)
 
 	g_signal_connect (buffer, "changed", G_CALLBACK (json_config_changed), self);
 	g_signal_connect (priv->import_config_button, "clicked", G_CALLBACK (import_button_clicked_cb), self);
+
+	/* MTU */
+	if (priv->wired) {
+		mtu_def = ce_get_property_default (NM_SETTING (priv->wired), NM_SETTING_WIRED_MTU);
+		mtu_val = nm_setting_wired_get_mtu (priv->wired);
+	} else {
+		mtu_def = mtu_val = 0;
+	}
+	g_signal_connect (priv->mtu, "output",
+	                  G_CALLBACK (ce_spin_output_with_automatic),
+	                  GINT_TO_POINTER (mtu_def));
+	gtk_spin_button_set_value (priv->mtu, (gdouble) mtu_val);
 }
 
 static void
@@ -216,10 +238,14 @@ add_slave (CEPageMaster *master, NewConnectionResultFunc result_func)
 static void
 finish_setup (CEPageTeam *self, gpointer unused, GError *error, gpointer user_data)
 {
+	CEPageTeamPrivate *priv = CE_PAGE_TEAM_GET_PRIVATE (self);
+
 	if (error)
 		return;
 
 	populate_ui (self);
+
+	g_signal_connect (priv->mtu, "value-changed", G_CALLBACK (stuff_changed), self);
 }
 
 CEPage *
@@ -253,6 +279,7 @@ ce_page_team_new (NMConnection *connection,
 		priv->setting = NM_SETTING_TEAM (nm_setting_team_new ());
 		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
 	}
+	priv->wired = nm_connection_get_setting_wired (connection);
 
 	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
 
@@ -263,9 +290,11 @@ static void
 ui_to_setting (CEPageTeam *self)
 {
 	CEPageTeamPrivate *priv = CE_PAGE_TEAM_GET_PRIVATE (self);
+	NMConnection *connection = CE_PAGE (self)->connection;
 	GtkTextBuffer *buffer;
 	GtkTextIter start, end;
 	char *json_config;
+	guint32 mtu;
 
 	buffer = gtk_text_view_get_buffer (priv->json_config_widget);
 	gtk_text_buffer_get_iter_at_offset (buffer, &start, 0);
@@ -278,6 +307,15 @@ ui_to_setting (CEPageTeam *self)
 	              NM_SETTING_TEAM_CONFIG, json_config,
 	              NULL);
 	g_free (json_config);
+
+	mtu = gtk_spin_button_get_value_as_int (priv->mtu);
+	if (mtu && !priv->wired) {
+		priv->wired = NM_SETTING_WIRED (nm_setting_wired_new ());
+		nm_connection_add_setting (connection, NM_SETTING (priv->wired));
+	}
+	if (priv->wired)
+		g_object_set (priv->wired, NM_SETTING_WIRED_MTU, mtu, NULL);
+
 }
 
 static gboolean
