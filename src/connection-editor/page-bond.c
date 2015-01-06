@@ -39,6 +39,7 @@ G_DEFINE_TYPE (CEPageBond, ce_page_bond, CE_TYPE_PAGE_MASTER)
 
 typedef struct {
 	NMSettingBond *setting;
+	NMSettingWired *wired;
 
 	int slave_arptype;
 
@@ -57,6 +58,7 @@ typedef struct {
 	GtkWidget *downdelay_box;
 	GtkEntry *arp_targets;
 	GtkWidget *arp_targets_label;
+	GtkSpinButton *mtu;
 } CEPageBondPrivate;
 
 #define MODE_BALANCE_RR    0
@@ -91,6 +93,7 @@ bond_private_init (CEPageBond *self)
 	priv->downdelay_box = GTK_WIDGET (gtk_builder_get_object (builder, "bond_downdelay_box"));
 	priv->arp_targets = GTK_ENTRY (gtk_builder_get_object (builder, "bond_arp_targets"));
 	priv->arp_targets_label = GTK_WIDGET (gtk_builder_get_object (builder, "bond_arp_targets_label"));
+	priv->mtu = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "bond_mtu"));
 
 	priv->toplevel = GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (priv->mode),
 	                                                      GTK_TYPE_WINDOW));
@@ -276,6 +279,7 @@ populate_ui (CEPageBond *self)
 	const char *mode, *primary, *frequency, *updelay, *downdelay, *raw_targets;
 	char *targets;
 	int mode_idx = MODE_BALANCE_RR;
+	guint32 mtu_def, mtu_val;
 
 	/* Mode */
 	mode = nm_setting_bond_get_option_by_name (setting, NM_SETTING_BOND_OPTION_MODE);
@@ -350,6 +354,18 @@ populate_ui (CEPageBond *self)
 		gtk_entry_set_text (priv->arp_targets, targets);
 		g_free (targets);
 	}
+
+	/* MTU */
+	if (priv->wired) {
+		mtu_def = ce_get_property_default (NM_SETTING (priv->wired), NM_SETTING_WIRED_MTU);
+		mtu_val = nm_setting_wired_get_mtu (priv->wired);
+	} else {
+		mtu_def = mtu_val = 0;
+	}
+	g_signal_connect (priv->mtu, "output",
+	                  G_CALLBACK (ce_spin_output_with_automatic),
+	                  GINT_TO_POINTER (mtu_def));
+	gtk_spin_button_set_value (priv->mtu, (gdouble) mtu_val);
 }
 
 static gboolean
@@ -410,6 +426,7 @@ finish_setup (CEPageBond *self, gpointer unused, GError *error, gpointer user_da
 	g_signal_connect (priv->updelay, "value-changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->downdelay, "value-changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->arp_targets, "changed", G_CALLBACK (stuff_changed), self);
+	g_signal_connect (priv->mtu, "value-changed", G_CALLBACK (stuff_changed), self);
 }
 
 CEPage *
@@ -445,6 +462,7 @@ ce_page_bond_new (NMConnection *connection,
 		priv->setting = NM_SETTING_BOND (nm_setting_bond_new ());
 		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
 	}
+	priv->wired = nm_connection_get_setting_wired (connection);
 
 	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
 
@@ -455,12 +473,14 @@ static void
 ui_to_setting (CEPageBond *self)
 {
 	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
+	NMConnection *connection = CE_PAGE (self)->connection;
 	const char *mode;
 	const char *frequency;
 	const char *updelay;
 	const char *downdelay;
 	const char *primary = NULL;
 	char *targets;
+	guint32 mtu;
 
 	/* Mode */
 	switch (gtk_combo_box_get_active (priv->mode)) {
@@ -529,6 +549,15 @@ ui_to_setting (CEPageBond *self)
 	}
 
 	g_free (targets);
+
+	mtu = gtk_spin_button_get_value_as_int (priv->mtu);
+	if (mtu) {
+		if (!priv->wired) {
+			priv->wired = NM_SETTING_WIRED (nm_setting_wired_new ());
+			nm_connection_add_setting (connection, NM_SETTING (priv->wired));
+		}
+		g_object_set (priv->wired, NM_SETTING_WIRED_MTU, mtu, NULL);
+	}
 }
 
 static gboolean
