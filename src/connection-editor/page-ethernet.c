@@ -48,7 +48,6 @@ typedef struct {
 	GtkComboBox *speed;
 	GtkToggleButton *duplex;
 	GtkToggleButton *autonegotiate;
-	GtkSpinButton *mtu;
 } CEPageEthernetPrivate;
 
 #define PORT_DEFAULT  0
@@ -91,7 +90,6 @@ ethernet_private_init (CEPageEthernet *self)
 	priv->speed = GTK_COMBO_BOX (gtk_builder_get_object (builder, "ethernet_speed"));
 	priv->duplex = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "ethernet_duplex"));
 	priv->autonegotiate = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "ethernet_autonegotiate"));
-	priv->mtu = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "ethernet_mtu"));
 }
 
 static void
@@ -109,7 +107,6 @@ populate_ui (CEPageEthernet *self)
 	const char *duplex;
 	int port_idx = PORT_DEFAULT;
 	int speed_idx;
-	int mtu_def;
 	char **mac_list;
 	const GByteArray *s_mac;
 	char *s_mac_str;
@@ -174,14 +171,6 @@ populate_ui (CEPageEthernet *self)
 	ce_page_mac_to_entry (nm_setting_wired_get_cloned_mac_address (setting),
 	                      ARPHRD_ETHER, priv->cloned_mac);
 	g_signal_connect (priv->cloned_mac, "changed", G_CALLBACK (stuff_changed), self);
-
-	/* MTU */
-	mtu_def = ce_get_property_default (NM_SETTING (setting), NM_SETTING_WIRED_MTU);
-	g_signal_connect (priv->mtu, "output",
-	                  G_CALLBACK (ce_spin_output_with_automatic),
-	                  GINT_TO_POINTER (mtu_def));
-
-	gtk_spin_button_set_value (priv->mtu, (gdouble) nm_setting_wired_get_mtu (setting));
 }
 
 static void
@@ -200,7 +189,6 @@ finish_setup (CEPageEthernet *self, gpointer unused, GError *error, gpointer use
 	g_signal_connect (priv->speed, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->duplex, "toggled", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->autonegotiate, "toggled", G_CALLBACK (stuff_changed), self);
-	g_signal_connect (priv->mtu, "value-changed", G_CALLBACK (stuff_changed), self);
 
 	/* Hide widgets we don't yet support */
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_port_label"));
@@ -317,7 +305,6 @@ ui_to_setting (CEPageEthernet *self)
 	              NM_SETTING_WIRED_SPEED, speed,
 	              NM_SETTING_WIRED_DUPLEX, gtk_toggle_button_get_active (priv->duplex) ? "full" : "half",
 	              NM_SETTING_WIRED_AUTO_NEGOTIATE, gtk_toggle_button_get_active (priv->autonegotiate),
-	              NM_SETTING_WIRED_MTU, (guint32) gtk_spin_button_get_value_as_int (priv->mtu),
 	              NULL);
 
 	if (device_mac)

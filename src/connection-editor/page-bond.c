@@ -39,6 +39,7 @@ G_DEFINE_TYPE (CEPageBond, ce_page_bond, CE_TYPE_PAGE_MASTER)
 
 typedef struct {
 	NMSettingBond *setting;
+	NMSettingWired *wired;
 
 	int slave_arptype;
 
@@ -446,6 +447,12 @@ ce_page_bond_new (NMConnection *connection,
 		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
 	}
 
+	priv->wired = nm_connection_get_setting_wired (connection);
+	if (!priv->setting) {
+		priv->wired = NM_SETTING_WIRED (nm_setting_wired_new ());
+		nm_connection_add_setting (connection, NM_SETTING (priv->wired));
+	}
+
 	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
 
 	return CE_PAGE (self);
@@ -593,6 +600,7 @@ bond_connection_new (GtkWindow *parent,
 	                                     settings,
 	                                     user_data);
 	nm_connection_add_setting (connection, nm_setting_bond_new ());
+	nm_connection_add_setting (connection, nm_setting_wired_new ());
 
 	/* Find an available interface name */
 	connections = nm_remote_settings_list_connections (settings);

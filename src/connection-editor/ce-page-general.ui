@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
+  <object class="GtkAdjustment" id="connection_mtu_adjustment">
+    <property name="upper">65535</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkListStore" id="dependent_vpn_model">
     <columns>
       <!-- column-name gchararray -->
@@ -13,7 +18,7 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="border_width">12</property>
-    <property name="n_rows">5</property>
+    <property name="n_rows">6</property>
     <property name="column_spacing">12</property>
     <property name="row_spacing">6</property>
     <child>
@@ -27,6 +32,8 @@
         <property name="draw_indicator">True</property>
       </object>
       <packing>
+        <property name="left_attach">0</property>
+        <property name="right_attach">2</property>
         <property name="top_attach">2</property>
         <property name="bottom_attach">3</property>
         <property name="x_options">GTK_FILL</property>
@@ -48,6 +55,8 @@
         </child>
       </object>
       <packing>
+        <property name="left_attach">0</property>
+        <property name="right_attach">2</property>
         <property name="top_attach">3</property>
         <property name="bottom_attach">4</property>
         <property name="y_options"/>
@@ -65,6 +74,8 @@
         <property name="draw_indicator">True</property>
       </object>
       <packing>
+        <property name="left_attach">0</property>
+        <property name="right_attach">2</property>
         <property name="top_attach">1</property>
         <property name="bottom_attach">2</property>
         <property name="y_options">GTK_FILL</property>
@@ -82,45 +93,93 @@
         <property name="draw_indicator">True</property>
       </object>
       <packing>
+        <property name="left_attach">0</property>
+        <property name="right_attach">2</property>
         <property name="y_options">GTK_FILL</property>
       </packing>
     </child>
     <child>
-      <object class="GtkBox" id="box2">
+      <object class="GtkLabel" id="firewall_zone_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="valign">start</property>
-        <property name="vexpand">True</property>
+        <property name="xalign">0</property>
+        <property name="label" translatable="yes">Firewall _zone:</property>
+        <property name="use_underline">True</property>
+      </object>
+      <packing>
+        <property name="top_attach">4</property>
+        <property name="bottom_attach">5</property>
+        <property name="x_options">GTK_FILL</property>
+        <property name="y_options"/>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkAlignment" id="firewall_zone_alignment">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+      </object>
+      <packing>
+        <property name="top_attach">4</property>
+        <property name="bottom_attach">5</property>
+        <property name="left_attach">1</property>
+        <property name="right_attach">2</property>
+        <property name="y_options"/>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="connection_mtu_label">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="xalign">0</property>
+        <property name="label" translatable="yes">_MTU:</property>
+        <property name="use_underline">True</property>
+        <property name="mnemonic_widget">connection_mtu</property>
+      </object>
+      <packing>
+        <property name="top_attach">5</property>
+        <property name="bottom_attach">6</property>
+        <property name="x_options">GTK_FILL</property>
+        <property name="y_options"/>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkHBox" id="connection_mtu_box">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="spacing">6</property>
         <child>
-          <object class="GtkLabel" id="firewall_zone_label">
+          <object class="GtkSpinButton" id="connection_mtu">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="xalign">0</property>
-            <property name="label" translatable="yes">Firewall _zone:</property>
-            <property name="use_underline">True</property>
+            <property name="can_focus">True</property>
+            <property name="adjustment">connection_mtu_adjustment</property>
+            <property name="climb_rate">1</property>
           </object>
           <packing>
-            <property name="expand">False</property>
+            <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="position">0</property>
           </packing>
         </child>
         <child>
-          <object class="GtkAlignment" id="firewall_zone_alignment">
+          <object class="GtkLabel" id="connection_mtu_units">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">0</property>
+            <property name="label" translatable="yes">bytes</property>
           </object>
           <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
             <property name="position">1</property>
           </packing>
         </child>
       </object>
       <packing>
-        <property name="top_attach">4</property>
-        <property name="bottom_attach">5</property>
+        <property name="top_attach">5</property>
+        <property name="bottom_attach">6</property>
+        <property name="left_attach">1</property>
+        <property name="right_attach">2</property>
+        <property name="y_options"/>
       </packing>
     </child>
   </object>

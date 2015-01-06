@@ -49,6 +49,8 @@ typedef struct {
 	GtkWidget *autoconnect;
 	GtkWidget *all_checkbutton;
 
+	GtkSpinButton *mtu;
+
 	gboolean setup_finished;
 } CEPageGeneralPrivate;
 
@@ -147,6 +149,9 @@ general_private_init (CEPageGeneral *self)
 
 	priv->autoconnect = GTK_WIDGET (gtk_builder_get_object (builder, "connection_autoconnect"));
 	priv->all_checkbutton = GTK_WIDGET (gtk_builder_get_object (builder, "system_checkbutton"));
+
+	/* MTU */
+	priv->mtu = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "connection_mtu"));
 }
 
 static void
@@ -224,6 +229,7 @@ populate_ui (CEPageGeneral *self)
 	GSList *con_list, *l;
 	GtkTreeIter iter;
 	gboolean global_connection = TRUE;
+	int mtu_def;
 
 	/* Zones are filled when got them from firewalld */
 	if (priv->got_zones)
@@ -273,6 +279,13 @@ populate_ui (CEPageGeneral *self)
 		global_connection = FALSE;
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->all_checkbutton), global_connection);
 
+	/* MTU */
+	mtu_def = 0;
+	g_signal_connect (priv->mtu, "output",
+			  G_CALLBACK (ce_spin_output_with_automatic),
+			  GINT_TO_POINTER (mtu_def));
+	gtk_spin_button_set_value (priv->mtu, (gdouble) nm_setting_connection_get_mtu (priv->setting));
+
 	stuff_changed (NULL, self);
 }
 
@@ -299,6 +312,8 @@ finish_setup (CEPageGeneral *self, gpointer unused, GError *error, gpointer user
 
 	g_signal_connect (priv->autoconnect, "toggled", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->all_checkbutton, "toggled", G_CALLBACK (stuff_changed), self);
+
+	g_signal_connect (priv->mtu, "value-changed", G_CALLBACK (stuff_changed), self);
 }
 
 CEPage *
@@ -352,6 +367,7 @@ ui_to_setting (CEPageGeneral *self)
 	char *uuid = NULL;
 	GtkTreeIter iter;
 	gboolean autoconnect = FALSE, everyone = FALSE;
+	guint32 mtu;
 
 	/* We can't take and save zone until the combo was properly initialized. Zones
 	 * are received from FirewallD asynchronously; got_zones indicates we are ready.
@@ -386,6 +402,9 @@ ui_to_setting (CEPageGeneral *self)
 		/* Only visible to this user */
 		nm_setting_connection_add_permission (priv->setting, "user", g_get_user_name (), NULL);
 	}
+
+	mtu = (guint32) gtk_spin_button_get_value_as_int (priv->mtu);
+	g_object_set (priv->setting, NM_SETTING_CONNECTION_MTU, mtu, NULL);
 }
 
 static gboolean

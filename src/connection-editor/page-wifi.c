@@ -51,7 +51,6 @@ typedef struct {
 	GtkSpinButton *channel;
 	GtkSpinButton *rate;
 	GtkSpinButton *tx_power;
-	GtkSpinButton *mtu;
 
 	GtkSizeGroup *group;
 
@@ -107,10 +106,6 @@ wifi_private_init (CEPageWifi *self)
 
 	priv->tx_power = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "wifi_tx_power"));
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "tx_power_units"));
-	gtk_size_group_add_widget (priv->group, widget);
-
-	priv->mtu      = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "wifi_mtu"));
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "mtu_units"));
 	gtk_size_group_add_widget (priv->group, widget);
 }
 
@@ -303,7 +298,6 @@ populate_ui (CEPageWifi *self)
 	int band_idx = 0;
 	int rate_def;
 	int tx_power_def;
-	int mtu_def;
 	char *utf8_ssid;
 	char **mac_list;
 	const GByteArray *s_mac, *s_bssid;
@@ -323,12 +317,6 @@ populate_ui (CEPageWifi *self)
 	                  G_CALLBACK (ce_spin_output_with_automatic),
 	                  GINT_TO_POINTER (tx_power_def));
 	g_signal_connect_swapped (priv->tx_power, "value-changed", G_CALLBACK (ce_page_changed), self);
-
-	mtu_def = ce_get_property_default (NM_SETTING (setting), NM_SETTING_WIRELESS_MTU);
-	g_signal_connect (priv->mtu, "output",
-	                  G_CALLBACK (ce_spin_output_with_automatic),
-	                  GINT_TO_POINTER (mtu_def));
-	g_signal_connect_swapped (priv->mtu, "value-changed", G_CALLBACK (ce_page_changed), self);
 
 	g_object_get (setting,
 	              NM_SETTING_WIRELESS_SSID, &ssid,
@@ -416,7 +404,6 @@ populate_ui (CEPageWifi *self)
 
 	gtk_spin_button_set_value (priv->rate, (gdouble) nm_setting_wireless_get_rate (setting));
 	gtk_spin_button_set_value (priv->tx_power, (gdouble) nm_setting_wireless_get_tx_power (setting));
-	gtk_spin_button_set_value (priv->mtu, (gdouble) nm_setting_wireless_get_mtu (setting));
 }
 
 static void
@@ -552,7 +539,6 @@ ui_to_setting (CEPageWifi *self)
 	              NM_SETTING_WIRELESS_CHANNEL, gtk_spin_button_get_value_as_int (priv->channel),
 	              NM_SETTING_WIRELESS_RATE, gtk_spin_button_get_value_as_int (priv->rate),
 	              NM_SETTING_WIRELESS_TX_POWER, gtk_spin_button_get_value_as_int (priv->tx_power),
-	              NM_SETTING_WIRELESS_MTU, gtk_spin_button_get_value_as_int (priv->mtu),
 	              NULL);
 
 	if (ssid)

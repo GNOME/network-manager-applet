@@ -43,7 +43,6 @@ typedef struct {
 	GtkComboBoxText *device_mac;  /* Permanent MAC of the device */
 
 	GtkComboBox *transport_mode;
-	GtkSpinButton *mtu;
 } CEPageInfinibandPrivate;
 
 #define TRANSPORT_MODE_DATAGRAM  0
@@ -73,7 +72,6 @@ infiniband_private_init (CEPageInfiniband *self)
 	gtk_label_set_mnemonic_widget (label, GTK_WIDGET (priv->device_mac));
 
 	priv->transport_mode = GTK_COMBO_BOX (gtk_builder_get_object (builder, "infiniband_mode"));
-	priv->mtu = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "infiniband_mtu"));
 }
 
 static void
@@ -89,7 +87,6 @@ populate_ui (CEPageInfiniband *self)
 	NMSettingInfiniband *setting = priv->setting;
 	const char *mode;
 	int mode_idx = TRANSPORT_MODE_DATAGRAM;
-	int mtu_def;
 	char **mac_list;
 	const GByteArray *s_mac;
 	char *s_mac_str;
@@ -114,14 +111,6 @@ populate_ui (CEPageInfiniband *self)
 	g_free (s_mac_str);
 	g_strfreev (mac_list);
 	g_signal_connect (priv->device_mac, "changed", G_CALLBACK (stuff_changed), self);
-
-	/* MTU */
-	mtu_def = ce_get_property_default (NM_SETTING (setting), NM_SETTING_INFINIBAND_MTU);
-	g_signal_connect (priv->mtu, "output",
-	                  G_CALLBACK (ce_spin_output_with_automatic),
-	                  GINT_TO_POINTER (mtu_def));
-
-	gtk_spin_button_set_value (priv->mtu, (gdouble) nm_setting_infiniband_get_mtu (setting));
 }
 
 static void
@@ -135,7 +124,6 @@ finish_setup (CEPageInfiniband *self, gpointer unused, GError *error, gpointer u
 	populate_ui (self);
 
 	g_signal_connect (priv->transport_mode, "changed", G_CALLBACK (stuff_changed), self);
-	g_signal_connect (priv->mtu, "value-changed", G_CALLBACK (stuff_changed), self);
 }
 
 CEPage *
@@ -198,7 +186,6 @@ ui_to_setting (CEPageInfiniband *self)
 
 	g_object_set (priv->setting,
 	              NM_SETTING_INFINIBAND_MAC_ADDRESS, device_mac,
-	              NM_SETTING_INFINIBAND_MTU, (guint32) gtk_spin_button_get_value_as_int (priv->mtu),
 	              NM_SETTING_INFINIBAND_TRANSPORT_MODE, mode,
 	              NULL);
 

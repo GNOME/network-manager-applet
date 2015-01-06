@@ -56,7 +56,6 @@ typedef struct {
 	GtkSpinButton *id_entry;
 	GtkEntry *name_entry;
 	GtkEntry *cloned_mac;
-	GtkSpinButton *mtu;
 
 	char *last_parent;
 	int last_id;
@@ -87,7 +86,6 @@ vlan_private_init (CEPageVlan *self)
 	priv->id_entry = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "vlan_id_entry"));
 	priv->name_entry = GTK_ENTRY (gtk_builder_get_object (builder, "vlan_name_entry"));
 	priv->cloned_mac = GTK_ENTRY (gtk_builder_get_object (builder, "vlan_cloned_mac_entry"));
-	priv->mtu = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "vlan_mtu"));
 }
 
 static void
@@ -191,12 +189,9 @@ parent_changed (GtkWidget *widget, gpointer user_data)
 	parent_id = gtk_combo_box_get_active (GTK_COMBO_BOX (priv->parent));
 	if (parent_id > -1 && priv->parents[parent_id]->device != NULL) {
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->cloned_mac), TRUE);
-		gtk_widget_set_sensitive (GTK_WIDGET (priv->mtu), TRUE);
 	} else {
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->cloned_mac), FALSE);
 		gtk_entry_set_text (priv->cloned_mac, "");
-		gtk_widget_set_sensitive (GTK_WIDGET (priv->mtu), FALSE);
-		gtk_spin_button_set_value (priv->mtu, 1500);
 	}
 
 	sync_iface (self, priv->parent_entry);
@@ -348,7 +343,7 @@ populate_ui (CEPageVlan *self)
 	NMConnection *parent_connection = NULL;
 	NMDevice *device, *parent_device = NULL;
 	const char *parent, *iface, *current_parent;
-	int i, mtu_def, mtu_val;
+	int i;
 
 	devices = get_vlan_devices (self);
 
@@ -440,20 +435,6 @@ populate_ui (CEPageVlan *self)
 	}
 	g_signal_connect (priv->cloned_mac, "changed", G_CALLBACK (stuff_changed), self);
 
-	/* MTU */
-	if (NM_IS_SETTING_WIRED (priv->s_hw)) {
-		mtu_def = ce_get_property_default (priv->s_hw, NM_SETTING_WIRED_MTU);
-		mtu_val = nm_setting_wired_get_mtu (NM_SETTING_WIRED (priv->s_hw));
-	} else {
-		mtu_def = mtu_val = 1500;
-	}
-	g_signal_connect (priv->mtu, "output",
-	                  G_CALLBACK (ce_spin_output_with_automatic),
-	                  GINT_TO_POINTER (mtu_def));
-
-	gtk_spin_button_set_value (priv->mtu, (gdouble) mtu_val);
-	g_signal_connect (priv->mtu, "value-changed", G_CALLBACK (stuff_changed), self);
-
 	g_slist_free (devices);
 }
 
@@ -519,8 +500,6 @@ ui_to_setting (CEPageVlan *self)
 	const char *iface;
 	char *tmp_parent_iface = NULL;
 	GType hwtype;
-	gboolean mtu_set;
-	int mtu;
 
 	parent_id = gtk_combo_box_get_active (GTK_COMBO_BOX (priv->parent));
 	if (parent_id == -1) {
@@ -575,10 +554,8 @@ ui_to_setting (CEPageVlan *self)
 
 	if (hwtype != G_TYPE_NONE) {
 		cloned_mac = ce_page_entry_to_mac (priv->cloned_mac, ARPHRD_ETHER, NULL);
-		mtu_set = g_ascii_isdigit (*gtk_entry_get_text (GTK_ENTRY (priv->mtu)));
-		mtu = gtk_spin_button_get_value_as_int (priv->mtu);
 
-		if (cloned_mac || mtu_set) {
+		if (cloned_mac) {
 			if (!priv->s_hw) {
 				priv->s_hw = g_object_new (hwtype, NULL);
 				nm_connection_add_setting (connection, priv->s_hw);
@@ -586,7 +563,6 @@ ui_to_setting (CEPageVlan *self)
 
 			g_object_set (priv->s_hw,
 			              NM_SETTING_WIRED_CLONED_MAC_ADDRESS, cloned_mac,
-			              NM_SETTING_WIRED_MTU, (guint32) mtu,
 			              NULL);
 
 			if (cloned_mac)
