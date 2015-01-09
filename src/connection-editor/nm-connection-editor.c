@@ -83,6 +83,8 @@
 #include "vpn-helpers.h"
 #include "eap-method.h"
 
+extern gboolean nm_ce_keep_above;
+
 G_DEFINE_TYPE (NMConnectionEditor, nm_connection_editor, G_TYPE_OBJECT)
 
 enum {
@@ -293,6 +295,9 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 	}
 
 	editor->window = GTK_WIDGET (gtk_builder_get_object (editor->builder, "nm-connection-editor"));
+	if (nm_ce_keep_above)
+		gtk_window_set_keep_above (GTK_WINDOW (editor->window), TRUE);
+
 	editor->cancel_button = GTK_WIDGET (gtk_builder_get_object (editor->builder, "cancel_button"));
 	editor->export_button = GTK_WIDGET (gtk_builder_get_object (editor->builder, "export_button"));
 }
