@@ -54,6 +54,8 @@
 #include "ce-polkit-button.h"
 #include "connection-helpers.h"
 
+extern gboolean nm_ce_keep_above;
+
 G_DEFINE_TYPE (NMConnectionList, nm_connection_list, G_TYPE_OBJECT)
 
 enum {
@@ -903,10 +905,11 @@ nm_connection_list_new (void)
 	initialize_treeview (list);
 	add_connection_buttons (list);
 
-	/* Connect to the main dialog's response handler */
 	list->dialog = GTK_WIDGET (gtk_builder_get_object (list->gui, "NMConnectionList"));
 	if (!list->dialog)
 		goto error;
+	if (nm_ce_keep_above)
+		gtk_window_set_keep_above (GTK_WINDOW (list->dialog), TRUE);
 	g_signal_connect (G_OBJECT (list->dialog), "response", G_CALLBACK (dialog_response_cb), list);
 
 	if (!vpn_get_plugins (&error)) {
