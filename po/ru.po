@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: NetworkManager-applet\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2015-01-11 11:10+0000\n"
+"POT-Creation-Date: 2015-01-11 21:05+0000\n"
 "PO-Revision-Date: 2015-01-11 23:02+0300\n"
 "Last-Translator: Stas Solovey <whats_up@tut.by>\n"
 "Language-Team: Русский <gnome-cyr@gnome.org>\n"
@@ -551,18 +551,22 @@ msgid "You are now connected to the bridged network."
 msgstr "Вы подключены к сети типа мост."
 
 #: ../src/applet-device-bridge.c:115
+#, c-format
 msgid "Preparing bridge connection '%s'..."
 msgstr "Подготовка соединения типа мост «%s»…"
 
 #: ../src/applet-device-bridge.c:118
+#, c-format
 msgid "Configuring bridge connection '%s'..."
 msgstr "Настройка соединения типа мост «%s»…"
 
 #: ../src/applet-device-bridge.c:121
+#, c-format
 msgid "User authentication required for bridge connection '%s'..."
 msgstr "Для соединения типа мост «%s» требуется аутентификация…"
 
 #: ../src/applet-device-bridge.c:128
+#, c-format
 msgid "Bridge connection '%s' active"
 msgstr "Соединение типа мост «%s» установлено"
 
@@ -2546,7 +2550,6 @@ msgid "DCB"
 msgstr "DCB"
 
 #: ../src/connection-editor/page-dcb.c:607
-#| msgid "Could not load DSL user interface."
 msgid "Could not load DCB user interface."
 msgstr "Не удалось загрузить диалог настройки DCB."
 
@@ -2816,6 +2819,7 @@ msgid "Could not load team user interface."
 msgstr "Не удалось загрузить диалог настройки агрегированного соединения."
 
 #: ../src/connection-editor/page-team.c:342
+#, c-format
 msgid "Team connection %d"
 msgstr "Агрегированное (team) соединение %d"
 
@@ -2828,7 +2832,8 @@ msgstr "Порт агрегации"
 
 #: ../src/connection-editor/page-team-port.c:159
 msgid "Could not load team port user interface."
-msgstr "Не удалось загрузить диалог настройки порта агрегированного соединения."
+msgstr ""
+"Не удалось загрузить диалог настройки порта агрегированного соединения."
 
 #. Translators: the first %s is a device name (eg, "em1"), the
 #. * second is a connection name (eg, "Auto Ethernet").
@@ -3137,9 +3142,9 @@ msgid ""
 "connection settings, choose \"Network Connections\" from the System >> "
 "Preferences menu."
 msgstr ""
-"После указания параметров доступа к мобильной сети будет установлено "
-"соединение с этой сетью. Чтобы изменить параметры соединения, дважды "
-"щёлкните на соединении."
+"Сейчас будет установлено соединение по указанным параметрам. Если произошла ошибка соединения " 
+"или нет доступа к сетевым ресурсам, попробуйте изменить параметры. Чтобы изменить параметры "
+"мобильного широкополосного соединения, выберите «Сеть» в Параметрах системы."
 
 #: ../src/libnm-gtk/nm-mobile-wizard.c:267
 msgid "Confirm Mobile Broadband Settings"
@@ -3523,7 +3528,7 @@ msgstr "GTC"
 
 #: ../src/wireless-security/eap-method-fast.c:404
 msgid "Choose a PAC file..."
-msgstr "Выберите файл PAC..."
+msgstr "Выберите файл PAC…"
 
 #: ../src/wireless-security/eap-method-fast.c:411
 msgid "PAC files (*.pac)"
@@ -3652,7 +3657,7 @@ msgstr "TLS"
 
 #: ../src/wireless-security/wireless-security.c:454
 msgid "PWD"
-msgstr ""
+msgstr "PWD"
 
 # Метод аутентификации
 #: ../src/wireless-security/wireless-security.c:465
