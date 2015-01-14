@@ -54,7 +54,6 @@ typedef struct {
 	GtkEntry *apn;
 	GtkButton *apn_button;
 	GtkEntry *network_id;
-	GtkComboBox *network_type;
 	GtkToggleButton *roaming_allowed;
 	GtkEntry *pin;
 
@@ -85,7 +84,6 @@ mobile_private_init (CEPageMobile *self)
 	priv->apn = GTK_ENTRY (gtk_builder_get_object (builder, "mobile_apn"));
 	priv->apn_button = GTK_BUTTON (gtk_builder_get_object (builder, "mobile_apn_button"));
 	priv->network_id = GTK_ENTRY (gtk_builder_get_object (builder, "mobile_network_id"));
-	priv->network_type = GTK_COMBO_BOX (gtk_builder_get_object (builder, "mobile_network_type"));
 	priv->roaming_allowed = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "mobile_roaming_allowed"));
 
 	priv->pin = GTK_ENTRY (gtk_builder_get_object (builder, "mobile_pin"));
@@ -98,7 +96,6 @@ populate_gsm_ui (CEPageMobile *self, NMConnection *connection)
 {
 	CEPageMobilePrivate *priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
 	NMSettingGsm *setting = NM_SETTING_GSM (priv->setting);
-	int type_idx;
 	const char *s;
 
 	s = nm_setting_gsm_get_number (setting);
@@ -116,34 +113,6 @@ populate_gsm_ui (CEPageMobile *self, NMConnection *connection)
 	s = nm_setting_gsm_get_network_id (setting);
 	if (s)
 		gtk_entry_set_text (priv->network_id, s);
-
-G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-	switch (nm_setting_gsm_get_network_type (setting)) {
-	case NM_SETTING_GSM_NETWORK_TYPE_UMTS_HSPA:
-		type_idx = NET_TYPE_3G;
-		break;
-	case NM_SETTING_GSM_NETWORK_TYPE_GPRS_EDGE:
-		type_idx = NET_TYPE_2G;
-		break;
-	case NM_SETTING_GSM_NETWORK_TYPE_PREFER_UMTS_HSPA:
-		type_idx = NET_TYPE_PREFER_3G;
-		break;
-	case NM_SETTING_GSM_NETWORK_TYPE_PREFER_GPRS_EDGE:
-		type_idx = NET_TYPE_PREFER_2G;
-		break;
-	case NM_SETTING_GSM_NETWORK_TYPE_PREFER_4G:
-		type_idx = NET_TYPE_PREFER_4G;
-		break;
-	case NM_SETTING_GSM_NETWORK_TYPE_4G:
-		type_idx = NET_TYPE_4G;
-		break;
-	case NM_SETTING_GSM_NETWORK_TYPE_ANY:
-	default:
-		type_idx = NET_TYPE_ANY;
-		break;
-	}
-	gtk_combo_box_set_active (priv->network_type, type_idx);
-G_GNUC_END_IGNORE_DEPRECATIONS
 
 	gtk_toggle_button_set_active (priv->roaming_allowed,
 	                              !nm_setting_gsm_get_home_only (setting));
@@ -319,7 +288,6 @@ finish_setup (CEPageMobile *self, gpointer unused, GError *error, gpointer user_
 	gtk_entry_set_max_length (priv->network_id, 6);  /* MCC/MNCs are max 6 chars */
 	g_signal_connect (priv->network_id, "insert-text", G_CALLBACK (network_id_filter_cb), self);
 
-	g_signal_connect (priv->network_type, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->pin, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->roaming_allowed, "toggled", G_CALLBACK (stuff_changed), self);
 
@@ -392,33 +360,7 @@ static void
 gsm_ui_to_setting (CEPageMobile *self)
 {
 	CEPageMobilePrivate *priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
-	int net_type;
 	gboolean roaming_allowed;
-
-	switch (gtk_combo_box_get_active (priv->network_type)) {
-	case NET_TYPE_3G:
-		net_type = NM_SETTING_GSM_NETWORK_TYPE_UMTS_HSPA;
-		break;
-	case NET_TYPE_2G:
-		net_type = NM_SETTING_GSM_NETWORK_TYPE_GPRS_EDGE;
-		break;
-	case NET_TYPE_PREFER_3G:
-		net_type = NM_SETTING_GSM_NETWORK_TYPE_PREFER_UMTS_HSPA;
-		break;
-	case NET_TYPE_PREFER_2G:
-		net_type = NM_SETTING_GSM_NETWORK_TYPE_PREFER_GPRS_EDGE;
-		break;
-	case NET_TYPE_PREFER_4G:
-		net_type = NM_SETTING_GSM_NETWORK_TYPE_PREFER_4G;
-		break;
-	case NET_TYPE_4G:
-		net_type = NM_SETTING_GSM_NETWORK_TYPE_4G;
-		break;
-	case NET_TYPE_ANY:
-	default:
-		net_type = NM_SETTING_GSM_NETWORK_TYPE_ANY;
-		break;
-	}
 
 	roaming_allowed = gtk_toggle_button_get_active (priv->roaming_allowed);
 
@@ -428,7 +370,6 @@ gsm_ui_to_setting (CEPageMobile *self)
 	              NM_SETTING_GSM_PASSWORD,     nm_entry_get_text (priv->password),
 	              NM_SETTING_GSM_APN,          nm_entry_get_text (priv->apn),
 	              NM_SETTING_GSM_NETWORK_ID,   nm_entry_get_text (priv->network_id),
-	              NM_SETTING_GSM_NETWORK_TYPE, net_type,
 	              NM_SETTING_GSM_PIN,          nm_entry_get_text (priv->pin),
 	              NM_SETTING_GSM_HOME_ONLY,    !roaming_allowed,
 	              NULL);
