@@ -3569,6 +3569,7 @@ initable_init (GInitable *initable, GCancellable *cancellable, GError **error)
 	g_signal_connect (applet->gsettings, "changed::show-applet",
 	                  G_CALLBACK (applet_gsettings_show_changed), applet);
 
+	foo_client_setup (applet);
 
 	/* Load pixmaps and create applet widgets */
 	if (!setup_widgets (applet)) {
@@ -3647,8 +3648,6 @@ initable_init (GInitable *initable, GCancellable *cancellable, GError **error)
 
 	applet->infiniband_class = applet_device_infiniband_get_class (applet);
 	g_assert (applet->infiniband_class);
-
-	foo_client_setup (applet);
 
 #if WITH_MODEM_MANAGER_1
 	mm1_client_setup (applet);
