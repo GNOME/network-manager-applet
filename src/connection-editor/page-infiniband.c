@@ -211,14 +211,18 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageInfiniband *self = CE_PAGE_INFINIBAND (page);
 	CEPageInfinibandPrivate *priv = CE_PAGE_INFINIBAND_GET_PRIVATE (self);
+	gboolean invalid = FALSE;
+	GByteArray *ignore;
 	GtkWidget *entry;
-	char buf[INFINIBAND_ALEN];
-	const char *hwaddr;
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
-	hwaddr = gtk_entry_get_text (GTK_ENTRY (entry));
-	if (hwaddr && *hwaddr && !nm_utils_hwaddr_aton (hwaddr, ARPHRD_INFINIBAND, buf))
-		return FALSE;
+	if (entry) {
+		ignore = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_INFINIBAND, &invalid);
+		if (invalid)
+			return FALSE;
+		if (ignore)
+			g_byte_array_free (ignore, TRUE);
+	}
 
 	ui_to_setting (self);
 	return nm_setting_verify (NM_SETTING (priv->setting), NULL, error);
