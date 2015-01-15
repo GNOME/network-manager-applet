@@ -3687,9 +3687,10 @@ static void finalize (GObject *object)
 	if (applet->update_icon_id)
 		g_source_remove (applet->update_icon_id);
 
-	if (applet->menu)
-		g_object_unref (applet->menu);
+	g_clear_object (&applet->status_icon);
+	g_clear_object (&applet->menu);
 	g_clear_pointer (&applet->icon_cache, g_hash_table_destroy);
+	g_clear_object (&applet->fallback_icon);
 	nma_icons_free (applet);
 
 	g_free (applet->tip);
@@ -3702,44 +3703,23 @@ static void finalize (GObject *object)
 		g_object_unref (applet->notification);
 	}
 
-	if (applet->info_dialog_ui)
-		g_object_unref (applet->info_dialog_ui);
-
-	if (applet->gsettings)
-		g_object_unref (applet->gsettings);
-
-	if (applet->status_icon)
-		g_object_unref (applet->status_icon);
-
-	if (applet->nm_client)
-		g_object_unref (applet->nm_client);
+	g_clear_object (&applet->info_dialog_ui);
+	g_clear_object (&applet->gsettings);
+	g_clear_object (&applet->nm_client);
 
 #if WITH_MODEM_MANAGER_1
-	if (applet->mm1)
-		g_object_unref (applet->mm1);
+	g_clear_object (&applet->mm1);
 #endif
 
-	if (applet->fallback_icon)
-		g_object_unref (applet->fallback_icon);
-
-	if (applet->agent)
-		g_object_unref (applet->agent);
-
-	if (applet->settings)
-		g_object_unref (applet->settings);
-
-	if (applet->session_bus)
-		dbus_g_connection_unref (applet->session_bus);
+	g_clear_object (&applet->agent);
+	g_clear_object (&applet->settings);
+	g_clear_pointer (&applet->session_bus, dbus_g_connection_unref);
 
 	G_OBJECT_CLASS (nma_parent_class)->finalize (object);
 }
 
 static void nma_init (NMApplet *applet)
 {
-	applet->animation_id = 0;
-	applet->animation_step = 0;
-	applet->icon_theme = NULL;
-	applet->notification = NULL;
 	applet->icon_size = 16;
 }
 
