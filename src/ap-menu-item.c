@@ -82,11 +82,6 @@ nm_network_menu_item_dispose (GObject *object)
 		return;
 	}
 
-	gtk_widget_destroy (item->ssid);
-	gtk_widget_destroy (item->strength);
-	gtk_widget_destroy (item->detail);
-	gtk_widget_destroy (item->hbox);
-
 	item->destroyed = TRUE;
 	g_free (item->hash);
 	g_free (item->ssid_string);
