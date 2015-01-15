@@ -73,7 +73,7 @@ nm_network_menu_item_new (const char *hash, gboolean has_connections)
 }
 
 static void
-nm_network_menu_item_class_dispose (GObject *object)
+nm_network_menu_item_dispose (GObject *object)
 {
 	NMNetworkMenuItem * item = NM_NETWORK_MENU_ITEM (object);
 
@@ -103,7 +103,7 @@ nm_network_menu_item_class_init (NMNetworkMenuItemClass * klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
 	/* virtual methods */
-	object_class->dispose = nm_network_menu_item_class_dispose;
+	object_class->dispose = nm_network_menu_item_dispose;
 }
 
 void
