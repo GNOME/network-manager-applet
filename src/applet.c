@@ -95,6 +95,7 @@
 #define NOTIFY_CAPS_ACTIONS_KEY "actions"
 
 extern gboolean shell_debug;
+extern gboolean with_agent;
 
 static void nma_initable_interface_init (GInitableIface *iface, gpointer iface_data);
 
@@ -3627,7 +3628,8 @@ initable_init (GInitable *initable, GCancellable *cancellable, GError **error)
 	                  G_CALLBACK (applet_embedded_cb), NULL);
 	applet_embedded_cb (G_OBJECT (applet->status_icon), NULL, NULL);
 
-	register_agent (applet);
+	if (with_agent)
+		register_agent (applet);
 
 	return TRUE;
 }

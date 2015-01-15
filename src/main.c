@@ -38,6 +38,7 @@
 
 static GMainLoop *loop = NULL;
 gboolean shell_debug = FALSE;
+gboolean with_agent = TRUE;
 
 static void
 signal_handler (int signo, siginfo_t *info, void *data)
@@ -89,6 +90,8 @@ int main (int argc, char *argv[])
 		}
 		if (!strcmp (argv[i], "--shell-debug"))
 			shell_debug = TRUE;
+		if (!strcmp (argv[i], "--no-agent"))
+			with_agent = FALSE;
 	}
 
 	bindtextdomain (GETTEXT_PACKAGE, NMALOCALEDIR);
