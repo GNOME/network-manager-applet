@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2004 - 2012 Red Hat, Inc.
+ * Copyright (C) 2004 - 2015 Red Hat, Inc.
  * Copyright (C) 2005 - 2008 Novell, Inc.
  *
  * This applet used the GNOME Wireless Applet as a skeleton to build from.
@@ -88,6 +88,7 @@
 #include "applet-vpn-request.h"
 #include "utils.h"
 #include "nm-ui-utils.h"
+#include "nm-glib-compat.h"
 
 #if WITH_MODEM_MANAGER_1
 # include "applet-device-broadband.h"
