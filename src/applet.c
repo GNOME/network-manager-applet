@@ -910,6 +910,7 @@ applet_do_notify (NMApplet *applet,
 	notify_notification_set_timeout (notify, NOTIFY_EXPIRES_DEFAULT);
 
 	if (applet_notify_server_has_actions () && action1) {
+		notify_notification_clear_actions (notify);
 		notify_notification_add_action (notify, action1, action1_label,
 		                                action1_cb, action1_user_data, NULL);
 	}
