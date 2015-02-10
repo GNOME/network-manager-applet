@@ -1247,13 +1247,13 @@ wifi_notify_connected (NMDevice *device,
 }
 
 static void
-wifi_get_icon (NMDevice *device,
-               NMDeviceState state,
-               NMConnection *connection,
-               GdkPixbuf **out_pixbuf,
-               const char **out_icon_name,
-               char **tip,
-               NMApplet *applet)
+wifi_get_icon_status (NMDevice *device,
+                      NMDeviceState state,
+                      NMConnection *connection,
+                      GdkPixbuf **out_pixbuf,
+                      const char **out_icon_name,
+                      char **tip,
+                      NMApplet *applet)
 {
 	NMSettingConnection *s_con;
 	NMAccessPoint *ap;
@@ -1286,15 +1286,15 @@ wifi_get_icon (NMDevice *device,
 		strength = MIN (strength, 100);
 
 		if (strength > 80)
-			*out_icon_name = "nm-signal-100";
+			*out_icon_name = "nm-signal-100-status";
 		else if (strength > 55)
-			*out_icon_name = "nm-signal-75";
+			*out_icon_name = "nm-signal-75-status";
 		else if (strength > 30)
-			*out_icon_name = "nm-signal-50";
+			*out_icon_name = "nm-signal-50-status";
 		else if (strength > 5)
-			*out_icon_name = "nm-signal-25";
+			*out_icon_name = "nm-signal-25-status";
 		else
-			*out_icon_name = "nm-signal-00";
+			*out_icon_name = "nm-signal-00-status";
 
 		if (ap) {
 			char *ssid = get_ssid_utf8 (ap);
@@ -1609,7 +1609,7 @@ applet_device_wifi_get_class (NMApplet *applet)
 	dclass->device_added = wifi_device_added;
 	dclass->device_state_changed = wifi_device_state_changed;
 	dclass->notify_connected = wifi_notify_connected;
-	dclass->get_icon = wifi_get_icon;
+	dclass->get_icon_status = wifi_get_icon_status;
 	dclass->get_secrets = wifi_get_secrets;
 	dclass->secrets_request_size = sizeof (NMWifiInfo);
 

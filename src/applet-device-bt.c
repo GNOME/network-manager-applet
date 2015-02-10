@@ -106,13 +106,13 @@ bt_notify_connected (NMDevice *device,
 }
 
 static void
-bt_get_icon (NMDevice *device,
-             NMDeviceState state,
-             NMConnection *connection,
-             GdkPixbuf **out_pixbuf,
-             const char **out_icon_name,
-             char **tip,
-             NMApplet *applet)
+bt_get_icon_status (NMDevice *device,
+                    NMDeviceState state,
+                    NMConnection *connection,
+                    GdkPixbuf **out_pixbuf,
+                    const char **out_icon_name,
+                    char **tip,
+                    NMApplet *applet)
 {
 	NMSettingConnection *s_con;
 	const char *id;
@@ -137,7 +137,7 @@ bt_get_icon (NMDevice *device,
 		*tip = g_strdup_printf (_("Requesting a network address for '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
-		*out_icon_name = "nm-device-wwan";
+		*out_icon_name = "nm-device-wwan-status";
 		*tip = g_strdup_printf (_("Mobile broadband connection '%s' active"), id);
 		break;
 	default:
@@ -271,7 +271,7 @@ applet_device_bt_get_class (NMApplet *applet)
 	dclass->new_auto_connection = bt_new_auto_connection;
 	dclass->add_menu_item = bt_add_menu_item;
 	dclass->notify_connected = bt_notify_connected;
-	dclass->get_icon = bt_get_icon;
+	dclass->get_icon_status = bt_get_icon_status;
 	dclass->get_secrets = bt_get_secrets;
 	dclass->secrets_request_size = sizeof (NMBtSecretsInfo);
 

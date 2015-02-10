@@ -617,13 +617,13 @@ broadband_act_to_mb_act (BroadbandDeviceInfo *info)
 }
 
 static void
-get_icon (NMDevice *device,
-          NMDeviceState state,
-          NMConnection *connection,
-          GdkPixbuf **out_pixbuf,
-          const char **out_icon_name,
-          char **tip,
-          NMApplet *applet)
+get_icon_status (NMDevice *device,
+                 NMDeviceState state,
+                 NMConnection *connection,
+                 GdkPixbuf **out_pixbuf,
+                 const char **out_icon_name,
+                 char **tip,
+                 NMApplet *applet)
 {
 	BroadbandDeviceInfo *info;
 
@@ -1058,7 +1058,7 @@ applet_device_broadband_get_class (NMApplet *applet)
 	dclass->add_menu_item = add_menu_item;
 	dclass->device_added = device_added;
 	dclass->notify_connected = notify_connected;
-	dclass->get_icon = get_icon;
+	dclass->get_icon_status = get_icon_status;
 	dclass->get_secrets = get_secrets;
 	dclass->secrets_request_size = sizeof (MobileHelperSecretsInfo);
 

@@ -2380,7 +2380,10 @@ applet_add_default_connection_item (NMDevice *device,
 /*****************************************************************************/
 
 static void
-foo_set_icon (NMApplet *applet, guint32 layer, GdkPixbuf *pixbuf, char *icon_name)
+foo_set_icon_status (NMApplet *applet,
+                     guint32 layer,
+                     GdkPixbuf *pixbuf,
+                     char *icon_name)
 {
 	int i;
 
@@ -2399,7 +2402,7 @@ foo_set_icon (NMApplet *applet, guint32 layer, GdkPixbuf *pixbuf, char *icon_nam
 		applet->icon_layers[layer] = g_object_ref (pixbuf);
 
 	if (!applet->icon_layers[0]) {
-		pixbuf = g_object_ref (nma_icon_check_and_load ("nm-no-connection", applet));
+		pixbuf = g_object_ref (nma_icon_check_and_load ("nm-no-connection-status", applet));
 	} else {
 		pixbuf = gdk_pixbuf_copy (applet->icon_layers[0]);
 
@@ -2852,7 +2855,7 @@ applet_get_device_icon_for_state (NMApplet *applet,
 
 		connection = applet_find_active_connection_for_device (device, applet, NULL);
 
-		dclass->get_icon (device, state, connection, out_pixbuf, &icon_name, out_tip, applet);
+		dclass->get_icon_status (device, state, connection, out_pixbuf, &icon_name, out_tip, applet);
 
 		if (!*out_pixbuf && icon_name)
 			*out_pixbuf = g_object_ref (nma_icon_check_and_load (icon_name, applet));
@@ -2941,12 +2944,12 @@ applet_update_icon (gpointer user_data)
 	switch (state) {
 	case NM_STATE_UNKNOWN:
 	case NM_STATE_ASLEEP:
-		icon_name = g_strdup ("nm-no-connection");
+		icon_name = g_strdup ("nm-no-connection-status");
 		pixbuf = g_object_ref (nma_icon_check_and_load (icon_name, applet));
 		dev_tip = g_strdup (_("Networking disabled"));
 		break;
 	case NM_STATE_DISCONNECTED:
-		icon_name = g_strdup ("nm-no-connection");
+		icon_name = g_strdup ("nm-no-connection-status");
 		pixbuf = g_object_ref (nma_icon_check_and_load (icon_name, applet));
 		dev_tip = g_strdup (_("No network connection"));
 		break;
@@ -2955,7 +2958,7 @@ applet_update_icon (gpointer user_data)
 		break;
 	}
 
-	foo_set_icon (applet, ICON_LAYER_LINK, pixbuf, icon_name);
+	foo_set_icon_status (applet, ICON_LAYER_LINK, pixbuf, icon_name);
 	if (pixbuf)
 		g_object_unref (pixbuf);
 	if (icon_name)
@@ -2970,14 +2973,14 @@ applet_update_icon (gpointer user_data)
 
 		switch (vpn_state) {
 		case NM_VPN_CONNECTION_STATE_ACTIVATED:
-			icon_name = g_strdup_printf ("nm-vpn-active-lock");
+			icon_name = g_strdup_printf ("nm-vpn-active-lock-status");
 			pixbuf = nma_icon_check_and_load (icon_name, applet);
 			break;
 		case NM_VPN_CONNECTION_STATE_PREPARE:
 		case NM_VPN_CONNECTION_STATE_NEED_AUTH:
 		case NM_VPN_CONNECTION_STATE_CONNECT:
 		case NM_VPN_CONNECTION_STATE_IP_CONFIG_GET:
-			name = g_strdup_printf ("nm-vpn-connecting%02d", applet->animation_step + 1);
+			name = g_strdup_printf ("nm-vpn-connecting%02d-status", applet->animation_step + 1);
 			pixbuf = nma_icon_check_and_load (name, applet);
 			g_free (name);
 
@@ -2998,7 +3001,7 @@ applet_update_icon (gpointer user_data)
 			vpn_tip = tmp;
 		}
 	}
-	foo_set_icon (applet, ICON_LAYER_VPN, pixbuf, icon_name);
+	foo_set_icon_status (applet, ICON_LAYER_VPN, pixbuf, icon_name);
 	if (icon_name)
 		g_free (icon_name);
 

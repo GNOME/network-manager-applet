@@ -344,13 +344,13 @@ cdma_notify_connected (NMDevice *device,
 }
 
 static void
-cdma_get_icon (NMDevice *device,
-               NMDeviceState state,
-               NMConnection *connection,
-               GdkPixbuf **out_pixbuf,
-               const char **out_icon_name,
-               char **tip,
-               NMApplet *applet)
+cdma_get_icon_status (NMDevice *device,
+                      NMDeviceState state,
+                      NMConnection *connection,
+                      GdkPixbuf **out_pixbuf,
+                      const char **out_icon_name,
+                      char **tip,
+                      NMApplet *applet)
 {
 	CdmaDeviceInfo *info;
 
@@ -737,7 +737,7 @@ applet_device_cdma_get_class (NMApplet *applet)
 	dclass->add_menu_item = cdma_add_menu_item;
 	dclass->device_state_changed = cdma_device_state_changed;
 	dclass->notify_connected = cdma_notify_connected;
-	dclass->get_icon = cdma_get_icon;
+	dclass->get_icon_status = cdma_get_icon_status;
 	dclass->get_secrets = cdma_get_secrets;
 	dclass->secrets_request_size = sizeof (MobileHelperSecretsInfo);
 	dclass->device_added = cdma_device_added;

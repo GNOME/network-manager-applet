@@ -405,13 +405,13 @@ wimax_notify_connected (NMDevice *device,
 }
 
 static void
-wimax_get_icon (NMDevice *device,
-                NMDeviceState state,
-                NMConnection *connection,
-                GdkPixbuf **out_pixbuf,
-                const char **out_icon_name,
-                char **tip,
-                NMApplet *applet)
+wimax_get_icon_status (NMDevice *device,
+                       NMDeviceState state,
+                       NMConnection *connection,
+                       GdkPixbuf **out_pixbuf,
+                       const char **out_icon_name,
+                       char **tip,
+                       NMApplet *applet)
 {
 	NMSettingConnection *s_con;
 	const char *id;
@@ -486,7 +486,7 @@ applet_device_wimax_get_class (NMApplet *applet)
 	dclass->add_menu_item = wimax_add_menu_item;
 	dclass->device_added = wimax_device_added;
 	dclass->notify_connected = wimax_notify_connected;
-	dclass->get_icon = wimax_get_icon;
+	dclass->get_icon_status = wimax_get_icon_status;
 	dclass->get_secrets = wimax_get_secrets;
 
 	return dclass;

@@ -226,7 +226,7 @@ struct NMADeviceClass {
 	 * be unrefed by the icon code.  This allows the device class to create
 	 * a composited pixbuf if necessary and pass the reference to the caller.
 	 */
-	void           (*get_icon)             (NMDevice *device,
+	void           (*get_icon_status)      (NMDevice *device,
 	                                        NMDeviceState state,
 	                                        NMConnection *connection,
 	                                        GdkPixbuf **out_pixbuf,

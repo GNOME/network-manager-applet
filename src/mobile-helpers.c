@@ -40,7 +40,7 @@ mobile_helper_get_status_pixbuf (guint32 quality,
 {
 	GdkPixbuf *pixbuf, *qual_pixbuf, *wwan_pixbuf, *tmp;
 
-	wwan_pixbuf = nma_icon_check_and_load ("nm-wwan-tower", applet);
+	wwan_pixbuf = nma_icon_check_and_load ("nm-wwan-tower-status", applet);
 
 	if (!quality_valid)
 		quality = 0;
@@ -71,7 +71,7 @@ mobile_helper_get_status_pixbuf (guint32 quality,
 
 	/* And finally the roaming or technology icon */
 	if (state == MB_STATE_ROAMING) {
-		tmp = nma_icon_check_and_load ("nm-mb-roam", applet);
+		tmp = nma_icon_check_and_load ("nm-mb-roam-status", applet);
 		gdk_pixbuf_composite (tmp, pixbuf, 0, 0,
 		                      gdk_pixbuf_get_width (tmp),
 							  gdk_pixbuf_get_height (tmp),
@@ -96,15 +96,15 @@ const char *
 mobile_helper_get_quality_icon_name (guint32 quality)
 {
 	if (quality > 80)
-		return "nm-signal-100";
+		return "nm-signal-100-status";
 	else if (quality > 55)
-		return "nm-signal-75";
+		return "nm-signal-75-status";
 	else if (quality > 30)
-		return "nm-signal-50";
+		return "nm-signal-50-status";
 	else if (quality > 5)
-		return "nm-signal-25";
+		return "nm-signal-25-status";
 	else 
-		return "nm-signal-00";
+		return "nm-signal-00-status";
 }
 
 const char *
@@ -112,23 +112,23 @@ mobile_helper_get_tech_icon_name (guint32 tech)
 {
 	switch (tech) {
 	case MB_TECH_1XRTT:
-		return "nm-tech-cdma-1x";
+		return "nm-tech-cdma-1x-status";
 	case MB_TECH_EVDO:
-		return "nm-tech-evdo";
+		return "nm-tech-evdo-status";
 	case MB_TECH_GSM:
 	case MB_TECH_GPRS:
-		return "nm-tech-gprs";
+		return "nm-tech-gprs-status";
 	case MB_TECH_EDGE:
-		return "nm-tech-edge";
+		return "nm-tech-edge-status";
 	case MB_TECH_UMTS:
-		return "nm-tech-umts";
+		return "nm-tech-umts-status";
 	case MB_TECH_HSDPA:
 	case MB_TECH_HSUPA:
 	case MB_TECH_HSPA:
 	case MB_TECH_HSPA_PLUS:
-		return "nm-tech-hspa";
+		return "nm-tech-hspa-status";
 	case MB_TECH_LTE:
-		return "nm-tech-lte";
+		return "nm-tech-lte-status";
 	case MB_TECH_WIMAX:
 	default:
 		return NULL;

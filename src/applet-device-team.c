@@ -89,13 +89,13 @@ team_notify_connected (NMDevice *device,
 }
 
 static void
-team_get_icon (NMDevice *device,
-               NMDeviceState state,
-               NMConnection *connection,
-               GdkPixbuf **out_pixbuf,
-               const char **out_icon_name,
-               char **tip,
-               NMApplet *applet)
+team_get_icon_status (NMDevice *device,
+                      NMDeviceState state,
+                      NMConnection *connection,
+                      GdkPixbuf **out_pixbuf,
+                      const char **out_icon_name,
+                      char **tip,
+                      NMApplet *applet)
 {
 	NMSettingConnection *s_con;
 	const char *id;
@@ -120,7 +120,7 @@ team_get_icon (NMDevice *device,
 		*tip = g_strdup_printf (_("Requesting address for '%s'..."), id);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
-		*out_icon_name = "nm-device-wired";
+		*out_icon_name = "nm-device-wired-status";
 		*tip = g_strdup_printf (_("Team connection '%s' active"), id);
 		break;
 	default:
@@ -157,7 +157,7 @@ applet_device_team_get_class (NMApplet *applet)
 	dclass->new_auto_connection = team_new_auto_connection;
 	dclass->add_menu_item = team_add_menu_item;
 	dclass->notify_connected = team_notify_connected;
-	dclass->get_icon = team_get_icon;
+	dclass->get_icon_status = team_get_icon_status;
 	dclass->get_secrets = team_get_secrets;
 
 	return dclass;
