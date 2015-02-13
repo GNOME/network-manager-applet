@@ -78,13 +78,20 @@ mobile_helper_get_status_pixbuf (guint32 quality,
 							  0, 0, 1.0, 1.0,
 							  GDK_INTERP_BILINEAR, 255);
 	} else {
-		tmp = nma_icon_check_and_load (mobile_helper_get_tech_icon_name (access_tech), applet);
-		if (tmp) {
-			gdk_pixbuf_composite (tmp, pixbuf, 0, 0,
-				                  gdk_pixbuf_get_width (tmp),
-								  gdk_pixbuf_get_height (tmp),
-								  0, 0, 1.0, 1.0,
-								  GDK_INTERP_BILINEAR, 255);
+		const gchar *tech_icon_name;
+
+		/* Only try to add the access tech info icon if we get a valid
+		 * access tech reported. */
+		tech_icon_name = mobile_helper_get_tech_icon_name (access_tech);
+		if (tech_icon_name) {
+			tmp = nma_icon_check_and_load (tech_icon_name, applet);
+			if (tmp) {
+				gdk_pixbuf_composite (tmp, pixbuf, 0, 0,
+				                      gdk_pixbuf_get_width (tmp),
+				                      gdk_pixbuf_get_height (tmp),
+				                      0, 0, 1.0, 1.0,
+				                      GDK_INTERP_BILINEAR, 255);
+			}
 		}
 	}
 
