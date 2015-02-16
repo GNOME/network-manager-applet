@@ -36,60 +36,70 @@
 
 G_DEFINE_TYPE (NMNetworkMenuItem, nm_network_menu_item, GTK_TYPE_IMAGE_MENU_ITEM);
 
+#define NM_NETWORK_MENU_ITEM_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), NM_TYPE_NETWORK_MENU_ITEM, NMNetworkMenuItemPrivate))
+
+typedef struct {
+	GtkWidget * ssid;
+	char      * ssid_string;
+	GtkWidget * strength;
+	guint32     int_strength;
+	GtkWidget * detail;
+	GtkWidget * hbox;
+	gchar *     hash;
+	GSList *    dupes;
+	gboolean    has_connections;
+	gboolean    is_adhoc;
+	gboolean    is_encrypted;
+} NMNetworkMenuItemPrivate;
+
 static void
-nm_network_menu_item_init (NMNetworkMenuItem * item)
+nm_network_menu_item_init (NMNetworkMenuItem *item)
 {
-	item->hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-	item->ssid = gtk_label_new (NULL);
-	gtk_misc_set_alignment (GTK_MISC (item->ssid), 0.0, 0.5);
+	NMNetworkMenuItemPrivate *priv = NM_NETWORK_MENU_ITEM_GET_PRIVATE (item);
 
-	item->detail = gtk_image_new ();
+	priv->hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+	priv->ssid = gtk_label_new (NULL);
+	gtk_misc_set_alignment (GTK_MISC (priv->ssid), 0.0, 0.5);
 
-	gtk_container_add (GTK_CONTAINER (item), item->hbox);
-	gtk_box_pack_start (GTK_BOX (item->hbox), item->ssid, TRUE, TRUE, 0);
-	gtk_box_pack_start (GTK_BOX (item->hbox), item->detail, FALSE, FALSE, 0);
+	priv->detail = gtk_image_new ();
 
-	item->strength = gtk_image_new ();
-	gtk_box_pack_end (GTK_BOX (item->hbox), item->strength, FALSE, TRUE, 0);
+	gtk_container_add (GTK_CONTAINER (item), priv->hbox);
+	gtk_box_pack_start (GTK_BOX (priv->hbox), priv->ssid, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (priv->hbox), priv->detail, FALSE, FALSE, 0);
 
-	gtk_widget_show (item->ssid);
-	gtk_widget_show (item->strength);
-	gtk_widget_show (item->detail);
-	gtk_widget_show (item->hbox);
+	priv->strength = gtk_image_new ();
+	gtk_box_pack_end (GTK_BOX (priv->hbox), priv->strength, FALSE, TRUE, 0);
+
+	gtk_widget_show (priv->ssid);
+	gtk_widget_show (priv->strength);
+	gtk_widget_show (priv->detail);
+	gtk_widget_show (priv->hbox);
 }
 
 GtkWidget*
 nm_network_menu_item_new (const char *hash, gboolean has_connections)
 {
-	NMNetworkMenuItem * item;
+	NMNetworkMenuItem *item;
 
 	item = g_object_new (NM_TYPE_NETWORK_MENU_ITEM, NULL);
-	if (item == NULL)
-		return NULL;
-
-	item->has_connections = has_connections;
-	item->hash = g_strdup (hash);
+	g_assert (item);
+	NM_NETWORK_MENU_ITEM_GET_PRIVATE (item)->has_connections = has_connections;
+	NM_NETWORK_MENU_ITEM_GET_PRIVATE (item)->hash = g_strdup (hash);
 	return GTK_WIDGET (item);
 }
 
 static void
-nm_network_menu_item_dispose (GObject *object)
+finalize (GObject *object)
 {
-	NMNetworkMenuItem * item = NM_NETWORK_MENU_ITEM (object);
+	NMNetworkMenuItemPrivate *priv = NM_NETWORK_MENU_ITEM_GET_PRIVATE (object);
 
-	if (item->destroyed) {
-		G_OBJECT_CLASS (nm_network_menu_item_parent_class)->dispose (object);
-		return;
-	}
+	g_free (priv->hash);
+	g_free (priv->ssid_string);
 
-	item->destroyed = TRUE;
-	g_free (item->hash);
-	g_free (item->ssid_string);
+	g_slist_foreach (priv->dupes, (GFunc) g_free, NULL);
+	g_slist_free (priv->dupes);
 
-	g_slist_foreach (item->dupes, (GFunc) g_free, NULL);
-	g_slist_free (item->dupes);
-
-	G_OBJECT_CLASS (nm_network_menu_item_parent_class)->dispose (object);
+	G_OBJECT_CLASS (nm_network_menu_item_parent_class)->finalize (object);
 }
 
 static void
@@ -97,62 +107,67 @@ nm_network_menu_item_class_init (NMNetworkMenuItemClass * klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
+	g_type_class_add_private (klass, sizeof (NMNetworkMenuItemPrivate));
+
 	/* virtual methods */
-	object_class->dispose = nm_network_menu_item_dispose;
+	object_class->finalize = finalize;
 }
 
 void
 nm_network_menu_item_set_ssid (NMNetworkMenuItem *item, GByteArray *ssid)
 {
-	g_return_if_fail (item != NULL);
+	NMNetworkMenuItemPrivate *priv;
+
 	g_return_if_fail (NM_IS_NETWORK_MENU_ITEM (item));
 	g_return_if_fail (ssid != NULL);
 
-	g_free (item->ssid_string);
+	priv = NM_NETWORK_MENU_ITEM_GET_PRIVATE (item);
 
-	item->ssid_string = nm_utils_ssid_to_utf8 (ssid);
-	if (!item->ssid_string) {
+	g_free (priv->ssid_string);
+
+	priv->ssid_string = nm_utils_ssid_to_utf8 (ssid);
+	if (!priv->ssid_string) {
 		// FIXME: shouldn't happen; always coerce the SSID to _something_
-		item->ssid_string = g_strdup ("<unknown>");
+		priv->ssid_string = g_strdup ("<unknown>");
 	}
-	gtk_label_set_text (GTK_LABEL (item->ssid), item->ssid_string);
+	gtk_label_set_text (GTK_LABEL (priv->ssid), priv->ssid_string);
 }
 
 const char *
 nm_network_menu_item_get_ssid (NMNetworkMenuItem *item)
 {
-	g_return_val_if_fail (item != NULL, NULL);
 	g_return_val_if_fail (NM_IS_NETWORK_MENU_ITEM (item), NULL);
 
-	return item->ssid_string;
+	return NM_NETWORK_MENU_ITEM_GET_PRIVATE (item)->ssid_string;
 }
 
 guint32
-nm_network_menu_item_get_strength (NMNetworkMenuItem * item)
+nm_network_menu_item_get_strength (NMNetworkMenuItem *item)
 {
-	g_return_val_if_fail (item != NULL, 0);
 	g_return_val_if_fail (NM_IS_NETWORK_MENU_ITEM (item), 0);
 
-	return item->int_strength;
+	return NM_NETWORK_MENU_ITEM_GET_PRIVATE (item)->int_strength;
 }
 
 void
-nm_network_menu_item_best_strength (NMNetworkMenuItem * item,
+nm_network_menu_item_best_strength (NMNetworkMenuItem *item,
                                     guint8 strength,
                                     NMApplet *applet)
 {
+	NMNetworkMenuItemPrivate *priv;
 	GdkPixbuf *icon = NULL, *pixbuf, *top;
 
-	g_return_if_fail (item != NULL);
 	g_return_if_fail (NM_IS_NETWORK_MENU_ITEM (item));
+
+	priv = NM_NETWORK_MENU_ITEM_GET_PRIVATE (item);
 
 	strength = MIN (strength, 100);
 
 	/* Just do nothing if the new strength is less */
-	if (strength < item->int_strength)
+	if (strength < priv->int_strength)
 		return;
 
-	item->int_strength = strength;
+	priv->int_strength = strength;
 
 	if (strength > 80)
 		icon = nma_icon_check_and_load ("nm-signal-100", applet);
@@ -168,7 +183,7 @@ nm_network_menu_item_best_strength (NMNetworkMenuItem * item,
 	pixbuf = gdk_pixbuf_copy (icon);
 
 	/* If the AP is "secure", composite the lock icon on top of the signal bars */
-	if (item->is_encrypted) {
+	if (priv->is_encrypted) {
 		top = nma_icon_check_and_load ("nm-secure-lock", applet);
 		gdk_pixbuf_composite (top, pixbuf, 0, 0, gdk_pixbuf_get_width (top),
 							  gdk_pixbuf_get_height (top),
@@ -185,17 +200,16 @@ nm_network_menu_item_best_strength (NMNetworkMenuItem * item,
 		pixbuf = scaled;
 	}
 
-	gtk_image_set_from_pixbuf (GTK_IMAGE (item->strength), pixbuf);
+	gtk_image_set_from_pixbuf (GTK_IMAGE (priv->strength), pixbuf);
 	g_object_unref (pixbuf);
 }
 
 const char *
-nm_network_menu_item_get_hash (NMNetworkMenuItem * item)
+nm_network_menu_item_get_hash (NMNetworkMenuItem *item)
 {
-	g_return_val_if_fail (item != NULL, NULL);
 	g_return_val_if_fail (NM_IS_NETWORK_MENU_ITEM (item), NULL);
 
-	return item->hash;
+	return NM_NETWORK_MENU_ITEM_GET_PRIVATE (item)->hash;
 }
 
 void
@@ -204,32 +218,34 @@ nm_network_menu_item_set_detail (NMNetworkMenuItem *item,
                                  GdkPixbuf *adhoc_icon,
                                  guint32 dev_caps)
 {
+	NMNetworkMenuItemPrivate *priv;
 	gboolean is_adhoc = FALSE;
 	guint32 ap_flags, ap_wpa, ap_rsn;
 
-	g_return_if_fail (item != NULL);
 	g_return_if_fail (NM_IS_NETWORK_MENU_ITEM (item));
+
+	priv = NM_NETWORK_MENU_ITEM_GET_PRIVATE (item);
 
 	ap_flags = nm_access_point_get_flags (ap);
 	ap_wpa = nm_access_point_get_wpa_flags (ap);
 	ap_rsn = nm_access_point_get_rsn_flags (ap);
 
 	if ((ap_flags & NM_802_11_AP_FLAGS_PRIVACY) || ap_wpa || ap_rsn)
-		item->is_encrypted = TRUE;
+		priv->is_encrypted = TRUE;
 
 	if (nm_access_point_get_mode (ap) == NM_802_11_MODE_ADHOC) {
 		GdkPixbuf *scaled = NULL;
 
-		item->is_adhoc = is_adhoc = TRUE;
+		priv->is_adhoc = is_adhoc = TRUE;
 
 		if (gdk_pixbuf_get_height (adhoc_icon) > 24 || gdk_pixbuf_get_width (adhoc_icon) > 24)
 			scaled = gdk_pixbuf_scale_simple (adhoc_icon, 24, 24, GDK_INTERP_BILINEAR);
 
-		gtk_image_set_from_pixbuf (GTK_IMAGE (item->detail), scaled ? scaled : adhoc_icon);
+		gtk_image_set_from_pixbuf (GTK_IMAGE (priv->detail), scaled ? scaled : adhoc_icon);
 
 		g_clear_object (&scaled);
 	} else
-		gtk_image_set_from_stock (GTK_IMAGE (item->detail), NULL, GTK_ICON_SIZE_MENU);
+		gtk_image_set_from_stock (GTK_IMAGE (priv->detail), NULL, GTK_ICON_SIZE_MENU);
 
 	/* Don't enable the menu item the device can't even connect to the AP */
 	if (   !nm_utils_security_valid (NMU_SEC_NONE, dev_caps, TRUE, is_adhoc, ap_flags, ap_wpa, ap_rsn)
@@ -247,15 +263,17 @@ nm_network_menu_item_set_detail (NMNetworkMenuItem *item,
 gboolean
 nm_network_menu_item_find_dupe (NMNetworkMenuItem *item, NMAccessPoint *ap)
 {
+	NMNetworkMenuItemPrivate *priv;
 	const char *path;
 	GSList *iter;
 
-	g_return_val_if_fail (item != NULL, FALSE);
 	g_return_val_if_fail (NM_IS_NETWORK_MENU_ITEM (item), FALSE);
 	g_return_val_if_fail (NM_IS_ACCESS_POINT (ap), FALSE);
 
+	priv = NM_NETWORK_MENU_ITEM_GET_PRIVATE (item);
+
 	path = nm_object_get_path (NM_OBJECT (ap));
-	for (iter = item->dupes; iter; iter = g_slist_next (iter)) {
+	for (iter = priv->dupes; iter; iter = g_slist_next (iter)) {
 		if (!strcmp (path, iter->data))
 			return TRUE;
 	}
@@ -265,57 +283,57 @@ nm_network_menu_item_find_dupe (NMNetworkMenuItem *item, NMAccessPoint *ap)
 void
 nm_network_menu_item_set_active (NMNetworkMenuItem *item, gboolean active)
 {
+	NMNetworkMenuItemPrivate *priv;
 	char *markup;
 
-	g_return_if_fail (item != NULL);
 	g_return_if_fail (NM_IS_NETWORK_MENU_ITEM (item));
 
-	gtk_label_set_use_markup (GTK_LABEL (item->ssid), active);
+	priv = NM_NETWORK_MENU_ITEM_GET_PRIVATE (item);
+
+	gtk_label_set_use_markup (GTK_LABEL (priv->ssid), active);
 	if (active) {
-		markup = g_markup_printf_escaped ("<b>%s</b>", item->ssid_string);
-		gtk_label_set_markup (GTK_LABEL (item->ssid), markup);
+		markup = g_markup_printf_escaped ("<b>%s</b>", priv->ssid_string);
+		gtk_label_set_markup (GTK_LABEL (priv->ssid), markup);
 		g_free (markup);
 	} else
-		gtk_label_set_text (GTK_LABEL (item->ssid), item->ssid_string);
+		gtk_label_set_text (GTK_LABEL (priv->ssid), priv->ssid_string);
 }
 
 void
 nm_network_menu_item_add_dupe (NMNetworkMenuItem *item, NMAccessPoint *ap)
 {
+	NMNetworkMenuItemPrivate *priv;
 	const char *path;
 
-	g_return_if_fail (item != NULL);
 	g_return_if_fail (NM_IS_NETWORK_MENU_ITEM (item));
 	g_return_if_fail (NM_IS_ACCESS_POINT (ap));
 
+	priv = NM_NETWORK_MENU_ITEM_GET_PRIVATE (item);
 	path = nm_object_get_path (NM_OBJECT (ap));
-	item->dupes = g_slist_prepend (item->dupes, g_strdup (path));
+	priv->dupes = g_slist_prepend (priv->dupes, g_strdup (path));
 }
 
 gboolean
 nm_network_menu_item_get_has_connections (NMNetworkMenuItem *item)
 {
-	g_return_val_if_fail (item != NULL, FALSE);
 	g_return_val_if_fail (NM_IS_NETWORK_MENU_ITEM (item), FALSE);
 
-	return item->has_connections;
+	return NM_NETWORK_MENU_ITEM_GET_PRIVATE (item)->has_connections;
 }
 
 gboolean
 nm_network_menu_item_get_is_adhoc (NMNetworkMenuItem *item)
 {
-	g_return_val_if_fail (item != NULL, FALSE);
 	g_return_val_if_fail (NM_IS_NETWORK_MENU_ITEM (item), FALSE);
 
-	return item->is_adhoc;
+	return NM_NETWORK_MENU_ITEM_GET_PRIVATE (item)->is_adhoc;
 }
 
 gboolean
 nm_network_menu_item_get_is_encrypted (NMNetworkMenuItem *item)
 {
-	g_return_val_if_fail (item != NULL, FALSE);
 	g_return_val_if_fail (NM_IS_NETWORK_MENU_ITEM (item), FALSE);
 
-	return item->is_encrypted;
+	return NM_NETWORK_MENU_ITEM_GET_PRIVATE (item)->is_encrypted;
 }
 

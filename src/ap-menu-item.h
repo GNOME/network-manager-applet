@@ -39,27 +39,11 @@
 typedef struct _NMNetworkMenuItem	    NMNetworkMenuItem;
 typedef struct _NMNetworkMenuItemClass  NMNetworkMenuItemClass;
 
-struct _NMNetworkMenuItem
-{
-	GtkImageMenuItem image_item;
-
-	/*< private >*/
-	GtkWidget * ssid;
-	char      * ssid_string;
-	GtkWidget * strength;
-	guint32     int_strength;
-	GtkWidget * detail;
-	GtkWidget * hbox;
-	gchar *     hash;
-	gboolean    destroyed;
-	GSList *    dupes;
-	gboolean    has_connections;
-	gboolean    is_adhoc;
-	gboolean    is_encrypted;
+struct _NMNetworkMenuItem {
+	GtkImageMenuItem parent;
 };
 
-struct _NMNetworkMenuItemClass
-{
+struct _NMNetworkMenuItemClass {
 	GtkImageMenuItemClass parent_class;
 };
 
