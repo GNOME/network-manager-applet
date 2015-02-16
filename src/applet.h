@@ -45,7 +45,7 @@
 #include <nm-remote-settings.h>
 #include "applet-agent.h"
 
-#if WITH_MODEM_MANAGER_1
+#if WITH_WWAN
 #include <libmm-glib.h>
 #endif
 
@@ -92,7 +92,7 @@ typedef struct
 
 	GSettings *gsettings;
 
-#if WITH_MODEM_MANAGER_1
+#if WITH_WWAN
 	MMManager *mm1;
 	gboolean   mm1_running;
 #endif
@@ -105,9 +105,7 @@ typedef struct
 	/* Device classes */
 	NMADeviceClass *ethernet_class;
 	NMADeviceClass *wifi_class;
-	NMADeviceClass *gsm_class;
-	NMADeviceClass *cdma_class;
-#if WITH_MODEM_MANAGER_1
+#if WITH_WWAN
 	NMADeviceClass *broadband_class;
 #endif
 	NMADeviceClass *bt_class;

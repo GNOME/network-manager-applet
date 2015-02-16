@@ -43,7 +43,7 @@
 #include "nm-utils.h"
 #include "utils.h"
 
-#if WITH_MODEM_MANAGER_1
+#if WITH_WWAN
 #include <libmm-glib.h>
 #endif
 
@@ -69,15 +69,12 @@ typedef struct {
 	gboolean dun_enabled;
 
 	/* DUN stuff */
-	DBusGProxy *dun_proxy;
-	DBusGProxy *mm_proxy;
-	GSList *modem_proxies;
-	char *rfcomm_iface;
-	guint dun_timeout_id;
-
-#if WITH_MODEM_MANAGER_1
+#if WITH_WWAN
 	GDBusConnection *dbus_connection;
 	MMManager *modem_manager_1;
+	DBusGProxy *dun_proxy;
+	char *rfcomm_iface;
+	guint dun_timeout_id;
 #endif
 
 	GtkWindow *parent_window;
@@ -113,15 +110,6 @@ static void _set_dun_enabled (NmaBtDevice *device, gboolean enabled);
 #define BLUEZ_DEVICE_INTERFACE  "org.bluez.Device"
 #define BLUEZ_SERIAL_INTERFACE  "org.bluez.Serial"
 #define BLUEZ_NETWORK_INTERFACE "org.bluez.Network"
-
-#define MM_SERVICE         "org.freedesktop.ModemManager"
-#define MM_PATH            "/org/freedesktop/ModemManager"
-#define MM_INTERFACE       "org.freedesktop.ModemManager"
-#define MM_MODEM_INTERFACE "org.freedesktop.ModemManager.Modem"
-
-#if WITH_MODEM_MANAGER_1
-#include <libmm-glib.h>
-#endif
 
 /*********************************************************************/
 
@@ -282,16 +270,8 @@ static void
 dun_cleanup (NmaBtDevice *self)
 {
 	NmaBtDevicePrivate *priv = NMA_BT_DEVICE_GET_PRIVATE (self);
-	GSList *iter;
 
-	/* ModemManager */
-	for (iter = priv->modem_proxies; iter; iter = g_slist_next (iter))
-		g_object_unref (DBUS_G_PROXY (iter->data));
-	g_slist_free (priv->modem_proxies);
-	priv->modem_proxies = NULL;
-	g_clear_object (&priv->mm_proxy);
-
-#if WITH_MODEM_MANAGER_1
+#if WITH_WWAN
 	g_clear_object (&priv->dbus_connection);
 	g_clear_object (&priv->modem_manager_1);
 #endif
@@ -517,124 +497,7 @@ start_wizard (NmaBtDevice *self,
 	nma_mobile_wizard_present (priv->wizard);
 }
 
-static void
-modem_get_all_cb (DBusGProxy *proxy, DBusGProxyCall *call, gpointer user_data)
-{
-	NmaBtDevice *self = NMA_BT_DEVICE (user_data);
-	NmaBtDevicePrivate *priv = NMA_BT_DEVICE_GET_PRIVATE (self);
-	const char *path;
-	GHashTable *properties = NULL;
-	GError *error = NULL;
-	GValue *value;
-	NMDeviceModemCapabilities caps = NM_DEVICE_MODEM_CAPABILITY_NONE;
-
-	path = dbus_g_proxy_get_path (proxy);
-	g_message ("%s: (%s) processing GetAll reply", __func__, path);
-
-	if (!dbus_g_proxy_end_call (proxy, call, &error,
-	                            DBUS_TYPE_G_MAP_OF_VARIANT, &properties,
-	                            G_TYPE_INVALID)) {
-		g_warning ("%s: (%s) Error getting modem properties: (%d) %s",
-		           __func__,
-		           path,
-		           error ? error->code : -1,
-		           (error && error->message) ? error->message : "(unknown)");
-		g_error_free (error);
-		goto out;
-	}
-
-	/* check whether this is the device we care about */
-	value = g_hash_table_lookup (properties, "Device");
-	if (value && G_VALUE_HOLDS_STRING (value) && g_value_get_string (value)) {
-		char *iface_basename = g_path_get_basename (priv->rfcomm_iface);
-		const char *modem_iface = g_value_get_string (value);
-
-		if (strcmp (iface_basename, modem_iface) == 0) {
-			/* yay, found it! */
-
-			value = g_hash_table_lookup (properties, "Type");
-			if (value && G_VALUE_HOLDS_UINT (value)) {
-				switch (g_value_get_uint (value)) {
-				case 1:
-					caps = NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS;
-					break;
-				case 2:
-					caps = NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO;
-					break;
-				default:
-					g_message ("%s: (%s) unknown modem type", __func__, path);
-					break;
-				}
-			}
-		} else {
-			g_message ("%s: (%s) (%s) not the modem we're looking for (%s)",
-			           __func__, path, modem_iface, iface_basename);
-		}
-
-		g_free (iface_basename);
-	} else
-		g_message ("%s: (%s) modem had no 'Device' property", __func__, path);
-
-	g_hash_table_unref (properties);
-
-	/* Launch wizard! */
-	start_wizard (self, path, caps);
-
-out:
-	g_message ("%s: finished", __func__);
-}
-
-static void
-modem_added (DBusGProxy *proxy, const char *path, gpointer user_data)
-{
-	NmaBtDevice *self = NMA_BT_DEVICE (user_data);
-	NmaBtDevicePrivate *priv = NMA_BT_DEVICE_GET_PRIVATE (self);
-	DBusGProxy *props_proxy;
-
-	g_return_if_fail (path != NULL);
-
-	g_message ("%s: (%s) modem found", __func__, path);
-
-	/* Create a proxy for the modem and get its properties */
-	props_proxy = dbus_g_proxy_new_for_name (priv->bus,
-	                                         MM_SERVICE,
-	                                         path,
-	                                         "org.freedesktop.DBus.Properties");
-	g_assert (proxy);
-	priv->modem_proxies = g_slist_append (priv->modem_proxies, props_proxy);
-
-	g_message ("%s: (%s) calling GetAll...", __func__, path);
-
-	dbus_g_proxy_begin_call (props_proxy, "GetAll",
-	                         modem_get_all_cb,
-	                         self,
-	                         NULL,
-	                         G_TYPE_STRING, MM_MODEM_INTERFACE,
-	                         G_TYPE_INVALID);
-}
-
-static void
-modem_removed (DBusGProxy *proxy, const char *path, gpointer user_data)
-{
-	NmaBtDevice *self = NMA_BT_DEVICE (user_data);
-	NmaBtDevicePrivate *priv = NMA_BT_DEVICE_GET_PRIVATE (self);
-	GSList *iter;
-
-	g_return_if_fail (path != NULL);
-
-	g_message ("%s: (%s) modem removed", __func__, path);
-
-	/* Clean up if a modem gets removed */
-	for (iter = priv->modem_proxies; iter; iter = g_slist_next (iter)) {
-		if (!strcmp (path, dbus_g_proxy_get_path (DBUS_G_PROXY (iter->data)))) {
-			priv->modem_proxies = g_slist_remove (priv->modem_proxies, iter->data);
-			g_object_unref (iter->data);
-			break;
-		}
-	}
-}
-
-#if WITH_MODEM_MANAGER_1
+#if WITH_WWAN
 
 static gboolean
 check_modem (NmaBtDevice *self,
@@ -697,7 +560,7 @@ modem_object_added (MMManager *modem_manager,
 	check_modem (self, modem_object);
 }
 
-#endif /* WITH_MODEM_MANAGER_1 */
+#endif /* WITH_WWAN */
 
 static void
 dun_connect_cb (DBusGProxy *proxy,
@@ -708,7 +571,7 @@ dun_connect_cb (DBusGProxy *proxy,
 	NmaBtDevicePrivate *priv = NMA_BT_DEVICE_GET_PRIVATE (self);
 	GError *error = NULL;
 	char *device;
-#if WITH_MODEM_MANAGER_1
+#if WITH_WWAN
 	GList *modems, *iter;
 	gboolean matched = FALSE;
 #endif
@@ -733,7 +596,7 @@ dun_connect_cb (DBusGProxy *proxy,
 	priv->rfcomm_iface = device;
 	g_message ("%s: new rfcomm interface '%s'", __func__, device);
 
-#if WITH_MODEM_MANAGER_1
+#if WITH_WWAN
 	/* ModemManager1 stuff */
 	priv->dbus_connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
 	if (!priv->dbus_connection) {
@@ -813,29 +676,6 @@ dun_start (NmaBtDevice *self)
 	g_message ("%s: starting DUN device discovery...", __func__);
 
 	_set_status (self, _("Detecting phone configuration..."));
-
-	/* ModemManager stuff */
-	priv->mm_proxy = dbus_g_proxy_new_for_name (priv->bus,
-	                                            MM_SERVICE,
-	                                            MM_PATH,
-	                                            MM_INTERFACE);
-	g_assert (priv->mm_proxy);
-
-	dbus_g_object_register_marshaller (g_cclosure_marshal_VOID__BOXED,
-	                                   G_TYPE_NONE,
-	                                   G_TYPE_BOXED,
-	                                   G_TYPE_INVALID);
-	dbus_g_proxy_add_signal (priv->mm_proxy, "DeviceAdded",
-	                         DBUS_TYPE_G_OBJECT_PATH, G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal (priv->mm_proxy, "DeviceAdded",
-								 G_CALLBACK (modem_added), self,
-								 NULL);
-
-	dbus_g_proxy_add_signal (priv->mm_proxy, "DeviceRemoved",
-	                         DBUS_TYPE_G_OBJECT_PATH, G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal (priv->mm_proxy, "DeviceRemoved",
-								 G_CALLBACK (modem_removed), self,
-								 NULL);
 
 	/* Bluez */
 	priv->dun_proxy = dbus_g_proxy_new_for_name (priv->bus,

@@ -74,10 +74,10 @@ PKG_CHECK_MODULES(GOBJECT, gobject-2.0)
 PKG_CHECK_MODULES(NMA,
 		[dbus-glib-1 >= 0.74
 		 gio-2.0 >= 2.32
-		 NetworkManager >= 0.9.10
-		 libnm-glib >= 0.9.10
-		 libnm-util >= 0.9.10
-		 libnm-glib-vpn >= 0.9.10
+		 NetworkManager >= 1.0
+		 libnm-glib >= 1.0
+		 libnm-util >= 1.0
+		 libnm-glib-vpn >= 1.0
 		 gmodule-export-2.0])
 
 NMA_CFLAGS="$NMA_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_32"
@@ -147,9 +147,9 @@ esac
 
 AM_CONDITIONAL(HAVE_GBT, test x"$have_gbt" = "xyes")
 
-dnl ModemManager1 with libmm-glib
-AC_ARG_WITH(modem-manager-1, AS_HELP_STRING([--with-modem-manager-1], [Enable new ModemManager1 interface support]),,[with_modem_manager_1=auto])
-if (test "${with_modem_manager_1}" != "no"); then
+dnl ModemManager1 with libmm-glib for WWAN support
+AC_ARG_WITH(wwan, AS_HELP_STRING([--with-wwan], [Enable WWAN support]),,[with_wwan=auto])
+if (test "${with_wwan}" != "no"); then
     PKG_CHECK_MODULES(MM_GLIB,
                       [mm-glib],
                       [have_libmm_glib=yes],
@@ -158,20 +158,20 @@ if (test "${with_modem_manager_1}" != "no"); then
     AC_SUBST(MM_GLIB_LIBS)
 
     if (test "${have_libmm_glib}" = "no"); then
-        if (test "${with_modem_manager_1}" = "yes"); then
+        if (test "${with_wwan}" = "yes"); then
             AC_MSG_ERROR([Couldn't find libmm-glib])
         fi
     else
-        with_modem_manager_1="yes"
+        with_wwan="yes"
     fi
 fi
 
-if (test "${with_modem_manager_1}" = "yes"); then
-    AC_DEFINE(WITH_MODEM_MANAGER_1, 1, [Define if you have ModemManager1 support])
+if (test "${with_wwan}" = "yes"); then
+    AC_DEFINE(WITH_WWAN, 1, [Define if you have ModemManager/WWAN support])
 else
-	AC_DEFINE(WITH_MODEM_MANAGER_1, 0, [Define if you have ModemManager1 support])
+	AC_DEFINE(WITH_WWAN, 0, [Define if you have ModemManager/WWAN support])
 fi
-AM_CONDITIONAL(WITH_MODEM_MANAGER_1, test "${with_modem_manager_1}" = "yes")
+AM_CONDITIONAL(WITH_WWAN, test "${with_wwan}" = "yes")
 
 dnl Check for gudev
 PKG_CHECK_MODULES(GUDEV, gudev-1.0 >= 147)

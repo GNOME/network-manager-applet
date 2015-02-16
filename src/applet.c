@@ -76,10 +76,8 @@
 #include "applet-device-team.h"
 #include "applet-device-bridge.h"
 #include "applet-device-bt.h"
-#include "applet-device-cdma.h"
 #include "applet-device-ethernet.h"
 #include "applet-device-infiniband.h"
-#include "applet-device-gsm.h"
 #include "applet-device-vlan.h"
 #include "applet-device-wifi.h"
 #include "applet-device-wimax.h"
@@ -90,7 +88,7 @@
 #include "nm-ui-utils.h"
 #include "nm-glib-compat.h"
 
-#if WITH_MODEM_MANAGER_1
+#if WITH_WWAN
 # include "applet-device-broadband.h"
 #endif
 
@@ -198,7 +196,6 @@ impl_dbus_connect_to_3g_network (NMApplet *applet,
                                  GError **error)
 {
 	NMDevice *device;
-	NMDeviceModemCapabilities caps;
 
 	device = nm_client_get_device_by_path (applet->nm_client, device_path);
 	if (!device || NM_IS_DEVICE_MODEM (device) == FALSE) {
@@ -209,35 +206,18 @@ impl_dbus_connect_to_3g_network (NMApplet *applet,
 		return FALSE;
 	}
 
-#if WITH_MODEM_MANAGER_1
-	if (g_str_has_prefix (nm_device_get_udi (device), "/org/freedesktop/ModemManager1/Modem/")) {
-		if (applet->mm1_running) {
-			applet_broadband_connect_network (applet, device);
-			return TRUE;
-		}
-
-		g_set_error_literal (error,
-		                     NM_SECRET_AGENT_ERROR,
-		                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
-		                     "ModemManager was not found");
-		return FALSE;
+#if WITH_WWAN
+	if (applet->mm1_running) {
+		applet_broadband_connect_network (applet, device);
+		return TRUE;
 	}
 #endif
 
-	caps = nm_device_modem_get_current_capabilities (NM_DEVICE_MODEM (device));
-	if (caps & NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS) {
-		applet_gsm_connect_network (applet, device);
-	} else if (caps & NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO) {
-		applet_cdma_connect_network (applet, device);
-	} else {
-		g_set_error_literal (error,
-		                     NM_SECRET_AGENT_ERROR,
-		                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
-		                     "The device had no GSM or CDMA capabilities.");
-		return FALSE;
-	}
-
-	return TRUE;
+	g_set_error_literal (error,
+	                     NM_SECRET_AGENT_ERROR,
+	                     NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+	                     "ModemManager was not found");
+	return FALSE;
 }
 
 #include "applet-dbus-bindings.h"
@@ -255,20 +235,11 @@ get_device_class (NMDevice *device, NMApplet *applet)
 	else if (NM_IS_DEVICE_WIFI (device))
 		return applet->wifi_class;
 	else if (NM_IS_DEVICE_MODEM (device)) {
-		NMDeviceModemCapabilities caps;
-
-#if WITH_MODEM_MANAGER_1
-		if (g_str_has_prefix (nm_device_get_udi (device), "/org/freedesktop/ModemManager1/Modem/"))
-			return applet->broadband_class;
+#if WITH_WWAN
+		return applet->broadband_class;
+#else
+		g_debug ("%s: modem found but WWAN support not enabled", __func__);
 #endif
-
-		caps = nm_device_modem_get_current_capabilities (NM_DEVICE_MODEM (device));
-		if (caps & NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS)
-			return applet->gsm_class;
-		else if (caps & NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO)
-			return applet->cdma_class;
-		else
-			g_debug ("%s: unhandled modem capabilities 0x%X", __func__, caps);
 	} else if (NM_IS_DEVICE_BT (device))
 		return applet->bt_class;
 	else if (NM_IS_DEVICE_WIMAX (device))
@@ -307,14 +278,10 @@ get_device_class_from_connection (NMConnection *connection, NMApplet *applet)
 		return applet->ethernet_class;
 	else if (!strcmp (ctype, NM_SETTING_WIRELESS_SETTING_NAME))
 		return applet->wifi_class;
-#if WITH_MODEM_MANAGER_1
-	else if (applet->mm1_running && (!strcmp (ctype, NM_SETTING_GSM_SETTING_NAME) || !strcmp (ctype, NM_SETTING_CDMA_SETTING_NAME)))
+#if WITH_WWAN
+	else if (!strcmp (ctype, NM_SETTING_GSM_SETTING_NAME) || !strcmp (ctype, NM_SETTING_CDMA_SETTING_NAME))
 		return applet->broadband_class;
 #endif
-	else if (!strcmp (ctype, NM_SETTING_GSM_SETTING_NAME))
-		return applet->gsm_class;
-	else if (!strcmp (ctype, NM_SETTING_CDMA_SETTING_NAME))
-		return applet->cdma_class;
 	else if (!strcmp (ctype, NM_SETTING_BLUETOOTH_SETTING_NAME))
 		return applet->bt_class;
 	else if (!strcmp (ctype, NM_SETTING_BOND_SETTING_NAME))
@@ -1603,7 +1570,8 @@ add_device_items (NMDeviceType type, const GPtrArray *all_devices, GSList *all_c
 		GSList *connections;
 
 		dclass = get_device_class (device, applet);
-		g_assert (dclass != NULL);
+		if (!dclass)
+			continue;
 
 		connections = nm_device_filter_connections (device, all_connections);
 		active = applet_find_active_connection_for_device (device, applet, NULL);
@@ -2683,7 +2651,7 @@ foo_client_setup (NMApplet *applet)
 	applet_schedule_update_icon (applet);
 }
 
-#if WITH_MODEM_MANAGER_1
+#if WITH_WWAN
 
 static void
 mm1_name_owner_changed_cb (GDBusObjectManagerClient *mm1,
@@ -2739,7 +2707,7 @@ mm1_client_setup (NMApplet *applet)
 	}
 }
 
-#endif /* WITH_MODEM_MANAGER_1 */
+#endif /* WITH_WWAN */
 
 static void
 applet_common_get_device_icon (NMDeviceState state,
@@ -3617,13 +3585,7 @@ initable_init (GInitable *initable, GCancellable *cancellable, GError **error)
 	applet->wifi_class = applet_device_wifi_get_class (applet);
 	g_assert (applet->wifi_class);
 
-	applet->gsm_class = applet_device_gsm_get_class (applet);
-	g_assert (applet->gsm_class);
-
-	applet->cdma_class = applet_device_cdma_get_class (applet);
-	g_assert (applet->cdma_class);
-
-#if WITH_MODEM_MANAGER_1
+#if WITH_WWAN
 	applet->broadband_class = applet_device_broadband_get_class (applet);
 	g_assert (applet->broadband_class);
 #endif
@@ -3649,7 +3611,7 @@ initable_init (GInitable *initable, GCancellable *cancellable, GError **error)
 	applet->infiniband_class = applet_device_infiniband_get_class (applet);
 	g_assert (applet->infiniband_class);
 
-#if WITH_MODEM_MANAGER_1
+#if WITH_WWAN
 	mm1_client_setup (applet);
 #endif
 
@@ -3671,9 +3633,7 @@ static void finalize (GObject *object)
 
 	g_slice_free (NMADeviceClass, applet->ethernet_class);
 	g_slice_free (NMADeviceClass, applet->wifi_class);
-	g_slice_free (NMADeviceClass, applet->gsm_class);
-	g_slice_free (NMADeviceClass, applet->cdma_class);
-#if WITH_MODEM_MANAGER_1
+#if WITH_WWAN
 	g_slice_free (NMADeviceClass, applet->broadband_class);
 #endif
 	g_slice_free (NMADeviceClass, applet->bt_class);
@@ -3707,7 +3667,7 @@ static void finalize (GObject *object)
 	g_clear_object (&applet->gsettings);
 	g_clear_object (&applet->nm_client);
 
-#if WITH_MODEM_MANAGER_1
+#if WITH_WWAN
 	g_clear_object (&applet->mm1);
 #endif
 

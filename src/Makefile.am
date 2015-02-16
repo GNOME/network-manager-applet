@@ -7,6 +7,7 @@ nm_applet_CPPFLAGS = \
 	$(NMA_CFLAGS) \
 	$(LIBSECRET_CFLAGS) \
 	$(NOTIFY_CFLAGS) \
+	$(MM_GLIB_CFLAGS) \
 	-DNM_VERSION_MIN_REQUIRED=NM_VERSION_0_9_10 \
 	-DNM_VERSION_MAX_ALLOWED=NM_VERSION_0_9_10 \
 	-DICONDIR=\""$(datadir)/icons"\"						\
@@ -50,10 +51,6 @@ nm_applet_SOURCES = \
 	ap-menu-item.c \
 	mb-menu-item.h \
 	mb-menu-item.c \
-	applet-device-gsm.h \
-	applet-device-gsm.c \
-	applet-device-cdma.h \
-	applet-device-cdma.c \
 	mobile-helpers.c \
 	mobile-helpers.h \
 	applet-device-bt.h \
@@ -72,24 +69,23 @@ nm_applet_SOURCES = \
 	applet-device-infiniband.c \
 	fallback-icon.h
 
+if WITH_WWAN
+nm_applet_SOURCES += \
+	applet-device-broadband.h \
+	applet-device-broadband.c
+endif
+
 nm_applet_LDADD = \
 	-lm \
 	$(GTK_LIBS) \
 	$(NMA_LIBS) \
 	$(LIBSECRET_LIBS) \
 	$(NOTIFY_LIBS) \
+	$(MM_GLIB_LIBS) \
 	${top_builddir}/src/marshallers/libmarshallers.la \
 	${top_builddir}/src/utils/libutils.la \
 	${top_builddir}/src/wireless-security/libwireless-security.la \
 	${top_builddir}/src/libnm-gtk/libnm-gtk.la
-
-if WITH_MODEM_MANAGER_1
-nm_applet_SOURCES += \
-	applet-device-broadband.h \
-	applet-device-broadband.c
-nm_applet_CPPFLAGS += $(MM_GLIB_CFLAGS)
-nm_applet_LDADD += $(MM_GLIB_LIBS)
-endif
 
 if BUILD_MIGRATION_TOOL
 SUBDIRS += gconf-helpers
