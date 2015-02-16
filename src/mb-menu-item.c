@@ -42,8 +42,6 @@ typedef struct {
 	guint32    int_strength;
 	GtkWidget *detail;
 	GtkWidget *hbox;
-
-	gboolean   destroyed;
 } NMMbMenuItemPrivate;
 
 static const char *
@@ -216,23 +214,11 @@ nm_mb_menu_item_init (NMMbMenuItem *self)
 }
 
 static void
-dispose (GObject *object)
+finalize (GObject *object)
 {
-	NMMbMenuItem *self = NM_MB_MENU_ITEM (object);
-	NMMbMenuItemPrivate *priv = NM_MB_MENU_ITEM_GET_PRIVATE (self);
+	g_free (NM_MB_MENU_ITEM_GET_PRIVATE (object)->desc_string);
 
-	if (priv->destroyed) {
-		G_OBJECT_CLASS (nm_mb_menu_item_parent_class)->dispose (object);
-		return;
-	}
-	priv->destroyed = TRUE;
-
-	gtk_widget_destroy (priv->desc);
-	gtk_widget_destroy (priv->strength);
-	gtk_widget_destroy (priv->hbox);
-	g_free (priv->desc_string);
-
-	G_OBJECT_CLASS (nm_mb_menu_item_parent_class)->dispose (object);
+	G_OBJECT_CLASS (nm_mb_menu_item_parent_class)->finalize (object);
 }
 
 static void
@@ -243,6 +229,6 @@ nm_mb_menu_item_class_init (NMMbMenuItemClass *klass)
 	g_type_class_add_private (klass, sizeof (NMMbMenuItemPrivate));
 
 	/* virtual methods */
-	object_class->dispose = dispose;
+	object_class->finalize = finalize;
 }
 
