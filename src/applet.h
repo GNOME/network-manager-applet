@@ -129,13 +129,13 @@ typedef struct
 	GtkIconTheme *	icon_theme;
 	GHashTable *	icon_cache;
 	GdkPixbuf *		fallback_icon;
+	int             icon_size;
 
 	/* Active status icon pixbufs */
 	GdkPixbuf *		icon_layers[ICON_LAYER_MAX + 1];
 
 	/* Direct UI elements */
 	GtkStatusIcon * status_icon;
-	int             icon_size;
 
 	GtkWidget *		menu;
 	GtkWidget *		context_menu;

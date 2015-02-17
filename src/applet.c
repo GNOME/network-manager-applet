@@ -705,10 +705,11 @@ applet_new_menu_item_helper (NMConnection *connection,
 {
 	NMSettingConnection *s_con = nm_connection_get_setting_connection (connection);
 	GtkWidget *item = gtk_image_menu_item_new_with_label ("");
-	char *markup;
-	GtkWidget *label;
 
 	if (add_active && (active == connection)) {
+		char *markup;
+		GtkWidget *label;
+
 		/* Pure evil */
 		label = gtk_bin_get_child (GTK_BIN (item));
 		gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
@@ -3332,7 +3333,6 @@ error:
 
 static void nma_icons_init (NMApplet *applet)
 {
-	GdkScreen *screen;
 	gboolean path_appended;
 
 	if (applet->icon_theme) {
@@ -3342,9 +3342,7 @@ static void nma_icons_init (NMApplet *applet)
 		g_object_unref (G_OBJECT (applet->icon_theme));
 	}
 
-	screen = gtk_status_icon_get_screen (applet->status_icon);
-	g_assert (screen);
-	applet->icon_theme = gtk_icon_theme_get_for_screen (screen);
+	applet->icon_theme = gtk_icon_theme_get_for_screen (gtk_status_icon_get_screen (applet->status_icon));
 
 	/* If not done yet, append our search path */
 	path_appended = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (applet->icon_theme),
