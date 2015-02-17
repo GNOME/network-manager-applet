@@ -135,7 +135,12 @@ update_icon (NMNetworkMenuItem *item, NMApplet *applet)
 	}
 
 #ifdef ENABLE_INDICATOR
+#ifdef DBUSMENU_PIXMAP_SUPPORT
 	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), gtk_image_new_from_pixbuf (icon));
+#else
+	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item),
+	                               gtk_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_MENU));
+#endif
 	/* For some reason we must always re-set always-show after setting the image */
 	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (item), TRUE);
 #else
