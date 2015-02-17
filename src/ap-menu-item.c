@@ -42,7 +42,6 @@ typedef struct {
 #ifndef ENABLE_INDICATOR
 	GtkWidget * ssid;
 	GtkWidget * strength;
-	GtkWidget * detail;
 	GtkWidget * hbox;
 #endif
 
@@ -100,10 +99,12 @@ static void
 update_icon (NMNetworkMenuItem *item, NMApplet *applet)
 {
 	NMNetworkMenuItemPrivate *priv = NM_NETWORK_MENU_ITEM_GET_PRIVATE (item);
-	GdkPixbuf *icon = NULL, *pixbuf, *top, *scaled;
+	GdkPixbuf *icon, *scaled = NULL;
 	const char *icon_name = NULL;
 
-	if (priv->int_strength > 80)
+	if (priv->is_adhoc)
+		icon_name = "nm-adhoc";
+	else if (priv->int_strength > 80)
 		icon_name = "nm-signal-100";
 	else if (priv->int_strength > 55)
 		icon_name = "nm-signal-75";
@@ -114,44 +115,33 @@ update_icon (NMNetworkMenuItem *item, NMApplet *applet)
 	else
 		icon_name = "nm-signal-00";
 
-	icon = nma_icon_check_and_load (icon_name, applet);
-	pixbuf = gdk_pixbuf_copy (icon);
+	icon = gdk_pixbuf_copy (nma_icon_check_and_load (icon_name, applet));
 
-	/* If the AP is "secure", composite the lock icon on top of the signal bars */
 	if (priv->is_encrypted) {
-		top = nma_icon_check_and_load ("nm-secure-lock", applet);
-		gdk_pixbuf_composite (top, pixbuf, 0, 0, gdk_pixbuf_get_width (top),
-							  gdk_pixbuf_get_height (top),
-							  0, 0, 1.0, 1.0,
-							  GDK_INTERP_NEAREST, 255);
+		GdkPixbuf *encrypted = nma_icon_check_and_load ("nm-secure-lock", applet);
+
+		gdk_pixbuf_composite (encrypted, icon, 0, 0,
+		                      gdk_pixbuf_get_width (encrypted),
+		                      gdk_pixbuf_get_height (encrypted),
+		                      0, 0, 1.0, 1.0,
+		                      GDK_INTERP_NEAREST, 255);
 	}
 
 	/* Scale to menu size if larger so the menu doesn't look awful */
-	if (gdk_pixbuf_get_height (pixbuf) > 24 || gdk_pixbuf_get_width (pixbuf) > 24) {
-		scaled = gdk_pixbuf_scale_simple (pixbuf, 24, 24, GDK_INTERP_BILINEAR);
-		g_object_unref (pixbuf);
-		pixbuf = scaled;
+	if (gdk_pixbuf_get_height (icon) > 24 || gdk_pixbuf_get_width (icon) > 24) {
+		scaled = gdk_pixbuf_scale_simple (icon, 24, 24, GDK_INTERP_BILINEAR);
+		g_object_unref (icon);
+		icon = scaled;
 	}
 
 #ifdef ENABLE_INDICATOR
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), gtk_image_new_from_pixbuf (pixbuf));
+	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), gtk_image_new_from_pixbuf (icon));
 	/* For some reason we must always re-set always-show after setting the image */
 	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (item), TRUE);
 #else
-	gtk_image_set_from_pixbuf (GTK_IMAGE (priv->strength), pixbuf);
+	gtk_image_set_from_pixbuf (GTK_IMAGE (priv->strength), icon);
 #endif
-	g_object_unref (pixbuf);
-
-#ifndef ENABLE_INDICATOR
-	if (priv->is_adhoc && !gtk_image_get_pixbuf (GTK_IMAGE (priv->detail))) {
-		scaled = NULL;
-		pixbuf = nma_icon_check_and_load ("nm-adhoc", applet);
-		if (gdk_pixbuf_get_height (pixbuf) > 24 || gdk_pixbuf_get_width (pixbuf) > 24)
-			scaled = gdk_pixbuf_scale_simple (pixbuf, 24, 24, GDK_INTERP_BILINEAR);
-		gtk_image_set_from_pixbuf (GTK_IMAGE (priv->detail), scaled ? scaled : pixbuf);
-		g_clear_object (&scaled);
-	}
-#endif
+	g_object_unref (icon);
 }
 
 void
@@ -335,18 +325,14 @@ nm_network_menu_item_init (NMNetworkMenuItem *item)
 	priv->ssid = gtk_label_new (NULL);
 	gtk_misc_set_alignment (GTK_MISC (priv->ssid), 0.0, 0.5);
 
-	priv->detail = gtk_image_new ();
-
 	gtk_container_add (GTK_CONTAINER (item), priv->hbox);
 	gtk_box_pack_start (GTK_BOX (priv->hbox), priv->ssid, TRUE, TRUE, 0);
-	gtk_box_pack_start (GTK_BOX (priv->hbox), priv->detail, FALSE, FALSE, 0);
 
 	priv->strength = gtk_image_new ();
 	gtk_box_pack_end (GTK_BOX (priv->hbox), priv->strength, FALSE, TRUE, 0);
 	gtk_widget_show (priv->strength);
 
 	gtk_widget_show (priv->ssid);
-	gtk_widget_show (priv->detail);
 	gtk_widget_show (priv->hbox);
 #else
 	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (item), TRUE);
