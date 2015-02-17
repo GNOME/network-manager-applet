@@ -194,15 +194,15 @@ nm_mb_menu_item_new (const char *connection_name,
 	/* And the strength icon, if we have strength information at all */
 	if (enabled && strength) {
 		const char *icon_name = mobile_helper_get_quality_icon_name (strength);
+		GdkPixbuf *pixbuf = nma_icon_check_and_load (icon_name, applet);
 
 #ifdef ENABLE_INDICATOR
 #ifdef DBUSMENU_PIXMAP_SUPPORT
-		GdkPixbuf *pixbuf = nma_icon_check_and_load (icon_name, applet);
-
 		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), gtk_image_new_from_pixbuf (pixbuf));
 #else
 		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item),
 		                               gtk_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_MENU));
+		pixbuf = NULL;
 #endif
 		/* For some reason we must always re-set always-show after setting the image */
 		gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (item), TRUE);
