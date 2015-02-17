@@ -1785,8 +1785,7 @@ nma_menu_add_vpn_submenu (GtkWidget *menu, NMApplet *applet)
 
 		name = get_connection_id (connection);
 
-		item = GTK_MENU_ITEM (gtk_image_menu_item_new_with_label (name));
-		gtk_image_menu_item_set_always_show_image(GTK_IMAGE_MENU_ITEM(item), TRUE);
+		item = GTK_MENU_ITEM (gtk_check_menu_item_new_with_label (name));
 
 		/* If no VPN connections are active, draw all menu items enabled. If
 		 * >= 1 VPN connections are active, only the active VPN menu item is
@@ -1804,11 +1803,7 @@ nma_menu_add_vpn_submenu (GtkWidget *menu, NMApplet *applet)
 		else
 			gtk_widget_set_sensitive (GTK_WIDGET (item), FALSE);
 
-		if (active) {
-			GtkWidget *image = gtk_image_new_from_stock (GTK_STOCK_CONNECT, GTK_ICON_SIZE_MENU);
-
-			gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), image);
-		}
+		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), !!active);
 
 		g_object_set_data_full (G_OBJECT (item), "connection", 
 						    g_object_ref (connection),
