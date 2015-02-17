@@ -134,9 +134,14 @@ update_icon (NMNetworkMenuItem *item, NMApplet *applet)
 	}
 
 #ifdef ENABLE_INDICATOR
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), gtk_image_new_from_pixbuf (pixbuf));
-	/* For some reason we must always re-set always-show after setting the image */
-	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (item), TRUE);
+	{
+//		GtkWidget *image = gtk_image_new_from_pixbuf (pixbuf);
+		GtkWidget *image = gtk_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_LARGE_TOOLBAR);
+
+		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), image);
+		/* For some reason we must always re-set always-show after setting the image */
+		gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (item), TRUE);
+	}
 #else
 	gtk_image_set_from_pixbuf (GTK_IMAGE (priv->strength), pixbuf);
 #endif
