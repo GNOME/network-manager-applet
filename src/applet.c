@@ -1767,6 +1767,7 @@ nma_menu_add_vpn_submenu (GtkWidget *menu, NMApplet *applet)
 	item = GTK_MENU_ITEM (gtk_menu_item_new_with_mnemonic (_("_VPN Connections")));
 	gtk_menu_item_set_submenu (item, GTK_WIDGET (vpn_menu));
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (item));
+	gtk_widget_show (GTK_WIDGET (item));
 
 	list = get_vpn_connections (applet);
 	for (iter = list; iter; iter = g_slist_next (iter)) {
@@ -1815,6 +1816,7 @@ nma_menu_add_vpn_submenu (GtkWidget *menu, NMApplet *applet)
 
 		g_signal_connect (item, "activate", G_CALLBACK (nma_menu_vpn_item_clicked), applet);
 		gtk_menu_shell_append (GTK_MENU_SHELL (vpn_menu), GTK_WIDGET (item));
+		gtk_widget_show (GTK_WIDGET (item));
 	}
 
 	/* Draw a seperator, but only if we have VPN connections above it */
@@ -1824,12 +1826,14 @@ nma_menu_add_vpn_submenu (GtkWidget *menu, NMApplet *applet)
 	item = GTK_MENU_ITEM (gtk_menu_item_new_with_mnemonic (_("_Configure VPN...")));
 	g_signal_connect (item, "activate", G_CALLBACK (nma_menu_configure_vpn_item_activate), applet);
 	gtk_menu_shell_append (GTK_MENU_SHELL (vpn_menu), GTK_WIDGET (item));
+	gtk_widget_show (GTK_WIDGET (item));
 
 	item = GTK_MENU_ITEM (gtk_menu_item_new_with_mnemonic (_("_Disconnect VPN")));
 	g_signal_connect (item, "activate", G_CALLBACK (nma_menu_disconnect_vpn_item_activate), applet);
 	gtk_menu_shell_append (GTK_MENU_SHELL (vpn_menu), GTK_WIDGET (item));
 	if (num_vpn_active == 0)
 		gtk_widget_set_sensitive (GTK_WIDGET (item), FALSE);
+	gtk_widget_show (GTK_WIDGET (item));
 
 	g_slist_free (list);
 }
