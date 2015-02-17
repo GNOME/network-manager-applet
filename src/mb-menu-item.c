@@ -36,12 +36,13 @@ G_DEFINE_TYPE (NMMbMenuItem, nm_mb_menu_item, GTK_TYPE_IMAGE_MENU_ITEM);
 #define NM_MB_MENU_ITEM_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), NM_TYPE_MB_MENU_ITEM, NMMbMenuItemPrivate))
 
 typedef struct {
-	GtkWidget *desc;
-	char *desc_string;
 	GtkWidget *strength;
-	guint32    int_strength;
 	GtkWidget *detail;
 	GtkWidget *hbox;
+	GtkWidget *desc;
+
+	char *desc_string;
+	guint32    int_strength;
 } NMMbMenuItemPrivate;
 
 static const char *
@@ -78,6 +79,21 @@ get_tech_name (guint32 tech)
 	return NULL;
 }
 
+static void
+update_label (NMMbMenuItem *item, gboolean use_bold)
+{
+	NMMbMenuItemPrivate *priv = NM_MB_MENU_ITEM_GET_PRIVATE (item);
+
+	gtk_label_set_use_markup (GTK_LABEL (priv->desc), use_bold);
+	if (use_bold) {
+		char *markup = g_markup_printf_escaped ("<b>%s</b>", priv->desc_string);
+
+		gtk_label_set_markup (GTK_LABEL (priv->desc), markup);
+		g_free (markup);
+	} else
+		gtk_label_set_text (GTK_LABEL (priv->desc), priv->desc_string);
+}
+
 GtkWidget *
 nm_mb_menu_item_new (const char *connection_name,
                      guint32 strength,
@@ -93,8 +109,7 @@ nm_mb_menu_item_new (const char *connection_name,
 	const char *tech_name = NULL;
 
 	item = g_object_new (NM_TYPE_MB_MENU_ITEM, NULL);
-	if (!item)
-		return NULL;
+	g_assert (item);
 
 	priv = NM_MB_MENU_ITEM_GET_PRIVATE (item);
 	priv->int_strength = strength;
@@ -168,22 +183,12 @@ nm_mb_menu_item_new (const char *connection_name,
 		break;
 	}
 
-	if (enabled && connection_name && active) {
-		char *markup;
-
-		gtk_label_set_use_markup (GTK_LABEL (priv->desc), TRUE);
-		markup = g_markup_printf_escaped ("<b>%s</b>", priv->desc_string);
-		gtk_label_set_markup (GTK_LABEL (priv->desc), markup);
-		g_free (markup);
-	} else {
-		/* Disconnected and disabled states */
-		gtk_label_set_use_markup (GTK_LABEL (priv->desc), FALSE);
-		gtk_label_set_text (GTK_LABEL (priv->desc), priv->desc_string);
-	}
+	update_label (item, (enabled && connection_name && active));
 
 	/* And the strength icon, if we have strength information at all */
 	if (enabled && strength) {
-		GdkPixbuf *pixbuf = nma_icon_check_and_load (mobile_helper_get_quality_icon_name (strength), applet);
+		const char *icon_name = mobile_helper_get_quality_icon_name (strength);
+		GdkPixbuf *pixbuf = nma_icon_check_and_load (icon_name, applet);
 
 		gtk_image_set_from_pixbuf (GTK_IMAGE (priv->strength), pixbuf);
 	}

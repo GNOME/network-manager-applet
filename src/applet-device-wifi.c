@@ -534,29 +534,20 @@ create_new_ap_item (NMDeviceWifi *device,
 {
 	WifiMenuItemInfo *info;
 	GSList *iter;
-	NMNetworkMenuItem *item = NULL;
+	GtkWidget *item;
 	GSList *dev_connections = NULL;
 	GSList *ap_connections = NULL;
-	const GByteArray *ssid;
-	guint32 dev_caps;
 
 	dev_connections = nm_device_filter_connections (NM_DEVICE (device), connections);
 	ap_connections = nm_access_point_filter_connections (ap, dev_connections);
 	g_slist_free (dev_connections);
 	dev_connections = NULL;
 
-	item = NM_NETWORK_MENU_ITEM (nm_network_menu_item_new (dup_data->hash,
-	                                                       !!g_slist_length (ap_connections)));
-
-	ssid = nm_access_point_get_ssid (ap);
-	nm_network_menu_item_set_ssid (item, (GByteArray *) ssid);
-
-	dev_caps = nm_device_wifi_get_capabilities (device);
-	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (item), TRUE);
-	nm_network_menu_item_set_detail (item, ap, nma_icon_check_and_load ("nm-adhoc", applet), dev_caps);
-	nm_network_menu_item_best_strength (item, nm_access_point_get_strength (ap), applet);
-	nm_network_menu_item_add_dupe (item, ap);
-
+	item = nm_network_menu_item_new (ap,
+	                                 nm_device_wifi_get_capabilities (device),
+	                                 dup_data->hash,
+	                                 !!g_slist_length (ap_connections),
+	                                 applet);
 	g_object_set_data (G_OBJECT (item), "device", NM_DEVICE (device));
 
 	/* If there's only one connection, don't show the submenu */
@@ -610,7 +601,7 @@ create_new_ap_item (NMDeviceWifi *device,
 	}
 
 	g_slist_free (ap_connections);
-	return item;
+	return NM_NETWORK_MENU_ITEM (item);
 }
 
 static NMNetworkMenuItem *
@@ -643,7 +634,7 @@ get_menu_item_for_ap (NMDeviceWifi *device,
 	g_slist_foreach (menu_list, find_duplicate, &dup_data);
 
 	if (dup_data.found) {
-		nm_network_menu_item_best_strength (dup_data.found, nm_access_point_get_strength (ap), applet);
+		nm_network_menu_item_set_strength (dup_data.found, nm_access_point_get_strength (ap), applet);
 		nm_network_menu_item_add_dupe (dup_data.found, ap);
 		return NULL;
 	}
