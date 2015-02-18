@@ -25,7 +25,6 @@
 
 #include <glib/gi18n.h>
 #include <string.h>
-#include <dbus/dbus-glib.h>
 
 #define SECRET_API_SUBJECT_TO_CHANGE
 #include <libsecret/secret.h>
@@ -68,8 +67,6 @@ static guint signals[LAST_SIGNAL] = { 0 };
 
 
 /*******************************************************/
-
-#define DBUS_TYPE_G_MAP_OF_STRING (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_STRING))
 
 typedef struct {
 	guint id;
@@ -662,12 +659,10 @@ write_one_secret_to_keyring (NMSetting *setting,
 		return;
 
 	if (NM_IS_SETTING_VPN (setting) && (g_strcmp0 (key, NM_SETTING_VPN_SECRETS) == 0)) {
-		g_return_if_fail (type == DBUS_TYPE_G_MAP_OF_STRING);
+		g_return_if_fail (type == G_TYPE_HASH_TABLE);
 
 		/* Process VPN secrets specially since it's a hash of secrets, not just one */
-		nm_setting_vpn_foreach_secret (NM_SETTING_VPN (setting),
-		                               vpn_secret_iter_cb,
-		                               r);
+		nm_setting_vpn_foreach_secret (NM_SETTING_VPN (setting), vpn_secret_iter_cb, r);
 	} else {
 		g_return_if_fail (type == G_TYPE_STRING);
 		secret = g_value_get_string (value);
