@@ -1695,7 +1695,10 @@ nma_menu_add_devices (GtkWidget *menu, NMApplet *applet)
 static int
 sort_vpn_connections (gconstpointer a, gconstpointer b)
 {
-	return strcmp (get_connection_id (NM_CONNECTION (a)), get_connection_id (NM_CONNECTION (b)));
+	NMConnection **ca = (NMConnection **) a;
+	NMConnection **cb = (NMConnection **) b;
+
+	return strcmp (nm_connection_get_id (NM_CONNECTION (*ca)), nm_connection_get_id (NM_CONNECTION (*cb)));
 }
 
 static GPtrArray *
