@@ -424,7 +424,7 @@ connection_combo_init (NMAWifiDialog *self, NMConnection *connection)
 		                    C_NAME_COLUMN, id,
 		                    C_CON_COLUMN, connection, -1);
 	} else {
-		GSList *to_add, *iter;
+		GSList *to_add = NULL, *iter;
 		const GPtrArray *connections;
 		int i;
 
