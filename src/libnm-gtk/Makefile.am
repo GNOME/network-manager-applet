@@ -27,7 +27,7 @@ libnm_gtk_la_SOURCES = \
 libnm_gtk_la_CFLAGS = \
 	$(GTK_CFLAGS) \
 	$(NMA_CFLAGS) \
-	$(DBUS_CFLAGS) \
+	$(DBUS_GLIB_CFLAGS) \
 	$(GUDEV_CFLAGS) \
 	-DLIBNM_GLIB_BUILD \
 	-DICONDIR=\""$(datadir)/icons"\" \
@@ -45,6 +45,7 @@ libnm_gtk_la_CFLAGS = \
 libnm_gtk_la_LIBADD = \
 	$(GTK_LIBS) \
 	$(NMA_LIBS) \
+	$(DBUS_GLIB_LIBS) \
 	$(GUDEV_LIBS) \
 	$(top_builddir)/src/wireless-security/libwireless-security-libnm-glib.la
 

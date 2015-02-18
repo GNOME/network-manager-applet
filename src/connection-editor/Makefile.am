@@ -13,7 +13,7 @@ nm_connection_editor_CPPFLAGS = \
 	-DLIBDIR=\""$(libdir)"\" \
 	-DDATADIR=\""$(datadir)"\" \
 	-DNMALOCALEDIR=\"$(datadir)/locale\" \
-	$(DBUS_CFLAGS) \
+	$(DBUS_GLIB_CFLAGS) \
 	-I${top_srcdir}/src/utils \
 	-I${top_srcdir}/src/wireless-security \
 	-I${top_srcdir}/src/libnm-gtk
@@ -92,6 +92,8 @@ nm_connection_editor_LDADD = \
 	${top_builddir}/src/libnm-gtk/libnm-gtk.la \
 	$(GTK_LIBS) \
 	$(NMA_LIBS) \
+	$(DBUS_GLIB_LIBS) \
+	$(LIBNM_LIBS) \
 	-lm
 
 uidir = $(datadir)/nm-applet

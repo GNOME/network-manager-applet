@@ -21,7 +21,7 @@ nm_applet_CPPFLAGS = \
 	-DVPN_NAME_FILES_DIR=\""$(sysconfdir)/NetworkManager/VPN"\"	\
 	-DNMALOCALEDIR=\"$(datadir)/locale\"					\
 	-DG_LOG_DOMAIN=\""nm-applet"\" \
-	$(DBUS_CFLAGS)										\
+	$(DBUS_GLIB_CFLAGS) \
 	-I${top_srcdir}/src/utils \
 	-I${top_srcdir}/src/wireless-security \
 	-I${top_srcdir}/src/libnm-gtk
@@ -79,6 +79,8 @@ nm_applet_LDADD = \
 	-lm \
 	$(GTK_LIBS) \
 	$(NMA_LIBS) \
+	$(DBUS_GLIB_LIBS) \
+	$(LIBNM_LIBS) \
 	$(LIBSECRET_LIBS) \
 	$(NOTIFY_LIBS) \
 	$(MM_GLIB_LIBS) \
