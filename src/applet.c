@@ -672,7 +672,6 @@ applet_new_menu_item_helper (NMConnection *connection,
                              NMConnection *active,
                              gboolean add_active)
 {
-	NMSettingConnection *s_con = nm_connection_get_setting_connection (connection);
 	GtkWidget *item = gtk_image_menu_item_new_with_label ("");
 
 #ifndef ENABLE_INDICATOR
@@ -683,12 +682,12 @@ applet_new_menu_item_helper (NMConnection *connection,
 		/* Pure evil */
 		label = gtk_bin_get_child (GTK_BIN (item));
 		gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
-		markup = g_markup_printf_escaped ("<b>%s</b>", nm_setting_connection_get_id (s_con));
+		markup = g_markup_printf_escaped ("<b>%s</b>", nm_connection_get_id (connection));
 		gtk_label_set_markup (GTK_LABEL (label), markup);
 		g_free (markup);
 	} else
 #endif
-		gtk_menu_item_set_label (GTK_MENU_ITEM (item), nm_setting_connection_get_id (s_con));
+		gtk_menu_item_set_label (GTK_MENU_ITEM (item), nm_connection_get_id (connection));
 
 	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (item), TRUE);
 	return item;
@@ -985,44 +984,42 @@ make_vpn_failure_message (NMVpnConnection *vpn,
                           NMApplet *applet)
 {
 	NMConnection *connection;
-	NMSettingConnection *s_con;
 
 	g_return_val_if_fail (vpn != NULL, NULL);
 
 	connection = (NMConnection *) nm_active_connection_get_connection (NM_ACTIVE_CONNECTION (vpn));
-	s_con = nm_connection_get_setting_connection (connection);
 
 	switch (reason) {
 	case NM_VPN_CONNECTION_STATE_REASON_DEVICE_DISCONNECTED:
 		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the network connection was interrupted."),
-								nm_setting_connection_get_id (s_con));
+								nm_connection_get_id (connection));
 	case NM_VPN_CONNECTION_STATE_REASON_SERVICE_STOPPED:
 		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the VPN service stopped unexpectedly."),
-								nm_setting_connection_get_id (s_con));
+								nm_connection_get_id (connection));
 	case NM_VPN_CONNECTION_STATE_REASON_IP_CONFIG_INVALID:
 		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the VPN service returned invalid configuration."),
-								nm_setting_connection_get_id (s_con));
+								nm_connection_get_id (connection));
 	case NM_VPN_CONNECTION_STATE_REASON_CONNECT_TIMEOUT:
 		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the connection attempt timed out."),
-								nm_setting_connection_get_id (s_con));
+								nm_connection_get_id (connection));
 	case NM_VPN_CONNECTION_STATE_REASON_SERVICE_START_TIMEOUT:
 		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the VPN service did not start in time."),
-								nm_setting_connection_get_id (s_con));
+								nm_connection_get_id (connection));
 	case NM_VPN_CONNECTION_STATE_REASON_SERVICE_START_FAILED:
 		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the VPN service failed to start."),
-								nm_setting_connection_get_id (s_con));
+								nm_connection_get_id (connection));
 	case NM_VPN_CONNECTION_STATE_REASON_NO_SECRETS:
 		return g_strdup_printf (_("\nThe VPN connection '%s' failed because there were no valid VPN secrets."),
-								nm_setting_connection_get_id (s_con));
+								nm_connection_get_id (connection));
 	case NM_VPN_CONNECTION_STATE_REASON_LOGIN_FAILED:
 		return g_strdup_printf (_("\nThe VPN connection '%s' failed because of invalid VPN secrets."),
-								nm_setting_connection_get_id (s_con));
+								nm_connection_get_id (connection));
 
 	default:
 		break;
 	}
 
-	return g_strdup_printf (_("\nThe VPN connection '%s' failed."), nm_setting_connection_get_id (s_con));
+	return g_strdup_printf (_("\nThe VPN connection '%s' failed."), nm_connection_get_id (connection));
 }
 
 static char *
@@ -1031,25 +1028,23 @@ make_vpn_disconnection_message (NMVpnConnection *vpn,
                                 NMApplet *applet)
 {
 	NMConnection *connection;
-	NMSettingConnection *s_con;
 
 	g_return_val_if_fail (vpn != NULL, NULL);
 
 	connection = (NMConnection *) nm_active_connection_get_connection (NM_ACTIVE_CONNECTION (vpn));
-	s_con = nm_connection_get_setting_connection (connection);
 
 	switch (reason) {
 	case NM_VPN_CONNECTION_STATE_REASON_DEVICE_DISCONNECTED:
 		return g_strdup_printf (_("\nThe VPN connection '%s' disconnected because the network connection was interrupted."),
-								nm_setting_connection_get_id (s_con));
+								nm_connection_get_id (connection));
 	case NM_VPN_CONNECTION_STATE_REASON_SERVICE_STOPPED:
 		return g_strdup_printf (_("\nThe VPN connection '%s' disconnected because the VPN service stopped."),
-								nm_setting_connection_get_id (s_con));
+								nm_connection_get_id (connection));
 	default:
 		break;
 	}
 
-	return g_strdup_printf (_("\nThe VPN connection '%s' disconnected."), nm_setting_connection_get_id (s_con));
+	return g_strdup_printf (_("\nThe VPN connection '%s' disconnected."), nm_connection_get_id (connection));
 }
 
 static void
@@ -1117,20 +1112,6 @@ vpn_connection_state_changed (NMVpnConnection *vpn,
 	applet_schedule_update_menu (applet);
 }
 
-static const char *
-get_connection_id (NMConnection *connection)
-{
-	NMSettingConnection *s_con;
-
-	g_return_val_if_fail (connection != NULL, NULL);
-	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
-
-	s_con = nm_connection_get_setting_connection (connection);
-	g_return_val_if_fail (s_con != NULL, NULL);
-
-	return nm_setting_connection_get_id (s_con);
-}
-
 typedef struct {
 	NMApplet *applet;
 	char *vpn_name;
@@ -1189,7 +1170,6 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 	NMApplet *applet = NM_APPLET (user_data);
 	VPNActivateInfo *info;
 	NMConnection *connection;
-	NMSettingConnection *s_con;
 	NMActiveConnection *active;
 	NMDevice *device = NULL;
 
@@ -1213,10 +1193,9 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 		return;
 	}
 
-	s_con = nm_connection_get_setting_connection (connection);
 	info = g_malloc0 (sizeof (VPNActivateInfo));
 	info->applet = applet;
-	info->vpn_name = g_strdup (nm_setting_connection_get_id (s_con));
+	info->vpn_name = g_strdup (nm_connection_get_id (connection));
 
 	/* Connection inactive, activate */
 	nm_client_activate_connection_async (applet->nm_client,
@@ -1712,16 +1691,13 @@ get_vpn_connections (NMApplet *applet)
 
 	for (i = 0; i < all_connections->len; i++) {
 		NMConnection *connection = NM_CONNECTION (all_connections->pdata[i]);
-		NMSettingConnection *s_con;
 
-		s_con = nm_connection_get_setting_connection (connection);
-		if (strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_VPN_SETTING_NAME))
-			/* Not a VPN connection */
+		if (!nm_connection_is_type (connection, NM_SETTING_VPN_SETTING_NAME))
 			continue;
 
 		if (!nm_connection_get_setting_vpn (connection)) {
 			g_warning ("%s: VPN connection '%s' didn't have required vpn setting.", __func__,
-			           nm_setting_connection_get_id (s_con));
+			           nm_connection_get_id (connection));
 			continue;
 		}
 
@@ -1765,7 +1741,7 @@ nma_menu_add_vpn_submenu (GtkWidget *menu, NMApplet *applet)
 		const char *name;
 		NMState state;
 
-		name = get_connection_id (connection);
+		name = nm_connection_get_id (connection);
 
 		item = GTK_MENU_ITEM (gtk_check_menu_item_new_with_label (name));
 
@@ -2523,16 +2499,12 @@ foo_device_state_changed_cb (NMDevice *device,
 	if (   new_state == NM_DEVICE_STATE_ACTIVATED
 	    && !g_settings_get_boolean (applet->gsettings, PREF_DISABLE_CONNECTED_NOTIFICATIONS)) {
 		NMConnection *connection;
-		NMSettingConnection *s_con = NULL;
 		char *str = NULL;
 
 		connection = applet_find_active_connection_for_device (device, applet, NULL);
 		if (connection) {
-			const char *id;
-			s_con = nm_connection_get_setting_connection (connection);
-			id = s_con ? nm_setting_connection_get_id (s_con) : NULL;
-			if (id)
-				str = g_strdup_printf (_("You are now connected to '%s'."), id);
+			str = g_strdup_printf (_("You are now connected to '%s'."),
+			                       nm_connection_get_id (connection));
 		}
 
 		dclass->notify_connected (device, str, applet);
@@ -2820,15 +2792,12 @@ get_tip_for_device_state (NMDevice *device,
                           NMDeviceState state,
                           NMConnection *connection)
 {
-	NMSettingConnection *s_con;
 	char *tip = NULL;
 	const char *id = NULL;
 
 	id = nm_device_get_iface (device);
-	if (connection) {
-		s_con = nm_connection_get_setting_connection (connection);
-		id = nm_setting_connection_get_id (s_con);
-	}
+	if (connection)
+		id = nm_connection_get_id (connection);
 
 	switch (state) {
 	case NM_DEVICE_STATE_PREPARE:
