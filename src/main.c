@@ -33,36 +33,13 @@
 
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
+#include <glib-unix.h>
 
 #include "applet.h"
 
 static GMainLoop *loop = NULL;
 gboolean shell_debug = FALSE;
 gboolean with_agent = TRUE;
-
-static void
-signal_handler (int signo, siginfo_t *info, void *data)
-{
-	if (signo == SIGINT || signo == SIGTERM) {
-		g_message ("PID %d (we are %d) sent signal %d, shutting down...",
-		           info->si_pid, getpid (), signo);
-		g_main_loop_quit (loop);
-	}
-}
-
-static void
-setup_signals (void)
-{
-	struct sigaction action;
-	sigset_t mask;
-
-	sigemptyset (&mask);
-	action.sa_sigaction = signal_handler;
-	action.sa_mask = mask;
-	action.sa_flags = SA_SIGINFO;
-	sigaction (SIGTERM,  &action, NULL);
-	sigaction (SIGINT,  &action, NULL);
-}
 
 static void
 usage (const char *progname)
@@ -76,6 +53,13 @@ usage (const char *progname)
 	                 _("This program is a component of NetworkManager (https://wiki.gnome.org/Projects/NetworkManager/)."),
 	                 _("It is not intended for command-line interaction but instead runs in the GNOME desktop environment."));
 	g_free (foo);
+}
+
+static gboolean
+do_quit (gpointer user_data)
+{
+	g_main_loop_quit ((GMainLoop *) user_data);
+	return G_SOURCE_REMOVE;
 }
 
 int main (int argc, char *argv[])
@@ -105,7 +89,8 @@ int main (int argc, char *argv[])
 	if (applet == NULL)
 		exit (1);
 
-	setup_signals ();
+	g_unix_signal_add (SIGINT, do_quit, loop);
+	g_unix_signal_add (SIGTERM, do_quit, loop);
 	g_main_loop_run (loop);
 
 	g_object_unref (G_OBJECT (applet));
