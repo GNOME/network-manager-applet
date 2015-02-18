@@ -69,9 +69,10 @@ else
     AC_DEFINE_UNQUOTED([ISO_CODES_PREFIX],["$prefix"],[ISO codes prefix])
 fi
 
+PKG_CHECK_MODULES(DBUS_GLIB, [dbus-glib-1 >= 0.74])
+
 PKG_CHECK_MODULES(NMA,
-		[dbus-glib-1 >= 0.74
-		 gio-2.0 >= 2.32
+		[gio-2.0 >= 2.32
 		 NetworkManager >= 1.0
 		 libnm-glib >= 1.0
 		 libnm-util >= 1.0
