@@ -82,7 +82,6 @@ typedef struct
 {
 	GObject parent_instance;
 
-	GMainLoop *loop;
 	DBusGConnection *session_bus;
 
 	NMClient *nm_client;
