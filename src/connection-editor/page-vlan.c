@@ -63,7 +63,7 @@ vlan_private_init (CEPageVlan *self)
 {
 	CEPageVlanPrivate *priv = CE_PAGE_VLAN_GET_PRIVATE (self);
 	GtkBuilder *builder;
-	GtkWidget *align;
+	GtkWidget *vbox;
 	GtkLabel *label;
 
 	builder = CE_PAGE (self)->builder;
@@ -72,8 +72,8 @@ vlan_private_init (CEPageVlan *self)
 	gtk_combo_box_set_entry_text_column (priv->parent, 0);
 	priv->parent_entry = GTK_ENTRY (gtk_bin_get_child (GTK_BIN (priv->parent)));
 
-	align = GTK_WIDGET (gtk_builder_get_object (builder, "vlan_parent_alignment"));
-	gtk_container_add (GTK_CONTAINER (align), GTK_WIDGET (priv->parent));
+	vbox = GTK_WIDGET (gtk_builder_get_object (builder, "vlan_parent_vbox"));
+	gtk_container_add (GTK_CONTAINER (vbox), GTK_WIDGET (priv->parent));
 	gtk_widget_show_all (GTK_WIDGET (priv->parent));
 
 	/* Set mnemonic widget for parent label */

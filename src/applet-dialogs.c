@@ -1271,7 +1271,7 @@ void
 applet_mobile_pin_dialog_start_spinner (GtkWidget *dialog, const char *text)
 {
 	GtkBuilder *builder;
-	GtkWidget *spinner, *widget, *hbox, *align;
+	GtkWidget *spinner, *widget, *hbox, *vbox;
 
 	g_return_if_fail (dialog != NULL);
 	g_return_if_fail (text != NULL);
@@ -1283,8 +1283,9 @@ applet_mobile_pin_dialog_start_spinner (GtkWidget *dialog, const char *text)
 	g_return_if_fail (spinner != NULL);
 	g_object_set_data (G_OBJECT (dialog), "spinner", spinner);
 
-	align = GTK_WIDGET (gtk_builder_get_object (builder, "spinner_alignment"));
-	gtk_container_add (GTK_CONTAINER (align), spinner);
+	vbox = GTK_WIDGET (gtk_builder_get_object (builder, "spinner_vbox"));
+	gtk_container_add (GTK_CONTAINER (vbox), spinner);
+	gtk_widget_set_halign (spinner, GTK_ALIGN_FILL);
 	gtk_spinner_start (GTK_SPINNER (spinner));
 
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "progress_label"));
@@ -1314,7 +1315,7 @@ void
 applet_mobile_pin_dialog_stop_spinner (GtkWidget *dialog, const char *text)
 {
 	GtkBuilder *builder;
-	GtkWidget *spinner, *widget, *align;
+	GtkWidget *spinner, *widget, *vbox;
 
 	g_return_if_fail (dialog != NULL);
 
@@ -1326,9 +1327,9 @@ applet_mobile_pin_dialog_stop_spinner (GtkWidget *dialog, const char *text)
 	gtk_spinner_stop (GTK_SPINNER (spinner));
 	g_object_set_data (G_OBJECT (dialog), "spinner", NULL);
 
-	/* Remove it from the alignment */
-	align = GTK_WIDGET (gtk_builder_get_object (builder, "spinner_alignment"));
-	gtk_container_remove (GTK_CONTAINER (align), spinner);
+	/* Remove it from the vbox */
+	vbox = GTK_WIDGET (gtk_builder_get_object (builder, "spinner_vbox"));
+	gtk_container_remove (GTK_CONTAINER (vbox), spinner);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "progress_label"));
 	if (text) {
