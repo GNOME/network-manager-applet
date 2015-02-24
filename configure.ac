@@ -71,7 +71,7 @@ fi
 
 PKG_CHECK_MODULES(DBUS_GLIB, [dbus-glib-1 >= 0.74])
 
-PKG_CHECK_MODULES(NMA,
+PKG_CHECK_MODULES(LIBNM_GLIB,
 		[gio-2.0 >= 2.32
 		 NetworkManager >= 1.0
 		 libnm-glib >= 1.0

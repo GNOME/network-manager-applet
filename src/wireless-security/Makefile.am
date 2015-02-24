@@ -39,12 +39,12 @@ libwireless_security_libnm_glib_la_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	-DUIDIR=\""$(uidir)"\" \
 	-DLIBNM_GLIB_BUILD \
-	$(NMA_CFLAGS) \
+	$(LIBNM_GLIB_CFLAGS) \
 	-I${top_srcdir}/src/utils
 
 libwireless_security_libnm_glib_la_LIBADD = \
 	$(GTK_LIBS) \
-	$(NMA_LIBS) \
+	$(LIBNM_GLIB_LIBS) \
 	${top_builddir}/src/utils/libutils-libnm-glib.la
 
 libwireless_security_libnm_la_SOURCES = \

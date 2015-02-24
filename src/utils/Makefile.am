@@ -12,11 +12,11 @@ libutils_libnm_glib_la_SOURCES = \
 libutils_libnm_glib_la_CPPFLAGS = \
 	-DLIBNM_GLIB_BUILD \
 	$(GTK_CFLAGS) \
-	$(NMA_CFLAGS)
+	$(LIBNM_GLIB_CFLAGS)
 
 libutils_libnm_glib_la_LIBADD = \
 	$(GTK_LIBS) \
-	$(NMA_LIBS)
+	$(LIBNM_GLIB_LIBS)
 
 libutils_libnm_la_SOURCES = \
 	utils.c \
