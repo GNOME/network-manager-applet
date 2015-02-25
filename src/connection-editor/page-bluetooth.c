@@ -27,8 +27,7 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
-#include <nm-setting-connection.h>
-#include <nm-setting-bluetooth.h>
+#include <NetworkManager.h>
 
 #include "page-bluetooth.h"
 #include "nm-connection-editor.h"
@@ -62,9 +61,11 @@ populate_ui (CEPageBluetooth *self, NMConnection *connection)
 {
 	CEPageBluetoothPrivate *priv = CE_PAGE_BLUETOOTH_GET_PRIVATE (self);
 	NMSettingBluetooth *setting = priv->setting;
+	const char *bdaddr;
 
-	ce_page_mac_to_entry (nm_setting_bluetooth_get_bdaddr (setting),
-	                      ARPHRD_ETHER, priv->bdaddr);
+	bdaddr = nm_setting_bluetooth_get_bdaddr (setting);
+	if (bdaddr)
+		gtk_entry_set_text (priv->bdaddr, bdaddr);
 }
 
 static void
@@ -91,7 +92,6 @@ CEPage *
 ce_page_bluetooth_new (NMConnection *connection,
                        GtkWindow *parent_window,
                        NMClient *client,
-                       NMRemoteSettings *settings,
                        const char **out_secrets_setting_name,
                        GError **error)
 {
@@ -102,7 +102,6 @@ ce_page_bluetooth_new (NMConnection *connection,
 	                          connection,
 	                          parent_window,
 	                          client,
-	                          settings,
 	                          UIDIR "/ce-page-bluetooth.ui",
 	                          "BluetoothPage",
 	                          _("Bluetooth")));
@@ -131,14 +130,13 @@ static void
 ui_to_setting (CEPageBluetooth *self)
 {
 	CEPageBluetoothPrivate *priv = CE_PAGE_BLUETOOTH_GET_PRIVATE (self);
-	GByteArray *bdaddr;
+	char *bdaddr;
 
 	bdaddr = ce_page_entry_to_mac (priv->bdaddr, ARPHRD_ETHER, NULL);
 	g_object_set (priv->setting,
 	              NM_SETTING_BLUETOOTH_BDADDR, bdaddr,
 	              NULL);
-	if (bdaddr)
-		g_byte_array_free (bdaddr, TRUE);
+	g_free (bdaddr);
 }
 
 static gboolean
@@ -146,14 +144,13 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageBluetooth *self = CE_PAGE_BLUETOOTH (page);
 	CEPageBluetoothPrivate *priv = CE_PAGE_BLUETOOTH_GET_PRIVATE (self);
-	GByteArray *bdaddr;
+	char *bdaddr;
 	gboolean invalid;
 
 	bdaddr = ce_page_entry_to_mac (priv->bdaddr, ARPHRD_ETHER, &invalid);
 	if (invalid)
 		return FALSE;
-	if (bdaddr)
-		g_byte_array_free (bdaddr, TRUE);
+	g_free (bdaddr);
 
 	ui_to_setting (self);
 	return nm_setting_verify (NM_SETTING (priv->setting), NULL, error);

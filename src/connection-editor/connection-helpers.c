@@ -48,13 +48,13 @@ static GSList *vpn_plugins;
 static gint
 sort_vpn_plugins (gconstpointer a, gconstpointer b)
 {
-	NMVpnPluginUiInterface *aa = NM_VPN_PLUGIN_UI_INTERFACE (a);
-	NMVpnPluginUiInterface *bb = NM_VPN_PLUGIN_UI_INTERFACE (b);
+	NMVpnEditorPlugin *aa = NM_VPN_EDITOR_PLUGIN (a);
+	NMVpnEditorPlugin *bb = NM_VPN_EDITOR_PLUGIN (b);
 	char *aa_desc = NULL, *bb_desc = NULL;
 	int ret;
 
-	g_object_get (aa, NM_VPN_PLUGIN_UI_INTERFACE_NAME, &aa_desc, NULL);
-	g_object_get (bb, NM_VPN_PLUGIN_UI_INTERFACE_NAME, &bb_desc, NULL);
+	g_object_get (aa, NM_VPN_EDITOR_PLUGIN_NAME, &aa_desc, NULL);
+	g_object_get (bb, NM_VPN_EDITOR_PLUGIN_NAME, &bb_desc, NULL);
 
 	ret = g_strcmp0 (aa_desc, bb_desc);
 
@@ -180,7 +180,7 @@ combo_changed_cb (GtkComboBox *combo, gpointer user_data)
 	GtkLabel *label = GTK_LABEL (user_data);
 	GtkTreeModel *model;
 	GtkTreeIter iter;
-	NMVpnPluginUiInterface *plugin = NULL;
+	NMVpnEditorPlugin *plugin = NULL;
 	char *description, *markup;
 
 	if (!gtk_combo_box_get_active_iter (combo, &iter))
@@ -194,7 +194,7 @@ combo_changed_cb (GtkComboBox *combo, gpointer user_data)
 	if (!plugin)
 		goto error;
 
-	g_object_get (G_OBJECT (plugin), NM_VPN_PLUGIN_UI_INTERFACE_DESC, &description, NULL);
+	g_object_get (G_OBJECT (plugin), NM_VPN_EDITOR_PLUGIN_DESCRIPTION, &description, NULL);
 	g_object_unref (plugin);
 	if (!description)
 		goto error;
@@ -293,10 +293,10 @@ set_up_connection_type_combo (GtkComboBox *combo,
 	}
 
 	for (p = vpn_plugins; p; p = p->next) {
-		NMVpnPluginUiInterface *plugin = NM_VPN_PLUGIN_UI_INTERFACE (p->data);
+		NMVpnEditorPlugin *plugin = NM_VPN_EDITOR_PLUGIN (p->data);
 		char *desc;
 
-		g_object_get (plugin, NM_VPN_PLUGIN_UI_INTERFACE_NAME, &desc, NULL);
+		g_object_get (plugin, NM_VPN_EDITOR_PLUGIN_NAME, &desc, NULL);
 
 		if (show_headers)
 			markup = g_markup_printf_escaped ("    %s", desc);
@@ -312,7 +312,7 @@ set_up_connection_type_combo (GtkComboBox *combo,
 		g_free (markup);
 		g_free (desc);
 
-		if (nm_vpn_plugin_ui_interface_get_capabilities (plugin) & NM_VPN_PLUGIN_UI_CAPABILITY_IMPORT)
+		if (nm_vpn_editor_plugin_get_capabilities (plugin) & NM_VPN_EDITOR_PLUGIN_CAPABILITY_IMPORT)
 			import_supported = TRUE;
 	}
 
@@ -338,7 +338,7 @@ set_up_connection_type_combo (GtkComboBox *combo,
 
 typedef struct {
 	GtkWindow *parent_window;
-	NMRemoteSettings *settings;
+	NMClient *client;
 	NewConnectionResultFunc result_func;
 	gpointer user_data;
 } NewConnectionData;
@@ -372,7 +372,7 @@ new_connection_result (NMConnection *connection,
 void
 new_connection_of_type (GtkWindow *parent_window,
                         const char *detail,
-                        NMRemoteSettings *settings,
+                        NMClient *client,
                         PageNewConnectionFunc new_func,
                         NewConnectionResultFunc result_func,
                         gpointer user_data)
@@ -381,25 +381,25 @@ new_connection_of_type (GtkWindow *parent_window,
 
 	ncd = g_slice_new (NewConnectionData);
 	ncd->parent_window = parent_window;
-	ncd->settings = settings;
+	ncd->client = client;
 	ncd->result_func = result_func;
 	ncd->user_data = user_data;
 
 	new_func (parent_window,
 	          detail,
-	          settings,
+	          client,
 	          new_connection_result,
 	          ncd);
 }
 
 void
 new_connection_dialog (GtkWindow *parent_window,
-                       NMRemoteSettings *settings,
+                       NMClient *client,
                        NewConnectionTypeFilterFunc type_filter_func,
                        NewConnectionResultFunc result_func,
                        gpointer user_data)
 {
-	new_connection_dialog_full (parent_window, settings,
+	new_connection_dialog_full (parent_window, client,
 	                            NULL, NULL,
 	                            type_filter_func,
 	                            result_func,
@@ -408,7 +408,7 @@ new_connection_dialog (GtkWindow *parent_window,
 
 void
 new_connection_dialog_full (GtkWindow *parent_window,
-                            NMRemoteSettings *settings,
+                            NMClient *client,
                             const char *primary_label,
                             const char *secondary_label,
                             NewConnectionTypeFilterFunc type_filter_func,
@@ -423,7 +423,7 @@ new_connection_dialog_full (GtkWindow *parent_window,
 	GtkTreeIter iter;
 	int response;
 	PageNewConnectionFunc new_func = NULL;
-	NMVpnPluginUiInterface *plugin = NULL;
+	NMVpnEditorPlugin *plugin = NULL;
 	char *vpn_type = NULL;
 	GError *error = NULL;
 
@@ -463,7 +463,7 @@ new_connection_dialog_full (GtkWindow *parent_window,
 		                    -1);
 
 		if (plugin) {
-			g_object_get (G_OBJECT (plugin), NM_VPN_PLUGIN_UI_INTERFACE_SERVICE, &vpn_type, NULL);
+			g_object_get (G_OBJECT (plugin), NM_VPN_EDITOR_PLUGIN_SERVICE, &vpn_type, NULL);
 			g_object_unref (plugin);
 		}
 	}
@@ -472,7 +472,7 @@ new_connection_dialog_full (GtkWindow *parent_window,
 	g_object_unref (gui);
 
 	if (new_func)
-		new_connection_of_type (parent_window, vpn_type, settings, new_func, result_func, user_data);
+		new_connection_of_type (parent_window, vpn_type, client, new_func, result_func, user_data);
 	else
 		result_func (NULL, user_data);
 
@@ -487,13 +487,15 @@ typedef struct {
 } DeleteInfo;
 
 static void
-delete_cb (NMRemoteConnection *connection,
-           GError *error,
+delete_cb (GObject *connection,
+           GAsyncResult *result,
            gpointer user_data)
 {
 	DeleteInfo *info = user_data;
 	DeleteConnectionResultFunc result_func;
+	GError *error = NULL;
 
+	nm_remote_connection_delete_finish (NM_REMOTE_CONNECTION (connection), result, &error);
 	if (error) {
 		nm_connection_editor_error (info->parent_window,
 		                            _("Connection delete failed"),
@@ -510,9 +512,10 @@ delete_cb (NMRemoteConnection *connection,
 	result_func = info->result_func;
 	user_data = info->user_data;
 	g_free (info);
+	g_clear_error (&error);
 
 	if (result_func)
-		(*result_func) (connection, error == NULL, user_data);
+		(*result_func) (NM_REMOTE_CONNECTION (connection), error == NULL, user_data);
 }
 
 void
@@ -565,7 +568,7 @@ delete_connection (GtkWindow *parent_window,
 	if (editor)
 		nm_connection_editor_set_busy (editor, TRUE);
 
-	nm_remote_connection_delete (connection, delete_cb, info);
+	nm_remote_connection_delete_async (connection, NULL, delete_cb, info);
 }
 
 gboolean

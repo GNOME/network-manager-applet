@@ -261,7 +261,7 @@ stuff_changed_cb (WirelessSecurity *sec, gpointer user_data)
 	}
 
 	if (ssid) {
-		valid = wireless_security_validate (sec, ssid);
+		valid = wireless_security_validate (sec);
 		if (free_ssid)
 			g_byte_array_free (ssid, TRUE);
 	}
@@ -301,7 +301,7 @@ ssid_entry_changed (GtkWidget *entry, gpointer user_data)
 		gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
 
 	if (sec) {
-		valid = wireless_security_validate (sec, ssid);
+		valid = wireless_security_validate (sec);
 		wireless_security_unref (sec);
 	} else {
 		valid = TRUE;

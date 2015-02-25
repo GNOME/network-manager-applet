@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2012 Red Hat, Inc.
+ * Copyright 2008 - 2014 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -27,11 +27,6 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
-#include <nm-setting-connection.h>
-#include <nm-setting-pppoe.h>
-#include <nm-setting-ppp.h>
-#include <nm-setting-wired.h>
-
 #include "page-dsl.h"
 #include "nm-connection-editor.h"
 
@@ -40,7 +35,7 @@ G_DEFINE_TYPE (CEPageDsl, ce_page_dsl, CE_TYPE_PAGE)
 #define CE_PAGE_DSL_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CE_TYPE_PAGE_DSL, CEPageDslPrivate))
 
 typedef struct {
-	NMSettingPPPOE *setting;
+	NMSettingPppoe *setting;
 
 	GtkEntry *username;
 	GtkEntry *password;
@@ -64,7 +59,7 @@ static void
 populate_ui (CEPageDsl *self, NMConnection *connection)
 {
 	CEPageDslPrivate *priv = CE_PAGE_DSL_GET_PRIVATE (self);
-	NMSettingPPPOE *setting = priv->setting;
+	NMSettingPppoe *setting = priv->setting;
 	const char *str;
 
 	str = nm_setting_pppoe_get_username (setting);
@@ -118,7 +113,6 @@ CEPage *
 ce_page_dsl_new (NMConnection *connection,
                  GtkWindow *parent_window,
                  NMClient *client,
-                 NMRemoteSettings *settings,
                  const char **out_secrets_setting_name,
                  GError **error)
 {
@@ -129,7 +123,6 @@ ce_page_dsl_new (NMConnection *connection,
 	                                 connection,
 	                                 parent_window,
 	                                 client,
-	                                 settings,
 	                                 UIDIR "/ce-page-dsl.ui",
 	                                 "DslPage",
 	                                 _("DSL")));
@@ -186,16 +179,9 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageDsl *self = CE_PAGE_DSL (page);
 	CEPageDslPrivate *priv = CE_PAGE_DSL_GET_PRIVATE (self);
-	GSList *foo;
-	gboolean valid;
 
 	ui_to_setting (self);
-
-	foo = g_slist_append (NULL, nm_connection_get_setting_ppp (connection));
-	valid = nm_setting_verify (NM_SETTING (priv->setting), foo, error);
-	g_slist_free (foo);
-
-	return valid;
+	return nm_setting_verify (NM_SETTING (priv->setting), connection, error);
 }
 
 static void
@@ -219,7 +205,7 @@ ce_page_dsl_class_init (CEPageDslClass *dsl_class)
 void
 dsl_connection_new (GtkWindow *parent,
                     const char *detail,
-                    NMRemoteSettings *settings,
+                    NMClient *client,
                     PageNewConnectionResultFunc result_func,
                     gpointer user_data)
 {
@@ -229,7 +215,7 @@ dsl_connection_new (GtkWindow *parent,
 	connection = ce_page_new_connection (_("DSL connection %d"),
 	                                     NM_SETTING_PPPOE_SETTING_NAME,
 	                                     FALSE,
-	                                     settings,
+	                                     client,
 	                                     user_data);
 	nm_connection_add_setting (connection, nm_setting_pppoe_new ());
 	nm_connection_add_setting (connection, nm_setting_wired_new ());

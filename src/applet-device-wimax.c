@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2012 Red Hat, Inc.
+ * Copyright 2008 - 2014 Red Hat, Inc.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -27,18 +27,10 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#include <nm-device.h>
-#include <nm-setting-connection.h>
-#include <nm-setting-wimax.h>
-#include <nm-device-wimax.h>
-#include <nm-utils.h>
-
 #include "applet.h"
 #include "applet-device-wimax.h"
 #include "applet-dialogs.h"
-#include "nma-marshal.h"
 #include "mb-menu-item.h"
-#include "nm-ui-utils.h"
 
 #define ACTIVE_NSP_TAG "active-nsp"
 
@@ -77,7 +69,7 @@ wimax_new_auto_connection (NMDevice *device,
 
 	nsp_name = nm_wimax_nsp_get_name (info->nsp);
 
-	connection = nm_connection_new ();
+	connection = nm_simple_connection_new ();
 
 	s_wimax = NM_SETTING_WIMAX (nm_setting_wimax_new ());
 	g_object_set (s_wimax,
@@ -169,14 +161,14 @@ new_nsp_menu_item (NMDeviceWimax *device,
 }
 
 static NMConnection *
-get_connection_for_nsp (GSList *connections, NMWimaxNsp *nsp)
+get_connection_for_nsp (const GPtrArray *connections, NMWimaxNsp *nsp)
 {
-	GSList *iter;
+	int i;
 	const char *nsp_name, *candidate_name;
 
 	nsp_name = nm_wimax_nsp_get_name (nsp);
-	for (iter = connections; iter; iter = g_slist_next (iter)) {
-		NMConnection *candidate = NM_CONNECTION (iter->data);
+	for (i = 0; i < connections->len; i++) {
+		NMConnection *candidate = NM_CONNECTION (connections->pdata[i]);
 		NMSettingWimax *s_wimax;
 
 		s_wimax = nm_connection_get_setting_wimax (candidate);
@@ -205,7 +197,7 @@ sort_nsps (gconstpointer a, gconstpointer b)
 static void
 wimax_add_menu_item (NMDevice *device,
                      gboolean multiple_devices,
-                     GSList *connections,
+                     const GPtrArray *connections,
                      NMConnection *active,
                      GtkWidget *menu,
                      NMApplet *applet)
@@ -224,7 +216,7 @@ wimax_add_menu_item (NMDevice *device,
 	if (multiple_devices) {
 		const char *desc;
 
-		desc = nma_utils_get_device_description (device);
+		desc = nm_device_get_description (device);
 		text = g_strdup_printf (_("WiMAX Mobile Broadband (%s)"), desc);
 	} else {
 		text = g_strdup (_("WiMAX Mobile Broadband"));

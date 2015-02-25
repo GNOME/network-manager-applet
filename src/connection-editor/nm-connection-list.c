@@ -18,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2012 Red Hat, Inc.
+ * Copyright 2007 - 2014 Red Hat, Inc.
  */
 
 #include <config.h>
@@ -29,23 +29,6 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <glib/gi18n.h>
-
-#include <nm-setting-connection.h>
-#include <nm-connection.h>
-#include <nm-setting.h>
-#include <nm-setting-connection.h>
-#include <nm-setting-wired.h>
-#include <nm-setting-wireless.h>
-#include <nm-setting-vpn.h>
-#include <nm-setting-gsm.h>
-#include <nm-setting-cdma.h>
-#include <nm-setting-pppoe.h>
-#include <nm-setting-ppp.h>
-#include <nm-setting-serial.h>
-#include <nm-setting-wimax.h>
-#include <nm-setting-infiniband.h>
-#include <nm-utils.h>
-#include <nm-remote-settings.h>
 
 #include "ce-page.h"
 #include "nm-connection-editor.h"
@@ -243,7 +226,7 @@ delete_slaves_of_connection (NMConnectionList *list, NMConnection *connection)
 		return;
 
 	uuid = nm_connection_get_uuid (connection);
-	iface = nm_connection_get_virtual_iface_name (connection);
+	iface = nm_connection_get_interface_name (connection);
 
 	do {
 		if (!gtk_tree_model_iter_children (list->model, &iter, &types_iter))
@@ -297,8 +280,7 @@ really_add_connection (NMConnection *connection,
 		return;
 	}
 
-	editor = nm_connection_editor_new (GTK_WINDOW (list->dialog), connection,
-	                                   list->nm_client, list->settings);
+	editor = nm_connection_editor_new (GTK_WINDOW (list->dialog), connection, list->client);
 	if (!editor) {
 		g_object_unref (connection);
 		g_signal_emit (list, list_signals[EDITING_DONE], 0, 0);
@@ -315,7 +297,7 @@ add_clicked (GtkButton *button, gpointer user_data)
 	NMConnectionList *list = user_data;
 
 	new_connection_dialog (GTK_WINDOW (list->dialog),
-	                       list->settings,
+	                       list->client,
 	                       NULL,
 	                       really_add_connection,
 	                       list);
@@ -354,8 +336,7 @@ edit_connection (NMConnectionList *list, NMConnection *connection)
 
 	editor = nm_connection_editor_new (GTK_WINDOW (list->dialog),
 	                                   NM_CONNECTION (connection),
-	                                   list->nm_client,
-	                                   list->settings);
+	                                   list->client);
 	g_signal_connect (editor, "done", G_CALLBACK (edit_done_cb), list);
 	nm_connection_editor_run (editor);
 }
@@ -445,11 +426,8 @@ dispose (GObject *object)
 
 	if (list->gui)
 		g_object_unref (list->gui);
-	if (list->nm_client)
-		g_object_unref (list->nm_client);
-
-	if (list->settings)
-		g_object_unref (list->settings);
+	if (list->client)
+		g_object_unref (list->client);
 
 	G_OBJECT_CLASS (nm_connection_list_parent_class)->dispose (object);
 }
@@ -468,8 +446,7 @@ nm_connection_list_class_init (NMConnectionListClass *klass)
 					  G_OBJECT_CLASS_TYPE (object_class),
 					  G_SIGNAL_RUN_FIRST,
 					  G_STRUCT_OFFSET (NMConnectionListClass, done),
-					  NULL, NULL,
-					  g_cclosure_marshal_VOID__INT,
+		              NULL, NULL, NULL,
 					  G_TYPE_NONE, 1, G_TYPE_INT);
 
 	list_signals[EDITING_DONE] =
@@ -477,8 +454,7 @@ nm_connection_list_class_init (NMConnectionListClass *klass)
 		              G_OBJECT_CLASS_TYPE (object_class),
 		              G_SIGNAL_RUN_FIRST,
 		              G_STRUCT_OFFSET (NMConnectionListClass, done),
-		              NULL, NULL,
-		              g_cclosure_marshal_VOID__INT,
+		              NULL, NULL, NULL,
 		              G_TYPE_NONE, 1, G_TYPE_INT);
 }
 
@@ -590,7 +566,7 @@ tree_model_visible_func (GtkTreeModel *model,
 	    && g_strcmp0 (slave_type, NM_SETTING_BRIDGE_SETTING_NAME) != 0)
 		return TRUE;
 
-	if (nm_remote_settings_get_connection_by_uuid (self->settings, master))
+	if (nm_client_get_connection_by_uuid (self->client, master))
 		return FALSE;
 	if (nm_connection_editor_get_master (connection))
 		return FALSE;
@@ -700,7 +676,7 @@ add_connection_buttons (NMConnectionList *self)
 	                               _("Edit the selected connection"),
 	                               _("Authenticate to edit the selected connection"),
 	                               GTK_STOCK_EDIT,
-	                               self->nm_client,
+	                               self->client,
 	                               NM_CLIENT_PERMISSION_SETTINGS_MODIFY_SYSTEM);
 	g_object_set_data (G_OBJECT (button), "NMConnectionList", self);
 	gtk_button_set_use_underline (GTK_BUTTON (button), TRUE);
@@ -716,7 +692,7 @@ add_connection_buttons (NMConnectionList *self)
 	                               _("Delete the selected connection"),
 	                               _("Authenticate to delete the selected connection"),
 	                               GTK_STOCK_DELETE,
-	                               self->nm_client,
+	                               self->client,
 	                               NM_CLIENT_PERMISSION_SETTINGS_MODIFY_SYSTEM);
 	g_object_set_data (G_OBJECT (button), "NMConnectionList", self);
 	gtk_button_set_use_underline (GTK_BUTTON (button), TRUE);
@@ -730,7 +706,9 @@ add_connection_buttons (NMConnectionList *self)
 }
 
 static void
-connection_removed (NMRemoteConnection *connection, gpointer user_data)
+connection_removed (NMClient *client,
+                    NMRemoteConnection *connection,
+                    gpointer user_data)
 {
 	NMConnectionList *self = NM_CONNECTION_LIST (user_data);
 	GtkTreeIter iter, parent_iter;
@@ -743,7 +721,7 @@ connection_removed (NMRemoteConnection *connection, gpointer user_data)
 }
 
 static void
-connection_updated (NMRemoteConnection *connection, gpointer user_data)
+connection_changed (NMRemoteConnection *connection, gpointer user_data)
 {
 	NMConnectionList *self = NM_CONNECTION_LIST (user_data);
 	GtkTreeIter iter;
@@ -769,7 +747,7 @@ get_parent_iter_for_connection (NMConnectionList *list,
 		return FALSE;
 	}
 
-	type = nm_connection_lookup_setting_type (str_type);
+	type = nm_setting_lookup_type (str_type);
 
 	if (gtk_tree_model_get_iter_first (list->model, iter)) {
 		do {
@@ -788,7 +766,7 @@ get_parent_iter_for_connection (NMConnectionList *list,
 }
 
 static void
-connection_added (NMRemoteSettings *settings,
+connection_added (NMClient *client,
                   NMRemoteConnection *connection,
                   gpointer user_data)
 {
@@ -839,33 +817,19 @@ connection_added (NMRemoteSettings *settings,
 		gtk_tree_path_free (path);
 	}
 
-	g_signal_connect (connection, NM_REMOTE_CONNECTION_REMOVED, G_CALLBACK (connection_removed), self);
-	g_signal_connect (connection, NM_REMOTE_CONNECTION_UPDATED, G_CALLBACK (connection_updated), self);
+	g_signal_connect (client, NM_CLIENT_CONNECTION_REMOVED, G_CALLBACK (connection_removed), self);
+	g_signal_connect (connection, NM_CONNECTION_CHANGED, G_CALLBACK (connection_changed), self);
 	gtk_tree_model_filter_refilter (self->filter);
-}
-
-static void
-initial_connections_read (NMRemoteSettings *settings, gpointer user_data)
-{
-	NMConnectionList *list = user_data;
-	GtkTreePath *path;
-	GtkTreeIter iter;
-
-	g_signal_handlers_disconnect_by_func (settings, G_CALLBACK (initial_connections_read), list);
-
-	if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (list->sortable), &iter)) {
-		path = gtk_tree_model_get_path (GTK_TREE_MODEL (list->sortable), &iter);
-		gtk_tree_view_scroll_to_cell (list->connection_list,
-		                              path, NULL,
-		                              FALSE, 0, 0);
-		gtk_tree_path_free (path);
-	}
 }
 
 NMConnectionList *
 nm_connection_list_new (void)
 {
 	NMConnectionList *list;
+	GtkTreePath *path;
+	GtkTreeIter iter;
+	const GPtrArray *all_cons;
+	int i;
 	GError *error = NULL;
 	const char *objects[] = { "NMConnectionList", NULL };
 
@@ -887,23 +851,30 @@ nm_connection_list_new (void)
 
 	gtk_window_set_default_icon_name ("preferences-system-network");
 
-	list->nm_client = nm_client_new ();
-	if (!list->nm_client)
+	list->client = nm_client_new (NULL, NULL);
+	if (!list->client)
 		goto error;
-
-	list->settings = nm_remote_settings_new (NULL);
-	g_signal_connect (list->settings,
-	                  NM_REMOTE_SETTINGS_NEW_CONNECTION,
+	g_signal_connect (list->client,
+	                  NM_CLIENT_CONNECTION_ADDED,
 	                  G_CALLBACK (connection_added),
-	                  list);
-	g_signal_connect (list->settings,
-	                  NM_REMOTE_SETTINGS_CONNECTIONS_READ,
-	                  G_CALLBACK (initial_connections_read),
 	                  list);
 
 	list->connection_list = GTK_TREE_VIEW (gtk_builder_get_object (list->gui, "connection_list"));
 	initialize_treeview (list);
 	add_connection_buttons (list);
+
+	/* Fill the treeview initially */
+	all_cons = nm_client_get_connections (list->client);
+	for (i = 0; i < all_cons->len; i++)
+		connection_added (list->client, all_cons->pdata[i], list);
+
+	if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (list->sortable), &iter)) {
+		path = gtk_tree_model_get_path (GTK_TREE_MODEL (list->sortable), &iter);
+		gtk_tree_view_scroll_to_cell (list->connection_list,
+		                              path, NULL,
+		                              FALSE, 0, 0);
+		gtk_tree_path_free (path);
+	}
 
 	list->dialog = GTK_WIDGET (gtk_builder_get_object (list->gui, "NMConnectionList"));
 	if (!list->dialog)
@@ -959,82 +930,29 @@ nm_connection_list_create (NMConnectionList *self, GType ctype, const char *deta
 	} else {
 		new_connection_of_type (GTK_WINDOW (self->dialog),
 		                        detail,
-		                        self->settings,
+		                        self->client,
 		                        types[i].new_connection_func,
 		                        really_add_connection,
 		                        self);
 	}
 }
 
-static NMConnection *
-get_connection (NMRemoteSettings *settings, const gchar *id)
-{
-	const gchar *uuid;
-	NMConnection *connection = NULL;
-	GSList *list, *l;
-
-	list = nm_remote_settings_list_connections (settings);
-	for (l = list; l; l = l->next) {
-		connection = l->data;
-		uuid = nm_connection_get_uuid (connection);
-		if (g_strcmp0 (uuid, id) == 0) {
-			g_slist_free (list);
-			return connection;
-		}
-	}
-
-	g_slist_free (list);
-	return NULL;
-}
-
-typedef struct {
-	NMConnectionList *self;
-	const gchar *uuid;
-	gboolean wait;
-} EditData;
-
-static void
-connections_read (NMRemoteSettings *settings, EditData *data)
-{
-	NMConnection *connection;
-	static gulong signal_id = 0;
-
-	connection = get_connection (settings, data->uuid);
-	if (connection) {
-		edit_connection (data->self, connection);
-		g_object_unref (connection);
-	} else if (data->wait) {
-		data->wait = FALSE;
-		signal_id = g_signal_connect (settings, "connections-read",
-		                              G_CALLBACK (connections_read), data);
-		return;
-	} else {
-		nm_connection_editor_error (NULL,
-		                            _("Error editing connection"),
-		                            _("Did not find a connection with UUID '%s'"), data->uuid);
-	}
-
-	if (signal_id != 0) {
-		g_signal_handler_disconnect (settings, signal_id);
-		signal_id = 0;
-	}
-
-	g_free (data);
-}
-
 void
 nm_connection_list_edit (NMConnectionList *self, const gchar *uuid)
 {
-	EditData *data;
+	NMConnection *connection;
 
 	g_return_if_fail (NM_IS_CONNECTION_LIST (self));
 
-	data =  g_new0 (EditData, 1);
-	data->self = self;
-	data->uuid = uuid;
-	data->wait = TRUE;
+	connection = (NMConnection *) nm_client_get_connection_by_uuid (self->client, uuid);
+	if (!connection) {
+		nm_connection_editor_error (NULL,
+		                            _("Error editing connection"),
+		                            _("Did not find a connection with UUID '%s'"), uuid);
+		return;
+	}
 
-	connections_read (self->settings, data);
+	edit_connection (self, connection);
 }
 
 static void

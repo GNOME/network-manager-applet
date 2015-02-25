@@ -41,30 +41,6 @@ gboolean shell_debug = FALSE;
 gboolean with_agent = TRUE;
 
 static void
-signal_handler (int signo, siginfo_t *info, void *data)
-{
-	if (signo == SIGINT || signo == SIGTERM) {
-		g_message ("PID %d (we are %d) sent signal %d, shutting down...",
-		           info->si_pid, getpid (), signo);
-		g_main_loop_quit (loop);
-	}
-}
-
-static void
-setup_signals (void)
-{
-	struct sigaction action;
-	sigset_t mask;
-
-	sigemptyset (&mask);
-	action.sa_sigaction = signal_handler;
-	action.sa_mask = mask;
-	action.sa_flags = SA_SIGINFO;
-	sigaction (SIGTERM,  &action, NULL);
-	sigaction (SIGINT,  &action, NULL);
-}
-
-static void
 usage (const char *progname)
 {
 	char *foo;
@@ -105,7 +81,6 @@ int main (int argc, char *argv[])
 	if (applet == NULL)
 		exit (1);
 
-	setup_signals ();
 	g_main_loop_run (loop);
 
 	g_object_unref (G_OBJECT (applet));

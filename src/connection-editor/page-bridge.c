@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2012 Red Hat, Inc.
+ * Copyright 2012 - 2014 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -23,10 +23,6 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-
-#include <nm-setting-connection.h>
-#include <nm-setting-bridge.h>
-#include <nm-utils.h>
 
 #include "page-bridge.h"
 #include "nm-connection-editor.h"
@@ -172,7 +168,7 @@ add_slave (CEPageMaster *master, NewConnectionResultFunc result_func)
 	CEPageBridgePrivate *priv = CE_PAGE_BRIDGE_GET_PRIVATE (self);
 
 	new_connection_dialog (priv->toplevel,
-	                       CE_PAGE (self)->settings,
+	                       CE_PAGE (self)->client,
 	                       connection_type_filter,
 	                       result_func,
 	                       master);
@@ -191,7 +187,6 @@ CEPage *
 ce_page_bridge_new (NMConnection *connection,
                     GtkWindow *parent_window,
                     NMClient *client,
-                    NMRemoteSettings *settings,
                     const char **out_secrets_setting_name,
                     GError **error)
 {
@@ -202,7 +197,6 @@ ce_page_bridge_new (NMConnection *connection,
 	                                  connection,
 	                                  parent_window,
 	                                  client,
-	                                  settings,
 	                                  UIDIR "/ce-page-bridge.ui",
 	                                  "BridgePage",
 	                                  _("Bridge")));
@@ -290,37 +284,33 @@ ce_page_bridge_class_init (CEPageBridgeClass *bridge_class)
 
 void
 bridge_connection_new (GtkWindow *parent,
-                     const char *detail,
-                     NMRemoteSettings *settings,
-                     PageNewConnectionResultFunc result_func,
-                     gpointer user_data)
+                       const char *detail,
+                       NMClient *client,
+                       PageNewConnectionResultFunc result_func,
+                       gpointer user_data)
 {
 	NMConnection *connection;
-	int bridge_num = 0, num;
-	GSList *connections, *iter;
+	int bridge_num = 0, num, i;
+	const GPtrArray *connections;
 	NMConnection *conn2;
-	NMSettingBridge *s_bridge;
 	const char *iface;
 	char *my_iface;
 
 	connection = ce_page_new_connection (_("Bridge connection %d"),
 	                                     NM_SETTING_BRIDGE_SETTING_NAME,
 	                                     TRUE,
-	                                     settings,
+	                                     client,
 	                                     user_data);
 	nm_connection_add_setting (connection, nm_setting_bridge_new ());
 
 	/* Find an available interface name */
-	connections = nm_remote_settings_list_connections (settings);
-	for (iter = connections; iter; iter = iter->next) {
-		conn2 = iter->data;
+	connections = nm_client_get_connections (client);
+	for (i = 0; i < connections->len; i++) {
+		conn2 = connections->pdata[i];
 
 		if (!nm_connection_is_type (conn2, NM_SETTING_BRIDGE_SETTING_NAME))
 			continue;
-		s_bridge = nm_connection_get_setting_bridge (conn2);
-		if (!s_bridge)
-			continue;
-		iface = nm_setting_bridge_get_interface_name (s_bridge);
+		iface = nm_connection_get_interface_name (connection);
 		if (!iface || strncmp (iface, "bridge", 6) != 0 || !g_ascii_isdigit (iface[6]))
 			continue;
 
@@ -328,12 +318,10 @@ bridge_connection_new (GtkWindow *parent,
 		if (bridge_num <= num)
 			bridge_num = num + 1;
 	}
-	g_slist_free (connections);
 
 	my_iface = g_strdup_printf ("bridge%d", bridge_num);
-	s_bridge = nm_connection_get_setting_bridge (connection);
-	g_object_set (G_OBJECT (s_bridge),
-	              NM_SETTING_BRIDGE_INTERFACE_NAME, my_iface,
+	g_object_set (G_OBJECT (connection),
+	              NM_SETTING_CONNECTION_INTERFACE_NAME, my_iface,
 	              NULL);
 	g_free (my_iface);
 

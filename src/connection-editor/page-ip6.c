@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2012 Red Hat, Inc.
+ * Copyright 2008 - 2014 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -33,16 +33,6 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#include <nm-setting-connection.h>
-#include <nm-setting-ip6-config.h>
-#include <nm-setting-wired.h>
-#include <nm-setting-wireless.h>
-#include <nm-setting-gsm.h>
-#include <nm-setting-cdma.h>
-#include <nm-setting-pppoe.h>
-#include <nm-setting-vpn.h>
-#include <nm-utils.h>
-
 #include "page-ip6.h"
 #include "ip6-routes-dialog.h"
 #include "nm-glib-compat.h"
@@ -57,7 +47,7 @@ G_DEFINE_TYPE (CEPageIP6, ce_page_ip6, CE_TYPE_PAGE)
 #define COL_LAST COL_GATEWAY
 
 typedef struct {
-	NMSettingIP6Config *setting;
+	NMSettingIPConfig *setting;
 	char *connection_id;
 	GType connection_type;
 
@@ -135,7 +125,7 @@ ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 	connection_type = nm_setting_connection_get_connection_type (s_con);
 	g_assert (connection_type);
 
-	priv->connection_type = nm_connection_lookup_setting_type (connection_type);
+	priv->connection_type = nm_setting_lookup_type (connection_type);
 
 	if (priv->connection_type == NM_TYPE_SETTING_VPN) {
 		str_auto = _("Automatic (VPN)");
@@ -353,7 +343,7 @@ static void
 populate_ui (CEPageIP6 *self)
 {
 	CEPageIP6Private *priv = CE_PAGE_IP6_GET_PRIVATE (self);
-	NMSettingIP6Config *setting = priv->setting;
+	NMSettingIPConfig *setting = priv->setting;
 	GtkListStore *store;
 	GtkTreeIter model_iter;
 	int method = IP6_METHOD_AUTO;
@@ -366,7 +356,7 @@ populate_ui (CEPageIP6 *self)
 
 	/* Method */
 	gtk_combo_box_set_active (priv->method, 0);
-	str_method = nm_setting_ip6_config_get_method (setting);
+	str_method = nm_setting_ip_config_get_method (setting);
 	if (str_method) {
 		if (!strcmp (str_method, NM_SETTING_IP6_CONFIG_METHOD_IGNORE))
 			method = IP6_METHOD_IGNORE;
@@ -382,7 +372,7 @@ populate_ui (CEPageIP6 *self)
 			method = IP6_METHOD_SHARED;
 	}
 
-	if (method == IP6_METHOD_AUTO && nm_setting_ip6_config_get_ignore_auto_dns (setting))
+	if (method == IP6_METHOD_AUTO && nm_setting_ip_config_get_ignore_auto_dns (setting))
 		method = IP6_METHOD_AUTO_ADDRESSES;
 
 	info.method = method;
@@ -391,33 +381,24 @@ populate_ui (CEPageIP6 *self)
 
 	/* Addresses */
 	store = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
-	for (i = 0; i < nm_setting_ip6_config_get_num_addresses (setting); i++) {
-		NMIP6Address *addr = nm_setting_ip6_config_get_address (setting, i);
-		const struct in6_addr *tmp_addr;
-		char buf[INET6_ADDRSTRLEN + 1];
+	for (i = 0; i < nm_setting_ip_config_get_num_addresses (setting); i++) {
+		NMIPAddress *addr = nm_setting_ip_config_get_address (setting, i);
+		char buf[32];
 
 		if (!addr) {
 			g_warning ("%s: empty IP6 Address structure!", __func__);
 			continue;
 		}
 
+		snprintf (buf, sizeof (buf), "%u", nm_ip_address_get_prefix (addr));
+
 		gtk_list_store_append (store, &model_iter);
-
-		/* Address */
-		tmp_addr = nm_ip6_address_get_address (addr);
-		(void) inet_ntop (AF_INET6, tmp_addr, &buf[0], sizeof (buf));
-		gtk_list_store_set (store, &model_iter, COL_ADDRESS, buf, -1);
-
-		/* Prefix */
-		snprintf (buf, sizeof (buf), "%u", nm_ip6_address_get_prefix (addr));
-		gtk_list_store_set (store, &model_iter, COL_PREFIX, buf, -1);
-
-		/* Gateway */
-		tmp_addr = nm_ip6_address_get_gateway (addr);
-		if (tmp_addr && !IN6_IS_ADDR_UNSPECIFIED (tmp_addr)) {
-			(void) inet_ntop (AF_INET6, tmp_addr, &buf[0], sizeof (buf));
-			gtk_list_store_set (store, &model_iter, COL_GATEWAY, buf, -1);
-		}
+		gtk_list_store_set (store, &model_iter,
+		                    COL_ADDRESS, nm_ip_address_get_address (addr),
+		                    COL_PREFIX, buf,
+		                    /* FIXME */
+		                    COL_GATEWAY, i == 0 ? nm_setting_ip_config_get_gateway (setting) : NULL,
+		                    -1);
 	}
 
 	gtk_tree_view_set_model (priv->addr_list, GTK_TREE_MODEL (store));
@@ -427,34 +408,32 @@ populate_ui (CEPageIP6 *self)
 
 	/* DNS servers */
 	string = g_string_new ("");
-	for (i = 0; i < nm_setting_ip6_config_get_num_dns (setting); i++) {
-		const struct in6_addr *tmp_addr;
-		char buf[INET6_ADDRSTRLEN + 1];
+	for (i = 0; i < nm_setting_ip_config_get_num_dns (setting); i++) {
+		const char *dns;
 
-		tmp_addr = nm_setting_ip6_config_get_dns (setting, i);
-		if (!tmp_addr)
+		dns = nm_setting_ip_config_get_dns (setting, i);
+		if (!dns)
 			continue;
 
-		(void) inet_ntop (AF_INET6, tmp_addr, &buf[0], sizeof (buf));
 		if (string->len)
 			g_string_append (string, ", ");
-		g_string_append (string, buf);
+		g_string_append (string, dns);
 	}
 	gtk_entry_set_text (priv->dns_servers, string->str);
 	g_string_free (string, TRUE);
 
 	/* DNS searches */
 	string = g_string_new ("");
-	for (i = 0; i < nm_setting_ip6_config_get_num_dns_searches (setting); i++) {
+	for (i = 0; i < nm_setting_ip_config_get_num_dns_searches (setting); i++) {
 		if (string->len)
 			g_string_append (string, ", ");
-		g_string_append (string, nm_setting_ip6_config_get_dns_search (setting, i));
+		g_string_append (string, nm_setting_ip_config_get_dns_search (setting, i));
 	}
 	gtk_entry_set_text (priv->dns_searches, string->str);
 	g_string_free (string, TRUE);
 
 	/* IPv6 privacy extensions */
-	ip6_privacy = nm_setting_ip6_config_get_ip6_privacy (setting);
+	ip6_privacy = nm_setting_ip6_config_get_ip6_privacy (NM_SETTING_IP6_CONFIG (setting));
 	switch (ip6_privacy) {
 	case NM_SETTING_IP6_CONFIG_PRIVACY_DISABLED:
 		ip6_privacy_idx = IP6_PRIVACY_DISABLED;
@@ -473,7 +452,7 @@ populate_ui (CEPageIP6 *self)
 
 	/* IPv6 required */
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->ip6_required),
-	                              !nm_setting_ip6_config_get_may_fail (setting));
+	                              !nm_setting_ip_config_get_may_fail (setting));
 }
 
 static void
@@ -833,7 +812,7 @@ routes_button_clicked_cb (GtkWidget *button, gpointer user_data)
 	toplevel = gtk_widget_get_toplevel (CE_PAGE (self)->page);
 	g_return_if_fail (gtk_widget_is_toplevel (toplevel));
 
-	method = nm_setting_ip6_config_get_method (priv->setting);
+	method = nm_setting_ip_config_get_method (priv->setting);
 	if (!method || !strcmp (method, NM_SETTING_IP6_CONFIG_METHOD_AUTO))
 		automatic = TRUE;
 
@@ -986,7 +965,6 @@ CEPage *
 ce_page_ip6_new (NMConnection *connection,
                  GtkWindow *parent_window,
                  NMClient *client,
-                 NMRemoteSettings *settings,
                  const char **out_secrets_setting_name,
                  GError **error)
 {
@@ -998,7 +976,6 @@ ce_page_ip6_new (NMConnection *connection,
 	                                 connection,
 	                                 parent_window,
 	                                 client,
-	                                 settings,
 	                                 UIDIR "/ce-page-ip6.ui",
 	                                 "IP6Page",
 	                                 _("IPv6 Settings")));
@@ -1018,7 +995,7 @@ ce_page_ip6_new (NMConnection *connection,
 
 	priv->setting = nm_connection_get_setting_ip6_config (connection);
 	if (!priv->setting) {
-		priv->setting = NM_SETTING_IP6_CONFIG (nm_setting_ip6_config_new ());
+		priv->setting = NM_SETTING_IP_CONFIG (nm_setting_ip6_config_new ());
 		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
 	}
 
@@ -1074,75 +1051,81 @@ ui_to_setting (CEPageIP6 *self)
 
 	g_object_freeze_notify (G_OBJECT (priv->setting));
 	g_object_set (priv->setting,
-	              NM_SETTING_IP6_CONFIG_METHOD, method,
-	              NM_SETTING_IP6_CONFIG_IGNORE_AUTO_DNS, ignore_auto_dns,
+	              NM_SETTING_IP_CONFIG_METHOD, method,
+	              NM_SETTING_IP_CONFIG_IGNORE_AUTO_DNS, ignore_auto_dns,
 	              NULL);
 
 	/* IP addresses */
-	nm_setting_ip6_config_clear_addresses (priv->setting);
+	nm_setting_ip_config_clear_addresses (priv->setting);
 	model = gtk_tree_view_get_model (priv->addr_list);
 	iter_valid = gtk_tree_model_get_iter_first (model, &tree_iter);
 	while (iter_valid) {
-		char *item = NULL, *end;
-		struct in6_addr tmp_addr, tmp_gw;
-		gboolean have_gw = FALSE;
-		NMIP6Address *addr;
+		char *addr_str = NULL, *prefix_str = NULL, *addr_gw_str = NULL, *end;
+		NMIPAddress *addr;
 		guint32 prefix;
 
-		/* IP address */
-		gtk_tree_model_get (model, &tree_iter, COL_ADDRESS, &item, -1);
-		if (!item || !inet_pton (AF_INET6, item, &tmp_addr)) {
+		gtk_tree_model_get (model, &tree_iter,
+		                    COL_ADDRESS, &addr_str,
+		                    COL_PREFIX, &prefix_str,
+		                    COL_GATEWAY, &addr_gw_str,
+		                    -1);
+
+		if (!addr_str || !nm_utils_ipaddr_valid (AF_INET6, addr_str)) {
 			g_warning ("%s: IPv6 address '%s' missing or invalid!",
-			           __func__, item ? item : "<none>");
-			g_free (item);
-			goto out;
-		}
-		g_free (item);
-
-		/* Prefix */
-		gtk_tree_model_get (model, &tree_iter, COL_PREFIX, &item, -1);
-		if (!item) {
-			g_warning ("%s: IPv6 prefix '%s' missing!",
-			           __func__, item ? item : "<none>");
+			           __func__, addr_str ? addr_str : "<none>");
+			g_free (addr_str);
+			g_free (prefix_str);
+			g_free (addr_gw_str);
 			goto out;
 		}
 
-		prefix = strtoul (item, &end, 10);
+		if (!prefix_str) {
+			g_warning ("%s: IPv6 prefix missing!", __func__);
+			g_free (addr_str);
+			g_free (prefix_str);
+			g_free (addr_gw_str);
+			goto out;
+		}
+
+		prefix = strtoul (prefix_str, &end, 10);
 		if (!end || *end || prefix == 0 || prefix > 128) {
 			g_warning ("%s: IPv6 prefix '%s' invalid!",
-			           __func__, item ? item : "<none>");
-			g_free (item);
+			           __func__, prefix_str);
+			g_free (addr_str);
+			g_free (prefix_str);
+			g_free (addr_gw_str);
 			goto out;
 		}
-		g_free (item);
 
-		/* Gateway */
-		gtk_tree_model_get (model, &tree_iter, COL_GATEWAY, &item, -1);
-		if (item && strlen (item)) {
-			if (!inet_pton (AF_INET6, item, &tmp_gw)) {
-				g_warning ("%s: IPv6 gateway '%s' missing or invalid!",
-				           __func__, item ? item : "<none>");
-				g_free (item);
-				goto out;
-			}
-			if (!IN6_IS_ADDR_UNSPECIFIED (&tmp_gw))
-				have_gw = TRUE;
+		/* Gateway is optional... */
+		if (addr_gw_str && !nm_utils_ipaddr_valid (AF_INET6, addr_gw_str)) {
+			g_warning ("%s: IPv6 gateway '%s' invalid!",
+			           __func__, addr_gw_str);
+			g_free (addr_str);
+			g_free (prefix_str);
+			g_free (addr_gw_str);
+			goto out;
 		}
-		g_free (item);
 
-		addr = nm_ip6_address_new ();
-		nm_ip6_address_set_address (addr, &tmp_addr);
-		nm_ip6_address_set_prefix (addr, prefix);
-		if (have_gw)
-			nm_ip6_address_set_gateway (addr, &tmp_gw);
-		nm_setting_ip6_config_add_address (priv->setting, addr);
-		nm_ip6_address_unref (addr);
+		addr = nm_ip_address_new (AF_INET6, addr_str, prefix, NULL);
+		nm_setting_ip_config_add_address (priv->setting, addr);
+		nm_ip_address_unref (addr);
+
+		if (nm_setting_ip_config_get_num_addresses (priv->setting) == 1 && addr_gw_str) {
+			g_object_set (G_OBJECT (priv->setting),
+			              NM_SETTING_IP_CONFIG_GATEWAY, addr_gw_str,
+			              NULL);
+		}
+
+		g_free (addr_str);
+		g_free (prefix_str);
+		g_free (addr_gw_str);
 
 		iter_valid = gtk_tree_model_iter_next (model, &tree_iter);
 	}
 
 	/* DNS servers */
-	nm_setting_ip6_config_clear_dns (priv->setting);
+	nm_setting_ip_config_clear_dns (priv->setting);
 	text = gtk_entry_get_text (GTK_ENTRY (priv->dns_servers));
 	if (text && strlen (text)) {
 		items = g_strsplit_set (text, ", ;", 0);
@@ -1154,7 +1137,7 @@ ui_to_setting (CEPageIP6 *self)
 				continue;
 
 			if (inet_pton (AF_INET6, stripped, &tmp_addr)) {
-				nm_setting_ip6_config_add_dns (priv->setting, &tmp_addr);
+				nm_setting_ip_config_add_dns (priv->setting, stripped);
 			} else {
 				g_strfreev (items);
 				goto out;
@@ -1164,7 +1147,7 @@ ui_to_setting (CEPageIP6 *self)
 	}
 
 	/* Search domains */
-	nm_setting_ip6_config_clear_dns_searches (priv->setting);
+	nm_setting_ip_config_clear_dns_searches (priv->setting);
 	text = gtk_entry_get_text (GTK_ENTRY (priv->dns_searches));
 	if (text && strlen (text)) {
 		items = g_strsplit_set (text, ", ;:", 0);
@@ -1172,7 +1155,7 @@ ui_to_setting (CEPageIP6 *self)
 			char *stripped = g_strstrip (*iter);
 
 			if (strlen (stripped))
-				nm_setting_ip6_config_add_dns_search (priv->setting, stripped);
+				nm_setting_ip_config_add_dns_search (priv->setting, stripped);
 		}
 		g_strfreev (items);
 	}
@@ -1195,7 +1178,7 @@ ui_to_setting (CEPageIP6 *self)
 
 	may_fail = !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->ip6_required));
 	g_object_set (G_OBJECT (priv->setting),
-	              NM_SETTING_IP6_CONFIG_MAY_FAIL, may_fail,
+	              NM_SETTING_IP_CONFIG_MAY_FAIL, may_fail,
 	              NM_SETTING_IP6_CONFIG_IP6_PRIVACY, ip6_privacy,
 	              NULL);
 

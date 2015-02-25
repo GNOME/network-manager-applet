@@ -1,7 +1,5 @@
 /* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /*
- * Copyright (C) 2013 Jiri Pirko <jiri@resnulli.us>
- *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -15,6 +13,9 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * Copyright 2013 Jiri Pirko <jiri@resnulli.us>
+ * Copyright 2013 - 2014 Red Hat, Inc.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -24,22 +25,14 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#include <nm-device.h>
-#include <nm-setting-connection.h>
-#include <nm-setting-wired.h>
-#include <nm-setting-team.h>
-#include <nm-device-team.h>
-#include <nm-utils.h>
-
 #include "applet.h"
 #include "applet-device-team.h"
 #include "utils.h"
-#include "nm-ui-utils.h"
 
 static void
 team_add_menu_item (NMDevice *device,
                     gboolean multiple_devices,
-                    GSList *connections,
+                    const GPtrArray *connections,
                     NMConnection *active,
                     GtkWidget *menu,
                     NMApplet *applet)
@@ -47,7 +40,7 @@ team_add_menu_item (NMDevice *device,
 	char *text;
 	GtkWidget *item;
 
-	text = nma_utils_get_connection_device_name (connections->data);
+	text = nm_connection_get_virtual_device_description (connections->pdata[0]);
 	item = applet_menu_item_create_device_item_helper (device, applet, text);
 	g_free (text);
 
@@ -55,8 +48,7 @@ team_add_menu_item (NMDevice *device,
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	gtk_widget_show (item);
 
-	if (g_slist_length (connections))
-		applet_add_connection_items (device, connections, TRUE, active, NMA_ADD_ACTIVE, menu, applet);
+	applet_add_connection_items (device, connections, TRUE, active, NMA_ADD_ACTIVE, menu, applet);
 
 	/* Notify user of unmanaged or unavailable device */
 	if (device) {
@@ -68,11 +60,10 @@ team_add_menu_item (NMDevice *device,
 	}
 
 	if (!device || !nma_menu_device_check_unusable (device)) {
-		if ((!active && g_slist_length (connections)) || (active && g_slist_length (connections) > 1))
+		if (!active || connections->len > 1)
 			applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"));
 
-		if (g_slist_length (connections))
-			applet_add_connection_items (device, connections, TRUE, active, NMA_ADD_INACTIVE, menu, applet);
+		applet_add_connection_items (device, connections, TRUE, active, NMA_ADD_INACTIVE, menu, applet);
 	}
 }
 

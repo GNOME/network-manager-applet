@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2012 Red Hat, Inc.
+ * Copyright 2012 - 2014 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -23,10 +23,6 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-
-#include <nm-setting-connection.h>
-#include <nm-setting-bond.h>
-#include <nm-utils.h>
 
 #include "page-bond.h"
 #include "page-infiniband.h"
@@ -396,13 +392,13 @@ add_slave (CEPageMaster *master, NewConnectionResultFunc result_func)
 	if (priv->slave_arptype == ARPHRD_INFINIBAND) {
 		new_connection_of_type (priv->toplevel,
 		                        NULL,
-		                        CE_PAGE (self)->settings,
+		                        CE_PAGE (self)->client,
 		                        infiniband_connection_new,
 		                        result_func,
 		                        master);
 	} else {
 		new_connection_dialog (priv->toplevel,
-		                       CE_PAGE (self)->settings,
+		                       CE_PAGE (self)->client,
 		                       connection_type_filter,
 		                       result_func,
 		                       master);
@@ -433,7 +429,6 @@ CEPage *
 ce_page_bond_new (NMConnection *connection,
 				  GtkWindow *parent_window,
 				  NMClient *client,
-                  NMRemoteSettings *settings,
 				  const char **out_secrets_setting_name,
 				  GError **error)
 {
@@ -444,7 +439,6 @@ ce_page_bond_new (NMConnection *connection,
 	                                  connection,
 	                                  parent_window,
 	                                  client,
-	                                  settings,
 	                                  UIDIR "/ce-page-bond.ui",
 	                                  "BondPage",
 	                                  _("Bond")));
@@ -604,36 +598,32 @@ ce_page_bond_class_init (CEPageBondClass *bond_class)
 void
 bond_connection_new (GtkWindow *parent,
                      const char *detail,
-                     NMRemoteSettings *settings,
+                     NMClient *client,
                      PageNewConnectionResultFunc result_func,
                      gpointer user_data)
 {
 	NMConnection *connection;
-	int bond_num = 0, num;
-	GSList *connections, *iter;
+	int bond_num = 0, num, i;
+	const GPtrArray *connections;
 	NMConnection *conn2;
-	NMSettingBond *s_bond;
 	const char *iface;
 	char *my_iface;
 
 	connection = ce_page_new_connection (_("Bond connection %d"),
 	                                     NM_SETTING_BOND_SETTING_NAME,
 	                                     TRUE,
-	                                     settings,
+	                                     client,
 	                                     user_data);
 	nm_connection_add_setting (connection, nm_setting_bond_new ());
 
 	/* Find an available interface name */
-	connections = nm_remote_settings_list_connections (settings);
-	for (iter = connections; iter; iter = iter->next) {
-		conn2 = iter->data;
+	connections = nm_client_get_connections (client);
+	for (i = 0; i < connections->len; i++) {
+		conn2 = connections->pdata[i];
 
 		if (!nm_connection_is_type (conn2, NM_SETTING_BOND_SETTING_NAME))
 			continue;
-		s_bond = nm_connection_get_setting_bond (conn2);
-		if (!s_bond)
-			continue;
-		iface = nm_setting_bond_get_interface_name (s_bond);
+		iface = nm_connection_get_interface_name (conn2);
 		if (!iface || strncmp (iface, "bond", 4) != 0 || !g_ascii_isdigit (iface[4]))
 			continue;
 
@@ -641,12 +631,10 @@ bond_connection_new (GtkWindow *parent,
 		if (bond_num <= num)
 			bond_num = num + 1;
 	}
-	g_slist_free (connections);
 
 	my_iface = g_strdup_printf ("bond%d", bond_num);
-	s_bond = nm_connection_get_setting_bond (connection);
-	g_object_set (G_OBJECT (s_bond),
-	              NM_SETTING_BOND_INTERFACE_NAME, my_iface,
+	g_object_set (G_OBJECT (connection),
+	              NM_SETTING_CONNECTION_INTERFACE_NAME, my_iface,
 	              NULL);
 	g_free (my_iface);
 

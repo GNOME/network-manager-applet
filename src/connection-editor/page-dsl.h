@@ -17,13 +17,11 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2012 Red Hat, Inc.
+ * Copyright 2008 - 2014 Red Hat, Inc.
  */
 
 #ifndef __PAGE_DSL_H__
 #define __PAGE_DSL_H__
-
-#include <nm-connection.h>
 
 #include <glib.h>
 #include <glib-object.h>
@@ -50,13 +48,12 @@ GType ce_page_dsl_get_type (void);
 CEPage *ce_page_dsl_new (NMConnection *connection,
                          GtkWindow *parent,
                          NMClient *client,
-                         NMRemoteSettings *settings,
                          const char **out_secrets_setting_name,
                          GError **error);
 
 void dsl_connection_new (GtkWindow *parent,
                          const char *detail,
-                         NMRemoteSettings *settings,
+                         NMClient *client,
                          PageNewConnectionResultFunc callback,
                          gpointer user_data);
 

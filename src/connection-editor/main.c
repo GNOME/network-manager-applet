@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2004 - 2013 Red Hat, Inc.
+ * Copyright 2004 - 2014 Red Hat, Inc.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -36,9 +36,6 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
-#include <nm-setting-wired.h>
-#include <nm-setting-gsm.h>
-#include <nm-setting-cdma.h>
 #include "nm-connection-list.h"
 #include "nm-connection-editor.h"
 
@@ -171,7 +168,7 @@ handle_arguments (NMConnectionList *list,
 		type = NM_SETTING_WIRED_SETTING_NAME;
 
 	/* Grab type to create or show */
-	ctype = nm_connection_lookup_setting_type (type);
+	ctype = nm_setting_lookup_type (type);
 	if (ctype == 0) {
 		g_warning ("Unknown connection type '%s'", type);
 		g_free (type_tmp);

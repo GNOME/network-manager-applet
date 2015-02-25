@@ -2,7 +2,8 @@ bin_PROGRAMS = nm-connection-editor
 
 nm_connection_editor_CPPFLAGS = \
 	$(GTK_CFLAGS) \
-	$(NMA_CFLAGS) \
+	$(LIBNM_CFLAGS) \
+	-DLIBNM_BUILD \
 	-DNM_VERSION_MIN_REQUIRED=NM_VERSION_0_9_10 \
 	-DNM_VERSION_MAX_ALLOWED=NM_VERSION_0_9_10 \
 	-DICONDIR=\""$(datadir)/icons"\" \
@@ -12,12 +13,10 @@ nm_connection_editor_CPPFLAGS = \
 	-DLIBDIR=\""$(libdir)"\" \
 	-DDATADIR=\""$(datadir)"\" \
 	-DNMALOCALEDIR=\"$(datadir)/locale\" \
-	$(DBUS_CFLAGS) \
-	$(DISABLE_DEPRECATED) \
+	$(DBUS_GLIB_CFLAGS) \
 	-I${top_srcdir}/src/utils \
 	-I${top_srcdir}/src/wireless-security \
-	-I${top_srcdir}/src/libnm-gtk \
-	-I${top_builddir}/src/marshallers
+	-I${top_srcdir}/src/libnma
 
 nm_connection_editor_SOURCES = \
 	nm-connection-editor.c \
@@ -88,12 +87,12 @@ nm-connection-editor-service-glue.h: $(top_srcdir)/src/connection-editor/nm-conn
 	$(AM_V_GEN) dbus-binding-tool --prefix=nm_connection_editor_service --mode=glib-server --output=$@ $<
 
 nm_connection_editor_LDADD = \
-	${top_builddir}/src/wireless-security/libwireless-security.la \
-	${top_builddir}/src/utils/libutils.la \
-	${top_builddir}/src/marshallers/libmarshallers.la \
-	${top_builddir}/src/libnm-gtk/libnm-gtk.la \
+	${top_builddir}/src/wireless-security/libwireless-security-libnm.la \
+	${top_builddir}/src/utils/libutils-libnm.la \
+	${top_builddir}/src/libnma/libnma.la \
 	$(GTK_LIBS) \
-	$(NMA_LIBS) \
+	$(DBUS_GLIB_LIBS) \
+	$(LIBNM_LIBS) \
 	-lm
 
 uidir = $(datadir)/nm-applet

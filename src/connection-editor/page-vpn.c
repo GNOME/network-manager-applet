@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2011 Red Hat, Inc.
+ * Copyright 2008 - 2014 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -26,13 +26,6 @@
 
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-
-#include <nm-setting-connection.h>
-#include <nm-setting-vpn.h>
-#include <nm-utils.h>
-
-#define NM_VPN_API_SUBJECT_TO_CHANGE
-#include <nm-vpn-plugin-ui-interface.h>
 
 #include "page-vpn.h"
 #include "connection-helpers.h"
@@ -45,16 +38,16 @@ G_DEFINE_TYPE (CEPageVpn, ce_page_vpn, CE_TYPE_PAGE)
 #define CE_PAGE_VPN_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CE_TYPE_PAGE_VPN, CEPageVpnPrivate))
 
 typedef struct {
-	NMSettingVPN *setting;
+	NMSettingVpn *setting;
 
 	char *service_type;
 
-	NMVpnPluginUiInterface *plugin;
-	NMVpnPluginUiWidgetInterface *ui;
+	NMVpnEditorPlugin *plugin;
+	NMVpnEditor *editor;
 } CEPageVpnPrivate;
 
 static void
-vpn_plugin_changed_cb (NMVpnPluginUiInterface *plugin, CEPageVpn *self)
+vpn_plugin_changed_cb (NMVpnEditorPlugin *plugin, CEPageVpn *self)
 {
 	ce_page_changed (CE_PAGE (self));
 }
@@ -71,17 +64,17 @@ finish_setup (CEPageVpn *self, gpointer unused, GError *error, gpointer user_dat
 
 	g_return_if_fail (priv->plugin != NULL);
 
-	priv->ui = nm_vpn_plugin_ui_interface_ui_factory (priv->plugin, parent->connection, &vpn_error);
-	if (!priv->ui) {
+	priv->editor = nm_vpn_editor_plugin_get_editor (priv->plugin, parent->connection, &vpn_error);
+	if (!priv->editor) {
 		g_warning ("Could not load VPN user interface for service '%s': %s.",
 		           priv->service_type,
 		           (vpn_error && vpn_error->message) ? vpn_error->message : "(unknown)");
 		g_error_free (vpn_error);
 		return;
 	}
-	g_signal_connect (priv->ui, "changed", G_CALLBACK (vpn_plugin_changed_cb), self);
+	g_signal_connect (priv->editor, "changed", G_CALLBACK (vpn_plugin_changed_cb), self);
 
-	parent->page = GTK_WIDGET (nm_vpn_plugin_ui_widget_interface_get_widget (priv->ui));
+	parent->page = GTK_WIDGET (nm_vpn_editor_get_widget (priv->editor));
 	if (!parent->page) {
 		g_warning ("Could not load VPN user interface for service '%s'.", priv->service_type);
 		return;
@@ -94,7 +87,6 @@ CEPage *
 ce_page_vpn_new (NMConnection *connection,
                  GtkWindow *parent_window,
                  NMClient *client,
-                 NMRemoteSettings *settings,
                  const char **out_secrets_setting_name,
                  GError **error)
 {
@@ -106,7 +98,6 @@ ce_page_vpn_new (NMConnection *connection,
 	                                 connection,
 	                                 parent_window,
 	                                 client,
-	                                 settings,
 	                                 NULL,
 	                                 NULL,
 	                                 _("VPN")));
@@ -143,7 +134,7 @@ ce_page_vpn_can_export (CEPageVpn *page)
 {
 	CEPageVpnPrivate *priv = CE_PAGE_VPN_GET_PRIVATE (page);
 
-	return 	(nm_vpn_plugin_ui_interface_get_capabilities (priv->plugin) & NM_VPN_PLUGIN_UI_CAPABILITY_EXPORT) != 0;
+	return 	(nm_vpn_editor_plugin_get_capabilities (priv->plugin) & NM_VPN_EDITOR_PLUGIN_CAPABILITY_EXPORT) != 0;
 }
 
 static gboolean
@@ -152,7 +143,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	CEPageVpn *self = CE_PAGE_VPN (page);
 	CEPageVpnPrivate *priv = CE_PAGE_VPN_GET_PRIVATE (self);
 
-	return nm_vpn_plugin_ui_widget_interface_update_connection (priv->ui, connection, error);
+	return nm_vpn_editor_update_connection (priv->editor, connection, error);
 }
 
 static void
@@ -165,7 +156,7 @@ dispose (GObject *object)
 {
 	CEPageVpnPrivate *priv = CE_PAGE_VPN_GET_PRIVATE (object);
 
-	g_clear_object (&priv->ui);
+	g_clear_object (&priv->editor);
 	g_clear_pointer (&priv->service_type, g_free);
 
 	G_OBJECT_CLASS (ce_page_vpn_parent_class)->dispose (object);
@@ -186,7 +177,7 @@ ce_page_vpn_class_init (CEPageVpnClass *vpn_class)
 }
 
 typedef struct {
-	NMRemoteSettings *settings;
+	NMClient *client;
 	PageNewConnectionResultFunc result_func;
 	gpointer user_data;
 } NewVpnInfo;
@@ -196,7 +187,7 @@ import_cb (NMConnection *connection, gpointer user_data)
 {
 	NewVpnInfo *info = (NewVpnInfo *) user_data;
 	NMSettingConnection *s_con;
-	NMSettingVPN *s_vpn;
+	NMSettingVpn *s_vpn;
 	const char *service_type;
 	char *s;
 	GError *error = NULL;
@@ -210,14 +201,12 @@ import_cb (NMConnection *connection, gpointer user_data)
 
 	s = (char *) nm_setting_connection_get_id (s_con);
 	if (!s) {
-		GSList *connections;
+		const GPtrArray *connections;
 
-		connections = nm_remote_settings_list_connections (info->settings);
+		connections = nm_client_get_connections (info->client);
 		s = ce_page_get_next_available_name (connections, _("VPN connection %d"));
 		g_object_set (s_con, NM_SETTING_CONNECTION_ID, s, NULL);
 		g_free (s);
-
-		g_slist_free (connections);
 	}
 
 	s = (char *) nm_setting_connection_get_connection_type (s_con);
@@ -244,14 +233,14 @@ import_cb (NMConnection *connection, gpointer user_data)
 
 	info->result_func (connection, FALSE, error, info->user_data);
 	g_clear_error (&error);
-	g_object_unref (info->settings);
+	g_object_unref (info->client);
 	g_slice_free (NewVpnInfo, info);
 }
 
 void
 vpn_connection_import (GtkWindow *parent,
                        const char *detail,
-                       NMRemoteSettings *settings,
+                       NMClient *client,
                        PageNewConnectionResultFunc result_func,
                        gpointer user_data)
 {
@@ -259,7 +248,7 @@ vpn_connection_import (GtkWindow *parent,
 
 	info = g_slice_new (NewVpnInfo);
 	info->result_func = result_func;
-	info->settings = g_object_ref (settings);
+	info->client = g_object_ref (client);
 	info->user_data = user_data;
 	vpn_import (import_cb, info);
 }
@@ -285,7 +274,7 @@ vpn_type_result_func (NMConnection *connection, gpointer user_data)
 void
 vpn_connection_new (GtkWindow *parent,
                     const char *detail,
-                    NMRemoteSettings *settings,
+                    NMClient *client,
                     PageNewConnectionResultFunc result_func,
                     gpointer user_data)
 {
@@ -302,7 +291,7 @@ vpn_connection_new (GtkWindow *parent,
 		info = g_slice_new (NewVpnInfo);
 		info->result_func = result_func;
 		info->user_data = user_data;
-		new_connection_dialog_full (parent, settings,
+		new_connection_dialog_full (parent, client,
 		                            NEW_VPN_CONNECTION_PRIMARY_LABEL,
 		                            NEW_VPN_CONNECTION_SECONDARY_LABEL,
 		                            vpn_type_filter_func,
@@ -313,7 +302,7 @@ vpn_connection_new (GtkWindow *parent,
 	connection = ce_page_new_connection (_("VPN connection %d"),
 	                                     NM_SETTING_VPN_SETTING_NAME,
 	                                     FALSE,
-	                                     settings,
+	                                     client,
 	                                     user_data);
 	s_vpn = nm_setting_vpn_new ();
 	g_object_set (s_vpn, NM_SETTING_VPN_SERVICE_TYPE, detail, NULL);

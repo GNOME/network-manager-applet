@@ -28,8 +28,8 @@
 #include <libsecret/secret.h>
 
 #include "applet.h"
-#include "nm-mobile-wizard.h"
-#include "nm-mobile-providers.h"
+#include "nma-mobile-wizard.h"
+#include "nma-mobile-providers.h"
 
 enum {
 	MB_STATE_UNKNOWN = 0,
