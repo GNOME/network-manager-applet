@@ -3490,7 +3490,7 @@ register_agent (NMApplet *applet)
 {
 	g_return_if_fail (!applet->agent);
 
-	applet->agent = applet_agent_new ();
+	applet->agent = applet_agent_new (NULL);
 	g_assert (applet->agent);
 	g_signal_connect (applet->agent, APPLET_AGENT_GET_SECRETS,
 	                  G_CALLBACK (applet_agent_get_secrets_cb), applet);

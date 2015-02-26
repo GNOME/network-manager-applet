@@ -63,7 +63,7 @@ typedef struct {
 
 GType applet_agent_get_type (void) G_GNUC_CONST;
 
-AppletAgent *applet_agent_new (void);
+AppletAgent *applet_agent_new (GError **error);
 
 void applet_agent_handle_vpn_only (AppletAgent *agent, gboolean vpn_only);
 
