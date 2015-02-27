@@ -6,6 +6,7 @@ test_mobile_providers_SOURCES = \
 	test-mobile-providers.c
 
 test_mobile_providers_CPPFLAGS = \
+	$(GTK_CFLAGS) \
 	$(LIBNM_GLIB_CFLAGS) \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/src/libnm-gtk \
