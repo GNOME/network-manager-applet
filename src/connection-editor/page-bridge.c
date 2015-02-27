@@ -259,7 +259,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 		return FALSE;
 
 	ui_to_setting (self);
-	return nm_setting_verify (NM_SETTING (priv->setting), NULL, error);
+	return nm_setting_verify (NM_SETTING (priv->setting), connection, error);
 }
 
 static void
