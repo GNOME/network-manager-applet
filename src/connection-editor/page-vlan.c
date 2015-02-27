@@ -45,6 +45,7 @@ typedef struct {
 
 	VlanParent **parents;
 	char **parent_labels;
+	int parents_len;
 
 	GtkComboBox *parent;
 	GtkEntry *parent_entry;
@@ -176,14 +177,29 @@ sync_iface (CEPageVlan *self, GtkEntry *changed_entry)
 		priv->last_id = id;
 }
 
+/* The first item in the combo box may be an arbitrary string not contained in parents array */
+static int
+get_parents_index (int parents_len, GtkComboBox *box, int combo_index)
+{
+	int size;
+	GtkTreeModel *model;
+
+	/* Get number of items in the combo box */
+	model = gtk_combo_box_get_model (box);
+	size = gtk_tree_model_iter_n_children (model, NULL);
+
+	return combo_index - (size - parents_len);
+}
+
 static void
 parent_changed (GtkWidget *widget, gpointer user_data)
 {
 	CEPageVlan *self = user_data;
 	CEPageVlanPrivate *priv = CE_PAGE_VLAN_GET_PRIVATE (self);
-	int parent_id;
+	int active_id, parent_id;
 
-	parent_id = gtk_combo_box_get_active (GTK_COMBO_BOX (priv->parent));
+	active_id = gtk_combo_box_get_active (GTK_COMBO_BOX (priv->parent));
+	parent_id = get_parents_index (priv->parents_len, GTK_COMBO_BOX (priv->parent), active_id);
 	if (parent_id > -1 && priv->parents[parent_id]->device != NULL) {
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->cloned_mac), TRUE);
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->mtu), TRUE);
@@ -332,6 +348,7 @@ build_vlan_parent_list (CEPageVlan *self, GSList *devices)
 	for (i = 0; priv->parents[i]; i++)
 		priv->parent_labels[i] = priv->parents[i]->label;
 	priv->parent_labels[i] = NULL;
+	priv->parents_len = i;
 }
 
 static void
@@ -407,8 +424,8 @@ populate_ui (CEPageVlan *self)
 			break;
 		}
 	}
-	ce_page_setup_mac_combo (CE_PAGE (self), priv->parent, current_parent, priv->parent_labels);
 	g_signal_connect (priv->parent, "changed", G_CALLBACK (parent_changed), self);
+	ce_page_setup_mac_combo (CE_PAGE (self), priv->parent, current_parent, priv->parent_labels);
 
 	if (current_parent)
 		priv->last_parent = g_strndup (current_parent, strcspn (current_parent, " "));
@@ -500,7 +517,7 @@ ui_to_setting (CEPageVlan *self)
 	NMSettingConnection *s_con = nm_connection_get_setting_connection (connection);
 	char *cloned_mac = NULL;
 	VlanParent *parent = NULL;
-	int parent_id, vid;
+	int active_id, parent_id, vid;
 	const char *parent_iface = NULL, *parent_uuid = NULL;
 	const char *slave_type;
 	const char *iface;
@@ -509,8 +526,9 @@ ui_to_setting (CEPageVlan *self)
 	gboolean mtu_set;
 	int mtu;
 
-	parent_id = gtk_combo_box_get_active (GTK_COMBO_BOX (priv->parent));
-	if (parent_id == -1) {
+	active_id = gtk_combo_box_get_active (GTK_COMBO_BOX (priv->parent));
+	parent_id = get_parents_index (priv->parents_len, GTK_COMBO_BOX (priv->parent), active_id);
+	if (parent_id < 0) {
 		parent_iface = gtk_entry_get_text (priv->parent_entry);
 		tmp_parent_iface = g_strndup (parent_iface, strcspn (parent_iface, " "));
 		parent_iface = tmp_parent_iface;
@@ -593,12 +611,10 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	CEPageVlanPrivate *priv = CE_PAGE_VLAN_GET_PRIVATE (self);
 	gboolean invalid = FALSE;
 	char *ignore;
-	int parent_id;
 	const char *parent;
 	char *parent_iface;
 
-	parent_id = gtk_combo_box_get_active (GTK_COMBO_BOX (priv->parent));
-	if (parent_id == -1) {
+	if (gtk_combo_box_get_active (GTK_COMBO_BOX (priv->parent)) == -1) {
 		gboolean valid;
 
 		parent = gtk_entry_get_text (priv->parent_entry);
