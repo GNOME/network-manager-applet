@@ -554,7 +554,7 @@ ui_to_setting (CEPageVlan *self)
 	iface = gtk_entry_get_text (priv->name_entry);
 	vid = gtk_spin_button_get_value_as_int (priv->id_entry);
 
-	g_object_set (s_con, NM_SETTING_CONNECTION_INTERFACE_NAME, iface, NULL);
+	g_object_set (s_con, NM_SETTING_CONNECTION_INTERFACE_NAME, *iface ? iface : NULL, NULL);
 	g_object_set (priv->setting,
 	              NM_SETTING_VLAN_PARENT, parent_uuid ? parent_uuid : parent_iface,
 	              NM_SETTING_VLAN_ID, vid,
