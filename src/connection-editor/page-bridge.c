@@ -38,6 +38,7 @@ typedef struct {
 	GtkWindow *toplevel;
 
 	GtkSpinButton *ageing_time;
+	GtkCheckButton *mcast_snoop;
 	GtkCheckButton *stp;
 	GtkSpinButton *priority;
 	GtkSpinButton *forward_delay;
@@ -55,6 +56,7 @@ bridge_private_init (CEPageBridge *self)
 	builder = CE_PAGE (self)->builder;
 
 	priv->ageing_time = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "bridge_ageing_time"));
+	priv->mcast_snoop = GTK_CHECK_BUTTON (gtk_builder_get_object (builder, "bridge_mcast_snoop_checkbox"));
 	priv->stp = GTK_CHECK_BUTTON (gtk_builder_get_object (builder, "bridge_stp_checkbox"));
 	priv->priority = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "bridge_priority"));
 	priv->forward_delay = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "bridge_forward_delay"));
@@ -96,7 +98,7 @@ populate_ui (CEPageBridge *self)
 {
 	CEPageBridgePrivate *priv = CE_PAGE_BRIDGE_GET_PRIVATE (self);
 	NMSettingBridge *s_bridge = priv->setting;
-	gboolean stp;
+	gboolean stp, mcast_snoop;
 	int priority, forward_delay, hello_time, max_age;
 	int ageing_time;
 
@@ -106,6 +108,11 @@ populate_ui (CEPageBridge *self)
 	g_signal_connect (priv->ageing_time, "value-changed",
 	                  G_CALLBACK (stuff_changed),
 	                  self);
+
+	/* Multicast snooping */
+	mcast_snoop = nm_setting_bridge_get_multicast_snooping (s_bridge);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->mcast_snoop), mcast_snoop);
+	g_signal_connect (priv->mcast_snoop, "toggled", G_CALLBACK (stuff_changed), self);
 
 	/* STP */
 	g_signal_connect (priv->stp, "toggled",
@@ -225,12 +232,14 @@ ui_to_setting (CEPageBridge *self)
 {
 	CEPageBridgePrivate *priv = CE_PAGE_BRIDGE_GET_PRIVATE (self);
 	int ageing_time, priority, forward_delay, hello_time, max_age;
-	gboolean stp;
+	gboolean stp, mcast_snoop;
 
 	ageing_time = gtk_spin_button_get_value_as_int (priv->ageing_time);
+	mcast_snoop = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->mcast_snoop));
 	stp = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->stp));
 	g_object_set (G_OBJECT (priv->setting),
 	              NM_SETTING_BRIDGE_AGEING_TIME, ageing_time,
+	              NM_SETTING_BRIDGE_MULTICAST_SNOOPING, mcast_snoop,
 	              NM_SETTING_BRIDGE_STP, stp,
 	              NULL);
 
