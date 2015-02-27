@@ -565,20 +565,14 @@ ui_to_setting (CEPageMaster *self)
 {
 	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
 	NMSettingConnection *s_con;
-	const char *connection_type;
-	NMSetting *setting;
 	const char *interface_name;
 
-	/* Find the "toplevel" NMSetting for this connection */
-	s_con = nm_connection_get_setting_connection (CE_PAGE (self)->connection);
-	connection_type = nm_setting_connection_get_connection_type (s_con);
-	setting = nm_connection_get_setting_by_name (CE_PAGE (self)->connection, connection_type);
-
 	/* Interface name */
+	s_con = nm_connection_get_setting_connection (CE_PAGE (self)->connection);
 	interface_name = gtk_entry_get_text (priv->interface_name);
-	g_object_set (setting,
-	              "interface-name", interface_name,
-	              NULL);
+	if (!*interface_name)
+		interface_name = NULL;
+	g_object_set (s_con, "interface-name", interface_name, NULL);
 
 	/* Slaves are updated as they're edited, so nothing to do */
 }
