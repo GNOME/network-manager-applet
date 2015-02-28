@@ -88,6 +88,7 @@ get_zones_cb (GDBusProxy *proxy, GAsyncResult *result, gpointer user_data)
 			g_warning ("Failed to get zones from FirewallD: invalid reply type '%s'",
 			           g_variant_get_type_string (variant));
 		}
+		g_variant_unref (variant);
 	} else if (!g_error_matches (error, G_DBUS_ERROR, G_DBUS_ERROR_SERVICE_UNKNOWN))
 		g_warning ("Failed to get zones from FirewallD: %s", error->message);
 
@@ -96,7 +97,6 @@ get_zones_cb (GDBusProxy *proxy, GAsyncResult *result, gpointer user_data)
 		populate_firewall_zones_ui (self);
 
 	g_clear_error (&error);
-	g_variant_unref (variant);
 	g_clear_object (&priv->cancellable);
 	g_clear_object (&priv->fw_proxy);
 }

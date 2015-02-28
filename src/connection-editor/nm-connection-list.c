@@ -761,7 +761,6 @@ get_parent_iter_for_connection (NMConnectionList *list,
 		} while (gtk_tree_model_iter_next (list->model, iter));
 	}
 
-	g_warning ("Unsupported connection type '%s'", str_type);
 	return FALSE;
 }
 
