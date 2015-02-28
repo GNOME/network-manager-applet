@@ -370,16 +370,19 @@ populate_ui (CEPageIP4 *self)
 	store = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
 	for (i = 0; i < nm_setting_ip_config_get_num_addresses (setting); i++) {
 		NMIPAddress *addr = nm_setting_ip_config_get_address (setting, i);
+		char buf[32];
 
 		if (!addr) {
 			g_warning ("%s: empty IP4 Address structure!", __func__);
 			continue;
 		}
 
+		snprintf (buf, sizeof (buf), "%u", nm_ip_address_get_prefix (addr));
+
 		gtk_list_store_append (store, &model_iter);
 		gtk_list_store_set (store, &model_iter,
 		                    COL_ADDRESS, nm_ip_address_get_address (addr),
-		                    COL_PREFIX, nm_ip_address_get_prefix (addr),
+		                    COL_PREFIX, buf,
 		                    /* FIXME */
 		                    COL_GATEWAY, i == 0 ? nm_setting_ip_config_get_gateway (setting) : NULL,
 		                    -1);
