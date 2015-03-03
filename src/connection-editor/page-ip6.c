@@ -455,6 +455,25 @@ populate_ui (CEPageIP6 *self)
 	                              !nm_setting_ip_config_get_may_fail (setting));
 }
 
+static gboolean
+is_prefix_valid (const char *prefix_str, guint32 *out_prefix)
+{
+	guint32 prefix;
+	char *end;
+
+	if (!prefix_str || !*prefix_str)
+		return FALSE;
+
+	prefix = strtoul (prefix_str, &end, 10);
+	if (!end || *end || prefix == 0 || prefix > 128)
+		return FALSE;
+	else {
+		if (out_prefix)
+			*out_prefix = prefix;
+		return TRUE;
+	}
+}
+
 static void
 addr_add_clicked (GtkButton *button, gpointer user_data)
 {
@@ -676,18 +695,11 @@ cell_changed_cb (GtkEditable *editable,
 
 	cell_text = gtk_editable_get_chars (editable, 0, -1);
 
-	/* The Prefix column is 0..128 */
+	/* The Prefix column is 1..128 */
 	column = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (user_data), "column"));
-	if (column == COL_PREFIX) {
-		guint32 prefix;
-		char *end;
-
-		prefix = strtoul (cell_text, &end, 10);
-		if (!end || *end || prefix == 0 || prefix > 128)
-			value_valid = FALSE;
-		else
-			value_valid = TRUE;
-	} else {
+	if (column == COL_PREFIX)
+		value_valid = is_prefix_valid (cell_text, NULL);
+	else {
 		struct in6_addr tmp_addr;
 
 		if (inet_pton (AF_INET6, cell_text, &tmp_addr))
@@ -874,6 +886,36 @@ tree_view_button_pressed_cb (GtkWidget *widget,
 }
 
 static void
+cell_error_data_func (GtkTreeViewColumn *tree_column,
+                      GtkCellRenderer *cell,
+                      GtkTreeModel *tree_model,
+                      GtkTreeIter *iter,
+                      gpointer data)
+{
+	guint32 col = GPOINTER_TO_UINT (data);
+	char *value = NULL;
+	const char *color = "red";
+	gboolean invalid = FALSE;
+
+	gtk_tree_model_get (tree_model, iter, col, &value, -1);
+
+	if (col == COL_ADDRESS)
+		invalid = !value || !*value || !nm_utils_ipaddr_valid (AF_INET6, value);
+	else if (col == COL_PREFIX)
+		invalid = !is_prefix_valid (value, NULL);
+	else if (col == COL_GATEWAY)
+		invalid = value && *value && !nm_utils_ipaddr_valid (AF_INET6, value);
+	else
+		g_warn_if_reached ();
+
+	if (invalid)
+		utils_set_cell_background (cell, color, value);
+	else
+		utils_set_cell_background (cell, NULL, NULL);
+	g_free (value);
+}
+
+static void
 finish_setup (CEPageIP6 *self, gpointer unused, GError *error, gpointer user_data)
 {
 	CEPageIP6Private *priv = CE_PAGE_IP6_GET_PRIVATE (self);
@@ -903,6 +945,8 @@ finish_setup (CEPageIP6 *self, gpointer unused, GError *error, gpointer user_dat
 	column = gtk_tree_view_get_column (GTK_TREE_VIEW (priv->addr_list), offset - 1);
 	gtk_tree_view_column_set_expand (GTK_TREE_VIEW_COLUMN (column), TRUE);
 	gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
+	gtk_tree_view_column_set_cell_data_func (column, renderer, cell_error_data_func,
+	                                         GUINT_TO_POINTER (COL_ADDRESS), NULL);
 
 	/* Prefix column */
 	renderer = gtk_cell_renderer_text_new ();
@@ -920,6 +964,8 @@ finish_setup (CEPageIP6 *self, gpointer unused, GError *error, gpointer user_dat
 	column = gtk_tree_view_get_column (GTK_TREE_VIEW (priv->addr_list), offset - 1);
 	gtk_tree_view_column_set_expand (GTK_TREE_VIEW_COLUMN (column), TRUE);
 	gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
+	gtk_tree_view_column_set_cell_data_func (column, renderer, cell_error_data_func,
+	                                         GUINT_TO_POINTER (COL_PREFIX), NULL);
 
 	/* Gateway column */
 	renderer = gtk_cell_renderer_text_new ();
@@ -937,6 +983,8 @@ finish_setup (CEPageIP6 *self, gpointer unused, GError *error, gpointer user_dat
 	column = gtk_tree_view_get_column (GTK_TREE_VIEW (priv->addr_list), offset - 1);
 	gtk_tree_view_column_set_expand (GTK_TREE_VIEW_COLUMN (column), TRUE);
 	gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
+	gtk_tree_view_column_set_cell_data_func (column, renderer, cell_error_data_func,
+	                                         GUINT_TO_POINTER (COL_GATEWAY), NULL);
 
 	g_signal_connect (priv->addr_list, "button-press-event", G_CALLBACK (tree_view_button_pressed_cb), self);
 
@@ -1060,7 +1108,7 @@ ui_to_setting (CEPageIP6 *self)
 	model = gtk_tree_view_get_model (priv->addr_list);
 	iter_valid = gtk_tree_model_get_iter_first (model, &tree_iter);
 	while (iter_valid) {
-		char *addr_str = NULL, *prefix_str = NULL, *addr_gw_str = NULL, *end;
+		char *addr_str = NULL, *prefix_str = NULL, *addr_gw_str = NULL;
 		NMIPAddress *addr;
 		guint32 prefix;
 
@@ -1079,18 +1127,11 @@ ui_to_setting (CEPageIP6 *self)
 			goto out;
 		}
 
-		if (!prefix_str) {
-			g_warning ("%s: IPv6 prefix missing!", __func__);
-			g_free (addr_str);
-			g_free (prefix_str);
-			g_free (addr_gw_str);
-			goto out;
-		}
-
-		prefix = strtoul (prefix_str, &end, 10);
-		if (!end || *end || prefix == 0 || prefix > 128) {
-			g_warning ("%s: IPv6 prefix '%s' invalid!",
-			           __func__, prefix_str);
+		if (!is_prefix_valid (prefix_str, &prefix)) {
+			if (!prefix_str)
+				g_warning ("%s: IPv6 prefix missing!", __func__);
+			else
+				g_warning ("%s: IPv6 prefix '%s' invalid!", __func__, prefix_str);
 			g_free (addr_str);
 			g_free (prefix_str);
 			g_free (addr_gw_str);

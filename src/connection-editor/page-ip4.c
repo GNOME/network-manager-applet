@@ -662,6 +662,9 @@ parse_netmask (const char *str, guint32 *prefix)
 	struct in_addr tmp_addr;
 	glong tmp_prefix;
 
+	if (!str || !*str)
+		return FALSE;
+
 	errno = 0;
 
 	/* Is it a prefix? */
@@ -882,6 +885,37 @@ tree_view_button_pressed_cb (GtkWidget *widget,
 }
 
 static void
+cell_error_data_func (GtkTreeViewColumn *tree_column,
+                      GtkCellRenderer *cell,
+                      GtkTreeModel *tree_model,
+                      GtkTreeIter *iter,
+                      gpointer data)
+{
+	guint32 col = GPOINTER_TO_UINT (data);
+	char *value = NULL;
+	const char *color = "red";
+	guint32 prefix;
+	gboolean invalid = FALSE;
+
+	gtk_tree_model_get (tree_model, iter, col, &value, -1);
+
+	if (col == COL_ADDRESS)
+		invalid = !value || !*value || !nm_utils_ipaddr_valid (AF_INET, value);
+	else if (col == COL_PREFIX)
+		invalid = !parse_netmask (value, &prefix);
+	else if (col == COL_GATEWAY)
+		invalid = value && *value && !nm_utils_ipaddr_valid (AF_INET, value);
+	else
+		g_warn_if_reached ();
+
+	if (invalid)
+		utils_set_cell_background (cell, color, value);
+	else
+		utils_set_cell_background (cell, NULL, NULL);
+	g_free (value);
+}
+
+static void
 finish_setup (CEPageIP4 *self, gpointer unused, GError *error, gpointer user_data)
 {
 	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
@@ -911,6 +945,8 @@ finish_setup (CEPageIP4 *self, gpointer unused, GError *error, gpointer user_dat
 	column = gtk_tree_view_get_column (GTK_TREE_VIEW (priv->addr_list), offset - 1);
 	gtk_tree_view_column_set_expand (GTK_TREE_VIEW_COLUMN (column), TRUE);
 	gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
+	gtk_tree_view_column_set_cell_data_func (column, renderer, cell_error_data_func,
+	                                         GUINT_TO_POINTER (COL_ADDRESS), NULL);
 
 	/* Prefix/netmask column */
 	renderer = gtk_cell_renderer_text_new ();
@@ -928,6 +964,8 @@ finish_setup (CEPageIP4 *self, gpointer unused, GError *error, gpointer user_dat
 	column = gtk_tree_view_get_column (GTK_TREE_VIEW (priv->addr_list), offset - 1);
 	gtk_tree_view_column_set_expand (GTK_TREE_VIEW_COLUMN (column), TRUE);
 	gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
+	gtk_tree_view_column_set_cell_data_func (column, renderer, cell_error_data_func,
+	                                         GUINT_TO_POINTER (COL_PREFIX), NULL);
 
 	/* Gateway column */
 	renderer = gtk_cell_renderer_text_new ();
@@ -945,6 +983,8 @@ finish_setup (CEPageIP4 *self, gpointer unused, GError *error, gpointer user_dat
 	column = gtk_tree_view_get_column (GTK_TREE_VIEW (priv->addr_list), offset - 1);
 	gtk_tree_view_column_set_expand (GTK_TREE_VIEW_COLUMN (column), TRUE);
 	gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
+	gtk_tree_view_column_set_cell_data_func (column, renderer, cell_error_data_func,
+	                                         GUINT_TO_POINTER (COL_GATEWAY), NULL);
 
 	g_signal_connect (priv->addr_list, "button-press-event", G_CALLBACK (tree_view_button_pressed_cb), self);
 
@@ -1091,7 +1131,7 @@ ui_to_setting (CEPageIP4 *self)
 			goto out;
 		}
 
-		if (!netmask || !parse_netmask (netmask, &prefix)) {
+		if (!parse_netmask (netmask, &prefix)) {
 			g_warning ("%s: IPv4 prefix '%s' missing or invalid!",
 			           __func__, netmask ? netmask : "<none>");
 			g_free (addr);

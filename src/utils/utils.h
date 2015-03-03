@@ -101,6 +101,9 @@ void utils_update_password_storage (NMSetting *setting,
                                     const char *password_flags_name);
 
 void utils_override_bg_color (GtkWidget *widget, GdkRGBA *rgba);
+void utils_set_cell_background (GtkCellRenderer *cell,
+                                const char *color,
+                                const char *value);
 
 #endif /* UTILS_H */
 

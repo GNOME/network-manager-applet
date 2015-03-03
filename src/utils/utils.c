@@ -517,3 +517,25 @@ utils_override_bg_color (GtkWidget *widget, GdkRGBA *rgba)
 		gtk_css_provider_load_from_data (provider, "", -1, NULL);
 }
 
+void
+utils_set_cell_background (GtkCellRenderer *cell,
+                           const char *color,
+                           const char *value)
+{
+	if (color) {
+		if (!value || !*value) {
+			g_object_set (G_OBJECT (cell),
+			              "cell-background-set", TRUE,
+			              "cell-background", color,
+			              NULL);
+		} else {
+			char *markup;
+			markup = g_markup_printf_escaped ("<span background='%s'>%s</span>",
+			                                  color, value);
+			g_object_set (G_OBJECT (cell), "markup", markup, NULL);
+			g_free (markup);
+			g_object_set (G_OBJECT (cell), "cell-background-set", FALSE, NULL);
+		}
+	} else
+		g_object_set (G_OBJECT (cell), "cell-background-set", FALSE, NULL);
+}

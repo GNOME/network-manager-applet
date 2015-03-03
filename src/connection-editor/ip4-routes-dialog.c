@@ -54,15 +54,19 @@ get_one_int (GtkTreeModel *model,
              int column,
              guint32 max_value,
              gboolean fail_if_missing,
-             guint32 *out)
+             guint32 *out,
+             char **out_raw)
 {
 	char *item = NULL;
 	gboolean success = FALSE;
 	long int tmp_int;
 
 	gtk_tree_model_get (model, iter, column, &item, -1);
+	if (out_raw)
+		*out_raw = item;
 	if (!item || !strlen (item)) {
-		g_free (item);
+		if (!out_raw)
+			g_free (item);
 		return fail_if_missing ? FALSE : TRUE;
 	}
 
@@ -75,7 +79,8 @@ get_one_int (GtkTreeModel *model,
 	success = TRUE;
 
 out:
-	g_free (item);
+	if (!out_raw)
+		g_free (item);
 	return success;
 }
 
@@ -84,7 +89,8 @@ get_one_prefix (GtkTreeModel *model,
                 GtkTreeIter *iter,
                 int column,
                 gboolean fail_if_missing,
-                guint32 *out)
+                guint32 *out,
+                char **out_raw)
 {
 	char *item = NULL;
 	struct in_addr tmp_addr = { 0 };
@@ -92,8 +98,11 @@ get_one_prefix (GtkTreeModel *model,
 	glong tmp_prefix;
 
 	gtk_tree_model_get (model, iter, column, &item, -1);
+	if (out_raw)
+		*out_raw = item;
 	if (!item || !strlen (item)) {
-		g_free (item);
+		if (!out_raw)
+			g_free (item);
 		return fail_if_missing ? FALSE : TRUE;
 	}
 
@@ -116,7 +125,8 @@ get_one_prefix (GtkTreeModel *model,
 	}
 
 out:
-	g_free (item);
+	if (!out_raw)
+		g_free (item);
 	return success;
 }
 
@@ -125,14 +135,18 @@ get_one_addr (GtkTreeModel *model,
               GtkTreeIter *iter,
               int column,
               gboolean fail_if_missing,
-              char **out)
+              char **out,
+              char **out_raw)
 {
 	char *item = NULL;
 	struct in_addr tmp_addr = { 0 };
 
 	gtk_tree_model_get (model, iter, column, &item, -1);
+	if (out_raw)
+		*out_raw = item;
 	if (!item || !strlen (item)) {
-		g_free (item);
+		if (!out_raw)
+			g_free (item);
 		return fail_if_missing ? FALSE : TRUE;
 	}
 
@@ -140,7 +154,8 @@ get_one_addr (GtkTreeModel *model,
 		return FALSE;
 
 	if (tmp_addr.s_addr == 0) {
-		g_free (item);
+		if (!out_raw)
+			g_free (item);
 		return fail_if_missing ? FALSE : TRUE;
 	}
 
@@ -172,24 +187,24 @@ validate (GtkWidget *dialog)
 		guint32 prefix = 0, metric = 0;
 
 		/* Address */
-		if (!get_one_addr (model, &tree_iter, COL_ADDRESS, TRUE, &addr))
+		if (!get_one_addr (model, &tree_iter, COL_ADDRESS, TRUE, &addr, NULL))
 			goto done;
 		g_free (addr);
 
 		/* Prefix */
-		if (!get_one_prefix (model, &tree_iter, COL_PREFIX, TRUE, &prefix))
+		if (!get_one_prefix (model, &tree_iter, COL_PREFIX, TRUE, &prefix, NULL))
 			goto done;
 		/* Don't allow zero prefix for now - that's not supported in libnm-util */
 		if (prefix == 0)
 			goto done;
 
 		/* Next hop (optional) */
-		if (!get_one_addr (model, &tree_iter, COL_NEXT_HOP, FALSE, &next_hop))
+		if (!get_one_addr (model, &tree_iter, COL_NEXT_HOP, FALSE, &next_hop, NULL))
 			goto done;
 		g_free (next_hop);
 
 		/* Metric (optional) */
-		if (!get_one_int (model, &tree_iter, COL_METRIC, G_MAXUINT32, FALSE, &metric))
+		if (!get_one_int (model, &tree_iter, COL_METRIC, G_MAXUINT32, FALSE, &metric, NULL))
 			goto done;
 
 		iter_valid = gtk_tree_model_iter_next (model, &tree_iter);
@@ -632,6 +647,39 @@ tree_view_button_pressed_cb (GtkWidget *widget,
 	return FALSE;
 }
 
+static void
+cell_error_data_func (GtkTreeViewColumn *tree_column,
+                      GtkCellRenderer *cell,
+                      GtkTreeModel *tree_model,
+                      GtkTreeIter *iter,
+                      gpointer data)
+{
+	guint32 col = GPOINTER_TO_UINT (data);
+	char *value = NULL;
+	char *addr, *next_hop;
+	guint32 prefix, metric;
+	const char *color = "red";
+	gboolean invalid = FALSE;
+
+	if (col == COL_ADDRESS)
+		invalid = !get_one_addr (tree_model, iter, COL_ADDRESS, TRUE, &addr, &value);
+	else if (col == COL_PREFIX)
+		invalid =    !get_one_prefix (tree_model, iter, COL_PREFIX, TRUE, &prefix, &value)
+		          || prefix == 0;
+	else if (col == COL_NEXT_HOP)
+		invalid = !get_one_addr (tree_model, iter, COL_NEXT_HOP, FALSE, &next_hop, &value);
+	else if (col == COL_METRIC)
+		invalid = !get_one_int (tree_model, iter, COL_METRIC, G_MAXUINT32, FALSE, &metric, &value);
+	else
+		g_warn_if_reached ();
+
+	if (invalid)
+		utils_set_cell_background (cell, color, value);
+	else
+		utils_set_cell_background (cell, NULL, NULL);
+	g_free (value);
+}
+
 GtkWidget *
 ip4_routes_dialog_new (NMSettingIPConfig *s_ip4, gboolean automatic)
 {
@@ -726,6 +774,8 @@ ip4_routes_dialog_new (NMSettingIPConfig *s_ip4, gboolean automatic)
 	column = gtk_tree_view_get_column (GTK_TREE_VIEW (widget), offset - 1);
 	gtk_tree_view_column_set_expand (GTK_TREE_VIEW_COLUMN (column), TRUE);
 	gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
+	gtk_tree_view_column_set_cell_data_func (column, renderer, cell_error_data_func,
+	                                         GUINT_TO_POINTER (COL_ADDRESS), NULL);
 
 	/* Prefix column */
 	renderer = gtk_cell_renderer_text_new ();
@@ -743,6 +793,8 @@ ip4_routes_dialog_new (NMSettingIPConfig *s_ip4, gboolean automatic)
 	column = gtk_tree_view_get_column (GTK_TREE_VIEW (widget), offset - 1);
 	gtk_tree_view_column_set_expand (GTK_TREE_VIEW_COLUMN (column), TRUE);
 	gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
+	gtk_tree_view_column_set_cell_data_func (column, renderer, cell_error_data_func,
+	                                         GUINT_TO_POINTER (COL_PREFIX), NULL);
 
 	/* Gateway column */
 	renderer = gtk_cell_renderer_text_new ();
@@ -760,6 +812,8 @@ ip4_routes_dialog_new (NMSettingIPConfig *s_ip4, gboolean automatic)
 	column = gtk_tree_view_get_column (GTK_TREE_VIEW (widget), offset - 1);
 	gtk_tree_view_column_set_expand (GTK_TREE_VIEW_COLUMN (column), TRUE);
 	gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
+	gtk_tree_view_column_set_cell_data_func (column, renderer, cell_error_data_func,
+	                                         GUINT_TO_POINTER (COL_NEXT_HOP), NULL);
 
 	/* Metric column */
 	renderer = gtk_cell_renderer_text_new ();
@@ -777,6 +831,8 @@ ip4_routes_dialog_new (NMSettingIPConfig *s_ip4, gboolean automatic)
 	column = gtk_tree_view_get_column (GTK_TREE_VIEW (widget), offset - 1);
 	gtk_tree_view_column_set_expand (GTK_TREE_VIEW_COLUMN (column), TRUE);
 	gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
+	gtk_tree_view_column_set_cell_data_func (column, renderer, cell_error_data_func,
+	                                         GUINT_TO_POINTER (COL_METRIC), NULL);
 
 	g_object_set_data_full (G_OBJECT (dialog), "renderers", renderers, (GDestroyNotify) g_slist_free);
 
@@ -837,27 +893,27 @@ ip4_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIPConfig *s_ip4)
 		NMIPRoute *route;
 
 		/* Address */
-		if (!get_one_addr (model, &tree_iter, COL_ADDRESS, TRUE, &addr)) {
+		if (!get_one_addr (model, &tree_iter, COL_ADDRESS, TRUE, &addr, NULL)) {
 			g_warning ("%s: IPv4 address missing or invalid!", __func__);
 			goto next;
 		}
 
 		/* Prefix */
-		if (!get_one_prefix (model, &tree_iter, COL_PREFIX, TRUE, &prefix)) {
+		if (!get_one_prefix (model, &tree_iter, COL_PREFIX, TRUE, &prefix, NULL)) {
 			g_warning ("%s: IPv4 prefix/netmask missing or invalid!", __func__);
 			g_free (addr);
 			goto next;
 		}
 
 		/* Next hop (optional) */
-		if (!get_one_addr (model, &tree_iter, COL_NEXT_HOP, FALSE, &next_hop)) {
+		if (!get_one_addr (model, &tree_iter, COL_NEXT_HOP, FALSE, &next_hop, NULL)) {
 			g_warning ("%s: IPv4 next hop invalid!", __func__);
 			g_free (addr);
 			goto next;
 		}
 
 		/* Metric (optional) */
-		if (!get_one_int (model, &tree_iter, COL_METRIC, G_MAXUINT32, FALSE, &metric)) {
+		if (!get_one_int (model, &tree_iter, COL_METRIC, G_MAXUINT32, FALSE, &metric, NULL)) {
 			g_warning ("%s: IPv4 metric invalid!", __func__);
 			g_free (addr);
 			g_free (next_hop);
