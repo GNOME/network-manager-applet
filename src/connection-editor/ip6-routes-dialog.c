@@ -791,7 +791,6 @@ ip6_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIPConfig *s_ip6)
 		}
 
 		/* Next hop (optional) */
-		memset (&next_hop, 0, sizeof (struct in6_addr));
 		if (!get_one_addr (model, &tree_iter, COL_NEXT_HOP, FALSE, &next_hop)) {
 			g_warning ("%s: IPv6 next hop invalid!", __func__);
 			g_free (dest);
