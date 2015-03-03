@@ -426,7 +426,7 @@ cell_changed_cb (GtkEditable *editable,
 		/* Is it a prefix? */
 		if (!strchr (cell_text, '.')) {
 			tmp_prefix = strtol (cell_text, NULL, 10);
-			if (!errno && tmp_prefix <= 32)
+			if (*cell_text && !errno && tmp_prefix <= 32)
 				value_valid = TRUE;
 		} else {
 			struct in_addr tmp_addr;
@@ -448,6 +448,10 @@ cell_changed_cb (GtkEditable *editable,
 		struct in_addr tmp_addr;
 
 		if (inet_pton (AF_INET, cell_text, &tmp_addr) > 0)
+			value_valid = TRUE;
+
+		/* Consider empty next_hop as valid */
+		if (!*cell_text && column == COL_NEXT_HOP)
 			value_valid = TRUE;
 	}
 

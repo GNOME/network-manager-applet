@@ -379,7 +379,7 @@ cell_changed_cb (GtkEditable *editable,
 
 		errno = 0;
 		tmp_int = strtol (cell_text, NULL, 10);
-		if (errno || tmp_int < 0 || tmp_int > 128)
+		if (!*cell_text || errno || tmp_int < 0 || tmp_int > 128)
 			value_valid = FALSE;
 		else
 			value_valid = TRUE;
@@ -396,6 +396,10 @@ cell_changed_cb (GtkEditable *editable,
 		struct in6_addr tmp_addr;
 
 		if (inet_pton (AF_INET6, cell_text, &tmp_addr) > 0)
+			value_valid = TRUE;
+
+		/* Consider empty next_hop as valid */
+		if (!*cell_text && column == COL_NEXT_HOP)
 			value_valid = TRUE;
 	}
 
