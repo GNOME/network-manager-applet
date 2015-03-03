@@ -667,7 +667,7 @@ parse_netmask (const char *str, guint32 *prefix)
 	/* Is it a prefix? */
 	if (!strchr (str, '.')) {
 		tmp_prefix = strtol (str, NULL, 10);
-		if (!errno && tmp_prefix >= 0 && tmp_prefix <= 32) {
+		if (!errno && tmp_prefix > 0 && tmp_prefix <= 32) {
 			*prefix = tmp_prefix;
 			return TRUE;
 		}
