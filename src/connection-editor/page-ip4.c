@@ -711,7 +711,7 @@ cell_changed_cb (GtkEditable *editable,
 	colorname = value_valid ? "lightgreen" : "red";
 
 	gdk_rgba_parse (&rgba, colorname);
-	gtk_widget_override_background_color (GTK_WIDGET (editable), GTK_STATE_FLAG_NORMAL, &rgba);
+	utils_override_bg_color (GTK_WIDGET (editable), &rgba);
 
 	g_free (cell_text);
 	return FALSE;
