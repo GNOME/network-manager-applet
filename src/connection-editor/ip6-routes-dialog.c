@@ -138,7 +138,8 @@ validate (GtkWidget *dialog)
 		g_free (dest);
 
 		/* Prefix */
-		if (!get_one_int (model, &tree_iter, COL_PREFIX, 128, TRUE, &prefix))
+		if (   !get_one_int (model, &tree_iter, COL_PREFIX, 128, TRUE, &prefix)
+		    || prefix == 0)
 			goto done;
 
 		/* Next hop (optional) */
@@ -379,7 +380,7 @@ cell_changed_cb (GtkEditable *editable,
 
 		errno = 0;
 		tmp_int = strtol (cell_text, NULL, 10);
-		if (!*cell_text || errno || tmp_int < 0 || tmp_int > 128)
+		if (!*cell_text || errno || tmp_int < 1 || tmp_int > 128)
 			value_valid = FALSE;
 		else
 			value_valid = TRUE;
@@ -788,7 +789,8 @@ ip6_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIPConfig *s_ip6)
 		}
 
 		/* Prefix */
-		if (!get_one_int (model, &tree_iter, COL_PREFIX, 128, TRUE, &prefix)) {
+		if (   !get_one_int (model, &tree_iter, COL_PREFIX, 128, TRUE, &prefix)
+		    || prefix == 0) {
 			g_warning ("%s: IPv6 prefix missing or invalid!", __func__);
 			g_free (dest);
 			goto next;

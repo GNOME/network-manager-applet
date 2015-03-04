@@ -426,7 +426,7 @@ cell_changed_cb (GtkEditable *editable,
 		/* Is it a prefix? */
 		if (!strchr (cell_text, '.')) {
 			tmp_prefix = strtol (cell_text, NULL, 10);
-			if (*cell_text && !errno && tmp_prefix <= 32)
+			if (*cell_text && !errno && tmp_prefix > 0 && tmp_prefix <= 32)
 				value_valid = TRUE;
 		} else {
 			struct in_addr tmp_addr;
