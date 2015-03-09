@@ -83,6 +83,7 @@ typedef struct {
 
 	/* Virtual functions */
 	gboolean    (*validate)     (CEPage *self, NMConnection *connection, GError **error);
+	gboolean    (*last_update)  (CEPage *self, NMConnection *connection, GError **error);
 
 	/* Signals */
 	void        (*changed)     (CEPage *self);
@@ -105,6 +106,7 @@ GtkWidget *  ce_page_get_page (CEPage *self);
 const char * ce_page_get_title (CEPage *self);
 
 gboolean ce_page_validate (CEPage *self, NMConnection *connection, GError **error);
+gboolean ce_page_last_update (CEPage *self, NMConnection *connection, GError **error);
 
 char **ce_page_get_mac_list (CEPage *self, GType device_type, const char *mac_property);
 void ce_page_setup_mac_combo (CEPage *self, GtkComboBox *combo,

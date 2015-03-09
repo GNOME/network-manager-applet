@@ -138,6 +138,18 @@ ce_page_validate (CEPage *self, NMConnection *connection, GError **error)
 	return TRUE;
 }
 
+gboolean
+ce_page_last_update (CEPage *self, NMConnection *connection, GError **error)
+{
+	g_return_val_if_fail (CE_IS_PAGE (self), FALSE);
+	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
+
+	if (CE_PAGE_GET_CLASS (self)->last_update)
+		return CE_PAGE_GET_CLASS (self)->last_update (self, connection, error);
+
+	return TRUE;
+}
+
 char **
 ce_page_get_mac_list (CEPage *self, GType device_type, const char *mac_property)
 {
