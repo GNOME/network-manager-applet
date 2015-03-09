@@ -44,6 +44,8 @@ typedef struct {
 	GtkTreeModel *connections_model;
 	GtkButton *add, *edit, *delete;
 
+	GHashTable *new_slaves;  /* track whether some slave(s) were added */
+
 } CEPageMasterPrivate;
 
 enum {
@@ -111,6 +113,8 @@ dispose (GObject *object)
 			g_object_unref (connection);
 		} while (gtk_tree_model_iter_next (priv->connections_model, &iter));
 	}
+
+	g_hash_table_destroy (priv->new_slaves);
 
 	G_OBJECT_CLASS (ce_page_master_parent_class)->dispose (object);
 }
@@ -343,6 +347,14 @@ connections_selection_changed_cb (GtkTreeSelection *selection, gpointer user_dat
 static void
 add_response_cb (NMConnectionEditor *editor, GtkResponseType response, gpointer user_data)
 {
+	CEPageMaster *self = user_data;
+	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
+	const char *uuid;
+
+	if (response == GTK_RESPONSE_OK) {
+		uuid = nm_connection_get_uuid (editor->connection);
+		g_hash_table_add (priv->new_slaves, g_strdup (uuid));
+	}
 	g_object_unref (editor);
 }
 
@@ -474,6 +486,20 @@ connection_double_clicked_cb (GtkTreeView *tree_view,
 }
 
 static void
+delete_result_cb (NMRemoteConnection *connection,
+                  gboolean deleted,
+                  gpointer user_data)
+{
+	CEPageMaster *self = user_data;
+	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
+
+	if (deleted) {
+		g_hash_table_remove (priv->new_slaves,
+		                     nm_connection_get_uuid (NM_CONNECTION (connection)));
+	}
+}
+
+static void
 delete_clicked (GtkButton *button, gpointer user_data)
 {
 	CEPageMaster *self = user_data;
@@ -484,7 +510,7 @@ delete_clicked (GtkButton *button, gpointer user_data)
 	if (!connection)
 		return;
 
-	delete_connection (priv->toplevel, connection, NULL, NULL);
+	delete_connection (priv->toplevel, connection, delete_result_cb, self);
 }
 
 static void
@@ -592,9 +618,52 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	return TRUE;
 }
 
+static gboolean
+last_update (CEPage *page, NMConnection *connection, GError **error)
+{
+	CEPageMaster *self = CE_PAGE_MASTER (page);
+	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
+	const char *interface_name, *tmp, *uuid;
+	NMSettingConnection *s_con;
+	GtkTreeIter iter;
+
+	/* No new slave added - leave master property as it is. */
+	if (g_hash_table_size (priv->new_slaves) == 0)
+		return TRUE;
+
+	/*
+	 * Set master property of all slaves to be the interface name.
+	 * Even if UUID has the advantage of being stable and thus easier to use,
+	 * users may prefer using interface name instead.
+	*/
+	interface_name = gtk_entry_get_text (priv->interface_name);
+	if (gtk_tree_model_get_iter_first (priv->connections_model, &iter)) {
+		do {
+			NMRemoteConnection *rcon = NULL;
+
+			gtk_tree_model_get (priv->connections_model, &iter,
+			                    COL_CONNECTION, &rcon,
+			                    -1);
+			tmp = nm_connection_get_interface_name (NM_CONNECTION (rcon));
+			uuid = nm_connection_get_uuid (NM_CONNECTION (rcon));
+			if (   g_hash_table_contains (priv->new_slaves, uuid)
+			    && g_strcmp0 (interface_name, tmp) != 0) {
+				s_con = nm_connection_get_setting_connection (NM_CONNECTION (rcon));
+				g_object_set (s_con, NM_SETTING_CONNECTION_MASTER, interface_name, NULL);
+				nm_remote_connection_commit_changes_async (rcon, TRUE, NULL, NULL, NULL);
+			}
+			g_object_unref (rcon);
+		} while (gtk_tree_model_iter_next (priv->connections_model, &iter));
+	}
+	return TRUE;
+}
+
 static void
 ce_page_master_init (CEPageMaster *self)
 {
+	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
+
+	priv->new_slaves = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 }
 
 static void
@@ -610,6 +679,7 @@ ce_page_master_class_init (CEPageMasterClass *master_class)
 	object_class->dispose = dispose;
 
 	parent_class->validate = validate;
+	parent_class->last_update = last_update;
 
 	/* Signals */
 	signals[CREATE_CONNECTION] = 

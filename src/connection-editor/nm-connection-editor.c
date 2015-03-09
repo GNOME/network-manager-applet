@@ -957,6 +957,7 @@ static void
 ok_button_clicked_cb (GtkWidget *widget, gpointer user_data)
 {
 	NMConnectionEditor *self = NM_CONNECTION_EDITOR (user_data);
+	GSList *iter;
 
 	/* If the dialog is busy waiting for authorization or something,
 	 * don't destroy it until authorization returns.
@@ -966,6 +967,10 @@ ok_button_clicked_cb (GtkWidget *widget, gpointer user_data)
 
 	/* Validate one last time to ensure all pages update the connection */
 	connection_editor_validate (self);
+
+	/* Perform page specific actions before the connection is saved */
+	for (iter = self->pages; iter; iter = g_slist_next (iter))
+		ce_page_last_update (CE_PAGE (iter->data), self->connection, NULL);
 
 	ok_button_clicked_save_connection (self);
 }
