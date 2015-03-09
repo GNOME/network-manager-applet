@@ -370,7 +370,7 @@ add_connection (NMConnection *connection,
 	iface_name = gtk_entry_get_text (priv->interface_name);
 	if (!*iface_name)
 		iface_name = nm_connection_get_interface_name (connection);
-	if (!*iface_name)
+	if (!iface_name || !nm_utils_iface_valid_name (iface_name))
 		iface_name = nm_connection_get_id (connection);
 	name = g_strdup_printf (_("%s slave %d"), iface_name,
 	                        gtk_tree_model_iter_n_children (priv->connections_model, NULL) + 1);
