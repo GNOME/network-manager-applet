@@ -299,6 +299,7 @@ bridge_connection_new (GtkWindow *parent,
                        gpointer user_data)
 {
 	NMConnection *connection;
+	NMSettingConnection *s_con;
 	int bridge_num = 0, num, i;
 	const GPtrArray *connections;
 	NMConnection *conn2;
@@ -319,7 +320,7 @@ bridge_connection_new (GtkWindow *parent,
 
 		if (!nm_connection_is_type (conn2, NM_SETTING_BRIDGE_SETTING_NAME))
 			continue;
-		iface = nm_connection_get_interface_name (connection);
+		iface = nm_connection_get_interface_name (conn2);
 		if (!iface || strncmp (iface, "bridge", 6) != 0 || !g_ascii_isdigit (iface[6]))
 			continue;
 
@@ -328,8 +329,9 @@ bridge_connection_new (GtkWindow *parent,
 			bridge_num = num + 1;
 	}
 
+	s_con = nm_connection_get_setting_connection (connection);
 	my_iface = g_strdup_printf ("bridge%d", bridge_num);
-	g_object_set (G_OBJECT (connection),
+	g_object_set (G_OBJECT (s_con),
 	              NM_SETTING_CONNECTION_INTERFACE_NAME, my_iface,
 	              NULL);
 	g_free (my_iface);

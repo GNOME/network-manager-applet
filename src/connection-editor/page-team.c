@@ -329,6 +329,7 @@ team_connection_new (GtkWindow *parent,
                      gpointer user_data)
 {
 	NMConnection *connection;
+	NMSettingConnection *s_con;
 	int team_num, num, i;
 	const GPtrArray *connections;
 	NMConnection *conn2;
@@ -359,8 +360,9 @@ team_connection_new (GtkWindow *parent,
 			team_num = num + 1;
 	}
 
+	s_con = nm_connection_get_setting_connection (connection);
 	my_iface = g_strdup_printf ("team%d", team_num);
-	g_object_set (G_OBJECT (connection),
+	g_object_set (G_OBJECT (s_con),
 	              NM_SETTING_CONNECTION_INTERFACE_NAME, my_iface,
 	              NULL);
 	g_free (my_iface);

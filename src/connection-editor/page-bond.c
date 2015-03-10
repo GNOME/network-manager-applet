@@ -603,6 +603,7 @@ bond_connection_new (GtkWindow *parent,
                      gpointer user_data)
 {
 	NMConnection *connection;
+	NMSettingConnection *s_con;
 	int bond_num = 0, num, i;
 	const GPtrArray *connections;
 	NMConnection *conn2;
@@ -632,8 +633,9 @@ bond_connection_new (GtkWindow *parent,
 			bond_num = num + 1;
 	}
 
+	s_con = nm_connection_get_setting_connection (connection);
 	my_iface = g_strdup_printf ("bond%d", bond_num);
-	g_object_set (G_OBJECT (connection),
+	g_object_set (G_OBJECT (s_con),
 	              NM_SETTING_CONNECTION_INTERFACE_NAME, my_iface,
 	              NULL);
 	g_free (my_iface);

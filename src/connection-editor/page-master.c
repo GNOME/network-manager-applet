@@ -295,7 +295,7 @@ connection_added (NMClient *client,
 		return;
 
 	interface_name = nm_connection_get_interface_name (CE_PAGE (self)->connection);
-	if (strcmp (master, interface_name) != 0 && strcmp (master, priv->uuid) != 0)
+	if (g_strcmp0 (master, interface_name) != 0 && g_strcmp0 (master, priv->uuid) != 0)
 		return;
 
 	check_new_slave_physical_port (self, NM_CONNECTION (connection));
