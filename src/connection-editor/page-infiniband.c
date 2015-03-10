@@ -172,7 +172,7 @@ ui_to_setting (CEPageInfiniband *self)
 {
 	CEPageInfinibandPrivate *priv = CE_PAGE_INFINIBAND_GET_PRIVATE (self);
 	const char *mode;
-	GByteArray *device_mac = NULL;
+	char *device_mac = NULL;
 	GtkWidget *entry;
 
 	/* Transport mode */
@@ -183,8 +183,7 @@ ui_to_setting (CEPageInfiniband *self)
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
 	if (entry)
-		device_mac = nm_utils_hwaddr_atoba (gtk_entry_get_text (GTK_ENTRY (entry)),
-		                                    ARPHRD_INFINIBAND);
+		device_mac = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_INFINIBAND, NULL);
 
 	g_object_set (priv->setting,
 	              NM_SETTING_INFINIBAND_MAC_ADDRESS, device_mac,
@@ -192,8 +191,7 @@ ui_to_setting (CEPageInfiniband *self)
 	              NM_SETTING_INFINIBAND_TRANSPORT_MODE, mode,
 	              NULL);
 
-	if (device_mac)
-		g_byte_array_free (device_mac, TRUE);
+	g_free (device_mac);
 }
 
 static gboolean
@@ -214,7 +212,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	}
 
 	ui_to_setting (self);
-	return nm_setting_verify (NM_SETTING (priv->setting), NULL, error);
+	return nm_setting_verify (NM_SETTING (priv->setting), connection, error);
 }
 
 static void
