@@ -240,9 +240,12 @@ set_up_connection_type_combo (GtkComboBox *combo,
 
 	for (i = 0; list[i].name; i++) {
 		if (type_filter_func) {
-			if (   !type_filter_func (list[i].setting_types[0], user_data)
-			    && !type_filter_func (list[i].setting_types[1], user_data)
-			    && !type_filter_func (list[i].setting_types[2], user_data))
+			if (   (   list[i].setting_types[0] == G_TYPE_INVALID
+			        || !type_filter_func (list[i].setting_types[0], user_data))
+			    && (   list[i].setting_types[1] == G_TYPE_INVALID
+			        || !type_filter_func (list[i].setting_types[1], user_data))
+			    && (   list[i].setting_types[2] == G_TYPE_INVALID
+			        || !type_filter_func (list[i].setting_types[2], user_data)))
 				continue;
 		}
 
