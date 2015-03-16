@@ -35,7 +35,7 @@ G_DEFINE_TYPE (CEPageInfiniband, ce_page_infiniband, CE_TYPE_PAGE)
 typedef struct {
 	NMSettingInfiniband *setting;
 
-	GtkComboBoxText *device_mac;  /* Permanent MAC of the device */
+	GtkComboBoxText *device_combo; /* Device identification (ifname and/or MAC) */
 
 	GtkComboBox *transport_mode;
 	GtkSpinButton *mtu;
@@ -54,19 +54,22 @@ infiniband_private_init (CEPageInfiniband *self)
 
 	builder = CE_PAGE (self)->builder;
 
-	priv->device_mac = GTK_COMBO_BOX_TEXT (gtk_combo_box_text_new_with_entry ());
-	gtk_combo_box_set_entry_text_column (GTK_COMBO_BOX (priv->device_mac), 0);
-	gtk_widget_set_tooltip_text (GTK_WIDGET (priv->device_mac),
-	                             _("This option locks this connection to the network device specified by its permanent MAC address entered here.  Example: 00:11:22:33:44:55"));
+	priv->device_combo = GTK_COMBO_BOX_TEXT (gtk_combo_box_text_new_with_entry ());
+	gtk_combo_box_set_entry_text_column (GTK_COMBO_BOX (priv->device_combo), 0);
+	gtk_widget_set_tooltip_text (GTK_WIDGET (priv->device_combo),
+	                             _("This option locks this connection to the network device specified "
+	                               "either by its interface name or permanent MAC or both. Examples: "
+	                               "\"ib0\", \"80:00:00:48:fe:80:00:00:00:00:00:00:00:02:c9:03:00:00:0f:65\", "
+	                               "\"ib0 (80:00:00:48:fe:80:00:00:00:00:00:00:00:02:c9:03:00:00:0f:65)\""));
 
-	vbox = GTK_WIDGET (gtk_builder_get_object (builder, "infiniband_device_mac_vbox"));
-	gtk_container_add (GTK_CONTAINER (vbox), GTK_WIDGET (priv->device_mac));
-	gtk_widget_set_halign (GTK_WIDGET (priv->device_mac), GTK_ALIGN_FILL);
-	gtk_widget_show_all (GTK_WIDGET (priv->device_mac));
+	vbox = GTK_WIDGET (gtk_builder_get_object (builder, "infiniband_device_vbox"));
+	gtk_container_add (GTK_CONTAINER (vbox), GTK_WIDGET (priv->device_combo));
+	gtk_widget_set_halign (GTK_WIDGET (priv->device_combo), GTK_ALIGN_FILL);
+	gtk_widget_show_all (GTK_WIDGET (priv->device_combo));
 
-	/* Set mnemonic widget for device MAC label */
-	label = GTK_LABEL (gtk_builder_get_object (builder, "infiniband_device_mac_label"));
-	gtk_label_set_mnemonic_widget (label, GTK_WIDGET (priv->device_mac));
+	/* Set mnemonic widget for Device label */
+	label = GTK_LABEL (gtk_builder_get_object (builder, "infiniband_device_label"));
+	gtk_label_set_mnemonic_widget (label, GTK_WIDGET (priv->device_combo));
 
 	priv->transport_mode = GTK_COMBO_BOX (gtk_builder_get_object (builder, "infiniband_mode"));
 	priv->mtu = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "infiniband_mtu"));
@@ -86,8 +89,7 @@ populate_ui (CEPageInfiniband *self)
 	const char *mode;
 	int mode_idx = TRANSPORT_MODE_DATAGRAM;
 	int mtu_def;
-	char **mac_list;
-	const char *s_mac_str;
+	const char *s_ifname, *s_mac;
 
 	/* Port */
 	mode = nm_setting_infiniband_get_transport_mode (setting);
@@ -99,14 +101,13 @@ populate_ui (CEPageInfiniband *self)
 	}
 	gtk_combo_box_set_active (priv->transport_mode, mode_idx);
 
-	/* Device MAC address */
-	mac_list = ce_page_get_mac_list (CE_PAGE (self), NM_TYPE_DEVICE_INFINIBAND,
-	                                 NM_DEVICE_INFINIBAND_HW_ADDRESS);
-	s_mac_str = nm_setting_infiniband_get_mac_address (setting);
-	ce_page_setup_mac_combo (CE_PAGE (self), GTK_COMBO_BOX (priv->device_mac),
-	                         s_mac_str, mac_list);
-	g_strfreev (mac_list);
-	g_signal_connect (priv->device_mac, "changed", G_CALLBACK (stuff_changed), self);
+	/* Device */
+        s_ifname = nm_connection_get_interface_name (CE_PAGE (self)->connection);
+	s_mac = nm_setting_infiniband_get_mac_address (setting);
+	ce_page_setup_device_combo (CE_PAGE (self), GTK_COMBO_BOX (priv->device_combo),
+	                            NM_TYPE_DEVICE_INFINIBAND, s_ifname,
+	                            s_mac, NM_DEVICE_INFINIBAND_HW_ADDRESS, TRUE);
+	g_signal_connect (priv->device_combo, "changed", G_CALLBACK (stuff_changed), self);
 
 	/* MTU */
 	mtu_def = ce_get_property_default (NM_SETTING (setting), NM_SETTING_INFINIBAND_MTU);
@@ -172,9 +173,14 @@ static void
 ui_to_setting (CEPageInfiniband *self)
 {
 	CEPageInfinibandPrivate *priv = CE_PAGE_INFINIBAND_GET_PRIVATE (self);
+	NMSettingConnection *s_con;
 	const char *mode;
+	char *ifname = NULL;
 	char *device_mac = NULL;
 	GtkWidget *entry;
+
+	s_con = nm_connection_get_setting_connection (CE_PAGE (self)->connection);
+	g_return_if_fail (s_con != NULL);
 
 	/* Transport mode */
 	if (gtk_combo_box_get_active (priv->transport_mode) == TRANSPORT_MODE_CONNECTED)
@@ -182,16 +188,20 @@ ui_to_setting (CEPageInfiniband *self)
 	else
 		mode = "datagram";
 
-	entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
+	entry = gtk_bin_get_child (GTK_BIN (priv->device_combo));
 	if (entry)
-		device_mac = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_INFINIBAND, NULL);
+		ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_INFINIBAND, &ifname, &device_mac);
 
+	g_object_set (s_con,
+	              NM_SETTING_CONNECTION_INTERFACE_NAME, ifname,
+	              NULL);
 	g_object_set (priv->setting,
 	              NM_SETTING_INFINIBAND_MAC_ADDRESS, device_mac,
 	              NM_SETTING_INFINIBAND_MTU, (guint32) gtk_spin_button_get_value_as_int (priv->mtu),
 	              NM_SETTING_INFINIBAND_TRANSPORT_MODE, mode,
 	              NULL);
 
+	g_free (ifname);
 	g_free (device_mac);
 }
 
@@ -200,16 +210,12 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageInfiniband *self = CE_PAGE_INFINIBAND (page);
 	CEPageInfinibandPrivate *priv = CE_PAGE_INFINIBAND_GET_PRIVATE (self);
-	gboolean invalid = FALSE;
-	char *ignore;
 	GtkWidget *entry;
 
-	entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
+	entry = gtk_bin_get_child (GTK_BIN (priv->device_combo));
 	if (entry) {
-		ignore = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_INFINIBAND, &invalid);
-		if (invalid)
+		if (!ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_INFINIBAND, NULL, NULL))
 			return FALSE;
-		g_free (ignore);
 	}
 
 	ui_to_setting (self);

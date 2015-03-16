@@ -33,7 +33,7 @@ typedef struct {
 	NMSettingWimax *setting;
 
 	GtkEntry *name;
-	GtkComboBoxText *device_mac;  /* Permanent MAC of the device */
+	GtkComboBoxText *device_combo;  /* Device identification (ifname and/or MAC) */
 } CEPageWimaxPrivate;
 
 static void
@@ -48,19 +48,21 @@ wimax_private_init (CEPageWimax *self)
 
 	priv->name = GTK_ENTRY (gtk_builder_get_object (builder, "wimax_name"));
 
-	priv->device_mac = GTK_COMBO_BOX_TEXT (gtk_combo_box_text_new_with_entry ());
-	gtk_combo_box_set_entry_text_column (GTK_COMBO_BOX (priv->device_mac), 0);
-	gtk_widget_set_tooltip_text (GTK_WIDGET (priv->device_mac),
-	                             _("This option locks this connection to the network device specified by its permanent MAC address entered here.  Example: 00:11:22:33:44:55"));
+	priv->device_combo = GTK_COMBO_BOX_TEXT (gtk_combo_box_text_new_with_entry ());
+	gtk_combo_box_set_entry_text_column (GTK_COMBO_BOX (priv->device_combo), 0);
+	gtk_widget_set_tooltip_text (GTK_WIDGET (priv->device_combo),
+	                             _("This option locks this connection to the network device specified "
+	                               "either by its interface name or permanent MAC or both. Examples: "
+	                               "\"em1\", \"3C:97:0E:42:1A:19\", \"em1 (3C:97:0E:42:1A:19)\""));
 
-	vbox = GTK_WIDGET (gtk_builder_get_object (builder, "wimax_device_mac_vbox"));
-	gtk_container_add (GTK_CONTAINER (vbox), GTK_WIDGET (priv->device_mac));
-	gtk_widget_set_halign (GTK_WIDGET (priv->device_mac), GTK_ALIGN_FILL);
-	gtk_widget_show_all (GTK_WIDGET (priv->device_mac));
+	vbox = GTK_WIDGET (gtk_builder_get_object (builder, "wimax_device_vbox"));
+	gtk_container_add (GTK_CONTAINER (vbox), GTK_WIDGET (priv->device_combo));
+	gtk_widget_set_halign (GTK_WIDGET (priv->device_combo), GTK_ALIGN_FILL);
+	gtk_widget_show_all (GTK_WIDGET (priv->device_combo));
 
-	/* Set mnemonic widget for device MAC label */
-	label = GTK_LABEL (gtk_builder_get_object (builder, "wimax_device_mac_label"));
-	gtk_label_set_mnemonic_widget (label, GTK_WIDGET (priv->device_mac));
+	/* Set mnemonic widget for Device label */
+	label = GTK_LABEL (gtk_builder_get_object (builder, "wimax_device_label"));
+	gtk_label_set_mnemonic_widget (label, GTK_WIDGET (priv->device_combo));
 }
 
 static void
@@ -68,20 +70,18 @@ populate_ui (CEPageWimax *self)
 {
 	CEPageWimaxPrivate *priv = CE_PAGE_WIMAX_GET_PRIVATE (self);
 	NMSettingWimax *setting = priv->setting;
-	char **mac_list;
-	const char *s_mac_str;
+	const char *s_mac, *s_ifname;
 
 	gtk_entry_set_text (priv->name, nm_setting_wimax_get_network_name (setting));
 	g_signal_connect_swapped (priv->name, "changed", G_CALLBACK (ce_page_changed), self);
 
 	/* Device MAC address */
-	mac_list = ce_page_get_mac_list (CE_PAGE (self), NM_TYPE_DEVICE_WIMAX,
-	                                 NM_DEVICE_WIMAX_HW_ADDRESS);
-	s_mac_str = nm_setting_wimax_get_mac_address (setting);
-	ce_page_setup_mac_combo (CE_PAGE (self), GTK_COMBO_BOX (priv->device_mac),
-	                         s_mac_str, mac_list);
-	g_strfreev (mac_list);
-	g_signal_connect_swapped (priv->device_mac, "changed", G_CALLBACK (ce_page_changed), self);
+        s_ifname = nm_connection_get_interface_name (CE_PAGE (self)->connection);
+	s_mac = nm_setting_wimax_get_mac_address (setting);
+	ce_page_setup_device_combo (CE_PAGE (self), GTK_COMBO_BOX (priv->device_combo),
+	                            NM_TYPE_DEVICE_WIMAX, s_ifname,
+	                            s_mac, NM_DEVICE_WIMAX_HW_ADDRESS, TRUE);
+	g_signal_connect_swapped (priv->device_combo, "changed", G_CALLBACK (ce_page_changed), self);
 }
 
 static void
@@ -136,21 +136,30 @@ static void
 ui_to_setting (CEPageWimax *self)
 {
 	CEPageWimaxPrivate *priv = CE_PAGE_WIMAX_GET_PRIVATE (self);
+	NMSettingConnection *s_con;
 	const char *name;
+	char *ifname = NULL;
 	char *device_mac = NULL;
 	GtkWidget *entry;
 
+	s_con = nm_connection_get_setting_connection (CE_PAGE (self)->connection);
+	g_return_if_fail (s_con != NULL);
+
 	name = gtk_entry_get_text (priv->name);
 
-	entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
+	entry = gtk_bin_get_child (GTK_BIN (priv->device_combo));
 	if (entry)
-		device_mac = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_ETHER, NULL);
+		ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, &ifname, &device_mac);
 
+	g_object_set (s_con,
+	              NM_SETTING_CONNECTION_INTERFACE_NAME, ifname,
+	              NULL);
 	g_object_set (priv->setting,
 	              NM_SETTING_WIMAX_NETWORK_NAME, name,
 	              NM_SETTING_WIMAX_MAC_ADDRESS, device_mac,
 	              NULL);
 
+	g_free (ifname);
 	g_free (device_mac);
 }
 
@@ -160,20 +169,16 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	CEPageWimax *self = CE_PAGE_WIMAX (page);
 	CEPageWimaxPrivate *priv = CE_PAGE_WIMAX_GET_PRIVATE (self);
 	const char *name;
-	gboolean invalid = FALSE;
-	char *ignore;
 	GtkWidget *entry;
 
 	name = gtk_entry_get_text (priv->name);
 	if (!*name)
 		return FALSE;
 
-	entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
+	entry = gtk_bin_get_child (GTK_BIN (priv->device_combo));
 	if (entry) {
-		ignore = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_ETHER, &invalid);
-		if (invalid)
+		if (!ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, NULL, NULL))
 			return FALSE;
-		g_free (ignore);
 	}
 
 	ui_to_setting (self);

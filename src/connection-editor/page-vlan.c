@@ -425,7 +425,7 @@ populate_ui (CEPageVlan *self)
 		}
 	}
 	g_signal_connect (priv->parent, "changed", G_CALLBACK (parent_changed), self);
-	ce_page_setup_mac_combo (CE_PAGE (self), priv->parent, current_parent, priv->parent_labels);
+	ce_page_setup_data_combo (CE_PAGE (self), priv->parent, current_parent, priv->parent_labels);
 
 	if (current_parent)
 		priv->last_parent = g_strndup (current_parent, strcspn (current_parent, " "));
@@ -515,7 +515,7 @@ ui_to_setting (CEPageVlan *self)
 	CEPageVlanPrivate *priv = CE_PAGE_VLAN_GET_PRIVATE (self);
 	NMConnection *connection = CE_PAGE (self)->connection;
 	NMSettingConnection *s_con = nm_connection_get_setting_connection (connection);
-	char *cloned_mac = NULL;
+	const char *cloned_mac;
 	VlanParent *parent = NULL;
 	int active_id, parent_id, vid;
 	const char *parent_iface = NULL, *parent_uuid = NULL;
@@ -579,7 +579,9 @@ ui_to_setting (CEPageVlan *self)
 	              NULL);
 
 	if (hwtype != G_TYPE_NONE) {
-		cloned_mac = ce_page_entry_to_mac (priv->cloned_mac, ARPHRD_ETHER, NULL);
+		cloned_mac = gtk_entry_get_text (priv->cloned_mac);
+		if (cloned_mac && !*cloned_mac)
+			cloned_mac = NULL;
 		mtu_set = g_ascii_isdigit (*gtk_entry_get_text (GTK_ENTRY (priv->mtu)));
 		mtu = gtk_spin_button_get_value_as_int (priv->mtu);
 
@@ -594,7 +596,6 @@ ui_to_setting (CEPageVlan *self)
 			              NM_SETTING_WIRED_MTU, (guint32) mtu,
 			              NULL);
 
-			g_free(cloned_mac);
 		} else if (priv->s_hw) {
 			nm_connection_remove_setting (connection, G_OBJECT_TYPE (priv->s_hw));
 			priv->s_hw = NULL;
@@ -609,8 +610,6 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageVlan *self = CE_PAGE_VLAN (page);
 	CEPageVlanPrivate *priv = CE_PAGE_VLAN_GET_PRIVATE (self);
-	gboolean invalid = FALSE;
-	char *ignore;
 	const char *parent;
 	char *parent_iface;
 
@@ -625,10 +624,8 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 			return FALSE;
 	}
 
-	ignore = ce_page_entry_to_mac (priv->cloned_mac, ARPHRD_ETHER, &invalid);
-	if (invalid)
+	if (!ce_page_mac_entry_valid (priv->cloned_mac, ARPHRD_ETHER))
 		return FALSE;
-	g_free (ignore);
 
 	ui_to_setting (self);
 

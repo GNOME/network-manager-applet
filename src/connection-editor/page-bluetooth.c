@@ -131,13 +131,12 @@ static void
 ui_to_setting (CEPageBluetooth *self)
 {
 	CEPageBluetoothPrivate *priv = CE_PAGE_BLUETOOTH_GET_PRIVATE (self);
-	char *bdaddr;
+	const char *bdaddr;
 
-	bdaddr = ce_page_entry_to_mac (priv->bdaddr, ARPHRD_ETHER, NULL);
+	bdaddr = gtk_entry_get_text (priv->bdaddr);
 	g_object_set (priv->setting,
-	              NM_SETTING_BLUETOOTH_BDADDR, bdaddr,
+	              NM_SETTING_BLUETOOTH_BDADDR, bdaddr && *bdaddr ? bdaddr : NULL,
 	              NULL);
-	g_free (bdaddr);
 }
 
 static gboolean
@@ -145,13 +144,9 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageBluetooth *self = CE_PAGE_BLUETOOTH (page);
 	CEPageBluetoothPrivate *priv = CE_PAGE_BLUETOOTH_GET_PRIVATE (self);
-	char *bdaddr;
-	gboolean invalid;
 
-	bdaddr = ce_page_entry_to_mac (priv->bdaddr, ARPHRD_ETHER, &invalid);
-	if (invalid)
+	if (!ce_page_mac_entry_valid (priv->bdaddr, ARPHRD_ETHER))
 		return FALSE;
-	g_free (bdaddr);
 
 	ui_to_setting (self);
 	return nm_setting_verify (NM_SETTING (priv->setting), NULL, error);

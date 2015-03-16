@@ -39,8 +39,8 @@ typedef struct {
 
 	GtkEntry *ssid;
 	GtkComboBoxText *bssid;
-	GtkComboBoxText *device_mac;  /* Permanent MAC of the device */
-	GtkEntry *cloned_mac;         /* Cloned MAC - used for MAC spoofing */
+	GtkComboBoxText *device_combo; /* Device identification (ifname and/or MAC) */
+	GtkEntry *cloned_mac;          /* Cloned MAC - used for MAC spoofing */
 	GtkComboBox *mode;
 	GtkComboBox *band;
 	GtkSpinButton *channel;
@@ -84,19 +84,21 @@ wifi_private_init (CEPageWifi *self)
 	gtk_widget_show_all (GTK_WIDGET (priv->bssid));
 
 	/* Device MAC */
-	priv->device_mac = GTK_COMBO_BOX_TEXT (gtk_combo_box_text_new_with_entry ());
-	gtk_combo_box_set_entry_text_column (GTK_COMBO_BOX (priv->device_mac), 0);
-	gtk_widget_set_tooltip_text (GTK_WIDGET (priv->device_mac),
-	                             _("This option locks this connection to the network device specified by its permanent MAC address entered here.  Example: 00:11:22:33:44:55"));
+	priv->device_combo = GTK_COMBO_BOX_TEXT (gtk_combo_box_text_new_with_entry ());
+	gtk_combo_box_set_entry_text_column (GTK_COMBO_BOX (priv->device_combo), 0);
+	gtk_widget_set_tooltip_text (GTK_WIDGET (priv->device_combo),
+	                             _("This option locks this connection to the network device specified "
+	                               "either by its interface name or permanent MAC or both. Examples: "
+	                               "\"wlan0\", \"3C:97:0E:42:1A:19\", \"wlan0 (3C:97:0E:42:1A:19)\""));
 
-	vbox = GTK_WIDGET (gtk_builder_get_object (builder, "wifi_device_mac_vbox"));
-	gtk_container_add (GTK_CONTAINER (vbox), GTK_WIDGET (priv->device_mac));
-	gtk_widget_set_halign (GTK_WIDGET (priv->device_mac), GTK_ALIGN_FILL);
-	gtk_widget_show_all (GTK_WIDGET (priv->device_mac));
+	vbox = GTK_WIDGET (gtk_builder_get_object (builder, "wifi_device_vbox"));
+	gtk_container_add (GTK_CONTAINER (vbox), GTK_WIDGET (priv->device_combo));
+	gtk_widget_set_halign (GTK_WIDGET (priv->device_combo), GTK_ALIGN_FILL);
+	gtk_widget_show_all (GTK_WIDGET (priv->device_combo));
 
-	/* Set mnemonic widget for device MAC label */
-	label = GTK_LABEL (gtk_builder_get_object (builder, "wifi_device_mac_label"));
-	gtk_label_set_mnemonic_widget (label, GTK_WIDGET (priv->device_mac));
+	/* Set mnemonic widget for Device label */
+	label = GTK_LABEL (gtk_builder_get_object (builder, "wifi_device_label"));
+	gtk_label_set_mnemonic_widget (label, GTK_WIDGET (priv->device_combo));
 
 	priv->rate     = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "wifi_rate"));
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "rate_units"));
@@ -302,8 +304,7 @@ populate_ui (CEPageWifi *self)
 	int tx_power_def;
 	int mtu_def;
 	char *utf8_ssid;
-	char **mac_list;
-	const char *s_mac_str, *s_bssid_str;
+	const char *s_ifname, *s_mac, *s_bssid;
 	GPtrArray *bssid_array;
 	char **bssid_list;
 	guint32 idx;
@@ -381,25 +382,24 @@ populate_ui (CEPageWifi *self)
 		g_ptr_array_add (bssid_array, g_strdup (nm_setting_wireless_get_seen_bssid (setting, idx)));
 	g_ptr_array_add (bssid_array, NULL);
 	bssid_list = (char **) g_ptr_array_free (bssid_array, FALSE);
-	s_bssid_str = nm_setting_wireless_get_bssid (setting);
+	s_bssid = nm_setting_wireless_get_bssid (setting);
 	ce_page_setup_mac_combo (CE_PAGE (self), GTK_COMBO_BOX (priv->bssid),
-	                         s_bssid_str, bssid_list);
+	                         s_bssid, bssid_list);
 	g_strfreev (bssid_list);
 	g_signal_connect_swapped (priv->bssid, "changed", G_CALLBACK (ce_page_changed), self);
 
 	/* Device MAC address */
-	mac_list = ce_page_get_mac_list (CE_PAGE (self), NM_TYPE_DEVICE_WIFI,
-	                                 NM_DEVICE_WIFI_PERMANENT_HW_ADDRESS);
-	s_mac_str = nm_setting_wireless_get_mac_address (setting);
-	ce_page_setup_mac_combo (CE_PAGE (self), GTK_COMBO_BOX (priv->device_mac),
-	                         s_mac_str, mac_list);
-	g_strfreev (mac_list);
-	g_signal_connect_swapped (priv->device_mac, "changed", G_CALLBACK (ce_page_changed), self);
+        s_ifname = nm_connection_get_interface_name (CE_PAGE (self)->connection);
+	s_mac = nm_setting_wireless_get_mac_address (setting);
+	ce_page_setup_device_combo (CE_PAGE (self), GTK_COMBO_BOX (priv->device_combo),
+	                            NM_TYPE_DEVICE_WIFI, s_ifname,
+	                            s_mac, NM_DEVICE_WIFI_PERMANENT_HW_ADDRESS, TRUE);
+	g_signal_connect_swapped (priv->device_combo, "changed", G_CALLBACK (ce_page_changed), self);
 
 	/* Cloned MAC address */
-	s_mac_str = nm_setting_wireless_get_cloned_mac_address (setting);
-	if (s_mac_str)
-		gtk_entry_set_text (priv->cloned_mac, s_mac_str);
+	s_mac = nm_setting_wireless_get_cloned_mac_address (setting);
+	if (s_mac)
+		gtk_entry_set_text (priv->cloned_mac, s_mac);
 	g_signal_connect_swapped (priv->cloned_mac, "changed", G_CALLBACK (ce_page_changed), self);
 
 	gtk_spin_button_set_value (priv->rate, (gdouble) nm_setting_wireless_get_rate (setting));
@@ -490,13 +490,18 @@ static void
 ui_to_setting (CEPageWifi *self)
 {
 	CEPageWifiPrivate *priv = CE_PAGE_WIFI_GET_PRIVATE (self);
+	NMSettingConnection *s_con;
 	GBytes *ssid;
-	char *bssid = NULL;
+	const char *bssid = NULL;
+	char *ifname = NULL;
 	char *device_mac = NULL;
-	char *cloned_mac = NULL;
+	const char *cloned_mac;
 	const char *mode;
 	const char *band;
 	GtkWidget *entry;
+
+	s_con = nm_connection_get_setting_connection (CE_PAGE (self)->connection);
+	g_return_if_fail (s_con != NULL);
 
 	ssid = ce_page_wifi_get_ssid (self);
 
@@ -521,17 +526,20 @@ ui_to_setting (CEPageWifi *self)
 	entry = gtk_bin_get_child (GTK_BIN (priv->bssid));
 	/* BSSID is only valid for infrastructure not for adhoc */
 	if (entry && mode && strcmp (mode, "adhoc") != 0)
-		bssid = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_ETHER, NULL);
-	entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
+		bssid = gtk_entry_get_text (GTK_ENTRY (entry));
+	entry = gtk_bin_get_child (GTK_BIN (priv->device_combo));
 	if (entry)
-		device_mac = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_ETHER, NULL);
-	cloned_mac = ce_page_entry_to_mac (priv->cloned_mac, ARPHRD_ETHER, NULL);
+		ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, &ifname, &device_mac);
+	cloned_mac = gtk_entry_get_text (priv->cloned_mac);
 
+	g_object_set (s_con,
+	              NM_SETTING_CONNECTION_INTERFACE_NAME, ifname,
+	              NULL);
 	g_object_set (priv->setting,
 	              NM_SETTING_WIRELESS_SSID, ssid,
-	              NM_SETTING_WIRELESS_BSSID, bssid,
+	              NM_SETTING_WIRELESS_BSSID, bssid && *bssid ? bssid : NULL,
 	              NM_SETTING_WIRELESS_MAC_ADDRESS, device_mac,
-	              NM_SETTING_WIRELESS_CLONED_MAC_ADDRESS, cloned_mac,
+	              NM_SETTING_WIRELESS_CLONED_MAC_ADDRESS, cloned_mac && *cloned_mac ? cloned_mac : NULL,
 	              NM_SETTING_WIRELESS_MODE, mode,
 	              NM_SETTING_WIRELESS_BAND, band,
 	              NM_SETTING_WIRELESS_CHANNEL, gtk_spin_button_get_value_as_int (priv->channel),
@@ -541,9 +549,8 @@ ui_to_setting (CEPageWifi *self)
 	              NULL);
 
 	g_bytes_unref (ssid);
+	g_free (ifname);
 	g_free (device_mac);
-	g_free (cloned_mac);
-	g_free (bssid);
 }
 
 static gboolean
@@ -552,30 +559,22 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	CEPageWifi *self = CE_PAGE_WIFI (page);
 	CEPageWifiPrivate *priv = CE_PAGE_WIFI_GET_PRIVATE (self);
 	gboolean success;
-	gboolean invalid = FALSE;
-	char *ignore;
 	GtkWidget *entry;
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->bssid));
 	if (entry) {
-		ignore = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_ETHER, &invalid);
-		if (invalid)
+		if (!ce_page_mac_entry_valid (GTK_ENTRY (entry), ARPHRD_ETHER))
 			return FALSE;
-		g_free (ignore);
 	}
 
-	entry = gtk_bin_get_child (GTK_BIN (priv->device_mac));
+	entry = gtk_bin_get_child (GTK_BIN (priv->device_combo));
 	if (entry) {
-		ignore = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_ETHER, &invalid);
-		if (invalid)
+		if (!ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, NULL, NULL))
 			return FALSE;
-		g_free (ignore);
 	}
 
-	ignore = ce_page_entry_to_mac (priv->cloned_mac, ARPHRD_ETHER, &invalid);
-	if (invalid)
+	if (!ce_page_mac_entry_valid (priv->cloned_mac, ARPHRD_ETHER))
 		return FALSE;
-	g_free (ignore);
 
 	ui_to_setting (self);
 
