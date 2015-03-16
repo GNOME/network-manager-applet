@@ -147,14 +147,9 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageBluetooth *self = CE_PAGE_BLUETOOTH (page);
 	CEPageBluetoothPrivate *priv = CE_PAGE_BLUETOOTH_GET_PRIVATE (self);
-	GByteArray *bdaddr;
-	gboolean invalid;
 
-	bdaddr = ce_page_entry_to_mac (priv->bdaddr, ARPHRD_ETHER, &invalid);
-	if (invalid)
+	if (!ce_page_mac_entry_valid (priv->bdaddr, ARPHRD_ETHER))
 		return FALSE;
-	if (bdaddr)
-		g_byte_array_free (bdaddr, TRUE);
 
 	ui_to_setting (self);
 	return nm_setting_verify (NM_SETTING (priv->setting), NULL, error);

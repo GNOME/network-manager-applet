@@ -416,7 +416,7 @@ populate_ui (CEPageVlan *self)
 			break;
 		}
 	}
-	ce_page_setup_mac_combo (CE_PAGE (self), priv->parent, current_parent, priv->parent_labels);
+	ce_page_setup_data_combo (CE_PAGE (self), priv->parent, current_parent, priv->parent_labels);
 	g_signal_connect (priv->parent, "changed", G_CALLBACK (parent_changed), self);
 
 	if (current_parent)
@@ -605,8 +605,6 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageVlan *self = CE_PAGE_VLAN (page);
 	CEPageVlanPrivate *priv = CE_PAGE_VLAN_GET_PRIVATE (self);
-	gboolean invalid = FALSE;
-	GByteArray *ignore;
 	int parent_id;
 	const char *parent;
 	char *parent_iface;
@@ -623,11 +621,8 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 			return FALSE;
 	}
 
-	ignore = ce_page_entry_to_mac (priv->cloned_mac, ARPHRD_ETHER, &invalid);
-	if (invalid)
+	if (!ce_page_mac_entry_valid (priv->cloned_mac, ARPHRD_ETHER))
 		return FALSE;
-	if (ignore)
-		g_byte_array_free (ignore, TRUE);
 
 	ui_to_setting (self);
 

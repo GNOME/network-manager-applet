@@ -150,74 +150,159 @@ ce_page_last_update (CEPage *self, NMConnection *connection, GError **error)
 	return TRUE;
 }
 
-char **
-ce_page_get_mac_list (CEPage *self, GType device_type, const char *mac_property)
+static int
+hwaddr_binary_len (const char *asc)
 {
-	const GPtrArray *devices;
-	GPtrArray *macs;
-	int i;
+	int octets = 1;
 
-	g_return_val_if_fail (CE_IS_PAGE (self), NULL);
+	if (!*asc)
+		return 0;
 
-	if (!self->client)
-		return NULL;
-
-	macs = g_ptr_array_new ();
-	devices = nm_client_get_devices (self->client);
-	for (i = 0; devices && (i < devices->len); i++) {
-		NMDevice *dev = g_ptr_array_index (devices, i);
-		const char *iface;
-		char *mac, *item;
-
-		if (!G_TYPE_CHECK_INSTANCE_TYPE (dev, device_type))
-			continue;
-
-		g_object_get (G_OBJECT (dev), mac_property, &mac, NULL);
-		iface = nm_device_get_iface (NM_DEVICE (dev));
-		item = g_strdup_printf ("%s (%s)", mac, iface);
-		g_free (mac);
-		g_ptr_array_add (macs, item);
+	for (; *asc; asc++) {
+		if (*asc == ':' || *asc == '-')
+			octets++;
 	}
-
-	g_ptr_array_add (macs, NULL);
-	return (char **)g_ptr_array_free (macs, FALSE);
+	return octets;
 }
 
+static gboolean
+_hwaddr_matches (const char *addr1, const char *addr2, int type)
+{
+	GByteArray *mac1, *mac2;
+	guint8 *ptr1, *ptr2;
+	int addr1_len, addr2_len, len;
+	int ret;
+
+	if (!addr1 || !addr2)
+		return FALSE;
+
+	addr1_len = hwaddr_binary_len (addr1);
+	addr2_len = hwaddr_binary_len (addr2);
+	if (addr1_len == 0 || addr2_len == 0)
+		return FALSE;
+	if (addr1_len != addr2_len)
+		return FALSE;
+
+	mac1 = nm_utils_hwaddr_atoba (addr1, type);
+	if (!mac1)
+		return FALSE;
+	mac2 = nm_utils_hwaddr_atoba (addr2, type);
+	if (!mac2)
+		return FALSE;
+
+	ptr1 = mac1->data;
+	ptr2 = mac2->data;
+	len = mac1->len;
+	if (type == ARPHRD_INFINIBAND) {
+		ptr1 = ptr1 + 20 - 8;
+		ptr2 = ptr2 + 20 - 8;
+		len = 8;
+	}
+	ret = memcmp (ptr1, ptr2, len);
+	g_byte_array_free (mac1, TRUE);
+	g_byte_array_free (mac2, TRUE);
+
+	return ret == 0;
+}
+
+static void
+_set_active_combo_item (GtkComboBox *combo, const char *item,
+                        const char *combo_item, int combo_idx)
+{
+	GtkWidget *entry;
+
+	if (item) {
+		/* set active item */
+		gtk_combo_box_set_active (combo, combo_idx);
+
+		if (!combo_item)
+			gtk_combo_box_text_prepend_text (GTK_COMBO_BOX_TEXT (combo), item);
+
+		entry = gtk_bin_get_child (GTK_BIN (combo));
+		if (entry)
+			gtk_entry_set_text (GTK_ENTRY (entry), combo_item ? combo_item : item);
+	}
+}
+
+/* Combo box storing data in the form of "text1 (text2)" */
+void
+ce_page_setup_data_combo (CEPage *self, GtkComboBox *combo,
+                          const char *data, char **list)
+{
+	char **iter, *active_item = NULL;
+	int i, active_idx = -1;
+	int data_len;
+
+	if (data)
+		data_len = strlen (data);
+	else
+		data_len = -1;
+
+	for (iter = list, i = 0; iter && *iter; iter++, i++) {
+		gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo), *iter);
+		if (   data
+		    && g_ascii_strncasecmp (*iter, data, data_len) == 0
+		    && ((*iter)[data_len] == '\0' || (*iter)[data_len] == ' ')) {
+			active_item = *iter;
+			active_idx = i;
+		}
+	}
+	_set_active_combo_item (combo, data, active_item, active_idx);
+}
+
+/* Combo box storing MAC addresses only */
 void
 ce_page_setup_mac_combo (CEPage *self, GtkComboBox *combo,
-                         const char *current_mac, char **mac_list)
+                         const GByteArray *mac, int type, char **mac_list)
 {
 	char **iter, *active_mac = NULL;
 	int i, active_idx = -1;
-	int current_mac_len;
-	GtkWidget *entry;
+	char *mac_str;
 
-	if (current_mac)
-		current_mac_len = strlen (current_mac);
-	else
-		current_mac_len = -1;
+	mac_str = mac ? nm_utils_hwaddr_ntoa (mac->data, type) : NULL;
 
 	for (iter = mac_list, i = 0; iter && *iter; iter++, i++) {
 		gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo), *iter);
-		if (   current_mac
-		    && g_ascii_strncasecmp (*iter, current_mac, current_mac_len) == 0
-		    && ((*iter)[current_mac_len] == '\0' || (*iter)[current_mac_len] == ' ')) {
+		if (mac_str && *iter && _hwaddr_matches (mac_str, *iter, type)) {
 			active_mac = *iter;
 			active_idx = i;
 		}
 	}
+	_set_active_combo_item (combo, mac_str, active_mac, active_idx);
+	g_free (mac_str);
+}
 
-	if (current_mac) {
-		/* set active item */
-		gtk_combo_box_set_active (combo, active_idx);
-		
-		if (!active_mac)
-			gtk_combo_box_text_prepend_text (GTK_COMBO_BOX_TEXT (combo), current_mac);
+static gboolean
+_mac_is_valid (const char *mac, int type)
+{
+	GByteArray *array;
+	gboolean valid;
 
-		entry = gtk_bin_get_child (GTK_BIN (combo));
-		if (entry)
-			gtk_entry_set_text (GTK_ENTRY (entry), active_mac ? active_mac : current_mac);
-	}
+	array = nm_utils_hwaddr_atoba (mac, type);
+	if (!array)
+		return FALSE;
+
+	valid = TRUE;
+	if (type == ARPHRD_ETHER && !utils_ether_addr_valid ((struct ether_addr *)array->data))
+		valid = FALSE;
+
+	g_byte_array_free (array, TRUE);
+	return valid;
+}
+
+gboolean
+ce_page_mac_entry_valid (GtkEntry *entry, int type)
+{
+	const char *mac;
+
+	g_return_val_if_fail (entry != NULL, FALSE);
+	g_return_val_if_fail (GTK_IS_ENTRY (entry), FALSE);
+
+	mac = gtk_entry_get_text (entry);
+	if (!mac || !*mac)
+		return TRUE;
+
+	return _mac_is_valid (mac, type);
 }
 
 void
@@ -242,9 +327,7 @@ ce_page_mac_to_entry (const GByteArray *mac, int type, GtkEntry *entry)
 GByteArray *
 ce_page_entry_to_mac (GtkEntry *entry, int type, gboolean *invalid)
 {
-	const char *temp, *sp;
-	char *buf = NULL;
-	GByteArray *mac;
+	const char *temp;
 
 	g_return_val_if_fail (entry != NULL, NULL);
 	g_return_val_if_fail (GTK_IS_ENTRY (entry), NULL);
@@ -253,29 +336,213 @@ ce_page_entry_to_mac (GtkEntry *entry, int type, gboolean *invalid)
 		g_return_val_if_fail (*invalid == FALSE, NULL);
 
 	temp = gtk_entry_get_text (entry);
-	if (!temp || !strlen (temp))
+	if (!temp || !*temp)
 		return NULL;
 
-	sp = strchr (temp, ' ');
-	if (sp)
-		temp = buf = g_strndup (temp, sp - temp);
+	return nm_utils_hwaddr_atoba (temp, type);
+}
 
-	mac = nm_utils_hwaddr_atoba (temp, type);
-	g_free (buf);
-	if (!mac) {
-		if (invalid)
-			*invalid = TRUE;
+static char **
+_get_device_list (CEPage *self,
+                  GType device_type,
+                  gboolean set_ifname,
+                  const char *mac_property,
+                  gboolean ifname_first)
+{
+	const GPtrArray *devices;
+	GPtrArray *interfaces;
+	int i;
+
+	g_return_val_if_fail (CE_IS_PAGE (self), NULL);
+	g_return_val_if_fail (set_ifname || mac_property, NULL);
+
+	if (!self->client)
 		return NULL;
+
+	interfaces = g_ptr_array_new ();
+	devices = nm_client_get_devices (self->client);
+	for (i = 0; devices && (i < devices->len); i++) {
+		NMDevice *dev = g_ptr_array_index (devices, i);
+		const char *ifname;
+		char *mac;
+		char *item;
+
+		if (!G_TYPE_CHECK_INSTANCE_TYPE (dev, device_type))
+			continue;
+
+		ifname = nm_device_get_iface (NM_DEVICE (dev));
+		if (mac_property)
+			g_object_get (G_OBJECT (dev), mac_property, &mac, NULL);
+
+		if (set_ifname && mac_property) {
+			if (ifname_first)
+				item = g_strdup_printf ("%s (%s)", ifname, mac);
+			else
+				item = g_strdup_printf ("%s (%s)", mac, ifname);
+		} else
+			item = g_strdup (set_ifname ? ifname : mac);
+
+		g_ptr_array_add (interfaces, item);
+		if (mac_property)
+			g_free (mac);
+	}
+	g_ptr_array_add (interfaces, NULL);
+
+	return (char **)g_ptr_array_free (interfaces, FALSE);
+}
+
+static gboolean
+_device_entry_parse (const char *entry_text, char **first, char **second)
+{
+	const char *sp, *left, *right;
+
+	if (!entry_text || !*entry_text) {
+		*first = NULL;
+		*second = NULL;
+		return TRUE;
 	}
 
-	if (type == ARPHRD_ETHER && !utils_ether_addr_valid ((struct ether_addr *)mac->data)) {
-		g_byte_array_free (mac, TRUE);
-		if (invalid)
-			*invalid = TRUE;
-		return NULL;
+	sp = strchr (entry_text, ' ');
+	if (sp) {
+		*first = g_strndup (entry_text, sp - entry_text);
+		left = sp + 1;
+		right = strchr (left, ')');
+		if (*left == '(' && right && right > left)
+			*second = g_strndup (left + 1, right - left - 1);
+		else {
+			*second = NULL;
+			return FALSE;
+		}
+	} else {
+		*first = g_strdup (entry_text);
+		*second = NULL;
+	}
+	return TRUE;
+}
+
+static gboolean
+_device_entries_match (const char *ifname, const char *mac, int type, const char *entry)
+{
+	char *first, *second;
+	gboolean ifname_match = FALSE, mac_match = FALSE;
+	gboolean both;
+
+	if (!ifname && !mac)
+		return FALSE;
+
+	_device_entry_parse (entry, &first, &second);
+	both = first && second;
+
+	if (   ifname
+	    && (   !g_strcmp0 (ifname, first)
+	        || !g_strcmp0 (ifname, second)))
+		ifname_match = TRUE;
+
+	if (   mac
+	    && (   (first && _hwaddr_matches (mac, first, type))
+	        || (second && _hwaddr_matches (mac, second, type))))
+		mac_match = TRUE;
+
+	g_free (first);
+	g_free (second);
+
+	if (both)
+		return ifname_match && mac_match;
+	else {
+		if (ifname)
+			return ifname_match;
+		if (mac)
+			return mac_match;
+		return FALSE;
+	}
+}
+
+/* Combo box storing ifname and/or MAC */
+void
+ce_page_setup_device_combo (CEPage *self,
+                            GtkComboBox *combo,
+                            GType device_type,
+                            const char *ifname,
+                            const GByteArray *mac,
+                            int mac_type,
+                            const char *mac_property,
+                            gboolean ifname_first)
+{
+	char **iter, *active_item = NULL;
+	int i, active_idx = -1;
+	char **device_list;
+	char *item;
+	char *mac_str;
+
+	mac_str = mac ? nm_utils_hwaddr_ntoa (mac->data, mac_type) : NULL;
+	device_list = _get_device_list (self, device_type, TRUE, mac_property, ifname_first);
+
+	if (ifname && mac_str)
+		item = g_strdup_printf ("%s (%s)", ifname, mac_str);
+	else if (!ifname && !mac_str)
+		item = NULL;
+	else
+		item = g_strdup (ifname ? ifname : mac_str);
+
+	for (iter = device_list, i = 0; iter && *iter; iter++, i++) {
+		gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo), *iter);
+		if (_device_entries_match (ifname, mac_str, mac_type, *iter)) {
+			active_item = *iter;
+			active_idx = i;
+		}
+	}
+	_set_active_combo_item (combo, item, active_item, active_idx);
+
+	g_free (mac_str);
+	g_free (item);
+	g_strfreev (device_list);
+}
+
+gboolean
+ce_page_device_entry_get (GtkEntry *entry, int type, char **ifname, GByteArray **mac)
+{
+	char *first, *second;
+	const char *ifname_tmp = NULL, *mac_tmp = NULL;
+	gboolean valid = TRUE;
+
+	g_return_val_if_fail (entry != NULL, FALSE);
+	g_return_val_if_fail (GTK_IS_ENTRY (entry), FALSE);
+
+	valid = _device_entry_parse (gtk_entry_get_text (entry), &first, &second);
+
+	if (first) {
+		if (_mac_is_valid (first, type))
+			mac_tmp = first;
+		else if (nm_utils_iface_valid_name (first))
+			ifname_tmp = first;
+		else
+			valid = FALSE;
+	}
+	if (second) {
+		if (_mac_is_valid (second, type)) {
+			if (!mac_tmp)
+				mac_tmp = second;
+			else
+				valid = FALSE;
+		} else if (nm_utils_iface_valid_name (second)) {
+			if (!ifname_tmp)
+				ifname_tmp = second;
+			else
+				valid = FALSE;
+		} else
+			valid = FALSE;
 	}
 
-	return mac;
+	if (ifname)
+		*ifname = g_strdup (ifname_tmp);
+	if (mac) {
+		*mac = mac_tmp ? nm_utils_hwaddr_atoba (mac_tmp, type) : NULL;
+	}
+
+	g_free (first);
+	g_free (second);
+
+	return valid;
 }
 
 char *

@@ -108,15 +108,25 @@ const char * ce_page_get_title (CEPage *self);
 gboolean ce_page_validate (CEPage *self, NMConnection *connection, GError **error);
 gboolean ce_page_last_update (CEPage *self, NMConnection *connection, GError **error);
 
-char **ce_page_get_mac_list (CEPage *self, GType device_type, const char *mac_property);
 void ce_page_setup_mac_combo (CEPage *self, GtkComboBox *combo,
-                              const char *current_mac, char **mac_list);
+                              const GByteArray *mac, int type, char **mac_list);
+void ce_page_setup_data_combo (CEPage *self, GtkComboBox *combo,
+                               const char *data, char **list);
+void ce_page_setup_device_combo (CEPage *self,
+                                 GtkComboBox *combo,
+                                 GType device_type,
+                                 const char *ifname,
+                                 const GByteArray *mac,
+                                 int mac_type,
+                                 const char *mac_property,
+                                 gboolean ifname_first);
+gboolean ce_page_mac_entry_valid (GtkEntry *entry, int type);
+gboolean ce_page_device_entry_get (GtkEntry *entry, int type,
+                                   char **ifname, GByteArray **mac);
+void ce_page_mac_to_entry (const GByteArray *mac, int type, GtkEntry *entry);
+GByteArray *ce_page_entry_to_mac (GtkEntry *entry, int type, gboolean *invalid);
 
 void ce_page_changed (CEPage *self);
-
-void ce_page_mac_to_entry (const GByteArray *mac, int type, GtkEntry *entry);
-
-GByteArray *ce_page_entry_to_mac (GtkEntry *entry, int type, gboolean *invalid);
 
 gboolean ce_spin_output_with_automatic (GtkSpinButton *spin, gpointer user_data);
 
