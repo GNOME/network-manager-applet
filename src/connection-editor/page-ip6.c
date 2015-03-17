@@ -585,6 +585,9 @@ cell_editing_canceled (GtkCellRenderer *renderer, gpointer user_data)
 	priv->last_column = -1;
 }
 
+#define DO_NOT_CYCLE_TAG "do-not-cycle"
+#define DIRECTION_TAG    "direction"
+
 static void
 cell_edited (GtkCellRendererText *cell,
              const gchar *path_string,
@@ -598,6 +601,9 @@ cell_edited (GtkCellRendererText *cell,
 	GtkTreeIter iter;
 	guint32 column;
 	GtkTreeViewColumn *next_col;
+	GtkCellRenderer *next_cell;
+	gboolean can_cycle;
+	int direction, tmp;
 
 	/* Free auxiliary stuff */
 	g_free (priv->last_edited);
@@ -610,10 +616,22 @@ cell_edited (GtkCellRendererText *cell,
 	gtk_tree_model_get_iter (GTK_TREE_MODEL (store), &iter, path);
 	gtk_list_store_set (store, &iter, column, new_text, -1);
 
-	/* Move focus to the next column */
-	column = (column >= COL_LAST) ? 0 : column + 1;
+	/* Move focus to the next/previous column */
+	can_cycle = g_object_get_data (G_OBJECT (cell), DO_NOT_CYCLE_TAG) == NULL;
+	direction = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (cell), DIRECTION_TAG));
+	g_object_set_data (G_OBJECT (cell), DIRECTION_TAG, NULL);
+	g_object_set_data (G_OBJECT (cell), DO_NOT_CYCLE_TAG, NULL);
+	if (direction == 0)  /* Move forward by default */
+		direction = 1;
+
+	tmp = column + direction;
+	if (can_cycle)
+		column = tmp < 0 ? COL_LAST : tmp > COL_LAST ? 0 : tmp;
+	else
+		column = tmp;
 	next_col = gtk_tree_view_get_column (priv->addr_list, column);
-	gtk_tree_view_set_cursor_on_cell (priv->addr_list, path, next_col, priv->addr_cells[column], TRUE);
+	next_cell = column <= COL_LAST ? priv->addr_cells[column] : NULL;
+	gtk_tree_view_set_cursor_on_cell (priv->addr_list, path, next_col, next_cell, TRUE);
 
 	gtk_tree_path_free (path);
 	ce_page_changed (CE_PAGE (self));
@@ -717,12 +735,12 @@ cell_changed_cb (GtkEditable *editable,
 }
 
 static gboolean
-key_pressed_cb (GtkWidget *widget,
-                GdkEvent *event,
-                gpointer user_data)
+key_pressed_cb (GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 {
-	GdkKeymapKey *keys = NULL;
-	gint n_keys;
+	GdkModifierType modifiers;
+	GtkCellRenderer *cell = (GtkCellRenderer *) user_data;
+
+	modifiers = event->state & gtk_accelerator_get_default_mod_mask ();
 
 	/*
 	 * Tab should behave the same way as Enter (cycling on cells).
@@ -732,17 +750,20 @@ key_pressed_cb (GtkWidget *widget,
 	 * But unfortunately, it showed up crash occurred with XIM input (GTK_IM_MODULE=xim).
 	 * https://bugzilla.redhat.com/show_bug.cgi?id=747368
 	 */
-	if (event->type == GDK_KEY_PRESS && event->key.keyval == GDK_KEY_Tab) {
-		/* Get hardware keycode for GDK_KEY_Return */
-		if (gdk_keymap_get_entries_for_keyval (gdk_keymap_get_default (), GDK_KEY_Return, &keys, &n_keys)) {
-			/* Change 'Tab' to 'Enter' key */
-			event->key.keyval = GDK_KEY_Return;
-			event->key.hardware_keycode = keys[0].keycode;
-		}
-		g_free (keys);
-	}
+	if (event->keyval == GDK_KEY_Tab && modifiers == 0) {
+		/* Tab */
+		g_object_set_data (G_OBJECT (cell), DIRECTION_TAG, GINT_TO_POINTER (1));
+		utils_fake_return_key (event);
+	} else if (event->keyval == GDK_KEY_ISO_Left_Tab && modifiers == GDK_SHIFT_MASK) {
+		/* Shift-Tab */
+		g_object_set_data (G_OBJECT (cell), DIRECTION_TAG, GINT_TO_POINTER (-1));
+		utils_fake_return_key (event);
+	} else if (event->keyval == GDK_KEY_Up)
+		g_object_set_data (G_OBJECT (cell), DIRECTION_TAG, GINT_TO_POINTER (-1));
+	else if (event->keyval == GDK_KEY_Return || event->keyval == GDK_KEY_ISO_Enter)
+		g_object_set_data (G_OBJECT (cell), DO_NOT_CYCLE_TAG, GUINT_TO_POINTER (TRUE));
 
-	return FALSE;
+	return FALSE; /* Allow default handler to be called */
 }
 
 static void
@@ -788,7 +809,7 @@ cell_editing_started (GtkCellRenderer *cell,
 	/* Set up key pressed handler - need to handle Tab key */
 	g_signal_connect (G_OBJECT (editable), "key-press-event",
 	                  (GCallback) key_pressed_cb,
-	                  user_data);
+	                  cell);
 }
 
 static void

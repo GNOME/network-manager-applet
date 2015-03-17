@@ -539,3 +539,20 @@ utils_set_cell_background (GtkCellRenderer *cell,
 	} else
 		g_object_set (G_OBJECT (cell), "cell-background-set", FALSE, NULL);
 }
+
+/* Change key in @event to 'Enter' key. */
+void
+utils_fake_return_key (GdkEventKey *event)
+{
+	GdkKeymapKey *keys = NULL;
+	gint n_keys;
+
+	/* Get hardware keycode for GDK_KEY_Return */
+	if (gdk_keymap_get_entries_for_keyval (gdk_keymap_get_default (), GDK_KEY_Return, &keys, &n_keys)) {
+		event->keyval = GDK_KEY_Return;
+		event->hardware_keycode = keys[0].keycode;
+		event->state = 0;
+	}
+	g_free (keys);
+}
+
