@@ -704,6 +704,18 @@ parse_netmask (const char *str, guint32 *prefix)
 }
 
 static gboolean
+is_address_unspecified (const char *str)
+{
+	struct in_addr addr;
+
+	if (!str)
+		return FALSE;
+
+	return (   inet_pton (AF_INET, str, &addr) == 1
+	        && addr.s_addr == INADDR_ANY);
+}
+
+static gboolean
 cell_changed_cb (GtkEditable *editable,
                  gpointer user_data)
 {
@@ -725,6 +737,13 @@ cell_changed_cb (GtkEditable *editable,
 		struct in_addr tmp_addr;
 
 		if (inet_pton (AF_INET, cell_text, &tmp_addr) > 0)
+			value_valid = TRUE;
+
+		 /* 0.0.0.0 is not accepted for address */
+		if (column == COL_ADDRESS && tmp_addr.s_addr == 0)
+			value_valid = FALSE;
+		/* Consider empty gateway as valid */
+		if (!*cell_text && column == COL_GATEWAY)
 			value_valid = TRUE;
 	}
 
@@ -921,7 +940,8 @@ cell_error_data_func (GtkTreeViewColumn *tree_column,
 	gtk_tree_model_get (tree_model, iter, col, &value, -1);
 
 	if (col == COL_ADDRESS)
-		invalid = !value || !*value || !nm_utils_ipaddr_valid (AF_INET, value);
+		invalid =    !value || !*value || !nm_utils_ipaddr_valid (AF_INET, value)
+		          || is_address_unspecified (value);
 	else if (col == COL_PREFIX)
 		invalid = !parse_netmask (value, &prefix);
 	else if (col == COL_GATEWAY)
@@ -1143,7 +1163,9 @@ ui_to_setting (CEPageIP4 *self)
 		                    COL_GATEWAY, &addr_gw,
 		                    -1);
 
-		if (!addr || !nm_utils_ipaddr_valid (AF_INET, addr)) {
+		if (   !addr
+		    || !nm_utils_ipaddr_valid (AF_INET, addr)
+		    || is_address_unspecified (addr)) {
 			g_warning ("%s: IPv4 address '%s' missing or invalid!",
 			           __func__, addr ? addr : "<none>");
 			g_free (addr);
@@ -1162,7 +1184,7 @@ ui_to_setting (CEPageIP4 *self)
 		}
 
 		/* Gateway is optional... */
-		if (addr_gw && !nm_utils_ipaddr_valid (AF_INET, addr_gw)) {
+		if (addr_gw && *addr_gw && !nm_utils_ipaddr_valid (AF_INET, addr_gw)) {
 			g_warning ("%s: IPv4 gateway '%s' invalid!",
 			           __func__, addr_gw);
 			g_free (addr);
@@ -1174,7 +1196,7 @@ ui_to_setting (CEPageIP4 *self)
 		nm_addr = nm_ip_address_new (AF_INET, addr, prefix, NULL);
 		g_ptr_array_add (addresses, nm_addr);
 
-		if (addresses->len == 1 && addr_gw) {
+		if (addresses->len == 1 && addr_gw && *addr_gw) {
 			gateway = addr_gw;
 			addr_gw = NULL;
 		}

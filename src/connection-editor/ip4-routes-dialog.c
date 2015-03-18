@@ -475,11 +475,14 @@ cell_changed_cb (GtkEditable *editable,
 		else
 			value_valid = TRUE;
 	} else {
-		struct in_addr tmp_addr;
+		struct in_addr tmp_addr = { 0 };
 
 		if (inet_pton (AF_INET, cell_text, &tmp_addr) > 0)
 			value_valid = TRUE;
 
+		/* 0.0.0.0 is not accepted for address */
+		if (column == COL_ADDRESS && tmp_addr.s_addr == 0)
+			value_valid = FALSE;
 		/* Consider empty next_hop as valid */
 		if (!*cell_text && column == COL_NEXT_HOP)
 			value_valid = TRUE;

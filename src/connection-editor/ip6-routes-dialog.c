@@ -425,6 +425,9 @@ cell_changed_cb (GtkEditable *editable,
 		if (inet_pton (AF_INET6, cell_text, &tmp_addr) > 0)
 			value_valid = TRUE;
 
+		/* :: is not accepted for address */
+		if (column == COL_ADDRESS && IN6_IS_ADDR_UNSPECIFIED (&tmp_addr))
+			value_valid = FALSE;
 		/* Consider empty next_hop as valid */
 		if (!*cell_text && column == COL_NEXT_HOP)
 			value_valid = TRUE;

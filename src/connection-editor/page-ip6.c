@@ -474,6 +474,18 @@ is_prefix_valid (const char *prefix_str, guint32 *out_prefix)
 	}
 }
 
+static gboolean
+is_address_unspecified (const char *str)
+{
+	struct in6_addr addr;
+
+	if (!str)
+		return FALSE;
+
+	return (   inet_pton (AF_INET6, str, &addr) == 1
+	        && IN6_IS_ADDR_UNSPECIFIED (&addr));
+}
+
 static void
 addr_add_clicked (GtkButton *button, gpointer user_data)
 {
@@ -722,6 +734,13 @@ cell_changed_cb (GtkEditable *editable,
 
 		if (inet_pton (AF_INET6, cell_text, &tmp_addr))
 			value_valid = TRUE;
+
+		/* :: is not accepted for address */
+		if (column == COL_ADDRESS && IN6_IS_ADDR_UNSPECIFIED (&tmp_addr))
+                        value_valid = FALSE;
+		/* Consider empty gateway as valid */
+		if (!*cell_text && column == COL_GATEWAY)
+			value_valid = TRUE;
 	}
 
 	/* Change cell's background color while editing */
@@ -921,7 +940,8 @@ cell_error_data_func (GtkTreeViewColumn *tree_column,
 	gtk_tree_model_get (tree_model, iter, col, &value, -1);
 
 	if (col == COL_ADDRESS)
-		invalid = !value || !*value || !nm_utils_ipaddr_valid (AF_INET6, value);
+		invalid =    !value || !*value || !nm_utils_ipaddr_valid (AF_INET6, value)
+		          || is_address_unspecified (value);
 	else if (col == COL_PREFIX)
 		invalid = !is_prefix_valid (value, NULL);
 	else if (col == COL_GATEWAY)
@@ -1081,6 +1101,7 @@ ui_to_setting (CEPageIP6 *self)
 	GtkTreeIter tree_iter;
 	int int_method = IP6_METHOD_AUTO;
 	const char *method;
+	char *gateway = NULL;
 	gboolean valid = FALSE, iter_valid;
 	const char *text;
 	gboolean ignore_auto_dns = FALSE;
@@ -1139,7 +1160,9 @@ ui_to_setting (CEPageIP6 *self)
 		                    COL_GATEWAY, &addr_gw_str,
 		                    -1);
 
-		if (!addr_str || !nm_utils_ipaddr_valid (AF_INET6, addr_str)) {
+		if (   !addr_str
+		    || !nm_utils_ipaddr_valid (AF_INET6, addr_str)
+		    || is_address_unspecified (addr_str)) {
 			g_warning ("%s: IPv6 address '%s' missing or invalid!",
 			           __func__, addr_str ? addr_str : "<none>");
 			g_free (addr_str);
@@ -1160,7 +1183,7 @@ ui_to_setting (CEPageIP6 *self)
 		}
 
 		/* Gateway is optional... */
-		if (addr_gw_str && !nm_utils_ipaddr_valid (AF_INET6, addr_gw_str)) {
+		if (addr_gw_str && *addr_gw_str && !nm_utils_ipaddr_valid (AF_INET6, addr_gw_str)) {
 			g_warning ("%s: IPv6 gateway '%s' invalid!",
 			           __func__, addr_gw_str);
 			g_free (addr_str);
@@ -1173,10 +1196,9 @@ ui_to_setting (CEPageIP6 *self)
 		nm_setting_ip_config_add_address (priv->setting, addr);
 		nm_ip_address_unref (addr);
 
-		if (nm_setting_ip_config_get_num_addresses (priv->setting) == 1 && addr_gw_str) {
-			g_object_set (G_OBJECT (priv->setting),
-			              NM_SETTING_IP_CONFIG_GATEWAY, addr_gw_str,
-			              NULL);
+		if (nm_setting_ip_config_get_num_addresses (priv->setting) == 1 && addr_gw_str && *addr_gw_str) {
+			gateway = addr_gw_str;
+			addr_gw_str = NULL;
 		}
 
 		g_free (addr_str);
@@ -1185,6 +1207,10 @@ ui_to_setting (CEPageIP6 *self)
 
 		iter_valid = gtk_tree_model_iter_next (model, &tree_iter);
 	}
+
+	g_object_set (G_OBJECT (priv->setting),
+	              NM_SETTING_IP_CONFIG_GATEWAY, gateway,
+	              NULL);
 
 	/* DNS servers */
 	nm_setting_ip_config_clear_dns (priv->setting);
