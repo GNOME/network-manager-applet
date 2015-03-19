@@ -438,6 +438,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 	const char * const *dns6;
 	NMIPAddress *def_addr = NULL;
 	NMIPAddress *def6_addr = NULL;
+	const char *gateway;
 	NMSettingIPConfig *s_ip6;
 	int row = 0;
 	GtkWidget* speed_label, *sec_label, *desc_widget, *data_widget = NULL;
@@ -635,10 +636,11 @@ info_dialog_add_page (GtkNotebook *notebook,
 	display_ip4_info (def_addr, grid, &row);
 
 	/* Gateway */
-	if (nm_ip_config_get_gateway (ip4_config)) {
+	gateway = nm_ip_config_get_gateway (ip4_config);
+	if (gateway && *gateway) {
 		desc_widget = create_info_label (_("Default Route:"), FALSE);
 		desc_object = gtk_widget_get_accessible (desc_widget);
-		data_widget = create_info_label (nm_ip_config_get_gateway (ip4_config), TRUE);
+		data_widget = create_info_label (gateway, TRUE);
 		data_object = gtk_widget_get_accessible (data_widget);
 		atk_object_add_relationship (desc_object, ATK_RELATION_LABEL_FOR, data_object);
 
@@ -679,11 +681,16 @@ info_dialog_add_page (GtkNotebook *notebook,
 	display_ip6_info (def6_addr, method, grid, &row);
 
 	/* Gateway */
-	if (nm_ip_config_get_gateway (ip6_config)) {
-		gtk_grid_attach (grid, create_info_label (_("Default Route:"), FALSE),
-		                 0, row, 1, 1);
-		gtk_grid_attach (grid, create_info_label (nm_ip_config_get_gateway (ip6_config), TRUE),
-		                 1, row, 1, 1);
+	gateway = nm_ip_config_get_gateway (ip6_config);
+	if (gateway && *gateway) {
+		desc_widget = create_info_label (_("Default Route:"), FALSE);
+		desc_object = gtk_widget_get_accessible (desc_widget);
+		data_widget = create_info_label (gateway, TRUE);
+		data_object = gtk_widget_get_accessible (data_widget);
+		atk_object_add_relationship (desc_object, ATK_RELATION_LABEL_FOR, data_object);
+
+		gtk_grid_attach (grid, desc_widget, 0, row, 1, 1);
+		gtk_grid_attach (grid, data_widget, 1, row, 1, 1);
 		row++;
 	}
 
