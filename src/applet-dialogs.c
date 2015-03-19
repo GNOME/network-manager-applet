@@ -143,6 +143,53 @@ create_info_label (const char *text, gboolean selectable)
 }
 
 static GtkWidget *
+create_more_addresses_widget (const GPtrArray *addresses)
+{
+	GtkWidget *expander, *label, *text_view, *child;
+	GtkTextBuffer *buffer;
+	GtkWidget *scrolled_window;
+	int i;
+
+	/* Create the expander */
+	expander = gtk_expander_new (_("More addresses"));
+	gtk_widget_set_halign (expander, GTK_ALIGN_START);
+	label = gtk_expander_get_label_widget (GTK_EXPANDER (expander));
+	gtk_widget_set_margin_top (label, 2);
+
+	/* Create the text view widget and add additional addresses to it */
+	text_view = gtk_text_view_new ();
+	gtk_text_view_set_editable (GTK_TEXT_VIEW (text_view), FALSE);
+	gtk_text_view_set_left_margin (GTK_TEXT_VIEW (text_view), 20);
+	gtk_expander_set_spacing (GTK_EXPANDER (expander), 4);
+	child = text_view;
+
+	buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (text_view));
+	for (i = 1; addresses && (i < addresses->len); i++) {
+		NMIPAddress *addr = (NMIPAddress *) g_ptr_array_index (addresses, i);
+		char *addr_text = g_strdup_printf ("%s / %d",
+		                                  nm_ip_address_get_address (addr),
+		                                  nm_ip_address_get_prefix (addr));
+		if (i != 1)
+			gtk_text_buffer_insert_at_cursor (buffer, "\n", -1);
+		gtk_text_buffer_insert_at_cursor (buffer, addr_text, -1);
+		g_free (addr_text);
+	}
+
+	if (addresses->len > 5) {
+		scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+		gtk_widget_set_size_request (scrolled_window, -1, 80);
+		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
+		                                GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+		gtk_container_add (GTK_CONTAINER (scrolled_window), text_view);
+		child = scrolled_window;
+	}
+
+	gtk_container_add (GTK_CONTAINER (expander), child);
+
+	return expander;
+}
+
+static GtkWidget *
 create_info_group_label (const char *text, gboolean selectable)
 {
 	GtkWidget *label;
@@ -317,7 +364,7 @@ wimax_bsid_changed_cb (NMDevice *device, GParamSpec *pspec, gpointer user_data)
 
 
 static void
-display_ip4_info (NMIPAddress *def_addr, GtkGrid *grid, int *row)
+display_ip4_info (NMIPAddress *def_addr, const GPtrArray *addresses, GtkGrid *grid, int *row)
 {
 	GtkWidget *desc_widget, *data_widget = NULL;
 	AtkObject *desc_object, *data_object = NULL;
@@ -372,10 +419,21 @@ display_ip4_info (NMIPAddress *def_addr, GtkGrid *grid, int *row)
 	gtk_grid_attach (grid, data_widget, 1, *row, 1, 1);
 	g_free (str);
 	(*row)++;
+
+	/* More Addresses */
+	if (addresses && addresses->len > 1) {
+		data_widget = create_more_addresses_widget (addresses);
+		gtk_grid_attach (grid, data_widget, 0, *row, 2, 1);
+		(*row)++;
+	}
 }
 
 static void
-display_ip6_info (NMIPAddress *def6_addr, const char *method, GtkGrid *grid, int *row)
+display_ip6_info (NMIPAddress *def6_addr,
+                  const GPtrArray *addresses,
+                  const char *method,
+                  GtkGrid *grid,
+                  int *row)
 {
 	GtkWidget *desc_widget, *data_widget = NULL;
 	AtkObject *desc_object, *data_object = NULL;
@@ -399,6 +457,13 @@ display_ip6_info (NMIPAddress *def6_addr, const char *method, GtkGrid *grid, int
 	gtk_grid_attach (grid, data_widget, 1, *row, 1, 1);
 	g_free (str);
 	(*row)++;
+
+	/* More Addresses */
+	if (addresses && addresses->len > 1) {
+		data_widget = create_more_addresses_widget (addresses);
+		gtk_grid_attach (grid, data_widget, 0, *row, 2, 1);
+		(*row)++;
+	}
 }
 
 static void
@@ -633,7 +698,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 	if (addresses && addresses->len > 0)
 		def_addr = (NMIPAddress *) g_ptr_array_index (addresses, 0);
 
-	display_ip4_info (def_addr, grid, &row);
+	display_ip4_info (def_addr, addresses, grid, &row);
 
 	/* Gateway */
 	gateway = nm_ip_config_get_gateway (ip4_config);
@@ -672,13 +737,14 @@ info_dialog_add_page (GtkNotebook *notebook,
 		row++;
 	}
 
+	addresses = NULL;
 	ip6_config = nm_device_get_ip6_config (device);
 	if (ip6_config) {
 		addresses = nm_ip_config_get_addresses (ip6_config);
 		if (addresses && addresses->len > 0)
 			def6_addr = (NMIPAddress *) g_ptr_array_index (addresses, 0);
 	}
-	display_ip6_info (def6_addr, method, grid, &row);
+	display_ip6_info (def6_addr, addresses, method, grid, &row);
 
 	/* Gateway */
 	gateway = nm_ip_config_get_gateway (ip6_config);
@@ -854,7 +920,7 @@ info_dialog_add_page_for_vpn (GtkNotebook *notebook,
 	if (addresses && addresses->len > 0)
 		def_addr = (NMIPAddress *) g_ptr_array_index (addresses, 0);
 
-	display_ip4_info (def_addr, grid, &row);
+	display_ip4_info (def_addr, addresses, grid, &row);
 
 	/* DNS */
 	dns = def_addr ? nm_ip_config_get_nameservers (ip4_config) : NULL;
@@ -886,7 +952,7 @@ info_dialog_add_page_for_vpn (GtkNotebook *notebook,
 			def6_addr = (NMIPAddress *) g_ptr_array_index (addresses, 0);
 
 		/* IPv6 Address */
-		display_ip6_info (def6_addr, method, grid, &row);
+		display_ip6_info (def6_addr, addresses, method, grid, &row);
 
 		/* DNS */
 		dns6 = def6_addr ? nm_ip_config_get_nameservers (ip6_config) : NULL;
