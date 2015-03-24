@@ -1558,8 +1558,8 @@ add_device_items (NMDeviceType type, const GPtrArray *all_devices,
 static gint
 sort_connections_by_ifname (gconstpointer a, gconstpointer b)
 {
-	NMConnection *aa = NM_CONNECTION (a);
-	NMConnection *bb = NM_CONNECTION (b);
+	NMConnection *aa =  *(NMConnection **)a;
+	NMConnection *bb =  *(NMConnection **)b;
 
 	return strcmp (nm_connection_get_interface_name (aa),
 	               nm_connection_get_interface_name (bb));
@@ -1594,7 +1594,7 @@ add_virtual_items (const char *type, const GPtrArray *all_devices,
 		 * (or reach the end of the list).
 		 */
 		while (   i < connections->len
-		       && sort_connections_by_ifname (connection, connections->pdata[i]) == 0)
+		       && sort_connections_by_ifname (&connection, &connections->pdata[i]) == 0)
 			i++;
 	}
 
@@ -1618,7 +1618,7 @@ add_virtual_items (const char *type, const GPtrArray *all_devices,
 
 		iface_connections = g_ptr_array_sized_new (5);
 		while (   i < connections->len
-		       && sort_connections_by_ifname (connection, connections->pdata[i]) == 0) {
+		       && sort_connections_by_ifname (&connection, &connections->pdata[i]) == 0) {
 			g_ptr_array_add (iface_connections, connections->pdata[i]);
 			i++;
 		}
