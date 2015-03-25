@@ -633,7 +633,11 @@ get_icon (NMDevice *device,
 	}
 
 	info = g_object_get_data (G_OBJECT (device), "devinfo");
-	g_assert (info);
+	if (!info) {
+		g_warning ("ModemManager is not available for modem at %s",
+		           nm_device_get_udi (device));
+		return;
+	}
 
 	mobile_helper_get_icon (device,
 	                        state,
