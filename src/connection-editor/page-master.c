@@ -25,6 +25,7 @@
 #include <glib/gi18n.h>
 
 #include <nm-setting-connection.h>
+#include <nm-utils.h>
 
 #include "page-master.h"
 #include "nm-connection-editor.h"
