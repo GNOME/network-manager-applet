@@ -766,13 +766,21 @@ key_pressed_cb (GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 	modifiers = event->state & gtk_accelerator_get_default_mod_mask ();
 
 	/*
-	 * Tab should behave the same way as Enter (cycling on cells).
+	 * Change some keys so that they work properly:
+	 * We want:
+	 *   - Tab should behave the same way as Enter (cycling on cells),
+	 *   - Shift-Tab should move in backwards direction.
+	 *   - Down arrow moves as Enter, but we have to handle Down arrow on
+	 *     key pad.
+	 *   - Up arrow should move backwards and we also have to handle Up arrow
+	 *     on key pad.
+	 *   - Enter should end editing when pressed on last column.
 	 *
-	 * Previously, we had finished cell editing, which appeared to work:
-	 *   gtk_cell_editable_editing_done (GTK_CELL_EDITABLE (widget));
-	 * But unfortunately, it showed up crash occurred with XIM input (GTK_IM_MODULE=xim).
+	 * Note: gtk_cell_editable_editing_done (GTK_CELL_EDITABLE (widget)) cannot be called
+	 * in this function, because it would crash with XIM input (GTK_IM_MODULE=xim), see
 	 * https://bugzilla.redhat.com/show_bug.cgi?id=747368
 	 */
+
 	if (event->keyval == GDK_KEY_Tab && modifiers == 0) {
 		/* Tab */
 		g_object_set_data (G_OBJECT (cell), DIRECTION_TAG, GINT_TO_POINTER (1));
@@ -781,9 +789,14 @@ key_pressed_cb (GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 		/* Shift-Tab */
 		g_object_set_data (G_OBJECT (cell), DIRECTION_TAG, GINT_TO_POINTER (-1));
 		utils_fake_return_key (event);
-	} else if (event->keyval == GDK_KEY_Up)
+	} else if (event->keyval == GDK_KEY_KP_Down)
+		event->keyval = GDK_KEY_Down;
+	else if (event->keyval == GDK_KEY_Up || event->keyval == GDK_KEY_KP_Up) {
+		event->keyval = GDK_KEY_Up;
 		g_object_set_data (G_OBJECT (cell), DIRECTION_TAG, GINT_TO_POINTER (-1));
-	else if (event->keyval == GDK_KEY_Return || event->keyval == GDK_KEY_ISO_Enter)
+	} else if (   event->keyval == GDK_KEY_Return
+	           || event->keyval == GDK_KEY_ISO_Enter
+	           || event->keyval == GDK_KEY_KP_Enter)
 		g_object_set_data (G_OBJECT (cell), DO_NOT_CYCLE_TAG, GUINT_TO_POINTER (TRUE));
 
 	return FALSE; /* Allow default handler to be called */
