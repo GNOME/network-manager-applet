@@ -28,6 +28,7 @@
 
 #include "wireless-security.h"
 #include "utils.h"
+#include "nm-ui-utils.h"
 
 struct _WirelessSecurityWEPKey {
 	WirelessSecurity parent;
@@ -188,7 +189,7 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 
 	/* Update secret flags and popup when editing the connection */
 	if (sec->editing_connection)
-		utils_update_password_storage (NM_SETTING (s_wsec), secret_flags, passwd_entry, sec->password_flags_name);
+		nma_utils_update_password_storage (NM_SETTING (s_wsec), secret_flags, passwd_entry, sec->password_flags_name);
 }
 
 static void
@@ -265,7 +266,7 @@ ws_wep_key_new (NMConnection *connection,
 	gtk_entry_set_width_chars (GTK_ENTRY (widget), 28);
 
 	/* Create password-storage popup menu for password entry under entry's secondary icon */
-	utils_setup_password_storage (connection, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, widget, sec->password_flags_name);
+	nma_utils_setup_password_storage (connection, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, widget, sec->password_flags_name);
 
 	if (connection) {
 		NMSettingWireless *s_wireless;

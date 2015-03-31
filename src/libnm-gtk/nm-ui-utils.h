@@ -14,7 +14,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2012 Red Hat, Inc.
+ * (C) Copyright 2007 - 2015 Red Hat, Inc.
  */
 
 
@@ -25,7 +25,11 @@
 #ifndef NMA_UI_UTILS_H
 #define NMA_UI_UTILS_H
 
+#include <glib.h>
+#include <gtk/gtk.h>
 #include <nm-device.h>
+#include <nm-setting.h>
+#include <nm-connection.h>
 
 const char *nma_utils_get_device_vendor (NMDevice *device);
 const char *nma_utils_get_device_product (NMDevice *device);
@@ -37,5 +41,14 @@ char **nma_utils_disambiguate_device_names (NMDevice **devices,
                                             int        num_devices);
 char *nma_utils_get_connection_device_name (NMConnection *connection);
 
-#endif	/* NMA_UI_UTILS_H */
+void nma_utils_setup_password_storage (NMConnection *connection,
+                                       const char *setting_name,
+                                       GtkWidget *passwd_entry,
+                                       const char *password_flags_name);
+void nma_utils_update_password_storage (NMSetting *setting,
+                                        NMSettingSecretFlags secret_flags,
+                                        GtkWidget *passwd_entry,
+                                        const char *password_flags_name);
+
+#endif /* NMA_UI_UTILS_H */
 

@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2007 - 2012 Red Hat, Inc.
+ * (C) Copyright 2007 - 2015 Red Hat, Inc.
  */
 
 #ifndef UTILS_H
@@ -106,15 +106,6 @@ gboolean utils_filter_editable_on_insert_text (GtkEditable *editable,
                                                void *user_data,
                                                UtilsFilterGtkEditableFunc validate_character,
                                                gpointer block_func);
-
-void utils_setup_password_storage (NMConnection *connection,
-                                   const char *setting_name,
-                                   GtkWidget *passwd_entry,
-                                   const char *password_flags_name);
-void utils_update_password_storage (NMSetting *setting,
-                                    NMSettingSecretFlags secret_flags,
-                                    GtkWidget *passwd_entry,
-                                    const char *password_flags_name);
 
 #endif /* UTILS_H */
 

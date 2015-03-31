@@ -35,7 +35,8 @@ libwireless_security_la_CPPFLAGS = \
 	-DUIDIR=\""$(uidir)"\" \
 	$(NMA_CFLAGS) \
 	$(DISABLE_DEPRECATED) \
-	-I${top_srcdir}/src/utils
+	-I${top_srcdir}/src/utils \
+	-I${top_srcdir}/src/libnm-gtk
 
 libwireless_security_la_LIBADD = \
 	$(GTK_LIBS) \
