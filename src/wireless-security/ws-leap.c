@@ -24,7 +24,7 @@
 
 #include "wireless-security.h"
 #include "helpers.h"
-#include "utils.h"
+#include "nm-ui-utils.h"
 
 struct _WirelessSecurityLEAP {
 	WirelessSecurity parent;
@@ -116,7 +116,7 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 
 	/* Update secret flags and popup when editing the connection */
 	if (sec->editing_connection)
-		utils_update_password_storage (NM_SETTING (s_wireless_sec), secret_flags, passwd_entry, sec->password_flags_name);
+		nma_utils_update_password_storage (NM_SETTING (s_wireless_sec), secret_flags, passwd_entry, sec->password_flags_name);
 }
 
 static void
@@ -173,7 +173,7 @@ ws_leap_new (NMConnection *connection, gboolean secrets_only)
 	                  sec);
 
 	/* Create password-storage popup menu for password entry under entry's secondary icon */
-	utils_setup_password_storage (connection, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, widget, sec->password_flags_name);
+	nma_utils_setup_password_storage (connection, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, widget, sec->password_flags_name);
 
 	if (wsec)
 		update_secrets (WIRELESS_SECURITY (sec), connection);

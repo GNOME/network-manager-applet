@@ -29,7 +29,7 @@
 #include "eap-method.h"
 #include "wireless-security.h"
 #include "helpers.h"
-#include "utils.h"
+#include "nm-ui-utils.h"
 
 struct _EAPMethodTLS {
 	EAPMethod parent;
@@ -180,7 +180,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection, NMSettingSecretFla
 
 	/* Update secret flags and popup when editing the connection */
 	if (method->editing_connection) {
-		utils_update_password_storage (NM_SETTING (s_8021x), flags, passwd_entry, parent->password_flags_name);
+		nma_utils_update_password_storage (NM_SETTING (s_8021x), flags, passwd_entry, parent->password_flags_name);
 	}
 
 	/* TLS client certificate */
@@ -485,7 +485,7 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 	                  ws_parent);
 
 	/* Create password-storage popup menu for password entry under entry's secondary icon */
-	utils_setup_password_storage (connection, NM_SETTING_802_1X_SETTING_NAME, widget, parent->password_flags_name);
+	nma_utils_setup_password_storage (connection, NM_SETTING_802_1X_SETTING_NAME, widget, parent->password_flags_name);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "show_checkbutton_eaptls"));
 	g_assert (widget);

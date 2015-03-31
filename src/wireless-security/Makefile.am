@@ -40,7 +40,8 @@ libwireless_security_libnm_glib_la_CPPFLAGS = \
 	-DUIDIR=\""$(uidir)"\" \
 	-DLIBNM_GLIB_BUILD \
 	$(LIBNM_GLIB_CFLAGS) \
-	-I${top_srcdir}/src/utils
+	-I${top_srcdir}/src/utils \
+	-I${top_srcdir}/src/libnm-gtk
 
 libwireless_security_libnm_glib_la_LIBADD = \
 	$(GTK_LIBS) \
