@@ -485,7 +485,7 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 	                  ws_parent);
 
 	/* Create password-storage popup menu for password entry under entry's secondary icon */
-	nma_utils_setup_password_storage (connection, NM_SETTING_802_1X_SETTING_NAME, widget, parent->password_flags_name);
+	nma_utils_setup_password_storage ((NMSetting *) s_8021x, widget, parent->password_flags_name);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "show_checkbutton_eaptls"));
 	g_assert (widget);
