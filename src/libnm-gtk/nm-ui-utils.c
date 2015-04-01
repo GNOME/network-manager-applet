@@ -597,23 +597,32 @@ nma_utils_get_connection_device_name (NMConnection *connection)
 /*---------------------------------------------------------------------------*/
 /* Password storage icon */
 
+typedef enum {
+	ITEM_STORAGE_USER    = 0,
+	ITEM_STORAGE_SYSTEM  = 1,
+	__ITEM_STORAGE_MAX,
+	ITEM_STORAGE_MAX = __ITEM_STORAGE_MAX - 1,
+} MenuItem;
+
+static const char *icon_name_table[ITEM_STORAGE_MAX + 1] = {
+	[ITEM_STORAGE_USER]    = "document-save",
+	[ITEM_STORAGE_SYSTEM]  = "document-save-as",
+};
+
 static void
-change_password_storage_icon (GtkWidget *passwd_entry, int number)
+change_password_storage_icon (GtkWidget *passwd_entry, MenuItem item)
 {
-	char *icon_name = "document-save";
+	g_return_if_fail (item >= 0 && item <= ITEM_STORAGE_MAX);
 
-	if (number == 1)
-		icon_name = "document-save";
-	else if (number == 2)
-		icon_name = "document-save-as";
-
-	gtk_entry_set_icon_from_icon_name (GTK_ENTRY (passwd_entry), GTK_ENTRY_ICON_SECONDARY, icon_name);
+	gtk_entry_set_icon_from_icon_name (GTK_ENTRY (passwd_entry),
+	                                   GTK_ENTRY_ICON_SECONDARY,
+	                                   icon_name_table[item]);
 }
 
 typedef struct {
 	NMSetting *setting;
 	const char *password_flags_name;
-	int item_number;
+	MenuItem item_number;
 	GtkWidget *passwd_entry;
 } PopupMenuItemInfo;
 
@@ -640,7 +649,7 @@ activate_menu_item_cb (GtkMenuItem *menuitem, gpointer user_data)
 
 	/* Update password flags according to the password-storage popup menu */
 	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem))) {
-		if (info->item_number == 1)
+		if (info->item_number == ITEM_STORAGE_USER)
 			secret_flags |= NM_SETTING_SECRET_FLAG_AGENT_OWNED;
 		else
 			secret_flags &= ~NM_SETTING_SECRET_FLAG_AGENT_OWNED;
@@ -696,7 +705,6 @@ nma_utils_setup_password_storage (GtkWidget *passwd_entry,
 	PopupMenuItemInfo *info;
 	NMSettingSecretFlags secret_flags;
 
-	gtk_entry_set_icon_from_icon_name (GTK_ENTRY (passwd_entry), GTK_ENTRY_ICON_SECONDARY, "document-save");
 	popup_menu = gtk_menu_new ();
 	g_object_set_data (G_OBJECT (popup_menu), PASSWORD_STORAGE_MENU_TAG, GUINT_TO_POINTER (TRUE));
 	group = NULL;
@@ -713,7 +721,7 @@ nma_utils_setup_password_storage (GtkWidget *passwd_entry,
 	info = g_slice_new0 (PopupMenuItemInfo);
 	info->setting = setting;
 	info->password_flags_name = password_flags_name;
-	info->item_number = 1;
+	info->item_number = ITEM_STORAGE_USER;
 	info->passwd_entry = passwd_entry;
 	g_signal_connect_data (item1, "activate",
 	                       G_CALLBACK (activate_menu_item_cb),
@@ -723,7 +731,7 @@ nma_utils_setup_password_storage (GtkWidget *passwd_entry,
 	info = g_slice_new0 (PopupMenuItemInfo);
 	info->setting = setting;
 	info->password_flags_name = password_flags_name;
-	info->item_number = 2;
+	info->item_number = ITEM_STORAGE_SYSTEM;
 	info->passwd_entry = passwd_entry;
 	g_signal_connect_data (item2, "activate",
 	                       G_CALLBACK (activate_menu_item_cb),
@@ -739,12 +747,13 @@ nma_utils_setup_password_storage (GtkWidget *passwd_entry,
 	else
 		secret_flags = initial_flags;
 
-	if (secret_flags & NM_SETTING_SECRET_FLAG_AGENT_OWNED)
+	if (secret_flags & NM_SETTING_SECRET_FLAG_AGENT_OWNED) {
 		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item1), TRUE);
-	else {
-		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item2), TRUE);
+		change_password_storage_icon (passwd_entry, ITEM_STORAGE_USER);
+	} else {
 		/* Use different icon for system-storage */
-		change_password_storage_icon (passwd_entry, 2);
+		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item2), TRUE);
+		change_password_storage_icon (passwd_entry, ITEM_STORAGE_SYSTEM);
 	}
 }
 
@@ -793,10 +802,10 @@ nma_utils_update_password_storage (GtkWidget *passwd_entry,
 
 		if (secret_flags & NM_SETTING_SECRET_FLAG_AGENT_OWNED) {
 			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item_user), TRUE);
-			change_password_storage_icon (passwd_entry, 1);
+			change_password_storage_icon (passwd_entry, ITEM_STORAGE_USER);
 		} else {
 			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item_system), TRUE);
-			change_password_storage_icon (passwd_entry, 2);
+			change_password_storage_icon (passwd_entry, ITEM_STORAGE_SYSTEM);
 		}
 	}
 }
