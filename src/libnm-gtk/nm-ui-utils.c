@@ -600,6 +600,7 @@ nma_utils_get_connection_device_name (NMConnection *connection)
 typedef enum {
 	ITEM_STORAGE_USER    = 0,
 	ITEM_STORAGE_SYSTEM  = 1,
+	ITEM_STORAGE_ASK     = 2,
 	__ITEM_STORAGE_MAX,
 	ITEM_STORAGE_MAX = __ITEM_STORAGE_MAX - 1,
 } MenuItem;
@@ -607,6 +608,7 @@ typedef enum {
 static const char *icon_name_table[ITEM_STORAGE_MAX + 1] = {
 	[ITEM_STORAGE_USER]    = "document-save",
 	[ITEM_STORAGE_SYSTEM]  = "document-save-as",
+	[ITEM_STORAGE_ASK]     = "dialog-question",
 };
 
 static void
@@ -617,6 +619,59 @@ change_password_storage_icon (GtkWidget *passwd_entry, MenuItem item)
 	gtk_entry_set_icon_from_icon_name (GTK_ENTRY (passwd_entry),
 	                                   GTK_ENTRY_ICON_SECONDARY,
 	                                   icon_name_table[item]);
+
+	/* We want to make entry insensitive when ITEM_STORAGE_ASK is selected
+	 * Unfortunately, making GtkEntry insensitive will also make the icon
+	 * insensitive, which prevents user from reverting the action.
+	 * Let's workaround that by disabling focus for entry instead of
+	 * sensitivity change.
+	*/
+	if (item == ITEM_STORAGE_ASK) {
+		gtk_entry_set_text (GTK_ENTRY (passwd_entry), "");
+		if (gtk_widget_is_focus (passwd_entry))
+			gtk_widget_child_focus ((gtk_widget_get_toplevel (passwd_entry)), GTK_DIR_TAB_BACKWARD);
+		gtk_widget_set_can_focus (passwd_entry, FALSE);
+	} else {
+		if (!gtk_widget_get_can_focus (passwd_entry)) {
+			gtk_widget_set_can_focus (passwd_entry, TRUE);
+			gtk_widget_grab_focus (passwd_entry);
+		}
+	}
+}
+
+static MenuItem
+secret_flags_to_menu_item (NMSettingSecretFlags flags)
+{
+	MenuItem idx;
+
+	if (flags & NM_SETTING_SECRET_FLAG_NOT_SAVED)
+		idx = ITEM_STORAGE_ASK;
+	else if (flags & NM_SETTING_SECRET_FLAG_AGENT_OWNED)
+		idx = ITEM_STORAGE_USER;
+	else
+		idx = ITEM_STORAGE_SYSTEM;
+
+	return idx;
+}
+
+static NMSettingSecretFlags
+menu_item_to_secret_flags (MenuItem item)
+{
+	NMSettingSecretFlags flags = NM_SETTING_SECRET_FLAG_NONE;
+
+	switch (item) {
+	case ITEM_STORAGE_USER:
+		flags |= NM_SETTING_SECRET_FLAG_AGENT_OWNED;
+		break;
+	case ITEM_STORAGE_ASK:
+		flags |= NM_SETTING_SECRET_FLAG_NOT_SAVED;
+		break;
+	case ITEM_STORAGE_SYSTEM:
+	default:
+		break;
+		
+	}
+	return flags;
 }
 
 typedef struct {
@@ -640,24 +695,16 @@ static void
 activate_menu_item_cb (GtkMenuItem *menuitem, gpointer user_data)
 {
 	PopupMenuItemInfo *info = (PopupMenuItemInfo *) user_data;
-	NMSettingSecretFlags secret_flags = NM_SETTING_SECRET_FLAG_NONE;
-
-	/* Get current secret flags */
-	if (info->setting)
-		nm_setting_get_secret_flags (info->setting, info->password_flags_name,
-		                             &secret_flags, NULL);
+	NMSettingSecretFlags flags;
 
 	/* Update password flags according to the password-storage popup menu */
 	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem))) {
-		if (info->item_number == ITEM_STORAGE_USER)
-			secret_flags |= NM_SETTING_SECRET_FLAG_AGENT_OWNED;
-		else
-			secret_flags &= ~NM_SETTING_SECRET_FLAG_AGENT_OWNED;
+		flags = menu_item_to_secret_flags (info->item_number);
 
-		/* Update the secret flags */
+		/* Update the secret flags in the setting */
 		if (info->setting)
 			nm_setting_set_secret_flags (info->setting, info->password_flags_name,
-			                             secret_flags, NULL);
+			                             flags, NULL);
 
 		/* Change icon */
 		change_password_storage_icon (info->passwd_entry, info->item_number);
@@ -700,20 +747,23 @@ nma_utils_setup_password_storage (GtkWidget *passwd_entry,
                                   const char *password_flags_name)
 {
 	GtkWidget *popup_menu;
-	GtkWidget *item1, *item2;
+	GtkWidget *item[3];
 	GSList *group;
+	MenuItem idx;
 	PopupMenuItemInfo *info;
 	NMSettingSecretFlags secret_flags;
 
 	popup_menu = gtk_menu_new ();
 	g_object_set_data (G_OBJECT (popup_menu), PASSWORD_STORAGE_MENU_TAG, GUINT_TO_POINTER (TRUE));
 	group = NULL;
-	item1 = gtk_radio_menu_item_new_with_mnemonic (group, _("Store the password only for this _user"));
-	group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item1));
-	item2 = gtk_radio_menu_item_new_with_mnemonic (group, _("Store the password for _all users"));
+	item[0] = gtk_radio_menu_item_new_with_mnemonic (group, _("Store the password only for this _user"));
+	group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item[0]));
+	item[1] = gtk_radio_menu_item_new_with_mnemonic (group, _("Store the password for _all users"));
+	item[2] = gtk_radio_menu_item_new_with_mnemonic (group, _("As_k for this password every time"));
 
-	gtk_menu_shell_append (GTK_MENU_SHELL (popup_menu), item1);
-	gtk_menu_shell_append (GTK_MENU_SHELL (popup_menu), item2);
+	gtk_menu_shell_append (GTK_MENU_SHELL (popup_menu), item[0]);
+	gtk_menu_shell_append (GTK_MENU_SHELL (popup_menu), item[1]);
+	gtk_menu_shell_append (GTK_MENU_SHELL (popup_menu), item[2]);
 
 	if (setting)
 		g_object_ref (setting);
@@ -723,7 +773,7 @@ nma_utils_setup_password_storage (GtkWidget *passwd_entry,
 	info->password_flags_name = password_flags_name;
 	info->item_number = ITEM_STORAGE_USER;
 	info->passwd_entry = passwd_entry;
-	g_signal_connect_data (item1, "activate",
+	g_signal_connect_data (item[0], "activate",
 	                       G_CALLBACK (activate_menu_item_cb),
 	                       info,
 	                       (GClosureNotify) popup_menu_item_info_destroy, 0);
@@ -733,7 +783,17 @@ nma_utils_setup_password_storage (GtkWidget *passwd_entry,
 	info->password_flags_name = password_flags_name;
 	info->item_number = ITEM_STORAGE_SYSTEM;
 	info->passwd_entry = passwd_entry;
-	g_signal_connect_data (item2, "activate",
+	g_signal_connect_data (item[1], "activate",
+	                       G_CALLBACK (activate_menu_item_cb),
+	                       info,
+	                       (GClosureNotify) popup_menu_item_info_destroy, 0);
+
+	info = g_slice_new0 (PopupMenuItemInfo);
+	info->setting = setting;
+	info->password_flags_name = password_flags_name;
+	info->item_number = ITEM_STORAGE_ASK;
+	info->passwd_entry = passwd_entry;
+	g_signal_connect_data (item[2], "activate",
 	                       G_CALLBACK (activate_menu_item_cb),
 	                       info,
 	                       (GClosureNotify) popup_menu_item_info_destroy, 0);
@@ -747,14 +807,9 @@ nma_utils_setup_password_storage (GtkWidget *passwd_entry,
 	else
 		secret_flags = initial_flags;
 
-	if (secret_flags & NM_SETTING_SECRET_FLAG_AGENT_OWNED) {
-		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item1), TRUE);
-		change_password_storage_icon (passwd_entry, ITEM_STORAGE_USER);
-	} else {
-		/* Use different icon for system-storage */
-		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item2), TRUE);
-		change_password_storage_icon (passwd_entry, ITEM_STORAGE_SYSTEM);
-	}
+	idx = secret_flags_to_menu_item (secret_flags);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item[idx]), TRUE);
+	change_password_storage_icon (passwd_entry, idx);
 }
 
 /**
@@ -791,22 +846,21 @@ nma_utils_update_password_storage (GtkWidget *passwd_entry,
 	}
 
 	if (menu) {
-		GtkRadioMenuItem *item, *item_user, *item_system;
+		GtkRadioMenuItem *item;
+		MenuItem idx;
 		GSList *group;
+		int i;
 
 		/* radio menu group list contains the menu items in reverse order */
 		item = (GtkRadioMenuItem *) gtk_menu_get_active (GTK_MENU (menu));
 		group = gtk_radio_menu_item_get_group (item);
-		item_system = group->data;
-		item_user = group->next->data;
 
-		if (secret_flags & NM_SETTING_SECRET_FLAG_AGENT_OWNED) {
-			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item_user), TRUE);
-			change_password_storage_icon (passwd_entry, ITEM_STORAGE_USER);
-		} else {
-			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item_system), TRUE);
-			change_password_storage_icon (passwd_entry, ITEM_STORAGE_SYSTEM);
-		}
+		idx = secret_flags_to_menu_item (secret_flags);
+		for (i = 0; i < ITEM_STORAGE_MAX - idx; i++)
+			group = g_slist_next (group);
+
+		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (group->data), TRUE);
+		change_password_storage_icon (passwd_entry, idx);
 	}
 }
 /*---------------------------------------------------------------------------*/
