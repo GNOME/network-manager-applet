@@ -174,7 +174,7 @@ ws_leap_new (NMConnection *connection, gboolean secrets_only)
 	                  sec);
 
 	/* Create password-storage popup menu for password entry under entry's secondary icon */
-	nma_utils_setup_password_storage (connection, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, widget, sec->password_flags_name);
+	nma_utils_setup_password_storage ((NMSetting *) wsec, widget, sec->password_flags_name);
 
 	if (wsec)
 		update_secrets (WIRELESS_SECURITY (sec), connection);

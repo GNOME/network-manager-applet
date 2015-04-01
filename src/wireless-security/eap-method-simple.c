@@ -281,6 +281,7 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 	EAPMethod *parent;
 	EAPMethodSimple *method;
 	GtkWidget *widget;
+	NMSetting8021x *s_8021x = NULL;
 
 	parent = eap_method_init (sizeof (EAPMethodSimple),
 	                          validate,
@@ -329,7 +330,9 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 	                  ws_parent);
 
 	/* Create password-storage popup menu for password entry under entry's secondary icon */
-	nma_utils_setup_password_storage (connection, NM_SETTING_802_1X_SETTING_NAME, widget, parent->password_flags_name);
+	if (connection)
+		s_8021x = nm_connection_get_setting_802_1x (connection);
+	nma_utils_setup_password_storage ((NMSetting *) s_8021x, widget, parent->password_flags_name);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_password_always_ask"));
 	g_assert (widget);

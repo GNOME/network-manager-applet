@@ -611,8 +611,7 @@ change_password_storage_icon (GtkWidget *passwd_entry, int number)
 }
 
 typedef struct {
-	NMConnection *connection;
-	const char *setting_name;
+	NMSetting *setting;
 	const char *password_flags_name;
 	int item_number;
 	GtkWidget *passwd_entry;
@@ -621,6 +620,10 @@ typedef struct {
 static void
 popup_menu_item_info_destroy (gpointer data)
 {
+	PopupMenuItemInfo *info = (PopupMenuItemInfo *) data;
+
+	if (info->setting)
+		g_object_unref (info->setting);
 	g_slice_free (PopupMenuItemInfo, data);
 }
 
@@ -628,13 +631,12 @@ static void
 activate_menu_item_cb (GtkMenuItem *menuitem, gpointer user_data)
 {
 	PopupMenuItemInfo *info = (PopupMenuItemInfo *) user_data;
-	NMSetting *setting;
 	NMSettingSecretFlags secret_flags = NM_SETTING_SECRET_FLAG_NONE;
 
 	/* Get current secret flags */
-	setting = nm_connection_get_setting_by_name (info->connection, info->setting_name);
-	if (setting)
-		nm_setting_get_secret_flags (setting, info->password_flags_name, &secret_flags, NULL);
+	if (info->setting)
+		nm_setting_get_secret_flags (info->setting, info->password_flags_name,
+		                             &secret_flags, NULL);
 
 	/* Update password flags according to the password-storage popup menu */
 	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem))) {
@@ -644,8 +646,9 @@ activate_menu_item_cb (GtkMenuItem *menuitem, gpointer user_data)
 			secret_flags &= ~NM_SETTING_SECRET_FLAG_AGENT_OWNED;
 
 		/* Update the secret flags */
-		if (setting)
-			nm_setting_set_secret_flags (setting, info->password_flags_name, secret_flags, NULL);
+		if (info->setting)
+			nm_setting_set_secret_flags (info->setting, info->password_flags_name,
+			                             secret_flags, NULL);
 
 		/* Change icon */
 		change_password_storage_icon (info->passwd_entry, info->item_number);
@@ -670,8 +673,7 @@ icon_release_cb (GtkEntry *entry,
 
 /**
  * nma_utils_setup_password_storage:
- * @connection: an #NMConnection
- * @setting_name: name of the setting containing the password
+ * @setting: #NMSetting containing the password
  * @passwd_entry: password #GtkEntry which the icon is attached to
  * @password_flags_name: name of the storage flags for password
  *   (like psk-flags)
@@ -679,8 +681,7 @@ icon_release_cb (GtkEntry *entry,
  * Adds a secondary icon and creates a popup menu for password entry.
  */
 void
-nma_utils_setup_password_storage (NMConnection *connection,
-                                  const char *setting_name,
+nma_utils_setup_password_storage (NMSetting *setting,
                                   GtkWidget *passwd_entry,
                                   const char *password_flags_name)
 {
@@ -688,7 +689,6 @@ nma_utils_setup_password_storage (NMConnection *connection,
 	GtkWidget *item1, *item2;
 	GSList *group;
 	PopupMenuItemInfo *info;
-	NMSetting *setting;
 
 	gtk_entry_set_icon_from_icon_name (GTK_ENTRY (passwd_entry), GTK_ENTRY_ICON_SECONDARY, "document-save");
 	popup_menu = gtk_menu_new ();
@@ -701,9 +701,11 @@ nma_utils_setup_password_storage (NMConnection *connection,
 	gtk_menu_shell_append (GTK_MENU_SHELL (popup_menu), item1);
 	gtk_menu_shell_append (GTK_MENU_SHELL (popup_menu), item2);
 
+	if (setting)
+		g_object_ref (setting);
+
 	info = g_slice_new0 (PopupMenuItemInfo);
-	info->connection = connection;
-	info->setting_name = setting_name;
+	info->setting = setting;
 	info->password_flags_name = password_flags_name;
 	info->item_number = 1;
 	info->passwd_entry = passwd_entry;
@@ -713,8 +715,7 @@ nma_utils_setup_password_storage (NMConnection *connection,
 	                       (GClosureNotify) popup_menu_item_info_destroy, 0);
 
 	info = g_slice_new0 (PopupMenuItemInfo);
-	info->connection = connection;
-	info->setting_name = setting_name;
+	info->setting = setting;
 	info->password_flags_name = password_flags_name;
 	info->item_number = 2;
 	info->passwd_entry = passwd_entry;
@@ -727,7 +728,6 @@ nma_utils_setup_password_storage (NMConnection *connection,
 	gtk_menu_attach_to_widget (GTK_MENU (popup_menu), passwd_entry, NULL);
 
 	/* Initialize active item for password-storage popup menu */
-	setting = nm_connection_get_setting_by_name (connection, setting_name);
 	if (setting) {
 		NMSettingSecretFlags secret_flags = NM_SETTING_SECRET_FLAG_NONE;
 		nm_setting_get_secret_flags (setting, password_flags_name, &secret_flags, NULL);
@@ -762,6 +762,9 @@ nma_utils_update_password_storage (NMSetting *setting,
 {
 	GList *menu_list, *iter;
 	GtkWidget *menu = NULL;
+
+	if (!setting)
+		return;
 
 	/* Update secret flags (WEP_KEY_FLAGS, PSK_FLAGS, ...) in the security setting */
 	nm_setting_set_secret_flags (setting, password_flags_name, secret_flags, NULL);

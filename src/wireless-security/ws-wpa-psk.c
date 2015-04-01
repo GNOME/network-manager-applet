@@ -130,7 +130,8 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 
 	/* Update secret flags and popup when editing the connection */
 	if (wpa_psk->editing_connection)
-		nma_utils_update_password_storage (NM_SETTING (s_wireless_sec), secret_flags, passwd_entry, wpa_psk->password_flags_name);
+		nma_utils_update_password_storage (NM_SETTING (s_wireless_sec), secret_flags,
+		                                   passwd_entry, wpa_psk->password_flags_name);
 
 	wireless_security_clear_ciphers (connection);
 	if (is_adhoc) {
@@ -167,6 +168,7 @@ ws_wpa_psk_new (NMConnection *connection, gboolean secrets_only)
 {
 	WirelessSecurity *parent;
 	WirelessSecurityWPAPSK *sec;
+	NMSetting *setting = NULL;
 	GtkWidget *widget;
 
 	parent = wireless_security_init (sizeof (WirelessSecurityWPAPSK),
@@ -194,7 +196,9 @@ ws_wpa_psk_new (NMConnection *connection, gboolean secrets_only)
 	gtk_entry_set_width_chars (GTK_ENTRY (widget), 28);
 
 	/* Create password-storage popup menu for password entry under entry's secondary icon */
-	nma_utils_setup_password_storage (connection, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, widget, sec->password_flags_name);
+	if (connection)
+		setting = (NMSetting *) nm_connection_get_setting_wireless_security (connection);
+	nma_utils_setup_password_storage (setting, widget, sec->password_flags_name);
 
 	/* Fill secrets, if any */
 	if (connection)
