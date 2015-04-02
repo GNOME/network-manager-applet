@@ -476,7 +476,15 @@ get_secrets (SecretsRequest *req,
 		return FALSE;
 
 	devinfo = g_object_get_data (G_OBJECT (device), "devinfo");
-	g_assert (devinfo);
+	if (!devinfo) {
+		g_set_error (error,
+		             NM_SECRET_AGENT_ERROR,
+		             NM_SECRET_AGENT_ERROR_INTERNAL_ERROR,
+		             "%s.%d (%s): ModemManager is not available for modem at %s",
+		             __FILE__, __LINE__, __func__,
+		             nm_device_get_udi (device));
+		return FALSE;
+	}
 
 	/* A GetSecrets PIN dialog overrides the initial unlock dialog */
 	if (devinfo->dialog)
@@ -716,6 +724,11 @@ add_menu_item (NMDevice *device,
 	GSList *iter;
 
 	info = g_object_get_data (G_OBJECT (device), "devinfo");
+	if (!info) {
+		g_warning ("ModemManager is not available for modem at %s",
+		           nm_device_get_udi (device));
+		return;
+	}
 
 	if (multiple_devices) {
 		const char *desc;
