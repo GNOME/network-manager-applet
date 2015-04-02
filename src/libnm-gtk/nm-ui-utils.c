@@ -601,6 +601,7 @@ typedef enum {
 	ITEM_STORAGE_USER    = 0,
 	ITEM_STORAGE_SYSTEM  = 1,
 	ITEM_STORAGE_ASK     = 2,
+	ITEM_STORAGE_UNUSED  = 3,
 	__ITEM_STORAGE_MAX,
 	ITEM_STORAGE_MAX = __ITEM_STORAGE_MAX - 1,
 } MenuItem;
@@ -609,6 +610,7 @@ static const char *icon_name_table[ITEM_STORAGE_MAX + 1] = {
 	[ITEM_STORAGE_USER]    = "document-save",
 	[ITEM_STORAGE_SYSTEM]  = "document-save-as",
 	[ITEM_STORAGE_ASK]     = "dialog-question",
+	[ITEM_STORAGE_UNUSED]  = "edit-clear",
 };
 
 static void
@@ -626,7 +628,7 @@ change_password_storage_icon (GtkWidget *passwd_entry, MenuItem item)
 	 * Let's workaround that by disabling focus for entry instead of
 	 * sensitivity change.
 	*/
-	if (item == ITEM_STORAGE_ASK) {
+	if (item == ITEM_STORAGE_ASK || item == ITEM_STORAGE_UNUSED) {
 		gtk_entry_set_text (GTK_ENTRY (passwd_entry), "");
 		if (gtk_widget_is_focus (passwd_entry))
 			gtk_widget_child_focus ((gtk_widget_get_toplevel (passwd_entry)), GTK_DIR_TAB_BACKWARD);
@@ -646,6 +648,8 @@ secret_flags_to_menu_item (NMSettingSecretFlags flags)
 
 	if (flags & NM_SETTING_SECRET_FLAG_NOT_SAVED)
 		idx = ITEM_STORAGE_ASK;
+	else if (flags & NM_SETTING_SECRET_FLAG_NOT_REQUIRED)
+		idx = ITEM_STORAGE_UNUSED;
 	else if (flags & NM_SETTING_SECRET_FLAG_AGENT_OWNED)
 		idx = ITEM_STORAGE_USER;
 	else
@@ -665,6 +669,9 @@ menu_item_to_secret_flags (MenuItem item)
 		break;
 	case ITEM_STORAGE_ASK:
 		flags |= NM_SETTING_SECRET_FLAG_NOT_SAVED;
+		break;
+	case ITEM_STORAGE_UNUSED:
+		flags |= NM_SETTING_SECRET_FLAG_NOT_REQUIRED;
 		break;
 	case ITEM_STORAGE_SYSTEM:
 	default:
@@ -747,7 +754,7 @@ nma_utils_setup_password_storage (GtkWidget *passwd_entry,
                                   const char *password_flags_name)
 {
 	GtkWidget *popup_menu;
-	GtkWidget *item[3];
+	GtkWidget *item[4];
 	GSList *group;
 	MenuItem idx;
 	PopupMenuItemInfo *info;
@@ -760,10 +767,12 @@ nma_utils_setup_password_storage (GtkWidget *passwd_entry,
 	group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item[0]));
 	item[1] = gtk_radio_menu_item_new_with_mnemonic (group, _("Store the password for _all users"));
 	item[2] = gtk_radio_menu_item_new_with_mnemonic (group, _("As_k for this password every time"));
+	item[3] = gtk_radio_menu_item_new_with_mnemonic (group, _("The password is _not required"));
 
 	gtk_menu_shell_append (GTK_MENU_SHELL (popup_menu), item[0]);
 	gtk_menu_shell_append (GTK_MENU_SHELL (popup_menu), item[1]);
 	gtk_menu_shell_append (GTK_MENU_SHELL (popup_menu), item[2]);
+	gtk_menu_shell_append (GTK_MENU_SHELL (popup_menu), item[3]);
 
 	if (setting)
 		g_object_ref (setting);
@@ -794,6 +803,16 @@ nma_utils_setup_password_storage (GtkWidget *passwd_entry,
 	info->item_number = ITEM_STORAGE_ASK;
 	info->passwd_entry = passwd_entry;
 	g_signal_connect_data (item[2], "activate",
+	                       G_CALLBACK (activate_menu_item_cb),
+	                       info,
+	                       (GClosureNotify) popup_menu_item_info_destroy, 0);
+
+	info = g_slice_new0 (PopupMenuItemInfo);
+	info->setting = setting;
+	info->password_flags_name = password_flags_name;
+	info->item_number = ITEM_STORAGE_UNUSED;
+	info->passwd_entry = passwd_entry;
+	g_signal_connect_data (item[3], "activate",
 	                       G_CALLBACK (activate_menu_item_cb),
 	                       info,
 	                       (GClosureNotify) popup_menu_item_info_destroy, 0);
