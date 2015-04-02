@@ -123,7 +123,6 @@
                             <property name="can_focus">True</property>
                             <property name="has_tooltip">True</property>
                             <property name="tooltip_text" translatable="yes">IP addresses identify your computer on the network.  Click the "Add" button to add an IP address.</property>
-                            <property name="rules_hint">True</property>
                             <child internal-child="selection">
                               <object class="GtkTreeSelection" id="treeview-selection1"/>
                             </child>
@@ -144,12 +143,12 @@
                         <property name="layout_style">start</property>
                         <child>
                           <object class="GtkButton" id="ip4_addr_add_button">
-                            <property name="label">gtk-add</property>
+                            <property name="label">_Add</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="can_default">True</property>
                             <property name="receives_default">True</property>
-                            <property name="use_stock">True</property>
+                            <property name="use_underline">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -159,12 +158,12 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="ip4_addr_delete_button">
-                            <property name="label">gtk-delete</property>
+                            <property name="label">_Delete</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="can_default">True</property>
                             <property name="receives_default">True</property>
-                            <property name="use_stock">True</property>
+                            <property name="use_underline">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -298,7 +297,6 @@
                     <property name="receives_default">False</property>
                     <property name="tooltip_text" translatable="yes">When connecting to IPv6-capable networks, allows the connection to complete if IPv4 configuration fails but IPv6 configuration succeeds.</property>
                     <property name="use_underline">True</property>
-                    <property name="xalign">0.5</property>
                     <property name="draw_indicator">True</property>
                   </object>
                   <packing>
