@@ -44,7 +44,8 @@ char *nma_utils_get_connection_device_name (NMConnection *connection);
 void nma_utils_setup_password_storage (GtkWidget *passwd_entry,
                                        NMSettingSecretFlags initial_flags,
                                        NMSetting *setting,
-                                       const char *password_flags_name);
+                                       const char *password_flags_name,
+                                       gboolean with_not_required);
 void nma_utils_update_password_storage (GtkWidget *passwd_entry,
                                         NMSettingSecretFlags secret_flags,
                                         NMSetting *setting,

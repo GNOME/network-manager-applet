@@ -198,7 +198,7 @@ ws_wpa_psk_new (NMConnection *connection, gboolean secrets_only)
 	/* Create password-storage popup menu for password entry under entry's secondary icon */
 	if (connection)
 		setting = (NMSetting *) nm_connection_get_setting_wireless_security (connection);
-	nma_utils_setup_password_storage (widget, 0, setting, sec->password_flags_name);
+	nma_utils_setup_password_storage (widget, 0, setting, sec->password_flags_name, FALSE);
 
 	/* Fill secrets, if any */
 	if (connection)
