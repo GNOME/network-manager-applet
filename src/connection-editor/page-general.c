@@ -135,7 +135,7 @@ general_private_init (CEPageGeneral *self)
 {
 	CEPageGeneralPrivate *priv = CE_PAGE_GENERAL_GET_PRIVATE (self);
 	GtkBuilder *builder;
-	GtkWidget *align;
+	GtkWidget *vbox;
 	GtkLabel *label;
 
 	builder = CE_PAGE (self)->builder;
@@ -143,8 +143,8 @@ general_private_init (CEPageGeneral *self)
 	/*-- Firewall zone --*/
 	priv->firewall_zone = GTK_COMBO_BOX_TEXT (gtk_combo_box_text_new ());
 
-	align = GTK_WIDGET (gtk_builder_get_object (builder, "firewall_zone_alignment"));
-	gtk_container_add (GTK_CONTAINER (align), GTK_WIDGET (priv->firewall_zone));
+	vbox = GTK_WIDGET (gtk_builder_get_object (builder, "firewall_zone_vbox"));
+	gtk_container_add (GTK_CONTAINER (vbox), GTK_WIDGET (priv->firewall_zone));
 	gtk_widget_show_all (GTK_WIDGET (priv->firewall_zone));
 
 	/* Get zones from FirewallD */

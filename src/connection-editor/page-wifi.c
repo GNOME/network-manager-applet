@@ -59,7 +59,7 @@ wifi_private_init (CEPageWifi *self)
 	CEPageWifiPrivate *priv = CE_PAGE_WIFI_GET_PRIVATE (self);
 	GtkBuilder *builder;
 	GtkWidget *widget;
-	GtkWidget *align;
+	GtkWidget *vbox;
 	GtkLabel *label;
 
 	builder = CE_PAGE (self)->builder;
@@ -78,8 +78,9 @@ wifi_private_init (CEPageWifi *self)
 	gtk_widget_set_tooltip_text (GTK_WIDGET (priv->bssid),
 	                             _("This option locks this connection to the Wi-Fi access point (AP) specified by the BSSID entered here.  Example: 00:11:22:33:44:55"));
 
-	align = GTK_WIDGET (gtk_builder_get_object (builder, "wifi_bssid_alignment"));
-	gtk_container_add (GTK_CONTAINER (align), GTK_WIDGET (priv->bssid));
+	vbox = GTK_WIDGET (gtk_builder_get_object (builder, "wifi_bssid_vbox"));
+	gtk_container_add (GTK_CONTAINER (vbox), GTK_WIDGET (priv->bssid));
+	gtk_widget_set_halign (GTK_WIDGET (priv->bssid), GTK_ALIGN_FILL);
 	gtk_widget_show_all (GTK_WIDGET (priv->bssid));
 
 	/* Device MAC */
@@ -88,8 +89,9 @@ wifi_private_init (CEPageWifi *self)
 	gtk_widget_set_tooltip_text (GTK_WIDGET (priv->device_mac),
 	                             _("This option locks this connection to the network device specified by its permanent MAC address entered here.  Example: 00:11:22:33:44:55"));
 
-	align = GTK_WIDGET (gtk_builder_get_object (builder, "wifi_device_mac_alignment"));
-	gtk_container_add (GTK_CONTAINER (align), GTK_WIDGET (priv->device_mac));
+	vbox = GTK_WIDGET (gtk_builder_get_object (builder, "wifi_device_mac_vbox"));
+	gtk_container_add (GTK_CONTAINER (vbox), GTK_WIDGET (priv->device_mac));
+	gtk_widget_set_halign (GTK_WIDGET (priv->device_mac), GTK_ALIGN_FILL);
 	gtk_widget_show_all (GTK_WIDGET (priv->device_mac));
 
 	/* Set mnemonic widget for device MAC label */
