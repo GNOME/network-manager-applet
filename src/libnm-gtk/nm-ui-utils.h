@@ -46,6 +46,7 @@ void nma_utils_setup_password_storage (GtkWidget *passwd_entry,
                                        NMSetting *setting,
                                        const char *password_flags_name,
                                        gboolean with_not_required);
+NMSettingSecretFlags nma_utils_menu_to_secret_flags (GtkWidget *passwd_entry);
 void nma_utils_update_password_storage (GtkWidget *passwd_entry,
                                         NMSettingSecretFlags secret_flags,
                                         NMSetting *setting,
