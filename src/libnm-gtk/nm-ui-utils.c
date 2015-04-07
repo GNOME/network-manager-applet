@@ -841,6 +841,51 @@ nma_utils_setup_password_storage (GtkWidget *passwd_entry,
 }
 
 /**
+ * nma_utils_menu_to_secret_flags:
+ * @passwd_entry: password #GtkEntry which the password icon/menu is attached to
+ *
+ * Returns secret flags corresponding to the selected password storage menu
+ * in the attached icon
+ *
+ * Returns: secret flags corresponding to the active item in password menu
+ */
+NMSettingSecretFlags
+nma_utils_menu_to_secret_flags (GtkWidget *passwd_entry)
+{
+	GList *menu_list, *iter;
+	GtkWidget *menu = NULL;
+	NMSettingSecretFlags flags = NM_SETTING_SECRET_FLAG_NONE;
+
+	menu_list = gtk_menu_get_for_attach_widget (passwd_entry);
+	for (iter = menu_list; iter; iter = g_list_next (iter)) {
+		if (g_object_get_data (G_OBJECT (iter->data), PASSWORD_STORAGE_MENU_TAG)) {
+			menu = iter->data;
+			break;
+		}
+	}
+
+	/* Translate password popup menu to secret flags */
+	if (menu) {
+		MenuItem idx = 0;
+		GList *list;
+		int i, length;
+
+		list = gtk_container_get_children (GTK_CONTAINER (menu));
+		length = g_list_length (list);
+		for (i = 0; i < length; i++) {
+			if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (list->data))) {
+				idx =  (MenuItem) i;
+				break;
+			}
+			list = g_list_next (list);
+		}
+
+		flags = menu_item_to_secret_flags (idx);
+	}
+	return flags;
+}
+
+/**
  * nma_utils_update_password_storage:
  * @passwd_entry: #GtkEntry with the password
  * @secret_flags: secret flags to set
