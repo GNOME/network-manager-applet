@@ -186,8 +186,8 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 
 	/* Update secret flags and popup when editing the connection */
 	if (sec->editing_connection)
-		nma_utils_update_password_storage (NM_SETTING (s_wsec), secret_flags,
-		                                   passwd_entry, sec->password_flags_name);
+		nma_utils_update_password_storage (passwd_entry, secret_flags,
+		                                   NM_SETTING (s_wsec), sec->password_flags_name);
 }
 
 static void
@@ -267,7 +267,7 @@ ws_wep_key_new (NMConnection *connection,
 	/* Create password-storage popup menu for password entry under entry's secondary icon */
 	if (connection)
 		setting = (NMSetting *) nm_connection_get_setting_wireless_security (connection);
-	nma_utils_setup_password_storage (setting, widget, sec->password_flags_name);
+	nma_utils_setup_password_storage (widget, 0, setting, sec->password_flags_name);
 
 	if (connection) {
 		NMSettingWireless *s_wireless;
