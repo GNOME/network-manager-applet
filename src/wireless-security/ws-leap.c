@@ -117,7 +117,8 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 
 	/* Update secret flags and popup when editing the connection */
 	if (sec->editing_connection)
-		nma_utils_update_password_storage (NM_SETTING (s_wireless_sec), secret_flags, passwd_entry, sec->password_flags_name);
+		nma_utils_update_password_storage (passwd_entry, secret_flags,
+		                                   NM_SETTING (s_wireless_sec), sec->password_flags_name);
 }
 
 static void
@@ -174,7 +175,7 @@ ws_leap_new (NMConnection *connection, gboolean secrets_only)
 	                  sec);
 
 	/* Create password-storage popup menu for password entry under entry's secondary icon */
-	nma_utils_setup_password_storage ((NMSetting *) wsec, widget, sec->password_flags_name);
+	nma_utils_setup_password_storage (widget, 0, (NMSetting *) wsec, sec->password_flags_name);
 
 	if (wsec)
 		update_secrets (WIRELESS_SECURITY (sec), connection);

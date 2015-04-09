@@ -130,8 +130,8 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 
 	/* Update secret flags and popup when editing the connection */
 	if (wpa_psk->editing_connection)
-		nma_utils_update_password_storage (NM_SETTING (s_wireless_sec), secret_flags,
-		                                   passwd_entry, wpa_psk->password_flags_name);
+		nma_utils_update_password_storage (passwd_entry, secret_flags,
+		                                   NM_SETTING (s_wireless_sec), wpa_psk->password_flags_name);
 
 	wireless_security_clear_ciphers (connection);
 	if (is_adhoc) {
@@ -198,7 +198,7 @@ ws_wpa_psk_new (NMConnection *connection, gboolean secrets_only)
 	/* Create password-storage popup menu for password entry under entry's secondary icon */
 	if (connection)
 		setting = (NMSetting *) nm_connection_get_setting_wireless_security (connection);
-	nma_utils_setup_password_storage (setting, widget, sec->password_flags_name);
+	nma_utils_setup_password_storage (widget, 0, setting, sec->password_flags_name);
 
 	/* Fill secrets, if any */
 	if (connection)

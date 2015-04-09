@@ -41,12 +41,13 @@ char **nma_utils_disambiguate_device_names (NMDevice **devices,
                                             int        num_devices);
 char *nma_utils_get_connection_device_name (NMConnection *connection);
 
-void nma_utils_setup_password_storage (NMSetting *setting,
-                                       GtkWidget *passwd_entry,
+void nma_utils_setup_password_storage (GtkWidget *passwd_entry,
+                                       NMSettingSecretFlags initial_flags,
+                                       NMSetting *setting,
                                        const char *password_flags_name);
-void nma_utils_update_password_storage (NMSetting *setting,
+void nma_utils_update_password_storage (GtkWidget *passwd_entry,
                                         NMSettingSecretFlags secret_flags,
-                                        GtkWidget *passwd_entry,
+                                        NMSetting *setting,
                                         const char *password_flags_name);
 
 #endif /* NMA_UI_UTILS_H */
