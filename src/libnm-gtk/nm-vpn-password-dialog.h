@@ -70,10 +70,20 @@ void nma_vpn_password_dialog_set_password_secondary       (NMAVpnPasswordDialog 
 void nma_vpn_password_dialog_set_password_secondary_label (NMAVpnPasswordDialog *dialog,
                                                            const char           *label);
 
+void nma_vpn_password_dialog_set_show_password_ternary  (NMAVpnPasswordDialog *dialog,
+                                                         gboolean              show);
+void nma_vpn_password_dialog_focus_password_ternary     (NMAVpnPasswordDialog *dialog);
+void nma_vpn_password_dialog_set_password_ternary       (NMAVpnPasswordDialog *dialog,
+                                                         const char           *password_ternary);
+void nma_vpn_password_dialog_set_password_ternary_label (NMAVpnPasswordDialog *dialog,
+                                                         const char           *label);
+
 /* Attribute accessors */
 const char *nma_vpn_password_dialog_get_password           (NMAVpnPasswordDialog *dialog);
 
 const char *nma_vpn_password_dialog_get_password_secondary (NMAVpnPasswordDialog *dialog);
+
+const char *nma_vpn_password_dialog_get_password_ternary (NMAVpnPasswordDialog *dialog);
 
 G_END_DECLS
 
