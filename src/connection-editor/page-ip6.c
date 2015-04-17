@@ -714,11 +714,59 @@ delete_text_cb (GtkEditable *editable,
 }
 
 static gboolean
+gateway_matches_address (const char *gw_str, const char *addr_str, guint32 prefix)
+{
+	struct in6_addr gw, addr;
+	guint32 x, y, mask;
+	int i;
+
+	if (!gw_str || inet_pton (AF_INET6, gw_str, &gw) != 1)
+		return FALSE;
+	if (!addr_str || inet_pton (AF_INET6, addr_str, &addr) != 1)
+		return FALSE;
+
+	x = prefix / 32;
+	y = prefix % 32;
+	mask = ~htonl (0xFFFFFFFF >> y);
+	for (i = 0; i < x; i++) {
+		if (addr.s6_addr32[i] != gw.s6_addr32[i])
+			return FALSE;
+	}
+	if ((addr.s6_addr32[i] & mask) != (gw.s6_addr32[i] & mask))
+		return FALSE;
+	return TRUE;
+}
+
+static gboolean
+possibly_wrong_gateway (GtkTreeModel *model, GtkTreeIter *iter, const char *gw_str)
+{
+	char *addr_str, *prefix_str;
+	gboolean addr_valid;
+	guint32 prefix;
+
+	gtk_tree_model_get (model, iter, COL_ADDRESS, &addr_str, -1);
+	gtk_tree_model_get (model, iter, COL_PREFIX, &prefix_str, -1);
+	addr_valid =   addr_str && *addr_str && nm_utils_ipaddr_valid (AF_INET6, addr_str) && !is_address_unspecified (addr_str)
+	            && is_prefix_valid (prefix_str, &prefix);
+
+	if (addr_valid && !gateway_matches_address (gw_str, addr_str, prefix))
+		return TRUE;
+	else
+		return FALSE;
+}
+
+typedef struct {
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	guint column;
+} AddressLineInfo;
+
+static gboolean
 cell_changed_cb (GtkEditable *editable,
                  gpointer user_data)
 {
+	AddressLineInfo *info = (AddressLineInfo *) user_data;
 	char *cell_text;
-	guint column;
 	GdkRGBA rgba;
 	gboolean value_valid = FALSE;
 	const char *colorname = NULL;
@@ -726,8 +774,7 @@ cell_changed_cb (GtkEditable *editable,
 	cell_text = gtk_editable_get_chars (editable, 0, -1);
 
 	/* The Prefix column is 1..128 */
-	column = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (user_data), "column"));
-	if (column == COL_PREFIX)
+	if (info->column == COL_PREFIX)
 		value_valid = is_prefix_valid (cell_text, NULL);
 	else {
 		struct in6_addr tmp_addr;
@@ -736,15 +783,21 @@ cell_changed_cb (GtkEditable *editable,
 			value_valid = TRUE;
 
 		/* :: is not accepted for address */
-		if (column == COL_ADDRESS && IN6_IS_ADDR_UNSPECIFIED (&tmp_addr))
+		if (info->column == COL_ADDRESS && IN6_IS_ADDR_UNSPECIFIED (&tmp_addr))
                         value_valid = FALSE;
 		/* Consider empty gateway as valid */
-		if (!*cell_text && column == COL_GATEWAY)
+		if (!*cell_text && info->column == COL_GATEWAY)
 			value_valid = TRUE;
 	}
 
 	/* Change cell's background color while editing */
 	colorname = value_valid ? "lightgreen" : "red";
+
+	/* Check gateway against address and prefix */
+	if (   info->column == COL_GATEWAY
+	    && value_valid
+	    && possibly_wrong_gateway (info->model, &info->iter, cell_text))
+		colorname = "yellow";
 
 	gdk_rgba_parse (&rgba, colorname);
 	utils_override_bg_color (GTK_WIDGET (editable), &rgba);
@@ -799,6 +852,12 @@ key_pressed_cb (GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 }
 
 static void
+address_line_info_destroy (AddressLineInfo *info)
+{
+	g_slice_free (AddressLineInfo, info);
+}
+
+static void
 cell_editing_started (GtkCellRenderer *cell,
                       GtkCellEditable *editable,
                       const gchar     *path,
@@ -807,6 +866,9 @@ cell_editing_started (GtkCellRenderer *cell,
 	CEPageIP6 *self = CE_PAGE_IP6 (user_data);
 	CEPageIP6Private *priv = CE_PAGE_IP6_GET_PRIVATE (self);
 	guint column;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	AddressLineInfo *info;
 
 	if (!GTK_IS_ENTRY (editable)) {
 		g_warning ("%s: Unexpected cell editable type.", __func__);
@@ -834,9 +896,16 @@ cell_editing_started (GtkCellRenderer *cell,
 	                        user_data);
 
 	/* Set up handler for value verifying and changing cell background */
-	g_signal_connect (G_OBJECT (editable), "changed",
-	                  (GCallback) cell_changed_cb,
-	                  cell);
+	model = gtk_tree_view_get_model (priv->addr_list);
+	gtk_tree_model_get_iter_from_string (model, &iter, priv->last_path);
+	info = g_slice_new0 (AddressLineInfo);
+	info->model = model;
+	info->iter = iter;
+	info->column = priv->last_column;
+	g_signal_connect_data (G_OBJECT (editable), "changed",
+	                       (GCallback) cell_changed_cb,
+	                       info,
+	                       (GClosureNotify) address_line_info_destroy, 0);
 
 	/* Set up key pressed handler - need to handle Tab key */
 	g_signal_connect (G_OBJECT (editable), "key-press-event",
@@ -947,7 +1016,7 @@ cell_error_data_func (GtkTreeViewColumn *tree_column,
 {
 	guint32 col = GPOINTER_TO_UINT (data);
 	char *value = NULL;
-	const char *color = "red";
+	const char *color = NULL;
 	gboolean invalid = FALSE;
 
 	gtk_tree_model_get (tree_model, iter, col, &value, -1);
@@ -957,15 +1026,18 @@ cell_error_data_func (GtkTreeViewColumn *tree_column,
 		          || is_address_unspecified (value);
 	else if (col == COL_PREFIX)
 		invalid = !is_prefix_valid (value, NULL);
-	else if (col == COL_GATEWAY)
+	else if (col == COL_GATEWAY) {
 		invalid = value && *value && !nm_utils_ipaddr_valid (AF_INET6, value);
-	else
+
+		/* Check gateway against address and prefix */
+		if (!invalid && possibly_wrong_gateway (tree_model, iter, value))
+			color = "#DDC000"; /* darker than "yellow", else selected text is hard to read */
+	} else
 		g_warn_if_reached ();
 
 	if (invalid)
-		utils_set_cell_background (cell, color, value);
-	else
-		utils_set_cell_background (cell, NULL, NULL);
+		color = "red";
+	utils_set_cell_background (cell, color, color ? value : NULL);
 	g_free (value);
 }
 
