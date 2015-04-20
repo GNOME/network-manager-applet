@@ -40,8 +40,8 @@ struct _EAPMethodSimple {
 
 	GtkEntry *username_entry;
 	GtkEntry *password_entry;
-	GtkToggleButton *always_ask;
 	GtkToggleButton *show_password;
+	guint idle_func_id;
 };
 
 static void
@@ -51,6 +51,13 @@ show_toggled_cb (GtkToggleButton *button, EAPMethodSimple *method)
 
 	visible = gtk_toggle_button_get_active (button);
 	gtk_entry_set_visibility (method->password_entry, visible);
+}
+
+static gboolean
+always_ask_selected (GtkEntry *passwd_entry)
+{
+	return !!(  nma_utils_menu_to_secret_flags (GTK_WIDGET (passwd_entry))
+	          & NM_SETTING_SECRET_FLAG_NOT_SAVED);
 }
 
 static gboolean
@@ -64,7 +71,7 @@ validate (EAPMethod *parent)
 		return FALSE;
 
 	/* Check if the password should always be requested */
-	if (gtk_toggle_button_get_active (method->always_ask))
+	if (always_ask_selected (method->password_entry))
 		return TRUE;
 
 	text = gtk_entry_get_text (method->password_entry);
@@ -110,7 +117,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection, NMSettingSecretFla
 	EAPMethodSimple *method = (EAPMethodSimple *) parent;
 	NMSetting8021x *s_8021x;
 	gboolean not_saved = FALSE;
-	NMSettingSecretFlags flags = prev_flags;
+	NMSettingSecretFlags flags;
 	const EapType *eap_type;
 
 	s_8021x = nm_connection_get_setting_802_1x (connection);
@@ -142,11 +149,8 @@ fill_connection (EAPMethod *parent, NMConnection *connection, NMSettingSecretFla
 	g_object_set (s_8021x, NM_SETTING_802_1X_IDENTITY, gtk_entry_get_text (method->username_entry), NULL);
 
 	/* Save the password always ask setting */
-	not_saved = gtk_toggle_button_get_active (method->always_ask);
-
-	flags &= ~(NM_SETTING_SECRET_FLAG_NOT_SAVED);
-	if (not_saved)
-		flags |= NM_SETTING_SECRET_FLAG_NOT_SAVED;
+	not_saved = always_ask_selected (method->password_entry);
+	flags = nma_utils_menu_to_secret_flags (GTK_WIDGET (method->password_entry));
 	nm_setting_set_secret_flags (NM_SETTING (s_8021x), NM_SETTING_802_1X_PASSWORD, flags, NULL);
 
 	/* Fill the connection's password if we're in the applet so that it'll get
@@ -177,43 +181,35 @@ update_secrets (EAPMethod *parent, NMConnection *connection)
 	                          (HelperSecretFunc) nm_setting_802_1x_get_password);
 }
 
-static void
-g_free_str0 (gpointer mem)
+static gboolean
+stuff_changed (EAPMethodSimple *method)
 {
-	/* g_free a char pointer and set it to 0 before (for passwords). */
-	if (mem) {
-		char *p = mem;
-		memset (p, 0, strlen (p));
-		g_free (p);
-	}
+	wireless_security_changed_cb (NULL, method->ws_parent);
+	method->idle_func_id = 0;
+	return FALSE;
 }
 
 static void
-password_always_ask_changed (GtkToggleButton *button, EAPMethodSimple *method)
+password_storage_changed (GObject *entry,
+                          GParamSpec *pspec,
+                          EAPMethodSimple *method)
 {
-	char *password;
 	gboolean always_ask;
+	gboolean secrets_only = method->flags & EAP_METHOD_SIMPLE_FLAG_SECRETS_ONLY;
 
-	always_ask = gtk_toggle_button_get_active (button);
+	always_ask = always_ask_selected (method->password_entry);
 
-	if (always_ask) {
-		password = g_strdup (gtk_entry_get_text (method->password_entry));
-		gtk_entry_set_text (method->password_entry, "");
-		g_object_set_data_full (G_OBJECT (method->password_entry), "password-old", password, g_free_str0);
-	} else {
-		password = g_object_get_data (G_OBJECT (method->password_entry), "password-old");
-		gtk_entry_set_text (method->password_entry, password ? password : "");
-		g_object_set_data(G_OBJECT (method->password_entry), "password-old", NULL);
-	}
-
-	if (always_ask) {
+	if (always_ask && !secrets_only) {
 		/* we always clear this button and do not restore it
 		 * (because we want to hide the password). */
 		gtk_toggle_button_set_active (method->show_password, FALSE);
 	}
 
-	gtk_widget_set_sensitive (GTK_WIDGET (method->password_entry), !always_ask);
-	gtk_widget_set_sensitive (GTK_WIDGET (method->show_password), !always_ask);
+	gtk_widget_set_sensitive (GTK_WIDGET (method->show_password),
+	                          !always_ask || secrets_only);
+
+	if (!method->idle_func_id)
+		method->idle_func_id = g_idle_add ((GSourceFunc) stuff_changed, method);
 }
 
 /* Set the UI fields for user, password, always_ask and show_password to the
@@ -231,7 +227,6 @@ set_userpass_ui (EAPMethodSimple *method)
 	else
 		gtk_entry_set_text (method->password_entry, "");
 
-	gtk_toggle_button_set_active (method->always_ask, method->ws_parent->always_ask);
 	gtk_toggle_button_set_active (method->show_password, method->ws_parent->show_password);
 }
 
@@ -247,11 +242,8 @@ widgets_unrealized (GtkWidget *widget, EAPMethodSimple *method)
 	wireless_security_set_userpass (method->ws_parent,
 	                                gtk_entry_get_text (method->username_entry),
 	                                gtk_entry_get_text (method->password_entry),
-	                                gtk_toggle_button_get_active (method->always_ask),
+	                                always_ask_selected (method->password_entry),
 	                                gtk_toggle_button_get_active (method->show_password));
-
-	/* clear the remembered password. If the user changes the scheme, it's gone. */
-	g_object_set_data(G_OBJECT (method->password_entry), "password-old", NULL);
 }
 
 static void
@@ -269,6 +261,16 @@ destroy (EAPMethod *parent)
 	g_signal_handlers_disconnect_by_func (G_OBJECT (widget),
 	                                      (GCallback) widgets_unrealized,
 	                                      method);
+
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_password_entry"));
+	g_assert (widget);
+	g_signal_handlers_disconnect_by_func (G_OBJECT (widget),
+	                                      (GCallback) password_storage_changed,
+	                                      method);
+	if (method->idle_func_id > 0) {
+		g_source_remove (method->idle_func_id);
+		method->idle_func_id = 0;
+	}
 
 	wireless_security_unref (method->ws_parent);
 }
@@ -335,26 +337,9 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 		s_8021x = nm_connection_get_setting_802_1x (connection);
 	nma_utils_setup_password_storage (widget, 0, (NMSetting *) s_8021x, parent->password_flags_name, FALSE);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_password_always_ask"));
-	g_assert (widget);
-	method->always_ask = GTK_TOGGLE_BUTTON (widget);
-	g_signal_connect (G_OBJECT (widget), "toggled",
-	                  (GCallback) wireless_security_changed_cb,
-	                  ws_parent);
-	if (flags & EAP_METHOD_SIMPLE_FLAG_IS_EDITOR) {
-		/* We only desensitize the password entry from the editor, because
-		 * from nm-applet if the entry was desensitized, there'd be no way to
-		 * get the password back to NetworkManager when NM asked for it.  Since
-		 * the editor only sets up the initial connection though, it's safe to
-		 * do there.
-		 */
-		g_signal_connect (G_OBJECT (widget), "toggled",
-		                  G_CALLBACK (password_always_ask_changed),
-		                  method);
-	}
-
-	if (flags & EAP_METHOD_SIMPLE_FLAG_SECRETS_ONLY)
-		gtk_widget_hide (widget);
+	g_signal_connect (method->password_entry, "notify::secondary-icon-name",
+	                  G_CALLBACK (password_storage_changed),
+	                  method);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "show_checkbutton_eapsimple"));
 	g_assert (widget);
