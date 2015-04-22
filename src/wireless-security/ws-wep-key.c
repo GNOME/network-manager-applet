@@ -162,15 +162,6 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	key = gtk_entry_get_text (GTK_ENTRY (widget));
 	strcpy (sec->keys[sec->cur_index], key);
 
-	/* Get WEP_KEY_FLAGS from the old security setting, if any. Else
-	 * initialize the flags to NM_SETTING_SECRET_FLAG_AGENT_OWNED.
-	 */
-	s_wsec = nm_connection_get_setting_wireless_security (connection);
-	if (s_wsec)
-		secret_flags = nm_setting_wireless_security_get_wep_key_flags (s_wsec);
-	else
-		secret_flags = NM_SETTING_SECRET_FLAG_AGENT_OWNED;
-
 	/* Blow away the old security setting by adding a clear one */
 	s_wsec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
 	nm_connection_add_setting (connection, (NMSetting *) s_wsec);
@@ -186,6 +177,10 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 		if (strlen (sec->keys[i]))
 			nm_setting_wireless_security_set_wep_key (s_wsec, i, sec->keys[i]);
 	}
+
+	/* Save WEP_KEY_FLAGS to the connection */
+	secret_flags = nma_utils_menu_to_secret_flags (passwd_entry);
+	g_object_set (s_wsec, NM_SETTING_WIRELESS_SECURITY_WEP_KEY_FLAGS, secret_flags, NULL);
 
 	/* Update secret flags and popup when editing the connection */
 	if (sec->editing_connection)
