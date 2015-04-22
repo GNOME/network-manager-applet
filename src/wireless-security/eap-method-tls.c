@@ -135,6 +135,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection, NMSettingSecretFla
 	EAPMethodTLS *method = (EAPMethodTLS *) parent;
 	NMSetting8021xCKFormat format = NM_SETTING_802_1X_CK_FORMAT_UNKNOWN;
 	NMSetting8021x *s_8021x;
+	NMSettingSecretFlags secret_flags;
 	GtkWidget *widget, *passwd_entry;
 	char *ca_filename, *pk_filename, *cc_filename;
 	const char *password = NULL;
@@ -178,9 +179,14 @@ fill_connection (EAPMethod *parent, NMConnection *connection, NMSettingSecretFla
 	}
 	g_free (pk_filename);
 
+	/* Save 802.1X password flags to the connection */
+	secret_flags = nma_utils_menu_to_secret_flags (passwd_entry);
+	nm_setting_set_secret_flags (NM_SETTING (s_8021x), parent->password_flags_name,
+	                             secret_flags, NULL);
+
 	/* Update secret flags and popup when editing the connection */
 	if (method->editing_connection) {
-		nma_utils_update_password_storage (passwd_entry, flags,
+		nma_utils_update_password_storage (passwd_entry, secret_flags,
 		                                   NM_SETTING (s_8021x), parent->password_flags_name);
 	}
 

@@ -85,6 +85,8 @@ fill_connection (EAPMethod *parent, NMConnection *connection, NMSettingSecretFla
 {
 	EAPMethodLEAP *method = (EAPMethodLEAP *) parent;
 	NMSetting8021x *s_8021x;
+	NMSettingSecretFlags secret_flags;
+	GtkWidget *passwd_entry;
 
 	s_8021x = nm_connection_get_setting_802_1x (connection);
 	g_assert (s_8021x);
@@ -94,14 +96,18 @@ fill_connection (EAPMethod *parent, NMConnection *connection, NMSettingSecretFla
 	g_object_set (s_8021x, NM_SETTING_802_1X_IDENTITY, gtk_entry_get_text (method->username_entry), NULL);
 	g_object_set (s_8021x, NM_SETTING_802_1X_PASSWORD, gtk_entry_get_text (method->password_entry), NULL);
 
-	/* Update secret flags and popup when editing the connection */
-	if (method->editing_connection) {
-		GtkWidget *passwd_entry = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_leap_password_entry"));
-		g_assert (passwd_entry);
+	passwd_entry = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_leap_password_entry"));
+	g_assert (passwd_entry);
 
-		nma_utils_update_password_storage (passwd_entry, flags,
+	/* Save 802.1X password flags to the connection */
+	secret_flags = nma_utils_menu_to_secret_flags (passwd_entry);
+	nm_setting_set_secret_flags (NM_SETTING (s_8021x), parent->password_flags_name,
+	                             secret_flags, NULL);
+
+	/* Update secret flags and popup when editing the connection */
+	if (method->editing_connection)
+		nma_utils_update_password_storage (passwd_entry, secret_flags,
 		                                   NM_SETTING (s_8021x), parent->password_flags_name);
-	}
 }
 
 static void
