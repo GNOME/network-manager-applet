@@ -612,6 +612,12 @@ static const char *icon_name_table[ITEM_STORAGE_MAX + 1] = {
 	[ITEM_STORAGE_ASK]     = "dialog-question",
 	[ITEM_STORAGE_UNUSED]  = "edit-clear",
 };
+static const char *icon_desc_table[ITEM_STORAGE_MAX + 1] = {
+	[ITEM_STORAGE_USER]    = N_("Store the password only for this _user"),
+	[ITEM_STORAGE_SYSTEM]  = N_("Store the password for _all users"),
+	[ITEM_STORAGE_ASK]     = N_("As_k for this password every time"),
+	[ITEM_STORAGE_UNUSED]  = N_("The password is _not required"),
+};
 
 static void
 change_password_storage_icon (GtkWidget *passwd_entry, MenuItem item)
@@ -621,6 +627,9 @@ change_password_storage_icon (GtkWidget *passwd_entry, MenuItem item)
 	gtk_entry_set_icon_from_icon_name (GTK_ENTRY (passwd_entry),
 	                                   GTK_ENTRY_ICON_SECONDARY,
 	                                   icon_name_table[item]);
+	gtk_entry_set_icon_tooltip_text (GTK_ENTRY (passwd_entry),
+	                                 GTK_ENTRY_ICON_SECONDARY,
+	                                 icon_desc_table[item]);
 
 	/* We want to make entry insensitive when ITEM_STORAGE_ASK is selected
 	 * Unfortunately, making GtkEntry insensitive will also make the icon
@@ -767,12 +776,12 @@ nma_utils_setup_password_storage (GtkWidget *passwd_entry,
 	g_object_set_data (G_OBJECT (popup_menu), PASSWORD_STORAGE_MENU_TAG, GUINT_TO_POINTER (TRUE));
 	g_object_set_data (G_OBJECT (popup_menu), MENU_WITH_NOT_REQUIRED_TAG, GUINT_TO_POINTER (with_not_required));
 	group = NULL;
-	item[0] = gtk_radio_menu_item_new_with_mnemonic (group, _("Store the password only for this _user"));
+	item[0] = gtk_radio_menu_item_new_with_mnemonic (group, icon_desc_table[0]);
 	group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item[0]));
-	item[1] = gtk_radio_menu_item_new_with_mnemonic (group, _("Store the password for _all users"));
-	item[2] = gtk_radio_menu_item_new_with_mnemonic (group, _("As_k for this password every time"));
+	item[1] = gtk_radio_menu_item_new_with_mnemonic (group, icon_desc_table[1]);
+	item[2] = gtk_radio_menu_item_new_with_mnemonic (group, icon_desc_table[2]);
 	if (with_not_required)
-		item[3] = gtk_radio_menu_item_new_with_mnemonic (group, _("The password is _not required"));
+		item[3] = gtk_radio_menu_item_new_with_mnemonic (group, icon_desc_table[3]);
 
 	gtk_menu_shell_append (GTK_MENU_SHELL (popup_menu), item[0]);
 	gtk_menu_shell_append (GTK_MENU_SHELL (popup_menu), item[1]);
