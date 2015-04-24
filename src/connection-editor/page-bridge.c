@@ -120,6 +120,7 @@ populate_ui (CEPageBridge *self)
 	                  self);
 	stp = nm_setting_bridge_get_stp (s_bridge);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->stp), stp);
+	stp_toggled (GTK_TOGGLE_BUTTON (priv->stp), self);
 
 	/* Priority */
 	priority = nm_setting_bridge_get_priority (s_bridge);
