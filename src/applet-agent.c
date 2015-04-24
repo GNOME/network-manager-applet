@@ -694,6 +694,9 @@ write_one_secret_to_keyring (NMSetting *setting,
 		                               vpn_secret_iter_cb,
 		                               r);
 	} else {
+		/* FIXME: password-raw is not string */
+		if (!g_strcmp0 (key, NM_SETTING_802_1X_PASSWORD_RAW))
+			return;
 		g_return_if_fail (type == G_TYPE_STRING);
 		secret = g_value_get_string (value);
 		if (secret && strlen (secret))
