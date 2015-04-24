@@ -265,7 +265,8 @@ ws_wep_key_new (NMConnection *connection,
 	/* Create password-storage popup menu for password entry under entry's secondary icon */
 	if (connection)
 		setting = (NMSetting *) nm_connection_get_setting_wireless_security (connection);
-	nma_utils_setup_password_storage (widget, 0, setting, sec->password_flags_name, FALSE);
+	nma_utils_setup_password_storage (widget, 0, setting, sec->password_flags_name,
+	                                  FALSE, secrets_only);
 
 	if (connection) {
 		NMSettingWireless *s_wireless;

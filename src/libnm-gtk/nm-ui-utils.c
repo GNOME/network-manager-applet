@@ -597,6 +597,10 @@ nma_utils_get_connection_device_name (NMConnection *connection)
 /*---------------------------------------------------------------------------*/
 /* Password storage icon */
 
+#define PASSWORD_STORAGE_MENU_TAG  "password-storage-menu"
+#define MENU_WITH_NOT_REQUIRED_TAG "menu-with-not-required"
+#define SENSITIVE_ASK_ENTRY        "sensitive-ask-entry"
+
 typedef enum {
 	ITEM_STORAGE_USER    = 0,
 	ITEM_STORAGE_SYSTEM  = 1,
@@ -634,6 +638,8 @@ static void
 change_password_storage_icon (GtkWidget *passwd_entry, MenuItem item)
 {
 	const char *old_pwd;
+	gboolean sensitive_ask;
+
 	g_return_if_fail (item >= 0 && item <= ITEM_STORAGE_MAX);
 
 	gtk_entry_set_icon_from_icon_name (GTK_ENTRY (passwd_entry),
@@ -649,7 +655,9 @@ change_password_storage_icon (GtkWidget *passwd_entry, MenuItem item)
 	 * Let's workaround that by disabling focus for entry instead of
 	 * sensitivity change.
 	*/
-	if (item == ITEM_STORAGE_ASK || item == ITEM_STORAGE_UNUSED) {
+	sensitive_ask = !!g_object_get_data (G_OBJECT (passwd_entry), SENSITIVE_ASK_ENTRY);
+	if (   (item == ITEM_STORAGE_ASK && !sensitive_ask)
+	    || item == ITEM_STORAGE_UNUSED) {
 		/* Store the old password */
 		old_pwd = gtk_entry_get_text (GTK_ENTRY (passwd_entry));
 		if (old_pwd && *old_pwd)
@@ -765,9 +773,6 @@ icon_release_cb (GtkEntry *entry,
 	}
 }
 
-#define PASSWORD_STORAGE_MENU_TAG  "password-storage-menu"
-#define MENU_WITH_NOT_REQUIRED_TAG "menu-with-not-required"
-
 /**
  * nma_utils_setup_password_storage:
  * @passwd_entry: password #GtkEntry which the icon is attached to
@@ -775,6 +780,8 @@ icon_release_cb (GtkEntry *entry,
  * @setting: #NMSetting containing the password, or NULL
  * @password_flags_name: name of the secret flags (like psk-flags), or NULL
  * @with_not_required: whether to include "Not required" menu item
+ * @sensitive_ask: %TRUE if entry should be sensivive on selected "always-ask"
+ *   icon (this is e.f. for nm-applet asking for password)
  *
  * Adds a secondary icon and creates a popup menu for password entry.
  * The active menu item is set up according to initial_flags, or
@@ -787,7 +794,8 @@ nma_utils_setup_password_storage (GtkWidget *passwd_entry,
                                   NMSettingSecretFlags initial_flags,
                                   NMSetting *setting,
                                   const char *password_flags_name,
-                                  gboolean with_not_required)
+                                  gboolean with_not_required,
+                                  gboolean sensitive_ask)
 {
 	GtkWidget *popup_menu;
 	GtkWidget *item[4];
@@ -795,6 +803,9 @@ nma_utils_setup_password_storage (GtkWidget *passwd_entry,
 	MenuItem idx;
 	PopupMenuItemInfo *info;
 	NMSettingSecretFlags secret_flags;
+
+	/* Whether entry should be sensitive if "always-ask" is active " */
+	g_object_set_data (G_OBJECT (passwd_entry), SENSITIVE_ASK_ENTRY, GUINT_TO_POINTER (sensitive_ask));
 
 	popup_menu = gtk_menu_new ();
 	g_object_set_data (G_OBJECT (popup_menu), PASSWORD_STORAGE_MENU_TAG, GUINT_TO_POINTER (TRUE));
