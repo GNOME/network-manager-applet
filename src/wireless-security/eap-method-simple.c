@@ -333,7 +333,8 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 	/* Create password-storage popup menu for password entry under entry's secondary icon */
 	if (connection)
 		s_8021x = nm_connection_get_setting_802_1x (connection);
-	nma_utils_setup_password_storage (widget, 0, (NMSetting *) s_8021x, parent->password_flags_name, FALSE);
+	nma_utils_setup_password_storage (widget, 0, (NMSetting *) s_8021x, parent->password_flags_name,
+	                                  FALSE, flags & EAP_METHOD_SIMPLE_FLAG_SECRETS_ONLY);
 
 	g_signal_connect (method->password_entry, "notify::secondary-icon-name",
 	                  G_CALLBACK (password_storage_changed),

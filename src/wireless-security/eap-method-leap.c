@@ -230,7 +230,8 @@ eap_method_leap_new (WirelessSecurity *ws_parent,
 	/* Create password-storage popup menu for password entry under entry's secondary icon */
 	if (connection)
 		s_8021x = nm_connection_get_setting_802_1x (connection);
-	nma_utils_setup_password_storage (widget, 0, (NMSetting *) s_8021x, parent->password_flags_name, FALSE);
+	nma_utils_setup_password_storage (widget, 0, (NMSetting *) s_8021x, parent->password_flags_name,
+	                                  FALSE, secrets_only);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "show_checkbutton_eapleap"));
 	g_assert (widget);
