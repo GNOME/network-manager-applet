@@ -3488,9 +3488,20 @@ applet_embedded_cb (GObject *object, GParamSpec *pspec, gpointer user_data)
 static void
 register_agent (NMApplet *applet)
 {
+	GError *error = NULL;
+
 	g_return_if_fail (!applet->agent);
 
-	applet->agent = applet_agent_new (NULL);
+	applet->agent = applet_agent_new (&error);
+	if (!applet->agent) {
+		if (!error)
+			error = g_error_new (NM_SECRET_AGENT_ERROR,
+			                     NM_SECRET_AGENT_ERROR_FAILED,
+			                     "Could not register secret agent");
+		g_warning ("%s", error->message);
+		g_error_free (error);
+		return;
+	}
 	g_assert (applet->agent);
 	g_signal_connect (applet->agent, APPLET_AGENT_GET_SECRETS,
 	                  G_CALLBACK (applet_agent_get_secrets_cb), applet);
