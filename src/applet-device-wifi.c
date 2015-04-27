@@ -394,6 +394,11 @@ _do_new_auto_connection (NMApplet *applet,
 
 	connection = nm_simple_connection_new ();
 
+	/* Make the new connection available only for the current user */
+	s_con = (NMSettingConnection *) nm_setting_connection_new ();
+	nm_setting_connection_add_permission (s_con, "user", g_get_user_name (), NULL);
+	nm_connection_add_setting (connection, NM_SETTING (s_con));
+
 	ssid = nm_access_point_get_ssid (ap);
 	if (   (nm_access_point_get_mode (ap) == NM_802_11_MODE_INFRA)
 	    && (is_manufacturer_default_ssid (ssid) == TRUE)) {
@@ -415,11 +420,9 @@ _do_new_auto_connection (NMApplet *applet,
 	    || (wpa_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X)) {
 
 		/* Need a UUID for the "always ask" stuff in the Dialog of Doom */
-		s_con = (NMSettingConnection *) nm_setting_connection_new ();
 		uuid = nm_utils_uuid_generate ();
 		g_object_set (s_con, NM_SETTING_CONNECTION_UUID, uuid, NULL);
 		g_free (uuid);
-		nm_connection_add_setting (connection, NM_SETTING (s_con));
 
 		if (!s_wifi) {
 			s_wifi = (NMSettingWireless *) nm_setting_wireless_new ();
