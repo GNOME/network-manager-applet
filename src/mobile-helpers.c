@@ -215,6 +215,9 @@ mobile_wizard_done (NMAMobileWizard *wizard,
 		              NM_SETTING_CONNECTION_AUTOCONNECT, FALSE,
 		              NM_SETTING_CONNECTION_UUID, uuid,
 		              NULL);
+		/* Make the new connection available only for the current user */
+		nm_setting_connection_add_permission ((NMSettingConnection *) setting,
+		                                      "user", g_get_user_name (), NULL);
 		g_free (uuid);
 		g_free (id);
 		nm_connection_add_setting (connection, setting);
