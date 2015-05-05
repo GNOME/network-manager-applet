@@ -1,6 +1,6 @@
 AC_PREREQ([2.63])
 AC_INIT([nm-applet],
-        [1.0.2],
+        [1.0.3],
         [https://bugzilla.gnome.org/enter_bug.cgi?product=NetworkManager],
         [network-manager-applet])
 
