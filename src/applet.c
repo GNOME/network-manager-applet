@@ -2910,7 +2910,7 @@ applet_update_icon (gpointer user_data)
 	GdkPixbuf *pixbuf = NULL;
 	NMState state;
 	char *dev_tip = NULL, *vpn_tip = NULL, *icon_name = NULL;
-	NMVpnConnectionState vpn_state = NM_VPN_SERVICE_STATE_UNKNOWN;
+	NMVpnConnectionState vpn_state = NM_VPN_CONNECTION_STATE_UNKNOWN;
 	gboolean nm_running;
 	NMActiveConnection *active_vpn = NULL;
 
