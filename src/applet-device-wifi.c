@@ -37,6 +37,7 @@
 #include "ap-menu-item.h"
 #include "utils.h"
 #include "nma-wifi-dialog.h"
+#include "mobile-helpers.h"
 
 #define ACTIVE_AP_TAG "active-ap"
 
@@ -1277,16 +1278,7 @@ wifi_get_icon (NMDevice *device,
 		strength = ap ? nm_access_point_get_strength (ap) : 0;
 		strength = MIN (strength, 100);
 
-		if (strength > 80)
-			*out_icon_name = "nm-signal-100";
-		else if (strength > 55)
-			*out_icon_name = "nm-signal-75";
-		else if (strength > 30)
-			*out_icon_name = "nm-signal-50";
-		else if (strength > 5)
-			*out_icon_name = "nm-signal-25";
-		else
-			*out_icon_name = "nm-signal-00";
+		*out_icon_name = mobile_helper_get_quality_icon_name (strength);
 
 		if (ap) {
 			char *ssid = get_ssid_utf8 (ap);

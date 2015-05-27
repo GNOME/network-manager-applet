@@ -33,6 +33,7 @@
 
 #include "ap-menu-item.h"
 #include "nm-access-point.h"
+#include "mobile-helpers.h"
 
 
 G_DEFINE_TYPE (NMNetworkMenuItem, nm_network_menu_item, GTK_TYPE_IMAGE_MENU_ITEM);
@@ -105,16 +106,8 @@ update_icon (NMNetworkMenuItem *item, NMApplet *applet)
 
 	if (priv->is_adhoc)
 		icon_name = "nm-adhoc";
-	else if (priv->int_strength > 80)
-		icon_name = "nm-signal-100";
-	else if (priv->int_strength > 55)
-		icon_name = "nm-signal-75";
-	else if (priv->int_strength > 30)
-		icon_name = "nm-signal-50";
-	else if (priv->int_strength > 5)
-		icon_name = "nm-signal-25";
 	else
-		icon_name = "nm-signal-00";
+		icon_name = mobile_helper_get_quality_icon_name (priv->int_strength);
 
 	icon = gdk_pixbuf_copy (nma_icon_check_and_load (icon_name, applet));
 
