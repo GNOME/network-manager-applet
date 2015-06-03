@@ -281,8 +281,8 @@ keyring_find_secrets_cb (GObject *source,
 	GError *error = NULL;
 	GError *search_error = NULL;
 	const char *connection_id = NULL;
-	GVariantBuilder builder;
-	GVariant *secrets = NULL, *settings = NULL;
+	GVariantBuilder builder_setting, builder_connection;
+	GVariant *settings = NULL;
 	GList *list = NULL;
 	GList *iter;
 	gboolean hint_found = FALSE, ask = FALSE;
@@ -323,7 +323,7 @@ keyring_find_secrets_cb (GObject *source,
 		return;
 	}
 
-	g_variant_builder_init (&builder, NM_VARIANT_TYPE_SETTING);
+	g_variant_builder_init (&builder_setting, NM_VARIANT_TYPE_SETTING);
 
 	/* Extract the secrets from the list of matching keyring items */
 	for (iter = list; iter != NULL; iter = g_list_next (iter)) {
@@ -342,7 +342,7 @@ keyring_find_secrets_cb (GObject *source,
 				continue;
 			}
 
-			g_variant_builder_add (&builder, "{sv}", key_name,
+			g_variant_builder_add (&builder_setting, "{sv}", key_name,
 			                       g_variant_new_string (secret_value_get (secret, NULL)));
 
 			/* See if this property matches a given hint */
@@ -356,7 +356,6 @@ keyring_find_secrets_cb (GObject *source,
 			break;
 		}
 	}
-	secrets = g_variant_builder_end (&builder);
 
 	/* If there were hints, and none of the hints were returned by the keyring,
 	 * get some new secrets.
@@ -375,9 +374,9 @@ keyring_find_secrets_cb (GObject *source,
 	/* Returned secrets are a{sa{sv}}; this is the outer a{s...} hash that
 	 * will contain all the individual settings hashes.
 	 */
-	g_variant_builder_init (&builder, NM_VARIANT_TYPE_CONNECTION);
-	g_variant_builder_add (&builder, "{sa{sv}}", r->setting_name, secrets);
-	settings = g_variant_builder_end (&builder);
+	g_variant_builder_init (&builder_connection, NM_VARIANT_TYPE_CONNECTION);
+	g_variant_builder_add (&builder_connection, "{sa{sv}}", r->setting_name, &builder_setting);
+	settings = g_variant_builder_end (&builder_connection);
 
 done:
 	g_list_free_full (list, g_object_unref);
