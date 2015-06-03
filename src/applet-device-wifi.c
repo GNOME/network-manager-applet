@@ -1519,6 +1519,7 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 		             NM_SECRET_AGENT_ERROR_FAILED,
 		             "%s.%d (%s): failed to hash connection '%s'.",
 		             __FILE__, __LINE__, __func__, nm_connection_get_id (connection));
+		goto done;
 	}
 	/* If the user chose an 802.1x-based auth method, return 802.1x secrets,
 	 * not wireless secrets.  Can happen with Dynamic WEP, because NM doesn't
