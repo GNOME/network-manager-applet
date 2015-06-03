@@ -1550,6 +1550,7 @@ get_secrets_dialog_response_cb (GtkDialog *foo,
 
 	/* Remove all not-relevant secrets (inner dicts) */
 	secrets = remove_unwanted_secrets (secrets, keep_8021X);
+	g_variant_take_ref (secrets);
 
 done:
 	applet_secrets_request_complete (req, secrets, error);
