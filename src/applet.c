@@ -428,10 +428,13 @@ applet_get_active_for_connection (NMApplet *applet, NMConnection *connection)
 	for (i = 0; active_list && (i < active_list->len); i++) {
 		NMActiveConnection *active = NM_ACTIVE_CONNECTION (g_ptr_array_index (active_list, i));
 		NMRemoteConnection *conn = nm_active_connection_get_connection (active);
-		const char *active_cpath = nm_connection_get_path (NM_CONNECTION (conn));
 
-		if (active_cpath && !strcmp (active_cpath, cpath))
-			return active;
+		if (conn) {
+			const char *active_cpath = nm_connection_get_path (NM_CONNECTION (conn));
+
+			if (active_cpath && !strcmp (active_cpath, cpath))
+				return active;
+		}
 	}
 	return NULL;
 }
