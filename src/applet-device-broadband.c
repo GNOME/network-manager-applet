@@ -505,7 +505,6 @@ broadband_state_to_mb_state (BroadbandDeviceInfo *info)
 	switch (state) {
 	case MM_MODEM_STATE_FAILED:
 	case MM_MODEM_STATE_UNKNOWN:
-		g_warn_if_reached ();
 	case MM_MODEM_STATE_INITIALIZING:
 	case MM_MODEM_STATE_LOCKED:
 	case MM_MODEM_STATE_DISABLED:
