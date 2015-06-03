@@ -174,7 +174,7 @@ get_secrets_cb (AppletAgent *self,
 			/* Copy the existing connection and update its secrets */
 			dupl = nm_simple_connection_new_clone (r->connection);
 			g_variant_iter_init (&iter, secrets);
-			while (g_variant_iter_next (&iter, (gpointer) &setting_name, NULL))
+			while (g_variant_iter_next (&iter, "{&s@a{sv}}", (gpointer) &setting_name, NULL))
 				nm_connection_update_secrets (dupl, setting_name, secrets, NULL);
 
 			/* And save updated secrets to the keyring */
