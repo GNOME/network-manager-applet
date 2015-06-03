@@ -1462,6 +1462,7 @@ free_wifi_info (SecretsRequest *req)
 	if (info->dialog) {
 		gtk_widget_hide (info->dialog);
 		gtk_widget_destroy (info->dialog);
+		info->dialog = NULL;
 	}
 }
 
@@ -1564,10 +1565,11 @@ wifi_get_secrets (SecretsRequest *req, GError **error)
 {
 	NMWifiInfo *info = (NMWifiInfo *) req;
 
-	applet_secrets_request_set_free_func (req, free_wifi_info);
+	g_return_val_if_fail (!info->dialog, FALSE);
 
 	info->dialog = nma_wifi_dialog_new (req->applet->nm_client, req->connection, NULL, NULL, TRUE);
 	if (info->dialog) {
+		applet_secrets_request_set_free_func (req, free_wifi_info);
 		g_signal_connect (info->dialog, "response",
 		                  G_CALLBACK (get_secrets_dialog_response_cb),
 		                  info);

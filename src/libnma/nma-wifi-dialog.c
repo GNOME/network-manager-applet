@@ -68,8 +68,6 @@ typedef struct {
 	guint revalidate_id;
 
 	GetSecretsInfo *secrets_info;
-
-	gboolean disposed;
 } NMAWifiDialogPrivate;
 
 enum {
@@ -1361,36 +1359,30 @@ dispose (GObject *object)
 {
 	NMAWifiDialogPrivate *priv = NMA_WIFI_DIALOG_GET_PRIVATE (object);
 
-	if (priv->disposed) {
-		G_OBJECT_CLASS (nma_wifi_dialog_parent_class)->dispose (object);
-		return;
+
+	if (priv->secrets_info) {
+		priv->secrets_info->canceled = TRUE;
+		priv->secrets_info = NULL;
 	}
 
-	priv->disposed = TRUE;
+	g_clear_object (&priv->client);
+	g_clear_object (&priv->builder);
 
-	if (priv->secrets_info)
-		priv->secrets_info->canceled = TRUE;
+	g_clear_object (&priv->device_model);
+	g_clear_object (&priv->connection_model);
 
-	g_object_unref (priv->client);
-	g_object_unref (priv->builder);
+	g_clear_object (&priv->group);
 
-	g_object_unref (priv->device_model);
-	g_object_unref (priv->connection_model);
+	g_clear_object (&priv->connection);
 
-	if (priv->group)
-		g_object_unref (priv->group);
+	g_clear_object (&priv->device);
 
-	if (priv->connection)
-		g_object_unref (priv->connection);
+	g_clear_object (&priv->ap);
 
-	if (priv->device)
-		g_object_unref (priv->device);
-
-	if (priv->ap)
-		g_object_unref (priv->ap);
-
-	if (priv->revalidate_id)
+	if (priv->revalidate_id) {
 		g_source_remove (priv->revalidate_id);
+		priv->revalidate_id = 0;
+	}
 
 	G_OBJECT_CLASS (nma_wifi_dialog_parent_class)->dispose (object);
 }
