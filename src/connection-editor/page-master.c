@@ -656,7 +656,7 @@ last_update (CEPage *page, NMConnection *connection, GError **error)
 			    && g_strcmp0 (interface_name, tmp) != 0) {
 				s_con = nm_connection_get_setting_connection (NM_CONNECTION (rcon));
 				g_object_set (s_con, NM_SETTING_CONNECTION_MASTER, interface_name, NULL);
-				nm_remote_connection_commit_changes_async (rcon, TRUE, NULL, NULL, NULL);
+				nm_remote_connection_commit_changes (rcon, NULL, NULL);
 			}
 			g_object_unref (rcon);
 		} while (gtk_tree_model_iter_next (priv->connections_model, &iter));
