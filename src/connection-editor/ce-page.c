@@ -246,7 +246,7 @@ _get_device_list (CEPage *self,
 	for (i = 0; i < devices->len; i++) {
 		NMDevice *dev = g_ptr_array_index (devices, i);
 		const char *ifname;
-		char *mac;
+		char *mac = NULL;
 		char *item;
 
 		if (!G_TYPE_CHECK_INSTANCE_TYPE (dev, device_type))
@@ -333,9 +333,8 @@ _device_entries_match (const char *ifname, const char *mac, const char *entry)
 	else {
 		if (ifname)
 			return ifname_match;
-		if (mac)
+		else
 			return mac_match;
-		return FALSE;
 	}
 }
 
