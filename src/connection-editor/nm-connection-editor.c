@@ -803,10 +803,10 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 			goto out;
 	}
 
-	if (   connection_supports_ip4 (editor->connection)
+	if (   nm_connection_get_setting_ip4_config (editor->connection)
 	    && !add_page (editor, ce_page_ip4_new, editor->connection, error))
 		goto out;
-	if (   connection_supports_ip6 (editor->connection)
+	if (   nm_connection_get_setting_ip6_config (editor->connection)
 	    && !add_page (editor, ce_page_ip6_new, editor->connection, error))
 		goto out;
 

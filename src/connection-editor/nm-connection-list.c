@@ -280,6 +280,11 @@ really_add_connection (NMConnection *connection,
 		return;
 	}
 
+	if (connection_supports_ip4 (connection))
+		nm_connection_add_setting (connection, nm_setting_ip4_config_new ());
+	if (connection_supports_ip6 (connection))
+		nm_connection_add_setting (connection, nm_setting_ip6_config_new ());
+
 	editor = nm_connection_editor_new (GTK_WINDOW (list->dialog), connection, list->client);
 	if (!editor) {
 		g_object_unref (connection);

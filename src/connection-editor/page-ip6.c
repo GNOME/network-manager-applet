@@ -1168,10 +1168,7 @@ ce_page_ip6_new (NMConnection *connection,
 	priv->connection_id = g_strdup (nm_setting_connection_get_id (s_con));
 
 	priv->setting = nm_connection_get_setting_ip6_config (connection);
-	if (!priv->setting) {
-		priv->setting = NM_SETTING_IP_CONFIG (nm_setting_ip6_config_new ());
-		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
-	}
+	g_assert (priv->setting);
 
 	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
 
