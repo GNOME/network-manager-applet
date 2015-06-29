@@ -427,22 +427,6 @@ ce_page_mobile_class_init (CEPageMobileClass *mobile_class)
 	object_class->dispose = dispose;
 }
 
-static void
-add_default_serial_setting (NMConnection *connection)
-{
-	NMSettingSerial *s_serial;
-
-	s_serial = NM_SETTING_SERIAL (nm_setting_serial_new ());
-	g_object_set (s_serial,
-	              NM_SETTING_SERIAL_BAUD, 115200,
-	              NM_SETTING_SERIAL_BITS, 8,
-	              NM_SETTING_SERIAL_PARITY, 'n',
-	              NM_SETTING_SERIAL_STOPBITS, 1,
-	              NULL);
-
-	nm_connection_add_setting (connection, NM_SETTING (s_serial));
-}
-
 typedef struct {
     NMClient *client;
     PageNewConnectionResultFunc result_func;
@@ -498,7 +482,6 @@ new_connection_mobile_wizard_done (NMAMobileWizard *wizard,
 		g_free (detail);
 
 		nm_connection_add_setting (connection, type_setting);
-		add_default_serial_setting (connection);
 		nm_connection_add_setting (connection, nm_setting_ppp_new ());
 	}
 
