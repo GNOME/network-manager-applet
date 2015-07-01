@@ -193,16 +193,6 @@ mobile_wizard_done (NMAMobileWizard *wizard,
 		} else
 			g_assert_not_reached ();
 
-		/* Serial setting */
-		setting = nm_setting_serial_new ();
-		g_object_set (setting,
-		              NM_SETTING_SERIAL_BAUD, 115200,
-		              NM_SETTING_SERIAL_BITS, 8,
-		              NM_SETTING_SERIAL_PARITY, 'n',
-		              NM_SETTING_SERIAL_STOPBITS, 1,
-		              NULL);
-		nm_connection_add_setting (connection, setting);
-
 		nm_connection_add_setting (connection, nm_setting_ppp_new ());
 
 		setting = nm_setting_connection_new ();
