@@ -1,4 +1,27 @@
 =======================================================
+network-manager-applet-1.0.4
+Overview of changes since network-manager-applet-1.0.2
+=======================================================
+
+This is a new stable release of network-manager-applet.  Notable changes include:
+
+* Setting MTU for a bond device is now supported.
+
+* Connecting to a wireless network from the NetworkManager applet no longer
+    results in an attempt to create system-wide connections.  This fixes the
+    ability to connect to a wireless network for non-privileged user.
+
+* The master interface name is used instead of master connection UUID for
+   slave connections created with nm-connection-editor.  This fixes
+   compatibility of the ifcfg configuration files with the legacy network
+   service.
+
+* It is now possible to specify an interface name instead of a MAC address
+    when editing a connection using nm-connection-editor.
+
+* The WWAN connections now have IPv6 enabled by default.
+
+=======================================================
 network-manager-applet-1.0.2
 Overview of changes since network-manager-applet-1.0.0
 =======================================================
