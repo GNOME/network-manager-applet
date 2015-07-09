@@ -25,7 +25,7 @@
 
 #include "wireless-security.h"
 #include "utils.h"
-#include "nm-ui-utils.h"
+#include "nma-ui-utils.h"
 
 struct _WirelessSecurityWEPKey {
 	WirelessSecurity parent;

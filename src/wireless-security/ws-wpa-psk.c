@@ -25,7 +25,7 @@
 
 #include "wireless-security.h"
 #include "helpers.h"
-#include "nm-ui-utils.h"
+#include "nma-ui-utils.h"
 
 #define WPA_PMK_LEN 32
 
