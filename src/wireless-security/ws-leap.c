@@ -25,7 +25,7 @@
 
 #include "wireless-security.h"
 #include "helpers.h"
-#include "utils.h"
+#include "nm-ui-utils.h"
 
 struct _WirelessSecurityLEAP {
 	WirelessSecurity parent;
@@ -88,15 +88,6 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	GtkWidget *widget, *passwd_entry;
 	const char *leap_password = NULL, *leap_username = NULL;
 
-	/* Get LEAP_PASSWORD_FLAGS from the old security setting, if any, or
-	 * set the flags to NM_SETTING_SECRET_FLAG_AGENT_OWNED by default.
-	 */
-	s_wireless_sec = nm_connection_get_setting_wireless_security (connection);
-	if (s_wireless_sec)
-		secret_flags = nm_setting_wireless_security_get_leap_password_flags (s_wireless_sec);
-	else
-		secret_flags = NM_SETTING_SECRET_FLAG_AGENT_OWNED;
-
 	/* Blow away the old security setting by adding a clear one */
 	s_wireless_sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
 	nm_connection_add_setting (connection, (NMSetting *) s_wireless_sec);
@@ -115,9 +106,15 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	              NM_SETTING_WIRELESS_SECURITY_LEAP_PASSWORD, leap_password,
 	              NULL);
 
+	/* Save LEAP_PASSWORD_FLAGS to the connection */
+	secret_flags = nma_utils_menu_to_secret_flags (passwd_entry);
+	nm_setting_set_secret_flags (NM_SETTING (s_wireless_sec), sec->password_flags_name,
+	                             secret_flags, NULL);
+
 	/* Update secret flags and popup when editing the connection */
 	if (sec->editing_connection)
-		utils_update_password_storage (NM_SETTING (s_wireless_sec), secret_flags, passwd_entry, sec->password_flags_name);
+		nma_utils_update_password_storage (passwd_entry, secret_flags,
+		                                   NM_SETTING (s_wireless_sec), sec->password_flags_name);
 }
 
 static void
@@ -174,7 +171,8 @@ ws_leap_new (NMConnection *connection, gboolean secrets_only)
 	                  sec);
 
 	/* Create password-storage popup menu for password entry under entry's secondary icon */
-	utils_setup_password_storage (connection, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, widget, sec->password_flags_name);
+	nma_utils_setup_password_storage (widget, 0, (NMSetting *) wsec, sec->password_flags_name,
+	                                  FALSE, secrets_only);
 
 	if (wsec)
 		update_secrets (WIRELESS_SECURITY (sec), connection);

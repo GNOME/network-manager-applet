@@ -27,7 +27,7 @@
 #include "eap-method.h"
 #include "wireless-security.h"
 #include "helpers.h"
-#include "utils.h"
+#include "nm-ui-utils.h"
 
 struct _EAPMethodLEAP {
 	EAPMethod parent;
@@ -86,6 +86,8 @@ fill_connection (EAPMethod *parent, NMConnection *connection, NMSettingSecretFla
 {
 	EAPMethodLEAP *method = (EAPMethodLEAP *) parent;
 	NMSetting8021x *s_8021x;
+	NMSettingSecretFlags secret_flags;
+	GtkWidget *passwd_entry;
 
 	s_8021x = nm_connection_get_setting_802_1x (connection);
 	g_assert (s_8021x);
@@ -95,13 +97,18 @@ fill_connection (EAPMethod *parent, NMConnection *connection, NMSettingSecretFla
 	g_object_set (s_8021x, NM_SETTING_802_1X_IDENTITY, gtk_entry_get_text (method->username_entry), NULL);
 	g_object_set (s_8021x, NM_SETTING_802_1X_PASSWORD, gtk_entry_get_text (method->password_entry), NULL);
 
-	/* Update secret flags and popup when editing the connection */
-	if (method->editing_connection) {
-		GtkWidget *passwd_entry = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_leap_password_entry"));
-		g_assert (passwd_entry);
+	passwd_entry = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_leap_password_entry"));
+	g_assert (passwd_entry);
 
-		utils_update_password_storage (NM_SETTING (s_8021x), flags, passwd_entry, parent->password_flags_name);
-	}
+	/* Save 802.1X password flags to the connection */
+	secret_flags = nma_utils_menu_to_secret_flags (passwd_entry);
+	nm_setting_set_secret_flags (NM_SETTING (s_8021x), parent->password_flags_name,
+	                             secret_flags, NULL);
+
+	/* Update secret flags and popup when editing the connection */
+	if (method->editing_connection)
+		nma_utils_update_password_storage (passwd_entry, secret_flags,
+		                                   NM_SETTING (s_8021x), parent->password_flags_name);
 }
 
 static void
@@ -175,6 +182,7 @@ eap_method_leap_new (WirelessSecurity *ws_parent,
 	EAPMethodLEAP *method;
 	EAPMethod *parent;
 	GtkWidget *widget;
+	NMSetting8021x *s_8021x = NULL;
 
 	parent = eap_method_init (sizeof (EAPMethodLEAP),
 	                          validate,
@@ -221,7 +229,10 @@ eap_method_leap_new (WirelessSecurity *ws_parent,
 	                  ws_parent);
 
 	/* Create password-storage popup menu for password entry under entry's secondary icon */
-	utils_setup_password_storage (connection, NM_SETTING_802_1X_SETTING_NAME, widget, parent->password_flags_name);
+	if (connection)
+		s_8021x = nm_connection_get_setting_802_1x (connection);
+	nma_utils_setup_password_storage (widget, 0, (NMSetting *) s_8021x, parent->password_flags_name,
+	                                  FALSE, secrets_only);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "show_checkbutton_eapleap"));
 	g_assert (widget);
