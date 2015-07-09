@@ -7,7 +7,8 @@ libnma_HEADERS = \
 	nma-wifi-dialog.h \
 	nma-mobile-wizard.h \
 	nma-mobile-providers.h \
-	nma-vpn-password-dialog.h
+	nma-vpn-password-dialog.h \
+	nma-ui-utils.h
 
 lib_LTLIBRARIES = libnma.la
 
@@ -16,6 +17,7 @@ libnma_la_SOURCES = \
 	nma-mobile-wizard.c \
 	nma-mobile-providers.c \
 	nma-vpn-password-dialog.c \
+	nma-ui-utils.c \
 	init.c
 
 libnma_la_CFLAGS = \
