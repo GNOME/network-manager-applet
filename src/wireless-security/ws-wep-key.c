@@ -25,6 +25,7 @@
 
 #include "wireless-security.h"
 #include "utils.h"
+#include "nm-ui-utils.h"
 
 struct _WirelessSecurityWEPKey {
 	WirelessSecurity parent;
@@ -158,15 +159,6 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	key = gtk_entry_get_text (GTK_ENTRY (widget));
 	strcpy (sec->keys[sec->cur_index], key);
 
-	/* Get WEP_KEY_FLAGS from the old security setting, if any. Else
-	 * initialize the flags to NM_SETTING_SECRET_FLAG_AGENT_OWNED.
-	 */
-	s_wsec = nm_connection_get_setting_wireless_security (connection);
-	if (s_wsec)
-		secret_flags = nm_setting_wireless_security_get_wep_key_flags (s_wsec);
-	else
-		secret_flags = NM_SETTING_SECRET_FLAG_AGENT_OWNED;
-
 	/* Blow away the old security setting by adding a clear one */
 	s_wsec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
 	nm_connection_add_setting (connection, (NMSetting *) s_wsec);
@@ -183,9 +175,14 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 			nm_setting_wireless_security_set_wep_key (s_wsec, i, sec->keys[i]);
 	}
 
+	/* Save WEP_KEY_FLAGS to the connection */
+	secret_flags = nma_utils_menu_to_secret_flags (passwd_entry);
+	g_object_set (s_wsec, NM_SETTING_WIRELESS_SECURITY_WEP_KEY_FLAGS, secret_flags, NULL);
+
 	/* Update secret flags and popup when editing the connection */
 	if (sec->editing_connection)
-		utils_update_password_storage (NM_SETTING (s_wsec), secret_flags, passwd_entry, sec->password_flags_name);
+		nma_utils_update_password_storage (passwd_entry, secret_flags,
+		                                   NM_SETTING (s_wsec), sec->password_flags_name);
 }
 
 static void
@@ -236,6 +233,7 @@ ws_wep_key_new (NMConnection *connection,
 	WirelessSecurityWEPKey *sec;
 	GtkWidget *widget;
 	NMSettingWirelessSecurity *s_wsec = NULL;
+	NMSetting *setting = NULL;
 	guint8 default_key_idx = 0;
 	gboolean is_adhoc = adhoc_create;
 	gboolean is_shared_key = FALSE;
@@ -262,7 +260,10 @@ ws_wep_key_new (NMConnection *connection,
 	gtk_entry_set_width_chars (GTK_ENTRY (widget), 28);
 
 	/* Create password-storage popup menu for password entry under entry's secondary icon */
-	utils_setup_password_storage (connection, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, widget, sec->password_flags_name);
+	if (connection)
+		setting = (NMSetting *) nm_connection_get_setting_wireless_security (connection);
+	nma_utils_setup_password_storage (widget, 0, setting, sec->password_flags_name,
+	                                  FALSE, secrets_only);
 
 	if (connection) {
 		NMSettingWireless *s_wireless;

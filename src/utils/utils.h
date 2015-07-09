@@ -38,10 +38,6 @@
 #error neither LIBNM_BUILD nor LIBNM_GLIB_BUILD defined
 #endif
 
-guint32 utils_freq_to_channel (guint32 freq);
-guint32 utils_channel_to_freq (guint32 channel, char *band);
-guint32 utils_find_next_channel (guint32 channel, int direction, char *band);
-
 gboolean utils_ether_addr_valid (const struct ether_addr *test_addr);
 
 #ifdef LIBNM_BUILD
@@ -90,15 +86,6 @@ gboolean utils_filter_editable_on_insert_text (GtkEditable *editable,
                                                void *user_data,
                                                UtilsFilterGtkEditableFunc validate_character,
                                                gpointer block_func);
-
-void utils_setup_password_storage (NMConnection *connection,
-                                   const char *setting_name,
-                                   GtkWidget *passwd_entry,
-                                   const char *password_flags_name);
-void utils_update_password_storage (NMSetting *setting,
-                                    NMSettingSecretFlags secret_flags,
-                                    GtkWidget *passwd_entry,
-                                    const char *password_flags_name);
 
 void utils_override_bg_color (GtkWidget *widget, GdkRGBA *rgba);
 void utils_set_cell_background (GtkCellRenderer *cell,

@@ -25,7 +25,7 @@
 
 #include "wireless-security.h"
 #include "helpers.h"
-#include "utils.h"
+#include "nm-ui-utils.h"
 
 #define WPA_PMK_LEN 32
 
@@ -109,15 +109,6 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	if (mode && !strcmp (mode, "adhoc"))
 		is_adhoc = TRUE;
 
-	/* Get PSK_FLAGS from the old security setting, if any. Else
-	 * initialize the flags to NM_SETTING_SECRET_FLAG_AGENT_OWNED.
-	 */
-	s_wireless_sec = nm_connection_get_setting_wireless_security (connection);
-	if (s_wireless_sec)
-		secret_flags = nm_setting_wireless_security_get_psk_flags (s_wireless_sec);
-	else
-		secret_flags = NM_SETTING_SECRET_FLAG_AGENT_OWNED;
-
 	/* Blow away the old security setting by adding a clear one */
 	s_wireless_sec = (NMSettingWirelessSecurity *) nm_setting_wireless_security_new ();
 	nm_connection_add_setting (connection, (NMSetting *) s_wireless_sec);
@@ -127,9 +118,15 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	key = gtk_entry_get_text (GTK_ENTRY (widget));
 	g_object_set (s_wireless_sec, NM_SETTING_WIRELESS_SECURITY_PSK, key, NULL);
 
+	/* Save PSK_FLAGS to the connection */
+	secret_flags = nma_utils_menu_to_secret_flags (passwd_entry);
+	nm_setting_set_secret_flags (NM_SETTING (s_wireless_sec), NM_SETTING_WIRELESS_SECURITY_PSK,
+	                             secret_flags, NULL);
+
 	/* Update secret flags and popup when editing the connection */
 	if (wpa_psk->editing_connection)
-		utils_update_password_storage (NM_SETTING (s_wireless_sec), secret_flags, passwd_entry, wpa_psk->password_flags_name);
+		nma_utils_update_password_storage (passwd_entry, secret_flags,
+		                                   NM_SETTING (s_wireless_sec), wpa_psk->password_flags_name);
 
 	wireless_security_clear_ciphers (connection);
 	if (is_adhoc) {
@@ -166,6 +163,7 @@ ws_wpa_psk_new (NMConnection *connection, gboolean secrets_only)
 {
 	WirelessSecurity *parent;
 	WirelessSecurityWPAPSK *sec;
+	NMSetting *setting = NULL;
 	GtkWidget *widget;
 
 	parent = wireless_security_init (sizeof (WirelessSecurityWPAPSK),
@@ -193,7 +191,10 @@ ws_wpa_psk_new (NMConnection *connection, gboolean secrets_only)
 	gtk_entry_set_width_chars (GTK_ENTRY (widget), 28);
 
 	/* Create password-storage popup menu for password entry under entry's secondary icon */
-	utils_setup_password_storage (connection, NM_SETTING_WIRELESS_SECURITY_SETTING_NAME, widget, sec->password_flags_name);
+	if (connection)
+		setting = (NMSetting *) nm_connection_get_setting_wireless_security (connection);
+	nma_utils_setup_password_storage (widget, 0, setting, sec->password_flags_name,
+	                                  FALSE, secrets_only);
 
 	/* Fill secrets, if any */
 	if (connection)
