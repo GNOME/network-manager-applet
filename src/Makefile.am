@@ -8,7 +8,7 @@ nm_applet_CPPFLAGS = \
 	$(LIBSECRET_CFLAGS) \
 	$(NOTIFY_CFLAGS) \
 	-DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_0 \
-	-DNM_VERSION_MAX_ALLOWED=NM_VERSION_1_2 \
+	-DNM_VERSION_MAX_ALLOWED=NM_VERSION_1_0 \
 	-DICONDIR=\""$(datadir)/icons"\"						\
 	-DUIDIR=\""$(uidir)"\"							\
 	-DBINDIR=\""$(bindir)"\"								\
