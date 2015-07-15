@@ -53,7 +53,6 @@ enum {
 	MB_TECH_HSPA,
 	MB_TECH_HSPA_PLUS,
 	MB_TECH_LTE,
-	MB_TECH_WIMAX,
 };
 
 GdkPixbuf *mobile_helper_get_status_pixbuf (guint32 quality,

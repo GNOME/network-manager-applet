@@ -335,33 +335,6 @@ bitrate_changed_cb (GObject *device, GParamSpec *pspec, gpointer user_data)
 	g_free (str);
 }
 
-static void
-wimax_cinr_changed_cb (NMDevice *device, GParamSpec *pspec, gpointer user_data)
-{
-	GtkWidget *label = GTK_WIDGET (user_data);
-	gint cinr;
-	char *str = NULL;
-
-	cinr = nm_device_wimax_get_cinr (NM_DEVICE_WIMAX (device));
-	if (cinr)
-		str = g_strdup_printf (_("%d dB"), cinr);
-
-	gtk_label_set_text (GTK_LABEL (label), str ? str : C_("WiMAX CINR", "unknown"));
-	g_free (str);
-}
-
-static void
-wimax_bsid_changed_cb (NMDevice *device, GParamSpec *pspec, gpointer user_data)
-{
-	GtkWidget *label = GTK_WIDGET (user_data);
-	const char *str = NULL;
-
-	str = nm_device_wimax_get_bsid (NM_DEVICE_WIMAX (device));
-	if (!str)
-		str = C_("WiMAX Base Station ID", "unknown");
-	gtk_label_set_text (GTK_LABEL (label), str);
-}
-
 
 static void
 display_ip4_info (NMIPAddress *def_addr, const GPtrArray *addresses, GtkGrid *grid, int *row)
@@ -534,9 +507,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 			str = g_strdup_printf (_("CDMA (%s)"), iface);
 		else
 			str = g_strdup_printf (_("Mobile Broadband (%s)"), iface);
-	} else if (NM_IS_DEVICE_WIMAX (device))
-		str = g_strdup_printf (_("WiMAX (%s)"), iface);
-	else
+	} else
 		str = g_strdup (iface);
 
 
@@ -564,8 +535,6 @@ info_dialog_add_page (GtkNotebook *notebook,
 		str = g_strdup (nm_device_ethernet_get_hw_address (NM_DEVICE_ETHERNET (device)));
 	else if (NM_IS_DEVICE_WIFI (device))
 		str = g_strdup (nm_device_wifi_get_hw_address (NM_DEVICE_WIFI (device)));
-	else if (NM_IS_DEVICE_WIMAX (device))
-		str = g_strdup (nm_device_wimax_get_hw_address (NM_DEVICE_WIMAX (device)));
 
 	desc_widget = create_info_label (_("Hardware Address:"), FALSE);
 	desc_object = gtk_widget_get_accessible (desc_widget);
@@ -642,46 +611,6 @@ info_dialog_add_page (GtkNotebook *notebook,
 			                 1, row, 1, 1);
 			row++;
 		}
-	}
-
-	if (NM_IS_DEVICE_WIMAX (device)) {
-		GtkWidget *bsid_label, *cinr_label;
-
-		/* CINR */
-		cinr_label = create_info_label ("", TRUE);
-		desc_widget = create_info_label (_("CINR:"), FALSE);
-		desc_object = gtk_widget_get_accessible (desc_widget);
-		data_object = gtk_widget_get_accessible (cinr_label);
-		atk_object_add_relationship (desc_object, ATK_RELATION_LABEL_FOR, data_object);
-
-		gtk_grid_attach (grid, desc_widget,
-			             0, row, 1, 1);
-		gtk_grid_attach (grid, cinr_label,
-			             1, row, 1, 1);
-		label_info_new (device,
-		                cinr_label,
-		                "notify::" NM_DEVICE_WIMAX_CINR,
-		                G_CALLBACK (wimax_cinr_changed_cb));
-		wimax_cinr_changed_cb (device, NULL, cinr_label);
-		row++;
-
-		/* Base Station ID */
-		bsid_label = create_info_label ("", TRUE);
-		desc_widget = create_info_label (_("BSID:"), FALSE);
-		desc_object = gtk_widget_get_accessible (desc_widget);
-		data_object = gtk_widget_get_accessible (bsid_label);
-		atk_object_add_relationship (desc_object, ATK_RELATION_LABEL_FOR, data_object);
-
-		gtk_grid_attach (grid, desc_widget,
-			             0, row, 1, 1);
-		gtk_grid_attach (grid, bsid_label,
-			             1, row, 1, 1);
-		label_info_new (device,
-		                bsid_label,
-		                "notify::" NM_DEVICE_WIMAX_BSID,
-		                G_CALLBACK (wimax_bsid_changed_cb));
-		wimax_bsid_changed_cb (device, NULL, bsid_label);
-		row++;
 	}
 
 	/* Empty line */

@@ -36,8 +36,6 @@ nm_connection_editor_SOURCES = \
 	page-wifi.c \
 	page-wifi-security.h \
 	page-wifi-security.c \
-	page-wimax.h \
-	page-wimax.c \
 	page-infiniband.h \
 	page-infiniband.c \
 	page-ip4.h \
@@ -103,7 +101,6 @@ ui_DATA = \
 	ce-page-ethernet.ui \
 	ce-page-wifi.ui \
 	ce-page-wifi-security.ui \
-	ce-page-wimax.ui \
 	ce-page-infiniband.ui \
 	ce-page-bond.ui \
 	ce-page-team.ui \

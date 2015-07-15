@@ -55,8 +55,6 @@ nm_applet_SOURCES = \
 	mobile-helpers.h \
 	applet-device-bt.h \
 	applet-device-bt.c \
-	applet-device-wimax.h \
-	applet-device-wimax.c \
 	applet-device-vlan.h \
 	applet-device-vlan.c \
 	applet-device-bond.h \

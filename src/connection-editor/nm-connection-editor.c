@@ -48,7 +48,6 @@
 #include "page-bluetooth.h"
 #include "page-ppp.h"
 #include "page-vpn.h"
-#include "page-wimax.h"
 #include "page-infiniband.h"
 #include "page-bond.h"
 #include "page-team.h"
@@ -772,9 +771,6 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 			if (!add_page (editor, ce_page_ppp_new, editor->connection, error))
 				goto out;
 		}
-	} else if (!strcmp (connection_type, NM_SETTING_WIMAX_SETTING_NAME)) {
-		if (!add_page (editor, ce_page_wimax_new, editor->connection, error))
-			goto out;
 	} else if (!strcmp (connection_type, NM_SETTING_INFINIBAND_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_infiniband_new, editor->connection, error))
 			goto out;

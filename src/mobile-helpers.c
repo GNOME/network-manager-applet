@@ -135,7 +135,6 @@ mobile_helper_get_tech_icon_name (guint32 tech)
 		return "nm-tech-hspa";
 	case MB_TECH_LTE:
 		return "nm-tech-lte";
-	case MB_TECH_WIMAX:
 	default:
 		return NULL;
 	}

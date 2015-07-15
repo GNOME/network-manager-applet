@@ -55,7 +55,6 @@
 #include "applet-device-infiniband.h"
 #include "applet-device-vlan.h"
 #include "applet-device-wifi.h"
-#include "applet-device-wimax.h"
 #include "applet-dialogs.h"
 #include "nma-wifi-dialog.h"
 #include "applet-vpn-request.h"
@@ -216,8 +215,6 @@ get_device_class (NMDevice *device, NMApplet *applet)
 #endif
 	} else if (NM_IS_DEVICE_BT (device))
 		return applet->bt_class;
-	else if (NM_IS_DEVICE_WIMAX (device))
-		return applet->wimax_class;
 	else if (NM_IS_DEVICE_VLAN (device))
 		return applet->vlan_class;
 	else if (NM_IS_DEVICE_BOND (device))
@@ -1818,17 +1815,6 @@ nma_set_wwan_enabled_cb (GtkWidget *widget, NMApplet *applet)
 }
 
 static void
-nma_set_wimax_enabled_cb (GtkWidget *widget, NMApplet *applet)
-{
-	gboolean state;
-
-	g_return_if_fail (applet != NULL);
-
-	state = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (widget));
-	nm_client_wimax_set_enabled (applet->nm_client, state);
-}
-
-static void
 nma_set_networking_enabled_cb (GtkWidget *widget, NMApplet *applet)
 {
 	gboolean state;
@@ -1975,10 +1961,8 @@ nma_context_menu_update (NMApplet *applet)
 	gboolean net_enabled = TRUE;
 	gboolean have_wifi = FALSE;
 	gboolean have_wwan = FALSE;
-	gboolean have_wimax = FALSE;
 	gboolean wifi_hw_enabled;
 	gboolean wwan_hw_enabled;
-	gboolean wimax_hw_enabled;
 #ifndef ENABLE_INDICATOR
 	gboolean notifications_enabled = TRUE;
 #endif
@@ -2029,18 +2013,6 @@ nma_context_menu_update (NMApplet *applet)
 	gtk_widget_set_sensitive (GTK_WIDGET (applet->wwan_enabled_item),
 	                          wwan_hw_enabled && is_permission_yes (applet, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WWAN));
 
-	/* Enable WiMAX */
-	g_signal_handler_block (G_OBJECT (applet->wimax_enabled_item),
-	                        applet->wimax_enabled_toggled_id);
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->wimax_enabled_item),
-	                                nm_client_wimax_get_enabled (applet->nm_client));
-	g_signal_handler_unblock (G_OBJECT (applet->wimax_enabled_item),
-	                          applet->wimax_enabled_toggled_id);
-
-	wimax_hw_enabled = nm_client_wimax_hardware_get_enabled (applet->nm_client);
-	gtk_widget_set_sensitive (GTK_WIDGET (applet->wimax_enabled_item),
-	                          wimax_hw_enabled && is_permission_yes (applet, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WIMAX));
-
 #ifndef ENABLE_INDICATOR
 	/* Enabled notifications */
 	g_signal_handler_block (G_OBJECT (applet->notifications_enabled_item),
@@ -2068,8 +2040,6 @@ nma_context_menu_update (NMApplet *applet)
 				have_wifi = TRUE;
 			else if (NM_IS_DEVICE_MODEM (candidate))
 				have_wwan = TRUE;
-			else if (NM_IS_DEVICE_WIMAX (candidate))
-				have_wimax = TRUE;
 		}
 	}
 
@@ -2082,11 +2052,6 @@ nma_context_menu_update (NMApplet *applet)
 		gtk_widget_show_all (applet->wwan_enabled_item);
 	else
 		gtk_widget_hide (applet->wwan_enabled_item);
-
-	if (have_wimax)
-		gtk_widget_show_all (applet->wimax_enabled_item);
-	else
-		gtk_widget_hide (applet->wimax_enabled_item);
 }
 
 static void
@@ -2165,15 +2130,6 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 	                       applet);
 	applet->wwan_enabled_toggled_id = id;
 	gtk_menu_shell_append (menu, applet->wwan_enabled_item);
-
-	/* 'Enable WiMAX Mobile Broadband' item */
-	applet->wimax_enabled_item = gtk_check_menu_item_new_with_mnemonic (_("Enable WiMA_X Mobile Broadband"));
-	id = g_signal_connect (applet->wimax_enabled_item,
-	                       "toggled",
-	                       G_CALLBACK (nma_set_wimax_enabled_cb),
-	                       applet);
-	applet->wimax_enabled_toggled_id = id;
-	gtk_menu_shell_append (menu, applet->wimax_enabled_item);
 
 	nma_menu_add_separator_item (GTK_WIDGET (menu));
 
@@ -3622,9 +3578,6 @@ initable_init (GInitable *initable, GCancellable *cancellable, GError **error)
 	applet->bt_class = applet_device_bt_get_class (applet);
 	g_assert (applet->bt_class);
 
-	applet->wimax_class = applet_device_wimax_get_class (applet);
-	g_assert (applet->wimax_class);
-
 	applet->vlan_class = applet_device_vlan_get_class (applet);
 	g_assert (applet->vlan_class);
 
@@ -3669,7 +3622,6 @@ static void finalize (GObject *object)
 	g_slice_free (NMADeviceClass, applet->broadband_class);
 #endif
 	g_slice_free (NMADeviceClass, applet->bt_class);
-	g_slice_free (NMADeviceClass, applet->wimax_class);
 	g_slice_free (NMADeviceClass, applet->vlan_class);
 	g_slice_free (NMADeviceClass, applet->bond_class);
 	g_slice_free (NMADeviceClass, applet->team_class);

@@ -71,14 +71,11 @@ get_tech_name (guint32 tech)
 		return _("HSPA");
 	case MB_TECH_HSPA_PLUS:
 		return _("HSPA+");
-	case MB_TECH_WIMAX:
-		return _("WiMAX");
 	case MB_TECH_LTE:
 		return _("LTE");
 	default:
-		break;
+		return NULL;
 	}
-	return NULL;
 }
 
 static void
@@ -112,7 +109,7 @@ nm_mb_menu_item_new (const char *connection_name,
 {
 	NMMbMenuItem *item;
 	NMMbMenuItemPrivate *priv;
-	const char *tech_name = NULL;
+	const char *tech_name;
 
 	item = g_object_new (NM_TYPE_MB_MENU_ITEM, NULL);
 	g_assert (item);
@@ -120,9 +117,7 @@ nm_mb_menu_item_new (const char *connection_name,
 	priv = NM_MB_MENU_ITEM_GET_PRIVATE (item);
 	priv->int_strength = strength;
 
-	/* WiMAX doesn't show tech name */
-	if (technology != MB_TECH_WIMAX)
-		tech_name = get_tech_name (technology);
+	tech_name = get_tech_name (technology);
 
 	/* Construct the description string */
 	switch (state) {

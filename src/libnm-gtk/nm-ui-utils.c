@@ -328,8 +328,6 @@ nma_utils_get_device_type_name (NMDevice *device)
 		return _("Bluetooth");
 	case NM_DEVICE_TYPE_OLPC_MESH:
 		return _("OLPC Mesh");
-	case NM_DEVICE_TYPE_WIMAX:
-		return _("WiMAX");
 	case NM_DEVICE_TYPE_MODEM:
 		return _("Mobile Broadband");
 	case NM_DEVICE_TYPE_INFINIBAND:

@@ -106,7 +106,6 @@ typedef struct
 	NMADeviceClass *broadband_class;
 #endif
 	NMADeviceClass *bt_class;
-	NMADeviceClass *wimax_class;
 	NMADeviceClass *vlan_class;
 	NMADeviceClass *bond_class;
 	NMADeviceClass *team_class;
@@ -151,8 +150,6 @@ typedef struct
 	guint           wifi_enabled_toggled_id;
 	GtkWidget *		wwan_enabled_item;
 	guint           wwan_enabled_toggled_id;
-	GtkWidget *		wimax_enabled_item;
-	guint           wimax_enabled_toggled_id;
 
 	GtkWidget *		info_menu_item;
 	GtkWidget *		connections_menu_item;
