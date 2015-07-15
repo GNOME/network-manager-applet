@@ -43,8 +43,10 @@ libnma_la_LIBADD = \
 	$(GUDEV_LIBS) \
 	$(top_builddir)/src/wireless-security/libwireless-security-libnm.la
 
+EXTRA_libnma_la_DEPENDENCIES = $(srcdir)/libnma.ver
+
 libnma_la_LDFLAGS = -Wl,-no-undefined \
-	-export-symbols-regex '^nma_.*'
+	-Wl,--version-script=$(srcdir)/libnma.ver
 
 
 pkgconfigdir = $(libdir)/pkgconfig
@@ -74,4 +76,4 @@ typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
 CLEANFILES = $(gir_DATA) $(typelib_DATA)
 endif
 
-EXTRA_DIST = libnma.pc.in $(ui_DATA)
+EXTRA_DIST = libnma.pc.in libnma.ver $(ui_DATA)
