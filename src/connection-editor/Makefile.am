@@ -4,7 +4,7 @@ nm_connection_editor_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	$(LIBNM_CFLAGS) \
 	-DLIBNM_BUILD \
-	-DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_0 \
+	-DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_2 \
 	-DNM_VERSION_MAX_ALLOWED=NM_VERSION_1_2 \
 	-DICONDIR=\""$(datadir)/icons"\" \
 	-DUIDIR=\""$(uidir)"\" \
