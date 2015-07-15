@@ -81,7 +81,10 @@ gir_DATA = $(INTROSPECTION_GIRS)
 typelibdir = $(libdir)/girepository-1.0
 typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
 
+check-local:
+	$(top_srcdir)/src/libnm-gtk/check-exports.sh $(builddir)/.libs/libnm-gtk.so $(srcdir)/libnm-gtk.ver
+
 CLEANFILES = $(gir_DATA) $(typelib_DATA)
 endif
 
-EXTRA_DIST = libnm-gtk.pc.in libnm-gtk.ver $(ui_DATA)
+EXTRA_DIST = libnm-gtk.pc.in libnm-gtk.ver check-exports.sh $(ui_DATA)
