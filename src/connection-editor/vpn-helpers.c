@@ -205,7 +205,7 @@ import_vpn_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 		                                     _("Cannot import VPN connection"));
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (err_dialog),
 		                                 _("The file '%s' could not be read or does not contain recognized VPN connection information\n\nError: %s."),
-		                                 bname, error ? error->message : "unknown error");
+		                                 bname, error ? error->message : _("unknown error"));
 		g_free (bname);
 		g_signal_connect (err_dialog, "delete-event", G_CALLBACK (gtk_widget_destroy), NULL);
 		g_signal_connect (err_dialog, "response", G_CALLBACK (gtk_widget_destroy), NULL);
