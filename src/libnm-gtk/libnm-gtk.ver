@@ -1,11 +1,3 @@
-libnm_gtk_1_0_0 {
-local:
-	[^n]*;
-	n[^m]*;
-	nm[^a]*;
-	nma[^_]*;
-};
-
 libnm_gtk_1_0_6 {
 global:
 	nma_utils_menu_to_secret_flags;
@@ -16,4 +8,9 @@ global:
 	nma_vpn_password_dialog_set_password_ternary;
 	nma_vpn_password_dialog_set_password_ternary_label;
 	nma_vpn_password_dialog_set_show_password_ternary;
-} libnm_gtk_1_0_0;
+local:
+	[^n]*;
+	n[^m]*;
+	nm[^a]*;
+	nma[^_]*;
+};
