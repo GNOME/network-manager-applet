@@ -84,7 +84,7 @@ vpn_get_plugins (GError **error)
 		if (!service)
 			goto next;
 
-		so_path = g_key_file_get_string (keyfile,  "libnm", "properties", NULL);
+		so_path = g_key_file_get_string (keyfile,  "libnm", "plugin", NULL);
 		if (!so_path)
 			goto next;
 
