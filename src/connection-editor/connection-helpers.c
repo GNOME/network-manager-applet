@@ -38,31 +38,10 @@
 #include "page-vpn.h"
 #include "vpn-helpers.h"
 
-static GSList *vpn_plugins;
-
 #define COL_MARKUP     0
 #define COL_SENSITIVE  1
 #define COL_NEW_FUNC   2
 #define COL_VPN_PLUGIN 3
-
-static gint
-sort_vpn_plugins (gconstpointer a, gconstpointer b)
-{
-	NMVpnEditorPlugin *aa = NM_VPN_EDITOR_PLUGIN (a);
-	NMVpnEditorPlugin *bb = NM_VPN_EDITOR_PLUGIN (b);
-	char *aa_desc = NULL, *bb_desc = NULL;
-	int ret;
-
-	g_object_get (aa, NM_VPN_EDITOR_PLUGIN_NAME, &aa_desc, NULL);
-	g_object_get (bb, NM_VPN_EDITOR_PLUGIN_NAME, &bb_desc, NULL);
-
-	ret = g_strcmp0 (aa_desc, bb_desc);
-
-	g_free (aa_desc);
-	g_free (bb_desc);
-
-	return ret;
-}
 
 static gint
 sort_types (gconstpointer a, gconstpointer b)
@@ -111,8 +90,6 @@ get_connection_type_list (void)
 {
 	GArray *array;
 	static ConnectionTypeData *list;
-	GHashTable *vpn_plugins_hash;
-	gboolean have_vpn_plugins;
 
 	if (list)
 		return list;
@@ -137,20 +114,8 @@ get_connection_type_list (void)
 	add_type_data_virtual (array, _("VLAN"), vlan_connection_new, NM_TYPE_SETTING_VLAN);
 
 	/* Add "VPN" only if there are plugins */
-	vpn_plugins_hash = vpn_get_plugins (NULL);
-	have_vpn_plugins  = vpn_plugins_hash && g_hash_table_size (vpn_plugins_hash);
-	if (have_vpn_plugins) {
-		GHashTableIter iter;
-		gpointer name, plugin;
-
+	if (vpn_get_plugins ())
 		add_type_data_virtual (array, _("VPN"), vpn_connection_new, NM_TYPE_SETTING_VPN);
-
-		vpn_plugins = NULL;
-		g_hash_table_iter_init (&iter, vpn_plugins_hash);
-		while (g_hash_table_iter_next (&iter, &name, &plugin))
-			vpn_plugins = g_slist_prepend (vpn_plugins, plugin);
-		vpn_plugins = g_slist_sort (vpn_plugins, sort_vpn_plugins);
-	}
 
 	g_array_sort (array, sort_types);
 
@@ -224,6 +189,7 @@ set_up_connection_type_combo (GtkComboBox *combo,
 	gboolean added_virtual_header = FALSE;
 	gboolean show_headers = (type_filter_func == NULL);
 	char *markup;
+	GSList *vpn_plugins;
 
 	gtk_combo_box_set_row_separator_func (combo, combo_row_separator_func, NULL, NULL);
 	g_signal_connect (G_OBJECT (combo), "changed", G_CALLBACK (combo_changed_cb), description_label);
@@ -280,6 +246,7 @@ set_up_connection_type_combo (GtkComboBox *combo,
 		added++;
 	}
 
+	vpn_plugins = vpn_get_plugins ();
 	if (!vpn_plugins || vpn_index == -1) {
 		gtk_combo_box_set_active (combo, show_headers ? active + 1 : active);
 		return;
@@ -296,7 +263,7 @@ set_up_connection_type_combo (GtkComboBox *combo,
 	}
 
 	for (p = vpn_plugins; p; p = p->next) {
-		NMVpnEditorPlugin *plugin = NM_VPN_EDITOR_PLUGIN (p->data);
+		NMVpnEditorPlugin *plugin = nm_vpn_plugin_info_get_editor_plugin (p->data);
 		char *desc;
 
 		g_object_get (plugin, NM_VPN_EDITOR_PLUGIN_NAME, &desc, NULL);

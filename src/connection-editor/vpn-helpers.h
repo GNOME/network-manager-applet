@@ -28,7 +28,7 @@
 
 #include <NetworkManager.h>
 
-GHashTable *vpn_get_plugins (GError **error);
+GSList *vpn_get_plugins (void);
 
 NMVpnEditorPlugin *vpn_get_plugin_by_service (const char *service);
 

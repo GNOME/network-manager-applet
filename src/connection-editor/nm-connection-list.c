@@ -33,7 +33,6 @@
 #include "ce-page.h"
 #include "nm-connection-editor.h"
 #include "nm-connection-list.h"
-#include "vpn-helpers.h"
 #include "ce-polkit-button.h"
 #include "connection-helpers.h"
 
@@ -886,11 +885,6 @@ nm_connection_list_new (void)
 	if (nm_ce_keep_above)
 		gtk_window_set_keep_above (GTK_WINDOW (list->dialog), TRUE);
 	g_signal_connect (G_OBJECT (list->dialog), "response", G_CALLBACK (dialog_response_cb), list);
-
-	if (!vpn_get_plugins (&error)) {
-		g_warning ("%s: failed to load VPN plugins: %s", __func__, error->message);
-		g_error_free (error);
-	}
 
 	return list;
 
