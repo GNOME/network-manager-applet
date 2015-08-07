@@ -106,11 +106,6 @@ typedef struct
 	NMADeviceClass *broadband_class;
 #endif
 	NMADeviceClass *bt_class;
-	NMADeviceClass *vlan_class;
-	NMADeviceClass *bond_class;
-	NMADeviceClass *team_class;
-	NMADeviceClass *bridge_class;
-	NMADeviceClass *infiniband_class;
 
 	/* Data model elements */
 	guint			update_icon_id;
