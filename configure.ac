@@ -25,6 +25,10 @@ dnl Initialize libtool
 LT_PREREQ([2.2.6])
 LT_INIT
 
+m4_define([nm_git_sha], [m4_esyscmd([ ( [ -d ./.git/ ] && [ "$(readlink -f ./.git/)" = "$(readlink -f "$(git rev-parse --git-dir 2>/dev/null)" 2>/dev/null)" ] && git rev-parse --verify -q HEAD 2>/dev/null ) || true ])])
+NM_GIT_SHA=nm_git_sha
+AC_DEFINE_UNQUOTED(NM_GIT_SHA,"$NM_GIT_SHA",[git commit id of the original source code version])
+
 dnl
 dnl Checks for typedefs, structures, and compiler characteristics.
 dnl
