@@ -24,8 +24,8 @@ desktop_in_files = nm-connection-editor.desktop.in
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 @INTLTOOL_DESKTOP_RULE@
 
-schema_in_files = org.gnome.nm-applet.gschema.xml.in
-gsettingsschema_DATA = $(schema_in_files:.xml.in=.xml)
+gsettings_SCHEMAS = org.gnome.nm-applet.gschema.xml
+@GSETTINGS_RULES@
 
 appdatadir = $(datadir)/appdata
 appdata_DATA = $(appdata_in_files:.xml.in=.xml)
@@ -38,7 +38,6 @@ convert_DATA=nm-applet.convert
 DISTCHECK_CONFIGURE_FLAGS = --enable-more-warnings=yes
 
 EXTRA_DIST += \
-	$(schema_in_files) \
 	$(convert_DATA) \
 	$(appdata_in_files) 	\
 	$(autostart_in_files) \
@@ -48,6 +47,6 @@ CLEANFILES = \
 	$(autostart_DATA) \
 	$(desktop_DATA) \
 	$(appdata_DATA) 	\
-	$(gsettingsschema_DATA)
+	$(BUILT_SOURCES)
 
 DISTCLEANFILES = intltool-extract intltool-merge intltool-update
