@@ -37,7 +37,7 @@ AC_TYPE_PID_T
 dnl
 dnl translation support
 dnl
-IT_PROG_INTLTOOL([0.40.0])
+IT_PROG_INTLTOOL([0.50.1])
 
 GETTEXT_PACKAGE=nm-applet
 AC_SUBST(GETTEXT_PACKAGE)
@@ -186,6 +186,7 @@ dnl Check for gobject introspection
 GOBJECT_INTROSPECTION_CHECK([0.9.6])
 
 GLIB_CONFIG_NMA
+GLIB_SETTINGS
 
 dnl
 dnl Compiler flags
@@ -220,5 +221,6 @@ po/Makefile.in
 man/Makefile
 man/nm-applet.1
 man/nm-connection-editor.1
+org.gnome.nm-applet.gschema.xml
 ])
 AC_OUTPUT
