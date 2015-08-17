@@ -7,7 +7,7 @@ AC_INIT([nm-applet],
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
-AM_INIT_AUTOMAKE([1.11 subdir-objects no-dist-gzip dist-bzip2 -Wno-portability])
+AM_INIT_AUTOMAKE([1.11 subdir-objects no-dist-gzip dist-xz -Wno-portability])
 AM_MAINTAINER_MODE([enable])
 AM_SILENT_RULES([yes])
 
