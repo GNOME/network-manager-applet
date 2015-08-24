@@ -545,13 +545,12 @@ ui_to_setting (CEPageBond *self)
 	g_free (targets);
 
 	mtu = gtk_spin_button_get_value_as_int (priv->mtu);
-	if (mtu) {
-		if (!priv->wired) {
-			priv->wired = NM_SETTING_WIRED (nm_setting_wired_new ());
-			nm_connection_add_setting (connection, NM_SETTING (priv->wired));
-		}
-		g_object_set (priv->wired, NM_SETTING_WIRED_MTU, mtu, NULL);
+	if (mtu && !priv->wired) {
+		priv->wired = NM_SETTING_WIRED (nm_setting_wired_new ());
+		nm_connection_add_setting (connection, NM_SETTING (priv->wired));
 	}
+	if (priv->wired)
+		g_object_set (priv->wired, NM_SETTING_WIRED_MTU, mtu, NULL);
 }
 
 static gboolean
