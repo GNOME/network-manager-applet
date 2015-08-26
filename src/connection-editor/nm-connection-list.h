@@ -50,6 +50,7 @@ typedef struct {
 	GtkWidget *dialog;
 
 	gboolean signals_connected;
+	gboolean connections_available;
 } NMConnectionList;
 
 typedef struct {
