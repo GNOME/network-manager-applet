@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-13 03:34+0200\n"
-"PO-Revision-Date: 2015-08-13 03:35+0200\n"
+"POT-Creation-Date: 2015-08-30 16:57+0200\n"
+"PO-Revision-Date: 2015-08-30 16:58+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -1358,7 +1358,8 @@ msgid "Bonded _connections:"
 msgstr "_Połączone połączenia:"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:11
-msgid "_Mode:"
+#: ../src/connection-editor/ce-page-wifi.ui.h:18
+msgid "M_ode:"
 msgstr "_Tryb:"
 
 # na przycisku
@@ -1431,6 +1432,7 @@ msgstr ""
 #: ../src/connection-editor/ce-page-bond.ui.h:24
 #: ../src/connection-editor/ce-page-ethernet.ui.h:17
 #: ../src/connection-editor/ce-page-infiniband.ui.h:4
+#: ../src/connection-editor/ce-page-team.ui.h:7
 #: ../src/connection-editor/ce-page-vlan.ui.h:4
 #: ../src/connection-editor/ce-page-wifi.ui.h:7
 msgid "_MTU:"
@@ -1439,6 +1441,7 @@ msgstr "_MTU:"
 #: ../src/connection-editor/ce-page-bond.ui.h:25
 #: ../src/connection-editor/ce-page-ethernet.ui.h:18
 #: ../src/connection-editor/ce-page-infiniband.ui.h:3
+#: ../src/connection-editor/ce-page-team.ui.h:8
 #: ../src/connection-editor/ce-page-vlan.ui.h:5
 #: ../src/connection-editor/ce-page-wifi.ui.h:6
 msgid "bytes"
@@ -2074,8 +2077,8 @@ msgid "_Teamed connections:"
 msgstr "_Zespołowe połączenia:"
 
 #: ../src/connection-editor/ce-page-team.ui.h:3
-msgid "I_mport team configuration from a file..."
-msgstr "Zai_mportuj konfigurację zespołową z pliku..."
+msgid "Im_port team configuration from a file..."
+msgstr "Zaimp_ortuj konfigurację zespołową z pliku..."
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:1
 msgid "_Parent interface:"
@@ -2150,10 +2153,6 @@ msgstr "Ka_nał:"
 #: ../src/connection-editor/ce-page-wifi.ui.h:17
 msgid "Ban_d:"
 msgstr "Pa_smo:"
-
-#: ../src/connection-editor/ce-page-wifi.ui.h:18
-msgid "M_ode:"
-msgstr "_Tryb:"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:19
 msgid "SS_ID:"
@@ -2253,7 +2252,7 @@ msgid "Bond"
 msgstr "Łączenie"
 
 #: ../src/connection-editor/connection-helpers.c:137
-#: ../src/connection-editor/page-team.c:244 ../src/libnm-gtk/nm-ui-utils.c:340
+#: ../src/connection-editor/page-team.c:270 ../src/libnm-gtk/nm-ui-utils.c:340
 #: ../src/libnm-gtk/nm-ui-utils.c:584
 msgid "Team"
 msgstr "Zespołowe"
@@ -2482,24 +2481,24 @@ msgstr "Usunięcie zaznaczonego połączenia"
 msgid "Authenticate to delete the selected connection"
 msgstr "Należy się uwierzytelnić, aby usunąć zaznaczone połączenie"
 
-#: ../src/connection-editor/nm-connection-list.c:953
+#: ../src/connection-editor/nm-connection-list.c:982
 msgid "No VPN plugins are installed."
 msgstr "Żadna wtyczka VPN nie jest zainstalowana."
 
-#: ../src/connection-editor/nm-connection-list.c:955
+#: ../src/connection-editor/nm-connection-list.c:984
 #, c-format
 msgid "Don't know how to create '%s' connections"
 msgstr "Nie wiadomo, jak utworzyć połączenia \"%s\""
 
-#: ../src/connection-editor/nm-connection-list.c:957
+#: ../src/connection-editor/nm-connection-list.c:986
 msgid "Error creating connection"
 msgstr "Błąd podczas tworzenia połączenia"
 
-#: ../src/connection-editor/nm-connection-list.c:1013
+#: ../src/connection-editor/nm-connection-list.c:1047
 msgid "Error editing connection"
 msgstr "Błąd podczas modyfikowania połączenia"
 
-#: ../src/connection-editor/nm-connection-list.c:1014
+#: ../src/connection-editor/nm-connection-list.c:1048
 #, c-format
 msgid "Did not find a connection with UUID '%s'"
 msgstr "Nie odnaleziono połączenia z UUID \"%s\""
@@ -2545,7 +2544,7 @@ msgstr "Sieć modemowa _DUN"
 msgid "Could not load bond user interface."
 msgstr "Nie można wczytać interfejsu użytkownika łączenia."
 
-#: ../src/connection-editor/page-bond.c:624
+#: ../src/connection-editor/page-bond.c:623
 #, c-format
 msgid "Bond connection %d"
 msgstr "Łączone połączenie %d"
@@ -2842,22 +2841,22 @@ msgstr "Ustawienia PPP"
 msgid "Could not load PPP user interface."
 msgstr "Nie można wczytać interfejsu użytkownika PPP."
 
-#: ../src/connection-editor/page-team.c:92
+#: ../src/connection-editor/page-team.c:101
 #: ../src/connection-editor/page-team-port.c:77
 #: ../src/connection-editor/vpn-helpers.c:239
 msgid "Select file to import"
 msgstr "Wybór pliku do zaimportowania"
 
-#: ../src/connection-editor/page-team.c:112
+#: ../src/connection-editor/page-team.c:121
 #: ../src/connection-editor/page-team-port.c:97
 msgid "Error: file doesn't contain a valid JSON configuration"
 msgstr "Błąd: plik nie zawiera prawidłowej konfiguracji JSON"
 
-#: ../src/connection-editor/page-team.c:247
+#: ../src/connection-editor/page-team.c:273
 msgid "Could not load team user interface."
 msgstr "Nie można wczytać interfejsu użytkownika zespołu."
 
-#: ../src/connection-editor/page-team.c:342
+#: ../src/connection-editor/page-team.c:380
 #, c-format
 msgid "Team connection %d"
 msgstr "Połączenie zespołowe %d"
