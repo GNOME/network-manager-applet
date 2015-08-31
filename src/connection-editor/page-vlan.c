@@ -57,6 +57,7 @@ typedef struct {
 	GtkEntry *name_entry;
 	GtkEntry *cloned_mac;
 	GtkSpinButton *mtu;
+	GtkToggleButton *flag_reorder_hdr, *flag_gvrp, *flag_loose_binding;
 
 	char *last_parent;
 	int last_id;
@@ -88,6 +89,9 @@ vlan_private_init (CEPageVlan *self)
 	priv->name_entry = GTK_ENTRY (gtk_builder_get_object (builder, "vlan_name_entry"));
 	priv->cloned_mac = GTK_ENTRY (gtk_builder_get_object (builder, "vlan_cloned_mac_entry"));
 	priv->mtu = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "vlan_mtu"));
+	priv->flag_reorder_hdr = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "reorder_hdr_flag"));
+	priv->flag_gvrp = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "gvrp_flag"));
+	priv->flag_loose_binding = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "loose_binding_flag"));
 
 	priv->toplevel = GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (priv->mtu),
 	                                                      GTK_TYPE_WINDOW));
@@ -444,6 +448,7 @@ populate_ui (CEPageVlan *self)
 	NMDevice *device, *parent_device = NULL;
 	const char *parent, *iface, *current_parent;
 	int i, mtu_def, mtu_val;
+	guint32 flags;
 
 	devices = get_vlan_devices (self);
 
@@ -544,6 +549,15 @@ populate_ui (CEPageVlan *self)
 	gtk_spin_button_set_value (priv->mtu, (gdouble) mtu_val);
 	g_signal_connect (priv->mtu, "value-changed", G_CALLBACK (stuff_changed), self);
 
+	/* Flags */
+	flags = nm_setting_vlan_get_flags (priv->setting);
+	if (flags & NM_VLAN_FLAG_REORDER_HEADERS)
+		gtk_toggle_button_set_active (priv->flag_reorder_hdr, TRUE);
+	if (flags & NM_VLAN_FLAG_GVRP)
+		gtk_toggle_button_set_active (priv->flag_gvrp, TRUE);
+	if (flags & NM_VLAN_FLAG_LOOSE_BINDING)
+		gtk_toggle_button_set_active (priv->flag_loose_binding, TRUE);
+
 	g_slist_free (devices);
 }
 
@@ -609,6 +623,7 @@ ui_to_setting (CEPageVlan *self)
 	GType hwtype;
 	gboolean mtu_set;
 	int mtu;
+	guint32 flags = 0;
 
 	active_id = gtk_combo_box_get_active (GTK_COMBO_BOX (priv->parent));
 	parent_id = get_parents_index (priv->parents_len, GTK_COMBO_BOX (priv->parent), active_id);
@@ -656,10 +671,19 @@ ui_to_setting (CEPageVlan *self)
 	iface = gtk_entry_get_text (priv->name_entry);
 	vid = gtk_spin_button_get_value_as_int (priv->id_entry);
 
+	/* Flags */
+	if (gtk_toggle_button_get_active (priv->flag_reorder_hdr))
+		flags |= NM_VLAN_FLAG_REORDER_HEADERS;
+	if (gtk_toggle_button_get_active (priv->flag_gvrp))
+		flags |= NM_VLAN_FLAG_GVRP;
+	if (gtk_toggle_button_get_active (priv->flag_loose_binding))
+		flags |= NM_VLAN_FLAG_LOOSE_BINDING;
+
 	g_object_set (s_con, NM_SETTING_CONNECTION_INTERFACE_NAME, *iface ? iface : NULL, NULL);
 	g_object_set (priv->setting,
 	              NM_SETTING_VLAN_PARENT, parent_uuid ? parent_uuid : parent_iface,
 	              NM_SETTING_VLAN_ID, vid,
+	              NM_SETTING_VLAN_FLAGS, flags,
 	              NULL);
 
 	if (hwtype != G_TYPE_NONE) {
