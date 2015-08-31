@@ -730,13 +730,13 @@ typedef struct {
 } PopupMenuItemInfo;
 
 static void
-popup_menu_item_info_destroy (gpointer data)
+popup_menu_item_info_destroy (gpointer data, GClosure *closure)
 {
 	PopupMenuItemInfo *info = (PopupMenuItemInfo *) data;
 
 	if (info->setting)
 		g_object_unref (info->setting);
-	g_slice_free (PopupMenuItemInfo, data);
+	g_slice_free (PopupMenuItemInfo, info);
 }
 
 static void
@@ -824,11 +824,8 @@ nma_utils_setup_password_storage (GtkWidget *passwd_entry,
 	if (with_not_required)
 		gtk_menu_shell_append (GTK_MENU_SHELL (popup_menu), item[3]);
 
-	if (setting)
-		g_object_ref (setting);
-
 	info = g_slice_new0 (PopupMenuItemInfo);
-	info->setting = setting;
+	info->setting = setting ? g_object_ref (setting) : NULL;
 	info->password_flags_name = password_flags_name;
 	info->item_number = ITEM_STORAGE_USER;
 	info->passwd_entry = passwd_entry;
@@ -838,7 +835,7 @@ nma_utils_setup_password_storage (GtkWidget *passwd_entry,
 	                       (GClosureNotify) popup_menu_item_info_destroy, 0);
 
 	info = g_slice_new0 (PopupMenuItemInfo);
-	info->setting = setting;
+	info->setting = setting ? g_object_ref (setting) : NULL;
 	info->password_flags_name = password_flags_name;
 	info->item_number = ITEM_STORAGE_SYSTEM;
 	info->passwd_entry = passwd_entry;
@@ -848,7 +845,7 @@ nma_utils_setup_password_storage (GtkWidget *passwd_entry,
 	                       (GClosureNotify) popup_menu_item_info_destroy, 0);
 
 	info = g_slice_new0 (PopupMenuItemInfo);
-	info->setting = setting;
+	info->setting = setting ? g_object_ref (setting) : NULL;
 	info->password_flags_name = password_flags_name;
 	info->item_number = ITEM_STORAGE_ASK;
 	info->passwd_entry = passwd_entry;
@@ -860,7 +857,7 @@ nma_utils_setup_password_storage (GtkWidget *passwd_entry,
 
 	if (with_not_required) {
 		info = g_slice_new0 (PopupMenuItemInfo);
-		info->setting = setting;
+		info->setting = setting ? g_object_ref (setting) : NULL;
 		info->password_flags_name = password_flags_name;
 		info->item_number = ITEM_STORAGE_UNUSED;
 		info->passwd_entry = passwd_entry;
