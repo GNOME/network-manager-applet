@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-30 17:15+0200\n"
-"PO-Revision-Date: 2015-08-30 17:17+0200\n"
+"POT-Creation-Date: 2015-09-06 21:00+0200\n"
+"PO-Revision-Date: 2015-09-06 21:01+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -763,9 +763,8 @@ msgstr "Dodanie nowego połączenia się nie powiodło"
 msgid "Error displaying connection information:"
 msgstr "Błąd podczas wyświetlania informacji o połączeniu:"
 
-#: ../src/applet-dialogs.c:75
-#: ../src/connection-editor/page-wifi-security.c:311
-#: ../src/libnma/nma-wifi-dialog.c:908 ../src/libnm-gtk/nm-wifi-dialog.c:924
+#: ../src/applet-dialogs.c:75 ../src/connection-editor/page-wifi-security.c:311
+#: ../src/libnma/nma-wifi-dialog.c:935 ../src/libnm-gtk/nm-wifi-dialog.c:951
 #: ../src/wireless-security/wireless-security.c:436
 msgid "LEAP"
 msgstr "LEAP"
@@ -1088,8 +1087,7 @@ msgstr ""
 "połączenie sieciowe."
 
 #: ../src/connection-editor/ce-new-connection.ui.h:1 ../src/libnma/wifi.ui.h:1
-#: ../src/libnm-gtk/wifi.ui.h:1
-#: ../src/wireless-security/eap-method-fast.ui.h:1
+#: ../src/libnm-gtk/wifi.ui.h:1 ../src/wireless-security/eap-method-fast.ui.h:1
 #: ../src/wireless-security/eap-method-peap.ui.h:1
 #: ../src/wireless-security/eap-method-ttls.ui.h:1
 #: ../src/wireless-security/ws-dynamic-wep.ui.h:1
@@ -1891,13 +1889,29 @@ msgstr "Sk_lonowany adres MAC:"
 msgid "VLAN _id:"
 msgstr "_Identyfikator VLAN:"
 
-#. In context, this means "concatenate the device name and the VLAN ID number together"
+#: ../src/connection-editor/ce-page-vlan.ui.h:7
+msgid "Flags:"
+msgstr "Flagi:"
+
 #: ../src/connection-editor/ce-page-vlan.ui.h:8
+msgid "_Reorder headers"
+msgstr "_Zmiana kolejności nagłówków"
+
+#: ../src/connection-editor/ce-page-vlan.ui.h:9
+msgid "_GVRP"
+msgstr "_GVRP"
+
+#: ../src/connection-editor/ce-page-vlan.ui.h:10
+msgid "_Loose binding"
+msgstr "_Luźne dowiązanie"
+
+#. In context, this means "concatenate the device name and the VLAN ID number together"
+#: ../src/connection-editor/ce-page-vlan.ui.h:12
 msgid "Device name + number"
 msgstr "Nazwa urządzenia + numer"
 
 #. LEAVE "vlan" UNTRANSLATED. In context, this means "concatenate the string
-#: ../src/connection-editor/ce-page-vlan.ui.h:10
+#: ../src/connection-editor/ce-page-vlan.ui.h:14
 msgid "\"vlan\" + number"
 msgstr "\"vlan\" + numer"
 
@@ -2053,7 +2067,7 @@ msgid "Bridge"
 msgstr "Mostek"
 
 #: ../src/connection-editor/connection-helpers.c:114
-#: ../src/connection-editor/page-vlan.c:575 ../src/libnm-gtk/nm-ui-utils.c:342
+#: ../src/connection-editor/page-vlan.c:589 ../src/libnm-gtk/nm-ui-utils.c:342
 #: ../src/libnm-gtk/nm-ui-utils.c:586
 msgid "VLAN"
 msgstr "VLAN"
@@ -2659,21 +2673,21 @@ msgstr "Nie można wczytać interfejsu użytkownika portu zespołowego."
 #. Translators: the first %s is a device name (eg, "em1"), the
 #. * second is a connection name (eg, "Auto Ethernet").
 #.
-#: ../src/connection-editor/page-vlan.c:412
+#: ../src/connection-editor/page-vlan.c:416
 #, c-format
 msgid "%s (via \"%s\")"
 msgstr "%s (przez „%s”)"
 
-#: ../src/connection-editor/page-vlan.c:424
+#: ../src/connection-editor/page-vlan.c:428
 #, c-format
 msgid "New connection..."
 msgstr "Nowe połączenie…"
 
-#: ../src/connection-editor/page-vlan.c:577
+#: ../src/connection-editor/page-vlan.c:591
 msgid "Could not load vlan user interface."
 msgstr "Nie można wczytać interfejsu użytkownika VLAN."
 
-#: ../src/connection-editor/page-vlan.c:767
+#: ../src/connection-editor/page-vlan.c:791
 #, c-format
 msgid "VLAN connection %d"
 msgstr "Połączenie VLAN %d"
@@ -2750,27 +2764,27 @@ msgid "Wi-Fi connection %d"
 msgstr "Połączenie Wi-Fi %d"
 
 #: ../src/connection-editor/page-wifi-security.c:288
-#: ../src/libnma/nma-wifi-dialog.c:882 ../src/libnm-gtk/nm-wifi-dialog.c:898
+#: ../src/libnma/nma-wifi-dialog.c:909 ../src/libnm-gtk/nm-wifi-dialog.c:925
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "40/128-bitowy klucz WEP (szesnastkowy lub ASCII)"
 
 #: ../src/connection-editor/page-wifi-security.c:298
-#: ../src/libnma/nma-wifi-dialog.c:891 ../src/libnm-gtk/nm-wifi-dialog.c:907
+#: ../src/libnma/nma-wifi-dialog.c:918 ../src/libnm-gtk/nm-wifi-dialog.c:934
 msgid "WEP 128-bit Passphrase"
 msgstr "128-bitowe hasło WEP"
 
 #: ../src/connection-editor/page-wifi-security.c:324
-#: ../src/libnma/nma-wifi-dialog.c:921 ../src/libnm-gtk/nm-wifi-dialog.c:937
+#: ../src/libnma/nma-wifi-dialog.c:948 ../src/libnm-gtk/nm-wifi-dialog.c:964
 msgid "Dynamic WEP (802.1x)"
 msgstr "Dynamiczny WEP (802.1x)"
 
 #: ../src/connection-editor/page-wifi-security.c:338
-#: ../src/libnma/nma-wifi-dialog.c:935 ../src/libnm-gtk/nm-wifi-dialog.c:951
+#: ../src/libnma/nma-wifi-dialog.c:962 ../src/libnm-gtk/nm-wifi-dialog.c:978
 msgid "WPA & WPA2 Personal"
 msgstr "WPA i WPA2 Personal"
 
 #: ../src/connection-editor/page-wifi-security.c:352
-#: ../src/libnma/nma-wifi-dialog.c:949 ../src/libnm-gtk/nm-wifi-dialog.c:965
+#: ../src/libnma/nma-wifi-dialog.c:976 ../src/libnm-gtk/nm-wifi-dialog.c:992
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA i WPA2 Enterprise"
 
@@ -3093,55 +3107,67 @@ msgstr "_Trzecie hasło:"
 msgid "Sh_ow passwords"
 msgstr "_Wyświetlanie haseł"
 
-#: ../src/libnma/nma-wifi-dialog.c:431 ../src/libnm-gtk/nm-wifi-dialog.c:441
+#: ../src/libnma/nma-wifi-dialog.c:135 ../src/libnm-gtk/nm-wifi-dialog.c:144
+msgid "Click to connect"
+msgstr "Kliknięcie połączy"
+
+#: ../src/libnma/nma-wifi-dialog.c:136 ../src/libnm-gtk/nm-wifi-dialog.c:145
+msgid ""
+"Either a password is missing or the connection is invalid. In the latter "
+"case, you have to edit the connection with nm-connection-editor first"
+msgstr ""
+"Brak hasła lub połączenie jest nieprawidłowe. W tym drugim przypadku należy "
+"najpierw zmodyfikować połączenie za pomocą programu nm-connection-editor"
+
+#: ../src/libnma/nma-wifi-dialog.c:458 ../src/libnm-gtk/nm-wifi-dialog.c:468
 msgid "New..."
 msgstr "Nowe…"
 
-#: ../src/libnma/nma-wifi-dialog.c:865 ../src/libnm-gtk/nm-wifi-dialog.c:881
+#: ../src/libnma/nma-wifi-dialog.c:892 ../src/libnm-gtk/nm-wifi-dialog.c:908
 msgctxt "Wifi/wired security"
 msgid "None"
 msgstr "Brak"
 
-#: ../src/libnma/nma-wifi-dialog.c:1033 ../src/libnm-gtk/nm-wifi-dialog.c:1051
+#: ../src/libnma/nma-wifi-dialog.c:1060 ../src/libnm-gtk/nm-wifi-dialog.c:1078
 msgid "C_reate"
 msgstr "_Utwórz"
 
-#: ../src/libnma/nma-wifi-dialog.c:1117 ../src/libnm-gtk/nm-wifi-dialog.c:1135
+#: ../src/libnma/nma-wifi-dialog.c:1146 ../src/libnm-gtk/nm-wifi-dialog.c:1164
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the Wi-Fi network '%s'."
 msgstr ""
 "Do połączenia z siecią Wi-Fi „%s” wymagane są hasła lub klucze szyfrujące."
 
-#: ../src/libnma/nma-wifi-dialog.c:1119 ../src/libnm-gtk/nm-wifi-dialog.c:1137
+#: ../src/libnma/nma-wifi-dialog.c:1148 ../src/libnm-gtk/nm-wifi-dialog.c:1166
 msgid "Wi-Fi Network Authentication Required"
 msgstr "Wymagane uwierzytelnienie w sieci Wi-Fi"
 
-#: ../src/libnma/nma-wifi-dialog.c:1121 ../src/libnm-gtk/nm-wifi-dialog.c:1139
+#: ../src/libnma/nma-wifi-dialog.c:1150 ../src/libnm-gtk/nm-wifi-dialog.c:1168
 msgid "Authentication required by Wi-Fi network"
 msgstr "Wymagane uwierzytelnienie w sieci Wi-Fi"
 
-#: ../src/libnma/nma-wifi-dialog.c:1126 ../src/libnm-gtk/nm-wifi-dialog.c:1144
+#: ../src/libnma/nma-wifi-dialog.c:1155 ../src/libnm-gtk/nm-wifi-dialog.c:1173
 msgid "Create New Wi-Fi Network"
 msgstr "Tworzenie nowej sieci Wi-Fi"
 
-#: ../src/libnma/nma-wifi-dialog.c:1128 ../src/libnm-gtk/nm-wifi-dialog.c:1146
+#: ../src/libnma/nma-wifi-dialog.c:1157 ../src/libnm-gtk/nm-wifi-dialog.c:1175
 msgid "New Wi-Fi network"
 msgstr "Nowa sieć Wi-Fi"
 
-#: ../src/libnma/nma-wifi-dialog.c:1129 ../src/libnm-gtk/nm-wifi-dialog.c:1147
+#: ../src/libnma/nma-wifi-dialog.c:1158 ../src/libnm-gtk/nm-wifi-dialog.c:1176
 msgid "Enter a name for the Wi-Fi network you wish to create."
 msgstr "Proszę wprowadzić nazwę sieci Wi-Fi, jaka ma zostać utworzona."
 
-#: ../src/libnma/nma-wifi-dialog.c:1131 ../src/libnm-gtk/nm-wifi-dialog.c:1149
+#: ../src/libnma/nma-wifi-dialog.c:1160 ../src/libnm-gtk/nm-wifi-dialog.c:1178
 msgid "Connect to Hidden Wi-Fi Network"
 msgstr "Połączenie z ukrytą siecią Wi-Fi"
 
-#: ../src/libnma/nma-wifi-dialog.c:1133 ../src/libnm-gtk/nm-wifi-dialog.c:1151
+#: ../src/libnma/nma-wifi-dialog.c:1162 ../src/libnm-gtk/nm-wifi-dialog.c:1180
 msgid "Hidden Wi-Fi network"
 msgstr "Ukryta sieć Wi-Fi"
 
-#: ../src/libnma/nma-wifi-dialog.c:1134 ../src/libnm-gtk/nm-wifi-dialog.c:1152
+#: ../src/libnma/nma-wifi-dialog.c:1163 ../src/libnm-gtk/nm-wifi-dialog.c:1181
 msgid ""
 "Enter the name and security details of the hidden Wi-Fi network you wish to "
 "connect to."
