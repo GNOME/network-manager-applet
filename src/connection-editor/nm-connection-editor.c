@@ -229,10 +229,10 @@ connection_editor_validate (NMConnectionEditor *editor)
 				printed = TRUE;
 				if (error) {
 					g_warning ("Invalid setting %s: %s", CE_PAGE (iter->data)->title, error->message);
-					g_error_free (error);
 				} else
 					g_warning ("Invalid setting %s", CE_PAGE (iter->data)->title);
 			}
+			g_clear_error (&error);
 		}
 	}
 
