@@ -34,7 +34,7 @@ G_DEFINE_TYPE (CEPolkitButton, ce_polkit_button, GTK_TYPE_BUTTON)
 typedef struct {
 	char *tooltip;
 	char *auth_tooltip;
-	gboolean master_sensitive;
+	char *validation_error;
 
 	GtkWidget *stock;
 	GtkWidget *auth;
@@ -65,7 +65,9 @@ update_button (CEPolkitButton *self)
 
 	gtk_widget_set_sensitive (GTK_WIDGET (self), actionable);
 
-	if (priv->permission_result == NM_CLIENT_PERMISSION_RESULT_AUTH)
+	if (priv->validation_error)
+		gtk_widget_set_tooltip_text (GTK_WIDGET (self), priv->validation_error);
+	else if (priv->permission_result == NM_CLIENT_PERMISSION_RESULT_AUTH)
 		gtk_widget_set_tooltip_text (GTK_WIDGET (self), priv->auth_tooltip);
 	else if (priv->permission_result == NM_CLIENT_PERMISSION_RESULT_YES)
 		gtk_widget_set_tooltip_text (GTK_WIDGET (self), priv->tooltip);
@@ -90,16 +92,24 @@ update_and_emit (CEPolkitButton *self, gboolean old_actionable)
 }
 
 void
-ce_polkit_button_set_master_sensitive (CEPolkitButton *self, gboolean sensitive)
+ce_polkit_button_set_validation_error (CEPolkitButton *self, const char *validation_error)
 {
+	CEPolkitButtonPrivate *priv;
 	gboolean old_actionable;
 
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (CE_IS_POLKIT_BUTTON (self));
 
-	old_actionable = ce_polkit_button_get_actionable (self);
-	CE_POLKIT_BUTTON_GET_PRIVATE (self)->master_sensitive = sensitive;
-	update_and_emit (self, old_actionable);
+	priv = CE_POLKIT_BUTTON_GET_PRIVATE (self);
+
+	if (g_strcmp0 (validation_error, priv->validation_error) != 0) {
+		old_actionable = ce_polkit_button_get_actionable (self);
+
+		g_free (priv->validation_error);
+		priv->validation_error = g_strdup (validation_error);
+
+		update_and_emit (self, old_actionable);
+	}
 }
 
 gboolean
@@ -112,7 +122,7 @@ ce_polkit_button_get_actionable (CEPolkitButton *self)
 
 	priv = CE_POLKIT_BUTTON_GET_PRIVATE (self);
 
-	return    priv->master_sensitive
+	return    !priv->validation_error
 	       && ce_polkit_button_get_authorized (self);
 }
 
@@ -216,6 +226,7 @@ finalize (GObject *object)
 
 	g_free (priv->tooltip);
 	g_free (priv->auth_tooltip);
+	g_free (priv->validation_error);
 
 	G_OBJECT_CLASS (ce_polkit_button_parent_class)->finalize (object);
 }

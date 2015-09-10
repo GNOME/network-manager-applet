@@ -404,12 +404,12 @@ pk_button_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
 		if (connection) {
 			s_con = nm_connection_get_setting_connection (NM_CONNECTION (connection));
 			g_assert (s_con);
-	
+
 			sensitive = !nm_setting_connection_get_read_only (s_con);
 		}
 	}
 
-	ce_polkit_button_set_master_sensitive (button, sensitive);
+	ce_polkit_button_set_validation_error (button, sensitive ? NULL : _("Connection cannot be modified"));
 }
 
 static void
