@@ -139,7 +139,7 @@ ui_to_setting (CEPageBridgePort *self)
 }
 
 static gboolean
-validate (CEPage *page, NMConnection *connection, GError **error)
+ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageBridgePort *self = CE_PAGE_BRIDGE_PORT (page);
 	CEPageBridgePortPrivate *priv = CE_PAGE_BRIDGE_PORT_GET_PRIVATE (self);
@@ -162,5 +162,5 @@ ce_page_bridge_port_class_init (CEPageBridgePortClass *bridge_port_class)
 	g_type_class_add_private (object_class, sizeof (CEPageBridgePortPrivate));
 
 	/* virtual methods */
-	parent_class->validate = validate;
+	parent_class->ce_page_validate_v = ce_page_validate_v;
 }

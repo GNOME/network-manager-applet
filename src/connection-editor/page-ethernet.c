@@ -325,7 +325,7 @@ ui_to_setting (CEPageEthernet *self)
 }
 
 static gboolean
-validate (CEPage *page, NMConnection *connection, GError **error)
+ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageEthernet *self = CE_PAGE_ETHERNET (page);
 	CEPageEthernetPrivate *priv = CE_PAGE_ETHERNET_GET_PRIVATE (self);
@@ -358,7 +358,7 @@ ce_page_ethernet_class_init (CEPageEthernetClass *ethernet_class)
 	g_type_class_add_private (object_class, sizeof (CEPageEthernetPrivate));
 
 	/* virtual methods */
-	parent_class->validate = validate;
+	parent_class->ce_page_validate_v = ce_page_validate_v;
 }
 
 

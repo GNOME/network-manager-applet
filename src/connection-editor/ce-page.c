@@ -128,8 +128,8 @@ ce_page_validate (CEPage *self, NMConnection *connection, GError **error)
 	g_return_val_if_fail (CE_IS_PAGE (self), FALSE);
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
 
-	if (CE_PAGE_GET_CLASS (self)->validate)
-		return CE_PAGE_GET_CLASS (self)->validate (self, connection, error);
+	if (CE_PAGE_GET_CLASS (self)->ce_page_validate_v)
+		return CE_PAGE_GET_CLASS (self)->ce_page_validate_v (self, connection, error);
 
 	return TRUE;
 }

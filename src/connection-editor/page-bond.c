@@ -554,13 +554,13 @@ ui_to_setting (CEPageBond *self)
 }
 
 static gboolean
-validate (CEPage *page, NMConnection *connection, GError **error)
+ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageBond *self = CE_PAGE_BOND (page);
 	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
 	const char *primary;
 
-	if (!CE_PAGE_CLASS (ce_page_bond_parent_class)->validate (page, connection, error))
+	if (!CE_PAGE_CLASS (ce_page_bond_parent_class)->ce_page_validate_v (page, connection, error))
 		return FALSE;
 
 	primary = gtk_entry_get_text (priv->primary);
@@ -591,7 +591,7 @@ ce_page_bond_class_init (CEPageBondClass *bond_class)
 	g_type_class_add_private (object_class, sizeof (CEPageBondPrivate));
 
 	/* virtual methods */
-	parent_class->validate = validate;
+	parent_class->ce_page_validate_v = ce_page_validate_v;
 
 	master_class->connection_added = connection_added;
 	master_class->connection_removed = connection_removed;
