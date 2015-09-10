@@ -21,10 +21,12 @@
  */
 
 #include <string.h>
+#include <glib/gi18n.h>
 
 #include "wireless-security.h"
 #include "helpers.h"
 #include "nma-ui-utils.h"
+#include "utils.h"
 
 struct _WirelessSecurityLEAP {
 	WirelessSecurity parent;
@@ -46,7 +48,7 @@ show_toggled_cb (GtkCheckButton *button, WirelessSecurity *sec)
 }
 
 static gboolean
-validate (WirelessSecurity *parent)
+validate (WirelessSecurity *parent, GError **error)
 {
 	GtkWidget *entry;
 	const char *text;
@@ -54,14 +56,18 @@ validate (WirelessSecurity *parent)
 	entry = GTK_WIDGET (gtk_builder_get_object (parent->builder, "leap_username_entry"));
 	g_assert (entry);
 	text = gtk_entry_get_text (GTK_ENTRY (entry));
-	if (!text || !strlen (text))
+	if (!text || !strlen (text)) {
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("missing leap-username"));
 		return FALSE;
+	}
 
 	entry = GTK_WIDGET (gtk_builder_get_object (parent->builder, "leap_password_entry"));
 	g_assert (entry);
 	text = gtk_entry_get_text (GTK_ENTRY (entry));
-	if (!text || !strlen (text))
+	if (!text || !strlen (text)) {
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("missing leap-password"));
 		return FALSE;
+	}
 
 	return TRUE;
 }

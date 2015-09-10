@@ -44,9 +44,9 @@ destroy (WirelessSecurity *parent)
 }
 
 static gboolean
-validate (WirelessSecurity *parent)
+validate (WirelessSecurity *parent, GError **error)
 {
-	return ws_802_1x_validate (parent, "wpa_eap_auth_combo");
+	return ws_802_1x_validate (parent, "wpa_eap_auth_combo", error);
 }
 
 static void

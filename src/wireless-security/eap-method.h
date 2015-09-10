@@ -41,7 +41,7 @@ typedef void        (*EMAddToSizeGroupFunc) (EAPMethod *method, GtkSizeGroup *gr
 typedef void        (*EMFillConnectionFunc) (EAPMethod *method, NMConnection *connection, NMSettingSecretFlags flags);
 typedef void        (*EMUpdateSecretsFunc)  (EAPMethod *method, NMConnection *connection);
 typedef void        (*EMDestroyFunc)        (EAPMethod *method);
-typedef gboolean    (*EMValidateFunc)       (EAPMethod *method);
+typedef gboolean    (*EMValidateFunc)       (EAPMethod *method, GError **error);
 
 struct _EAPMethod {
 	guint32 refcount;
@@ -68,7 +68,7 @@ struct _EAPMethod {
 
 GtkWidget *eap_method_get_widget (EAPMethod *method);
 
-gboolean eap_method_validate (EAPMethod *method);
+gboolean eap_method_validate (EAPMethod *method, GError **error);
 
 void eap_method_add_to_size_group (EAPMethod *method, GtkSizeGroup *group);
 
@@ -116,7 +116,8 @@ gboolean eap_method_validate_filepicker (GtkBuilder *builder,
                                          const char *name,
                                          guint32 item_type,
                                          const char *password,
-                                         NMSetting8021xCKFormat *out_format);
+                                         NMSetting8021xCKFormat *out_format,
+                                         GError **error);
 
 void eap_method_phase2_update_secrets_helper (EAPMethod *method,
                                               NMConnection *connection,

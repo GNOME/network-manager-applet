@@ -558,13 +558,12 @@ ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageBond *self = CE_PAGE_BOND (page);
 	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
-	const char *primary;
 
 	if (!CE_PAGE_CLASS (ce_page_bond_parent_class)->ce_page_validate_v (page, connection, error))
 		return FALSE;
 
-	primary = gtk_entry_get_text (priv->primary);
-	if (primary && *primary && !nm_utils_iface_valid_name (primary))
+	if (!ce_page_interface_name_valid (gtk_entry_get_text (priv->primary),
+	                                   _("primary"), error))
 		return FALSE;
 
 	ui_to_setting (self);

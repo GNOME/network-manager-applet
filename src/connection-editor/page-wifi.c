@@ -529,7 +529,7 @@ ui_to_setting (CEPageWifi *self)
 		bssid = gtk_entry_get_text (GTK_ENTRY (entry));
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_combo));
 	if (entry)
-		ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, &ifname, &device_mac);
+		ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, &ifname, &device_mac, NULL, NULL);
 	cloned_mac = gtk_entry_get_text (priv->cloned_mac);
 
 	g_object_set (s_con,
@@ -563,17 +563,17 @@ ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->bssid));
 	if (entry) {
-		if (!ce_page_mac_entry_valid (GTK_ENTRY (entry), ARPHRD_ETHER))
+		if (!ce_page_mac_entry_valid (GTK_ENTRY (entry), ARPHRD_ETHER, _("bssid"), error))
 			return FALSE;
 	}
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_combo));
 	if (entry) {
-		if (!ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, NULL, NULL))
+		if (!ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, NULL, NULL, _("Wi-Fi device"), error))
 			return FALSE;
 	}
 
-	if (!ce_page_mac_entry_valid (priv->cloned_mac, ARPHRD_ETHER))
+	if (!ce_page_mac_entry_valid (priv->cloned_mac, ARPHRD_ETHER, _("cloned MAC"), error))
 		return FALSE;
 
 	ui_to_setting (self);

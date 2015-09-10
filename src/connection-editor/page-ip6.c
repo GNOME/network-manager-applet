@@ -1176,7 +1176,7 @@ ce_page_ip6_new (NMConnection *connection,
 }
 
 static gboolean
-ui_to_setting (CEPageIP6 *self)
+ui_to_setting (CEPageIP6 *self, GError **error)
 {
 	CEPageIP6Private *priv = CE_PAGE_IP6_GET_PRIVATE (self);
 	GtkTreeModel *model;
@@ -1245,8 +1245,7 @@ ui_to_setting (CEPageIP6 *self)
 		if (   !addr_str
 		    || !nm_utils_ipaddr_valid (AF_INET6, addr_str)
 		    || is_address_unspecified (addr_str)) {
-			g_warning ("%s: IPv6 address '%s' missing or invalid!",
-			           __func__, addr_str ? addr_str : "<none>");
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv6 address \"%s\" invalid"), addr_str ? addr_str : "");
 			g_free (addr_str);
 			g_free (prefix_str);
 			g_free (addr_gw_str);
@@ -1254,10 +1253,7 @@ ui_to_setting (CEPageIP6 *self)
 		}
 
 		if (!is_prefix_valid (prefix_str, &prefix)) {
-			if (!prefix_str)
-				g_warning ("%s: IPv6 prefix missing!", __func__);
-			else
-				g_warning ("%s: IPv6 prefix '%s' invalid!", __func__, prefix_str);
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv6 prefix \"%s\" invalid"), prefix_str ? prefix_str : "");
 			g_free (addr_str);
 			g_free (prefix_str);
 			g_free (addr_gw_str);
@@ -1266,8 +1262,7 @@ ui_to_setting (CEPageIP6 *self)
 
 		/* Gateway is optional... */
 		if (addr_gw_str && *addr_gw_str && !nm_utils_ipaddr_valid (AF_INET6, addr_gw_str)) {
-			g_warning ("%s: IPv6 gateway '%s' invalid!",
-			           __func__, addr_gw_str);
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv6 gateway \"%s\" invalid"), addr_gw_str);
 			g_free (addr_str);
 			g_free (prefix_str);
 			g_free (addr_gw_str);
@@ -1309,6 +1304,7 @@ ui_to_setting (CEPageIP6 *self)
 			if (inet_pton (AF_INET6, stripped, &tmp_addr)) {
 				nm_setting_ip_config_add_dns (priv->setting, stripped);
 			} else {
+				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv6 DNS server \"%s\" invalid"), stripped);
 				g_strfreev (items);
 				goto out;
 			}
@@ -1366,7 +1362,7 @@ ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 	CEPageIP6 *self = CE_PAGE_IP6 (page);
 	CEPageIP6Private *priv = CE_PAGE_IP6_GET_PRIVATE (self);
 
-	if (!ui_to_setting (self))
+	if (!ui_to_setting (self, error))
 		return FALSE;
 	return nm_setting_verify (NM_SETTING (priv->setting), NULL, error);
 }

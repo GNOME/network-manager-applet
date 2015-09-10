@@ -36,8 +36,8 @@ static void
 stuff_changed_cb (WirelessSecurity *sec, gpointer user_data)
 {
 	GtkWidget *button = GTK_WIDGET (user_data);
-	
-	gtk_widget_set_sensitive (button, wireless_security_validate (sec));
+
+	gtk_widget_set_sensitive (button, wireless_security_validate (sec, NULL));
 }
 
 static void

@@ -145,7 +145,7 @@ ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 	CEPageBluetooth *self = CE_PAGE_BLUETOOTH (page);
 	CEPageBluetoothPrivate *priv = CE_PAGE_BLUETOOTH_GET_PRIVATE (self);
 
-	if (!ce_page_mac_entry_valid (priv->bdaddr, ARPHRD_ETHER))
+	if (!ce_page_mac_entry_valid (priv->bdaddr, ARPHRD_ETHER, _("bdaddr"), error))
 		return FALSE;
 
 	ui_to_setting (self);
