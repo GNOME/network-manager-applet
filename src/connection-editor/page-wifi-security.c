@@ -457,7 +457,7 @@ dispose (GObject *object)
 }
 
 static gboolean
-validate (CEPage *page, NMConnection *connection, GError **error)
+ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageWifiSecurity *self = CE_PAGE_WIFI_SECURITY (page);
 	CEPageWifiSecurityPrivate *priv = CE_PAGE_WIFI_SECURITY_GET_PRIVATE (self);
@@ -524,5 +524,5 @@ ce_page_wifi_security_class_init (CEPageWifiSecurityClass *wireless_security_cla
 	/* virtual methods */
 	object_class->dispose = dispose;
 
-	parent_class->validate = validate;
+	parent_class->ce_page_validate_v = ce_page_validate_v;
 }

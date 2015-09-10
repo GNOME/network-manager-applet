@@ -214,7 +214,7 @@ ui_to_setting (CEPageInfiniband *self)
 }
 
 static gboolean
-validate (CEPage *page, NMConnection *connection, GError **error)
+ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageInfiniband *self = CE_PAGE_INFINIBAND (page);
 	CEPageInfinibandPrivate *priv = CE_PAGE_INFINIBAND_GET_PRIVATE (self);
@@ -244,7 +244,7 @@ ce_page_infiniband_class_init (CEPageInfinibandClass *infiniband_class)
 	g_type_class_add_private (object_class, sizeof (CEPageInfinibandPrivate));
 
 	/* virtual methods */
-	parent_class->validate = validate;
+	parent_class->ce_page_validate_v = ce_page_validate_v;
 }
 
 

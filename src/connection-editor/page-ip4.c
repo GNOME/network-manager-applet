@@ -1221,7 +1221,7 @@ out:
 }
 
 static gboolean
-validate (CEPage *page, NMConnection *connection, GError **error)
+ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageIP4 *self = CE_PAGE_IP4 (page);
 	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
@@ -1266,6 +1266,6 @@ ce_page_ip4_class_init (CEPageIP4Class *ip4_class)
 	g_type_class_add_private (object_class, sizeof (CEPageIP4Private));
 
 	/* virtual methods */
-	parent_class->validate = validate;
+	parent_class->ce_page_validate_v = ce_page_validate_v;
 	object_class->dispose = dispose;
 }

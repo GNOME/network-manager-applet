@@ -82,7 +82,7 @@ typedef struct {
 	GObjectClass parent;
 
 	/* Virtual functions */
-	gboolean    (*validate)     (CEPage *self, NMConnection *connection, GError **error);
+	gboolean    (*ce_page_validate_v) (CEPage *self, NMConnection *connection, GError **error);
 	gboolean    (*last_update)  (CEPage *self, NMConnection *connection, GError **error);
 
 	/* Signals */

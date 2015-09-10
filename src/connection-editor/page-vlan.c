@@ -625,7 +625,7 @@ ui_to_setting (CEPageVlan *self)
 }
 
 static gboolean
-validate (CEPage *page, NMConnection *connection, GError **error)
+ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageVlan *self = CE_PAGE_VLAN (page);
 	CEPageVlanPrivate *priv = CE_PAGE_VLAN_GET_PRIVATE (self);
@@ -688,7 +688,7 @@ ce_page_vlan_class_init (CEPageVlanClass *vlan_class)
 
 	/* virtual methods */
 	object_class->finalize = finalize;
-	parent_class->validate = validate;
+	parent_class->ce_page_validate_v = ce_page_validate_v;
 }
 
 
