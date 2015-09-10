@@ -22,6 +22,7 @@
 
 #include <string.h>
 #include <glib.h>
+#include <glib/gi18n.h>
 
 #include <nm-setting-wireless.h>
 #include <nm-setting-wireless-security.h>
@@ -92,7 +93,7 @@ destroy (WirelessSecurity *parent)
 }
 
 static gboolean
-validate (WirelessSecurity *parent)
+validate (WirelessSecurity *parent, GError **error)
 {
 	WirelessSecurityWEPKey *sec = (WirelessSecurityWEPKey *) parent;
 	GtkWidget *entry;
@@ -103,26 +104,38 @@ validate (WirelessSecurity *parent)
 	g_assert (entry);
 
 	key = gtk_entry_get_text (GTK_ENTRY (entry));
-	if (!key)
+	if (!key) {
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("missing wep-key"));
 		return FALSE;
+	}
 
 	if (sec->type == NM_WEP_KEY_TYPE_KEY) {
 		if ((strlen (key) == 10) || (strlen (key) == 26)) {
 			for (i = 0; i < strlen (key); i++) {
-				if (!g_ascii_isxdigit (key[i]))
+				if (!g_ascii_isxdigit (key[i])) {
+					g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("invalid wep-key: key with a length of %zu must contain only hex-digits"), strlen (key));
 					return FALSE;
+				}
 			}
 		} else if ((strlen (key) == 5) || (strlen (key) == 13)) {
 			for (i = 0; i < strlen (key); i++) {
-				if (!utils_char_is_ascii_print (key[i]))
+				if (!utils_char_is_ascii_print (key[i])) {
+					g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("invalid wep-key: key with a length of %zu must contain only ascii characters"), strlen (key));
 					return FALSE;
+				}
 			}
 		} else {
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("invalid wep-key: wrong key length %zu. A key must be either of length 5/13 (ascii) or 10/26 (hex)"), strlen (key));
 			return FALSE;
 		}
 	} else if (sec->type == NM_WEP_KEY_TYPE_PASSPHRASE) {
-		if (!strlen (key) || (strlen (key) > 64))
+		if (!*key || (strlen (key) > 64)) {
+			if (!*key)
+				g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("invalid wep-key: passphrase must be non-empty"));
+			else
+				g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("invalid wep-key: passphrase must be shorter then 64 characters"));
 			return FALSE;
+		}
 	}
 
 	return TRUE;

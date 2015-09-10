@@ -22,12 +22,15 @@
 
 #include <ctype.h>
 #include <string.h>
+#include <glib/gi18n.h>
+
 #include <nm-setting-8021x.h>
 
 #include "eap-method.h"
 #include "wireless-security.h"
 #include "helpers.h"
 #include "nm-ui-utils.h"
+#include "utils.h"
 
 struct _EAPMethodLEAP {
 	EAPMethod parent;
@@ -51,18 +54,22 @@ show_toggled_cb (GtkToggleButton *button, EAPMethodLEAP *method)
 }
 
 static gboolean
-validate (EAPMethod *parent)
+validate (EAPMethod *parent, GError **error)
 {
 	EAPMethodLEAP *method = (EAPMethodLEAP *)parent;
 	const char *text;
 
 	text = gtk_entry_get_text (method->username_entry);
-	if (!text || !strlen (text))
+	if (!text || !strlen (text)) {
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("missing EAP-LEAP username"));
 		return FALSE;
+	}
 
-	text = gtk_entry_get_text (method->password_entry);
+	text = gtk_entry_get_text (method->password_entry); {
 	if (!text || !strlen (text))
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("missing EAP-LEAP password"));
 		return FALSE;
+	}
 
 	return TRUE;
 }

@@ -31,6 +31,7 @@
 
 #include "eap-method.h"
 #include "wireless-security.h"
+#include "utils.h"
 
 #define I_NAME_COLUMN   0
 #define I_METHOD_COLUMN 1
@@ -53,7 +54,7 @@ destroy (EAPMethod *parent)
 }
 
 static gboolean
-validate (EAPMethod *parent)
+validate (EAPMethod *parent, GError **error)
 {
 	GtkWidget *widget;
 	GtkTreeModel *model;
@@ -69,8 +70,10 @@ validate (EAPMethod *parent)
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_fast_pac_file_button"));
 	g_assert (widget);
 	file = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
-	if (!provisioning && !file)
+	if (!provisioning && !file) {
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("missing EAP-FAST PAC file"));
 		return FALSE;
+	}
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_fast_inner_auth_combo"));
 	g_assert (widget);
@@ -78,7 +81,7 @@ validate (EAPMethod *parent)
 	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (widget), &iter);
 	gtk_tree_model_get (model, &iter, I_METHOD_COLUMN, &eap, -1);
 	g_assert (eap);
-	valid = eap_method_validate (eap);
+	valid = eap_method_validate (eap, error);
 	eap_method_unref (eap);
 	return valid;
 }

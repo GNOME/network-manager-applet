@@ -635,17 +635,16 @@ ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 
 	parent_id = gtk_combo_box_get_active (GTK_COMBO_BOX (priv->parent));
 	if (parent_id == -1) {
-		gboolean valid;
-
 		parent = gtk_entry_get_text (priv->parent_entry);
 		parent_iface = g_strndup (parent, strcspn (parent, " "));
-		valid = nm_utils_iface_valid_name (parent_iface);
-		g_free (parent_iface);
-		if (!valid)
+		if (!ce_page_interface_name_valid (parent_iface, _("vlan parent"), error)) {
+			g_free (parent_iface);
 			return FALSE;
+		}
+		g_free (parent_iface);
 	}
 
-	if (!ce_page_mac_entry_valid (priv->cloned_mac, ARPHRD_ETHER))
+	if (!ce_page_mac_entry_valid (priv->cloned_mac, ARPHRD_ETHER, _("cloned MAC"), error))
 		return FALSE;
 
 	ui_to_setting (self);
