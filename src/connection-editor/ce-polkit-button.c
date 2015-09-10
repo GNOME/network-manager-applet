@@ -59,9 +59,12 @@ enum {
 static guint signals[LAST_SIGNAL] = { 0 };
 
 static void
-update_button (CEPolkitButton *self, gboolean actionable)
+update_button (CEPolkitButton *self)
 {
 	CEPolkitButtonPrivate *priv = CE_POLKIT_BUTTON_GET_PRIVATE (self);
+	gboolean actionable;
+
+	actionable = ce_polkit_button_get_actionable (self);
 
 	gtk_widget_set_sensitive (GTK_WIDGET (self), actionable);
 
@@ -80,7 +83,7 @@ update_and_emit (CEPolkitButton *self, gboolean old_actionable)
 	gboolean new_actionable;
 
 	new_actionable = ce_polkit_button_get_actionable (self);
-	update_button (self, new_actionable);
+	update_button (self);
 	if (new_actionable != old_actionable)
 		g_signal_emit (self, signals[ACTIONABLE], 0, new_actionable);
 }
@@ -172,8 +175,7 @@ ce_polkit_button_new (const char *label,
 	g_object_ref_sink (priv->auth);
 
 	gtk_button_set_label (GTK_BUTTON (object), label);
-	update_button (CE_POLKIT_BUTTON (object),
-	               ce_polkit_button_get_actionable (CE_POLKIT_BUTTON (object)));
+	update_button (CE_POLKIT_BUTTON (object));
 
 	permission_changed_cb (client,
 	                       permission,
