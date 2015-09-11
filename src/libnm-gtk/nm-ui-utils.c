@@ -715,7 +715,6 @@ menu_item_to_secret_flags (MenuItem item)
 	case ITEM_STORAGE_SYSTEM:
 	default:
 		break;
-		
 	}
 	return flags;
 }
@@ -735,6 +734,8 @@ popup_menu_item_info_destroy (gpointer data, GClosure *closure)
 	if (info->setting)
 		g_object_unref (info->setting);
 	g_clear_pointer (&info->password_flags_name, g_free);
+	if (info->passwd_entry)
+		g_object_remove_weak_pointer (G_OBJECT (info->passwd_entry), (gpointer *) &info->passwd_entry);
 	g_slice_free (PopupMenuItemInfo, info);
 }
 
@@ -754,7 +755,8 @@ activate_menu_item_cb (GtkMenuItem *menuitem, gpointer user_data)
 			                             flags, NULL);
 
 		/* Change icon */
-		change_password_storage_icon (info->passwd_entry, info->item_number);
+		if (info->passwd_entry)
+			change_password_storage_icon (info->passwd_entry, info->item_number);
 	}
 }
 
@@ -772,6 +774,9 @@ popup_menu_item_info_register (GtkWidget *item,
 	info->password_flags_name = g_strdup (password_flags_name);
 	info->item_number = item_number;
 	info->passwd_entry = passwd_entry;
+
+	if (info->passwd_entry)
+		g_object_add_weak_pointer (G_OBJECT (info->passwd_entry), (gpointer *) &info->passwd_entry);
 
 	g_signal_connect_data (item, "activate",
 	                       G_CALLBACK (activate_menu_item_cb),
