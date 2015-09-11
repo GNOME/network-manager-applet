@@ -348,7 +348,6 @@ static void
 ui_to_setting (CEPageGeneral *self)
 {
 	CEPageGeneralPrivate *priv = CE_PAGE_GENERAL_GET_PRIVATE (self);
-	char *zone;
 	char *uuid = NULL;
 	GtkTreeIter iter;
 	gboolean autoconnect = FALSE, everyone = FALSE;
@@ -357,12 +356,12 @@ ui_to_setting (CEPageGeneral *self)
 	 * are received from FirewallD asynchronously; got_zones indicates we are ready.
 	 */
 	if (priv->got_zones) {
+		char *zone;
+
 		zone = gtk_combo_box_text_get_active_text (priv->firewall_zone);
-
-		if (g_strcmp0 (zone, FIREWALL_ZONE_DEFAULT) == 0)
-			zone = NULL;
-		g_object_set (priv->setting, NM_SETTING_CONNECTION_ZONE, zone, NULL);
-
+		g_object_set (priv->setting, NM_SETTING_CONNECTION_ZONE,
+		              (g_strcmp0 (zone, FIREWALL_ZONE_DEFAULT) != 0) ? zone : NULL,
+		              NULL);
 		g_free (zone);
 	}
 
