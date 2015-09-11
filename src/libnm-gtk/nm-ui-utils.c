@@ -611,10 +611,10 @@ typedef enum {
 } MenuItem;
 
 static const char *icon_name_table[ITEM_STORAGE_MAX + 1] = {
-	[ITEM_STORAGE_USER]    = "document-save",
-	[ITEM_STORAGE_SYSTEM]  = "document-save-as",
-	[ITEM_STORAGE_ASK]     = "dialog-question",
-	[ITEM_STORAGE_UNUSED]  = "edit-clear",
+	[ITEM_STORAGE_USER]    = "user-info-symbolic",
+	[ITEM_STORAGE_SYSTEM]  = "system-users-symbolic",
+	[ITEM_STORAGE_ASK]     = "dialog-question-symbolic",
+	[ITEM_STORAGE_UNUSED]  = "edit-clear-all-symbolic",
 };
 static const char *icon_desc_table[ITEM_STORAGE_MAX + 1] = {
 	[ITEM_STORAGE_USER]    = N_("Store the password only for this user"),
