@@ -36,7 +36,7 @@ typedef void (*WSAddToSizeGroupFunc) (WirelessSecurity *sec, GtkSizeGroup *group
 typedef void (*WSFillConnectionFunc) (WirelessSecurity *sec, NMConnection *connection);
 typedef void (*WSUpdateSecretsFunc)  (WirelessSecurity *sec, NMConnection *connection);
 typedef void (*WSDestroyFunc)        (WirelessSecurity *sec);
-typedef gboolean (*WSValidateFunc)   (WirelessSecurity *sec, const GByteArray *ssid);
+typedef gboolean (*WSValidateFunc)   (WirelessSecurity *sec, GError **error);
 typedef GtkWidget * (*WSNagUserFunc) (WirelessSecurity *sec);
 
 struct _WirelessSecurity {
@@ -68,7 +68,7 @@ void wireless_security_set_changed_notify (WirelessSecurity *sec,
                                            WSChangedFunc func,
                                            gpointer user_data);
 
-gboolean wireless_security_validate (WirelessSecurity *sec, const GByteArray *ssid);
+gboolean wireless_security_validate (WirelessSecurity *sec, GError **error);
 
 void wireless_security_add_to_size_group (WirelessSecurity *sec,
                                           GtkSizeGroup *group);
@@ -133,7 +133,7 @@ void ws_802_1x_auth_combo_changed (GtkWidget *combo,
                                    const char *vbox_name,
                                    GtkSizeGroup *size_group);
 
-gboolean ws_802_1x_validate (WirelessSecurity *sec, const char *combo_name);
+gboolean ws_802_1x_validate (WirelessSecurity *sec, const char *combo_name, GError **error);
 
 void ws_802_1x_add_to_size_group (WirelessSecurity *sec,
                                   GtkSizeGroup *size_group,

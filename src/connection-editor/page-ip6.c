@@ -1028,7 +1028,7 @@ ce_page_ip6_new (NMConnection *connection,
 }
 
 static gboolean
-ui_to_setting (CEPageIP6 *self)
+ui_to_setting (CEPageIP6 *self, GError **error)
 {
 	CEPageIP6Private *priv = CE_PAGE_IP6_GET_PRIVATE (self);
 	GtkTreeModel *model;
@@ -1092,8 +1092,7 @@ ui_to_setting (CEPageIP6 *self)
 		/* IP address */
 		gtk_tree_model_get (model, &tree_iter, COL_ADDRESS, &item, -1);
 		if (!item || !inet_pton (AF_INET6, item, &tmp_addr)) {
-			g_warning ("%s: IPv6 address '%s' missing or invalid!",
-			           __func__, item ? item : "<none>");
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv6 address \"%s\" invalid"), item ? item : "");
 			g_free (item);
 			goto out;
 		}
@@ -1102,15 +1101,13 @@ ui_to_setting (CEPageIP6 *self)
 		/* Prefix */
 		gtk_tree_model_get (model, &tree_iter, COL_PREFIX, &item, -1);
 		if (!item) {
-			g_warning ("%s: IPv6 prefix '%s' missing!",
-			           __func__, item ? item : "<none>");
+			g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv6 prefix \"%s\" missing"));
 			goto out;
 		}
 
 		prefix = strtoul (item, &end, 10);
 		if (!end || *end || prefix == 0 || prefix > 128) {
-			g_warning ("%s: IPv6 prefix '%s' invalid!",
-			           __func__, item ? item : "<none>");
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv6 prefix \"%s\" invalid"), item);
 			g_free (item);
 			goto out;
 		}
@@ -1120,8 +1117,7 @@ ui_to_setting (CEPageIP6 *self)
 		gtk_tree_model_get (model, &tree_iter, COL_GATEWAY, &item, -1);
 		if (item && strlen (item)) {
 			if (!inet_pton (AF_INET6, item, &tmp_gw)) {
-				g_warning ("%s: IPv6 gateway '%s' missing or invalid!",
-				           __func__, item ? item : "<none>");
+				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv6 gateway \"%s\" invalid"), item);
 				g_free (item);
 				goto out;
 			}
@@ -1156,6 +1152,7 @@ ui_to_setting (CEPageIP6 *self)
 			if (inet_pton (AF_INET6, stripped, &tmp_addr)) {
 				nm_setting_ip6_config_add_dns (priv->setting, &tmp_addr);
 			} else {
+				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv6 DNS server \"%s\" invalid"), stripped);
 				g_strfreev (items);
 				goto out;
 			}
@@ -1208,12 +1205,12 @@ out:
 }
 
 static gboolean
-validate (CEPage *page, NMConnection *connection, GError **error)
+ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageIP6 *self = CE_PAGE_IP6 (page);
 	CEPageIP6Private *priv = CE_PAGE_IP6_GET_PRIVATE (self);
 
-	if (!ui_to_setting (self))
+	if (!ui_to_setting (self, error))
 		return FALSE;
 	return nm_setting_verify (NM_SETTING (priv->setting), NULL, error);
 }
@@ -1253,6 +1250,6 @@ ce_page_ip6_class_init (CEPageIP6Class *ip6_class)
 	g_type_class_add_private (object_class, sizeof (CEPageIP6Private));
 
 	/* virtual methods */
-	parent_class->validate = validate;
+	parent_class->ce_page_validate_v = ce_page_validate_v;
 	object_class->dispose = dispose;
 }

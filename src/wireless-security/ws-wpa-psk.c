@@ -22,11 +22,14 @@
 
 #include <ctype.h>
 #include <string.h>
+#include <glib/gi18n.h>
+
 #include <nm-setting-wireless.h>
 
 #include "wireless-security.h"
 #include "helpers.h"
 #include "nm-ui-utils.h"
+#include "utils.h"
 
 #define WPA_PMK_LEN 32
 
@@ -51,26 +54,30 @@ show_toggled_cb (GtkCheckButton *button, WirelessSecurity *sec)
 }
 
 static gboolean
-validate (WirelessSecurity *parent, const GByteArray *ssid)
+validate (WirelessSecurity *parent, GError **error)
 {
 	GtkWidget *entry;
 	const char *key;
-	guint32 len;
+	gsize len;
 	int i;
 
 	entry = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wpa_psk_entry"));
 	g_assert (entry);
 
 	key = gtk_entry_get_text (GTK_ENTRY (entry));
-	len = strlen (key);
-	if ((len < 8) || (len > 64))
+	len = key ? strlen (key) : 0;
+	if ((len < 8) || (len > 64)) {
+		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("invalid wpa-psk: invalid key-length %zu. Must be [8,63] bytes or 64 hex digits"), len);
 		return FALSE;
+	}
 
 	if (len == 64) {
 		/* Hex PSK */
 		for (i = 0; i < len; i++) {
-			if (!isxdigit (key[i]))
+			if (!isxdigit (key[i])) {
+				g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("invalid wpa-psk: cannot interpret key with 64 bytes as hex"));
 				return FALSE;
+			}
 		}
 	}
 

@@ -56,7 +56,7 @@ GtkWidget *ce_polkit_button_new (const char *label,
                                  NMClient *client,
                                  NMClientPermission permission);
 
-void ce_polkit_button_set_master_sensitive (CEPolkitButton *button, gboolean sensitive);
+void ce_polkit_button_set_validation_error (CEPolkitButton *self, const char *validation_error);
 
 gboolean ce_polkit_button_get_actionable (CEPolkitButton *button);
 

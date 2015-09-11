@@ -36,6 +36,7 @@
 #include <nm-setting-8021x.h>
 #include "eap-method.h"
 #include "nm-utils.h"
+#include "utils.h"
 
 G_DEFINE_BOXED_TYPE (EAPMethod, eap_method, eap_method_ref, eap_method_unref)
 
@@ -48,12 +49,17 @@ eap_method_get_widget (EAPMethod *method)
 }
 
 gboolean
-eap_method_validate (EAPMethod *method)
+eap_method_validate (EAPMethod *method, GError **error)
 {
+	gboolean result;
+
 	g_return_val_if_fail (method != NULL, FALSE);
 
 	g_assert (method->validate);
-	return (*(method->validate)) (method);
+	result = (*(method->validate)) (method, error);
+	if (!result && error && !*error)
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("undefined error in 802.1x security (wpa-eap)"));
+	return result;
 }
 
 void
@@ -209,13 +215,13 @@ eap_method_validate_filepicker (GtkBuilder *builder,
                                 const char *name,
                                 guint32 item_type,
                                 const char *password,
-                                NMSetting8021xCKFormat *out_format)
+                                NMSetting8021xCKFormat *out_format,
+                                GError **error)
 {
 	GtkWidget *widget;
 	char *filename;
 	NMSetting8021x *setting;
 	gboolean success = FALSE;
-	GError *error = NULL;
 
 	if (item_type == TYPE_PRIVATE_KEY) {
 		g_return_val_if_fail (password != NULL, FALSE);
@@ -234,25 +240,13 @@ eap_method_validate_filepicker (GtkBuilder *builder,
 	setting = (NMSetting8021x *) nm_setting_802_1x_new ();
 
 	if (item_type == TYPE_PRIVATE_KEY) {
-		if (!nm_setting_802_1x_set_private_key (setting, filename, password, NM_SETTING_802_1X_CK_SCHEME_PATH, out_format, &error)) {
-			g_warning ("Error: couldn't verify private key: %d %s",
-			           error ? error->code : -1, error ? error->message : "(none)");
-			g_clear_error (&error);
-		} else
+		if (nm_setting_802_1x_set_private_key (setting, filename, password, NM_SETTING_802_1X_CK_SCHEME_PATH, out_format, error))
 			success = TRUE;
 	} else if (item_type == TYPE_CLIENT_CERT) {
-		if (!nm_setting_802_1x_set_client_cert (setting, filename, NM_SETTING_802_1X_CK_SCHEME_PATH, out_format, &error)) {
-			g_warning ("Error: couldn't verify client certificate: %d %s",
-			           error ? error->code : -1, error ? error->message : "(none)");
-			g_clear_error (&error);
-		} else
+		if (nm_setting_802_1x_set_client_cert (setting, filename, NM_SETTING_802_1X_CK_SCHEME_PATH, out_format, error))
 			success = TRUE;
 	} else if (item_type == TYPE_CA_CERT) {
-		if (!nm_setting_802_1x_set_ca_cert (setting, filename, NM_SETTING_802_1X_CK_SCHEME_PATH, out_format, &error)) {
-			g_warning ("Error: couldn't verify CA certificate: %d %s",
-			           error ? error->code : -1, error ? error->message : "(none)");
-			g_clear_error (&error);
-		} else
+		if (nm_setting_802_1x_set_ca_cert (setting, filename, NM_SETTING_802_1X_CK_SCHEME_PATH, out_format, error))
 			success = TRUE;
 	} else
 		g_warning ("%s: invalid item type %d.", __func__, item_type);
@@ -261,6 +255,9 @@ eap_method_validate_filepicker (GtkBuilder *builder,
 
 out:
 	g_free (filename);
+
+	if (!success && error && !*error)
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("unspecified error validating eap-method file"));
 	return success;
 }
 

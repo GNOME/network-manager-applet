@@ -457,7 +457,7 @@ dispose (GObject *object)
 }
 
 static gboolean
-validate (CEPage *page, NMConnection *connection, GError **error)
+ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageWifiSecurity *self = CE_PAGE_WIFI_SECURITY (page);
 	CEPageWifiSecurityPrivate *priv = CE_PAGE_WIFI_SECURITY_GET_PRIVATE (self);
@@ -484,20 +484,17 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 		const GByteArray *ssid = nm_setting_wireless_get_ssid (s_wireless);
 
 		if (ssid) {
-			/* FIXME: get failed property and error out of wifi security objects */
-			valid = wireless_security_validate (sec, ssid);
+			valid = wireless_security_validate (sec, error);
 			if (valid)
 				wireless_security_fill_connection (sec, connection);
-			else
-				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, "Invalid Wi-Fi security");
 		} else {
-			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, "Missing SSID");
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("missing SSID"));
 			valid = FALSE;
 		}
 
 		if (priv->adhoc) {
 			if (!wireless_security_adhoc_compatible (sec)) {
-				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, "Security not compatible with Ad-Hoc mode");
+				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Security not compatible with Ad-Hoc mode"));
 				valid = FALSE;
 			}
 		}
@@ -524,5 +521,5 @@ ce_page_wifi_security_class_init (CEPageWifiSecurityClass *wireless_security_cla
 	/* virtual methods */
 	object_class->dispose = dispose;
 
-	parent_class->validate = validate;
+	parent_class->ce_page_validate_v = ce_page_validate_v;
 }

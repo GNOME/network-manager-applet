@@ -257,12 +257,12 @@ ui_to_setting (CEPageBridge *self)
 }
 
 static gboolean
-validate (CEPage *page, NMConnection *connection, GError **error)
+ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageBridge *self = CE_PAGE_BRIDGE (page);
 	CEPageBridgePrivate *priv = CE_PAGE_BRIDGE_GET_PRIVATE (self);
 
-	if (!CE_PAGE_CLASS (ce_page_bridge_parent_class)->validate (page, connection, error))
+	if (!CE_PAGE_CLASS (ce_page_bridge_parent_class)->ce_page_validate_v (page, connection, error))
 		return FALSE;
 
 	ui_to_setting (self);
@@ -284,7 +284,7 @@ ce_page_bridge_class_init (CEPageBridgeClass *bridge_class)
 	g_type_class_add_private (object_class, sizeof (CEPageBridgePrivate));
 
 	/* virtual methods */
-	parent_class->validate = validate;
+	parent_class->ce_page_validate_v = ce_page_validate_v;
 	master_class->create_connection = create_connection;
 	master_class->add_slave = add_slave;
 }

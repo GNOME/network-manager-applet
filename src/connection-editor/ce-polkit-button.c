@@ -34,18 +34,15 @@ G_DEFINE_TYPE (CEPolkitButton, ce_polkit_button, GTK_TYPE_BUTTON)
 typedef struct {
 	char *tooltip;
 	char *auth_tooltip;
-	gboolean master_sensitive;
+	char *validation_error;
 
 	GtkWidget *stock;
 	GtkWidget *auth;
 
 	NMClient *client;
 	NMClientPermission permission;
-	/* authorized = TRUE if either explicitly authorized or if the action
-	 * could be performed if the user successfully authenticated to gain the
-	 * authorization.
-	 */
-	gboolean authorized;
+
+	NMClientPermissionResult permission_result;
 
 	guint perm_id;
 } CEPolkitButtonPrivate;
@@ -59,19 +56,28 @@ enum {
 static guint signals[LAST_SIGNAL] = { 0 };
 
 static void
-update_button (CEPolkitButton *self, gboolean actionable)
+update_button (CEPolkitButton *self)
 {
 	CEPolkitButtonPrivate *priv = CE_POLKIT_BUTTON_GET_PRIVATE (self);
+	gboolean actionable;
+
+	actionable = ce_polkit_button_get_actionable (self);
 
 	gtk_widget_set_sensitive (GTK_WIDGET (self), actionable);
 
-	if (priv->authorized) {
+	if (priv->validation_error)
+		gtk_widget_set_tooltip_text (GTK_WIDGET (self), priv->validation_error);
+	else if (priv->permission_result == NM_CLIENT_PERMISSION_RESULT_AUTH)
 		gtk_widget_set_tooltip_text (GTK_WIDGET (self), priv->auth_tooltip);
-		gtk_button_set_image (GTK_BUTTON (self), priv->auth);
-	} else {
+	else if (priv->permission_result == NM_CLIENT_PERMISSION_RESULT_YES)
 		gtk_widget_set_tooltip_text (GTK_WIDGET (self), priv->tooltip);
+	else
+		gtk_widget_set_tooltip_text (GTK_WIDGET (self), _("No polkit authorization to perform the action"));
+
+	if (priv->permission_result == NM_CLIENT_PERMISSION_RESULT_YES)
 		gtk_button_set_image (GTK_BUTTON (self), priv->stock);
-	}
+	else
+		gtk_button_set_image (GTK_BUTTON (self), priv->auth);
 }
 
 static void
@@ -80,22 +86,30 @@ update_and_emit (CEPolkitButton *self, gboolean old_actionable)
 	gboolean new_actionable;
 
 	new_actionable = ce_polkit_button_get_actionable (self);
-	update_button (self, new_actionable);
+	update_button (self);
 	if (new_actionable != old_actionable)
 		g_signal_emit (self, signals[ACTIONABLE], 0, new_actionable);
 }
 
 void
-ce_polkit_button_set_master_sensitive (CEPolkitButton *self, gboolean sensitive)
+ce_polkit_button_set_validation_error (CEPolkitButton *self, const char *validation_error)
 {
+	CEPolkitButtonPrivate *priv;
 	gboolean old_actionable;
 
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (CE_IS_POLKIT_BUTTON (self));
 
-	old_actionable = ce_polkit_button_get_actionable (self);
-	CE_POLKIT_BUTTON_GET_PRIVATE (self)->master_sensitive = sensitive;
-	update_and_emit (self, old_actionable);
+	priv = CE_POLKIT_BUTTON_GET_PRIVATE (self);
+
+	if (g_strcmp0 (validation_error, priv->validation_error) != 0) {
+		old_actionable = ce_polkit_button_get_actionable (self);
+
+		g_free (priv->validation_error);
+		priv->validation_error = g_strdup (validation_error);
+
+		update_and_emit (self, old_actionable);
+	}
 }
 
 gboolean
@@ -108,16 +122,22 @@ ce_polkit_button_get_actionable (CEPolkitButton *self)
 
 	priv = CE_POLKIT_BUTTON_GET_PRIVATE (self);
 
-	return priv->master_sensitive && priv->authorized;
+	return    !priv->validation_error
+	       && ce_polkit_button_get_authorized (self);
 }
 
 gboolean
 ce_polkit_button_get_authorized (CEPolkitButton *self)
 {
+	CEPolkitButtonPrivate *priv;
+
 	g_return_val_if_fail (self != NULL, FALSE);
 	g_return_val_if_fail (CE_IS_POLKIT_BUTTON (self), FALSE);
 
-	return CE_POLKIT_BUTTON_GET_PRIVATE (self)->authorized;
+	priv = CE_POLKIT_BUTTON_GET_PRIVATE (self);
+
+	return    priv->permission_result == NM_CLIENT_PERMISSION_RESULT_YES
+	       || priv->permission_result == NM_CLIENT_PERMISSION_RESULT_AUTH;
 }
 
 static void
@@ -127,16 +147,16 @@ permission_changed_cb (NMClient *client,
                        CEPolkitButton *self)
 {
 	CEPolkitButtonPrivate *priv = CE_POLKIT_BUTTON_GET_PRIVATE (self);
-	gboolean old_actionable, old_authorized;
+	gboolean old_actionable;
+
+	if (priv->permission_result == result)
+		return;
 
 	old_actionable = ce_polkit_button_get_actionable (self);
-	old_authorized = priv->authorized;
-
-	priv->authorized = (result == NM_CLIENT_PERMISSION_RESULT_YES || result == NM_CLIENT_PERMISSION_RESULT_AUTH);
+	priv->permission_result = result;
 	update_and_emit (self, old_actionable);
 
-	if (priv->authorized != old_authorized)
-		g_signal_emit (self, signals[AUTHORIZED], 0, priv->authorized);
+	g_signal_emit (self, signals[AUTHORIZED], 0, ce_polkit_button_get_authorized (self));
 }
 
 GtkWidget *
@@ -172,8 +192,7 @@ ce_polkit_button_new (const char *label,
 	g_object_ref_sink (priv->auth);
 
 	gtk_button_set_label (GTK_BUTTON (object), label);
-	update_button (CE_POLKIT_BUTTON (object),
-	               ce_polkit_button_get_actionable (CE_POLKIT_BUTTON (object)));
+	update_button (CE_POLKIT_BUTTON (object));
 
 	permission_changed_cb (client,
 	                       permission,
@@ -207,6 +226,7 @@ finalize (GObject *object)
 
 	g_free (priv->tooltip);
 	g_free (priv->auth_tooltip);
+	g_free (priv->validation_error);
 
 	G_OBJECT_CLASS (ce_polkit_button_parent_class)->finalize (object);
 }

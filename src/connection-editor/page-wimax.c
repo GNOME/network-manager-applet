@@ -156,7 +156,7 @@ ui_to_setting (CEPageWimax *self)
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_combo));
 	if (entry)
-		ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, &ifname, &device_mac);
+		ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, &ifname, &device_mac, NULL, NULL);
 
 	g_object_set (s_con,
 	              NM_SETTING_CONNECTION_INTERFACE_NAME, ifname,
@@ -172,7 +172,7 @@ ui_to_setting (CEPageWimax *self)
 }
 
 static gboolean
-validate (CEPage *page, NMConnection *connection, GError **error)
+ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageWimax *self = CE_PAGE_WIMAX (page);
 	CEPageWimaxPrivate *priv = CE_PAGE_WIMAX_GET_PRIVATE (self);
@@ -180,12 +180,14 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	GtkWidget *entry;
 
 	name = gtk_entry_get_text (priv->name);
-	if (!*name)
+	if (!*name) {
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("WiMAX name missing"));
 		return FALSE;
+	}
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_combo));
 	if (entry) {
-		if (!ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, NULL, NULL))
+		if (!ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, NULL, NULL, _("WiMAX device"), error))
 			return FALSE;
 	}
 
@@ -207,7 +209,7 @@ ce_page_wimax_class_init (CEPageWimaxClass *wimax_class)
 	g_type_class_add_private (object_class, sizeof (CEPageWimaxPrivate));
 
 	/* virtual methods */
-	parent_class->validate = validate;
+	parent_class->ce_page_validate_v = ce_page_validate_v;
 }
 
 

@@ -540,7 +540,7 @@ ui_to_setting (CEPageWifi *self)
 		bssid = ce_page_entry_to_mac (GTK_ENTRY (entry), ARPHRD_ETHER, NULL);
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_combo));
 	if (entry)
-		ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, &ifname, &device_mac);
+		ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, &ifname, &device_mac, NULL, NULL);
 	cloned_mac = ce_page_entry_to_mac (priv->cloned_mac, ARPHRD_ETHER, NULL);
 
 	g_object_set (s_con,
@@ -570,7 +570,7 @@ ui_to_setting (CEPageWifi *self)
 }
 
 static gboolean
-validate (CEPage *page, NMConnection *connection, GError **error)
+ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageWifi *self = CE_PAGE_WIFI (page);
 	CEPageWifiPrivate *priv = CE_PAGE_WIFI_GET_PRIVATE (self);
@@ -579,17 +579,17 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->bssid));
 	if (entry) {
-		if (!ce_page_mac_entry_valid (GTK_ENTRY (entry), ARPHRD_ETHER))
+		if (!ce_page_mac_entry_valid (GTK_ENTRY (entry), ARPHRD_ETHER, _("bssid"), error))
 			return FALSE;
 	}
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_combo));
 	if (entry) {
-		if (!ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, NULL, NULL))
+		if (!ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, NULL, NULL, _("Wi-Fi device"), error))
 			return FALSE;
 	}
 
-	if (!ce_page_mac_entry_valid (priv->cloned_mac, ARPHRD_ETHER))
+	if (!ce_page_mac_entry_valid (priv->cloned_mac, ARPHRD_ETHER, _("cloned MAC"), error))
 		return FALSE;
 
 	ui_to_setting (self);
@@ -613,7 +613,7 @@ ce_page_wifi_class_init (CEPageWifiClass *wifi_class)
 	g_type_class_add_private (object_class, sizeof (CEPageWifiPrivate));
 
 	/* virtual methods */
-	parent_class->validate = validate;
+	parent_class->ce_page_validate_v = ce_page_validate_v;
 }
 
 

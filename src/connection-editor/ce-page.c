@@ -132,8 +132,13 @@ ce_page_validate (CEPage *self, NMConnection *connection, GError **error)
 	g_return_val_if_fail (CE_IS_PAGE (self), FALSE);
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
 
-	if (CE_PAGE_GET_CLASS (self)->validate)
-		return CE_PAGE_GET_CLASS (self)->validate (self, connection, error);
+	if (CE_PAGE_GET_CLASS (self)->ce_page_validate_v) {
+		if (!CE_PAGE_GET_CLASS (self)->ce_page_validate_v (self, connection, error)) {
+			if (error && !*error)
+				g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("unspecified error"));
+			return FALSE;
+		}
+	}
 
 	return TRUE;
 }
@@ -291,18 +296,30 @@ _mac_is_valid (const char *mac, int type)
 }
 
 gboolean
-ce_page_mac_entry_valid (GtkEntry *entry, int type)
+ce_page_mac_entry_valid (GtkEntry *entry, int type, const char *property_name, GError **error)
 {
 	const char *mac;
 
-	g_return_val_if_fail (entry != NULL, FALSE);
 	g_return_val_if_fail (GTK_IS_ENTRY (entry), FALSE);
 
 	mac = gtk_entry_get_text (entry);
-	if (!mac || !*mac)
-		return TRUE;
+	if (    mac && *mac
+	    &&  !_mac_is_valid (mac, type)) {
+		const char *addr_type;
 
-	return _mac_is_valid (mac, type);
+		addr_type = type == ARPHRD_ETHER ? _("MAC address") : _("HW addreess");
+		if (property_name) {
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
+			             _("invalid %s for %s (%s)"),
+			             addr_type, property_name, mac);
+		} else {
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
+			             _("invalid %s (%s)"),
+			             addr_type, mac);
+		}
+		return FALSE;
+	}
+	return TRUE;
 }
 
 void
@@ -340,6 +357,26 @@ ce_page_entry_to_mac (GtkEntry *entry, int type, gboolean *invalid)
 		return NULL;
 
 	return nm_utils_hwaddr_atoba (temp, type);
+}
+
+gboolean
+ce_page_interface_name_valid (const char *iface, const char *property_name, GError **error)
+{
+	if (iface && *iface) {
+		if (!nm_utils_iface_valid_name (iface)) {
+			if (property_name) {
+				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
+				             _("invalid interface-name for %s (%s)"),
+				             property_name, iface);
+			} else {
+				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
+				             _("invalid interface-name (%s)"),
+				             iface);
+			}
+			return FALSE;
+		}
+	}
+	return TRUE;
 }
 
 static char **
@@ -498,16 +535,19 @@ ce_page_setup_device_combo (CEPage *self,
 }
 
 gboolean
-ce_page_device_entry_get (GtkEntry *entry, int type, char **ifname, GByteArray **mac)
+ce_page_device_entry_get (GtkEntry *entry, int type, char **ifname, GByteArray **mac, const char *device_name, GError **error)
 {
 	char *first, *second;
 	const char *ifname_tmp = NULL, *mac_tmp = NULL;
 	gboolean valid = TRUE;
+	const char *str;
 
 	g_return_val_if_fail (entry != NULL, FALSE);
 	g_return_val_if_fail (GTK_IS_ENTRY (entry), FALSE);
 
-	valid = _device_entry_parse (gtk_entry_get_text (entry), &first, &second);
+	str = gtk_entry_get_text (entry);
+
+	valid = _device_entry_parse (str, &first, &second);
 
 	if (first) {
 		if (_mac_is_valid (first, type))
@@ -540,6 +580,13 @@ ce_page_device_entry_get (GtkEntry *entry, int type, char **ifname, GByteArray *
 
 	g_free (first);
 	g_free (second);
+
+	if (!valid) {
+		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
+		             _("invalid %s (%s)"),
+		             device_name ? device_name : _("device"),
+		             str);
+	}
 
 	return valid;
 }

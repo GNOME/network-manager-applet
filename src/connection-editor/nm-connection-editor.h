@@ -65,6 +65,8 @@ typedef struct {
 	gboolean busy;
 	gboolean init_run;
 	guint validate_id;
+
+	char *last_validation_error;
 } NMConnectionEditor;
 
 typedef struct {

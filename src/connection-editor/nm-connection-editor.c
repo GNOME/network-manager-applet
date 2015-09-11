@@ -131,7 +131,7 @@ nm_connection_editor_update_title (NMConnectionEditor *editor)
 }
 
 static gboolean
-ui_to_setting (NMConnectionEditor *editor)
+ui_to_setting (NMConnectionEditor *editor, GError **error)
 {
 	NMSettingConnection *s_con;
 	GtkWidget *widget;
@@ -146,8 +146,10 @@ ui_to_setting (NMConnectionEditor *editor)
 	g_object_set (G_OBJECT (s_con), NM_SETTING_CONNECTION_ID, name, NULL);
 	nm_connection_editor_update_title (editor);
 
-	if (!name || !strlen (name))
+	if (!name || !strlen (name)) {
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Missing connection name"));
 		return FALSE;
+	}
 
 	return TRUE;
 }
@@ -203,43 +205,54 @@ static void
 connection_editor_validate (NMConnectionEditor *editor)
 {
 	NMSettingConnection *s_con;
-	gboolean valid = FALSE, printed = FALSE;
 	GSList *iter;
+	char *validation_error = NULL;
+	GError *error = NULL;
 
-	if (!editor_is_initialized (editor))
+	if (!editor_is_initialized (editor)) {
+		validation_error = g_strdup (_("Editor initializing..."));
 		goto done;
+	}
 
 	s_con = nm_connection_get_setting_connection (editor->connection);
 	g_assert (s_con);
-	if (nm_setting_connection_get_read_only (s_con))
+	if (nm_setting_connection_get_read_only (s_con)) {
+		validation_error = g_strdup (_("Connection cannot be modified"));
 		goto done;
+	}
 
-	if (!ui_to_setting (editor))
+	if (!ui_to_setting (editor, &error)) {
+		validation_error = g_strdup (error->message);
+		g_clear_error (&error);
 		goto done;
+	}
 
-	valid = TRUE;
 	for (iter = editor->pages; iter; iter = g_slist_next (iter)) {
-		GError *error = NULL;
-
 		if (!ce_page_validate (CE_PAGE (iter->data), editor->connection, &error)) {
-			valid = FALSE;
-
-			/* FIXME: use the error to indicate which UI widgets are invalid */
-			if (!printed) {
-				printed = TRUE;
-				if (error) {
-					g_warning ("Invalid setting %s: %s", CE_PAGE (iter->data)->title, error->message);
-					g_error_free (error);
-				} else
-					g_warning ("Invalid setting %s", CE_PAGE (iter->data)->title);
+			if (!validation_error) {
+				validation_error = g_strdup_printf (_("Invalid setting %s: %s"),
+				                                    CE_PAGE (iter->data)->title,
+				                                    error->message);
 			}
+			g_clear_error (&error);
 		}
 	}
 
 done:
-	ce_polkit_button_set_master_sensitive (CE_POLKIT_BUTTON (editor->ok_button), valid);
-	gtk_widget_set_sensitive (editor->export_button, valid);
+	if (g_strcmp0 (validation_error, editor->last_validation_error) != 0) {
+		if (editor->last_validation_error && !validation_error)
+			g_message ("Connection validates and can be saved");
+		else if (validation_error)
+			g_message ("Cannot save connection due to error: %s", validation_error);
+		g_free (editor->last_validation_error);
+		editor->last_validation_error = g_strdup (validation_error);
+	}
+	ce_polkit_button_set_validation_error (CE_POLKIT_BUTTON (editor->ok_button), validation_error);
+	gtk_widget_set_sensitive (editor->export_button, !!validation_error);
+
 	update_sensitivity (editor);
+
+	g_free (validation_error);
 }
 
 static void
@@ -252,8 +265,8 @@ ok_button_actionable_cb (GtkWidget *button,
 
 static void
 permissions_changed_cb (NMClient *client,
-	                    NMClientPermission permission,
-	                    NMClientPermissionResult result,                       
+                        NMClientPermission permission,
+                        NMClientPermissionResult result,
                         NMConnectionEditor *editor)
 {
 	if (permission != NM_CLIENT_PERMISSION_SETTINGS_MODIFY_SYSTEM)
@@ -370,6 +383,8 @@ dispose (GObject *object)
 	g_object_unref (editor->client);
 
 	g_object_unref (editor->settings);
+
+	g_clear_pointer (&editor->last_validation_error, g_free);
 
 out:
 	G_OBJECT_CLASS (nm_connection_editor_parent_class)->dispose (object);

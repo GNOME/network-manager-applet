@@ -727,7 +727,7 @@ ui_to_setting (CEPageDcb *self, NMSettingDcb *s_dcb)
 }
 
 static gboolean
-validate (CEPage *page, NMConnection *connection, GError **error)
+ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageDcb *self = CE_PAGE_DCB (page);
 	CEPageDcbPrivate *priv = CE_PAGE_DCB_GET_PRIVATE (self);
@@ -774,5 +774,5 @@ ce_page_dcb_class_init (CEPageDcbClass *security_class)
 	/* virtual methods */
 	object_class->dispose = dispose;
 
-	parent_class->validate = validate;
+	parent_class->ce_page_validate_v = ce_page_validate_v;
 }

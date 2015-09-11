@@ -22,6 +22,8 @@
 
 #include <ctype.h>
 #include <string.h>
+#include <glib/gi18n.h>
+
 #include <nm-setting-8021x.h>
 #include <nm-setting-connection.h>
 
@@ -29,6 +31,7 @@
 #include "wireless-security.h"
 #include "helpers.h"
 #include "nm-ui-utils.h"
+#include "utils.h"
 
 struct _EAPMethodSimple {
 	EAPMethod parent;
@@ -61,22 +64,26 @@ always_ask_selected (GtkEntry *passwd_entry)
 }
 
 static gboolean
-validate (EAPMethod *parent)
+validate (EAPMethod *parent, GError **error)
 {
 	EAPMethodSimple *method = (EAPMethodSimple *)parent;
 	const char *text;
 
 	text = gtk_entry_get_text (method->username_entry);
-	if (!text || !strlen (text))
+	if (!text || !strlen (text)) {
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("missing EAP username"));
 		return FALSE;
+	}
 
 	/* Check if the password should always be requested */
 	if (always_ask_selected (method->password_entry))
 		return TRUE;
 
 	text = gtk_entry_get_text (method->password_entry);
-	if (!text || !strlen (text))
+	if (!text || !strlen (text)) {
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("missing EAP password"));
 		return FALSE;
+	}
 
 	return TRUE;
 }
