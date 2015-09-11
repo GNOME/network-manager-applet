@@ -604,7 +604,7 @@ ui_to_setting (CEPageMaster *self)
 }
 
 static gboolean
-validate (CEPage *page, NMConnection *connection, GError **error)
+ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageMaster *self = CE_PAGE_MASTER (page);
 
@@ -614,7 +614,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 
 	ui_to_setting (self);
 
-	/* Subtype validate() method will validate the interface name */
+	/* Subtype ce_page_validate_v() method will validate the interface name */
 	return TRUE;
 }
 
@@ -678,7 +678,7 @@ ce_page_master_class_init (CEPageMasterClass *master_class)
 	object_class->constructed = constructed;
 	object_class->dispose = dispose;
 
-	parent_class->validate = validate;
+	parent_class->ce_page_validate_v = ce_page_validate_v;
 	parent_class->last_update = last_update;
 
 	/* Signals */

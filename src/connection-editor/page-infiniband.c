@@ -190,7 +190,7 @@ ui_to_setting (CEPageInfiniband *self)
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_combo));
 	if (entry)
-		ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_INFINIBAND, &ifname, &device_mac);
+		ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_INFINIBAND, &ifname, &device_mac, NULL, NULL);
 
 	g_object_set (s_con,
 	              NM_SETTING_CONNECTION_INTERFACE_NAME, ifname,
@@ -206,7 +206,7 @@ ui_to_setting (CEPageInfiniband *self)
 }
 
 static gboolean
-validate (CEPage *page, NMConnection *connection, GError **error)
+ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageInfiniband *self = CE_PAGE_INFINIBAND (page);
 	CEPageInfinibandPrivate *priv = CE_PAGE_INFINIBAND_GET_PRIVATE (self);
@@ -214,7 +214,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_combo));
 	if (entry) {
-		if (!ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_INFINIBAND, NULL, NULL))
+		if (!ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_INFINIBAND, NULL, NULL, _("infiniband device"), error))
 			return FALSE;
 	}
 
@@ -236,7 +236,7 @@ ce_page_infiniband_class_init (CEPageInfinibandClass *infiniband_class)
 	g_type_class_add_private (object_class, sizeof (CEPageInfinibandPrivate));
 
 	/* virtual methods */
-	parent_class->validate = validate;
+	parent_class->ce_page_validate_v = ce_page_validate_v;
 }
 
 

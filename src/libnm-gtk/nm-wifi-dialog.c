@@ -276,7 +276,7 @@ stuff_changed_cb (WirelessSecurity *sec, gpointer user_data)
 	GByteArray *ssid = NULL;
 	gboolean free_ssid = TRUE;
 	gboolean valid = FALSE;
-	
+
 	if (priv->connection) {
 		NMSettingWireless *s_wireless;
 		s_wireless = nm_connection_get_setting_wireless (priv->connection);
@@ -288,7 +288,7 @@ stuff_changed_cb (WirelessSecurity *sec, gpointer user_data)
 	}
 
 	if (ssid) {
-		valid = wireless_security_validate (sec);
+		valid = wireless_security_validate (sec, NULL);
 		if (free_ssid)
 			g_byte_array_free (ssid, TRUE);
 	}
@@ -328,7 +328,7 @@ ssid_entry_changed (GtkWidget *entry, gpointer user_data)
 		gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
 
 	if (sec) {
-		valid = wireless_security_validate (sec);
+		valid = wireless_security_validate (sec, NULL);
 		wireless_security_unref (sec);
 	} else {
 		valid = TRUE;

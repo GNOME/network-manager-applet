@@ -1174,7 +1174,7 @@ free_one_addr (gpointer data)
 }
 
 static gboolean
-ui_to_setting (CEPageIP4 *self)
+ui_to_setting (CEPageIP4 *self, GError **error)
 {
 	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
 	GtkTreeModel *model;
@@ -1239,8 +1239,7 @@ ui_to_setting (CEPageIP4 *self)
 		if (   !addr
 		    || !nm_utils_ipaddr_valid (AF_INET, addr)
 		    || is_address_unspecified (addr)) {
-			g_warning ("%s: IPv4 address '%s' missing or invalid!",
-			           __func__, addr ? addr : "<none>");
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv4 address \"%s\" invalid"), addr ? addr : "");
 			g_free (addr);
 			g_free (netmask);
 			g_free (addr_gw);
@@ -1248,8 +1247,7 @@ ui_to_setting (CEPageIP4 *self)
 		}
 
 		if (!parse_netmask (netmask, &prefix)) {
-			g_warning ("%s: IPv4 prefix '%s' missing or invalid!",
-			           __func__, netmask ? netmask : "<none>");
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv4 address netmask \"%s\" invalid"), netmask ? netmask : "");
 			g_free (addr);
 			g_free (netmask);
 			g_free (addr_gw);
@@ -1258,8 +1256,7 @@ ui_to_setting (CEPageIP4 *self)
 
 		/* Gateway is optional... */
 		if (addr_gw && *addr_gw && !nm_utils_ipaddr_valid (AF_INET, addr_gw)) {
-			g_warning ("%s: IPv4 gateway '%s' invalid!",
-			           __func__, addr_gw);
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv4 gateway \"%s\" invalid"), addr_gw);
 			g_free (addr);
 			g_free (netmask);
 			g_free (addr_gw);
@@ -1302,6 +1299,7 @@ ui_to_setting (CEPageIP4 *self)
 			if (inet_pton (AF_INET, stripped, &tmp_addr))
 				g_ptr_array_add (tmp_array, g_strdup (stripped));
 			else {
+				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv4 DNS server \"%s\" invalid"), stripped);
 				g_strfreev (items);
 				g_ptr_array_free (tmp_array, TRUE);
 				goto out;
@@ -1364,12 +1362,12 @@ out:
 }
 
 static gboolean
-validate (CEPage *page, NMConnection *connection, GError **error)
+ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageIP4 *self = CE_PAGE_IP4 (page);
 	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
 
-	if (!ui_to_setting (self))
+	if (!ui_to_setting (self, error))
 		return FALSE;
 	return nm_setting_verify (NM_SETTING (priv->setting), NULL, error);
 }
@@ -1409,6 +1407,6 @@ ce_page_ip4_class_init (CEPageIP4Class *ip4_class)
 	g_type_class_add_private (object_class, sizeof (CEPageIP4Private));
 
 	/* virtual methods */
-	parent_class->validate = validate;
+	parent_class->ce_page_validate_v = ce_page_validate_v;
 	object_class->dispose = dispose;
 }

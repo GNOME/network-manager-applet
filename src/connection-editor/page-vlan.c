@@ -714,7 +714,7 @@ ui_to_setting (CEPageVlan *self)
 }
 
 static gboolean
-validate (CEPage *page, NMConnection *connection, GError **error)
+ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageVlan *self = CE_PAGE_VLAN (page);
 	CEPageVlanPrivate *priv = CE_PAGE_VLAN_GET_PRIVATE (self);
@@ -722,17 +722,16 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 	char *parent_iface;
 
 	if (gtk_combo_box_get_active (GTK_COMBO_BOX (priv->parent)) == -1) {
-		gboolean valid;
-
 		parent = gtk_entry_get_text (priv->parent_entry);
 		parent_iface = g_strndup (parent, strcspn (parent, " "));
-		valid = nm_utils_iface_valid_name (parent_iface);
-		g_free (parent_iface);
-		if (!valid)
+		if (!ce_page_interface_name_valid (parent_iface, _("vlan parent"), error)) {
+			g_free (parent_iface);
 			return FALSE;
+		}
+		g_free (parent_iface);
 	}
 
-	if (!ce_page_mac_entry_valid (priv->cloned_mac, ARPHRD_ETHER))
+	if (!ce_page_mac_entry_valid (priv->cloned_mac, ARPHRD_ETHER, _("cloned MAC"), error))
 		return FALSE;
 
 	ui_to_setting (self);
@@ -775,7 +774,7 @@ ce_page_vlan_class_init (CEPageVlanClass *vlan_class)
 
 	/* virtual methods */
 	object_class->finalize = finalize;
-	parent_class->validate = validate;
+	parent_class->ce_page_validate_v = ce_page_validate_v;
 }
 
 

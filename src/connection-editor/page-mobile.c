@@ -392,7 +392,7 @@ ui_to_setting (CEPageMobile *self)
 }
 
 static gboolean
-validate (CEPage *page, NMConnection *connection, GError **error)
+ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageMobile *self = CE_PAGE_MOBILE (page);
 	CEPageMobilePrivate *priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
@@ -423,7 +423,7 @@ ce_page_mobile_class_init (CEPageMobileClass *mobile_class)
 	g_type_class_add_private (object_class, sizeof (CEPageMobilePrivate));
 
 	/* virtual methods */
-	parent_class->validate = validate;
+	parent_class->ce_page_validate_v = ce_page_validate_v;
 	object_class->dispose = dispose;
 }
 

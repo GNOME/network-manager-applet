@@ -413,7 +413,7 @@ ui_to_setting (CEPageGeneral *self)
 }
 
 static gboolean
-validate (CEPage *page, NMConnection *connection, GError **error)
+ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageGeneral *self = CE_PAGE_GENERAL (page);
 	CEPageGeneralPrivate *priv = CE_PAGE_GENERAL_GET_PRIVATE (self);
@@ -438,6 +438,6 @@ ce_page_general_class_init (CEPageGeneralClass *connection_class)
 	/* virtual methods */
 	object_class->dispose = dispose;
 
-	parent_class->validate = validate;
+	parent_class->ce_page_validate_v = ce_page_validate_v;
 }
 

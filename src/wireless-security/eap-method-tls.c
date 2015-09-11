@@ -30,6 +30,7 @@
 #include "wireless-security.h"
 #include "helpers.h"
 #include "nma-ui-utils.h"
+#include "utils.h"
 
 struct _EAPMethodTLS {
 	EAPMethod parent;
@@ -52,40 +53,56 @@ show_toggled_cb (GtkCheckButton *button, EAPMethod *method)
 }
 
 static gboolean
-validate (EAPMethod *parent)
+validate (EAPMethod *parent, GError **error)
 {
 	NMSetting8021xCKFormat format = NM_SETTING_802_1X_CK_FORMAT_UNKNOWN;
 	GtkWidget *widget;
 	const char *password, *identity;
+	GError *local = NULL;
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_identity_entry"));
 	g_assert (widget);
 	identity = gtk_entry_get_text (GTK_ENTRY (widget));
-	if (!identity || !strlen (identity))
+	if (!identity || !strlen (identity)) {
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("missing EAP-TLS identity"));
 		return FALSE;
+	}
 
-	if (!eap_method_validate_filepicker (parent->builder, "eap_tls_ca_cert_button", TYPE_CA_CERT, NULL, NULL))
+	if (!eap_method_validate_filepicker (parent->builder, "eap_tls_ca_cert_button", TYPE_CA_CERT, NULL, NULL, &local)) {
+		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("invalid EAP-TLS CA certificate: %s"), local->message);
+		g_clear_error (&local);
 		return FALSE;
-	if (eap_method_ca_cert_required (parent->builder, "eap_tls_ca_cert_not_required_checkbox", "eap_tls_ca_cert_button") )
+	}
+	if (eap_method_ca_cert_required (parent->builder, "eap_tls_ca_cert_not_required_checkbox", "eap_tls_ca_cert_button")) {
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("invalid EAP-TLS CA certificate: no certificate specified"));
 		return FALSE;
-
+	}
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_private_key_password_entry"));
 	g_assert (widget);
 	password = gtk_entry_get_text (GTK_ENTRY (widget));
-	if (!password || !strlen (password))
+	if (!password || !strlen (password)) {
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("invalid EAP-TLS password: missing"));
 		return FALSE;
+	}
 
 	if (!eap_method_validate_filepicker (parent->builder,
 	                                     "eap_tls_private_key_button",
 	                                     TYPE_PRIVATE_KEY,
 	                                     password,
-	                                     &format))
+	                                     &format,
+	                                     &local)) {
+		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("invalid EAP-TLS private-key: %s"), local->message);
+		g_clear_error (&local);
 		return FALSE;
+	}
 
 	if (format != NM_SETTING_802_1X_CK_FORMAT_PKCS12) {
-		if (!eap_method_validate_filepicker (parent->builder, "eap_tls_user_cert_button", TYPE_CLIENT_CERT, NULL, NULL))
+		if (!eap_method_validate_filepicker (parent->builder, "eap_tls_user_cert_button", TYPE_CLIENT_CERT, NULL, NULL, &local)) {
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("invalid EAP-TLS user-certificate: %s"), local->message);
+			g_clear_error (&local);
 			return FALSE;
+		}
 	}
 
 	return TRUE;

@@ -248,7 +248,7 @@ validate_dialog_ssid (NMAWifiDialog *self)
 	widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "network_name_entry"));
 
 	ssid = gtk_entry_get_text (GTK_ENTRY (widget));
-	
+
 	if (!ssid || strlen (ssid) == 0 || strlen (ssid) > 32)
 		return NULL;
 
@@ -264,7 +264,7 @@ stuff_changed_cb (WirelessSecurity *sec, gpointer user_data)
 	GBytes *ssid = NULL;
 	gboolean free_ssid = TRUE;
 	gboolean valid = FALSE;
-	
+
 	if (priv->connection) {
 		NMSettingWireless *s_wireless;
 		s_wireless = nm_connection_get_setting_wireless (priv->connection);
@@ -276,7 +276,7 @@ stuff_changed_cb (WirelessSecurity *sec, gpointer user_data)
 	}
 
 	if (ssid) {
-		valid = wireless_security_validate (sec);
+		valid = wireless_security_validate (sec, NULL);
 		if (free_ssid)
 			g_bytes_unref (ssid);
 	}
@@ -316,7 +316,7 @@ ssid_entry_changed (GtkWidget *entry, gpointer user_data)
 		gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
 
 	if (sec) {
-		valid = wireless_security_validate (sec);
+		valid = wireless_security_validate (sec, NULL);
 		wireless_security_unref (sec);
 	} else {
 		valid = TRUE;
