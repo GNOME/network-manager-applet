@@ -722,7 +722,7 @@ menu_item_to_secret_flags (MenuItem item)
 
 typedef struct {
 	NMSetting *setting;
-	const char *password_flags_name;
+	char *password_flags_name;
 	MenuItem item_number;
 	GtkWidget *passwd_entry;
 } PopupMenuItemInfo;
@@ -734,6 +734,7 @@ popup_menu_item_info_destroy (gpointer data, GClosure *closure)
 
 	if (info->setting)
 		g_object_unref (info->setting);
+	g_clear_pointer (&info->password_flags_name, g_free);
 	g_slice_free (PopupMenuItemInfo, info);
 }
 
@@ -768,7 +769,7 @@ popup_menu_item_info_register (GtkWidget *item,
 
 	info = g_slice_new0 (PopupMenuItemInfo);
 	info->setting = setting ? g_object_ref (setting) : NULL;
-	info->password_flags_name = password_flags_name;
+	info->password_flags_name = g_strdup (password_flags_name);
 	info->item_number = item_number;
 	info->passwd_entry = passwd_entry;
 
