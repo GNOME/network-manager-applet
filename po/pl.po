@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-09 19:10+0200\n"
-"PO-Revision-Date: 2015-09-09 19:11+0200\n"
+"POT-Creation-Date: 2015-09-12 20:50+0200\n"
+"PO-Revision-Date: 2015-09-12 20:52+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -973,7 +973,7 @@ msgstr "Błąd podczas wyświetlania informacji o połączeniu:"
 #: ../src/applet-dialogs.c:109
 #: ../src/connection-editor/page-wifi-security.c:318
 #: ../src/libnm-gtk/nm-wifi-dialog.c:951
-#: ../src/wireless-security/wireless-security.c:442
+#: ../src/wireless-security/wireless-security.c:449
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -1500,7 +1500,44 @@ msgstr "automatycznie"
 msgid "default"
 msgstr "domyślne"
 
-#: ../src/connection-editor/ce-page.c:638
+#: ../src/connection-editor/ce-page.c:138
+msgid "unspecified error"
+msgstr "nieokreślony błąd"
+
+#: ../src/connection-editor/ce-page.c:310
+msgid "MAC address"
+msgstr "Adres MAC"
+
+#: ../src/connection-editor/ce-page.c:310
+msgid "HW address"
+msgstr "Adres HW"
+
+#: ../src/connection-editor/ce-page.c:313
+#, c-format
+msgid "invalid %s for %s (%s)"
+msgstr "nieprawidłowe %s dla %s (%s)"
+
+#: ../src/connection-editor/ce-page.c:317
+#: ../src/connection-editor/ce-page.c:586
+#, c-format
+msgid "invalid %s (%s)"
+msgstr "nieprawidłowe %s (%s)"
+
+#: ../src/connection-editor/ce-page.c:369
+#, c-format
+msgid "invalid interface-name for %s (%s)"
+msgstr "nieprawidłowe \"interface-name\" dla %s (%s)"
+
+#: ../src/connection-editor/ce-page.c:373
+#, c-format
+msgid "invalid interface-name (%s)"
+msgstr "nieprawidłowe \"interface-name\" (%s)"
+
+#: ../src/connection-editor/ce-page.c:587
+msgid "device"
+msgstr "urządzenie"
+
+#: ../src/connection-editor/ce-page.c:685
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr ""
 "Zaktualizowanie ustawień połączenia się nie powiodło z powodu nieznanego "
@@ -2173,6 +2210,10 @@ msgstr "Pa_smo:"
 msgid "SS_ID:"
 msgstr "SS_ID:"
 
+#: ../src/connection-editor/ce-polkit-button.c:75
+msgid "No polkit authorization to perform the action"
+msgstr "Brak upoważnienia polkit do wykonania działania"
+
 #: ../src/connection-editor/ce-ppp-auth-methods.ui.h:1
 msgid "Allowed Authentication Methods"
 msgstr "Dozwolone metody uwierzytelniania"
@@ -2363,7 +2404,25 @@ msgstr "Modyfikowanie %s"
 msgid "Editing un-named connection"
 msgstr "Modyfikowanie połączenia bez nazwy"
 
-#: ../src/connection-editor/nm-connection-editor.c:290
+#: ../src/connection-editor/nm-connection-editor.c:150
+msgid "Missing connection name"
+msgstr "Brak nazwy połączenia"
+
+#: ../src/connection-editor/nm-connection-editor.c:213
+msgid "Editor initializing..."
+msgstr "Inicjowanie edytora..."
+
+#: ../src/connection-editor/nm-connection-editor.c:220
+#: ../src/connection-editor/nm-connection-list.c:412
+msgid "Connection cannot be modified"
+msgstr "Nie można modyfikować połączenia"
+
+#: ../src/connection-editor/nm-connection-editor.c:233
+#, c-format
+msgid "Invalid setting %s: %s"
+msgstr "Nieprawidłowe ustawienie %s: %s"
+
+#: ../src/connection-editor/nm-connection-editor.c:303
 msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
@@ -2371,45 +2430,45 @@ msgstr ""
 "Edytor połączeń nie może odnaleźć niektórych wymaganych zasobów (plik .ui "
 "nie został odnaleziony)."
 
-#: ../src/connection-editor/nm-connection-editor.c:424
+#: ../src/connection-editor/nm-connection-editor.c:439
 msgid "_Save"
 msgstr "Zapi_sz"
 
-#: ../src/connection-editor/nm-connection-editor.c:425
+#: ../src/connection-editor/nm-connection-editor.c:440
 msgid "Save any changes made to this connection."
 msgstr "Zapis zmian dokonanych na tym połączeniu."
 
-#: ../src/connection-editor/nm-connection-editor.c:426
+#: ../src/connection-editor/nm-connection-editor.c:441
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Należy się uwierzytelnić, aby zapisać to połączenie dla wszystkich "
 "użytkowników komputera."
 
-#: ../src/connection-editor/nm-connection-editor.c:442
+#: ../src/connection-editor/nm-connection-editor.c:457
 msgid "Could not create connection"
 msgstr "Nie można utworzyć połączenia"
 
-#: ../src/connection-editor/nm-connection-editor.c:442
+#: ../src/connection-editor/nm-connection-editor.c:457
 msgid "Could not edit connection"
 msgstr "Nie można zmodyfikować połączenia"
 
-#: ../src/connection-editor/nm-connection-editor.c:444
+#: ../src/connection-editor/nm-connection-editor.c:459
 msgid "Unknown error creating connection editor dialog."
 msgstr "Nieznany błąd podczas tworzenia okna dialogowego edytora połączeń."
 
-#: ../src/connection-editor/nm-connection-editor.c:578
+#: ../src/connection-editor/nm-connection-editor.c:593
 msgid "Error initializing editor"
 msgstr "Błąd podczas inicjowania edytora"
 
-#: ../src/connection-editor/nm-connection-editor.c:917
+#: ../src/connection-editor/nm-connection-editor.c:932
 msgid "Connection add failed"
 msgstr "Dodanie połączenia się nie powiodło"
 
-#: ../src/connection-editor/nm-connection-editor.c:957
+#: ../src/connection-editor/nm-connection-editor.c:972
 msgid "Error saving connection"
 msgstr "Błąd podczas zapisywania połączenia"
 
-#: ../src/connection-editor/nm-connection-editor.c:958
+#: ../src/connection-editor/nm-connection-editor.c:973
 #, c-format
 msgid "The property '%s' / '%s' is invalid: %d"
 msgstr "Właściwość \"%s\" / \"%s\" jest nieprawidłowa: %d"
@@ -2534,6 +2593,10 @@ msgstr "Użycie zabezpieczeń 802.1_X dla tego połączenia"
 msgid "Could not load Bluetooth user interface."
 msgstr "Nie można wczytać interfejsu użytkownika Bluetooth."
 
+#: ../src/connection-editor/page-bluetooth.c:151
+msgid "bdaddr"
+msgstr "bdaddr"
+
 #: ../src/connection-editor/page-bluetooth.c:229
 #, c-format
 msgid "Bluetooth connection %d"
@@ -2559,7 +2622,11 @@ msgstr "Sieć modemowa _DUN"
 msgid "Could not load bond user interface."
 msgstr "Nie można wczytać interfejsu użytkownika łączenia."
 
-#: ../src/connection-editor/page-bond.c:623
+#: ../src/connection-editor/page-bond.c:572
+msgid "primary"
+msgstr "główne"
+
+#: ../src/connection-editor/page-bond.c:622
 #, c-format
 msgid "Bond connection %d"
 msgstr "Łączone połączenie %d"
@@ -2616,6 +2683,16 @@ msgstr ""
 msgid "Could not load ethernet user interface."
 msgstr "Nie można wczytać interfejsu użytkownika połączenia ethernetowego."
 
+#: ../src/connection-editor/page-ethernet.c:346
+msgid "Ethernet device"
+msgstr "urządzenie ethernetowe"
+
+#: ../src/connection-editor/page-ethernet.c:350
+#: ../src/connection-editor/page-vlan.c:647
+#: ../src/connection-editor/page-wifi.c:592
+msgid "cloned MAC"
+msgstr "sklonowany adres MAC"
+
 #: ../src/connection-editor/page-ethernet.c:384
 #, c-format
 msgid "Ethernet connection %d"
@@ -2660,6 +2737,10 @@ msgstr ""
 #: ../src/connection-editor/page-infiniband.c:161
 msgid "Could not load InfiniBand user interface."
 msgstr "Nie można wczytać interfejsu użytkownika InfiniBand."
+
+#: ../src/connection-editor/page-infiniband.c:225
+msgid "infiniband device"
+msgstr "urządzenie InfiniBand"
 
 #: ../src/connection-editor/page-infiniband.c:260
 #, c-format
@@ -2727,6 +2808,30 @@ msgstr "Ustawienia IPv4"
 msgid "Could not load IPv4 user interface."
 msgstr "Nie można wczytać interfejsu użytkownika IPv4."
 
+#: ../src/connection-editor/page-ip4.c:1099
+#, c-format
+msgid "IPv4 address \"%s\" invalid"
+msgstr "Adres IPv4 \"%s\" jest nieprawidłowy"
+
+#: ../src/connection-editor/page-ip4.c:1107
+msgid "IPv4 address netmask missing"
+msgstr "Brak maski sieci adresu IPv4"
+
+#: ../src/connection-editor/page-ip4.c:1112
+#, c-format
+msgid "IPv4 address netmask \"%s\" invalid"
+msgstr "Maska sieci adresu IPv4 \"%s\" jest nieprawidłowa"
+
+#: ../src/connection-editor/page-ip4.c:1121
+#, c-format
+msgid "IPv4 gateway \"%s\" invalid"
+msgstr "Brama IPv4 \"%s\" jest nieprawidłowa"
+
+#: ../src/connection-editor/page-ip4.c:1161
+#, c-format
+msgid "IPv4 DNS server \"%s\" invalid"
+msgstr "Serwer DNS IPv4 \"%s\" jest nieprawidłowy"
+
 #: ../src/connection-editor/page-ip6.c:160
 msgid "Ignore"
 msgstr "Ignorowanie"
@@ -2747,6 +2852,31 @@ msgstr "Ustawienia IPv6"
 #: ../src/connection-editor/page-ip6.c:1006
 msgid "Could not load IPv6 user interface."
 msgstr "Nie można wczytać interfejsu użytkownika IPv6."
+
+#: ../src/connection-editor/page-ip6.c:1095
+#, c-format
+msgid "IPv6 address \"%s\" invalid"
+msgstr "Adres IPv6 \"%s\" jest nieprawidłowy"
+
+#: ../src/connection-editor/page-ip6.c:1104
+#, c-format
+msgid "IPv6 prefix \"%s\" missing"
+msgstr "Brak przedrostka IPv6 \"%s\""
+
+#: ../src/connection-editor/page-ip6.c:1110
+#, c-format
+msgid "IPv6 prefix \"%s\" invalid"
+msgstr "Przedrostek IPv6 \"%s\" jest nieprawidłowy"
+
+#: ../src/connection-editor/page-ip6.c:1120
+#, c-format
+msgid "IPv6 gateway \"%s\" invalid"
+msgstr "Brama IPv6 \"%s\" jest nieprawidłowa"
+
+#: ../src/connection-editor/page-ip6.c:1155
+#, c-format
+msgid "IPv6 DNS server \"%s\" invalid"
+msgstr "Serwer DNS IPv6 \"%s\" jest nieprawidłowy"
 
 #: ../src/connection-editor/page-master.c:249
 #: ../src/connection-editor/page-master.c:260
@@ -2817,24 +2947,24 @@ msgid "EAP"
 msgstr "EAP"
 
 #: ../src/connection-editor/page-ppp.c:137
-#: ../src/wireless-security/eap-method-ttls.c:255
+#: ../src/wireless-security/eap-method-ttls.c:262
 msgid "PAP"
 msgstr "PAP"
 
 #: ../src/connection-editor/page-ppp.c:138
-#: ../src/wireless-security/eap-method-ttls.c:300
+#: ../src/wireless-security/eap-method-ttls.c:307
 msgid "CHAP"
 msgstr "CHAP"
 
 #: ../src/connection-editor/page-ppp.c:139
-#: ../src/wireless-security/eap-method-fast.c:281
-#: ../src/wireless-security/eap-method-peap.c:269
-#: ../src/wireless-security/eap-method-ttls.c:285
+#: ../src/wireless-security/eap-method-fast.c:284
+#: ../src/wireless-security/eap-method-peap.c:276
+#: ../src/wireless-security/eap-method-ttls.c:292
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
 #: ../src/connection-editor/page-ppp.c:140
-#: ../src/wireless-security/eap-method-ttls.c:270
+#: ../src/wireless-security/eap-method-ttls.c:277
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
@@ -2899,7 +3029,11 @@ msgstr "%s (przez \"%s\")"
 msgid "Could not load vlan user interface."
 msgstr "Nie można wczytać interfejsu użytkownika VLAN."
 
-#: ../src/connection-editor/page-vlan.c:704
+#: ../src/connection-editor/page-vlan.c:640
+msgid "vlan parent"
+msgstr "nadrzędny VLAN"
+
+#: ../src/connection-editor/page-vlan.c:703
 #, c-format
 msgid "VLAN connection %d"
 msgstr "Połączenie VLAN %d"
@@ -2970,6 +3104,14 @@ msgstr "%u (%u MHz)"
 msgid "Could not load Wi-Fi user interface."
 msgstr "Nie można wczytać interfejsu użytkownika Wi-Fi."
 
+#: ../src/connection-editor/page-wifi.c:582
+msgid "bssid"
+msgstr "BSSID"
+
+#: ../src/connection-editor/page-wifi.c:588
+msgid "Wi-Fi device"
+msgstr "urządzenie Wi-Fi"
+
 #: ../src/connection-editor/page-wifi.c:630
 #, c-format
 msgid "Wi-Fi connection %d"
@@ -3013,11 +3155,29 @@ msgstr "Zabezpieczenia"
 msgid "Could not load Wi-Fi security user interface."
 msgstr "Nie można wczytać interfejsu użytkownika zabezpieczeń Wi-Fi."
 
+#: ../src/connection-editor/page-wifi-security.c:491
+#, c-format
+msgid "missing SSID"
+msgstr "brak SSID"
+
+#: ../src/connection-editor/page-wifi-security.c:497
+#, c-format
+msgid "Security not compatible with Ad-Hoc mode"
+msgstr "Zabezpieczenie jest niezgodne z trybem ad-hoc"
+
 #: ../src/connection-editor/page-wimax.c:124
 msgid "Could not load WiMAX user interface."
 msgstr "Nie można wczytać interfejsu użytkownika WiMAX."
 
-#: ../src/connection-editor/page-wimax.c:224
+#: ../src/connection-editor/page-wimax.c:184
+msgid "WiMAX name missing"
+msgstr "Brak nazwy WiMAX"
+
+#: ../src/connection-editor/page-wimax.c:190
+msgid "WiMAX device"
+msgstr "urządzenie WiMAX"
+
+#: ../src/connection-editor/page-wimax.c:226
 #, c-format
 msgid "WiMAX connection %d"
 msgstr "Połączenie WiMAX %d"
@@ -3393,6 +3553,18 @@ msgstr "Pytanie o hasło za każdym razem"
 msgid "The password is not required"
 msgstr "Hasło nie jest wymagane"
 
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:102
+msgid "_Secondary Password:"
+msgstr "_Drugie hasło:"
+
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:105
+msgid "_Ternary Password:"
+msgstr "_Trzecie hasło:"
+
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:250
+msgid "Sh_ow passwords"
+msgstr "_Wyświetlanie haseł"
+
 #: ../src/libnm-gtk/nm-wifi-dialog.c:144
 msgid "Click to connect"
 msgstr "Kliknięcie połączy"
@@ -3459,18 +3631,6 @@ msgid ""
 "connect to."
 msgstr ""
 "Proszę wprowadzić nazwę i ustawienia zabezpieczeń dla żądanej sieci Wi-Fi."
-
-#: ../src/libnm-gtk/nm-vpn-password-dialog.c:102
-msgid "_Secondary Password:"
-msgstr "_Drugie hasło:"
-
-#: ../src/libnm-gtk/nm-vpn-password-dialog.c:105
-msgid "_Ternary Password:"
-msgstr "_Trzecie hasło:"
-
-#: ../src/libnm-gtk/nm-vpn-password-dialog.c:250
-msgid "Sh_ow passwords"
-msgstr "_Wyświetlanie haseł"
 
 #: ../src/libnm-gtk/wifi.ui.h:2
 msgid "Wi-Fi _security:"
@@ -3605,30 +3765,42 @@ msgstr "Wymagany kod PIN dla urządzenia dostępowego do sieci komórkowej"
 msgid "%s connection"
 msgstr "Połączenie %s"
 
-#: ../src/wireless-security/eap-method.c:440
+#: ../src/wireless-security/eap-method.c:61
+msgid "undefined error in 802.1x security (wpa-eap)"
+msgstr "nieokreślony błąd w zabezpieczeniach 802.1x (WPA-EAP)"
+
+#: ../src/wireless-security/eap-method.c:260
+msgid "unspecified error validating eap-method file"
+msgstr "nieokreślony błąd podczas sprawdzania poprawności pliku eap-method"
+
+#: ../src/wireless-security/eap-method.c:437
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr ""
 "Certyfikaty DER, PEM lub klucze prywatne PKCS#12 (*.der, *.pem, *.p12, *.key)"
 
-#: ../src/wireless-security/eap-method.c:443
+#: ../src/wireless-security/eap-method.c:440
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
 msgstr "Certyfikaty DER lub PEM (*.der, *.pem, *.crt, *.cer)"
 
-#: ../src/wireless-security/eap-method-fast.c:266
-#: ../src/wireless-security/eap-method-peap.c:299
-#: ../src/wireless-security/eap-method-ttls.c:330
+#: ../src/wireless-security/eap-method-fast.c:74
+msgid "missing EAP-FAST PAC file"
+msgstr "brak pliku PAC EAP-FAST"
+
+#: ../src/wireless-security/eap-method-fast.c:269
+#: ../src/wireless-security/eap-method-peap.c:306
+#: ../src/wireless-security/eap-method-ttls.c:337
 msgid "GTC"
 msgstr "GTC"
 
-#: ../src/wireless-security/eap-method-fast.c:404
+#: ../src/wireless-security/eap-method-fast.c:407
 msgid "Choose a PAC file..."
 msgstr "Wybierz plik PAC..."
 
-#: ../src/wireless-security/eap-method-fast.c:411
+#: ../src/wireless-security/eap-method-fast.c:414
 msgid "PAC files (*.pac)"
 msgstr "Pliki PAC (*.pac)"
 
-#: ../src/wireless-security/eap-method-fast.c:415
+#: ../src/wireless-security/eap-method-fast.c:418
 msgid "All files"
 msgstr "Wszystkie pliki"
 
@@ -3664,15 +3836,32 @@ msgstr "Wewnętrzne uw_ierzytelnianie:"
 msgid "Allow automatic PAC pro_visioning"
 msgstr "Automatyczne za_bezpieczanie PAC"
 
-#: ../src/wireless-security/eap-method-peap.c:284
-#: ../src/wireless-security/eap-method-ttls.c:315
-#: ../src/wireless-security/wireless-security.c:418
+#: ../src/wireless-security/eap-method-leap.c:64
+msgid "missing EAP-LEAP username"
+msgstr "brak nazwy użytkownika EAP-LEAP"
+
+#: ../src/wireless-security/eap-method-leap.c:70
+msgid "missing EAP-LEAP password"
+msgstr "brak hasła EAP-LEAP"
+
+#: ../src/wireless-security/eap-method-peap.c:67
+#, c-format
+msgid "invalid EAP-PEAP CA certificate: %s"
+msgstr "nieprawidłowy certyfikat CA EAP-PEAP: %s"
+
+#: ../src/wireless-security/eap-method-peap.c:72
+msgid "invalid EAP-PEAP CA ertificate: no certificate specified"
+msgstr "nieprawidłowy certyfikat CA EAP-PEAP: nie podano certyfikatu"
+
+#: ../src/wireless-security/eap-method-peap.c:291
+#: ../src/wireless-security/eap-method-ttls.c:322
+#: ../src/wireless-security/wireless-security.c:425
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/wireless-security/eap-method-peap.c:378
-#: ../src/wireless-security/eap-method-tls.c:468
-#: ../src/wireless-security/eap-method-ttls.c:409
+#: ../src/wireless-security/eap-method-peap.c:385
+#: ../src/wireless-security/eap-method-tls.c:485
+#: ../src/wireless-security/eap-method-ttls.c:416
 msgid "Choose a Certificate Authority certificate..."
 msgstr "Wybór certyfikatu CA..."
 
@@ -3700,11 +3889,46 @@ msgstr "Certyfikat CA nie jest _wymagany"
 msgid "PEAP _version:"
 msgstr "_Wersja PEAP:"
 
-#: ../src/wireless-security/eap-method-tls.c:283
+#: ../src/wireless-security/eap-method-simple.c:74
+msgid "missing EAP username"
+msgstr "brak nazwy użytkownika EAP"
+
+#: ../src/wireless-security/eap-method-simple.c:84
+msgid "missing EAP password"
+msgstr "brak hasła EAP"
+
+#: ../src/wireless-security/eap-method-tls.c:70
+msgid "missing EAP-TLS identity"
+msgstr "brak tożsamości EAP-TLS"
+
+#: ../src/wireless-security/eap-method-tls.c:75
+#, c-format
+msgid "invalid EAP-TLS CA certificate: %s"
+msgstr "nieprawidłowy certyfikat CA EAP-TLS: %s"
+
+#: ../src/wireless-security/eap-method-tls.c:80
+msgid "invalid EAP-TLS CA certificate: no certificate specified"
+msgstr "nieprawidłowy certyfikat CA EAP-TLS: nie podano certyfikatu"
+
+#: ../src/wireless-security/eap-method-tls.c:88
+msgid "invalid EAP-TLS password: missing"
+msgstr "nieprawidłowe hasło EAP-TLS: brak"
+
+#: ../src/wireless-security/eap-method-tls.c:98
+#, c-format
+msgid "invalid EAP-TLS private-key: %s"
+msgstr "nieprawidłowe \"private-key\" EAP-TLS: %s"
+
+#: ../src/wireless-security/eap-method-tls.c:105
+#, c-format
+msgid "invalid EAP-TLS user-certificate: %s"
+msgstr "nieprawidłowe \"user-certificate\" EAP-TLS: %s"
+
+#: ../src/wireless-security/eap-method-tls.c:300
 msgid "Unencrypted private keys are insecure"
 msgstr "Niezaszyfrowane klucze prywatne są niezabezpieczone"
 
-#: ../src/wireless-security/eap-method-tls.c:286
+#: ../src/wireless-security/eap-method-tls.c:303
 msgid ""
 "The selected private key does not appear to be protected by a password.  "
 "This could allow your security credentials to be compromised.  Please select "
@@ -3718,11 +3942,11 @@ msgstr ""
 "\n"
 "(można ochronić klucz prywatny hasłem za pomocą oprogramowania OpenSSL)"
 
-#: ../src/wireless-security/eap-method-tls.c:462
+#: ../src/wireless-security/eap-method-tls.c:479
 msgid "Choose your personal certificate..."
 msgstr "Wybór prywatnego certyfikatu..."
 
-#: ../src/wireless-security/eap-method-tls.c:474
+#: ../src/wireless-security/eap-method-tls.c:491
 msgid "Choose your private key..."
 msgstr "Wybór klucza prywatnego..."
 
@@ -3742,23 +3966,36 @@ msgstr "_Klucz prywatny:"
 msgid "_Private key password:"
 msgstr "_Hasło klucza prywatnego:"
 
-#: ../src/wireless-security/wireless-security.c:430
+#: ../src/wireless-security/eap-method-ttls.c:67
+#, c-format
+msgid "invalid EAP-TTLS CA certificate: %s"
+msgstr "nieprawidłowy certyfikat CA EAP-TTLS: %s"
+
+#: ../src/wireless-security/eap-method-ttls.c:72
+msgid "invalid EAP-TTLS CA certificate: no certificate specified"
+msgstr "nieprawidłowy certyfikat CA EAP-TTLS: nie podano certyfikatu"
+
+#: ../src/wireless-security/wireless-security.c:82
+msgid "Unknown error validating 802.1x security"
+msgstr "Nieznany błąd podczas sprawdzania poprawności zabezpieczeń 802.1x"
+
+#: ../src/wireless-security/wireless-security.c:437
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:454
+#: ../src/wireless-security/wireless-security.c:461
 msgid "PWD"
 msgstr "PWD"
 
-#: ../src/wireless-security/wireless-security.c:465
+#: ../src/wireless-security/wireless-security.c:472
 msgid "FAST"
 msgstr "FAST"
 
-#: ../src/wireless-security/wireless-security.c:476
+#: ../src/wireless-security/wireless-security.c:483
 msgid "Tunneled TLS"
 msgstr "Tunelowane TLS"
 
-#: ../src/wireless-security/wireless-security.c:487
+#: ../src/wireless-security/wireless-security.c:494
 msgid "Protected EAP (PEAP)"
 msgstr "Chronione EAP (PEAP)"
 
@@ -3767,6 +4004,50 @@ msgstr "Chronione EAP (PEAP)"
 #: ../src/wireless-security/ws-wpa-eap.ui.h:2
 msgid "Au_thentication:"
 msgstr "Uwierzy_telnianie:"
+
+#: ../src/wireless-security/ws-leap.c:62
+msgid "missing leap-username"
+msgstr "brak \"leap-username\""
+
+#: ../src/wireless-security/ws-leap.c:70
+msgid "missing leap-password"
+msgstr "brak \"leap-password\""
+
+#: ../src/wireless-security/ws-wep-key.c:108
+msgid "missing wep-key"
+msgstr "brak \"wep-key\""
+
+#: ../src/wireless-security/ws-wep-key.c:116
+#, c-format
+msgid "invalid wep-key: key with a length of %zu must contain only hex-digits"
+msgstr ""
+"nieprawidłowe \"wep-key\": klucz o długości %zu może zawierać tylko liczby "
+"szesnastkowe"
+
+#: ../src/wireless-security/ws-wep-key.c:123
+#, c-format
+msgid ""
+"invalid wep-key: key with a length of %zu must contain only ascii characters"
+msgstr ""
+"nieprawidłowe \"wep-key\": klucz o długości %zu może zawierać tylko znaki "
+"ASCII"
+
+#: ../src/wireless-security/ws-wep-key.c:128
+#, c-format
+msgid ""
+"invalid wep-key: wrong key length %zu. A key must be either of length 5/13 "
+"(ascii) or 10/26 (hex)"
+msgstr ""
+"nieprawidłowe \"wep-key\": błędna długość klucza %zu. Klucz musi być "
+"długości 5/13 (ASCII) lub 10/26 (szesnastkowy)"
+
+#: ../src/wireless-security/ws-wep-key.c:134
+msgid "invalid wep-key: passphrase must be non-empty"
+msgstr "nieprawidłowe \"wep-key\": hasło nie może być puste"
+
+#: ../src/wireless-security/ws-wep-key.c:136
+msgid "invalid wep-key: passphrase must be shorter then 64 characters"
+msgstr "nieprawidłowe \"wep-key\": hasło nie może być krótsze niż 64 znaki"
 
 #: ../src/wireless-security/ws-wep-key.ui.h:1
 msgid "1 (Default)"
@@ -3792,6 +4073,21 @@ msgstr "_Wyświetlanie klucza"
 #: ../src/wireless-security/ws-wep-key.ui.h:10
 msgid "WEP inde_x:"
 msgstr "Inde_ks WEP:"
+
+#: ../src/wireless-security/ws-wpa-psk.c:70
+#, c-format
+msgid ""
+"invalid wpa-psk: invalid key-length %zu. Must be [8,63] bytes or 64 hex "
+"digits"
+msgstr ""
+"nieprawidłowe \"wpa-psk\": nieprawidłowe \"key-length\" %zu. Musi wynosić "
+"[8,63] bajty lub 64 cyfry szesnastkowe"
+
+#: ../src/wireless-security/ws-wpa-psk.c:78
+msgid "invalid wpa-psk: cannot interpret key with 64 bytes as hex"
+msgstr ""
+"nieprawidłowe \"wpa-psk\": nie można zinterpretować klucza o 64 bajtach jako "
+"szesnastkowy"
 
 #: ../src/wireless-security/ws-wpa-psk.ui.h:2
 msgid "_Type:"
