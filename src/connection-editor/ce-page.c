@@ -226,7 +226,7 @@ ce_page_mac_entry_valid (GtkEntry *entry, int type, const char *property_name, G
 		if (!nm_utils_hwaddr_valid (mac, nm_utils_hwaddr_len (type))) {
 			const char *addr_type;
 
-			addr_type = type == ARPHRD_ETHER ? _("MAC address") : _("HW addreess");
+			addr_type = type == ARPHRD_ETHER ? _("MAC address") : _("HW address");
 			if (property_name) {
 				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
 				             _("invalid %s for %s (%s)"),
