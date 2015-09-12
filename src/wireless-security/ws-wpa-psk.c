@@ -51,7 +51,7 @@ show_toggled_cb (GtkCheckButton *button, WirelessSecurity *sec)
 }
 
 static gboolean
-validate (WirelessSecurity *parent, const GByteArray *ssid)
+validate (WirelessSecurity *parent)
 {
 	GtkWidget *entry;
 	const char *key;

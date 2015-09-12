@@ -68,12 +68,12 @@ wireless_security_changed_cb (GtkWidget *ignored, gpointer user_data)
 }
 
 gboolean
-wireless_security_validate (WirelessSecurity *sec, const GByteArray *ssid)
+wireless_security_validate (WirelessSecurity *sec)
 {
 	g_return_val_if_fail (sec != NULL, FALSE);
 
 	g_assert (sec->validate);
-	return (*(sec->validate)) (sec, ssid);
+	return (*(sec->validate)) (sec);
 }
 
 void

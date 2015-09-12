@@ -45,7 +45,7 @@ destroy (WirelessSecurity *parent)
 }
 
 static gboolean
-validate (WirelessSecurity *parent, const GByteArray *ssid)
+validate (WirelessSecurity *parent)
 {
 	return ws_802_1x_validate (parent, "wpa_eap_auth_combo");
 }

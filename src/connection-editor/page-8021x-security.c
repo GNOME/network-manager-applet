@@ -153,7 +153,7 @@ validate (CEPage *page, NMConnection *connection, GError **error)
 		NMSetting *s_8021x;
 
 		/* FIXME: get failed property and error out of wireless security objects */
-		valid = wireless_security_validate (priv->security, NULL);
+		valid = wireless_security_validate (priv->security);
 		if (valid) {
 			NMSetting *s_con;
 
