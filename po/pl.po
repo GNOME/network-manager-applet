@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-12 20:30+0200\n"
-"PO-Revision-Date: 2015-09-12 20:32+0200\n"
+"POT-Creation-Date: 2015-09-19 09:57+0200\n"
+"PO-Revision-Date: 2015-09-19 09:58+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -1644,6 +1644,49 @@ msgstr ""
 "sieciowego, dla którego zostało utworzone to połączenie. Ta funkcja jest "
 "znana jako klonowanie lub „spoofing” adresu MAC. Przykład: 00:11:22:33:44:55"
 
+#: ../src/connection-editor/ce-page-ethernet.ui.h:19
+msgid "Wake on LAN:"
+msgstr "Przebudzanie przez LAN:"
+
+#: ../src/connection-editor/ce-page-ethernet.ui.h:20
+msgid "De_fault"
+msgstr "_Domyślne"
+
+#: ../src/connection-editor/ce-page-ethernet.ui.h:21
+msgid "_Phy"
+msgstr "_Phy"
+
+#: ../src/connection-editor/ce-page-ethernet.ui.h:22
+msgid "_Unicast"
+msgstr "_Unicast"
+
+#: ../src/connection-editor/ce-page-ethernet.ui.h:23
+msgid "Mul_ticast"
+msgstr "Mul_ticast"
+
+#: ../src/connection-editor/ce-page-ethernet.ui.h:24
+msgid "_Broadcast"
+msgstr "_Rozgłaszanie"
+
+#: ../src/connection-editor/ce-page-ethernet.ui.h:25
+msgid "_Arp"
+msgstr "_ARP"
+
+#: ../src/connection-editor/ce-page-ethernet.ui.h:26
+msgid "Ma_gic"
+msgstr "_Magiczne"
+
+#: ../src/connection-editor/ce-page-ethernet.ui.h:27
+msgid "_Wake on LAN password:"
+msgstr "_Hasło przebudzania przez LAN:"
+
+#: ../src/connection-editor/ce-page-ethernet.ui.h:28
+msgid ""
+"Wake-on-LAN password (an Ethernet MAC). It is only valid for magic packets."
+msgstr ""
+"Hasło przebudzania przez LAN (MAC ethernetowy). Prawidłowe tylko dla "
+"magicznych pakietów."
+
 #: ../src/connection-editor/ce-page-general.ui.h:1
 msgid "Automatically connect to _VPN when using this connection"
 msgstr "Automatyczne łączenie z _VPN podczas używania tego połączenia"
@@ -2062,7 +2105,7 @@ msgstr ""
 "obsługę niektórych metod."
 
 #: ../src/connection-editor/connection-helpers.c:99
-#: ../src/connection-editor/page-ethernet.c:232
+#: ../src/connection-editor/page-ethernet.c:316
 #: ../src/libnm-gtk/nm-ui-utils.c:324
 msgid "Ethernet"
 msgstr "Ethernet"
@@ -2451,7 +2494,7 @@ msgstr "Nie można wczytać interfejsu użytkownika DSL."
 msgid "DSL connection %d"
 msgstr "Połączenie DSL %d"
 
-#: ../src/connection-editor/page-ethernet.c:74
+#: ../src/connection-editor/page-ethernet.c:77
 msgid ""
 "This option locks this connection to the network device specified either by "
 "its interface name or permanent MAC or both. Examples: \"em1\", "
@@ -2461,21 +2504,25 @@ msgstr ""
 "nazwę interfejsu i/lub trwały adres MAC. Przykłady: „em1”, "
 "„3C:97:0E:42:1A:19”, „em1 (3C:97:0E:42:1A:19)”"
 
-#: ../src/connection-editor/page-ethernet.c:234
+#: ../src/connection-editor/page-ethernet.c:318
 msgid "Could not load ethernet user interface."
 msgstr "Nie można wczytać interfejsu użytkownika połączenia ethernetowego."
 
-#: ../src/connection-editor/page-ethernet.c:336
+#: ../src/connection-editor/page-ethernet.c:445
 msgid "Ethernet device"
 msgstr "urządzenie ethernetowe"
 
-#: ../src/connection-editor/page-ethernet.c:340
+#: ../src/connection-editor/page-ethernet.c:449
 #: ../src/connection-editor/page-vlan.c:734
 #: ../src/connection-editor/page-wifi.c:576
 msgid "cloned MAC"
 msgstr "sklonowany adres MAC"
 
-#: ../src/connection-editor/page-ethernet.c:374
+#: ../src/connection-editor/page-ethernet.c:453
+msgid "Wake-on-LAN password"
+msgstr "Hasło przebudzania przez LAN"
+
+#: ../src/connection-editor/page-ethernet.c:488
 #, c-format
 msgid "Ethernet connection %d"
 msgstr "Połączenie ethernetowe %d"
