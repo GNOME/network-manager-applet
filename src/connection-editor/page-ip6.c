@@ -983,7 +983,8 @@ finish_setup (CEPageIP6 *self, gpointer unused, GError *error, gpointer user_dat
 }
 
 CEPage *
-ce_page_ip6_new (NMConnection *connection,
+ce_page_ip6_new (NMConnectionEditor *editor,
+                 NMConnection *connection,
                  GtkWindow *parent_window,
                  NMClient *client,
                  NMRemoteSettings *settings,
@@ -995,6 +996,7 @@ ce_page_ip6_new (NMConnection *connection,
 	NMSettingConnection *s_con;
 
 	self = CE_PAGE_IP6 (ce_page_new (CE_TYPE_PAGE_IP6,
+	                                 editor,
 	                                 connection,
 	                                 parent_window,
 	                                 client,

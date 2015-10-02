@@ -218,7 +218,8 @@ finish_setup (CEPageEthernet *self, gpointer unused, GError *error, gpointer use
 }
 
 CEPage *
-ce_page_ethernet_new (NMConnection *connection,
+ce_page_ethernet_new (NMConnectionEditor *editor,
+                      NMConnection *connection,
                       GtkWindow *parent_window,
                       NMClient *client,
                       NMRemoteSettings *settings,
@@ -229,6 +230,7 @@ ce_page_ethernet_new (NMConnection *connection,
 	CEPageEthernetPrivate *priv;
 
 	self = CE_PAGE_ETHERNET (ce_page_new (CE_TYPE_PAGE_ETHERNET,
+	                                      editor,
 	                                      connection,
 	                                      parent_window,
 	                                      client,

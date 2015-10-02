@@ -91,7 +91,8 @@ finish_setup (CEPageVpn *self, gpointer unused, GError *error, gpointer user_dat
 }
 
 CEPage *
-ce_page_vpn_new (NMConnection *connection,
+ce_page_vpn_new (NMConnectionEditor *editor,
+                 NMConnection *connection,
                  GtkWindow *parent_window,
                  NMClient *client,
                  NMRemoteSettings *settings,
@@ -103,6 +104,7 @@ ce_page_vpn_new (NMConnection *connection,
 	const char *service_type;
 
 	self = CE_PAGE_VPN (ce_page_new (CE_TYPE_PAGE_VPN,
+	                                 editor,
 	                                 connection,
 	                                 parent_window,
 	                                 client,

@@ -115,7 +115,8 @@ finish_setup (CEPageDsl *self, gpointer unused, GError *error, gpointer user_dat
 }
 
 CEPage *
-ce_page_dsl_new (NMConnection *connection,
+ce_page_dsl_new (NMConnectionEditor *editor,
+                 NMConnection *connection,
                  GtkWindow *parent_window,
                  NMClient *client,
                  NMRemoteSettings *settings,
@@ -126,6 +127,7 @@ ce_page_dsl_new (NMConnection *connection,
 	CEPageDslPrivate *priv;
 
 	self = CE_PAGE_DSL (ce_page_new (CE_TYPE_PAGE_DSL,
+	                                 editor,
 	                                 connection,
 	                                 parent_window,
 	                                 client,

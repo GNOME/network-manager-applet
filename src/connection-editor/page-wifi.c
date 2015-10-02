@@ -33,6 +33,7 @@
 #include <nm-device-wifi.h>
 #include <nm-utils.h>
 
+#include "nm-connection-editor.h"
 #include "page-wifi.h"
 
 G_DEFINE_TYPE (CEPageWifi, ce_page_wifi, CE_TYPE_PAGE)
@@ -430,7 +431,8 @@ finish_setup (CEPageWifi *self, gpointer unused, GError *error, gpointer user_da
 }
 
 CEPage *
-ce_page_wifi_new (NMConnection *connection,
+ce_page_wifi_new (NMConnectionEditor *editor,
+                  NMConnection *connection,
                   GtkWindow *parent_window,
                   NMClient *client,
                   NMRemoteSettings *settings,
@@ -443,6 +445,7 @@ ce_page_wifi_new (NMConnection *connection,
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
 
 	self = CE_PAGE_WIFI (ce_page_new (CE_TYPE_PAGE_WIFI,
+	                                  editor,
 	                                  connection,
 	                                  parent_window,
 	                                  client,

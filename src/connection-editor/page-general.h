@@ -45,12 +45,13 @@ typedef struct {
 
 GType ce_page_general_get_type (void);
 
-CEPage *ce_page_general_new (NMConnection *connection,
-                                     GtkWindow *parent,
-                                     NMClient *client,
-                                     NMRemoteSettings *settings,
-                                     const char **out_secrets_setting_name,
-                                     GError **error);
+CEPage *ce_page_general_new (NMConnectionEditor *editor,
+                             NMConnection *connection,
+                             GtkWindow *parent,
+                             NMClient *client,
+                             NMRemoteSettings *settings,
+                             const char **out_secrets_setting_name,
+                             GError **error);
 
 #endif  /* __PAGE_GENERAL_H__ */
 

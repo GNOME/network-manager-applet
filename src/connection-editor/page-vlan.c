@@ -481,7 +481,8 @@ finish_setup (CEPageVlan *self, gpointer unused, GError *error, gpointer user_da
 }
 
 CEPage *
-ce_page_vlan_new (NMConnection *connection,
+ce_page_vlan_new (NMConnectionEditor *editor,
+                  NMConnection *connection,
                   GtkWindow *parent_window,
                   NMClient *client,
                   NMRemoteSettings *settings,
@@ -492,6 +493,7 @@ ce_page_vlan_new (NMConnection *connection,
 	CEPageVlanPrivate *priv;
 
 	self = CE_PAGE_VLAN (ce_page_new (CE_TYPE_PAGE_VLAN,
+	                                  editor,
 	                                  connection,
 	                                  parent_window,
 	                                  client,

@@ -98,7 +98,8 @@ finish_setup (CEPage8021xSecurity *self, gpointer unused, GError *error, gpointe
 }
 
 CEPage *
-ce_page_8021x_security_new (NMConnection *connection,
+ce_page_8021x_security_new (NMConnectionEditor *editor,
+                            NMConnection *connection,
                             GtkWindow *parent_window,
                             NMClient *client,
                             NMRemoteSettings *settings,
@@ -110,6 +111,7 @@ ce_page_8021x_security_new (NMConnection *connection,
 	CEPage *parent;
 
 	self = CE_PAGE_8021X_SECURITY (ce_page_new (CE_TYPE_PAGE_8021X_SECURITY,
+	                                            editor,
 	                                            connection,
 	                                            parent_window,
 	                                            client,

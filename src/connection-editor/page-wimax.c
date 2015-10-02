@@ -99,7 +99,8 @@ finish_setup (CEPageWimax *self, gpointer unused, GError *error, gpointer user_d
 }
 
 CEPage *
-ce_page_wimax_new (NMConnection *connection,
+ce_page_wimax_new (NMConnectionEditor *editor,
+                   NMConnection *connection,
                    GtkWindow *parent_window,
                    NMClient *client,
                    NMRemoteSettings *settings,
@@ -112,6 +113,7 @@ ce_page_wimax_new (NMConnection *connection,
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
 
 	self = CE_PAGE_WIMAX (ce_page_new (CE_TYPE_PAGE_WIMAX,
+	                                   editor,
 	                                   connection,
 	                                   parent_window,
 	                                   client,

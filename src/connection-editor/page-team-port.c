@@ -134,17 +134,19 @@ finish_setup (CEPageTeamPort *self, gpointer unused, GError *error, gpointer use
 }
 
 CEPage *
-ce_page_team_port_new (NMConnection *connection,
-                         GtkWindow *parent_window,
-                         NMClient *client,
-                         NMRemoteSettings *settings,
-                         const char **out_secrets_setting_name,
-                         GError **error)
+ce_page_team_port_new (NMConnectionEditor *editor,
+                       NMConnection *connection,
+                       GtkWindow *parent_window,
+                       NMClient *client,
+                       NMRemoteSettings *settings,
+                       const char **out_secrets_setting_name,
+                       GError **error)
 {
 	CEPageTeamPort *self;
 	CEPageTeamPortPrivate *priv;
 
 	self = CE_PAGE_TEAM_PORT (ce_page_new (CE_TYPE_PAGE_TEAM_PORT,
+	                                       editor,
 	                                       connection,
 	                                       parent_window,
 	                                       client,

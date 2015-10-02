@@ -155,6 +155,24 @@ ce_page_last_update (CEPage *self, NMConnection *connection, GError **error)
 	return TRUE;
 }
 
+gboolean
+ce_page_inter_page_change (CEPage *self)
+{
+	gboolean ret = FALSE;
+
+	g_return_val_if_fail (CE_IS_PAGE (self), FALSE);
+
+	if (self->inter_page_change_running)
+		return FALSE;
+
+	self->inter_page_change_running = TRUE;
+	if (CE_PAGE_GET_CLASS (self)->inter_page_change)
+		ret = CE_PAGE_GET_CLASS (self)->inter_page_change (self);
+	self->inter_page_change_running = FALSE;
+
+	return ret;
+}
+
 static int
 hwaddr_binary_len (const char *asc)
 {
@@ -884,6 +902,7 @@ ce_page_new_connection (const char *format,
 
 CEPage *
 ce_page_new (GType page_type,
+             NMConnectionEditor *editor,
              NMConnection *connection,
              GtkWindow *parent_window,
              NMClient *client,
@@ -906,6 +925,7 @@ ce_page_new (GType page_type,
 	self->title = g_strdup (title);
 	self->client = client;
 	self->settings = settings;
+	self->editor = editor;
 
 	if (ui_file) {
 		if (!gtk_builder_add_from_file (self->builder, ui_file, &error)) {
