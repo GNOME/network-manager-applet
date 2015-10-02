@@ -246,8 +246,8 @@ mode_combo_changed_cb (GtkComboBox *combo,
 	gboolean show_bssid = TRUE;
 
  	switch (gtk_combo_box_get_active (GTK_COMBO_BOX (combo))) {
-	case 2: /* hotspot */
- 	case 1: /* adhoc */
+	case 1: /* hotspot */
+ 	case 2: /* adhoc */
 		/* BSSID is random and is created by kernel for Ad-Hoc networks
 		 * http://lxr.linux.no/linux+v3.7.6/net/mac80211/ibss.c#L685
 		 * For AP-mode, the BSSID is the MAC address of the device.
@@ -332,9 +332,9 @@ populate_ui (CEPageWifi *self)
 
 	/* Default to Infrastructure */
 	gtk_combo_box_set_active (priv->mode, 0);
-	if (!g_strcmp0 (mode, "adhoc"))
-		gtk_combo_box_set_active (priv->mode, 1);
 	if (!g_strcmp0 (mode, "ap"))
+		gtk_combo_box_set_active (priv->mode, 1);
+	if (!g_strcmp0 (mode, "adhoc"))
 		gtk_combo_box_set_active (priv->mode, 2);
 	mode_combo_changed_cb (priv->mode, self);
 	g_signal_connect (priv->mode, "changed", G_CALLBACK (mode_combo_changed_cb), self);
@@ -499,10 +499,10 @@ ui_to_setting (CEPageWifi *self)
 
 	switch (gtk_combo_box_get_active (priv->mode)) {
 	case 1:
-		mode = "adhoc";
+		mode = "ap";
 		break;
 	case 2:
-		mode = "ap";
+		mode = "adhoc";
 		break;
 	default:
 		mode = "infrastructure";
