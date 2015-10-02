@@ -53,6 +53,8 @@ typedef struct {
 
 	GtkComboBox *method;
 	GtkListStore *method_store;
+	int normal_method_idx;
+	int hotspot_method_idx;
 
 	/* Addresses */
 	GtkWidget *addr_label;
@@ -1369,12 +1371,100 @@ ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 	return nm_setting_verify (NM_SETTING (priv->setting), NULL, error);
 }
 
+static gboolean
+get_iter_for_method (GtkTreeModel *model, int column, GtkTreeIter *iter)
+{
+	int col;
+
+	if (gtk_tree_model_get_iter_first (model, iter)) {
+		do {
+			gtk_tree_model_get (model, iter, METHOD_COL_NUM, &col, -1);
+			if (col == column)
+				return TRUE;
+		} while (gtk_tree_model_iter_next (model, iter));
+	}
+	return FALSE;
+}
+
+static void
+toggle_method_sensitivity (CEPage *page, int column, gboolean sensitive)
+{
+	CEPageIP6 *self = CE_PAGE_IP6 (page);
+	CEPageIP6Private *priv = CE_PAGE_IP6_GET_PRIVATE (self);
+	GtkTreeModel *model = GTK_TREE_MODEL (priv->method_store);
+	GtkTreeIter iter;
+
+	if (get_iter_for_method (model, column, &iter))
+		gtk_list_store_set (priv->method_store, &iter, METHOD_COL_ENABLED, sensitive, -1);
+}
+
+static gboolean
+get_method_sensitivity (CEPage *page, int column)
+{
+	CEPageIP6 *self = CE_PAGE_IP6 (page);
+	CEPageIP6Private *priv = CE_PAGE_IP6_GET_PRIVATE (self);
+	GtkTreeModel *model = GTK_TREE_MODEL (priv->method_store);
+	GtkTreeIter iter;
+	gboolean sensitive = FALSE;
+
+	if (get_iter_for_method (model, column, &iter))
+		gtk_tree_model_get (GTK_TREE_MODEL (priv->method_store), &iter, METHOD_COL_ENABLED, &sensitive, -1);
+	return sensitive;
+}
+
+static void
+change_method_combo (CEPage *page, gboolean is_hotspot)
+{
+	CEPageIP6 *self = CE_PAGE_IP6 (page);
+	CEPageIP6Private *priv = CE_PAGE_IP6_GET_PRIVATE (self);
+
+	/* Store previous active method */
+	if (get_method_sensitivity (page, IP6_METHOD_AUTO))
+		priv->normal_method_idx = gtk_combo_box_get_active (priv->method);
+	else
+		priv->hotspot_method_idx = gtk_combo_box_get_active (priv->method);
+
+	/* Set active method */
+	if (is_hotspot) {
+		if (priv->hotspot_method_idx != -1)
+			gtk_combo_box_set_active (priv->method, priv->hotspot_method_idx);
+		else
+			gtk_combo_box_set_active (priv->method, IP6_METHOD_IGNORE);
+	} else {
+		if (priv->normal_method_idx != -1)
+			gtk_combo_box_set_active (priv->method, priv->normal_method_idx);
+	}
+
+	toggle_method_sensitivity (page, IP6_METHOD_AUTO, !is_hotspot);
+	toggle_method_sensitivity (page, IP6_METHOD_AUTO_ADDRESSES, !is_hotspot);
+	toggle_method_sensitivity (page, IP6_METHOD_AUTO_DHCP_ONLY, !is_hotspot);
+	toggle_method_sensitivity (page, IP6_METHOD_MANUAL, !is_hotspot);
+	toggle_method_sensitivity (page, IP6_METHOD_LINK_LOCAL, !is_hotspot);
+}
+
+static gboolean
+inter_page_change (CEPage *page)
+{
+	gpointer wifi_mode_ap;
+
+	if (nm_connection_editor_inter_page_get_value (page->editor, INTER_PAGE_CHANGE_WIFI_MODE, &wifi_mode_ap)) {
+		/* For Wi-Fi AP mode restrict IPv6 methods to ignore */
+		if (GPOINTER_TO_UINT (wifi_mode_ap))
+			change_method_combo (page, TRUE);
+		else
+			change_method_combo (page, FALSE);
+	}
+	return TRUE;
+}
+
 static void
 ce_page_ip6_init (CEPageIP6 *self)
 {
 	CEPageIP6Private *priv = CE_PAGE_IP6_GET_PRIVATE (self);
 
 	priv->last_column = -1;
+	priv->normal_method_idx = -1;
+	priv->hotspot_method_idx = -1;
 }
 
 static void
@@ -1405,5 +1495,6 @@ ce_page_ip6_class_init (CEPageIP6Class *ip6_class)
 
 	/* virtual methods */
 	parent_class->ce_page_validate_v = ce_page_validate_v;
+	parent_class->inter_page_change = inter_page_change;
 	object_class->dispose = dispose;
 }
