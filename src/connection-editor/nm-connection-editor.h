@@ -80,6 +80,7 @@ typedef struct {
 
 typedef enum {
 	/* Add item for inter-page changes here */
+	INTER_PAGE_CHANGE_WIFI_MODE = 1,
 } InterPageChangeType;
 
 GType               nm_connection_editor_get_type (void);
