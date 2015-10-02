@@ -331,7 +331,8 @@ finish_setup (CEPageGeneral *self, gpointer unused, GError *error, gpointer user
 }
 
 CEPage *
-ce_page_general_new (NMConnection *connection,
+ce_page_general_new (NMConnectionEditor *editor,
+                     NMConnection *connection,
                      GtkWindow *parent_window,
                      NMClient *client,
                      const char **out_secrets_setting_name,
@@ -341,6 +342,7 @@ ce_page_general_new (NMConnection *connection,
 	CEPageGeneralPrivate *priv;
 
 	self = CE_PAGE_GENERAL (ce_page_new (CE_TYPE_PAGE_GENERAL,
+	                                     editor,
 	                                     connection,
 	                                     parent_window,
 	                                     client,

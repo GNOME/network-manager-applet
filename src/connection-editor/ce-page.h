@@ -30,6 +30,7 @@
 
 #include <NetworkManager.h>
 
+#include "nm-connection-editor.h"
 #include "utils.h"
 
 /* for ARPHRD_ETHER / ARPHRD_INFINIBAND for MAC utilies */
@@ -63,12 +64,14 @@ typedef struct {
 	GObject parent;
 
 	gboolean initialized;
+	gboolean inter_page_change_running;
 	GtkBuilder *builder;
 	GtkWidget *page;
 	char *title;
 
 	gulong secrets_done_validate;
 
+	NMConnectionEditor *editor;
 	NMConnection *connection;
 	GtkWindow *parent_window;
 	NMClient *client;
@@ -80,6 +83,7 @@ typedef struct {
 	/* Virtual functions */
 	gboolean    (*ce_page_validate_v) (CEPage *self, NMConnection *connection, GError **error);
 	gboolean    (*last_update)  (CEPage *self, NMConnection *connection, GError **error);
+	gboolean    (*inter_page_change)  (CEPage *self);
 
 	/* Signals */
 	void        (*changed)     (CEPage *self);
@@ -87,7 +91,8 @@ typedef struct {
 } CEPageClass;
 
 
-typedef CEPage* (*CEPageNewFunc)(NMConnection *connection,
+typedef CEPage* (*CEPageNewFunc)(NMConnectionEditor *editor,
+                                 NMConnection *connection,
                                  GtkWindow *parent,
                                  NMClient *client,
                                  const char **out_secrets_setting_name,
@@ -102,6 +107,7 @@ const char * ce_page_get_title (CEPage *self);
 
 gboolean ce_page_validate (CEPage *self, NMConnection *connection, GError **error);
 gboolean ce_page_last_update (CEPage *self, NMConnection *connection, GError **error);
+gboolean ce_page_inter_page_change (CEPage *self);
 
 void ce_page_setup_mac_combo (CEPage *self, GtkComboBox *combo,
                               const char *mac, char **mac_list);
@@ -146,12 +152,14 @@ NMConnection *ce_page_new_connection (const char *format,
                                       gpointer user_data);
 
 CEPage *ce_page_new (GType page_type,
+                     NMConnectionEditor *editor,
                      NMConnection *connection,
                      GtkWindow *parent_window,
                      NMClient *client,
                      const char *ui_file,
                      const char *widget_name,
                      const char *title);
+
 
 #endif  /* __CE_PAGE_H__ */
 

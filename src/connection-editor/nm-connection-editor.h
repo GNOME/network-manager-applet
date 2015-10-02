@@ -66,6 +66,8 @@ typedef struct {
 	guint validate_id;
 
 	char *last_validation_error;
+
+	GHashTable *inter_page_hash;
 } NMConnectionEditor;
 
 typedef struct {
@@ -74,6 +76,11 @@ typedef struct {
 	/* Signals */
 	void (*done)  (NMConnectionEditor *editor, gint result, GError *error);
 } NMConnectionEditorClass;
+
+typedef enum {
+	/* Add item for inter-page changes here */
+	DUMMY,
+} InterPageChangeType;
 
 GType               nm_connection_editor_get_type (void);
 NMConnectionEditor *nm_connection_editor_new (GtkWindow *parent_window,
@@ -97,5 +104,13 @@ void                nm_connection_editor_warning (GtkWindow *parent,
                                                   const char *heading,
                                                   const char *format,
                                                   ...);
+
+void               nm_connection_editor_inter_page_set_value (NMConnectionEditor *editor,
+                                                              InterPageChangeType type,
+                                                              gpointer value);
+gboolean           nm_connection_editor_inter_page_get_value (NMConnectionEditor *editor,
+                                                              InterPageChangeType type,
+                                                              gpointer *value);
+void               nm_connection_editor_inter_page_clear_data (NMConnectionEditor *editor);
 
 #endif

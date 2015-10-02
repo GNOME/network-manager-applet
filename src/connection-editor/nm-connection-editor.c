@@ -258,6 +258,12 @@ permissions_changed_cb (NMClient *client,
 }
 
 static void
+destroy_inter_page_item (gpointer data)
+{
+	return;
+}
+
+static void
 nm_connection_editor_init (NMConnectionEditor *editor)
 {
 	GtkWidget *dialog;
@@ -290,6 +296,8 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 
 	editor->cancel_button = GTK_WIDGET (gtk_builder_get_object (editor->builder, "cancel_button"));
 	editor->export_button = GTK_WIDGET (gtk_builder_get_object (editor->builder, "export_button"));
+
+	editor->inter_page_hash = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, (GDestroyNotify) destroy_inter_page_item);
 }
 
 static void
@@ -360,6 +368,8 @@ dispose (GObject *object)
 	g_object_unref (editor->client);
 
 	g_clear_pointer (&editor->last_validation_error, g_free);
+
+	g_hash_table_destroy (editor->inter_page_hash);
 
 out:
 	G_OBJECT_CLASS (nm_connection_editor_parent_class)->dispose (object);
@@ -507,6 +517,14 @@ static void
 page_changed (CEPage *page, gpointer user_data)
 {
 	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
+	GSList *iter;
+
+	/* Do page interdependent changes */
+	for (iter = editor->pages; iter; iter = g_slist_next (iter))
+		ce_page_inter_page_change (CE_PAGE (iter->data));
+
+	if (editor_is_initialized (editor))
+		nm_connection_editor_inter_page_clear_data (editor);
 
 	connection_editor_validate (editor);
 }
@@ -695,7 +713,7 @@ add_page (NMConnectionEditor *editor,
 	g_return_val_if_fail (func != NULL, FALSE);
 	g_return_val_if_fail (connection != NULL, FALSE);
 
-	page = (*func) (connection, GTK_WINDOW (editor->window), editor->client,
+	page = (*func) (editor, connection, GTK_WINDOW (editor->window), editor->client,
 	                &secrets_setting_name, error);
 	if (page) {
 		g_object_set_data_full (G_OBJECT (page),
@@ -1117,5 +1135,23 @@ nm_connection_editor_warning (GtkWindow *parent, const char *heading, const char
 	va_start (args, format);
 	nm_connection_editor_dialog (parent, GTK_MESSAGE_WARNING, heading, format, args);
 	va_end (args);
+}
+
+void
+nm_connection_editor_inter_page_set_value (NMConnectionEditor *editor, InterPageChangeType type, gpointer value)
+{
+	g_hash_table_insert (editor->inter_page_hash, GUINT_TO_POINTER (type), value);
+}
+
+gboolean
+nm_connection_editor_inter_page_get_value (NMConnectionEditor *editor, InterPageChangeType type, gpointer *value)
+{
+	return g_hash_table_lookup_extended (editor->inter_page_hash, GUINT_TO_POINTER (type), NULL, value);
+}
+
+void
+nm_connection_editor_inter_page_clear_data (NMConnectionEditor *editor)
+{
+	g_hash_table_remove_all (editor->inter_page_hash);
 }
 

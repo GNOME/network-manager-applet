@@ -262,7 +262,8 @@ finish_setup (CEPagePpp *self, gpointer unused, GError *error, gpointer user_dat
 }
 
 CEPage *
-ce_page_ppp_new (NMConnection *connection,
+ce_page_ppp_new (NMConnectionEditor *editor,
+                 NMConnection *connection,
                  GtkWindow *parent_window,
                  NMClient *client,
                  const char **out_secrets_setting_name,
@@ -273,6 +274,7 @@ ce_page_ppp_new (NMConnection *connection,
 	NMSettingConnection *s_con;
 
 	self = CE_PAGE_PPP (ce_page_new (CE_TYPE_PAGE_PPP,
+	                                 editor,
 	                                 connection,
 	                                 parent_window,
 	                                 client,

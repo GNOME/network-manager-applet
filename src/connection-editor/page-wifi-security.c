@@ -399,7 +399,8 @@ finish_setup (CEPageWifiSecurity *self, gpointer unused, GError *error, gpointer
 }
 
 CEPage *
-ce_page_wifi_security_new (NMConnection *connection,
+ce_page_wifi_security_new (NMConnectionEditor *editor,
+                           NMConnection *connection,
                            GtkWindow *parent_window,
                            NMClient *client,
                            const char **out_secrets_setting_name,
@@ -417,6 +418,7 @@ ce_page_wifi_security_new (NMConnection *connection,
 	}
 
 	self = CE_PAGE_WIFI_SECURITY (ce_page_new (CE_TYPE_PAGE_WIFI_SECURITY,
+	                                           editor,
 	                                           connection,
 	                                           parent_window,
 	                                           client,

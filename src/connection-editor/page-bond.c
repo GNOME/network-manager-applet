@@ -426,16 +426,18 @@ finish_setup (CEPageBond *self, gpointer unused, GError *error, gpointer user_da
 }
 
 CEPage *
-ce_page_bond_new (NMConnection *connection,
-				  GtkWindow *parent_window,
-				  NMClient *client,
-				  const char **out_secrets_setting_name,
-				  GError **error)
+ce_page_bond_new (NMConnectionEditor *editor,
+                  NMConnection *connection,
+                  GtkWindow *parent_window,
+                  NMClient *client,
+                  const char **out_secrets_setting_name,
+                  GError **error)
 {
 	CEPageBond *self;
 	CEPageBondPrivate *priv;
 
 	self = CE_PAGE_BOND (ce_page_new (CE_TYPE_PAGE_BOND,
+	                                  editor,
 	                                  connection,
 	                                  parent_window,
 	                                  client,
