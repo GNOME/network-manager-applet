@@ -104,6 +104,7 @@ typedef struct {
 
 #define METHOD_COL_NAME 0
 #define METHOD_COL_NUM  1
+#define METHOD_COL_ENABLED 2
 
 #define IP4_METHOD_AUTO            0
 #define IP4_METHOD_AUTO_ADDRESSES  1
@@ -121,6 +122,7 @@ ip4_private_init (CEPageIP4 *self, NMConnection *connection)
 	NMSettingConnection *s_con;
 	const char *connection_type;
 	char *str_auto = NULL, *str_auto_only = NULL;
+	GList *cells;
 
 	builder = CE_PAGE (self)->builder;
 
@@ -147,19 +149,24 @@ ip4_private_init (CEPageIP4 *self, NMConnection *connection)
 	}
 
 	priv->method = GTK_COMBO_BOX (gtk_builder_get_object (builder, "ip4_method"));
+	cells = gtk_cell_layout_get_cells (GTK_CELL_LAYOUT (priv->method));
+	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (priv->method), cells->data,
+	                               "sensitive", METHOD_COL_ENABLED);
 
-	priv->method_store = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_UINT);
+	priv->method_store = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_UINT, G_TYPE_BOOLEAN);
 
 	gtk_list_store_append (priv->method_store, &iter);
 	gtk_list_store_set (priv->method_store, &iter,
 	                    METHOD_COL_NAME, str_auto,
 	                    METHOD_COL_NUM, IP4_METHOD_AUTO,
+	                    METHOD_COL_ENABLED, TRUE,
 	                    -1);
 
 	gtk_list_store_append (priv->method_store, &iter);
 	gtk_list_store_set (priv->method_store, &iter,
 	                    METHOD_COL_NAME, str_auto_only,
 	                    METHOD_COL_NUM, IP4_METHOD_AUTO_ADDRESSES,
+	                    METHOD_COL_ENABLED, TRUE,
 	                    -1);
 
 	/* Manual is pointless for Mobile Broadband */
@@ -170,6 +177,7 @@ ip4_private_init (CEPageIP4 *self, NMConnection *connection)
 		gtk_list_store_set (priv->method_store, &iter,
 		                    METHOD_COL_NAME, _("Manual"),
 		                    METHOD_COL_NUM, IP4_METHOD_MANUAL,
+		                    METHOD_COL_ENABLED, TRUE,
 		                    -1);
 	}
 
@@ -182,12 +190,14 @@ ip4_private_init (CEPageIP4 *self, NMConnection *connection)
 		gtk_list_store_set (priv->method_store, &iter,
 		                    METHOD_COL_NAME, _("Link-Local Only"),
 		                    METHOD_COL_NUM, IP4_METHOD_LINK_LOCAL,
+		                    METHOD_COL_ENABLED, TRUE,
 		                    -1);
 
 		gtk_list_store_append (priv->method_store, &iter);
 		gtk_list_store_set (priv->method_store, &iter,
 		                    METHOD_COL_NAME, _("Shared to other computers"),
 		                    METHOD_COL_NUM, IP4_METHOD_SHARED,
+		                    METHOD_COL_ENABLED, TRUE,
 		                    -1);
 	}
 
@@ -197,6 +207,7 @@ ip4_private_init (CEPageIP4 *self, NMConnection *connection)
 		gtk_list_store_set (priv->method_store, &iter,
 		                    METHOD_COL_NAME, _("Disabled"),
 		                    METHOD_COL_NUM, IP4_METHOD_DISABLED,
+		                    METHOD_COL_ENABLED, TRUE,
 		                    -1);
 	}
 	gtk_combo_box_set_model (priv->method, GTK_TREE_MODEL (priv->method_store));
