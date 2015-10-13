@@ -151,7 +151,7 @@ ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 	priv->method = GTK_COMBO_BOX (gtk_builder_get_object (builder, "ip6_method"));
 	cells = gtk_cell_layout_get_cells (GTK_CELL_LAYOUT (priv->method));
 	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (priv->method), cells->data,
-								   "sensitive", METHOD_COL_ENABLED);
+	                               "sensitive", METHOD_COL_ENABLED);
 
 	priv->method_store = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_UINT, G_TYPE_BOOLEAN);
 
@@ -159,21 +159,21 @@ ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 	gtk_list_store_set (priv->method_store, &iter,
 	                    METHOD_COL_NAME, _("Ignore"),
 	                    METHOD_COL_NUM, IP6_METHOD_IGNORE,
-						METHOD_COL_ENABLED, TRUE,
+	                    METHOD_COL_ENABLED, TRUE,
 	                    -1);
 
 	gtk_list_store_append (priv->method_store, &iter);
 	gtk_list_store_set (priv->method_store, &iter,
 	                    METHOD_COL_NAME, str_auto,
 	                    METHOD_COL_NUM, IP6_METHOD_AUTO,
-						METHOD_COL_ENABLED, TRUE,
+	                    METHOD_COL_ENABLED, TRUE,
 	                    -1);
 
 	gtk_list_store_append (priv->method_store, &iter);
 	gtk_list_store_set (priv->method_store, &iter,
 	                    METHOD_COL_NAME, str_auto_only,
 	                    METHOD_COL_NUM, IP6_METHOD_AUTO_ADDRESSES,
-						METHOD_COL_ENABLED, TRUE,
+	                    METHOD_COL_ENABLED, TRUE,
 	                    -1);
 
 	/* DHCP only used on Wi-Fi and ethernet for now */
@@ -183,7 +183,7 @@ ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 		gtk_list_store_set (priv->method_store, &iter,
 		                    METHOD_COL_NAME, _("Automatic, DHCP only"),
 		                    METHOD_COL_NUM, IP6_METHOD_AUTO_DHCP_ONLY,
-							METHOD_COL_ENABLED, TRUE,
+		                    METHOD_COL_ENABLED, TRUE,
 		                    -1);
 	}
 
@@ -195,7 +195,7 @@ ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 		gtk_list_store_set (priv->method_store, &iter,
 		                    METHOD_COL_NAME, _("Manual"),
 		                    METHOD_COL_NUM, IP6_METHOD_MANUAL,
-							METHOD_COL_ENABLED, TRUE,
+		                    METHOD_COL_ENABLED, TRUE,
 		                    -1);
 	}
 
@@ -208,14 +208,14 @@ ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 		gtk_list_store_set (priv->method_store, &iter,
 		                    METHOD_COL_NAME, _("Link-Local Only"),
 		                    METHOD_COL_NUM, IP6_METHOD_LINK_LOCAL,
-							METHOD_COL_ENABLED, TRUE,
+		                    METHOD_COL_ENABLED, TRUE,
 		                    -1);
 
 		gtk_list_store_append (priv->method_store, &iter);
 		gtk_list_store_set (priv->method_store, &iter,
 		                    METHOD_COL_NAME, _("Shared to other computers"),
 		                    METHOD_COL_NUM, IP6_METHOD_SHARED,
-							METHOD_COL_ENABLED, FALSE,
+		                    METHOD_COL_ENABLED, FALSE,
 		                    -1);
 	}
 
