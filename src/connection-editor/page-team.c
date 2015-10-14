@@ -250,17 +250,19 @@ finish_setup (CEPageTeam *self, gpointer unused, GError *error, gpointer user_da
 }
 
 CEPage *
-ce_page_team_new (NMConnection *connection,
-				  GtkWindow *parent_window,
-				  NMClient *client,
+ce_page_team_new (NMConnectionEditor *editor,
+                  NMConnection *connection,
+                  GtkWindow *parent_window,
+                  NMClient *client,
                   NMRemoteSettings *settings,
-				  const char **out_secrets_setting_name,
-				  GError **error)
+                  const char **out_secrets_setting_name,
+                  GError **error)
 {
 	CEPageTeam *self;
 	CEPageTeamPrivate *priv;
 
 	self = CE_PAGE_TEAM (ce_page_new (CE_TYPE_PAGE_TEAM,
+	                                  editor,
 	                                  connection,
 	                                  parent_window,
 	                                  client,

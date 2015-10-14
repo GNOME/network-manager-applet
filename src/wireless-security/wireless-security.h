@@ -48,6 +48,7 @@ struct _WirelessSecurity {
 	gpointer changed_notify_data;
 	const char *default_field;
 	gboolean adhoc_compatible;
+	gboolean hotspot_compatible;
 
 	char *username, *password;
 	gboolean always_ask, show_password;
@@ -80,6 +81,8 @@ void wireless_security_update_secrets (WirelessSecurity *sec,
                                        NMConnection *connection);
 
 gboolean wireless_security_adhoc_compatible (WirelessSecurity *sec);
+
+gboolean wireless_security_hotspot_compatible (WirelessSecurity *sec);
 
 void wireless_security_set_userpass (WirelessSecurity *sec,
                                      const char *user,

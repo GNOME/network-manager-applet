@@ -47,7 +47,8 @@ typedef struct {
 
 GType ce_page_vpn_get_type (void);
 
-CEPage *ce_page_vpn_new (NMConnection *connection,
+CEPage *ce_page_vpn_new (NMConnectionEditor *editor,
+                         NMConnection *connection,
                          GtkWindow *parent,
                          NMClient *client,
                          NMRemoteSettings *settings,

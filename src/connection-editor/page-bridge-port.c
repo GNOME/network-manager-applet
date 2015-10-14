@@ -92,7 +92,8 @@ finish_setup (CEPageBridgePort *self, gpointer unused, GError *error, gpointer u
 }
 
 CEPage *
-ce_page_bridge_port_new (NMConnection *connection,
+ce_page_bridge_port_new (NMConnectionEditor *editor,
+                         NMConnection *connection,
                          GtkWindow *parent_window,
                          NMClient *client,
                          NMRemoteSettings *settings,
@@ -103,6 +104,7 @@ ce_page_bridge_port_new (NMConnection *connection,
 	CEPageBridgePortPrivate *priv;
 
 	self = CE_PAGE_BRIDGE_PORT (ce_page_new (CE_TYPE_PAGE_BRIDGE_PORT,
+	                                         editor,
 	                                         connection,
 	                                         parent_window,
 	                                         client,

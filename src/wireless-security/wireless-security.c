@@ -199,6 +199,7 @@ wireless_security_init (gsize obj_size,
 
 	sec->destroy = destroy;
 	sec->adhoc_compatible = TRUE;
+	sec->hotspot_compatible = TRUE;
 
 	return sec;
 }
@@ -209,6 +210,14 @@ wireless_security_adhoc_compatible (WirelessSecurity *sec)
 	g_return_val_if_fail (sec != NULL, FALSE);
 
 	return sec->adhoc_compatible;
+}
+
+gboolean
+wireless_security_hotspot_compatible (WirelessSecurity *sec)
+{
+	g_return_val_if_fail (sec != NULL, FALSE);
+
+	return sec->hotspot_compatible;
 }
 
 void
