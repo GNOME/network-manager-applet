@@ -45,7 +45,8 @@ typedef struct {
 
 GType ce_page_8021x_security_get_type (void);
 
-CEPage *ce_page_8021x_security_new (NMConnection *connection,
+CEPage *ce_page_8021x_security_new (NMConnectionEditor *editor,
+                                    NMConnection *connection,
                                     GtkWindow *parent,
                                     NMClient *client,
                                     const char **out_secrets_setting_name,

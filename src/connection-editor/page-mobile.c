@@ -291,7 +291,8 @@ finish_setup (CEPageMobile *self, gpointer unused, GError *error, gpointer user_
 }
 
 CEPage *
-ce_page_mobile_new (NMConnection *connection,
+ce_page_mobile_new (NMConnectionEditor *editor,
+                    NMConnection *connection,
                     GtkWindow *parent_window,
                     NMClient *client,
                     const char **out_secrets_setting_name,
@@ -301,6 +302,7 @@ ce_page_mobile_new (NMConnection *connection,
 	CEPageMobilePrivate *priv;
 
 	self = CE_PAGE_MOBILE (ce_page_new (CE_TYPE_PAGE_MOBILE,
+	                                    editor,
 	                                    connection,
 	                                    parent_window,
 	                                    client,

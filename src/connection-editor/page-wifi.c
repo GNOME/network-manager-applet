@@ -28,6 +28,7 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
+#include "nm-connection-editor.h"
 #include "page-wifi.h"
 
 G_DEFINE_TYPE (CEPageWifi, ce_page_wifi, CE_TYPE_PAGE)
@@ -242,51 +243,46 @@ mode_combo_changed_cb (GtkComboBox *combo,
 	CEPageWifiPrivate *priv = CE_PAGE_WIFI_GET_PRIVATE (self);
 	CEPage *parent = CE_PAGE (self);
 	GtkWidget *widget_band_label, *widget_chan_label, *widget_bssid_label;
-	gboolean adhoc;
+	gboolean show_freq = FALSE;
+	gboolean show_bssid = TRUE;
+	gboolean hotspot = FALSE;
 
  	switch (gtk_combo_box_get_active (GTK_COMBO_BOX (combo))) {
- 	case 1: /* adhoc */
-		adhoc = TRUE;
+	case 1: /* hotspot */
+		hotspot = TRUE;
+ 	case 2: /* adhoc */
+		/* BSSID is random and is created by kernel for Ad-Hoc networks
+		 * http://lxr.linux.no/linux+v3.7.6/net/mac80211/ibss.c#L685
+		 * For AP-mode, the BSSID is the MAC address of the device.
+		 */
+		show_bssid = FALSE;
+		show_freq = TRUE;
  		break;
  	default: /* infrastructure */
-		adhoc = FALSE;
+		show_freq = FALSE;
  		break;
  	}
+	nm_connection_editor_inter_page_set_value (parent->editor,
+	                                           INTER_PAGE_CHANGE_WIFI_MODE,
+	                                           GUINT_TO_POINTER (hotspot));
 
 	widget_band_label = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_band_label"));
 	widget_chan_label = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_channel_label"));
 	widget_bssid_label = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_bssid_label"));
 
-	if (adhoc) {
-		/* For Ad-Hoc show Band and Channel */
-		gtk_widget_show (widget_band_label);
-		gtk_widget_show (GTK_WIDGET (priv->band));
-		gtk_widget_show (widget_chan_label);
-		gtk_widget_show (GTK_WIDGET (priv->channel));
+	gtk_widget_set_visible (widget_band_label, show_freq);
+	gtk_widget_set_sensitive (widget_band_label, show_freq);
+	gtk_widget_set_visible (GTK_WIDGET (priv->band), show_freq);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->band), show_freq);
+	gtk_widget_set_visible (widget_chan_label, show_freq);
+	gtk_widget_set_sensitive (widget_chan_label, show_freq);
+	gtk_widget_set_visible (GTK_WIDGET (priv->channel), show_freq);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->channel), show_freq);
 
-		/* and hide BSSID
-		 * BSSID is random and is created by kernel for Ad-Hoc networks
-		 * http://lxr.linux.no/linux+v3.7.6/net/mac80211/ibss.c#L685
-		 */
-		gtk_widget_hide (widget_bssid_label);
-		gtk_widget_hide (GTK_WIDGET (priv->bssid));
-	} else {
-		/* Do opposite for Infrastructure mode */
-		gtk_widget_hide (widget_band_label);
-		gtk_widget_hide (GTK_WIDGET (priv->band));
-		gtk_widget_hide (widget_chan_label);
-		gtk_widget_hide (GTK_WIDGET (priv->channel));
-
-		gtk_widget_show (widget_bssid_label);
-		gtk_widget_show (GTK_WIDGET (priv->bssid));
-	}
-
-	gtk_widget_set_sensitive (widget_band_label, adhoc);
-	gtk_widget_set_sensitive (GTK_WIDGET (priv->band), adhoc);
-	gtk_widget_set_sensitive (widget_chan_label, adhoc);
-	gtk_widget_set_sensitive (GTK_WIDGET (priv->channel), adhoc);
-	gtk_widget_set_sensitive (widget_bssid_label, !adhoc);
-	gtk_widget_set_sensitive (GTK_WIDGET (priv->bssid), !adhoc);
+	gtk_widget_set_visible (widget_bssid_label, show_bssid);
+	gtk_widget_set_sensitive (widget_bssid_label, show_bssid);
+	gtk_widget_set_visible (GTK_WIDGET (priv->bssid), show_bssid);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->bssid), show_bssid);
 
 	ce_page_changed (CE_PAGE (self));
 }
@@ -342,8 +338,10 @@ populate_ui (CEPageWifi *self)
 
 	/* Default to Infrastructure */
 	gtk_combo_box_set_active (priv->mode, 0);
-	if (mode && !strcmp (mode, "adhoc"))
+	if (!g_strcmp0 (mode, "ap"))
 		gtk_combo_box_set_active (priv->mode, 1);
+	if (!g_strcmp0 (mode, "adhoc"))
+		gtk_combo_box_set_active (priv->mode, 2);
 	mode_combo_changed_cb (priv->mode, self);
 	g_signal_connect (priv->mode, "changed", G_CALLBACK (mode_combo_changed_cb), self);
 
@@ -430,7 +428,8 @@ finish_setup (CEPageWifi *self, gpointer unused, GError *error, gpointer user_da
 }
 
 CEPage *
-ce_page_wifi_new (NMConnection *connection,
+ce_page_wifi_new (NMConnectionEditor *editor,
+                  NMConnection *connection,
                   GtkWindow *parent_window,
                   NMClient *client,
                   const char **out_secrets_setting_name,
@@ -442,6 +441,7 @@ ce_page_wifi_new (NMConnection *connection,
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
 
 	self = CE_PAGE_WIFI (ce_page_new (CE_TYPE_PAGE_WIFI,
+	                                  editor,
 	                                  connection,
 	                                  parent_window,
 	                                  client,
@@ -505,10 +505,17 @@ ui_to_setting (CEPageWifi *self)
 
 	ssid = ce_page_wifi_get_ssid (self);
 
-	if (gtk_combo_box_get_active (priv->mode) == 1)
+	switch (gtk_combo_box_get_active (priv->mode)) {
+	case 1:
+		mode = "ap";
+		break;
+	case 2:
 		mode = "adhoc";
-	else
+		break;
+	default:
 		mode = "infrastructure";
+		break;
+	}
 
 	switch (gtk_combo_box_get_active (priv->band)) {
 	case 1:
@@ -524,8 +531,8 @@ ui_to_setting (CEPageWifi *self)
 	}
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->bssid));
-	/* BSSID is only valid for infrastructure not for adhoc */
-	if (entry && mode && strcmp (mode, "adhoc") != 0)
+	/* BSSID is only valid for infrastructure */
+	if (entry && mode && strcmp (mode, "infrastructure") == 0)
 		bssid = gtk_entry_get_text (GTK_ENTRY (entry));
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_combo));
 	if (entry)

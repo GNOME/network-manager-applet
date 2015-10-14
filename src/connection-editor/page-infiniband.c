@@ -133,7 +133,8 @@ finish_setup (CEPageInfiniband *self, gpointer unused, GError *error, gpointer u
 }
 
 CEPage *
-ce_page_infiniband_new (NMConnection *connection,
+ce_page_infiniband_new (NMConnectionEditor *editor,
+                        NMConnection *connection,
                         GtkWindow *parent_window,
                         NMClient *client,
                         const char **out_secrets_setting_name,
@@ -143,6 +144,7 @@ ce_page_infiniband_new (NMConnection *connection,
 	CEPageInfinibandPrivate *priv;
 
 	self = CE_PAGE_INFINIBAND (ce_page_new (CE_TYPE_PAGE_INFINIBAND,
+	                                        editor,
 	                                        connection,
 	                                        parent_window,
 	                                        client,

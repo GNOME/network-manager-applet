@@ -90,7 +90,8 @@ finish_setup (CEPageBluetooth *self, gpointer unused, GError *error, gpointer us
 }
 
 CEPage *
-ce_page_bluetooth_new (NMConnection *connection,
+ce_page_bluetooth_new (NMConnectionEditor *editor,
+                       NMConnection *connection,
                        GtkWindow *parent_window,
                        NMClient *client,
                        const char **out_secrets_setting_name,
@@ -100,6 +101,7 @@ ce_page_bluetooth_new (NMConnection *connection,
 	CEPageBluetoothPrivate *priv;
 
 	self = CE_PAGE_BLUETOOTH (ce_page_new (CE_TYPE_PAGE_BLUETOOTH,
+	                          editor,
 	                          connection,
 	                          parent_window,
 	                          client,
