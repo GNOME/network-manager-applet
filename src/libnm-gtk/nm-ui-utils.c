@@ -757,8 +757,12 @@ activate_menu_item_cb (GtkMenuItem *menuitem, gpointer user_data)
 			                             flags, NULL);
 
 		/* Change icon */
-		if (info->passwd_entry)
+		if (info->passwd_entry) {
 			change_password_storage_icon (info->passwd_entry, info->item_number);
+
+			/* Emit "changed" signal on the entry */
+			g_signal_emit_by_name (G_OBJECT (info->passwd_entry), "changed");
+		}
 	}
 }
 
