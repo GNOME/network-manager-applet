@@ -1980,19 +1980,20 @@ static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 
 	if (nm_client_get_state (applet->nm_client) == NM_STATE_ASLEEP) {
 		nma_menu_add_text_item (menu, _("Networking disabled"));
-		return;
 		
-	/*Set up theme and transparency support*/
-	GtkWidget *toplevel = gtk_widget_get_toplevel (menu);
-	/* Fix any failures of compiz/other wm's to communicate with gtk for transparency */
-	GdkScreen *screen = gtk_widget_get_screen(GTK_WIDGET(toplevel));
-	GdkVisual *visual = gdk_screen_get_rgba_visual(screen);
-	gtk_widget_set_visual(GTK_WIDGET(toplevel), visual); 
-	/* Set menu and it's toplevel window to follow panel theme */
-	GtkStyleContext *context;
-	context = gtk_widget_get_style_context (GTK_WIDGET(toplevel));
-	gtk_style_context_add_class(context,"gnome-panel-menu-bar");
-	gtk_style_context_add_class(context,"mate-panel-menu-bar");
+		/*Set up theme and transparency support*/
+		GtkWidget *toplevel = gtk_widget_get_toplevel (menu);
+		/* Fix any failures of compiz/other wm's to communicate with gtk for transparency */
+		GdkScreen *screen = gtk_widget_get_screen(GTK_WIDGET(toplevel));
+		GdkVisual *visual = gdk_screen_get_rgba_visual(screen);
+		gtk_widget_set_visual(GTK_WIDGET(toplevel), visual); 
+		/* Set menu and it's toplevel window to follow panel theme */
+		GtkStyleContext *context;
+		context = gtk_widget_get_style_context (GTK_WIDGET(toplevel));
+		gtk_style_context_add_class(context,"gnome-panel-menu-bar");
+		gtk_style_context_add_class(context,"mate-panel-menu-bar");
+	
+		return;
 	}
 
 	nma_menu_add_devices (menu, applet);
