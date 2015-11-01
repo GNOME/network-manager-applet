@@ -317,7 +317,8 @@ dispose (GObject *object)
 		goto out;
 	editor->disposed = TRUE;
 
-	g_hash_table_remove (active_editors, editor->orig_connection);
+	if (active_editors)
+		g_hash_table_remove (active_editors, editor->orig_connection);
 
 	g_slist_foreach (editor->initializing_pages, (GFunc) g_object_unref, NULL);
 	g_slist_free (editor->initializing_pages);

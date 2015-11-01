@@ -341,8 +341,10 @@ edit_connection (NMConnectionList *list, NMConnection *connection)
 	editor = nm_connection_editor_new (GTK_WINDOW (list->dialog),
 	                                   NM_CONNECTION (connection),
 	                                   list->client);
-	g_signal_connect (editor, "done", G_CALLBACK (edit_done_cb), list);
-	nm_connection_editor_run (editor);
+	if (editor) {
+		g_signal_connect (editor, "done", G_CALLBACK (edit_done_cb), list);
+		nm_connection_editor_run (editor);
+	}
 }
 
 static void
