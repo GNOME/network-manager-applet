@@ -69,7 +69,7 @@ validate (EAPMethod *parent, GError **error)
 		return FALSE;
 	}
 	if (eap_method_ca_cert_required (parent->builder, "eap_peap_ca_cert_not_required_checkbox", "eap_peap_ca_cert_button")) {
-		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("invalid EAP-PEAP CA ertificate: no certificate specified"));
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("invalid EAP-PEAP CA certificate: no certificate specified"));
 		return FALSE;
 	}
 
