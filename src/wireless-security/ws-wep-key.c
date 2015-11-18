@@ -133,7 +133,7 @@ validate (WirelessSecurity *parent, GError **error)
 			if (!*key)
 				g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("invalid wep-key: passphrase must be non-empty"));
 			else
-				g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("invalid wep-key: passphrase must be shorter then 64 characters"));
+				g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("invalid wep-key: passphrase must be shorter than 64 characters"));
 			return FALSE;
 		}
 	}
