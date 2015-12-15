@@ -57,7 +57,7 @@ typedef struct {
 	GtkEntry *name_entry;
 	GtkEntry *cloned_mac;
 	GtkSpinButton *mtu;
-	GtkToggleButton *flag_reorder_hdr, *flag_gvrp, *flag_loose_binding;
+	GtkToggleButton *flag_reorder_hdr, *flag_gvrp, *flag_loose_binding, *flag_mvrp;
 
 	char *last_parent;
 	int last_id;
@@ -92,6 +92,7 @@ vlan_private_init (CEPageVlan *self)
 	priv->flag_reorder_hdr = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "reorder_hdr_flag"));
 	priv->flag_gvrp = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "gvrp_flag"));
 	priv->flag_loose_binding = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "loose_binding_flag"));
+	priv->flag_mvrp = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "mvrp_flag"));
 
 	priv->toplevel = GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (priv->mtu),
 	                                                      GTK_TYPE_WINDOW));
@@ -557,6 +558,8 @@ populate_ui (CEPageVlan *self)
 		gtk_toggle_button_set_active (priv->flag_gvrp, TRUE);
 	if (flags & NM_VLAN_FLAG_LOOSE_BINDING)
 		gtk_toggle_button_set_active (priv->flag_loose_binding, TRUE);
+	if (flags & NM_VLAN_FLAG_MVRP)
+		gtk_toggle_button_set_active (priv->flag_mvrp, TRUE);
 
 	g_slist_free (devices);
 }
@@ -680,6 +683,8 @@ ui_to_setting (CEPageVlan *self)
 		flags |= NM_VLAN_FLAG_GVRP;
 	if (gtk_toggle_button_get_active (priv->flag_loose_binding))
 		flags |= NM_VLAN_FLAG_LOOSE_BINDING;
+	if (gtk_toggle_button_get_active (priv->flag_mvrp))
+		flags |= NM_VLAN_FLAG_MVRP;
 
 	g_object_set (s_con, NM_SETTING_CONNECTION_INTERFACE_NAME, *iface ? iface : NULL, NULL);
 	g_object_set (priv->setting,
