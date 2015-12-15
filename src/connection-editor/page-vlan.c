@@ -532,8 +532,11 @@ populate_ui (CEPageVlan *self)
 	g_signal_connect (priv->id_entry, "value-changed", G_CALLBACK (id_changed), self);
 
 	/* Cloned MAC address */
-	if (NM_IS_SETTING_WIRED (priv->s_hw))
-		gtk_entry_set_text (priv->cloned_mac, nm_setting_wired_get_cloned_mac_address (NM_SETTING_WIRED (priv->s_hw)));
+	if (NM_IS_SETTING_WIRED (priv->s_hw)) {
+		const char *mac = nm_setting_wired_get_cloned_mac_address (NM_SETTING_WIRED (priv->s_hw));
+		if (mac)
+			gtk_entry_set_text (priv->cloned_mac, mac);
+	}
 	g_signal_connect (priv->cloned_mac, "changed", G_CALLBACK (stuff_changed), self);
 
 	/* MTU */
