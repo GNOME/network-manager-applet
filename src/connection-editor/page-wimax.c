@@ -158,7 +158,7 @@ ui_to_setting (CEPageWimax *self)
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_combo));
 	if (entry)
-		ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, &ifname, &device_mac, NULL, NULL);
+		ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, TRUE, &ifname, &device_mac, NULL, NULL);
 
 	g_object_set (s_con,
 	              NM_SETTING_CONNECTION_INTERFACE_NAME, ifname,
@@ -189,7 +189,7 @@ ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_combo));
 	if (entry) {
-		if (!ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, NULL, NULL, _("WiMAX device"), error))
+		if (!ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, TRUE, NULL, NULL, _("WiMAX device"), error))
 			return FALSE;
 	}
 

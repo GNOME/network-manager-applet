@@ -129,6 +129,7 @@ void ce_page_setup_device_combo (CEPage *self,
 gboolean ce_page_mac_entry_valid (GtkEntry *entry, int type, const char *property_name, GError **error);
 gboolean ce_page_interface_name_valid (const char *iface, const char *property_name, GError **error);
 gboolean ce_page_device_entry_get (GtkEntry *entry, int type,
+                                   gboolean check_ifname,
                                    char **ifname, GByteArray **mac,
                                    const char *device_name,
                                    GError **error);

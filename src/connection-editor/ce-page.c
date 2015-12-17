@@ -31,6 +31,7 @@
 
 #include <nm-setting-connection.h>
 #include <nm-utils.h>
+#include <nm-device-bt.h>
 
 #include "ce-page.h"
 #include "nma-marshal.h"
@@ -425,7 +426,10 @@ _get_device_list (CEPage *self,
 		if (!G_TYPE_CHECK_INSTANCE_TYPE (dev, device_type))
 			continue;
 
-		ifname = nm_device_get_iface (NM_DEVICE (dev));
+		if (device_type == NM_TYPE_DEVICE_BT)
+			ifname = nm_device_bt_get_name (NM_DEVICE_BT (dev));
+		else
+			ifname = nm_device_get_iface (NM_DEVICE (dev));
 		if (mac_property)
 			g_object_get (G_OBJECT (dev), mac_property, &mac, NULL);
 
@@ -457,7 +461,7 @@ _device_entry_parse (const char *entry_text, char **first, char **second)
 		return TRUE;
 	}
 
-	sp = strchr (entry_text, ' ');
+	sp = strstr (entry_text, " (");
 	if (sp) {
 		*first = g_strndup (entry_text, sp - entry_text);
 		left = sp + 1;
@@ -553,7 +557,8 @@ ce_page_setup_device_combo (CEPage *self,
 }
 
 gboolean
-ce_page_device_entry_get (GtkEntry *entry, int type, char **ifname, GByteArray **mac, const char *device_name, GError **error)
+ce_page_device_entry_get (GtkEntry *entry, int type, gboolean check_ifname,
+                          char **ifname, GByteArray **mac, const char *device_name, GError **error)
 {
 	char *first, *second;
 	const char *ifname_tmp = NULL, *mac_tmp = NULL;
@@ -570,7 +575,7 @@ ce_page_device_entry_get (GtkEntry *entry, int type, char **ifname, GByteArray *
 	if (first) {
 		if (_mac_is_valid (first, type))
 			mac_tmp = first;
-		else if (nm_utils_iface_valid_name (first))
+		else if (!check_ifname || nm_utils_iface_valid_name (first))
 			ifname_tmp = first;
 		else
 			valid = FALSE;
@@ -581,7 +586,7 @@ ce_page_device_entry_get (GtkEntry *entry, int type, char **ifname, GByteArray *
 				mac_tmp = second;
 			else
 				valid = FALSE;
-		} else if (nm_utils_iface_valid_name (second)) {
+		} else if (!check_ifname || nm_utils_iface_valid_name (second)) {
 			if (!ifname_tmp)
 				ifname_tmp = second;
 			else

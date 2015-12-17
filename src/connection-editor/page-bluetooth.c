@@ -29,6 +29,8 @@
 
 #include <nm-setting-connection.h>
 #include <nm-setting-bluetooth.h>
+#include <nm-device-bt.h>
+#include <nm-utils.h>
 
 #include "page-bluetooth.h"
 #include "nm-connection-editor.h"
@@ -41,7 +43,7 @@ G_DEFINE_TYPE (CEPageBluetooth, ce_page_bluetooth, CE_TYPE_PAGE)
 typedef struct {
 	NMSettingBluetooth *setting;
 
-	GtkEntry *bdaddr;
+	GtkComboBoxText *bdaddr;
 
 	gboolean disposed;
 } CEPageBluetoothPrivate;
@@ -51,10 +53,24 @@ bluetooth_private_init (CEPageBluetooth *self)
 {
 	CEPageBluetoothPrivate *priv = CE_PAGE_BLUETOOTH_GET_PRIVATE (self);
 	GtkBuilder *builder;
+	GtkWidget *vbox;
+	GtkLabel *label;
 
 	builder = CE_PAGE (self)->builder;
 
-	priv->bdaddr = GTK_ENTRY (gtk_builder_get_object (builder, "bluetooth_bdaddr"));
+	priv->bdaddr = GTK_COMBO_BOX_TEXT (gtk_combo_box_text_new_with_entry ());
+	gtk_combo_box_set_entry_text_column (GTK_COMBO_BOX (priv->bdaddr), 0);
+	gtk_widget_set_tooltip_text (GTK_WIDGET (priv->bdaddr),
+	                             _("MAC address of the Bluetooth device. Example: 00:11:22:33:44:55"));
+
+	vbox = GTK_WIDGET (gtk_builder_get_object (builder, "bluetooth_device_vbox"));
+	gtk_container_add (GTK_CONTAINER (vbox), GTK_WIDGET (priv->bdaddr));
+	gtk_widget_set_halign (GTK_WIDGET (priv->bdaddr), GTK_ALIGN_FILL);
+	gtk_widget_show_all (GTK_WIDGET (priv->bdaddr));
+
+	/* Set mnemonic widget for Device label */
+	label = GTK_LABEL (gtk_builder_get_object (builder, "bluetooth_device_label"));
+	gtk_label_set_mnemonic_widget (label, GTK_WIDGET (priv->bdaddr));
 
 }
 
@@ -63,9 +79,13 @@ populate_ui (CEPageBluetooth *self, NMConnection *connection)
 {
 	CEPageBluetoothPrivate *priv = CE_PAGE_BLUETOOTH_GET_PRIVATE (self);
 	NMSettingBluetooth *setting = priv->setting;
+	const GByteArray *bdaddr;
 
-	ce_page_mac_to_entry (nm_setting_bluetooth_get_bdaddr (setting),
-	                      ARPHRD_ETHER, priv->bdaddr);
+	bdaddr = nm_setting_bluetooth_get_bdaddr (setting);
+	ce_page_setup_device_combo (CE_PAGE (self), GTK_COMBO_BOX (priv->bdaddr),
+	                            NM_TYPE_DEVICE_BT, NULL,
+	                            bdaddr, ARPHRD_ETHER, NM_DEVICE_BT_HW_ADDRESS, TRUE);
+	g_signal_connect_swapped (priv->bdaddr, "changed", G_CALLBACK (ce_page_changed), self);
 }
 
 static void
@@ -134,9 +154,13 @@ static void
 ui_to_setting (CEPageBluetooth *self)
 {
 	CEPageBluetoothPrivate *priv = CE_PAGE_BLUETOOTH_GET_PRIVATE (self);
-	GByteArray *bdaddr;
+	GtkWidget *entry;
+	GByteArray *bdaddr = NULL;
 
-	bdaddr = ce_page_entry_to_mac (priv->bdaddr, ARPHRD_ETHER, NULL);
+	entry = gtk_bin_get_child (GTK_BIN (priv->bdaddr));
+	if (entry)
+		ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, FALSE, NULL, &bdaddr, NULL, NULL);
+
 	g_object_set (priv->setting,
 	              NM_SETTING_BLUETOOTH_BDADDR, bdaddr,
 	              NULL);
@@ -149,9 +173,28 @@ ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageBluetooth *self = CE_PAGE_BLUETOOTH (page);
 	CEPageBluetoothPrivate *priv = CE_PAGE_BLUETOOTH_GET_PRIVATE (self);
+	GtkWidget *entry;
+	GByteArray *bdaddr = NULL;
+	char *str_addr;
 
-	if (!ce_page_mac_entry_valid (priv->bdaddr, ARPHRD_ETHER, _("bdaddr"), error))
-		return FALSE;
+	entry = gtk_bin_get_child (GTK_BIN (priv->bdaddr));
+	if (entry) {
+		ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, FALSE, NULL, &bdaddr, NULL, NULL);
+		if (!bdaddr || !utils_ether_addr_valid ((struct ether_addr *)bdaddr->data)) {
+			if (bdaddr)
+				str_addr = nm_utils_hwaddr_ntoa (bdaddr->data, ARPHRD_ETHER);
+			else
+				str_addr = g_strdup ("null");
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
+			             _("invalid Bluetooth device (%s)"), str_addr);
+			g_free (str_addr);
+			if (bdaddr)
+				g_byte_array_free (bdaddr, TRUE);
+			return FALSE;
+		}
+		if (bdaddr)
+			g_byte_array_free (bdaddr, TRUE);
+	}
 
 	ui_to_setting (self);
 	return nm_setting_verify (NM_SETTING (priv->setting), NULL, error);
