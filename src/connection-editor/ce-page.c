@@ -31,6 +31,7 @@
 
 #include <nm-setting-connection.h>
 #include <nm-utils.h>
+#include <nm-device-bt.h>
 
 #include "ce-page.h"
 #include "nma-marshal.h"
@@ -425,7 +426,10 @@ _get_device_list (CEPage *self,
 		if (!G_TYPE_CHECK_INSTANCE_TYPE (dev, device_type))
 			continue;
 
-		ifname = nm_device_get_iface (NM_DEVICE (dev));
+		if (device_type == NM_TYPE_DEVICE_BT)
+			ifname = nm_device_bt_get_name (NM_DEVICE_BT (dev));
+		else
+			ifname = nm_device_get_iface (NM_DEVICE (dev));
 		if (mac_property)
 			g_object_get (G_OBJECT (dev), mac_property, &mac, NULL);
 
