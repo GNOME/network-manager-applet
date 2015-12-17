@@ -3034,10 +3034,12 @@ applet_agent_cancel_secrets_cb (AppletAgent *agent,
                                 gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
-	GSList *iter;
+	GSList *iter, *next;
 
-	for (iter = applet->secrets_reqs; iter; iter = g_slist_next (iter)) {
+	for (iter = applet->secrets_reqs; iter; iter = next) {
 		SecretsRequest *req = iter->data;
+
+		next = g_slist_next (iter);
 
 		if (req->reqid == request_id) {
 			/* cancel and free this password request */
