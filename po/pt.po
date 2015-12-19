@@ -10,9 +10,9 @@ msgstr ""
 "Project-Id-Version: 3.8\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2015-11-08 08:27+0000\n"
-"PO-Revision-Date: 2015-11-08 08:29+0000\n"
-"Last-Translator:  <>\n"
+"POT-Creation-Date: 2015-12-19 01:54+0000\n"
+"PO-Revision-Date: 2015-12-19 08:19+0000\n"
+"Last-Translator: Pedro Albuquerque <palbuquerque73@gmail.com>\n"
 "Language-Team: Português <palbuquerque73@gmail.com>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
@@ -178,7 +178,6 @@ msgid "_Network name:"
 msgstr "_Nome da rede:"
 
 #: ../src/ap-menu-item.c:87
-#| msgid "Ad-hoc"
 msgid "ad-hoc"
 msgstr "ad-hoc"
 
@@ -756,7 +755,8 @@ msgstr "Falha ao adicionar uma nova ligação"
 msgid "Error displaying connection information:"
 msgstr "Erro ao mostrar informação de ligação:"
 
-#: ../src/applet-dialogs.c:75 ../src/connection-editor/page-wifi-security.c:335
+#: ../src/applet-dialogs.c:75
+#: ../src/connection-editor/page-wifi-security.c:335
 #: ../src/libnma/nma-wifi-dialog.c:935 ../src/libnm-gtk/nm-wifi-dialog.c:951
 #: ../src/wireless-security/wireless-security.c:452
 msgid "LEAP"
@@ -1083,7 +1083,8 @@ msgstr ""
 "Se ativado, esta ligação nunca será usada com a ligação de rede predefinida."
 
 #: ../src/connection-editor/ce-new-connection.ui.h:1 ../src/libnma/wifi.ui.h:1
-#: ../src/libnm-gtk/wifi.ui.h:1 ../src/wireless-security/eap-method-fast.ui.h:1
+#: ../src/libnm-gtk/wifi.ui.h:1
+#: ../src/wireless-security/eap-method-fast.ui.h:1
 #: ../src/wireless-security/eap-method-peap.ui.h:1
 #: ../src/wireless-security/eap-method-ttls.ui.h:1
 #: ../src/wireless-security/ws-dynamic-wep.ui.h:1
@@ -1262,7 +1263,6 @@ msgid "s"
 msgstr "s"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:10
-#| msgid "Enable _Networking"
 msgid "Enable I_GMP snooping"
 msgstr "Ativar bisbilhotar I_GMP"
 
@@ -1949,11 +1949,13 @@ msgid "_Parent interface:"
 msgstr "Ambiente _Pai:"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:2
-msgid "VLAN interface _name:"
+#| msgid "VLAN interface _name:"
+msgid "VLAN inter_face name:"
 msgstr "_Nome do ambiente VLAN:"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:3
-msgid "_Cloned MAC address:"
+#| msgid "_Cloned MAC address:"
+msgid "Cloned MAC _address:"
 msgstr "Endereço MAC _Clonado:"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:6
@@ -1976,13 +1978,17 @@ msgstr "_GVRP"
 msgid "_Loose binding"
 msgstr "_Associação solta"
 
+#: ../src/connection-editor/ce-page-vlan.ui.h:11
+msgid "M_VRP"
+msgstr "M_VRP"
+
 #. In context, this means "concatenate the device name and the VLAN ID number together"
-#: ../src/connection-editor/ce-page-vlan.ui.h:12
+#: ../src/connection-editor/ce-page-vlan.ui.h:13
 msgid "Device name + number"
 msgstr "Nome + número do dispositivo"
 
 #. LEAVE "vlan" UNTRANSLATED. In context, this means "concatenate the string
-#: ../src/connection-editor/ce-page-vlan.ui.h:14
+#: ../src/connection-editor/ce-page-vlan.ui.h:15
 msgid "\"vlan\" + number"
 msgstr "\"vlan\" + número"
 
@@ -2146,7 +2152,7 @@ msgid "Bridge"
 msgstr "Ponte"
 
 #: ../src/connection-editor/connection-helpers.c:114
-#: ../src/connection-editor/page-vlan.c:591 ../src/libnm-gtk/nm-ui-utils.c:342
+#: ../src/connection-editor/page-vlan.c:597 ../src/libnm-gtk/nm-ui-utils.c:342
 #: ../src/libnm-gtk/nm-ui-utils.c:586
 msgid "VLAN"
 msgstr "VLAN"
@@ -2502,7 +2508,7 @@ msgid "Ethernet device"
 msgstr "Ethernet"
 
 #: ../src/connection-editor/page-ethernet.c:451
-#: ../src/connection-editor/page-vlan.c:736
+#: ../src/connection-editor/page-vlan.c:744
 #: ../src/connection-editor/page-wifi.c:583
 msgid "cloned MAC"
 msgstr "MAC clonado"
@@ -2832,25 +2838,25 @@ msgstr "Impossível carregar o ambiente de utilizador de porta da equipa."
 #. Translators: the first %s is a device name (eg, "em1"), the
 #. * second is a connection name (eg, "Auto Ethernet").
 #.
-#: ../src/connection-editor/page-vlan.c:416
+#: ../src/connection-editor/page-vlan.c:417
 #, c-format
 msgid "%s (via \"%s\")"
 msgstr "%s (via \"%s\")"
 
-#: ../src/connection-editor/page-vlan.c:428
+#: ../src/connection-editor/page-vlan.c:429
 #, c-format
 msgid "New connection..."
 msgstr "Nova ligação..."
 
-#: ../src/connection-editor/page-vlan.c:593
+#: ../src/connection-editor/page-vlan.c:599
 msgid "Could not load vlan user interface."
 msgstr "Impossível carregar o ambiente de utilizador de vlan."
 
-#: ../src/connection-editor/page-vlan.c:729
+#: ../src/connection-editor/page-vlan.c:737
 msgid "vlan parent"
 msgstr "Pai de vlan"
 
-#: ../src/connection-editor/page-vlan.c:792
+#: ../src/connection-editor/page-vlan.c:800
 #, c-format
 msgid "VLAN connection %d"
 msgstr "Ligação VLAN %d"
