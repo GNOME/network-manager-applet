@@ -782,7 +782,7 @@ connection_added (NMClient *client,
 	NMConnectionList *self = NM_CONNECTION_LIST (user_data);
 	GtkTreeIter parent_iter, iter;
 	NMSettingConnection *s_con;
-	char *last_used;
+	char *last_used, *id;
 	gboolean expand = TRUE;
 
 	if (!get_parent_iter_for_connection (self, connection, &parent_iter))
@@ -792,14 +792,17 @@ connection_added (NMClient *client,
 
 	last_used = format_last_used (nm_setting_connection_get_timestamp (s_con));
 
+	id = g_markup_escape_text (nm_setting_connection_get_id (s_con), -1);
+
 	gtk_tree_store_append (GTK_TREE_STORE (self->model), &iter, &parent_iter);
 	gtk_tree_store_set (GTK_TREE_STORE (self->model), &iter,
-	                    COL_ID, nm_setting_connection_get_id (s_con),
+	                    COL_ID, id,
 	                    COL_LAST_USED, last_used,
 	                    COL_TIMESTAMP, nm_setting_connection_get_timestamp (s_con),
 	                    COL_CONNECTION, connection,
 	                    -1);
 
+	g_free (id);
 	g_free (last_used);
 
 	if (self->displayed_type) {
