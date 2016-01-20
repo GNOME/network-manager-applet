@@ -608,7 +608,7 @@ initialize_treeview (NMConnectionList *self)
 	GtkTreeSelection *selection;
 	ConnectionTypeData *types;
 	GtkTreeIter iter;
-	char *id;
+	char *id, *tmp;
 	int i;
 
 	/* Model */
@@ -668,7 +668,11 @@ initialize_treeview (NMConnectionList *self)
 	/* Fill in connection types */
 	types = get_connection_type_list ();
 	for (i = 0; types[i].name; i++) {
-		id = g_strdup_printf ("<b>%s</b>", types[i].name);
+
+		tmp = g_markup_escape_text (types[i].name, -1);
+		id = g_strdup_printf ("<b>%s</b>", tmp);
+		g_free (tmp);
+
 		gtk_tree_store_append (GTK_TREE_STORE (self->model), &iter, NULL);
 		gtk_tree_store_set (GTK_TREE_STORE (self->model), &iter,
 		                    COL_ID, id,
