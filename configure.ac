@@ -142,7 +142,7 @@ dnl Check for gobject introspection
 GOBJECT_INTROSPECTION_CHECK([0.9.6])
 
 GLIB_CONFIG_NMA
-GLIB_SETTINGS
+GLIB_GSETTINGS
 
 dnl
 dnl Compiler flags
