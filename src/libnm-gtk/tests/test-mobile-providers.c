@@ -13,8 +13,12 @@
  * Copyright (C) 2012 Aleksander Morgado <aleksander@gnu.org>
  */
 
+#include "config.h"
+
 #include <locale.h>
 #include <string.h>
+
+#include <glib/gi18n-lib.h>
 
 #include "nm-mobile-providers.h"
 
@@ -317,7 +321,7 @@ ensure_movistar (NMAMobileProvider *provider)
 	}
 
 	/* Check access method name, APN and type */
-	g_assert_cmpstr (nma_mobile_access_method_get_name (method), ==, "Default");
+	g_assert_cmpstr (nma_mobile_access_method_get_name (method), ==, _("Default"));
 	g_assert_cmpint (nma_mobile_access_method_get_family (method), ==, NMA_MOBILE_FAMILY_3GPP);
 	g_assert_cmpstr (nma_mobile_access_method_get_3gpp_apn (method), ==, "movistar.es");
 
