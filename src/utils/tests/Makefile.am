@@ -14,6 +14,5 @@ test_utils_LDADD = \
 	$(GTK_LIBS) \
 	$(LIBNM_LIBS)
 
-check-local: test-utils
-	$(abs_builddir)/test-utils
+TESTS: test-utils
 

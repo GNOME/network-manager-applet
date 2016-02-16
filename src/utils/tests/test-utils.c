@@ -29,6 +29,8 @@
 
 #include "utils.h"
 
+#include "nm-test-utils.h"
+
 typedef struct {
 	char *foobar_infra_open;
 	char *foobar_infra_wep;
@@ -412,13 +414,15 @@ test_ap_hash_foobar_asdf11_adhoc_wpa_rsn (TestData *d)
 	g_assert (strcmp (d->foobar_adhoc_wpa_rsn, d->asdf11_adhoc_wpa_rsn));
 }
 
+NMTST_DEFINE ();
+
 int
 main (int argc, char **argv)
 {
 	gint result;
 	TestData *data;
 
-	g_test_init (&argc, &argv, NULL);
+	nmtst_init (&argc, &argv, TRUE);
 
 	data = test_data_new ();
 

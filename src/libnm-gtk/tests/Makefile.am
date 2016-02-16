@@ -17,9 +17,7 @@ test_mobile_providers_LDADD = \
 	$(top_builddir)/src/libnm-gtk/libnm-gtk.la \
 	$(LIBNM_GLIB_LIBS)
 
-check-local: test-mobile-providers
-	$(abs_builddir)/test-mobile-providers
-
+TESTS: test-mobile-providers
 
 EXTRA_DIST = \
 	iso3166-test.xml \
