@@ -29,6 +29,8 @@
 
 #include "config.h"
 
+#include "nm-default.h"
+
 #include <time.h>
 #include <string.h>
 #include <strings.h>

@@ -22,6 +22,8 @@
 
 #include "config.h"
 
+#include "nm-default.h"
+
 #include <net/ethernet.h>
 #include <netinet/ether.h>
 #include <string.h>

@@ -22,6 +22,7 @@ nm_applet_CPPFLAGS = \
 	-DNMALOCALEDIR=\"$(datadir)/locale\"					\
 	-DG_LOG_DOMAIN=\""nm-applet"\" \
 	$(DBUS_GLIB_CFLAGS) \
+	"-I${top_srcdir}/shared/" \
 	-I${top_srcdir}/src/utils \
 	-I${top_srcdir}/src/wireless-security \
 	-I${top_srcdir}/src/libnma

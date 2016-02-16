@@ -22,6 +22,8 @@
 
 #include "config.h"
 
+#include "nm-default.h"
+
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>

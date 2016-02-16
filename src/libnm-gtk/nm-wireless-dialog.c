@@ -22,6 +22,8 @@
 
 #include "config.h"
 
+#include "nm-default.h"
+
 #include <nm-client.h>
 
 #include "nm-wireless-dialog.h"

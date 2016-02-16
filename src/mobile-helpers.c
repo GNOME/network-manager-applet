@@ -22,6 +22,8 @@
 
 #include "config.h"
 
+#include "nm-default.h"
+
 #include <ctype.h>
 #include <glib/gi18n.h>
 

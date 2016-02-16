@@ -15,10 +15,10 @@
 
 #include "config.h"
 
+#include "nm-default.h"
+
 #include <locale.h>
 #include <string.h>
-
-#include <glib/gi18n-lib.h>
 
 #include "nm-mobile-providers.h"
 
