@@ -22,7 +22,7 @@
  *          Dan Williams <dcbw@redhat.com>
  */
 
-#include <config.h>
+#include "config.h"
 
 #include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>

@@ -22,10 +22,6 @@
 #ifndef APPLET_H
 #define APPLET_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <string.h>
 
 #include <gtk/gtk.h>

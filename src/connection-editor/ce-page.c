@@ -20,7 +20,7 @@
  * Copyright 2008 - 2014 Red Hat, Inc.
  */
 
-#include <config.h>
+#include "config.h"
 
 #include <net/ethernet.h>
 #include <netinet/ether.h>

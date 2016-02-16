@@ -20,6 +20,8 @@
  * Copyright 2007 - 2014 Red Hat, Inc.
  */
 
+#include "config.h"
+
 #include <glib/gi18n.h>
 #include <ctype.h>
 #include <string.h>

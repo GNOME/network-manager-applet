@@ -20,7 +20,7 @@
  * Copyright 2007 - 2014 Red Hat, Inc.
  */
 
-#include <config.h>
+#include "config.h"
 
 #include <string.h>
 
