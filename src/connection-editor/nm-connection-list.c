@@ -21,7 +21,10 @@
  * Copyright 2007 - 2014 Red Hat, Inc.
  */
 
-#include <config.h>
+#include "config.h"
+
+#include "nm-default.h"
+
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>

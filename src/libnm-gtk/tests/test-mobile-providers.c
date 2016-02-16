@@ -15,12 +15,14 @@
 
 #include "config.h"
 
+#include "nm-default.h"
+
 #include <locale.h>
 #include <string.h>
 
-#include <glib/gi18n-lib.h>
-
 #include "nm-mobile-providers.h"
+
+#include "nm-test-utils.h"
 
 #if defined TEST_DATA_DIR
 #  define COUNTRY_CODES_FILE     TEST_DATA_DIR "/iso3166-test.xml"
@@ -490,14 +492,13 @@ split_mccmnc_error_4 (void)
 
 /******************************************************************************/
 
+NMTST_DEFINE ();
+
 int main (int argc, char **argv)
 {
 	setlocale (LC_ALL, "");
 
-#if !GLIB_CHECK_VERSION(2,36,0)
-	g_type_init ();
-#endif
-	g_test_init (&argc, &argv, NULL);
+	nmtst_init (&argc, &argv, TRUE);
 
 	g_test_add_func ("/MobileProvidersDatabase/new-sync",  new_sync);
 	g_test_add_func ("/MobileProvidersDatabase/new-async", new_async);

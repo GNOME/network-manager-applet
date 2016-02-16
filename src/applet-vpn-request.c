@@ -20,7 +20,10 @@
  * Copyright 2004 - 2014 Red Hat, Inc.
  */
 
-#include <config.h>
+#include "config.h"
+
+#include "nm-default.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

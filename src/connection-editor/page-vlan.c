@@ -20,6 +20,8 @@
 
 #include "config.h"
 
+#include "nm-default.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <net/ethernet.h>

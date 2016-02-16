@@ -20,10 +20,16 @@
  * (C) Copyright 2009 Red Hat, Inc.
  */
 
+#include "config.h"
+
+#include "nm-default.h"
+
 #include <glib.h>
 #include <string.h>
 
 #include "utils.h"
+
+#include "nm-test-utils.h"
 
 typedef struct {
 	char *foobar_infra_open;
@@ -408,13 +414,15 @@ test_ap_hash_foobar_asdf11_adhoc_wpa_rsn (TestData *d)
 	g_assert (strcmp (d->foobar_adhoc_wpa_rsn, d->asdf11_adhoc_wpa_rsn));
 }
 
+NMTST_DEFINE ();
+
 int
 main (int argc, char **argv)
 {
 	gint result;
 	TestData *data;
 
-	g_test_init (&argc, &argv, NULL);
+	nmtst_init (&argc, &argv, TRUE);
 
 	data = test_data_new ();
 

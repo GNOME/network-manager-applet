@@ -18,9 +18,9 @@
  * (C) Copyright 2012 Aleksander Morgado <aleksander@gnu.org>
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "config.h"
+
+#include "nm-default.h"
 
 #include <ctype.h>
 

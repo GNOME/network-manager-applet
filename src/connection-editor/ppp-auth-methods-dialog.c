@@ -20,6 +20,10 @@
  * Copyright 2008 - 2014 Red Hat, Inc.
  */
 
+#include "config.h"
+
+#include "nm-default.h"
+
 #include <netinet/in.h>
 #include <sys/types.h>
 #include <sys/socket.h>

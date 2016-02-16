@@ -27,9 +27,9 @@
  * Copyright 2001, 2002 Free Software Foundation
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "config.h"
+
+#include "nm-default.h"
 
 #include <time.h>
 #include <string.h>

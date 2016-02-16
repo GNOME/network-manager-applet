@@ -20,7 +20,9 @@
  * (C) Copyright 2007 - 2012 Red Hat, Inc.
  */
 
-#include <config.h>
+#include "config.h"
+
+#include "nm-default.h"
 
 #include <nm-client.h>
 
