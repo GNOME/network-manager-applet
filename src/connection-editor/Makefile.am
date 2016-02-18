@@ -13,7 +13,6 @@ nm_connection_editor_CPPFLAGS = \
 	-DLIBDIR=\""$(libdir)"\" \
 	-DDATADIR=\""$(datadir)"\" \
 	-DNMALOCALEDIR=\"$(datadir)/locale\" \
-	$(DBUS_GLIB_CFLAGS) \
 	"-I${top_srcdir}/shared/" \
 	-I${top_srcdir}/src/utils \
 	-I${top_srcdir}/src/wireless-security \
@@ -82,15 +81,11 @@ nm_connection_editor_SOURCES = \
 	connection-helpers.c \
 	connection-helpers.h
 
-nm-connection-editor-service-glue.h: $(top_srcdir)/src/connection-editor/nm-connection-editor-service.xml
-	$(AM_V_GEN) dbus-binding-tool --prefix=nm_connection_editor_service --mode=glib-server --output=$@ $<
-
 nm_connection_editor_LDADD = \
 	${top_builddir}/src/wireless-security/libwireless-security-libnm.la \
 	${top_builddir}/src/utils/libutils-libnm.la \
 	${top_builddir}/src/libnma/libnma.la \
 	$(GTK_LIBS) \
-	$(DBUS_GLIB_LIBS) \
 	$(LIBNM_LIBS) \
 	-lm
 
@@ -120,9 +115,5 @@ ui_DATA = \
 	ce-page-vlan.ui \
 	ce-page-dcb.ui
 
-BUILT_SOURCES = nm-connection-editor-service-glue.h
-
-CLEANFILES = *.bak $(BUILT_SOURCES)
-
-EXTRA_DIST = $(ui_DATA) nm-connection-editor-service.xml
+EXTRA_DIST = $(ui_DATA)
 
