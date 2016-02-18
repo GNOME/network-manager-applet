@@ -31,6 +31,7 @@
 #include <glib/gi18n-lib.h>
 #include <glib.h>
 #include <glib-object.h>
+#include <glib-unix.h>
 
 #include "gsystem-local-alloc.h"
 #include "nm-connection-list.h"
@@ -267,25 +268,15 @@ try_existing_instance (GDBusConnection *bus,
 	return TRUE;
 }
 
-static void
-signal_handler (int signo)
+static gboolean
+signal_handler (gpointer user_data)
 {
-	if (signo == SIGINT || signo == SIGTERM)
-		g_main_loop_quit (loop);
-}
+	int signo = GPOINTER_TO_INT (user_data);
 
-static void
-setup_signals (void)
-{
-	struct sigaction action;
-	sigset_t mask;
+	g_message ("Caught signal %d, shutting down...", signo);
+	g_main_loop_quit (loop);
 
-	sigemptyset (&mask);
-	action.sa_handler = signal_handler;
-	action.sa_mask = mask;
-	action.sa_flags = 0;
-	sigaction (SIGTERM,  &action, NULL);
-	sigaction (SIGINT,  &action, NULL);
+	return G_SOURCE_REMOVE;
 }
 
 int
@@ -358,7 +349,9 @@ main (int argc, char *argv[])
 	if (handle_arguments (list, type, create, show, uuid, (create || show || uuid)))
 		nm_connection_list_present (list);
 
-	setup_signals ();
+	g_unix_signal_add (SIGTERM, signal_handler, GINT_TO_POINTER (SIGTERM));
+	g_unix_signal_add (SIGINT, signal_handler, GINT_TO_POINTER (SIGINT));
+
 	g_main_loop_run (loop);
 	ret = 0;
 
