@@ -26,15 +26,12 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include <signal.h>
-#include <unistd.h>
 
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
 #include "applet.h"
 
-static GMainLoop *loop = NULL;
 gboolean shell_debug = FALSE;
 gboolean with_agent = TRUE;
 
@@ -54,8 +51,10 @@ usage (const char *progname)
 
 int main (int argc, char *argv[])
 {
-	NMApplet *applet;
+	GApplication *applet;
+	char *fake_args[1] = { argv[0] };
 	guint32 i;
+	int status;
 
 	for (i = 1; i < argc; i++) {
 		if (!strcmp (argv[i], "--help")) {
@@ -73,16 +72,12 @@ int main (int argc, char *argv[])
 	gtk_init (&argc, &argv);
 	textdomain (GETTEXT_PACKAGE);
 
-	loop = g_main_loop_new (NULL, FALSE);
+	applet = g_object_new (NM_TYPE_APPLET,
+	                       "application-id", "org.freedesktop.network-manager-applet",
+	                       NULL);
+	status = g_application_run (applet, 1, fake_args);
+	g_object_unref (applet);
 
-	applet = nm_applet_new ();
-	if (applet == NULL)
-		exit (1);
-
-	g_main_loop_run (loop);
-
-	g_object_unref (G_OBJECT (applet));
-
-	exit (0);
+	return status;
 }
 

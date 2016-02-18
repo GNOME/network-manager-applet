@@ -87,8 +87,6 @@ typedef struct {
 	AppletVpnRequest *vpn;
 } VpnSecretsInfo;
 
-#define DBUS_TYPE_G_MAP_OF_STRING (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_STRING))
-
 static void 
 child_finished_cb (GPid pid, gint status, gpointer user_data)
 {
