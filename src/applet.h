@@ -27,7 +27,6 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 
-#include <dbus/dbus-glib.h>
 #include <net/ethernet.h>
 
 #include <libnotify/notify.h>
@@ -51,9 +50,8 @@
 #define NM_IS_APPLET_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE((klass), NM_TYPE_APPLET))
 #define NM_APPLET_GET_CLASS(object)(G_TYPE_INSTANCE_GET_CLASS((object), NM_TYPE_APPLET, NMAppletClass))
 
-typedef struct
-{
-	GObjectClass	parent_class;
+typedef struct {
+	GApplicationClass	parent_class;
 } NMAppletClass; 
 
 #define APPLET_PREFS_SCHEMA "org.gnome.nm-applet"
@@ -74,11 +72,8 @@ typedef struct NMADeviceClass NMADeviceClass;
  * Applet instance data
  *
  */
-typedef struct
-{
-	GObject parent_instance;
-
-	DBusGConnection *session_bus;
+typedef struct {
+	GApplication parent;
 
 	NMClient *nm_client;
 	AppletAgent *agent;

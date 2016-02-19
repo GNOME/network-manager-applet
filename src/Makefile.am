@@ -21,16 +21,10 @@ nm_applet_CPPFLAGS = \
 	-DVPN_NAME_FILES_DIR=\""$(sysconfdir)/NetworkManager/VPN"\"	\
 	-DNMALOCALEDIR=\"$(datadir)/locale\"					\
 	-DG_LOG_DOMAIN=\""nm-applet"\" \
-	$(DBUS_GLIB_CFLAGS) \
 	"-I${top_srcdir}/shared/" \
 	-I${top_srcdir}/src/utils \
 	-I${top_srcdir}/src/wireless-security \
 	-I${top_srcdir}/src/libnma
-
-BUILT_SOURCES = applet-dbus-bindings.h
-
-applet-dbus-bindings.h: nm-applet-introspection.xml
-	$(AM_V_GEN) dbus-binding-tool --mode=glib-server --prefix=nma --output=$@ $<
 
 nm_applet_SOURCES = \
 	main.c \
@@ -67,7 +61,6 @@ endif
 nm_applet_LDADD = \
 	-lm \
 	$(GTK_LIBS) \
-	$(DBUS_GLIB_LIBS) \
 	$(LIBNM_LIBS) \
 	$(LIBSECRET_LIBS) \
 	$(NOTIFY_LIBS) \
@@ -80,9 +73,5 @@ nm_applet_LDADD = \
 uidir = $(datadir)/nm-applet
 ui_DATA = gsm-unlock.ui info.ui 8021x.ui keyring.png
 
-CLEANFILES = *.bak $(BUILT_SOURCES)
-
-EXTRA_DIST = \
-	$(ui_DATA) \
-	nm-applet-introspection.xml
+EXTRA_DIST = $(ui_DATA)
 
