@@ -187,6 +187,7 @@ po/Makefile.in
 man/Makefile
 man/nm-applet.1
 man/nm-connection-editor.1
+shared/Makefile
 org.gnome.nm-applet.gschema.xml
 ])
 AC_OUTPUT
