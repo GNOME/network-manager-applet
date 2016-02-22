@@ -104,6 +104,7 @@ GTK_CFLAGS="$GTK_CFLAGS -DGDK_VERSION_MIN_REQUIRED=GDK_VERSION_3_4"
 AC_ARG_WITH([appindicator], AS_HELP_STRING([--with-appindicator|--without-appindicator], [Build with libappindicator support instead of xembed systray support.]))
 if test "$with_appindicator" == "yes"; then
 	PKG_CHECK_MODULES(APPINDICATOR, appindicator3-0.1)
+	PKG_CHECK_MODULES(DBUSMENU, dbusmenu-gtk3-0.4 >= 16.04.0)
 	AC_DEFINE([ENABLE_INDICATOR], 1, [Enable using libappindicator])
 fi
 
