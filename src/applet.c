@@ -518,7 +518,6 @@ applet_new_menu_item_helper (NMConnection *connection,
 {
 	GtkWidget *item = gtk_image_menu_item_new_with_label ("");
 
-#ifndef ENABLE_INDICATOR
 	if (add_active && (active == connection)) {
 		char *markup;
 		GtkWidget *label;
@@ -530,7 +529,6 @@ applet_new_menu_item_helper (NMConnection *connection,
 		gtk_label_set_markup (GTK_LABEL (label), markup);
 		g_free (markup);
 	} else
-#endif
 		gtk_menu_item_set_label (GTK_MENU_ITEM (item), nm_connection_get_id (connection));
 
 	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (item), TRUE);
