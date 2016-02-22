@@ -40,11 +40,11 @@ typedef struct _NMNetworkMenuItem	    NMNetworkMenuItem;
 typedef struct _NMNetworkMenuItemClass  NMNetworkMenuItemClass;
 
 struct _NMNetworkMenuItem {
-	GtkImageMenuItem parent;
+	GtkMenuItem parent;
 };
 
 struct _NMNetworkMenuItemClass {
-	GtkImageMenuItemClass parent_class;
+	GtkMenuItemClass parent_class;
 };
 
 
