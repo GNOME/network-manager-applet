@@ -489,7 +489,7 @@ applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
 #ifdef ENABLE_INDICATOR
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), gtk_separator_menu_item_new ());
 #else
-	GtkWidget *menu_item = gtk_image_menu_item_new ();
+	GtkWidget *menu_item = gtk_menu_item_new ();
 	GtkWidget *box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 	GtkWidget *xlabel = NULL;
 
@@ -516,7 +516,7 @@ applet_new_menu_item_helper (NMConnection *connection,
                              NMConnection *active,
                              gboolean add_active)
 {
-	GtkWidget *item = gtk_image_menu_item_new_with_label ("");
+	GtkWidget *item = gtk_menu_item_new_with_label ("");
 
 	if (add_active && (active == connection)) {
 		char *markup;
@@ -531,7 +531,6 @@ applet_new_menu_item_helper (NMConnection *connection,
 	} else
 		gtk_menu_item_set_label (GTK_MENU_ITEM (item), nm_connection_get_id (connection));
 
-	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (item), TRUE);
 	return item;
 }
 
@@ -1810,15 +1809,21 @@ applet_connection_info_cb (NMApplet *applet)
 static GtkWidget *nma_context_menu_create (NMApplet *applet)
 {
 	GtkMenuShell *menu;
-#ifndef ENABLE_INDICATOR
-	GtkWidget *menu_item;
-#endif
-	GtkWidget *image;
 	guint id;
+	static gboolean icons_shown = FALSE;
 
 	g_return_val_if_fail (applet != NULL, NULL);
 
 	menu = GTK_MENU_SHELL (gtk_menu_new ());
+
+	if (G_UNLIKELY (icons_shown == FALSE)) {
+		GtkSettings *settings = gtk_widget_get_settings (GTK_WIDGET (menu));
+
+		/* We always want our icons displayed */
+		if (settings)
+			g_object_set (G_OBJECT (settings), "gtk-menu-images", TRUE, NULL);
+		icons_shown = TRUE;
+	}
 
 	/* 'Enable Networking' item */
 	applet->networking_enabled_item = gtk_check_menu_item_new_with_mnemonic (_("Enable _Networking"));
@@ -1863,45 +1868,33 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 #endif
 
 	/* 'Connection Information' item */
-	applet->info_menu_item = gtk_image_menu_item_new_with_mnemonic (_("Connection _Information"));
+	applet->info_menu_item = gtk_menu_item_new_with_mnemonic (_("Connection _Information"));
 	g_signal_connect_swapped (applet->info_menu_item,
 	                          "activate",
 	                          G_CALLBACK (applet_connection_info_cb),
 	                          applet);
-	image = gtk_image_new_from_stock (GTK_STOCK_INFO, GTK_ICON_SIZE_MENU);
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (applet->info_menu_item), image);
 	gtk_menu_shell_append (menu, applet->info_menu_item);
 
 	/* 'Edit Connections...' item */
-	applet->connections_menu_item = gtk_image_menu_item_new_with_mnemonic (_("Edit Connections..."));
+	applet->connections_menu_item = gtk_menu_item_new_with_mnemonic (_("Edit Connections..."));
 	g_signal_connect (applet->connections_menu_item,
 				   "activate",
 				   G_CALLBACK (nma_edit_connections_cb),
 				   applet);
-	image = gtk_image_new_from_stock (GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU);
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (applet->connections_menu_item), image);
 	gtk_menu_shell_append (menu, applet->connections_menu_item);
 
 	/* Separator */
 	nma_menu_add_separator_item (GTK_WIDGET (menu));
 
 #ifndef ENABLE_INDICATOR
-#if 0	/* FIXME: Implement the help callback, nma_help_cb()! */
-	/* Help item */
-	menu_item = gtk_image_menu_item_new_with_mnemonic (_("_Help"));
-	g_signal_connect (menu_item, "activate", G_CALLBACK (nma_help_cb), applet);
-	image = gtk_image_new_from_stock (GTK_STOCK_HELP, GTK_ICON_SIZE_MENU);
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item), image);
-	gtk_menu_shell_append (menu, menu_item);
-	gtk_widget_set_sensitive (menu_item, FALSE);
-#endif
+	{
+		/* About item */
+		GtkWidget *menu_item;
 
-	/* About item */
-	menu_item = gtk_image_menu_item_new_with_mnemonic (_("_About"));
-	g_signal_connect_swapped (menu_item, "activate", G_CALLBACK (applet_about_dialog_show), applet);
-	image = gtk_image_new_from_stock (GTK_STOCK_ABOUT, GTK_ICON_SIZE_MENU);
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item), image);
-	gtk_menu_shell_append (menu, menu_item);
+		menu_item = gtk_menu_item_new_with_mnemonic (_("_About"));
+		g_signal_connect_swapped (menu_item, "activate", G_CALLBACK (applet_about_dialog_show), applet);
+		gtk_menu_shell_append (menu, menu_item);
+	}
 #endif
 
 	gtk_widget_show_all (GTK_WIDGET (menu));
