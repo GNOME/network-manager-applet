@@ -22,8 +22,6 @@
  *          Dan Williams <dcbw@redhat.com>
  */
 
-#include "config.h"
-
 #include "nm-default.h"
 
 #include <glib/gi18n-lib.h>

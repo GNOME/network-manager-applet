@@ -27,8 +27,6 @@
  * Copyright 2001, 2002 Free Software Foundation
  */
 
-#include "config.h"
-
 #include "nm-default.h"
 
 #include <time.h>

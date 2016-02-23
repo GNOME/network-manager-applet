@@ -21,8 +21,6 @@
  * Copyright 2005 - 2014 Red Hat, Inc.
  */
 
-#include "config.h"
-
 #include "nm-default.h"
 
 #include <stdio.h>

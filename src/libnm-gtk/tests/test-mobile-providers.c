@@ -13,8 +13,6 @@
  * Copyright (C) 2012 Aleksander Morgado <aleksander@gnu.org>
  */
 
-#include "config.h"
-
 #include "nm-default.h"
 
 #include <locale.h>

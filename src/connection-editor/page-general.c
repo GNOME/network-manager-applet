@@ -18,8 +18,6 @@
  * Copyright 2012 - 2014 Red Hat, Inc.
  */
 
-#include "config.h"
-
 #include "nm-default.h"
 
 #include <gtk/gtk.h>

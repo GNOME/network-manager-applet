@@ -20,8 +20,6 @@
  * Copyright 2010 - 2014 Red Hat, Inc.
  */
 
-#include "config.h"
-
 #include "nm-default.h"
 
 #include <ctype.h>

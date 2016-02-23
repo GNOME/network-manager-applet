@@ -22,8 +22,6 @@
  * Copyright (C) 2012 Lanedo GmbH
  */
 
-#include "config.h"
-
 #include "nm-default.h"
 
 #include <string.h>

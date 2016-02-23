@@ -18,8 +18,6 @@
  * Copyright 2014 Red Hat, Inc.
  */
 
-#include "config.h"
-
 #include "nm-default.h"
 
 #include <libintl.h>
