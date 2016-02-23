@@ -947,6 +947,9 @@ modem_state_changed (MMModem *object,
 	if ((old < MM_MODEM_STATE_REGISTERED &&
 	     new >= MM_MODEM_STATE_REGISTERED)) {
 		guint32 mb_state;
+		const char *signal_strength_icon;
+
+		signal_strength_icon = mobile_helper_get_quality_icon_name (mm_modem_get_signal_quality(info->mm_modem, NULL));
 
 		/* Notify about new registration info */
 		mb_state = broadband_state_to_mb_state (info);
@@ -954,13 +957,13 @@ modem_state_changed (MMModem *object,
 			applet_do_notify_with_pref (info->applet,
 			                            _("Mobile Broadband network."),
 			                            _("You are now registered on the home network."),
-			                            "nm-signal-100",
+			                            signal_strength_icon,
 			                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
 		} else if (mb_state == MB_STATE_ROAMING) {
 			applet_do_notify_with_pref (info->applet,
 			                            _("Mobile Broadband network."),
 			                            _("You are now registered on a roaming network."),
-			                            "nm-signal-100",
+			                            signal_strength_icon,
 			                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
 		}
 	}
