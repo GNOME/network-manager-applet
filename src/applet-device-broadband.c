@@ -22,8 +22,6 @@
 
 #include <ctype.h>
 
-#include <gtk/gtk.h>
-
 #include <NetworkManager.h>
 
 #include "applet.h"

@@ -24,8 +24,6 @@
 
 #include <string.h>
 
-#include <gtk/gtk.h>
-
 #include "page-ppp.h"
 #include "ppp-auth-methods-dialog.h"
 #include "nm-connection-editor.h"

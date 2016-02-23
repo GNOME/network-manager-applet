@@ -24,8 +24,6 @@
 
 #include <string.h>
 
-#include <gtk/gtk.h>
-
 #include "page-mobile.h"
 #include "nm-connection-editor.h"
 #include "nma-mobile-wizard.h"

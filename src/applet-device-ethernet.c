@@ -23,8 +23,6 @@
 
 #include "nm-default.h"
 
-#include <gtk/gtk.h>
-
 #include "applet.h"
 #include "applet-device-ethernet.h"
 #include "ethernet-dialog.h"

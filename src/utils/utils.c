@@ -24,7 +24,6 @@
 
 #include <string.h>
 #include <netinet/ether.h>
-#include <gtk/gtk.h>
 
 #include "utils.h"
 
@@ -59,7 +58,7 @@ utils_ether_addr_valid (const struct ether_addr *test_addr)
 
 	if (test_addr->ether_addr_octet[0] & 1)			/* Multicast addresses */
 		return FALSE;
-	
+
 	return TRUE;
 }
 

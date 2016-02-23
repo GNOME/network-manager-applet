@@ -20,8 +20,6 @@
 
 #include "nm-default.h"
 
-#include <gtk/gtk.h>
-
 #include <net/if_arp.h>
 #include <linux/if_infiniband.h>
 

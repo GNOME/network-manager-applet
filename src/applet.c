@@ -32,13 +32,9 @@
 #include <time.h>
 #include <string.h>
 #include <strings.h>
-#include <gtk/gtk.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <stdlib.h>
-
-#include <gio/gio.h>
-
 #include <libnotify/notify.h>
 
 #include "applet.h"

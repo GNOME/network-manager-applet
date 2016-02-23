@@ -51,6 +51,8 @@
 #include "gsystem-local-alloc.h"
 #include "nm-macros-internal.h"
 
+#include <gtk/gtk.h>
+
 /*****************************************************************************/
 
 #if ((NETWORKMANAGER_COMPILATION) == NM_NETWORKMANAGER_COMPILATION_LIB) || ((NETWORKMANAGER_COMPILATION) == NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY)

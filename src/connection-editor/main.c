@@ -27,7 +27,6 @@
 #include <signal.h>
 
 #include <dbus/dbus.h>
-#include <gtk/gtk.h>
 #include <glib-unix.h>
 
 #include "gsystem-local-alloc.h"

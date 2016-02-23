@@ -24,8 +24,6 @@
 
 #include "nm-default.h"
 
-#include <gtk/gtk.h>
-
 #include "nma-vpn-password-dialog.h"
 
 G_DEFINE_TYPE (NMAVpnPasswordDialog, nma_vpn_password_dialog, GTK_TYPE_DIALOG)
@@ -39,7 +37,7 @@ typedef struct {
 	gboolean show_password;
 	gboolean show_password_secondary;
 	gboolean show_password_ternary;
-	
+
 	/* Internal widgetry and flags */
 	GtkWidget *password_entry;
 	GtkWidget *password_entry_secondary;
@@ -49,7 +47,7 @@ typedef struct {
 	GtkWidget *grid_alignment;
 	GtkWidget *grid;
 	GtkSizeGroup *group;
-	
+
 	char *primary_password_label;
 	char *secondary_password_label;
 	char *ternary_password_label;

@@ -23,7 +23,6 @@
 #include "nm-default.h"
 
 #include <stdlib.h>
-#include <gtk/gtk.h>
 
 #include "page-team.h"
 #include "page-infiniband.h"

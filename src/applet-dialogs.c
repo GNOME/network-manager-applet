@@ -28,8 +28,6 @@
 
 #include <NetworkManager.h>
 
-#include <gtk/gtk.h>
-
 #include "applet-dialogs.h"
 #include "utils.h"
 

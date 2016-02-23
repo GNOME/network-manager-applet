@@ -24,8 +24,6 @@
 
 #include <string.h>
 
-#include <gtk/gtk.h>
-
 #include "wireless-security.h"
 #include "page-ethernet.h"
 #include "page-8021x-security.h"

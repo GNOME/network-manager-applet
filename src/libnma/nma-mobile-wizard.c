@@ -23,7 +23,6 @@
 #include "nm-default.h"
 
 #include <stdlib.h>
-#include <gtk/gtk.h>
 
 #include <NetworkManager.h>
 #include <nm-setting-gsm.h>

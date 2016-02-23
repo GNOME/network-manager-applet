@@ -23,8 +23,6 @@
 
 #include "nm-default.h"
 
-#include <gtk/gtk.h>
-
 #include "applet.h"
 #include "applet-device-bt.h"
 #include "applet-dialogs.h"

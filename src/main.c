@@ -27,8 +27,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <gtk/gtk.h>
-
 #include "applet.h"
 
 gboolean shell_debug = FALSE;

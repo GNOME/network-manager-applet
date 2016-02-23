@@ -24,8 +24,6 @@
 
 #include <string.h>
 
-#include <gtk/gtk.h>
-
 #include "ce-polkit-button.h"
 
 G_DEFINE_TYPE (CEPolkitButton, ce_polkit_button, GTK_TYPE_BUTTON)

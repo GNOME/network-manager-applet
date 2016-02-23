@@ -28,8 +28,6 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
-
-#include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 
 #include "nm-connection-editor.h"

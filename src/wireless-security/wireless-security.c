@@ -24,8 +24,6 @@
 
 #include <string.h>
 
-#include <gtk/gtk.h>
-
 #include "wireless-security.h"
 #include "eap-method.h"
 #include "utils.h"

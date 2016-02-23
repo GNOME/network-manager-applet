@@ -25,8 +25,6 @@
 #include <string.h>
 #include <net/ethernet.h>
 
-#include <gtk/gtk.h>
-
 #include "page-ethernet.h"
 
 G_DEFINE_TYPE (CEPageEthernet, ce_page_ethernet, CE_TYPE_PAGE)

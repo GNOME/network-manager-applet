@@ -26,8 +26,6 @@
 #include <errno.h>
 #include <stdlib.h>
 
-#include <gtk/gtk.h>
-
 #include "page-dcb.h"
 
 G_DEFINE_TYPE (CEPageDcb, ce_page_dcb, CE_TYPE_PAGE)

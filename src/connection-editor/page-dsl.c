@@ -24,8 +24,6 @@
 
 #include <string.h>
 
-#include <gtk/gtk.h>
-
 #include "page-dsl.h"
 #include "nm-connection-editor.h"
 

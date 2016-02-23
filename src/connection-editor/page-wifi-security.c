@@ -24,8 +24,6 @@
 
 #include <string.h>
 
-#include <gtk/gtk.h>
-
 #include "wireless-security.h"
 #include "page-wifi.h"
 #include "page-wifi-security.h"

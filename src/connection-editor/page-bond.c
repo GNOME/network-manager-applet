@@ -21,7 +21,6 @@
 #include "nm-default.h"
 
 #include <stdlib.h>
-#include <gtk/gtk.h>
 
 #include "page-bond.h"
 #include "page-infiniband.h"

@@ -24,8 +24,6 @@
 #include <string.h>
 #include <net/ethernet.h>
 
-#include <gtk/gtk.h>
-
 #include "page-vlan.h"
 #include "connection-helpers.h"
 #include "nm-connection-editor.h"

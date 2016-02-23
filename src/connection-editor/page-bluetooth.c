@@ -24,8 +24,6 @@
 
 #include <string.h>
 
-#include <gtk/gtk.h>
-
 #include <NetworkManager.h>
 
 #include "page-bluetooth.h"

@@ -21,7 +21,6 @@
 #include "nm-default.h"
 
 #include <stdlib.h>
-#include <gtk/gtk.h>
 
 #include "page-bridge.h"
 #include "nm-connection-editor.h"

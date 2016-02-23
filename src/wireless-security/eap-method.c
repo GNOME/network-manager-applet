@@ -23,7 +23,6 @@
 
 #include "nm-default.h"
 
-#include <gtk/gtk.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>

@@ -22,8 +22,6 @@
 
 #include <string.h>
 
-#include <gtk/gtk.h>
-
 #include "page-team-port.h"
 
 G_DEFINE_TYPE (CEPageTeamPort, ce_page_team_port, CE_TYPE_PAGE)

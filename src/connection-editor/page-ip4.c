@@ -25,8 +25,6 @@
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
-
-#include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <sys/socket.h>
 #include <netinet/in.h>

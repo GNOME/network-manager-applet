@@ -27,8 +27,6 @@
 #include <netinet/ether.h>
 #include <ctype.h>
 
-#include <gtk/gtk.h>
-
 #include "applet.h"
 #include "applet-device-wifi.h"
 #include "ap-menu-item.h"

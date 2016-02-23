@@ -24,8 +24,6 @@
 
 #include <string.h>
 
-#include <gtk/gtk.h>
-
 #include "page-bridge-port.h"
 
 G_DEFINE_TYPE (CEPageBridgePort, ce_page_bridge_port, CE_TYPE_PAGE)

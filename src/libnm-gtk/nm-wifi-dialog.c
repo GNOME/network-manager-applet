@@ -23,8 +23,6 @@
 #include "nm-default.h"
 
 #include <string.h>
-
-#include <gtk/gtk.h>
 #include <netinet/ether.h>
 
 #include <nm-client.h>

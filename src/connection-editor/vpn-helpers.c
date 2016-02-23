@@ -24,7 +24,6 @@
 
 #include <string.h>
 #include <gmodule.h>
-#include <gtk/gtk.h>
 
 #include "vpn-helpers.h"
 #include "utils.h"

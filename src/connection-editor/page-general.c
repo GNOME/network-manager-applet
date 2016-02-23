@@ -20,8 +20,6 @@
 
 #include "nm-default.h"
 
-#include <gtk/gtk.h>
-
 #include "page-general.h"
 
 G_DEFINE_TYPE (CEPageGeneral, ce_page_general, CE_TYPE_PAGE)

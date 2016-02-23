@@ -24,8 +24,6 @@
 
 #include <string.h>
 
-#include <gtk/gtk.h>
-
 #include "page-vpn.h"
 #include "connection-helpers.h"
 #include "nm-connection-editor.h"
