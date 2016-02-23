@@ -25,7 +25,6 @@
 #include <net/ethernet.h>
 
 #include <gtk/gtk.h>
-#include <glib/gi18n.h>
 
 #include "page-vlan.h"
 #include "connection-helpers.h"

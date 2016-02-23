@@ -24,7 +24,6 @@
 #include "nm-default.h"
 
 #include <glib.h>
-#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <string.h>
 #include <sys/types.h>

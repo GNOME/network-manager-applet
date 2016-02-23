@@ -22,7 +22,6 @@
 
 #include "nm-default.h"
 
-#include <glib/gi18n.h>
 #include <ctype.h>
 #include <string.h>
 

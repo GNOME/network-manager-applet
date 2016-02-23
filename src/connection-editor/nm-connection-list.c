@@ -29,7 +29,6 @@
 
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
-#include <glib/gi18n.h>
 
 #include "ce-page.h"
 #include "nm-connection-editor.h"

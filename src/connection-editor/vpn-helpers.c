@@ -26,7 +26,6 @@
 #include <glib.h>
 #include <gmodule.h>
 #include <gtk/gtk.h>
-#include <glib/gi18n.h>
 
 #include "vpn-helpers.h"
 #include "utils.h"

@@ -29,7 +29,6 @@
 #include <NetworkManager.h>
 
 #include <gtk/gtk.h>
-#include <glib/gi18n.h>
 
 #include "applet-dialogs.h"
 #include "utils.h"

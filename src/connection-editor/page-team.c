@@ -24,7 +24,6 @@
 
 #include <stdlib.h>
 #include <gtk/gtk.h>
-#include <glib/gi18n.h>
 
 #include "page-team.h"
 #include "page-infiniband.h"

@@ -33,7 +33,6 @@
 #include <string.h>
 #include <strings.h>
 #include <gtk/gtk.h>
-#include <glib/gi18n.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <stdlib.h>

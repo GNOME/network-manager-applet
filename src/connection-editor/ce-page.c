@@ -27,8 +27,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <glib/gi18n.h>
-
 #include "ce-page.h"
 
 G_DEFINE_ABSTRACT_TYPE (CEPage, ce_page, G_TYPE_OBJECT)

@@ -26,7 +26,6 @@
 #include <math.h>
 
 #include <gtk/gtk.h>
-#include <glib/gi18n.h>
 
 #include "nm-connection-editor.h"
 #include "page-wifi.h"

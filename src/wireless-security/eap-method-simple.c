@@ -24,7 +24,6 @@
 
 #include <ctype.h>
 #include <string.h>
-#include <glib/gi18n.h>
 
 #include "eap-method.h"
 #include "wireless-security.h"

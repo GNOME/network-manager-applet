@@ -23,7 +23,6 @@
 
 #include "nm-default.h"
 
-#include <glib/gi18n.h>
 
 #include "ethernet-dialog.h"
 #include "wireless-security.h"

@@ -28,7 +28,6 @@
 
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
-#include <glib/gi18n.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>

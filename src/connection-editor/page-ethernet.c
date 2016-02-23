@@ -26,7 +26,6 @@
 #include <net/ethernet.h>
 
 #include <gtk/gtk.h>
-#include <glib/gi18n.h>
 
 #include "page-ethernet.h"
 
