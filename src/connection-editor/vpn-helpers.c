@@ -23,7 +23,6 @@
 #include "nm-default.h"
 
 #include <string.h>
-#include <glib.h>
 #include <gmodule.h>
 #include <gtk/gtk.h>
 

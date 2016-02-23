@@ -23,7 +23,6 @@
 #include "nm-default.h"
 
 #include <string.h>
-#include <glib.h>
 
 #include "wireless-security.h"
 #include "utils.h"

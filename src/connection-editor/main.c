@@ -28,8 +28,6 @@
 
 #include <dbus/dbus.h>
 #include <gtk/gtk.h>
-#include <glib.h>
-#include <glib-object.h>
 #include <glib-unix.h>
 
 #include "gsystem-local-alloc.h"
