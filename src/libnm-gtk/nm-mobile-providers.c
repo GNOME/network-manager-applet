@@ -28,8 +28,6 @@
 #include <errno.h>
 #include <stdlib.h>
 
-#include <glib/gi18n-lib.h>
-
 #include "nm-mobile-providers.h"
 
 #ifndef MOBILE_BROADBAND_PROVIDER_INFO

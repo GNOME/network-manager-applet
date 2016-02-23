@@ -21,7 +21,6 @@
 #include "nm-default.h"
 
 #include <libintl.h>
-#include <glib/gi18n-lib.h>
 
 static void __attribute__((constructor))
 _libnma_init (void)

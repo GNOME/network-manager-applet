@@ -22,7 +22,6 @@
 
 #include <string.h>
 
-#include <glib/gi18n-lib.h>
 #include <gudev/gudev.h>
 
 #include <nm-device.h>
