@@ -5,7 +5,6 @@ noinst_LTLIBRARIES = \
 	libutils-libnm.la
 
 libutils_libnm_glib_la_SOURCES = \
-	nm-glib-compat.h \
 	utils.c \
 	utils.h
 

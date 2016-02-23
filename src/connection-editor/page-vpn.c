@@ -33,7 +33,6 @@
 #include "connection-helpers.h"
 #include "nm-connection-editor.h"
 #include "vpn-helpers.h"
-#include "nm-glib-compat.h"
 
 G_DEFINE_TYPE (CEPageVpn, ce_page_vpn, CE_TYPE_PAGE)
 
