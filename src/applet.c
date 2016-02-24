@@ -2081,9 +2081,9 @@ foo_set_icon (NMApplet *applet, guint32 layer, GdkPixbuf *pixbuf, char *icon_nam
 				continue;
 
 			gdk_pixbuf_composite (top, pixbuf, 0, 0, gdk_pixbuf_get_width (top),
-							  gdk_pixbuf_get_height (top),
-							  0, 0, 1.0, 1.0,
-							  GDK_INTERP_NEAREST, 255);
+			                      gdk_pixbuf_get_height (top),
+			                      0, 0, 1.0, 1.0,
+			                      GDK_INTERP_NEAREST, 255);
 		}
 	} else
 		pixbuf = g_object_ref (nma_icon_check_and_load ("nm-no-connection", applet));
@@ -2917,24 +2917,16 @@ applet_agent_cancel_secrets_cb (AppletAgent *agent,
 
 /*****************************************************************************/
 
-static void
-nma_clear_icon (GdkPixbuf **icon, NMApplet *applet)
-{
-	g_return_if_fail (icon != NULL);
-	g_return_if_fail (applet != NULL);
-
-	if (*icon && (*icon != applet->fallback_icon)) {
-		g_object_unref (*icon);
-		*icon = NULL;
-	}
-}
-
 static void nma_icons_free (NMApplet *applet)
 {
-	int i;
+	guint i;
 
-	for (i = 0; i <= ICON_LAYER_MAX; i++)
-		nma_clear_icon (&applet->icon_layers[i], applet);
+	g_return_if_fail (NM_IS_APPLET (applet));
+
+	for (i = 0; i <= ICON_LAYER_MAX; i++) {
+		if (applet->icon_layers[i] != applet->fallback_icon)
+			g_clear_object (&applet->icon_layers[i]);
+	}
 }
 
 GdkPixbuf *
