@@ -2966,7 +2966,7 @@ static gboolean
 nma_icons_reload (NMApplet *applet)
 {
 	GError *error = NULL;
-	GdkPixbufLoader *loader;
+	gs_unref_object GdkPixbufLoader *loader = NULL;
 
 	g_return_val_if_fail (applet->icon_size > 0, FALSE);
 
@@ -2989,7 +2989,6 @@ nma_icons_reload (NMApplet *applet)
 	applet->fallback_icon = gdk_pixbuf_loader_get_pixbuf (loader);
 	g_object_ref (applet->fallback_icon);
 	g_assert (applet->fallback_icon);
-	g_object_unref (loader);
 
 	return TRUE;
 
