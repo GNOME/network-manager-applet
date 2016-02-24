@@ -2946,10 +2946,9 @@ nma_icon_check_and_load (const char *name, NMApplet *applet)
 	 * the icon to the fallback icon if requested.
 	 */
 	if (!(icon = gtk_icon_theme_load_icon (applet->icon_theme, name, applet->icon_size, GTK_ICON_LOOKUP_FORCE_SIZE, &error))) {
-		g_warning ("Icon %s missing: (%d) %s",
+		g_warning ("Icon %s missing: %s",
 		           name,
-		           error ? error->code : -1,
-			       (error && error->message) ? error->message : "(unknown)");
+		           error->message);
 		g_clear_error (&error);
 
 		icon = applet->fallback_icon;
@@ -2993,9 +2992,7 @@ nma_icons_reload (NMApplet *applet)
 	return TRUE;
 
 error:
-	g_warning ("Could not load fallback icon: (%d) %s",
-	           error ? error->code : -1,
-		       (error && error->message) ? error->message : "(unknown)");
+	g_warning ("Could not load fallback icon: %s", error->message);
 	g_clear_error (&error);
 	/* Die if we can't get a fallback icon */
 	g_assert (FALSE);
@@ -3021,12 +3018,12 @@ static void nma_icons_init (NMApplet *applet)
 
 	/* If not done yet, append our search path */
 	path_appended = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (applet->icon_theme),
-					 		    "NMAIconPathAppended"));
+	                                 "NMAIconPathAppended"));
 	if (path_appended == FALSE) {
 		gtk_icon_theme_append_search_path (applet->icon_theme, ICONDIR);
 		g_object_set_data (G_OBJECT (applet->icon_theme),
-				   "NMAIconPathAppended",
-				   GINT_TO_POINTER (TRUE));
+		                   "NMAIconPathAppended",
+		                   GINT_TO_POINTER (TRUE));
 	}
 
 	g_signal_connect (applet->icon_theme, "changed", G_CALLBACK (nma_icons_reload), applet);
