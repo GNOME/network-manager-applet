@@ -18,14 +18,9 @@
  * Copyright 2013 - 2014  Red Hat, Inc.
  */
 
-#include "config.h"
-
 #include "nm-default.h"
 
 #include <string.h>
-
-#include <gtk/gtk.h>
-#include <glib/gi18n.h>
 
 #include "page-team-port.h"
 

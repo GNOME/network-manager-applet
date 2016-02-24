@@ -20,11 +20,8 @@
  * (C) Copyright 2009 Red Hat, Inc.
  */
 
-#include "config.h"
-
 #include "nm-default.h"
 
-#include <glib.h>
 #include <string.h>
 
 #include "utils.h"

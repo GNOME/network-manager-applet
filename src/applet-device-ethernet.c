@@ -21,12 +21,7 @@
  * Copyright 2008 Novell, Inc.
  */
 
-#include "config.h"
-
 #include "nm-default.h"
-
-#include <glib/gi18n.h>
-#include <gtk/gtk.h>
 
 #include "applet.h"
 #include "applet-device-ethernet.h"

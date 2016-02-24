@@ -20,8 +20,6 @@
  * Copyright 2008 - 2014 Red Hat, Inc.
  */
 
-#include "config.h"
-
 #include "nm-default.h"
 
 #include <netinet/in.h>
@@ -32,7 +30,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <glib/gi18n.h>
 
 #include <NetworkManager.h>
 

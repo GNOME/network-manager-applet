@@ -20,24 +20,18 @@
  * Copyright 2008 - 2014 Red Hat, Inc.
  */
 
-#include "config.h"
-
 #include "nm-default.h"
 
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
-
-#include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
-#include <glib/gi18n.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
 #include "page-ip6.h"
 #include "ip6-routes-dialog.h"
-#include "nm-glib-compat.h"
 
 G_DEFINE_TYPE (CEPageIP6, ce_page_ip6, CE_TYPE_PAGE)
 

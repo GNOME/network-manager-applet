@@ -39,12 +39,19 @@
 
 /* always include these headers for our internal source files. */
 
+#ifndef ___CONFIG_H__
+#define ___CONFIG_H__
+#include <config.h>
+#endif
+
 #include <stdlib.h>
 
 #include "nm-glib.h"
 #include "nm-version.h"
 #include "gsystem-local-alloc.h"
 #include "nm-macros-internal.h"
+
+#include <gtk/gtk.h>
 
 /*****************************************************************************/
 

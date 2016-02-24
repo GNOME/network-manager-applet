@@ -20,17 +20,13 @@
  * Copyright 2004 - 2014 Red Hat, Inc.
  */
 
-# include "config.h"
+#include "nm-default.h"
 
 #include <string.h>
 #include <stdlib.h>
 #include <signal.h>
 
 #include <dbus/dbus.h>
-#include <gtk/gtk.h>
-#include <glib/gi18n-lib.h>
-#include <glib.h>
-#include <glib-object.h>
 #include <glib-unix.h>
 
 #include "gsystem-local-alloc.h"

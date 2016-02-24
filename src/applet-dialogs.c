@@ -20,8 +20,6 @@
  * Copyright 2008 - 2014 Red Hat, Inc.
  */
 
-#include "config.h"
-
 #include "nm-default.h"
 
 #include <netinet/in.h>
@@ -29,9 +27,6 @@
 #include <arpa/inet.h>
 
 #include <NetworkManager.h>
-
-#include <gtk/gtk.h>
-#include <glib/gi18n.h>
 
 #include "applet-dialogs.h"
 #include "utils.h"

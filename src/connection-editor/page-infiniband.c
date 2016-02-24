@@ -18,12 +18,7 @@
  * Copyright 2012 - 2014 Red Hat, Inc.
  */
 
-#include "config.h"
-
 #include "nm-default.h"
-
-#include <gtk/gtk.h>
-#include <glib/gi18n.h>
 
 #include <net/if_arp.h>
 #include <linux/if_infiniband.h>

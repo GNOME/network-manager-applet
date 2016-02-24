@@ -21,12 +21,9 @@
  * Copyright (C) 2005 - 2010 Red Hat, Inc.
  */
 
-#include "config.h"
-
 #include "nm-default.h"
 
 #include <stdio.h>
-#include <glib/gi18n.h>
 #include <string.h>
 
 #include "mb-menu-item.h"

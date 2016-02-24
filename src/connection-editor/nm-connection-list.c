@@ -21,17 +21,12 @@
  * Copyright 2007 - 2014 Red Hat, Inc.
  */
 
-#include "config.h"
-
 #include "nm-default.h"
 
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
-
-#include <gtk/gtk.h>
 #include <gdk/gdkx.h>
-#include <glib/gi18n.h>
 
 #include "ce-page.h"
 #include "nm-connection-editor.h"

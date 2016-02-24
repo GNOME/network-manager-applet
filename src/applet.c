@@ -27,21 +27,14 @@
  * Copyright 2001, 2002 Free Software Foundation
  */
 
-#include "config.h"
-
 #include "nm-default.h"
 
 #include <time.h>
 #include <string.h>
 #include <strings.h>
-#include <gtk/gtk.h>
-#include <glib/gi18n.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <stdlib.h>
-
-#include <gio/gio.h>
-
 #include <libnotify/notify.h>
 
 #include "applet.h"

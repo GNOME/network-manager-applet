@@ -271,13 +271,16 @@ _NM_IN_STRSET_streq (const char *x, const char *s)
 
 /*****************************************************************************/
 
-#define NM_GOBJECT_PROPERTIES_DEFINE(obj_type, ...) \
+#define NM_GOBJECT_PROPERTIES_DEFINE_BASE(...) \
 typedef enum { \
 	_PROPERTY_ENUMS_0, \
 	__VA_ARGS__ \
 	_PROPERTY_ENUMS_LAST, \
 } _PropertyEnums; \
-static GParamSpec *obj_properties[_PROPERTY_ENUMS_LAST] = { NULL, }; \
+static GParamSpec *obj_properties[_PROPERTY_ENUMS_LAST] = { NULL, }
+
+#define NM_GOBJECT_PROPERTIES_DEFINE(obj_type, ...) \
+NM_GOBJECT_PROPERTIES_DEFINE_BASE (__VA_ARGS__); \
 static inline void \
 _notify (obj_type *obj, _PropertyEnums prop) \
 { \
@@ -429,7 +432,7 @@ nm_decode_version (guint version, guint *major, guint *minor, guint *micro) {
 		 * It disallows a buffer size of sizeof(gpointer) to catch that. */ \
 		G_STATIC_ASSERT (G_N_ELEMENTS (buf) == sizeof (buf) && sizeof (buf) != sizeof (char *)); \
 		g_snprintf (_buf, sizeof (buf), \
-		            ""format"", __VA_ARGS__); \
+		            ""format"", ##__VA_ARGS__); \
 		_buf; \
 	})
 
@@ -440,7 +443,7 @@ nm_decode_version (guint version, guint *major, guint *minor, guint *micro) {
 		G_STATIC_ASSERT (sizeof (char[MAX ((n_elements), 1)]) == (n_elements)); \
 		_buf = g_alloca (n_elements); \
 		g_snprintf (_buf, n_elements, \
-		            ""format"", __VA_ARGS__); \
+		            ""format"", ##__VA_ARGS__); \
 		_buf; \
 	})
 

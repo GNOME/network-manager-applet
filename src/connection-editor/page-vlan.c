@@ -18,16 +18,11 @@
  * Copyright 2008 - 2014 Red Hat, Inc.
  */
 
-#include "config.h"
-
 #include "nm-default.h"
 
 #include <stdlib.h>
 #include <string.h>
 #include <net/ethernet.h>
-
-#include <gtk/gtk.h>
-#include <glib/gi18n.h>
 
 #include "page-vlan.h"
 #include "connection-helpers.h"

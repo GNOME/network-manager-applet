@@ -20,15 +20,10 @@
  * Copyright 2008 - 2014 Red Hat, Inc.
  */
 
-#include "config.h"
-
 #include "nm-default.h"
 
 #include <string.h>
-#include <glib.h>
 #include <gmodule.h>
-#include <gtk/gtk.h>
-#include <glib/gi18n.h>
 
 #include "vpn-helpers.h"
 #include "utils.h"

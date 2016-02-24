@@ -20,14 +20,9 @@
  * Copyright 2007 - 2014 Red Hat, Inc.
  */
 
-#include "config.h"
-
 #include "nm-default.h"
 
 #include <string.h>
-
-#include <glib/gi18n-lib.h>
-#include <gtk/gtk.h>
 #include <netinet/ether.h>
 
 #include <NetworkManager.h>

@@ -20,19 +20,13 @@
  * Copyright 2008 - 2014 Red Hat, Inc.
  */
 
-#include "config.h"
-
 #include "nm-default.h"
 
 #include <string.h>
 
-#include <gtk/gtk.h>
-#include <glib/gi18n.h>
-
 #include "page-ppp.h"
 #include "ppp-auth-methods-dialog.h"
 #include "nm-connection-editor.h"
-#include "nm-glib-compat.h"
 
 G_DEFINE_TYPE (CEPagePpp, ce_page_ppp, CE_TYPE_PAGE)
 

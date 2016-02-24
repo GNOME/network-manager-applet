@@ -23,17 +23,12 @@
  * Copyright 2007 - 2008 Novell, Inc.
  */
 
-#include "config.h"
-
 #include "nm-default.h"
 
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
-
-#include <gtk/gtk.h>
 #include <gdk/gdkx.h>
-#include <glib/gi18n.h>
 
 #include "nm-connection-editor.h"
 

@@ -20,20 +20,14 @@
  * Copyright 2008 - 2014 Red Hat, Inc.
  */
 
-#include "config.h"
-
 #include "nm-default.h"
 
 #include <string.h>
-
-#include <gtk/gtk.h>
-#include <glib/gi18n.h>
 
 #include "page-vpn.h"
 #include "connection-helpers.h"
 #include "nm-connection-editor.h"
 #include "vpn-helpers.h"
-#include "nm-glib-compat.h"
 
 G_DEFINE_TYPE (CEPageVpn, ce_page_vpn, CE_TYPE_PAGE)
 

@@ -18,11 +18,7 @@
  * Copyright 2012 Red Hat, Inc.
  */
 
-#include "config.h"
-
 #include "nm-default.h"
-
-#include <glib/gi18n.h>
 
 #include "connection-helpers.h"
 #include "nm-connection-list.h"

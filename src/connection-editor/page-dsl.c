@@ -20,14 +20,9 @@
  * Copyright 2008 - 2014 Red Hat, Inc.
  */
 
-#include "config.h"
-
 #include "nm-default.h"
 
 #include <string.h>
-
-#include <gtk/gtk.h>
-#include <glib/gi18n.h>
 
 #include "page-dsl.h"
 #include "nm-connection-editor.h"
