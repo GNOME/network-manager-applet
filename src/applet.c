@@ -2963,13 +2963,13 @@ nma_icon_check_and_load (const char *name, NMApplet *applet)
 
 #include "fallback-icon.h"
 
-static gboolean
-nma_icons_reload (NMApplet *applet)
+static void
+nma_icons_reload (NMApplet *applet, gpointer user_data)
 {
 	GError *error = NULL;
 	gs_unref_object GdkPixbufLoader *loader = NULL;
 
-	g_return_val_if_fail (applet->icon_size > 0, FALSE);
+	g_return_if_fail (applet->icon_size > 0);
 
 	g_hash_table_remove_all (applet->icon_cache);
 	nma_icons_free (applet);
@@ -2987,18 +2987,15 @@ nma_icons_reload (NMApplet *applet)
 	if (!gdk_pixbuf_loader_close (loader, &error))
 		goto error;
 
+	g_clear_object (&applet->fallback_icon);
 	applet->fallback_icon = gdk_pixbuf_loader_get_pixbuf (loader);
+	g_return_if_fail (applet->fallback_icon);
 	g_object_ref (applet->fallback_icon);
-	g_assert (applet->fallback_icon);
-
-	return TRUE;
+	return;
 
 error:
-	g_warning ("Could not load fallback icon: %s", error->message);
+	g_critical ("Failed loading default-icon: %s", error->message);
 	g_clear_error (&error);
-	/* Die if we can't get a fallback icon */
-	g_assert (FALSE);
-	return FALSE;
 }
 
 static void nma_icons_init (NMApplet *applet)
@@ -3038,7 +3035,7 @@ status_icon_screen_changed_cb (GtkStatusIcon *icon,
                                NMApplet *applet)
 {
 	nma_icons_init (applet);
-	nma_icons_reload (applet);
+	nma_icons_reload (applet, NULL);
 }
 
 static gboolean
@@ -3053,7 +3050,7 @@ status_icon_size_changed_cb (GtkStatusIcon *icon,
 	 */
 	applet->icon_size = size ? size : 16;
 
-	nma_icons_reload (applet);
+	nma_icons_reload (applet, NULL);
 
 	applet_schedule_update_icon (applet);
 
