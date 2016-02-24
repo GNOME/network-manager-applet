@@ -2041,6 +2041,10 @@ applet_schedule_update_menu (NMApplet *applet)
 static void
 foo_set_icon (NMApplet *applet, guint32 layer, GdkPixbuf *pixbuf, char *icon_name)
 {
+#ifndef ENABLE_INDICATOR
+	gs_unref_object GdkPixbuf *pixbuf_free = NULL;
+#endif
+
 	g_return_if_fail (layer == ICON_LAYER_LINK || layer == ICON_LAYER_VPN);
 
 #ifdef ENABLE_INDICATOR
@@ -2061,10 +2065,7 @@ foo_set_icon (NMApplet *applet, guint32 layer, GdkPixbuf *pixbuf, char *icon_nam
 	if (applet->icon_layers[layer] == pixbuf)
 		return;
 
-	if (applet->icon_layers[layer]) {
-		g_object_unref (applet->icon_layers[layer]);
-		applet->icon_layers[layer] = NULL;
-	}
+	g_clear_object (&applet->icon_layers[layer]);
 
 	if (pixbuf)
 		applet->icon_layers[layer] = g_object_ref (pixbuf);
@@ -2072,7 +2073,7 @@ foo_set_icon (NMApplet *applet, guint32 layer, GdkPixbuf *pixbuf, char *icon_nam
 	if (applet->icon_layers[0]) {
 		int i;
 
-		pixbuf = gdk_pixbuf_copy (applet->icon_layers[0]);
+		pixbuf = applet->icon_layers[0];
 
 		for (i = ICON_LAYER_LINK + 1; i <= ICON_LAYER_MAX; i++) {
 			GdkPixbuf *top = applet->icon_layers[i];
@@ -2080,16 +2081,18 @@ foo_set_icon (NMApplet *applet, guint32 layer, GdkPixbuf *pixbuf, char *icon_nam
 			if (!top)
 				continue;
 
+			if (!pixbuf_free)
+				pixbuf = pixbuf_free = gdk_pixbuf_copy (pixbuf);
+
 			gdk_pixbuf_composite (top, pixbuf, 0, 0, gdk_pixbuf_get_width (top),
 			                      gdk_pixbuf_get_height (top),
 			                      0, 0, 1.0, 1.0,
 			                      GDK_INTERP_NEAREST, 255);
 		}
 	} else
-		pixbuf = g_object_ref (nma_icon_check_and_load ("nm-no-connection", applet));
+		pixbuf = nma_icon_check_and_load ("nm-no-connection", applet);
 
 	gtk_status_icon_set_from_pixbuf (applet->status_icon, pixbuf);
-	g_object_unref (pixbuf);
 #endif
 }
 
