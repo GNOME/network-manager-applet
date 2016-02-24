@@ -2926,10 +2926,8 @@ static void nma_icons_free (NMApplet *applet)
 
 	g_return_if_fail (NM_IS_APPLET (applet));
 
-	for (i = 0; i <= ICON_LAYER_MAX; i++) {
-		if (applet->icon_layers[i] != applet->fallback_icon)
-			g_clear_object (&applet->icon_layers[i]);
-	}
+	for (i = 0; i <= ICON_LAYER_MAX; i++)
+		g_clear_object (&applet->icon_layers[i]);
 }
 
 GdkPixbuf *
@@ -2954,7 +2952,8 @@ nma_icon_check_and_load (const char *name, NMApplet *applet)
 		           error->message);
 		g_clear_error (&error);
 
-		icon = applet->fallback_icon;
+		if (applet->fallback_icon)
+			icon = g_object_ref (applet->fallback_icon);
 	}
 
 	g_hash_table_insert (applet->icon_cache, g_strdup (name), icon);
@@ -3008,8 +3007,8 @@ static void nma_icons_init (NMApplet *applet)
 
 	if (applet->icon_theme) {
 		g_signal_handlers_disconnect_by_func (applet->icon_theme,
-						      G_CALLBACK (nma_icons_reload),
-						      applet);
+		                                      G_CALLBACK (nma_icons_reload),
+		                                      applet);
 		g_object_unref (G_OBJECT (applet->icon_theme));
 	}
 
