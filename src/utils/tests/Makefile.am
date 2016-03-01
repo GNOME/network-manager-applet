@@ -14,5 +14,5 @@ test_utils_LDADD = \
 	$(GTK_LIBS) \
 	$(LIBNM_LIBS)
 
-TESTS: test-utils
+TESTS = $(noinst_PROGRAMS)
 
