@@ -207,7 +207,7 @@ try_existing_instance (GDBusConnection *bus,
 {
 	gs_free char *owner = NULL;
 	gs_free_error GError *error = NULL;
-	gs_unref_variant GVariant *reply = NULL, *args = NULL;
+	gs_unref_variant GVariant *reply = NULL;
 	GVariantBuilder builder;
 
 	g_assert (bus);
