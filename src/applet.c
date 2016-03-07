@@ -2040,7 +2040,7 @@ applet_schedule_update_menu (NMApplet *applet)
 /*****************************************************************************/
 
 static void
-foo_set_icon (NMApplet *applet, guint32 layer, GdkPixbuf *pixbuf, char *icon_name)
+foo_set_icon (NMApplet *applet, guint32 layer, GdkPixbuf *pixbuf, const char *icon_name)
 {
 #ifndef ENABLE_INDICATOR
 	gs_unref_object GdkPixbuf *pixbuf_free = NULL;
@@ -2054,7 +2054,7 @@ foo_set_icon (NMApplet *applet, guint32 layer, GdkPixbuf *pixbuf, char *icon_nam
 	 * icon and the VPN icon.
 	 */
 	if (icon_name == NULL && layer == ICON_LAYER_LINK)
-		icon_name = g_strdup ("nm-no-connection");
+		icon_name = "nm-no-connection";
 	if (icon_name != NULL && g_strcmp0 (app_indicator_get_icon (applet->app_indicator), icon_name) != 0)
 		app_indicator_set_icon_full (applet->app_indicator, icon_name, applet->tip);
 #else
