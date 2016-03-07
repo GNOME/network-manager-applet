@@ -1258,6 +1258,9 @@ wifi_get_icon (NMDevice *device,
 	const char *id;
 	guint8 strength;
 
+	g_return_if_fail (out_icon_name && !*out_icon_name);
+	g_return_if_fail (tip && !*tip);
+
 	ap = g_object_get_data (G_OBJECT (device), ACTIVE_AP_TAG);
 
 	id = nm_device_get_iface (device);

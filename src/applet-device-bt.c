@@ -102,6 +102,9 @@ bt_get_icon (NMDevice *device,
 	NMSettingConnection *s_con;
 	const char *id;
 
+	g_return_if_fail (out_icon_name && !*out_icon_name);
+	g_return_if_fail (tip && !*tip);
+
 	id = nm_device_get_iface (NM_DEVICE (device));
 	if (connection) {
 		s_con = nm_connection_get_setting_connection (connection);

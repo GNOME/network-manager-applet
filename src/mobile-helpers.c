@@ -110,7 +110,7 @@ mobile_helper_get_quality_icon_name (guint32 quality)
 		return "nm-signal-50";
 	else if (quality > 5)
 		return "nm-signal-25";
-	else 
+	else
 		return "nm-signal-00";
 }
 
@@ -579,6 +579,9 @@ mobile_helper_get_icon (NMDevice *device,
 {
 	NMSettingConnection *s_con;
 	const char *id;
+
+	g_return_if_fail (out_icon_name && !*out_icon_name);
+	g_return_if_fail (tip && !*tip);
 
 	id = nm_device_get_iface (NM_DEVICE (device));
 	if (connection) {
