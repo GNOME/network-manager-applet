@@ -2590,9 +2590,12 @@ static gboolean
 applet_update_icon (gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
-	GdkPixbuf *pixbuf = NULL;
+	gs_unref_object GdkPixbuf *pixbuf = NULL;
 	NMState state;
-	char *dev_tip = NULL, *vpn_tip = NULL, *icon_name = NULL;
+	const char *icon_name, *dev_tip;
+	char *vpn_tip = NULL;
+	gs_free char *icon_name_free = NULL;
+	gs_free char *dev_tip_free = NULL;
 	NMVpnConnectionState vpn_state = NM_VPN_CONNECTION_STATE_UNKNOWN;
 	gboolean nm_running;
 	NMActiveConnection *active_vpn = NULL;
@@ -2616,38 +2619,37 @@ applet_update_icon (gpointer user_data)
 	switch (state) {
 	case NM_STATE_UNKNOWN:
 	case NM_STATE_ASLEEP:
-		icon_name = g_strdup ("nm-no-connection");
-		dev_tip = g_strdup (_("Networking disabled"));
+		icon_name = "nm-no-connection";
+		dev_tip = _("Networking disabled");
 		break;
 	case NM_STATE_DISCONNECTED:
-		icon_name = g_strdup ("nm-no-connection");
-		dev_tip = g_strdup (_("No network connection"));
+		icon_name = "nm-no-connection";
+		dev_tip = _("No network connection");
 		break;
 	default:
-		applet_get_device_icon_for_state (applet, &pixbuf, &icon_name, &dev_tip);
+		applet_get_device_icon_for_state (applet, &pixbuf, &icon_name_free, &dev_tip_free);
+		icon_name = icon_name_free;
+		dev_tip = dev_tip_free;
 		break;
 	}
 
 	foo_set_icon (applet, ICON_LAYER_LINK, pixbuf, icon_name);
-	if (pixbuf)
-		g_object_unref (pixbuf);
-	if (icon_name)
-		g_free (icon_name);
+
+	icon_name = NULL;
+	g_clear_pointer (&icon_name_free, g_free);
 
 	/* VPN state next */
-	pixbuf = NULL;
-	icon_name = NULL;
 	active_vpn = applet_get_first_active_vpn_connection (applet, &vpn_state);
 	if (active_vpn) {
 		switch (vpn_state) {
 		case NM_VPN_CONNECTION_STATE_ACTIVATED:
-			icon_name = g_strdup_printf ("nm-vpn-active-lock");
+			icon_name = "nm-vpn-active-lock";
 			break;
 		case NM_VPN_CONNECTION_STATE_PREPARE:
 		case NM_VPN_CONNECTION_STATE_NEED_AUTH:
 		case NM_VPN_CONNECTION_STATE_CONNECT:
 		case NM_VPN_CONNECTION_STATE_IP_CONFIG_GET:
-			icon_name = g_strdup_printf ("nm-vpn-connecting%02d", applet->animation_step + 1);
+			icon_name = icon_name_free = g_strdup_printf ("nm-vpn-connecting%02d", applet->animation_step + 1);
 			applet->animation_step++;
 			if (applet->animation_step >= NUM_VPN_CONNECTING_FRAMES)
 				applet->animation_step = 0;
@@ -2665,13 +2667,18 @@ applet_update_icon (gpointer user_data)
 			vpn_tip = tmp;
 		}
 	}
-	foo_set_icon (applet, ICON_LAYER_VPN, pixbuf, icon_name);
-	if (icon_name)
-		g_free (icon_name);
+	foo_set_icon (applet, ICON_LAYER_VPN, NULL, icon_name);
 
 	/* update tooltip */
 	g_free (applet->tip);
-	applet->tip = g_strdup (vpn_tip ? vpn_tip : dev_tip);
+	if (vpn_tip)
+		applet->tip = vpn_tip;
+	else if (dev_tip == dev_tip_free) {
+		applet->tip = dev_tip_free;
+		dev_tip_free = NULL;
+	} else
+		applet->tip = g_strdup (dev_tip);
+
 #ifdef ENABLE_INDICATOR
 	/* FIXME: The applet->tip attribute seems to only be picked up by
 	 * the next call to foo_set_icon() which is not particularly nice.
@@ -2679,8 +2686,6 @@ applet_update_icon (gpointer user_data)
 #else
 	gtk_status_icon_set_tooltip_text (applet->status_icon, applet->tip);
 #endif
-	g_free (vpn_tip);
-	g_free (dev_tip);
 
 	return FALSE;
 }
