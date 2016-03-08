@@ -26,12 +26,12 @@
 #include <stdlib.h>
 #include <signal.h>
 
-#include <dbus/dbus.h>
 #include <glib-unix.h>
 
 #include "gsystem-local-alloc.h"
 #include "nm-connection-list.h"
 #include "nm-connection-editor.h"
+#include "nm-dbus-compat.h"
 
 gboolean nm_ce_keep_above;
 

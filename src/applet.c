@@ -979,10 +979,7 @@ activate_vpn_cb (GObject *client,
 
 		title = _("VPN Connection Failed");
 
-		/* dbus-glib GError messages _always_ have two NULLs, the D-Bus error
-		 * name comes after the first NULL.  Find it.
-		 */
-		name = error->message + strlen (error->message) + 1;
+		name = g_dbus_error_get_remote_error (error);
 		if (strstr (name, "ServiceStartFailed")) {
 			msg = g_strdup_printf (_("\nThe VPN connection '%s' failed because the VPN service failed to start.\n\n%s"),
 			                       info->vpn_name, error->message);
