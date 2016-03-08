@@ -247,6 +247,7 @@ mode_combo_changed_cb (GtkComboBox *combo,
  	switch (gtk_combo_box_get_active (GTK_COMBO_BOX (combo))) {
 	case 1: /* hotspot */
 		hotspot = TRUE;
+		/* fallthrough */
  	case 2: /* adhoc */
 		/* BSSID is random and is created by kernel for Ad-Hoc networks
 		 * http://lxr.linux.no/linux+v3.7.6/net/mac80211/ibss.c#L685
