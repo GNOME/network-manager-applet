@@ -46,6 +46,154 @@ static void _do_new_auto_connection (NMApplet *applet,
                                      AppletNewAutoConnectionCallback callback,
                                      gpointer callback_data);
 
+/*****************************************************************************/
+
+typedef struct {
+	NMApplet *applet;
+	NMDevice *device;
+	NMAccessPoint *ap;
+	gulong signal_id;
+} ActiveAPData;
+
+static void _active_ap_set (NMApplet *applet, NMDevice *device, NMAccessPoint *ap);
+static void _active_ap_set_weakref (gpointer data, GObject *where_the_object_was);
+
+static void
+_active_ap_set_notify (NMAccessPoint *ap, GParamSpec *pspec, gpointer user_data)
+{
+	ActiveAPData *d = user_data;
+
+	g_return_if_fail (NM_IS_ACCESS_POINT (ap));
+	g_return_if_fail (d);
+	g_return_if_fail (NM_IS_APPLET (d->applet));
+	g_return_if_fail (NM_IS_DEVICE (d->device));
+	g_return_if_fail (d->ap == ap);
+	g_return_if_fail (d->signal_id);
+
+	applet_schedule_update_icon (d->applet);
+}
+
+static void
+_active_ap_data_free (ActiveAPData *d)
+{
+	if (d->device)
+		g_object_weak_unref ((GObject *) d->device, _active_ap_set_weakref, d);
+	if (d->ap) {
+		g_object_weak_unref ((GObject *) d->ap, _active_ap_set_weakref, d);
+		g_signal_handler_disconnect (d->ap, d->signal_id);
+	}
+	g_slice_free (ActiveAPData, d);
+}
+
+static NMAccessPoint *
+_active_ap_get (NMApplet *applet, NMDevice *device)
+{
+	GSList *list, *iter;
+
+	g_return_val_if_fail (NM_IS_APPLET (applet), NULL);
+	g_return_val_if_fail (NM_IS_DEVICE (device), NULL);
+
+	list = g_object_get_data ((GObject *) applet, ACTIVE_AP_TAG);
+	for (iter = list; iter; iter = iter->next) {
+		ActiveAPData *d = iter->data;
+
+		if (device == d->device && d->ap)
+			return d->ap;
+	}
+	return NULL;
+}
+
+static void
+_active_ap_set_destroy (gpointer data)
+{
+	g_slist_free_full (data, (GDestroyNotify) _active_ap_data_free);
+}
+
+static void
+_active_ap_set_weakref (gpointer data, GObject *where_the_object_was)
+{
+	ActiveAPData *d = data;
+
+	if ((GObject *) d->ap == where_the_object_was)
+		d->ap = NULL;
+	else if ((GObject *) d->device == where_the_object_was)
+		d->device = NULL;
+	else
+		g_return_if_reached ();
+	_active_ap_set (d->applet, NULL, NULL);
+
+	applet_schedule_update_icon (d->applet);
+}
+
+static void
+_active_ap_set (NMApplet *applet, NMDevice *device, NMAccessPoint *ap)
+{
+	GSList *list, *iter, *list0, *pcurrent;
+	ActiveAPData *d;
+
+	g_return_if_fail (NM_IS_APPLET (applet));
+	g_return_if_fail (!device || NM_IS_DEVICE (device));
+	g_return_if_fail (!ap || NM_IS_ACCESS_POINT (ap));
+
+	list0 = g_object_get_data ((GObject *) applet, ACTIVE_AP_TAG);
+	list = list0;
+
+remove_empty:
+	pcurrent = NULL;
+	for (iter = list; iter; iter = iter->next) {
+		d = iter->data;
+		if (!d->device || !d->ap) {
+			_active_ap_data_free (d);
+			list = g_slist_delete_link (list, iter);
+			goto remove_empty;
+		}
+		if (device && d->device == device)
+			pcurrent = iter;
+	}
+
+	if (!device)
+		goto out;
+
+	if (!ap) {
+		if (pcurrent) {
+			_active_ap_data_free (pcurrent->data);
+			list = g_slist_delete_link (list, pcurrent);
+		}
+		goto out;
+	}
+
+	if (pcurrent) {
+		d = pcurrent->data;
+
+		if (d->ap == ap)
+			goto out;
+		g_object_weak_unref ((GObject *) d->ap, _active_ap_set_weakref, d);
+		g_signal_handler_disconnect (d->ap, d->signal_id);
+	} else {
+		d = g_slice_new (ActiveAPData);
+
+		d->applet = applet;
+		d->device = device;
+		g_object_weak_ref ((GObject *) device, _active_ap_set_weakref, d);
+		list = g_slist_append (list, d);
+	}
+	d->ap = ap;
+	g_object_weak_ref ((GObject *) ap, _active_ap_set_weakref, d);
+	d->signal_id = g_signal_connect (ap,
+	                                 "notify::" NM_ACCESS_POINT_STRENGTH,
+	                                 G_CALLBACK (_active_ap_set_notify),
+	                                 d);
+
+out:
+	if (list0 != list) {
+		g_object_replace_data ((GObject *) applet, ACTIVE_AP_TAG,
+		                       list0, list,
+		                       _active_ap_set_destroy, NULL);
+	}
+}
+
+/*****************************************************************************/
+
 static void
 show_ignore_focus_stealing_prevention (GtkWidget *widget)
 {
@@ -1065,7 +1213,7 @@ access_point_added_cb (NMDeviceWifi *device,
 	                  "notify",
 	                  G_CALLBACK (notify_ap_prop_changed_cb),
 	                  applet);
-	
+
 	queue_avail_access_point_notification (NM_DEVICE (device));
 	applet_schedule_update_menu (applet);
 }
@@ -1081,9 +1229,9 @@ access_point_removed_cb (NMDeviceWifi *device,
 	/* If this AP was the active AP, make sure ACTIVE_AP_TAG gets cleared from
 	 * its device.
 	 */
-	old = g_object_get_data (G_OBJECT (device), ACTIVE_AP_TAG);
+	old = _active_ap_get (applet, (NMDevice *) device);
 	if (old == ap) {
-		g_object_set_data (G_OBJECT (device), ACTIVE_AP_TAG, NULL);
+		_active_ap_set (applet, (NMDevice *) device, NULL);
 		applet_schedule_update_icon (applet);
 		applet_schedule_update_menu (applet);
 	}
@@ -1163,16 +1311,10 @@ wifi_device_added (NMDevice *device, NMApplet *applet)
 		add_hash_to_ap (g_ptr_array_index (aps, i));
 }
 
-static void
-bssid_strength_changed (NMAccessPoint *ap, GParamSpec *pspec, gpointer user_data)
-{
-	applet_schedule_update_icon (NM_APPLET (user_data));
-}
-
 static NMAccessPoint *
 update_active_ap (NMDevice *device, NMDeviceState state, NMApplet *applet)
 {
-	NMAccessPoint *new = NULL, *old;
+	NMAccessPoint *new = NULL;
 
 	if (state == NM_DEVICE_STATE_PREPARE ||
 	    state == NM_DEVICE_STATE_CONFIG ||
@@ -1182,25 +1324,7 @@ update_active_ap (NMDevice *device, NMDeviceState state, NMApplet *applet)
 		new = nm_device_wifi_get_active_access_point (NM_DEVICE_WIFI (device));
 	}
 
-	old = g_object_get_data (G_OBJECT (device), ACTIVE_AP_TAG);
-	if (new && (new == old))
-		return new;   /* no change */
-
-	if (old) {
-		g_signal_handlers_disconnect_by_func (old, G_CALLBACK (bssid_strength_changed), applet);
-		g_object_set_data (G_OBJECT (device), ACTIVE_AP_TAG, NULL);
-	}
-
-	if (new) {
-		g_object_set_data (G_OBJECT (device), ACTIVE_AP_TAG, new);
-
-		/* monitor this AP's signal strength for updating the applet icon */
-		g_signal_connect (new,
-		                  "notify::" NM_ACCESS_POINT_STRENGTH,
-		                  G_CALLBACK (bssid_strength_changed),
-		                  applet);
-	}
-
+	_active_ap_set (applet, device, new);
 	return new;
 }
 
@@ -1227,7 +1351,7 @@ wifi_notify_connected (NMDevice *device,
 	char *ssid_msg;
 	const char *signal_strength_icon;
 
-	ap = g_object_get_data (G_OBJECT (device), ACTIVE_AP_TAG);
+	ap = _active_ap_get (applet, device);
 
 	esc_ssid = get_ssid_utf8 (ap);
 
@@ -1261,7 +1385,7 @@ wifi_get_icon (NMDevice *device,
 	g_return_if_fail (out_icon_name && !*out_icon_name);
 	g_return_if_fail (tip && !*tip);
 
-	ap = g_object_get_data (G_OBJECT (device), ACTIVE_AP_TAG);
+	ap = _active_ap_get (applet, device);
 
 	id = nm_device_get_iface (device);
 	if (connection) {
