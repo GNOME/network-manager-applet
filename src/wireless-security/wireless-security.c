@@ -68,7 +68,7 @@ wireless_security_validate (WirelessSecurity *sec, GError **error)
 
 	g_assert (sec->validate);
 	result = (*(sec->validate)) (sec, error);
-	if (!result && error && !error)
+	if (!result && error && !*error)
 		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Unknown error validating 802.1x security"));
 	return result;
 }
