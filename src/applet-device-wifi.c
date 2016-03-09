@@ -1126,6 +1126,8 @@ idle_check_avail_access_point_notification (gpointer datap)
 	gboolean have_unused_access_point = FALSE;
 	gboolean have_no_autoconnect_points = TRUE;
 
+	data->id = 0;
+
 	if (nm_client_get_state (data->applet->nm_client) != NM_STATE_DISCONNECTED)
 		return FALSE;
 
@@ -1252,8 +1254,7 @@ free_ap_notification_data (gpointer user_data)
 	struct ap_notification_data *data = user_data;
 	NMClient *client = data->applet->nm_client;
 
-	if (data->id)
-		g_source_remove (data->id);
+	nm_clear_g_source (&data->id);
 
 	if (client)
 		g_signal_handler_disconnect (client, data->new_con_id);
