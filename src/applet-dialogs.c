@@ -620,14 +620,20 @@ info_dialog_add_page (GtkNotebook *notebook,
 	row++;
 
 	ip4_config = nm_device_get_ip4_config (device);
-	addresses = nm_ip_config_get_addresses (ip4_config);
+	if (ip4_config) {
+		addresses = nm_ip_config_get_addresses (ip4_config);
+		gateway = nm_ip_config_get_gateway (ip4_config);
+	} else {
+		addresses = NULL;
+		gateway = NULL;
+	}
+
 	if (addresses && addresses->len > 0)
 		def_addr = (NMIPAddress *) g_ptr_array_index (addresses, 0);
 
 	display_ip4_info (def_addr, addresses, grid, &row);
 
 	/* Gateway */
-	gateway = nm_ip_config_get_gateway (ip4_config);
 	if (gateway && *gateway) {
 		desc_widget = create_info_label (_("Default Route:"), FALSE);
 		desc_object = gtk_widget_get_accessible (desc_widget);
@@ -667,13 +673,18 @@ info_dialog_add_page (GtkNotebook *notebook,
 	ip6_config = nm_device_get_ip6_config (device);
 	if (ip6_config) {
 		addresses = nm_ip_config_get_addresses (ip6_config);
-		if (addresses && addresses->len > 0)
-			def6_addr = (NMIPAddress *) g_ptr_array_index (addresses, 0);
+		gateway = nm_ip_config_get_gateway (ip6_config);
+	} else {
+		addresses = NULL;
+		gateway = NULL;
 	}
+
+	if (addresses && addresses->len > 0)
+		def6_addr = (NMIPAddress *) g_ptr_array_index (addresses, 0);
+
 	display_ip6_info (def6_addr, addresses, method, grid, &row);
 
 	/* Gateway */
-	gateway = nm_ip_config_get_gateway (ip6_config);
 	if (gateway && *gateway) {
 		desc_widget = create_info_label (_("Default Route:"), FALSE);
 		desc_object = gtk_widget_get_accessible (desc_widget);
