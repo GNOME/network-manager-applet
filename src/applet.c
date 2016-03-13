@@ -1482,8 +1482,8 @@ nma_menu_add_vpn_submenu (GtkWidget *menu, NMApplet *applet)
 		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), !!active);
 
 		g_object_set_data_full (G_OBJECT (item), "connection", 
-						    g_object_ref (connection),
-						    (GDestroyNotify) g_object_unref);
+		                        g_object_ref (connection),
+		                        (GDestroyNotify) g_object_unref);
 
 		g_signal_connect (item, "activate", G_CALLBACK (nma_menu_vpn_item_clicked), applet);
 		gtk_menu_shell_append (GTK_MENU_SHELL (vpn_menu), GTK_WIDGET (item));
@@ -1990,7 +1990,7 @@ applet_add_default_connection_item (NMDevice *device,
 {
 	AppletMenuItemInfo *info;
 	GtkWidget *item;
-	
+
 	item = gtk_check_menu_item_new_with_label (label);
 	gtk_widget_set_sensitive (GTK_WIDGET (item), sensitive);
 	gtk_check_menu_item_set_draw_as_radio (GTK_CHECK_MENU_ITEM (item), TRUE);
@@ -2455,7 +2455,7 @@ applet_common_get_device_icon (NMDeviceState state,
 		char *name = g_strdup_printf ("nm-stage%02d-connecting%02d", stage + 1, applet->animation_step + 1);
 
 		if (out_pixbuf)
-			*out_pixbuf = g_object_ref (nma_icon_check_and_load (name, applet));
+			*out_pixbuf = nm_g_object_ref (nma_icon_check_and_load (name, applet));
 		if (out_icon_name)
 			*out_icon_name = name;
 		else
@@ -2539,7 +2539,7 @@ applet_get_device_icon_for_state (NMApplet *applet,
 		dclass->get_icon (device, state, connection, out_pixbuf, &icon_name, out_tip, applet);
 
 		if (!*out_pixbuf && icon_name)
-			*out_pixbuf = g_object_ref (nma_icon_check_and_load (icon_name, applet));
+			*out_pixbuf = nm_g_object_ref (nma_icon_check_and_load (icon_name, applet));
 		*out_icon_name = g_strdup (icon_name);
 		if (!*out_tip)
 			*out_tip = get_tip_for_device_state (device, state, connection);
@@ -2952,9 +2952,7 @@ nma_icon_check_and_load (const char *name, NMApplet *applet)
 	if (!(icon = gtk_icon_theme_load_icon (applet->icon_theme, name, applet->icon_size, GTK_ICON_LOOKUP_FORCE_SIZE, &error))) {
 		g_warning ("failed to load icon \"%s\": %s", name, error->message);
 		g_clear_error (&error);
-
-		if (applet->fallback_icon)
-			icon = g_object_ref (applet->fallback_icon);
+		icon = nm_g_object_ref (applet->fallback_icon);
 	}
 
 	g_hash_table_insert (applet->icon_cache, g_strdup (name), icon);
@@ -2991,13 +2989,12 @@ nma_icons_reload (NMApplet *applet, gpointer user_data)
 	if (!gdk_pixbuf_loader_close (loader, &error))
 		goto error;
 
-	applet->fallback_icon = gdk_pixbuf_loader_get_pixbuf (loader);
-	g_return_if_fail (applet->fallback_icon);
-	g_object_ref (applet->fallback_icon);
+	applet->fallback_icon = nm_g_object_ref (gdk_pixbuf_loader_get_pixbuf (loader));
+	g_warn_if_fail (applet->fallback_icon);
 	return;
 
 error:
-	g_critical ("failed loading default-icon: %s", error->message);
+	g_warning ("failed loading default-icon: %s", error->message);
 	g_clear_error (&error);
 }
 

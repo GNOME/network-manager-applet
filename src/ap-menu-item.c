@@ -98,7 +98,8 @@ static void
 update_icon (NMNetworkMenuItem *item, NMApplet *applet)
 {
 	NMNetworkMenuItemPrivate *priv = NM_NETWORK_MENU_ITEM_GET_PRIVATE (item);
-	GdkPixbuf *icon, *scaled = NULL;
+	gs_unref_object GdkPixbuf *icon_free = NULL, *icon_free2 = NULL;
+	GdkPixbuf *icon;
 	const char *icon_name = NULL;
 
 	if (priv->is_adhoc)
@@ -106,23 +107,25 @@ update_icon (NMNetworkMenuItem *item, NMApplet *applet)
 	else
 		icon_name = mobile_helper_get_quality_icon_name (priv->int_strength);
 
-	icon = gdk_pixbuf_copy (nma_icon_check_and_load (icon_name, applet));
+	icon = nma_icon_check_and_load (icon_name, applet);
+	if (icon) {
+		if (priv->is_encrypted) {
+			GdkPixbuf *encrypted = nma_icon_check_and_load ("nm-secure-lock", applet);
 
-	if (priv->is_encrypted) {
-		GdkPixbuf *encrypted = nma_icon_check_and_load ("nm-secure-lock", applet);
+			if (encrypted) {
+				icon = icon_free = gdk_pixbuf_copy (icon);
 
-		gdk_pixbuf_composite (encrypted, icon, 0, 0,
-		                      gdk_pixbuf_get_width (encrypted),
-		                      gdk_pixbuf_get_height (encrypted),
-		                      0, 0, 1.0, 1.0,
-		                      GDK_INTERP_NEAREST, 255);
-	}
+				gdk_pixbuf_composite (encrypted, icon, 0, 0,
+				                      gdk_pixbuf_get_width (encrypted),
+				                      gdk_pixbuf_get_height (encrypted),
+				                      0, 0, 1.0, 1.0,
+				                      GDK_INTERP_NEAREST, 255);
+			}
+		}
 
-	/* Scale to menu size if larger so the menu doesn't look awful */
-	if (gdk_pixbuf_get_height (icon) > 24 || gdk_pixbuf_get_width (icon) > 24) {
-		scaled = gdk_pixbuf_scale_simple (icon, 24, 24, GDK_INTERP_BILINEAR);
-		g_object_unref (icon);
-		icon = scaled;
+		/* Scale to menu size if larger so the menu doesn't look awful */
+		if (gdk_pixbuf_get_height (icon) > 24 || gdk_pixbuf_get_width (icon) > 24)
+			icon = icon_free2 = gdk_pixbuf_scale_simple (icon, 24, 24, GDK_INTERP_BILINEAR);
 	}
 
 #ifdef ENABLE_INDICATOR
@@ -137,7 +140,6 @@ update_icon (NMNetworkMenuItem *item, NMApplet *applet)
 #else
 	gtk_image_set_from_pixbuf (GTK_IMAGE (priv->strength), icon);
 #endif
-	g_object_unref (icon);
 }
 
 void
