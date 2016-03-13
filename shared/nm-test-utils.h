@@ -110,23 +110,24 @@
 
 /* general purpose functions that have no dependency on other nmtst functions */
 
-inline static void
-nmtst_assert_error (GError *error,
-                    GQuark expect_error_domain,
-                    gint expect_error_code,
-                    const char *expect_error_pattern)
-{
-	if (expect_error_domain)
-		g_assert_error (error, expect_error_domain, expect_error_code);
-	else
-		g_assert (error);
-	g_assert (error->message);
-	if (   expect_error_pattern
-	    && !g_pattern_match_simple (expect_error_pattern, error->message)) {
-		g_error ("error message does not have expected pattern '%s'. Instead it is '%s' (%s, %d)",
-		         expect_error_pattern, error->message, g_quark_to_string (error->domain), error->code);
-	}
-}
+#define nmtst_assert_error(error, expect_error_domain, expect_error_code, expect_error_pattern) \
+	G_STMT_START { \
+		GError *_error = (error); \
+		GQuark _expect_error_domain = (expect_error_domain); \
+		const char *_expect_error_pattern = (expect_error_pattern); \
+		\
+		if (_expect_error_domain) \
+			g_assert_error (_error, _expect_error_domain, (expect_error_code)); \
+		else \
+			g_assert (_error); \
+		g_assert (_error->message); \
+		if (   _expect_error_pattern \
+		    && !g_pattern_match_simple (_expect_error_pattern, _error->message)) { \
+			g_error ("%s:%d: error message does not have expected pattern '%s'. Instead it is '%s' (%s, %d)", \
+			         __FILE__, __LINE__, \
+			         _expect_error_pattern, _error->message, g_quark_to_string (_error->domain), _error->code); \
+		} \
+	} G_STMT_END
 
 #define NMTST_WAIT(max_wait_ms, wait) \
 	({ \
@@ -154,7 +155,7 @@ inline static void
 _nmtst_assert_success (gboolean success, GError *error, const char *file, int line)
 {
 	if (!success || error)
-		g_error ("(%s:%d) FAILURE success=%d, error=%s", file, line, success, error && error->message ? error->message : "(no error)");
+		g_error ("(%s:%d) FAILURE success=%d, error=%s", file, line, success, error ? error->message : "(no error)");
 }
 #define nmtst_assert_success(success, error) _nmtst_assert_success ((success), (error), __FILE__, __LINE__)
 
@@ -852,6 +853,18 @@ nmtst_main_loop_run (GMainLoop *loop, int timeout_ms)
 	return loopx != NULL;
 }
 
+inline static void
+_nmtst_main_loop_quit_on_notify (GObject *object, GParamSpec *pspec, gpointer user_data)
+{
+	GMainLoop *loop = user_data;
+
+	g_assert (G_IS_OBJECT (object));
+	g_assert (loop);
+
+	g_main_loop_quit (loop);
+}
+#define nmtst_main_loop_quit_on_notify ((GCallback) _nmtst_main_loop_quit_on_notify)
+
 /*****************************************************************************/
 
 inline static const char *
@@ -1147,7 +1160,7 @@ nmtst_platform_ip6_address (const char *address, const char *peer_address, guint
 inline static NMPlatformIP6Address *
 nmtst_platform_ip6_address_full (const char *address, const char *peer_address, guint plen,
                                  int ifindex, NMIPConfigSource source, guint32 timestamp,
-                                 guint32 lifetime, guint32 preferred, guint flags)
+                                 guint32 lifetime, guint32 preferred, guint32 flags)
 {
 	NMPlatformIP6Address *addr = nmtst_platform_ip6_address (address, peer_address, plen);
 
@@ -1156,7 +1169,7 @@ nmtst_platform_ip6_address_full (const char *address, const char *peer_address, 
 	addr->timestamp = timestamp;
 	addr->lifetime = lifetime;
 	addr->preferred = preferred;
-	addr->flags = flags;
+	addr->n_ifa_flags = flags;
 
 	return addr;
 }
@@ -1772,6 +1785,34 @@ nmtst_create_connection_from_keyfile (const char *keyfile_str, const char *keyfi
 #endif
 
 #ifdef __NM_CONNECTION_H__
+
+#define nmtst_assert_variant_is_of_type(variant, type) \
+	G_STMT_START { \
+		GVariant *_variantx = (variant); \
+		\
+		g_assert (_variantx); \
+		g_assert (g_variant_is_of_type (_variantx, (type))); \
+	} G_STMT_END
+
+#define nmtst_assert_variant_uint32(variant, val) \
+	G_STMT_START { \
+		GVariant *_variant = (variant); \
+		\
+		nmtst_assert_variant_is_of_type (_variant, G_VARIANT_TYPE_UINT32); \
+		g_assert_cmpint (g_variant_get_uint32 (_variant), ==, (val)); \
+	} G_STMT_END
+
+#define nmtst_assert_variant_string(variant, str) \
+	G_STMT_START { \
+		gsize _l; \
+		GVariant *_variant = (variant); \
+		const char *_str = (str); \
+		\
+		nmtst_assert_variant_is_of_type (_variant, G_VARIANT_TYPE_STRING); \
+		g_assert (_str); \
+		g_assert_cmpstr (g_variant_get_string (_variant, &_l), ==, _str); \
+		g_assert_cmpint (_l, ==, strlen (_str)); \
+	} G_STMT_END
 
 typedef enum {
 	NMTST_VARIANT_EDITOR_CONNECTION,
