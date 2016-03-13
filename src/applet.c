@@ -2943,16 +2943,14 @@ nma_icon_check_and_load (const char *name, NMApplet *applet)
 	g_assert (applet != NULL);
 
 	/* icon already loaded successfully */
-	if ((icon = g_hash_table_lookup (applet->icon_cache, name)))
+	if (g_hash_table_lookup_extended (applet->icon_cache, name, NULL, (gpointer) &icon))
 		return icon;
 
 	/* Try to load the icon; if the load fails, log the problem, and set
 	 * the icon to the fallback icon if requested.
 	 */
 	if (!(icon = gtk_icon_theme_load_icon (applet->icon_theme, name, applet->icon_size, GTK_ICON_LOOKUP_FORCE_SIZE, &error))) {
-		g_warning ("Icon %s missing: %s",
-		           name,
-		           error->message);
+		g_warning ("failed to load icon \"%s\": %s", name, error->message);
 		g_clear_error (&error);
 
 		if (applet->fallback_icon)
@@ -3252,7 +3250,7 @@ applet_startup (GApplication *app, gpointer user_data)
 	applet->icon_cache = g_hash_table_new_full (g_str_hash,
 	                                            g_str_equal,
 	                                            g_free,
-	                                            g_object_unref);
+	                                            nm_g_object_unref);
 	nma_icons_init (applet);
 
 	if (!notify_is_initted ())
