@@ -3029,6 +3029,8 @@ static void nma_icons_init (NMApplet *applet)
 	}
 
 	g_signal_connect (applet->icon_theme, "changed", G_CALLBACK (nma_icons_reload), applet);
+
+	nma_icons_reload (applet, NULL);
 }
 
 #ifndef ENABLE_INDICATOR
@@ -3038,7 +3040,6 @@ status_icon_screen_changed_cb (GtkStatusIcon *icon,
                                NMApplet *applet)
 {
 	nma_icons_init (applet);
-	nma_icons_reload (applet, NULL);
 }
 
 static gboolean
