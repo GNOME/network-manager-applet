@@ -2977,6 +2977,9 @@ nma_icons_reload (NMApplet *applet, gpointer user_data)
 	g_hash_table_remove_all (applet->icon_cache);
 	nma_icons_free (applet);
 
+	if (applet->fallback_icon)
+		return;
+
 	loader = gdk_pixbuf_loader_new_with_type ("png", &error);
 	if (!loader)
 		goto error;
@@ -2990,14 +2993,13 @@ nma_icons_reload (NMApplet *applet, gpointer user_data)
 	if (!gdk_pixbuf_loader_close (loader, &error))
 		goto error;
 
-	g_clear_object (&applet->fallback_icon);
 	applet->fallback_icon = gdk_pixbuf_loader_get_pixbuf (loader);
 	g_return_if_fail (applet->fallback_icon);
 	g_object_ref (applet->fallback_icon);
 	return;
 
 error:
-	g_critical ("Failed loading default-icon: %s", error->message);
+	g_critical ("failed loading default-icon: %s", error->message);
 	g_clear_error (&error);
 }
 
