@@ -31,7 +31,7 @@
 
 #include <libnotify/notify.h>
 
-#ifdef ENABLE_INDICATOR
+#ifdef WITH_APPINDICATOR
 #include <libappindicator/app-indicator.h>
 #endif
 
@@ -117,15 +117,15 @@ typedef struct {
 	GdkPixbuf *		icon_layers[ICON_LAYER_MAX + 1];
 
 	/* Direct UI elements */
-#ifdef ENABLE_INDICATOR
+#ifdef WITH_APPINDICATOR
 	AppIndicator *  app_indicator;
+#endif
 	guint           update_menu_id;
-#else
+
 	GtkStatusIcon * status_icon;
 
 	GtkWidget *		menu;
 	GtkWidget *		context_menu;
-#endif
 
 	GtkWidget *		notifications_enabled_item;
 	guint			notifications_enabled_toggled_id;

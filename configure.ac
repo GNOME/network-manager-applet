@@ -105,7 +105,7 @@ AC_ARG_WITH([appindicator], AS_HELP_STRING([--with-appindicator|--without-appind
 if test "$with_appindicator" == "yes"; then
 	PKG_CHECK_MODULES(APPINDICATOR, appindicator3-0.1)
 	PKG_CHECK_MODULES(DBUSMENU, dbusmenu-gtk3-0.4 >= 16.04.0)
-	AC_DEFINE([ENABLE_INDICATOR], 1, [Enable using libappindicator])
+	AC_DEFINE([WITH_APPINDICATOR], 1, [Enable using libappindicator])
 fi
 
 AM_CONDITIONAL(HAVE_GBT, test x"$have_gbt" = "xyes")
