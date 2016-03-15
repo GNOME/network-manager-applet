@@ -54,6 +54,7 @@
 
 extern gboolean shell_debug;
 extern gboolean with_agent;
+extern gboolean with_appindicator;
 
 #ifdef WITH_APPINDICATOR
 #define INDICATOR_ENABLED(a) ((a)->app_indicator)
@@ -3094,13 +3095,15 @@ static gboolean
 setup_widgets (NMApplet *applet)
 {
 #ifdef WITH_APPINDICATOR
-	applet->app_indicator = app_indicator_new
-				("nm-applet", "nm-no-connection",
-				 APP_INDICATOR_CATEGORY_SYSTEM_SERVICES);
-	if (!applet->app_indicator)
-		return FALSE;
-	app_indicator_set_title(applet->app_indicator, _("Network"));
-	applet_schedule_update_menu (applet);
+	if (with_appindicator) {
+		applet->app_indicator = app_indicator_new ("nm-applet",
+		                                           "nm-no-connection",
+		                                           APP_INDICATOR_CATEGORY_SYSTEM_SERVICES);
+		if (!applet->app_indicator)
+			return FALSE;
+		app_indicator_set_title(applet->app_indicator, _("Network"));
+		applet_schedule_update_menu (applet);
+	}
 #endif  /* WITH_APPINDICATOR */
 
 	/* Fall back to status icon if indicator isn't enabled or built */
