@@ -55,6 +55,12 @@
 extern gboolean shell_debug;
 extern gboolean with_agent;
 
+#ifdef ENABLE_INDICATOR
+#define INDICATOR_ENABLED(a) ((a)->app_indicator != NULL)
+#else
+#define INDICATOR_ENABLED(a) (FALSE)
+#endif
+
 G_DEFINE_TYPE (NMApplet, nma, G_TYPE_APPLICATION)
 
 /********************************************************************/
@@ -1541,7 +1547,6 @@ nma_set_networking_enabled_cb (GtkWidget *widget, NMApplet *applet)
 }
 
 
-#ifndef ENABLE_INDICATOR
 static void
 nma_set_notifications_enabled_cb (GtkWidget *widget, NMApplet *applet)
 {
@@ -1564,7 +1569,6 @@ nma_set_notifications_enabled_cb (GtkWidget *widget, NMApplet *applet)
 	                        PREF_SUPPRESS_WIFI_NETWORKS_AVAILABLE,
 	                        !state);
 }
-#endif /* ENABLE_INDICATOR */
 
 static gboolean
 has_usable_wifi (NMApplet *applet)
@@ -1678,9 +1682,7 @@ nma_context_menu_update (NMApplet *applet)
 	gboolean have_wwan = FALSE;
 	gboolean wifi_hw_enabled;
 	gboolean wwan_hw_enabled;
-#ifndef ENABLE_INDICATOR
 	gboolean notifications_enabled = TRUE;
-#endif
 	gboolean sensitive = FALSE;
 
 	state = nm_client_get_state (applet->nm_client);
@@ -1728,19 +1730,19 @@ nma_context_menu_update (NMApplet *applet)
 	gtk_widget_set_sensitive (GTK_WIDGET (applet->wwan_enabled_item),
 	                          wwan_hw_enabled && is_permission_yes (applet, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WWAN));
 
-#ifndef ENABLE_INDICATOR
-	/* Enabled notifications */
-	g_signal_handler_block (G_OBJECT (applet->notifications_enabled_item),
-	                        applet->notifications_enabled_toggled_id);
-	if (   g_settings_get_boolean (applet->gsettings, PREF_DISABLE_CONNECTED_NOTIFICATIONS)
-	    && g_settings_get_boolean (applet->gsettings, PREF_DISABLE_DISCONNECTED_NOTIFICATIONS)
-	    && g_settings_get_boolean (applet->gsettings, PREF_DISABLE_VPN_NOTIFICATIONS)
-	    && g_settings_get_boolean (applet->gsettings, PREF_SUPPRESS_WIFI_NETWORKS_AVAILABLE))
-		notifications_enabled = FALSE;
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->notifications_enabled_item), notifications_enabled);
-	g_signal_handler_unblock (G_OBJECT (applet->notifications_enabled_item),
-	                          applet->notifications_enabled_toggled_id);
-#endif
+	if (!INDICATOR_ENABLED (applet)) {
+		/* Enabled notifications */
+		g_signal_handler_block (G_OBJECT (applet->notifications_enabled_item),
+			                    applet->notifications_enabled_toggled_id);
+		if (   g_settings_get_boolean (applet->gsettings, PREF_DISABLE_CONNECTED_NOTIFICATIONS)
+			&& g_settings_get_boolean (applet->gsettings, PREF_DISABLE_DISCONNECTED_NOTIFICATIONS)
+			&& g_settings_get_boolean (applet->gsettings, PREF_DISABLE_VPN_NOTIFICATIONS)
+			&& g_settings_get_boolean (applet->gsettings, PREF_SUPPRESS_WIFI_NETWORKS_AVAILABLE))
+			notifications_enabled = FALSE;
+		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->notifications_enabled_item), notifications_enabled);
+		g_signal_handler_unblock (G_OBJECT (applet->notifications_enabled_item),
+			                      applet->notifications_enabled_toggled_id);
+	}
 
 	/* Don't show wifi-specific stuff if wifi is off */
 	if (state != NM_STATE_ASLEEP) {
@@ -1854,18 +1856,18 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 
 	nma_menu_add_separator_item (GTK_WIDGET (menu));
 
-#ifndef ENABLE_INDICATOR
-	/* Toggle notifications item */
-	applet->notifications_enabled_item = gtk_check_menu_item_new_with_mnemonic (_("Enable N_otifications"));
-	id = g_signal_connect (applet->notifications_enabled_item,
-	                       "toggled",
-	                       G_CALLBACK (nma_set_notifications_enabled_cb),
-	                       applet);
-	applet->notifications_enabled_toggled_id = id;
-	gtk_menu_shell_append (menu, applet->notifications_enabled_item);
+	if (!INDICATOR_ENABLED (applet)) {
+		/* Toggle notifications item */
+		applet->notifications_enabled_item = gtk_check_menu_item_new_with_mnemonic (_("Enable N_otifications"));
+		id = g_signal_connect (applet->notifications_enabled_item,
+			                   "toggled",
+			                   G_CALLBACK (nma_set_notifications_enabled_cb),
+			                   applet);
+		applet->notifications_enabled_toggled_id = id;
+		gtk_menu_shell_append (menu, applet->notifications_enabled_item);
 
-	nma_menu_add_separator_item (GTK_WIDGET (menu));
-#endif
+		nma_menu_add_separator_item (GTK_WIDGET (menu));
+	}
 
 	/* 'Connection Information' item */
 	applet->info_menu_item = gtk_menu_item_new_with_mnemonic (_("Connection _Information"));
@@ -1886,8 +1888,7 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 	/* Separator */
 	nma_menu_add_separator_item (GTK_WIDGET (menu));
 
-#ifndef ENABLE_INDICATOR
-	{
+	if (!INDICATOR_ENABLED (applet)) {
 		/* About item */
 		GtkWidget *menu_item;
 
@@ -1895,7 +1896,6 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 		g_signal_connect_swapped (menu_item, "activate", G_CALLBACK (applet_about_dialog_show), applet);
 		gtk_menu_shell_append (menu, menu_item);
 	}
-#endif
 
 	gtk_widget_show_all (GTK_WIDGET (menu));
 

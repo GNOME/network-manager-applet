@@ -125,10 +125,10 @@ typedef struct {
 
 	GtkWidget *		menu;
 	GtkWidget *		context_menu;
+#endif
 
 	GtkWidget *		notifications_enabled_item;
 	guint			notifications_enabled_toggled_id;
-#endif
 
 	GtkWidget *		networking_enabled_item;
 	guint           networking_enabled_toggled_id;
