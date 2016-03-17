@@ -493,32 +493,30 @@ applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
                                                NMApplet *applet,
                                                const gchar *label)
 {
-	GtkWidget *menu_item;
+	GtkWidget *menu_item, *box, *xlabel;
 
 	if (INDICATOR_ENABLED (applet)) {
 		/* Indicator doesn't draw complex separators */
-		menu_item = gtk_separator_menu_item_new ();
-	} else {
-		GtkWidget *box, *xlabel;
+		return;
+	}
 
-		menu_item = gtk_menu_item_new ();
-		box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	menu_item = gtk_menu_item_new ();
+	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 
-		if (label) {
-			xlabel = gtk_label_new (NULL);
-			gtk_label_set_markup (GTK_LABEL (xlabel), label);
-
-			gtk_box_pack_start (GTK_BOX (box), gtk_separator_new (GTK_ORIENTATION_HORIZONTAL), TRUE, TRUE, 0);
-			gtk_box_pack_start (GTK_BOX (box), xlabel, FALSE, FALSE, 2);
-		}
+	if (label) {
+		xlabel = gtk_label_new (NULL);
+		gtk_label_set_markup (GTK_LABEL (xlabel), label);
 
 		gtk_box_pack_start (GTK_BOX (box), gtk_separator_new (GTK_ORIENTATION_HORIZONTAL), TRUE, TRUE, 0);
-
-		g_object_set (G_OBJECT (menu_item),
-			          "child", box,
-			          "sensitive", FALSE,
-			          NULL);
+		gtk_box_pack_start (GTK_BOX (box), xlabel, FALSE, FALSE, 2);
 	}
+
+	gtk_box_pack_start (GTK_BOX (box), gtk_separator_new (GTK_ORIENTATION_HORIZONTAL), TRUE, TRUE, 0);
+
+	g_object_set (G_OBJECT (menu_item),
+		          "child", box,
+		          "sensitive", FALSE,
+		          NULL);
 
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 }
@@ -1363,6 +1361,9 @@ add_device_items (NMDeviceType type, const GPtrArray *all_devices,
 		dclass->add_menu_item (device, n_devices > 1, connections, active, menu, applet);
 
 		g_ptr_array_unref (connections);
+
+		if (INDICATOR_ENABLED (applet))
+			gtk_menu_shell_append (GTK_MENU_SHELL (menu), gtk_separator_menu_item_new ());
 	}
 
 	g_slist_free (devices);
@@ -1956,6 +1957,7 @@ applet_add_connection_items (NMDevice *device,
 
 		item = applet_new_menu_item_helper (connection, active, (flag & NMA_ADD_ACTIVE));
 		gtk_widget_set_sensitive (item, sensitive);
+		gtk_widget_show_all (item);
 
 		info = g_slice_new0 (AppletMenuItemInfo);
 		info->applet = applet;
