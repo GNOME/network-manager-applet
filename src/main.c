@@ -31,19 +31,18 @@
 
 gboolean shell_debug = FALSE;
 gboolean with_agent = TRUE;
+gboolean with_appindicator = FALSE;
 
 static void
 usage (const char *progname)
 {
-	char *foo;
+	gs_free char *basename = g_path_get_basename (progname);
 
-	foo = g_path_get_basename (progname);
 	fprintf (stdout, "%s %s\n\n%s\n%s\n\n",
 	                 _("Usage:"),
-	                 foo,
+	                 basename,
 	                 _("This program is a component of NetworkManager (https://wiki.gnome.org/Projects/NetworkManager/)."),
 	                 _("It is not intended for command-line interaction but instead runs in the GNOME desktop environment."));
-	g_free (foo);
 }
 
 int main (int argc, char *argv[])
@@ -60,8 +59,15 @@ int main (int argc, char *argv[])
 		}
 		if (!strcmp (argv[i], "--shell-debug"))
 			shell_debug = TRUE;
-		if (!strcmp (argv[i], "--no-agent"))
+		else if (!strcmp (argv[i], "--no-agent"))
 			with_agent = FALSE;
+		else if (!strcmp (argv[i], "--indicator")) {
+#ifdef WITH_APPINDICATOR
+			with_appindicator = TRUE;
+#else
+			g_error ("Error: --indicator requested but indicator support not available");
+#endif
+		}
 	}
 
 	bindtextdomain (GETTEXT_PACKAGE, NMALOCALEDIR);

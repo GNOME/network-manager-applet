@@ -54,6 +54,13 @@
 
 extern gboolean shell_debug;
 extern gboolean with_agent;
+extern gboolean with_appindicator;
+
+#ifdef WITH_APPINDICATOR
+#define INDICATOR_ENABLED(a) ((a)->app_indicator)
+#else
+#define INDICATOR_ENABLED(a) (FALSE)
+#endif  /* WITH_APPINDICATOR */
 
 G_DEFINE_TYPE (NMApplet, nma, G_TYPE_APPLICATION)
 
@@ -484,14 +491,17 @@ applet_menu_item_activate_helper (NMDevice *device,
 void
 applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
                                                NMApplet *applet,
-                                               const gchar* label)
+                                               const gchar *label)
 {
-#ifdef ENABLE_INDICATOR
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), gtk_separator_menu_item_new ());
-#else
-	GtkWidget *menu_item = gtk_image_menu_item_new ();
-	GtkWidget *box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	GtkWidget *xlabel = NULL;
+	GtkWidget *menu_item, *box, *xlabel;
+
+	if (INDICATOR_ENABLED (applet)) {
+		/* Indicator doesn't draw complex separators */
+		return;
+	}
+
+	menu_item = gtk_menu_item_new ();
+	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 
 	if (label) {
 		xlabel = gtk_label_new (NULL);
@@ -504,11 +514,11 @@ applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
 	gtk_box_pack_start (GTK_BOX (box), gtk_separator_new (GTK_ORIENTATION_HORIZONTAL), TRUE, TRUE, 0);
 
 	g_object_set (G_OBJECT (menu_item),
-	              "child", box,
-	              "sensitive", FALSE,
-	              NULL);
+		          "child", box,
+		          "sensitive", FALSE,
+		          NULL);
+
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
-#endif
 }
 
 GtkWidget *
@@ -516,9 +526,8 @@ applet_new_menu_item_helper (NMConnection *connection,
                              NMConnection *active,
                              gboolean add_active)
 {
-	GtkWidget *item = gtk_image_menu_item_new_with_label ("");
+	GtkWidget *item = gtk_menu_item_new_with_label ("");
 
-#ifndef ENABLE_INDICATOR
 	if (add_active && (active == connection)) {
 		char *markup;
 		GtkWidget *label;
@@ -530,14 +539,11 @@ applet_new_menu_item_helper (NMConnection *connection,
 		gtk_label_set_markup (GTK_LABEL (label), markup);
 		g_free (markup);
 	} else
-#endif
 		gtk_menu_item_set_label (GTK_MENU_ITEM (item), nm_connection_get_id (connection));
 
-	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (item), TRUE);
 	return item;
 }
 
-#ifndef ENABLE_INDICATOR
 #define TITLE_TEXT_R ((double) 0x5e / 255.0 )
 #define TITLE_TEXT_G ((double) 0x5e / 255.0 )
 #define TITLE_TEXT_B ((double) 0x5e / 255.0 )
@@ -601,7 +607,6 @@ menu_title_item_draw (GtkWidget *widget, cairo_t *cr, gpointer user_data)
 	menu_item_draw_generic (widget, cr);
 	return TRUE;
 }
-#endif /* ENABLE_INDICATOR */
 
 GtkWidget *
 applet_menu_item_create_device_item_helper (NMDevice *device,
@@ -612,9 +617,8 @@ applet_menu_item_create_device_item_helper (NMDevice *device,
 
 	item = gtk_menu_item_new_with_label (text);
 	gtk_widget_set_sensitive (item, FALSE);
-#ifndef ENABLE_INDICATOR
-	g_signal_connect (item, "draw", G_CALLBACK (menu_title_item_draw), NULL);
-#endif
+	if (!INDICATOR_ENABLED (applet))
+		g_signal_connect (item, "draw", G_CALLBACK (menu_title_item_draw), NULL);
 	return item;
 }
 
@@ -672,13 +676,15 @@ applet_do_notify (NMApplet *applet,
 	g_return_if_fail (summary != NULL);
 	g_return_if_fail (message != NULL);
 
-#ifdef ENABLE_INDICATOR
-	if (app_indicator_get_status (applet->app_indicator) == APP_INDICATOR_STATUS_PASSIVE)
-		return;
-#else
-	if (!gtk_status_icon_is_embedded (applet->status_icon))
-		return;
-#endif
+	if (INDICATOR_ENABLED (applet)) {
+#ifdef WITH_APPINDICATOR
+		if (app_indicator_get_status (applet->app_indicator) == APP_INDICATOR_STATUS_PASSIVE)
+			return;
+#endif  /* WITH_APPINDICATOR */
+	} else {
+		if (!gtk_status_icon_is_embedded (applet->status_icon))
+			return;
+	}
 
 	/* if we're not acting as a secret agent, don't notify either */
 	if (!applet->agent)
@@ -1001,9 +1007,7 @@ activate_vpn_cb (GObject *client,
 	g_free (info);
 }
 
-#ifdef ENABLE_INDICATOR
 static void nma_menu_disconnect_vpn_item_activate (GtkMenuItem *item, gpointer user_data);
-#endif
 
 static void
 nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
@@ -1027,9 +1031,9 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 	}
 
 	if (applet_get_active_for_connection (applet, connection)) {
-#ifdef ENABLE_INDICATOR
-		nma_menu_disconnect_vpn_item_activate (item, applet);
-#endif
+		if (INDICATOR_ENABLED (applet))
+			nma_menu_disconnect_vpn_item_activate (item, applet);
+
 		/* Connection already active; do nothing */
 		return;
 	}
@@ -1357,6 +1361,9 @@ add_device_items (NMDeviceType type, const GPtrArray *all_devices,
 		dclass->add_menu_item (device, n_devices > 1, connections, active, menu, applet);
 
 		g_ptr_array_unref (connections);
+
+		if (INDICATOR_ENABLED (applet))
+			gtk_menu_shell_append (GTK_MENU_SHELL (menu), gtk_separator_menu_item_new ());
 	}
 
 	g_slist_free (devices);
@@ -1544,7 +1551,6 @@ nma_set_networking_enabled_cb (GtkWidget *widget, NMApplet *applet)
 }
 
 
-#ifndef ENABLE_INDICATOR
 static void
 nma_set_notifications_enabled_cb (GtkWidget *widget, NMApplet *applet)
 {
@@ -1567,7 +1573,6 @@ nma_set_notifications_enabled_cb (GtkWidget *widget, NMApplet *applet)
 	                        PREF_SUPPRESS_WIFI_NETWORKS_AVAILABLE,
 	                        !state);
 }
-#endif /* ENABLE_INDICATOR */
 
 static gboolean
 has_usable_wifi (NMApplet *applet)
@@ -1604,9 +1609,8 @@ static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 	g_return_if_fail (menu != NULL);
 	g_return_if_fail (applet != NULL);
 
-#ifndef ENABLE_INDICATOR
-	gtk_status_icon_set_tooltip_text (applet->status_icon, NULL);
-#endif
+	if (applet->status_icon)
+		gtk_status_icon_set_tooltip_text (applet->status_icon, NULL);
 
 	if (!nm_client_get_nm_running (applet->nm_client)) {
 		nma_menu_add_text_item (menu, _("NetworkManager is not running..."));
@@ -1628,14 +1632,12 @@ static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 		nma_menu_add_create_network_item (menu, applet);
 	}
 
-#ifndef ENABLE_INDICATOR
-	gtk_widget_show_all (menu);
-#endif
+	if (!INDICATOR_ENABLED (applet))
+		gtk_widget_show_all (menu);
 
 //	nmi_dbus_signal_user_interface_activated (applet->connection);
 }
 
-#ifndef ENABLE_INDICATOR
 static gboolean
 destroy_old_menu (gpointer user_data)
 {
@@ -1657,7 +1659,6 @@ nma_menu_deactivate_cb (GtkWidget *widget, NMApplet *applet)
 	/* Re-set the tooltip */
 	gtk_status_icon_set_tooltip_text (applet->status_icon, applet->tip);
 }
-#endif
 
 static gboolean
 is_permission_yes (NMApplet *applet, NMClientPermission perm)
@@ -1681,9 +1682,7 @@ nma_context_menu_update (NMApplet *applet)
 	gboolean have_wwan = FALSE;
 	gboolean wifi_hw_enabled;
 	gboolean wwan_hw_enabled;
-#ifndef ENABLE_INDICATOR
 	gboolean notifications_enabled = TRUE;
-#endif
 	gboolean sensitive = FALSE;
 
 	state = nm_client_get_state (applet->nm_client);
@@ -1731,19 +1730,19 @@ nma_context_menu_update (NMApplet *applet)
 	gtk_widget_set_sensitive (GTK_WIDGET (applet->wwan_enabled_item),
 	                          wwan_hw_enabled && is_permission_yes (applet, NM_CLIENT_PERMISSION_ENABLE_DISABLE_WWAN));
 
-#ifndef ENABLE_INDICATOR
-	/* Enabled notifications */
-	g_signal_handler_block (G_OBJECT (applet->notifications_enabled_item),
-	                        applet->notifications_enabled_toggled_id);
-	if (   g_settings_get_boolean (applet->gsettings, PREF_DISABLE_CONNECTED_NOTIFICATIONS)
-	    && g_settings_get_boolean (applet->gsettings, PREF_DISABLE_DISCONNECTED_NOTIFICATIONS)
-	    && g_settings_get_boolean (applet->gsettings, PREF_DISABLE_VPN_NOTIFICATIONS)
-	    && g_settings_get_boolean (applet->gsettings, PREF_SUPPRESS_WIFI_NETWORKS_AVAILABLE))
-		notifications_enabled = FALSE;
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->notifications_enabled_item), notifications_enabled);
-	g_signal_handler_unblock (G_OBJECT (applet->notifications_enabled_item),
-	                          applet->notifications_enabled_toggled_id);
-#endif
+	if (!INDICATOR_ENABLED (applet)) {
+		/* Enabled notifications */
+		g_signal_handler_block (G_OBJECT (applet->notifications_enabled_item),
+			                    applet->notifications_enabled_toggled_id);
+		if (   g_settings_get_boolean (applet->gsettings, PREF_DISABLE_CONNECTED_NOTIFICATIONS)
+			&& g_settings_get_boolean (applet->gsettings, PREF_DISABLE_DISCONNECTED_NOTIFICATIONS)
+			&& g_settings_get_boolean (applet->gsettings, PREF_DISABLE_VPN_NOTIFICATIONS)
+			&& g_settings_get_boolean (applet->gsettings, PREF_SUPPRESS_WIFI_NETWORKS_AVAILABLE))
+			notifications_enabled = FALSE;
+		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (applet->notifications_enabled_item), notifications_enabled);
+		g_signal_handler_unblock (G_OBJECT (applet->notifications_enabled_item),
+			                      applet->notifications_enabled_toggled_id);
+	}
 
 	/* Don't show wifi-specific stuff if wifi is off */
 	if (state != NM_STATE_ASLEEP) {
@@ -1812,15 +1811,21 @@ applet_connection_info_cb (NMApplet *applet)
 static GtkWidget *nma_context_menu_create (NMApplet *applet)
 {
 	GtkMenuShell *menu;
-#ifndef ENABLE_INDICATOR
-	GtkWidget *menu_item;
-#endif
-	GtkWidget *image;
 	guint id;
+	static gboolean icons_shown = FALSE;
 
 	g_return_val_if_fail (applet != NULL, NULL);
 
 	menu = GTK_MENU_SHELL (gtk_menu_new ());
+
+	if (G_UNLIKELY (icons_shown == FALSE)) {
+		GtkSettings *settings = gtk_widget_get_settings (GTK_WIDGET (menu));
+
+		/* We always want our icons displayed */
+		if (settings)
+			g_object_set (G_OBJECT (settings), "gtk-menu-images", TRUE, NULL);
+		icons_shown = TRUE;
+	}
 
 	/* 'Enable Networking' item */
 	applet->networking_enabled_item = gtk_check_menu_item_new_with_mnemonic (_("Enable _Networking"));
@@ -1851,60 +1856,46 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 
 	nma_menu_add_separator_item (GTK_WIDGET (menu));
 
-#ifndef ENABLE_INDICATOR
-	/* Toggle notifications item */
-	applet->notifications_enabled_item = gtk_check_menu_item_new_with_mnemonic (_("Enable N_otifications"));
-	id = g_signal_connect (applet->notifications_enabled_item,
-	                       "toggled",
-	                       G_CALLBACK (nma_set_notifications_enabled_cb),
-	                       applet);
-	applet->notifications_enabled_toggled_id = id;
-	gtk_menu_shell_append (menu, applet->notifications_enabled_item);
+	if (!INDICATOR_ENABLED (applet)) {
+		/* Toggle notifications item */
+		applet->notifications_enabled_item = gtk_check_menu_item_new_with_mnemonic (_("Enable N_otifications"));
+		id = g_signal_connect (applet->notifications_enabled_item,
+			                   "toggled",
+			                   G_CALLBACK (nma_set_notifications_enabled_cb),
+			                   applet);
+		applet->notifications_enabled_toggled_id = id;
+		gtk_menu_shell_append (menu, applet->notifications_enabled_item);
 
-	nma_menu_add_separator_item (GTK_WIDGET (menu));
-#endif
+		nma_menu_add_separator_item (GTK_WIDGET (menu));
+	}
 
 	/* 'Connection Information' item */
-	applet->info_menu_item = gtk_image_menu_item_new_with_mnemonic (_("Connection _Information"));
+	applet->info_menu_item = gtk_menu_item_new_with_mnemonic (_("Connection _Information"));
 	g_signal_connect_swapped (applet->info_menu_item,
 	                          "activate",
 	                          G_CALLBACK (applet_connection_info_cb),
 	                          applet);
-	image = gtk_image_new_from_stock (GTK_STOCK_INFO, GTK_ICON_SIZE_MENU);
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (applet->info_menu_item), image);
 	gtk_menu_shell_append (menu, applet->info_menu_item);
 
 	/* 'Edit Connections...' item */
-	applet->connections_menu_item = gtk_image_menu_item_new_with_mnemonic (_("Edit Connections..."));
+	applet->connections_menu_item = gtk_menu_item_new_with_mnemonic (_("Edit Connections..."));
 	g_signal_connect (applet->connections_menu_item,
 				   "activate",
 				   G_CALLBACK (nma_edit_connections_cb),
 				   applet);
-	image = gtk_image_new_from_stock (GTK_STOCK_EDIT, GTK_ICON_SIZE_MENU);
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (applet->connections_menu_item), image);
 	gtk_menu_shell_append (menu, applet->connections_menu_item);
 
 	/* Separator */
 	nma_menu_add_separator_item (GTK_WIDGET (menu));
 
-#ifndef ENABLE_INDICATOR
-#if 0	/* FIXME: Implement the help callback, nma_help_cb()! */
-	/* Help item */
-	menu_item = gtk_image_menu_item_new_with_mnemonic (_("_Help"));
-	g_signal_connect (menu_item, "activate", G_CALLBACK (nma_help_cb), applet);
-	image = gtk_image_new_from_stock (GTK_STOCK_HELP, GTK_ICON_SIZE_MENU);
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item), image);
-	gtk_menu_shell_append (menu, menu_item);
-	gtk_widget_set_sensitive (menu_item, FALSE);
-#endif
+	if (!INDICATOR_ENABLED (applet)) {
+		/* About item */
+		GtkWidget *menu_item;
 
-	/* About item */
-	menu_item = gtk_image_menu_item_new_with_mnemonic (_("_About"));
-	g_signal_connect_swapped (menu_item, "activate", G_CALLBACK (applet_about_dialog_show), applet);
-	image = gtk_image_new_from_stock (GTK_STOCK_ABOUT, GTK_ICON_SIZE_MENU);
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item), image);
-	gtk_menu_shell_append (menu, menu_item);
-#endif
+		menu_item = gtk_menu_item_new_with_mnemonic (_("_About"));
+		g_signal_connect_swapped (menu_item, "activate", G_CALLBACK (applet_about_dialog_show), applet);
+		gtk_menu_shell_append (menu, menu_item);
+	}
 
 	gtk_widget_show_all (GTK_WIDGET (menu));
 
@@ -1966,6 +1957,7 @@ applet_add_connection_items (NMDevice *device,
 
 		item = applet_new_menu_item_helper (connection, active, (flag & NMA_ADD_ACTIVE));
 		gtk_widget_set_sensitive (item, sensitive);
+		gtk_widget_show_all (item);
 
 		info = g_slice_new0 (AppletMenuItemInfo);
 		info->applet = applet;
@@ -2007,31 +1999,32 @@ applet_add_default_connection_item (NMDevice *device,
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 }
 
-#ifdef ENABLE_INDICATOR
 static gboolean
 applet_update_indicator_menu (gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
-	GtkWidget *menu = nma_context_menu_create (applet);
+#ifdef WITH_APPINDICATOR
+	GtkWidget *menu;
 
+	menu = nma_context_menu_create (applet);
 	nma_menu_show_cb (menu, applet);
 	nma_menu_add_separator_item (menu);
 	nma_context_menu_update (applet);
 
 	app_indicator_set_menu (applet->app_indicator, GTK_MENU (menu));
+#endif /* WITH_APPINDICATOR */
 
 	applet->update_menu_id = 0;
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
-#endif /* ENABLE_INDICATOR */
 
 void
 applet_schedule_update_menu (NMApplet *applet)
 {
-#ifdef ENABLE_INDICATOR
-	if (!applet->update_menu_id)
-		applet->update_menu_id = g_idle_add (applet_update_indicator_menu, applet);
-#endif
+	if (INDICATOR_ENABLED (applet)) {
+		if (!applet->update_menu_id)
+			applet->update_menu_id = g_idle_add (applet_update_indicator_menu, applet);
+	}
 }
 
 /*****************************************************************************/
@@ -2039,22 +2032,24 @@ applet_schedule_update_menu (NMApplet *applet)
 static void
 foo_set_icon (NMApplet *applet, guint32 layer, GdkPixbuf *pixbuf, const char *icon_name)
 {
-#ifndef ENABLE_INDICATOR
 	gs_unref_object GdkPixbuf *pixbuf_free = NULL;
-#endif
 
 	g_return_if_fail (layer == ICON_LAYER_LINK || layer == ICON_LAYER_VPN);
 
-#ifdef ENABLE_INDICATOR
-	/* FIXME: We rely on the fact that VPN icon gets drawn later and therefore
-	 * wins but we cannot currently set a combined pixmap made of both the link
-	 * icon and the VPN icon.
-	 */
-	if (icon_name == NULL && layer == ICON_LAYER_LINK)
-		icon_name = "nm-no-connection";
-	if (icon_name != NULL && g_strcmp0 (app_indicator_get_icon (applet->app_indicator), icon_name) != 0)
-		app_indicator_set_icon_full (applet->app_indicator, icon_name, applet->tip);
-#else
+#ifdef WITH_APPINDICATOR
+	if (INDICATOR_ENABLED (applet)) {
+		/* FIXME: We rely on the fact that VPN icon gets drawn later and therefore
+		 * wins but we cannot currently set a combined pixmap made of both the link
+		 * icon and the VPN icon.
+		 */
+		if (icon_name == NULL && layer == ICON_LAYER_LINK)
+			icon_name = "nm-no-connection";
+		if (icon_name != NULL && g_strcmp0 (app_indicator_get_icon (applet->app_indicator), icon_name) != 0)
+			app_indicator_set_icon_full (applet->app_indicator, icon_name, applet->tip);
+		return;
+	}
+#endif  /* WITH_APPINDICATOR */
+
 	/* Load the pixbuf by icon name */
 	if (icon_name && !pixbuf)
 		pixbuf = nma_icon_check_and_load (icon_name, applet);
@@ -2091,7 +2086,6 @@ foo_set_icon (NMApplet *applet, guint32 layer, GdkPixbuf *pixbuf, const char *ic
 		pixbuf = nma_icon_check_and_load ("nm-no-connection", applet);
 
 	gtk_status_icon_set_from_pixbuf (applet->status_icon, pixbuf);
-#endif
 }
 
 NMRemoteConnection *
@@ -2239,16 +2233,12 @@ foo_client_state_changed_cb (NMClient *client, GParamSpec *pspec, gpointer user_
 	applet_schedule_update_menu (applet);
 }
 
-#ifdef ENABLE_INDICATOR
 static void
-foo_device_removed_cb (NMClient *client, NMDevice *device, gpointer user_data)
+foo_device_removed_cb (NMClient *client, NMDevice *device, NMApplet *applet)
 {
-	NMApplet *applet = NM_APPLET (user_data);
-
 	applet_schedule_update_icon (applet);
 	applet_schedule_update_menu (applet);
 }
-#endif
 
 static void
 foo_manager_running_cb (NMClient *client,
@@ -2346,11 +2336,11 @@ foo_client_setup (NMApplet *applet)
 	g_signal_connect (applet->nm_client, "device-added",
 	                  G_CALLBACK (foo_device_added_cb),
 	                  applet);
-#ifdef ENABLE_INDICATOR
-	g_signal_connect (applet->nm_client, "device-removed",
-	                  G_CALLBACK (foo_device_removed_cb),
-	                  applet);
-#endif
+	if (INDICATOR_ENABLED (applet)) {
+		g_signal_connect (applet->nm_client, "device-removed",
+		                  G_CALLBACK (foo_device_removed_cb),
+		                  applet);
+	}
 	g_signal_connect (applet->nm_client, "notify::manager-running",
 	                  G_CALLBACK (foo_manager_running_cb),
 	                  applet);
@@ -2607,11 +2597,14 @@ applet_update_icon (gpointer user_data)
 	if (!nm_running)
 		state = NM_STATE_UNKNOWN;
 
-#ifdef ENABLE_INDICATOR
-	app_indicator_set_status (applet->app_indicator, nm_running ? APP_INDICATOR_STATUS_ACTIVE : APP_INDICATOR_STATUS_PASSIVE);
-#else
-	gtk_status_icon_set_visible (applet->status_icon, applet->visible);
-#endif
+#ifdef WITH_APPINDICATOR
+	if (INDICATOR_ENABLED (applet))
+		app_indicator_set_status (applet->app_indicator, nm_running ? APP_INDICATOR_STATUS_ACTIVE : APP_INDICATOR_STATUS_PASSIVE);
+	else
+#endif  /* WITH_APPINDICATOR */
+	{
+		gtk_status_icon_set_visible (applet->status_icon, applet->visible);
+	}
 
 	switch (state) {
 	case NM_STATE_UNKNOWN:
@@ -2676,13 +2669,8 @@ applet_update_icon (gpointer user_data)
 	} else
 		applet->tip = g_strdup (dev_tip);
 
-#ifdef ENABLE_INDICATOR
-	/* FIXME: The applet->tip attribute seems to only be picked up by
-	 * the next call to foo_set_icon() which is not particularly nice.
-	 */
-#else
-	gtk_status_icon_set_tooltip_text (applet->status_icon, applet->tip);
-#endif
+	if (applet->status_icon)
+		gtk_status_icon_set_tooltip_text (applet->status_icon, applet->tip);
 
 	return FALSE;
 }
@@ -3009,11 +2997,10 @@ static void nma_icons_init (NMApplet *applet)
 		g_object_unref (G_OBJECT (applet->icon_theme));
 	}
 
-#ifdef ENABLE_INDICATOR
-	applet->icon_theme = gtk_icon_theme_get_default ();
-#else
-	applet->icon_theme = gtk_icon_theme_get_for_screen (gtk_status_icon_get_screen (applet->status_icon));
-#endif
+	if (applet->status_icon)
+		applet->icon_theme = gtk_icon_theme_get_for_screen (gtk_status_icon_get_screen (applet->status_icon));
+	else
+		applet->icon_theme = gtk_icon_theme_get_default ();
 
 	/* If not done yet, append our search path */
 	path_appended = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (applet->icon_theme),
@@ -3030,7 +3017,6 @@ static void nma_icons_init (NMApplet *applet)
 	nma_icons_reload (applet, NULL);
 }
 
-#ifndef ENABLE_INDICATOR
 static void
 status_icon_screen_changed_cb (GtkStatusIcon *icon,
                                GParamSpec *pspec,
@@ -3106,49 +3092,46 @@ status_icon_popup_menu_cb (GtkStatusIcon *icon,
 			gtk_status_icon_position_menu, icon,
 			button, activate_time);
 }
-#endif /* ENABLE_INDICATOR */
 
 static gboolean
 setup_widgets (NMApplet *applet)
 {
-#ifdef ENABLE_INDICATOR
-	applet->app_indicator = app_indicator_new
-				("nm-applet", "nm-no-connection",
-				 APP_INDICATOR_CATEGORY_SYSTEM_SERVICES);
-	app_indicator_set_title(applet->app_indicator, _("Network"));
-	applet_schedule_update_menu (applet);
-#else
-	applet->status_icon = gtk_status_icon_new ();
+#ifdef WITH_APPINDICATOR
+	if (with_appindicator) {
+		applet->app_indicator = app_indicator_new ("nm-applet",
+		                                           "nm-no-connection",
+		                                           APP_INDICATOR_CATEGORY_SYSTEM_SERVICES);
+		if (!applet->app_indicator)
+			return FALSE;
+		app_indicator_set_title(applet->app_indicator, _("Network"));
+		applet_schedule_update_menu (applet);
+	}
+#endif  /* WITH_APPINDICATOR */
 
-	if (shell_debug)
-		gtk_status_icon_set_name (applet->status_icon, "adsfasdfasdfadfasdf");
+	/* Fall back to status icon if indicator isn't enabled or built */
+	if (!INDICATOR_ENABLED (applet)) {
+		applet->status_icon = gtk_status_icon_new ();
 
-	g_signal_connect (applet->status_icon, "notify::screen",
-			  G_CALLBACK (status_icon_screen_changed_cb), applet);
-	g_signal_connect (applet->status_icon, "size-changed",
-			  G_CALLBACK (status_icon_size_changed_cb), applet);
-	g_signal_connect (applet->status_icon, "activate",
-			  G_CALLBACK (status_icon_activate_cb), applet);
-	g_signal_connect (applet->status_icon, "popup-menu",
-			  G_CALLBACK (status_icon_popup_menu_cb), applet);
+		if (shell_debug)
+			gtk_status_icon_set_name (applet->status_icon, "adsfasdfasdfadfasdf");
 
-	applet->context_menu = nma_context_menu_create (applet);
-	if (!applet->context_menu)
-		return FALSE;
-#endif
+		g_signal_connect (applet->status_icon, "notify::screen",
+				  G_CALLBACK (status_icon_screen_changed_cb), applet);
+		g_signal_connect (applet->status_icon, "size-changed",
+				  G_CALLBACK (status_icon_size_changed_cb), applet);
+		g_signal_connect (applet->status_icon, "activate",
+				  G_CALLBACK (status_icon_activate_cb), applet);
+		g_signal_connect (applet->status_icon, "popup-menu",
+				  G_CALLBACK (status_icon_popup_menu_cb), applet);
+
+		applet->context_menu = nma_context_menu_create (applet);
+		if (!applet->context_menu)
+			return FALSE;
+	}
 
 	return TRUE;
 }
 
-#ifdef ENABLE_INDICATOR
-static void
-connection_added_cb (NMClient *client, NMRemoteConnection *connection, gpointer user_data)
-{
-	NMApplet *applet = NM_APPLET (user_data);
-
-	applet_schedule_update_menu (applet);
-}
-#else
 static void
 applet_embedded_cb (GObject *object, GParamSpec *pspec, gpointer user_data)
 {
@@ -3157,7 +3140,6 @@ applet_embedded_cb (GObject *object, GParamSpec *pspec, gpointer user_data)
 	g_debug ("applet now %s the notification area",
 	         embedded ? "embedded in" : "removed from");
 }
-#endif
 
 static void
 register_agent (NMApplet *applet)
@@ -3181,12 +3163,13 @@ register_agent (NMApplet *applet)
 	                  G_CALLBACK (applet_agent_get_secrets_cb), applet);
 	g_signal_connect (applet->agent, APPLET_AGENT_CANCEL_SECRETS,
 	                  G_CALLBACK (applet_agent_cancel_secrets_cb), applet);
-#ifdef ENABLE_INDICATOR
-	/* Watch for new connections */
-	g_signal_connect (applet->nm_client, NM_CLIENT_CONNECTION_ADDED,
-	                  G_CALLBACK (connection_added_cb),
-	                  applet);
-#endif
+
+	if (INDICATOR_ENABLED (applet)) {
+		/* Watch for new connections */
+		g_signal_connect_swapped (applet->nm_client, NM_CLIENT_CONNECTION_ADDED,
+		                          G_CALLBACK (applet_schedule_update_menu),
+		                          applet);
+	}
 }
 
 static void
@@ -3201,9 +3184,8 @@ applet_gsettings_show_changed (GSettings *settings,
 
 	applet->visible = g_settings_get_boolean (settings, key);
 
-#ifndef ENABLE_INDICATOR
-	gtk_status_icon_set_visible (applet->status_icon, applet->visible);
-#endif
+	if (applet->status_icon)
+		gtk_status_icon_set_visible (applet->status_icon, applet->visible);
 }
 
 /****************************************************************/
@@ -3244,6 +3226,8 @@ applet_startup (GApplication *app, gpointer user_data)
 		g_application_quit (app);
 		return;
 	}
+	g_assert (INDICATOR_ENABLED (applet) || applet->status_icon);
+
 	applet->icon_cache = g_hash_table_new_full (g_str_hash,
 	                                            g_str_equal,
 	                                            g_free,
@@ -3272,14 +3256,14 @@ applet_startup (GApplication *app, gpointer user_data)
 	mm1_client_setup (applet);
 #endif
 
-#ifndef ENABLE_INDICATOR
-	/* Track embedding to help debug issues where user has removed the
-	 * notification area applet from the panel, and thus nm-applet too.
-	 */
-	g_signal_connect (applet->status_icon, "notify::embedded",
-	                  G_CALLBACK (applet_embedded_cb), NULL);
-	applet_embedded_cb (G_OBJECT (applet->status_icon), NULL, NULL);
-#endif
+	if (applet->status_icon) {
+		/* Track embedding to help debug issues where user has removed the
+		 * notification area applet from the panel, and thus nm-applet too.
+		 */
+		g_signal_connect (applet->status_icon, "notify::embedded",
+			              G_CALLBACK (applet_embedded_cb), NULL);
+		applet_embedded_cb (G_OBJECT (applet->status_icon), NULL, NULL);
+	}
 
 	if (with_agent)
 		register_agent (applet);
@@ -3301,18 +3285,17 @@ static void finalize (GObject *object)
 	if (applet->update_icon_id)
 		g_source_remove (applet->update_icon_id);
 
-#ifdef ENABLE_INDICATOR
+#ifdef WITH_APPINDICATOR
 	g_clear_object (&applet->app_indicator);
-	if (applet->update_menu_id)
-		g_source_remove (applet->update_menu_id);
-#else
+#endif /* WITH_APPINDICATOR */
+	nm_clear_g_source (&applet->update_menu_id);
+
 	g_clear_object (&applet->status_icon);
 	g_clear_object (&applet->menu);
 	g_clear_pointer (&applet->icon_cache, g_hash_table_destroy);
 	g_clear_object (&applet->fallback_icon);
 	g_free (applet->tip);
 	nma_icons_free (applet);
-#endif
 
 	while (g_slist_length (applet->secrets_reqs))
 		applet_secrets_request_free ((SecretsRequest *) applet->secrets_reqs->data);
