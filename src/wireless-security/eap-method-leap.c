@@ -64,8 +64,8 @@ validate (EAPMethod *parent, GError **error)
 		return FALSE;
 	}
 
-	text = gtk_entry_get_text (method->password_entry); {
-	if (!text || !strlen (text))
+	text = gtk_entry_get_text (method->password_entry);
+	if (!text || !strlen (text)) {
 		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("missing EAP-LEAP password"));
 		return FALSE;
 	}
