@@ -1083,6 +1083,7 @@ applet_get_first_active_vpn_connection (NMApplet *applet,
 	for (i = 0; active_list && (i < active_list->len); i++) {
 		NMActiveConnection *candidate;
 		NMConnection *connection;
+		NMSettingConnection *s_con;
 
 		candidate = g_ptr_array_index (active_list, i);
 
@@ -1090,12 +1091,10 @@ applet_get_first_active_vpn_connection (NMApplet *applet,
 		if (!connection)
 			continue;
 
-		/* FIXME: rh#1313866 crashed on the following invariants for unknown reasons.
-		 * Downgrade crash to warning. */
-		g_warn_if_fail (NM_IS_CONNECTION (connection));
-		g_warn_if_fail (NM_IS_SETTING (nm_connection_get_setting_connection (connection)));
+		s_con = nm_connection_get_setting_connection (connection);
+		g_assert (s_con);
 
-		if (nm_streq0 (nm_connection_get_connection_type (connection), NM_SETTING_VPN_SETTING_NAME)) {
+		if (!strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_VPN_SETTING_NAME)) {
 			if (out_state)
 				*out_state = nm_vpn_connection_get_vpn_state (NM_VPN_CONNECTION (candidate));
 			return candidate;
