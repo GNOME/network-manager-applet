@@ -41,7 +41,7 @@ typedef struct {
 	GtkToggleButton *duplex;
 	GtkToggleButton *autonegotiate;
 	GtkSpinButton *mtu;
-	GtkToggleButton *wol_default, *wol_phy, *wol_unicast, *wol_multicast,
+	GtkToggleButton *wol_default, *wol_ignore, *wol_phy, *wol_unicast, *wol_multicast,
 	                *wol_broadcast, *wol_arp, *wol_magic;
 	GtkEntry *wol_passwd;
 } CEPageEthernetPrivate;
@@ -91,6 +91,7 @@ ethernet_private_init (CEPageEthernet *self)
 	priv->autonegotiate = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "ethernet_autonegotiate"));
 	priv->mtu = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "ethernet_mtu"));
 	priv->wol_default = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "wol_default"));
+	priv->wol_ignore = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "wol_ignore"));
 	priv->wol_phy = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "wol_phy"));
 	priv->wol_unicast = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "wol_unicast"));
 	priv->wol_multicast = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "wol_multicast"));
@@ -107,7 +108,7 @@ stuff_changed (GtkWidget *w, gpointer user_data)
 }
 
 static void
-wol_default_toggled_cb (GtkWidget *widget, gpointer user_data)
+wol_special_toggled_cb (GtkWidget *widget, gpointer user_data)
 {
 	CEPageEthernet *self = CE_PAGE_ETHERNET (user_data);
 	CEPageEthernetPrivate *priv = CE_PAGE_ETHERNET_GET_PRIVATE (self);
@@ -121,6 +122,12 @@ wol_default_toggled_cb (GtkWidget *widget, gpointer user_data)
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->wol_broadcast), !enabled);
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->wol_arp), !enabled);
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->wol_magic), !enabled);
+	if (widget == GTK_WIDGET (priv->wol_default))
+		gtk_widget_set_sensitive (GTK_WIDGET (priv->wol_ignore), !enabled);
+	else if (widget == GTK_WIDGET (priv->wol_ignore))
+		gtk_widget_set_sensitive (GTK_WIDGET (priv->wol_default), !enabled);
+	else
+		g_return_if_reached ();
 
 	enabled_passwd = !enabled && gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->wol_magic));
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->wol_passwd), enabled_passwd);
@@ -227,6 +234,8 @@ populate_ui (CEPageEthernet *self)
 	wol = nm_setting_wired_get_wake_on_lan (priv->setting);
 	if (wol == NM_SETTING_WIRED_WAKE_ON_LAN_DEFAULT)
 		gtk_toggle_button_set_active (priv->wol_default, TRUE);
+	else if (wol == NM_SETTING_WIRED_WAKE_ON_LAN_IGNORE)
+		gtk_toggle_button_set_active (priv->wol_ignore, TRUE);
 	else {
 		if (wol & NM_SETTING_WIRED_WAKE_ON_LAN_PHY)
 			gtk_toggle_button_set_active (priv->wol_phy, TRUE);
@@ -267,8 +276,10 @@ finish_setup (CEPageEthernet *self, gpointer unused, GError *error, gpointer use
 	g_signal_connect (priv->autonegotiate, "toggled", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->mtu, "value-changed", G_CALLBACK (stuff_changed), self);
 
-	g_signal_connect (priv->wol_default,   "toggled", G_CALLBACK (wol_default_toggled_cb), self);
-	wol_default_toggled_cb (GTK_WIDGET (priv->wol_default), self);
+	g_signal_connect (priv->wol_default,   "toggled", G_CALLBACK (wol_special_toggled_cb), self);
+	g_signal_connect (priv->wol_ignore,    "toggled", G_CALLBACK (wol_special_toggled_cb), self);
+	wol_special_toggled_cb (GTK_WIDGET (priv->wol_default), self);
+	wol_special_toggled_cb (GTK_WIDGET (priv->wol_ignore), self);
 	g_signal_connect (priv->wol_phy,       "toggled", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->wol_unicast,   "toggled", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->wol_multicast, "toggled", G_CALLBACK (stuff_changed), self);
@@ -395,6 +406,8 @@ ui_to_setting (CEPageEthernet *self)
 	/* Wake-on-LAN */
 	if (gtk_toggle_button_get_active (priv->wol_default))
 		wol = NM_SETTING_WIRED_WAKE_ON_LAN_DEFAULT;
+	else if (gtk_toggle_button_get_active (priv->wol_ignore))
+		wol = NM_SETTING_WIRED_WAKE_ON_LAN_IGNORE;
 	else {
 		if (gtk_toggle_button_get_active (priv->wol_phy))
 			wol |= NM_SETTING_WIRED_WAKE_ON_LAN_PHY;
