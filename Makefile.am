@@ -29,7 +29,7 @@ gsettings_SCHEMAS = org.gnome.nm-applet.gschema.xml
 
 appdatadir = $(datadir)/appdata
 appdata_DATA = $(appdata_in_files:.xml.in=.xml)
-appdata_in_files = org.gnome.nm-connection-editor.appdata.xml.in
+appdata_in_files = nm-connection-editor.appdata.xml.in
 @INTLTOOL_XML_RULE@
 
 convertdir=$(datadir)/GConf/gsettings
