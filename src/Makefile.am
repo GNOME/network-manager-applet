@@ -18,7 +18,6 @@ nm_applet_CPPFLAGS = \
 	-DSYSCONFDIR=\""$(sysconfdir)"\"						\
 	-DLIBEXECDIR=\""$(libexecdir)"\" \
 	-DAUTOSTARTDIR=\""$(sysconfdir)/xdg/autostart"\"			\
-	-DVPN_NAME_FILES_DIR=\""$(sysconfdir)/NetworkManager/VPN"\"	\
 	-DNMALOCALEDIR=\"$(datadir)/locale\"					\
 	-DG_LOG_DOMAIN=\""nm-applet"\" \
 	"-I${top_srcdir}/shared/" \

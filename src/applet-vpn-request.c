@@ -169,66 +169,23 @@ find_auth_dialog_binary (const char *service,
                          gboolean *out_hints_supported,
                          GError **error)
 {
-	GDir *dir;
-	char *prog = NULL;
-	const char *f;
-	gboolean hints_supported = FALSE;
+	const char *auth_dialog;
+	gs_unref_object NMVpnPluginInfo *plugin = NULL;
 
-	dir = g_dir_open (VPN_NAME_FILES_DIR, 0, NULL);
-	if (!dir) {
-		g_set_error (error,
-		             NM_SECRET_AGENT_ERROR,
-		             NM_SECRET_AGENT_ERROR_FAILED,
-		             "Failed to open VPN plugin file configuration directory " VPN_NAME_FILES_DIR);
-		return NULL;
-	}
+	plugin = nm_vpn_plugin_info_new_search_file (NULL, service);
 
-	while (prog == NULL && (f = g_dir_read_name (dir)) != NULL) {
-		char *path;
-		GKeyFile *keyfile;
-
-		if (!g_str_has_suffix (f, ".name"))
-			continue;
-
-		path = g_strdup_printf ("%s/%s", VPN_NAME_FILES_DIR, f);
-
-		keyfile = g_key_file_new ();
-		if (g_key_file_load_from_file (keyfile, path, 0, NULL)) {
-			char *thisservice;
-
-			thisservice = g_key_file_get_string (keyfile, "VPN Connection", "service", NULL);
-			if (g_strcmp0 (thisservice, service) == 0) {
-				prog = g_key_file_get_string (keyfile, "GNOME", "auth-dialog", NULL);
-				hints_supported = g_key_file_get_boolean (keyfile, "GNOME", "supports-hints", NULL);
-			}
-			g_free (thisservice);
-		}
-		g_key_file_free (keyfile);
-		g_free (path);
-	}
-	g_dir_close (dir);
-
-	if (prog == NULL) {
+	auth_dialog = plugin ? nm_vpn_plugin_info_get_auth_dialog (plugin) : NULL;
+	if (!auth_dialog) {
 		g_set_error (error,
 		             NM_SECRET_AGENT_ERROR,
 		             NM_SECRET_AGENT_ERROR_FAILED,
 		             "Could not find the authentication dialog for VPN connection type '%s'",
 		             service);
-	} else if (!g_path_is_absolute (prog)) {
-		char *prog_basename;
-
-		/* Remove any path component, then reconstruct path to the auth
-		 * dialog in LIBEXECDIR.
-		 */
-		prog_basename = g_path_get_basename (prog);
-		g_free (prog);
-		prog = g_strdup_printf ("%s/%s", LIBEXECDIR, prog_basename);
-		g_free (prog_basename);
-
-		*out_hints_supported = hints_supported;
+		return NULL;
 	}
 
-	return prog;
+	*out_hints_supported = nm_vpn_plugin_info_supports_hints (plugin);
+	return g_strdup (auth_dialog);
 }
 
 static void
