@@ -2904,6 +2904,7 @@ applet_agent_cancel_secrets_cb (AppletAgent *agent,
 		if (req->reqid == request_id) {
 			/* cancel and free this password request */
 			applet_secrets_request_free (req);
+			break;
 		}
 	}
 }
