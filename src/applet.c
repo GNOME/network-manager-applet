@@ -1070,6 +1070,20 @@ nma_menu_configure_vpn_item_activate (GtkMenuItem *item, gpointer user_data)
 }
 
 /*
+ * nma_menu_add_vpn_item_activate
+ *
+ * Signal function called when user clicks "Add a VPN connection..."
+ *
+ */
+static void
+nma_menu_add_vpn_item_activate (GtkMenuItem *item, gpointer user_data)
+{
+	const char *argv[] = { BINDIR "/nm-connection-editor", "--create", "--type", NM_SETTING_VPN_SETTING_NAME, NULL};
+
+	g_spawn_async (NULL, (gchar **) argv, NULL, 0, NULL, NULL, NULL, NULL);
+}
+
+/*
  * applet_get_active_vpn_connection:
  *
  * Gets a VPN connection along with its state. If there are more, ones that
@@ -1478,11 +1492,14 @@ nma_menu_add_vpn_submenu (GtkWidget *menu, NMApplet *applet)
 	}
 
 	/* Draw a separator, but only if we have VPN connections above it */
-	if (list->len)
+	if (list->len) {
 		nma_menu_add_separator_item (GTK_WIDGET (vpn_menu));
-
-	item = GTK_MENU_ITEM (gtk_menu_item_new_with_mnemonic (_("_Configure VPN...")));
-	g_signal_connect (item, "activate", G_CALLBACK (nma_menu_configure_vpn_item_activate), applet);
+		item = GTK_MENU_ITEM (gtk_menu_item_new_with_mnemonic (_("_Configure VPN...")));
+		g_signal_connect (item, "activate", G_CALLBACK (nma_menu_configure_vpn_item_activate), applet);
+	} else {
+		item = GTK_MENU_ITEM (gtk_menu_item_new_with_mnemonic (_("_Add a VPN connection...")));
+		g_signal_connect (item, "activate", G_CALLBACK (nma_menu_add_vpn_item_activate), applet);
+	}
 	gtk_menu_shell_append (GTK_MENU_SHELL (vpn_menu), GTK_WIDGET (item));
 	gtk_widget_show (GTK_WIDGET (item));
 
