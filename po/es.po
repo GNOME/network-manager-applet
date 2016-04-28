@@ -14,9 +14,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: networkmanager-applet.master\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-05 14:02+0200\n"
-"PO-Revision-Date: 2016-02-04 09:27+0100\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
+"POT-Creation-Date: 2016-04-28 01:45+0000\n"
+"PO-Revision-Date: 2016-04-28 13:29+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
 "Language: \n"
@@ -26,7 +27,7 @@ msgstr ""
 "X-Generator: Gtranslator 2.91.6\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3105
+#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3097
 msgid "Network"
 msgstr "Red"
 
@@ -137,15 +138,17 @@ msgstr ""
 "Establecer esto a cierto para desactivar las notificaciones sobre "
 "certificados CA en la fase 2 de la autenticación EAP."
 
-#: ../org.gnome.nm-connection-editor.appdata.xml.in.h:1
+#: ../nm-connection-editor.appdata.xml.in.h:1
 msgid "NetworkManager"
 msgstr "Gestor de la red"
 
-#: ../org.gnome.nm-connection-editor.appdata.xml.in.h:2
-msgid "NetworkManager for GNOME"
-msgstr "Gestor de la red para GNOME"
+#: ../nm-connection-editor.appdata.xml.in.h:2
+#, fuzzy
+#| msgid "No network connection"
+msgid "NetworkManager connection editor"
+msgstr "Sin conexión de red"
 
-#: ../org.gnome.nm-connection-editor.appdata.xml.in.h:3
+#: ../nm-connection-editor.appdata.xml.in.h:3
 msgid ""
 "NetworkManager is a system service for managing and configuring your network "
 "connections and devices."
@@ -153,13 +156,18 @@ msgstr ""
 "NetworkManager es un demonio del sistema para gestionar y configurar sus "
 "conexiones y sus dispositivos de red."
 
-#: ../org.gnome.nm-connection-editor.appdata.xml.in.h:4
+#: ../nm-connection-editor.appdata.xml.in.h:4
 msgid ""
 "The nm-connection-editor program works with NetworkManager to create and "
 "edit existing connection profiles for NetworkManager."
 msgstr ""
 "El programa nm-connection-editor funciona con NetworkManager para crear y "
 "editar perfiles de NetworkManager."
+
+#: ../nm-connection-editor.appdata.xml.in.h:5
+#| msgid "NetworkManager Applet"
+msgid "The NetworkManager Developers"
+msgstr "Los desarrolladores de NetworkManager"
 
 #: ../src/8021x.ui.h:1 ../src/ethernet-dialog.c:99
 msgid "802.1X authentication"
@@ -383,144 +391,146 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1280
+#: ../src/applet.c:1284
 msgid "device not ready (firmware missing)"
 msgstr "el dispositivo no está listo (falta el firmware)"
 
-#: ../src/applet.c:1282
+#: ../src/applet.c:1286
 msgid "device not ready"
 msgstr "el dispositivo no está listo"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet.c:1292 ../src/applet-device-ethernet.c:109
+#: ../src/applet.c:1296 ../src/applet-device-ethernet.c:109
 msgid "disconnected"
 msgstr "desconectado"
 
-#: ../src/applet.c:1308
+#: ../src/applet.c:1312
 msgid "Disconnect"
 msgstr "Desconectar"
 
-#: ../src/applet.c:1322
+#: ../src/applet.c:1326
 msgid "device not managed"
 msgstr "el dispositivo no está gestionado"
 
-#: ../src/applet.c:1395
+#: ../src/applet.c:1399
 msgid "No network devices available"
 msgstr "No hay dispositivos de red disponibles"
 
-#: ../src/applet.c:1449
+#: ../src/applet.c:1453
 msgid "_VPN Connections"
 msgstr "Conexiones _VPN"
 
-#: ../src/applet.c:1503
+#: ../src/applet.c:1497
 msgid "_Configure VPN..."
 msgstr "_Configurar VPN…"
 
-#: ../src/applet.c:1508
-msgid "_Disconnect VPN"
-msgstr "_Desconectar VPN"
+#: ../src/applet.c:1500
+#| msgid "Export VPN connection..."
+msgid "_Add a VPN connection..."
+msgstr "_Añadir una conexión VPN…"
 
-#: ../src/applet.c:1615
+#: ../src/applet.c:1606
 msgid "NetworkManager is not running..."
 msgstr "El Gestor de la red no se está ejecutando…"
 
-#: ../src/applet.c:1620 ../src/applet.c:2612
+#: ../src/applet.c:1611 ../src/applet.c:2603
 msgid "Networking disabled"
 msgstr "Red desactivada"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1830
+#: ../src/applet.c:1821
 msgid "Enable _Networking"
 msgstr "Activar _red"
 
 #. 'Enable Wi-Fi' item
-#: ../src/applet.c:1839
+#: ../src/applet.c:1830
 msgid "Enable _Wi-Fi"
 msgstr "Activar _inalámbrica"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:1848
+#: ../src/applet.c:1839
 msgid "Enable _Mobile Broadband"
 msgstr "Activar la banda ancha _móvil"
 
 #. Toggle notifications item
-#: ../src/applet.c:1860
+#: ../src/applet.c:1851
 msgid "Enable N_otifications"
 msgstr "Activar n_otificaciones"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1872
+#: ../src/applet.c:1863
 msgid "Connection _Information"
 msgstr "_Información de la conexión"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1880
+#: ../src/applet.c:1871
 msgid "Edit Connections..."
 msgstr "Editar las conexiones…"
 
-#: ../src/applet.c:1894
+#: ../src/applet.c:1885
 msgid "_About"
 msgstr "_Acerca de"
 
-#: ../src/applet.c:2179
+#: ../src/applet.c:2170
 #, c-format
 msgid "You are now connected to '%s'."
 msgstr "Ahora está conectado a «%s»."
 
-#: ../src/applet.c:2222
+#: ../src/applet.c:2213
 msgid "Disconnected"
 msgstr "Desconectado"
 
-#: ../src/applet.c:2223
+#: ../src/applet.c:2214
 msgid "The network connection has been disconnected."
 msgstr "La conexión de red se ha desconectado."
 
-#: ../src/applet.c:2474
+#: ../src/applet.c:2465
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "Preparando la conexión de red «%s»…"
 
-#: ../src/applet.c:2477
+#: ../src/applet.c:2468
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "Se necesita autenticación de usuario para la conexión de red «%s»…"
 
-#: ../src/applet.c:2480 ../src/applet-device-bt.c:125
+#: ../src/applet.c:2471 ../src/applet-device-bt.c:125
 #: ../src/mobile-helpers.c:608
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "Solicitando una dirección de red para «%s»…"
 
-#: ../src/applet.c:2483
+#: ../src/applet.c:2474
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "Conexión de red «%s» activa"
 
-#: ../src/applet.c:2557
+#: ../src/applet.c:2548
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "Iniciando conexión VPN «%s»…"
 
-#: ../src/applet.c:2560
+#: ../src/applet.c:2551
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "Se necesita autenticación de usuario para la conexión VPN «%s»…"
 
-#: ../src/applet.c:2563
+#: ../src/applet.c:2554
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "Solicitando una dirección VPN para «%s»…"
 
-#: ../src/applet.c:2566
+#: ../src/applet.c:2557
 #, c-format
-msgid "VPN connection '%s' active"
-msgstr "Conexión VPN «%s» activa"
+#| msgid "VPN connection '%s' active"
+msgid "VPN connection active"
+msgstr "Conexión VPN activa"
 
-#: ../src/applet.c:2616
+#: ../src/applet.c:2607
 msgid "No network connection"
 msgstr "Sin conexión de red"
 
-#: ../src/applet.c:3204
+#: ../src/applet.c:3196
 msgid "NetworkManager Applet"
 msgstr "Miniaplicación Gestor de la red"
 
@@ -758,7 +768,8 @@ msgstr "Falló al añadir la conexión nueva"
 msgid "Error displaying connection information:"
 msgstr "Ha ocurrido un error al mostrar información de la conexión:"
 
-#: ../src/applet-dialogs.c:72 ../src/connection-editor/page-wifi-security.c:332
+#: ../src/applet-dialogs.c:72
+#: ../src/connection-editor/page-wifi-security.c:332
 #: ../src/libnma/nma-wifi-dialog.c:932 ../src/libnm-gtk/nm-wifi-dialog.c:948
 #: ../src/wireless-security/wireless-security.c:448
 msgid "LEAP"
@@ -1086,7 +1097,8 @@ msgstr ""
 "predeterminada."
 
 #: ../src/connection-editor/ce-new-connection.ui.h:1 ../src/libnma/wifi.ui.h:1
-#: ../src/libnm-gtk/wifi.ui.h:1 ../src/wireless-security/eap-method-fast.ui.h:1
+#: ../src/libnm-gtk/wifi.ui.h:1
+#: ../src/wireless-security/eap-method-fast.ui.h:1
 #: ../src/wireless-security/eap-method-peap.ui.h:1
 #: ../src/wireless-security/eap-method-ttls.ui.h:1
 #: ../src/wireless-security/ws-dynamic-wep.ui.h:1
@@ -1649,9 +1661,8 @@ msgid "De_fault"
 msgstr "_Predeterminado"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:21
-#, fuzzy
 msgid "_Ignore"
-msgstr "Ignorar"
+msgstr "_Ignorar"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:22
 msgid "_Phy"
@@ -2249,9 +2260,8 @@ msgid "Missing connection name"
 msgstr "Falta el nombre de de la conexión"
 
 #: ../src/connection-editor/nm-connection-editor.c:187
-#, fuzzy
 msgid "Editor initializing..."
-msgstr "Error al inicializar el editor"
+msgstr "Inicializando el editor…"
 
 #: ../src/connection-editor/nm-connection-editor.c:194
 #: ../src/connection-editor/nm-connection-list.c:397
@@ -2385,24 +2395,24 @@ msgstr "Eliminar la conexión seleccionada"
 msgid "Authenticate to delete the selected connection"
 msgstr "Autentíquese para eliminar la conexión seleccionada"
 
-#: ../src/connection-editor/nm-connection-list.c:929
+#: ../src/connection-editor/nm-connection-list.c:912
 msgid "No VPN plugins are installed."
 msgstr "No hay complementos de VPN instalados."
 
-#: ../src/connection-editor/nm-connection-list.c:931
+#: ../src/connection-editor/nm-connection-list.c:914
 #, c-format
 msgid "Don't know how to create '%s' connections"
 msgstr "Se desconoce cómo crear conexiones «%s»"
 
-#: ../src/connection-editor/nm-connection-list.c:933
+#: ../src/connection-editor/nm-connection-list.c:916
 msgid "Error creating connection"
 msgstr "Error al crear la conexión"
 
-#: ../src/connection-editor/nm-connection-list.c:955
+#: ../src/connection-editor/nm-connection-list.c:938
 msgid "Error editing connection"
 msgstr "Error al editar la conexión"
 
-#: ../src/connection-editor/nm-connection-list.c:956
+#: ../src/connection-editor/nm-connection-list.c:939
 #, c-format
 msgid "Did not find a connection with UUID '%s'"
 msgstr "No se encontró una conexión con UUID «%s»"
@@ -3882,6 +3892,12 @@ msgstr ""
 #: ../src/wireless-security/ws-wpa-psk.ui.h:2
 msgid "_Type:"
 msgstr "_Tipo:"
+
+#~ msgid "NetworkManager for GNOME"
+#~ msgstr "Gestor de la red para GNOME"
+
+#~ msgid "_Disconnect VPN"
+#~ msgstr "_Desconectar VPN"
 
 #~ msgid "_Help"
 #~ msgstr "Ay_uda"
