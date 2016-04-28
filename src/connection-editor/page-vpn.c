@@ -132,7 +132,7 @@ ce_page_vpn_can_export (CEPageVpn *page)
 {
 	CEPageVpnPrivate *priv = CE_PAGE_VPN_GET_PRIVATE (page);
 
-	return 	(nm_vpn_editor_plugin_get_capabilities (priv->plugin) & NM_VPN_EDITOR_PLUGIN_CAPABILITY_EXPORT) != 0;
+	return (nm_vpn_editor_plugin_get_capabilities (priv->plugin) & NM_VPN_EDITOR_PLUGIN_CAPABILITY_EXPORT) != 0;
 }
 
 static gboolean
@@ -154,7 +154,10 @@ dispose (GObject *object)
 {
 	CEPageVpnPrivate *priv = CE_PAGE_VPN_GET_PRIVATE (object);
 
-	g_clear_object (&priv->editor);
+	if (priv->editor) {
+		g_signal_handlers_disconnect_by_func (priv->editor, G_CALLBACK (vpn_plugin_changed_cb), object);
+		g_clear_object (&priv->editor);
+	}
 	g_clear_pointer (&priv->service_type, g_free);
 
 	G_OBJECT_CLASS (ce_page_vpn_parent_class)->dispose (object);
