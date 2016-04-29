@@ -111,9 +111,7 @@ get_connection_type_list (void)
 	add_type_data_virtual (array, _("Bridge"), bridge_connection_new, NM_TYPE_SETTING_BRIDGE);
 	add_type_data_virtual (array, _("VLAN"), vlan_connection_new, NM_TYPE_SETTING_VLAN);
 
-	/* Add "VPN" only if there are plugins */
-	if (vpn_get_plugins ())
-		add_type_data_virtual (array, _("VPN"), vpn_connection_new, NM_TYPE_SETTING_VPN);
+	add_type_data_virtual (array, _("VPN"), vpn_connection_new, NM_TYPE_SETTING_VPN);
 
 	g_array_sort (array, sort_types);
 
