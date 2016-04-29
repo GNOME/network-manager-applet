@@ -58,7 +58,7 @@ finish_setup (CEPageVpn *self, gpointer unused, GError *error, gpointer user_dat
 	if (error)
 		return;
 
-	g_return_if_fail (priv->plugin != NULL);
+	g_return_if_fail (NM_IS_VPN_EDITOR_PLUGIN (priv->plugin));
 
 	priv->editor = nm_vpn_editor_plugin_get_editor (priv->plugin, parent->connection, &vpn_error);
 	if (!priv->editor) {
@@ -119,6 +119,7 @@ ce_page_vpn_new (NMConnectionEditor *editor,
 		g_object_unref (self);
 		return NULL;
 	}
+	priv->plugin = g_object_ref (priv->plugin);
 
 	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
 
@@ -159,6 +160,8 @@ dispose (GObject *object)
 		g_clear_object (&priv->editor);
 	}
 	g_clear_pointer (&priv->service_type, g_free);
+
+	g_clear_object (&priv->plugin);
 
 	G_OBJECT_CLASS (ce_page_vpn_parent_class)->dispose (object);
 }
