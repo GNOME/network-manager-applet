@@ -75,10 +75,10 @@ fi
 
 PKG_CHECK_MODULES(LIBNM_GLIB,
 		[gio-2.0 >= 2.32
-		 NetworkManager >= 1.1
+		 NetworkManager >= 1.3
 		 libnm-glib >= 1.3
-		 libnm-util >= 1.1
-		 libnm-glib-vpn >= 1.1
+		 libnm-util >= 1.3
+		 libnm-glib-vpn >= 1.3
 		 gmodule-export-2.0])
 LIBNM_GLIB_CFLAGS="$LIBNM_GLIB_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_32"
 LIBNM_GLIB_CFLAGS="$LIBNM_GLIB_CFLAGS -DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_4"
