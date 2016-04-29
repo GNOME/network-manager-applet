@@ -53,21 +53,13 @@ finish_setup (CEPageVpn *self, gpointer unused, GError *error, gpointer user_dat
 {
 	CEPage *parent = CE_PAGE (self);
 	CEPageVpnPrivate *priv = CE_PAGE_VPN_GET_PRIVATE (self);
-	GError *vpn_error = NULL;
 
 	if (error)
 		return;
 
 	g_return_if_fail (NM_IS_VPN_EDITOR_PLUGIN (priv->plugin));
+	g_return_if_fail (NM_IS_VPN_EDITOR (priv->editor));
 
-	priv->editor = nm_vpn_editor_plugin_get_editor (priv->plugin, parent->connection, &vpn_error);
-	if (!priv->editor) {
-		g_warning ("Could not load VPN user interface for service '%s': %s.",
-		           priv->service_type,
-		           (vpn_error && vpn_error->message) ? vpn_error->message : "(unknown)");
-		g_error_free (vpn_error);
-		return;
-	}
 	g_signal_connect (priv->editor, "changed", G_CALLBACK (vpn_plugin_changed_cb), self);
 
 	parent->page = GTK_WIDGET (nm_vpn_editor_get_widget (priv->editor));
@@ -90,6 +82,7 @@ ce_page_vpn_new (NMConnectionEditor *editor,
 	CEPageVpn *self;
 	CEPageVpnPrivate *priv;
 	const char *service_type;
+	GError *local = NULL;
 
 	self = CE_PAGE_VPN (ce_page_new (CE_TYPE_PAGE_VPN,
 	                                 editor,
@@ -115,11 +108,21 @@ ce_page_vpn_new (NMConnectionEditor *editor,
 
 	priv->plugin = vpn_get_plugin_by_service (service_type);
 	if (!priv->plugin) {
-		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not find VPN plugin service for '%s'."), service_type);
+		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not find VPN plugin for '%s'."), service_type);
 		g_object_unref (self);
 		return NULL;
 	}
 	priv->plugin = g_object_ref (priv->plugin);
+
+	priv->editor = nm_vpn_editor_plugin_get_editor (priv->plugin, CE_PAGE (self)->connection, &local);
+	if (!priv->editor) {
+		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
+		             _("Could not load editor VPN plugin for '%s' (%s)."),
+		             service_type, local ? local->message : _("unknown failure"));
+		g_clear_error (&local);
+		g_object_unref (self);
+		return NULL;
+	}
 
 	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
 
