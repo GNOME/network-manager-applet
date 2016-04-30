@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-26 18:50+0200\n"
-"PO-Revision-Date: 2016-04-26 18:51+0200\n"
+"POT-Creation-Date: 2016-04-30 14:22+0200\n"
+"PO-Revision-Date: 2016-04-30 14:23+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -132,15 +132,15 @@ msgstr ""
 "Ustawienie na „true” wyłącza ostrzeżenia o certyfikatach CA podczas drugiego "
 "etapu uwierzytelniania EAP."
 
-#: ../org.gnome.nm-connection-editor.appdata.xml.in.h:1
+#: ../nm-connection-editor.appdata.xml.in.h:1
 msgid "NetworkManager"
 msgstr "NetworkManager"
 
-#: ../org.gnome.nm-connection-editor.appdata.xml.in.h:2
+#: ../nm-connection-editor.appdata.xml.in.h:2
 msgid "NetworkManager connection editor"
 msgstr "Edytor połączeń usługi NetworkManager"
 
-#: ../org.gnome.nm-connection-editor.appdata.xml.in.h:3
+#: ../nm-connection-editor.appdata.xml.in.h:3
 msgid ""
 "NetworkManager is a system service for managing and configuring your network "
 "connections and devices."
@@ -148,7 +148,7 @@ msgstr ""
 "NetworkManager jest usługą systemową do zarządzania i konfigurowania "
 "połączeń i urządzeń sieciowych."
 
-#: ../org.gnome.nm-connection-editor.appdata.xml.in.h:4
+#: ../nm-connection-editor.appdata.xml.in.h:4
 msgid ""
 "The nm-connection-editor program works with NetworkManager to create and "
 "edit existing connection profiles for NetworkManager."
@@ -156,7 +156,7 @@ msgstr ""
 "Program nm-connection-editor umożliwia tworzenie i modyfikowanie "
 "istniejących profilów połączeń za pomocą usługi NetworkManager."
 
-#: ../org.gnome.nm-connection-editor.appdata.xml.in.h:5
+#: ../nm-connection-editor.appdata.xml.in.h:5
 msgid "The NetworkManager Developers"
 msgstr "Programiści projektu NetworkManager"
 
@@ -2166,26 +2166,26 @@ msgstr "Mostek"
 msgid "VLAN"
 msgstr "VLAN"
 
-#: ../src/connection-editor/connection-helpers.c:116
-#: ../src/connection-editor/connection-helpers.c:254
-#: ../src/connection-editor/page-vpn.c:101
+#: ../src/connection-editor/connection-helpers.c:114
+#: ../src/connection-editor/connection-helpers.c:252
+#: ../src/connection-editor/page-vpn.c:94
 msgid "VPN"
 msgstr "VPN"
 
-#: ../src/connection-editor/connection-helpers.c:196
+#: ../src/connection-editor/connection-helpers.c:194
 msgid "Hardware"
 msgstr "Sprzętowe"
 
-#: ../src/connection-editor/connection-helpers.c:223
+#: ../src/connection-editor/connection-helpers.c:221
 msgid "Virtual"
 msgstr "Wirtualne"
 
+#: ../src/connection-editor/connection-helpers.c:290
 #: ../src/connection-editor/connection-helpers.c:292
-#: ../src/connection-editor/connection-helpers.c:294
 msgid "Import a saved VPN configuration..."
 msgstr "Zaimportuj zapisaną konfigurację VPN…"
 
-#: ../src/connection-editor/connection-helpers.c:323
+#: ../src/connection-editor/connection-helpers.c:321
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
@@ -2193,15 +2193,15 @@ msgstr ""
 "Nie można zainicjować okna dialogowego edytora połączeń z powodu nieznanego "
 "błędu."
 
-#: ../src/connection-editor/connection-helpers.c:332
+#: ../src/connection-editor/connection-helpers.c:330
 msgid "Could not create new connection"
 msgstr "Nie można utworzyć nowego połączenia"
 
-#: ../src/connection-editor/connection-helpers.c:469
+#: ../src/connection-editor/connection-helpers.c:467
 msgid "Connection delete failed"
 msgstr "Usunięcie połączenia się nie powiodło"
 
-#: ../src/connection-editor/connection-helpers.c:517
+#: ../src/connection-editor/connection-helpers.c:515
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Na pewno usunąć połączenie %s?"
@@ -2879,22 +2879,31 @@ msgstr "nadrzędny VLAN"
 msgid "VLAN connection %d"
 msgstr "Połączenie VLAN %d"
 
-#: ../src/connection-editor/page-vpn.c:103
+#: ../src/connection-editor/page-vpn.c:96
 msgid "Could not load VPN user interface."
 msgstr "Nie można wczytać interfejsu użytkownika VPN."
 
-#: ../src/connection-editor/page-vpn.c:118
+#: ../src/connection-editor/page-vpn.c:111
 #, c-format
-msgid "Could not find VPN plugin service for '%s'."
-msgstr "Nie można odnaleźć wtyczki usługi VPN dla „%s”."
+msgid "Could not find VPN plugin for '%s'."
+msgstr "Nie można odnaleźć wtyczki VPN dla „%s”."
 
-#: ../src/connection-editor/page-vpn.c:205
-#: ../src/connection-editor/page-vpn.c:300
+#: ../src/connection-editor/page-vpn.c:120
+#, c-format
+msgid "Could not load editor VPN plugin for '%s' (%s)."
+msgstr "Nie można wczytać wtyczki VPN edytora dla „%s” (%s)."
+
+#: ../src/connection-editor/page-vpn.c:121
+msgid "unknown failure"
+msgstr "nieznane niepowodzenie"
+
+#: ../src/connection-editor/page-vpn.c:214
+#: ../src/connection-editor/page-vpn.c:309
 #, c-format
 msgid "VPN connection %d"
 msgstr "Połączenie VPN %d"
 
-#: ../src/connection-editor/page-vpn.c:229
+#: ../src/connection-editor/page-vpn.c:238
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
@@ -2904,11 +2913,11 @@ msgstr ""
 "\n"
 "Błąd: brak typu usługi VPN."
 
-#: ../src/connection-editor/page-vpn.c:254
+#: ../src/connection-editor/page-vpn.c:263
 msgid "Choose a VPN Connection Type"
 msgstr "Wybór typu połączenia VPN"
 
-#: ../src/connection-editor/page-vpn.c:255
+#: ../src/connection-editor/page-vpn.c:264
 msgid ""
 "Select the type of VPN you wish to use for the new connection.  If the type "
 "of VPN connection you wish to create does not appear in the list, you may "
