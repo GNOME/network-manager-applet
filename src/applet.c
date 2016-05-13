@@ -1112,7 +1112,8 @@ applet_get_active_vpn_connection (NMApplet *applet,
 			continue;
 
 		s_con = nm_connection_get_setting_connection (connection);
-		g_assert (s_con);
+		if (!s_con)
+			continue;
 
 		if (!strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_VPN_SETTING_NAME)) {
 			ret = candidate;
