@@ -393,7 +393,7 @@ default_filter_privkey (const GtkFileFilterInfo *filter_info, gpointer user_data
 	const char *extensions[] = { ".der", ".pem", ".p12", ".key", NULL };
 #endif
 	gboolean require_encrypted = !!user_data;
-	gboolean is_encrypted = TRUE;
+	gboolean is_encrypted;
 
 	if (!filter_info->filename)
 		return FALSE;
@@ -402,10 +402,12 @@ default_filter_privkey (const GtkFileFilterInfo *filter_info, gpointer user_data
 	if (!file_has_extension (filter_info->filename, extensions))
 		return FALSE;
 
+	is_encrypted = TRUE;
 	if (   !file_is_der_or_pem (filter_info->filename, TRUE, &is_encrypted)
 	    && !nm_utils_file_is_pkcs12 (filter_info->filename))
 		return FALSE;
 #elif defined (LIBNM_BUILD)
+	is_encrypted = FALSE;
 	if (!nm_utils_file_is_private_key (filter_info->filename, &is_encrypted))
 		return FALSE;
 #else
