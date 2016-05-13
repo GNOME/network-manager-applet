@@ -226,8 +226,13 @@ eap_method_validate_filepicker (GtkBuilder *builder,
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, name));
 	g_assert (widget);
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
-	if (!filename)
-		return (item_type == TYPE_CA_CERT) ? TRUE : FALSE;
+	if (!filename) {
+		if (item_type == TYPE_CA_CERT)
+			success = TRUE;
+		else
+			g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("no file selected"));
+		goto out;
+	}
 
 	if (!g_file_test (filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR))
 		goto out;
