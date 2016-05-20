@@ -2023,9 +2023,9 @@ applet_update_menu (gpointer user_data)
 
 	/* Update the menu */
 	if (INDICATOR_ENABLED (applet)) {
-		nma_context_menu_populate (applet, menu);
 		nma_menu_show_cb (GTK_WIDGET (menu), applet);
 		nma_menu_add_separator_item (GTK_WIDGET (menu));
+		nma_context_menu_populate (applet, menu);
 		nma_context_menu_update (applet);
 	} else
 		nma_menu_show_cb (GTK_WIDGET (menu), applet);
