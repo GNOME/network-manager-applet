@@ -760,9 +760,21 @@ get_secrets_cb (GObject *object,
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	GError *error = NULL;
+	gboolean current_secrets = FALSE;
 
 	if (info->canceled)
 		goto out;
+
+	priv = NMA_WIFI_DIALOG_GET_PRIVATE (info->self);
+	if (priv->secrets_info == info) {
+		priv->secrets_info = NULL;
+
+		/* Buttons should only be re-enabled if this secrets response is the
+		 * in-progress one.
+		 */
+		_set_response_sensitive (info->self, GTK_RESPONSE_CANCEL, TRUE);
+		current_secrets = TRUE;
+	}
 
 	secrets = nm_remote_connection_get_secrets_finish (connection, result, &error);
 	if (error) {
@@ -773,16 +785,8 @@ get_secrets_cb (GObject *object,
 		goto out;
 	}
 
-	priv = NMA_WIFI_DIALOG_GET_PRIVATE (info->self);
-	if (priv->secrets_info == info) {
-		priv->secrets_info = NULL;
-
-		/* Buttons should only be re-enabled if this secrets response is the
-		 * in-progress one.
-		 */
-		_set_response_sensitive (info->self, GTK_RESPONSE_CANCEL, TRUE);
+	if (current_secrets)
 		_set_response_sensitive (info->self, GTK_RESPONSE_OK, TRUE);
-	}
 
 	/* User might have changed the connection while the secrets call was in
 	 * progress, so don't try to update the wrong connection with the secrets
