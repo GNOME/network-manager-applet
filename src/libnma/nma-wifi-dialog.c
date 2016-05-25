@@ -261,6 +261,16 @@ stuff_changed_cb (WirelessSecurity *sec, gpointer user_data)
 	GBytes *ssid = NULL;
 	gboolean free_ssid = TRUE;
 	gboolean valid = FALSE;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	WirelessSecurity *sel_sec = NULL;
+
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->sec_combo));
+	if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->sec_combo), &iter))
+		gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sel_sec, -1);
+
+	if (sel_sec != sec)
+		return;
 
 	if (priv->connection) {
 		NMSettingWireless *s_wireless;
