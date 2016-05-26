@@ -172,7 +172,7 @@ ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 			ws_802_1x_fill_connection (priv->security, "wpa_eap_auth_combo", tmp_connection);
 
 			s_8021x = nm_connection_get_setting (tmp_connection, NM_TYPE_SETTING_802_1X);
-			nm_connection_add_setting (connection, NM_SETTING (g_object_ref (s_8021x)));
+			nm_connection_add_setting (connection, nm_setting_duplicate (s_8021x));
 
 			g_object_unref (tmp_connection);
 		}
