@@ -337,3 +337,4 @@ vpn_supports_ipv6 (NMConnection *connection)
 	capabilities = nm_vpn_editor_plugin_get_capabilities (plugin);
 	return (capabilities & NM_VPN_EDITOR_PLUGIN_CAPABILITY_IPV6) != 0;
 }
+
