@@ -93,6 +93,8 @@ pfc_dialog_show (CEPageDcb *self)
 	ce_page_changed (CE_PAGE (self));
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
 static gboolean
 uint_entries_validate (GtkBuilder *builder, const char *fmt, gint max, gboolean sum)
 {
@@ -268,6 +270,7 @@ bool_entries_handle (GtkBuilder *builder,
 			g_assert_not_reached ();
 	}
 }
+#pragma GCC diagnostic pop
 
 static void
 pg_dialog_show (CEPageDcb *self)
