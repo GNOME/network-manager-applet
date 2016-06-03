@@ -46,7 +46,7 @@ _sort_vpn_plugins (NMVpnPluginInfo *aa, NMVpnPluginInfo *bb)
 }
 
 GSList *
-vpn_get_plugins ()
+vpn_get_plugins (void)
 {
 	static gboolean plugins_loaded = FALSE;
 	static GSList *plugins = NULL;
