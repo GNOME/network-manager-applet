@@ -132,6 +132,19 @@ ce_page_8021x_security_new (NMConnectionEditor *editor,
 	return CE_PAGE (self);
 }
 
+static void
+clear_widget_errors (GtkWidget *widget,
+                     gpointer   user_data)
+{
+	if (GTK_IS_CONTAINER (widget)) {
+		gtk_container_forall (GTK_CONTAINER (widget),
+		                      clear_widget_errors,
+		                      NULL);
+	} else {
+		widget_unset_error (widget);
+	}
+}
+
 static gboolean
 ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 {
@@ -164,6 +177,9 @@ ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 			g_object_unref (tmp_connection);
 		}
 	} else {
+		gtk_container_forall (GTK_CONTAINER (priv->security_widget),
+		                      clear_widget_errors,
+		                      NULL);
 		nm_connection_remove_setting (connection, NM_TYPE_SETTING_802_1X);
 		valid = TRUE;
 	}

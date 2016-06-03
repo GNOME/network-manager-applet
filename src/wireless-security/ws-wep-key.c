@@ -26,6 +26,7 @@
 
 #include "wireless-security.h"
 #include "utils.h"
+#include "helpers.h"
 #include "nma-ui-utils.h"
 
 struct _WirelessSecurityWEPKey {
@@ -102,6 +103,7 @@ validate (WirelessSecurity *parent, GError **error)
 
 	key = gtk_entry_get_text (GTK_ENTRY (entry));
 	if (!key) {
+		widget_set_error (entry);
 		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("missing wep-key"));
 		return FALSE;
 	}
@@ -110,6 +112,7 @@ validate (WirelessSecurity *parent, GError **error)
 		if ((strlen (key) == 10) || (strlen (key) == 26)) {
 			for (i = 0; i < strlen (key); i++) {
 				if (!g_ascii_isxdigit (key[i])) {
+					widget_set_error (entry);
 					g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("invalid wep-key: key with a length of %zu must contain only hex-digits"), strlen (key));
 					return FALSE;
 				}
@@ -117,16 +120,19 @@ validate (WirelessSecurity *parent, GError **error)
 		} else if ((strlen (key) == 5) || (strlen (key) == 13)) {
 			for (i = 0; i < strlen (key); i++) {
 				if (!utils_char_is_ascii_print (key[i])) {
+					widget_set_error (entry);
 					g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("invalid wep-key: key with a length of %zu must contain only ascii characters"), strlen (key));
 					return FALSE;
 				}
 			}
 		} else {
+			widget_set_error (entry);
 			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("invalid wep-key: wrong key length %zu. A key must be either of length 5/13 (ascii) or 10/26 (hex)"), strlen (key));
 			return FALSE;
 		}
 	} else if (sec->type == NM_WEP_KEY_TYPE_PASSPHRASE) {
 		if (!*key || (strlen (key) > 64)) {
+			widget_set_error (entry);
 			if (!*key)
 				g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("invalid wep-key: passphrase must be non-empty"));
 			else
@@ -134,6 +140,7 @@ validate (WirelessSecurity *parent, GError **error)
 			return FALSE;
 		}
 	}
+	widget_unset_error (entry);
 
 	return TRUE;
 }

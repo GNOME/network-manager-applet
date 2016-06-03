@@ -66,24 +66,32 @@ validate (EAPMethod *parent, GError **error)
 {
 	EAPMethodSimple *method = (EAPMethodSimple *)parent;
 	const char *text;
+	gboolean ret = TRUE;
 
 	text = gtk_entry_get_text (method->username_entry);
 	if (!text || !strlen (text)) {
+		widget_set_error (GTK_WIDGET (method->username_entry));
 		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("missing EAP username"));
-		return FALSE;
-	}
+		ret = FALSE;
+	} else
+		widget_unset_error (GTK_WIDGET (method->username_entry));
 
 	/* Check if the password should always be requested */
 	if (always_ask_selected (method->password_entry))
-		return TRUE;
-
-	text = gtk_entry_get_text (method->password_entry);
-	if (!text || !strlen (text)) {
-		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("missing EAP password"));
-		return FALSE;
+		widget_unset_error (GTK_WIDGET (method->password_entry));
+	else {
+		text = gtk_entry_get_text (method->password_entry);
+		if (!text || !strlen (text)) {
+			widget_set_error (GTK_WIDGET (method->password_entry));
+			if (ret) {
+				g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("missing EAP password"));
+				ret = FALSE;
+			}
+		} else
+			widget_unset_error (GTK_WIDGET (method->password_entry));
 	}
 
-	return TRUE;
+	return ret;
 }
 
 static void

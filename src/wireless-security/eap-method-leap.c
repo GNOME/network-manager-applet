@@ -57,20 +57,27 @@ validate (EAPMethod *parent, GError **error)
 {
 	EAPMethodLEAP *method = (EAPMethodLEAP *)parent;
 	const char *text;
+	gboolean ret = TRUE;
 
 	text = gtk_entry_get_text (method->username_entry);
 	if (!text || !strlen (text)) {
+		widget_set_error (GTK_WIDGET (method->username_entry));
 		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("missing EAP-LEAP username"));
-		return FALSE;
-	}
+		ret = FALSE;
+	} else
+		widget_unset_error (GTK_WIDGET (method->username_entry));
 
 	text = gtk_entry_get_text (method->password_entry);
 	if (!text || !strlen (text)) {
-		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("missing EAP-LEAP password"));
-		return FALSE;
-	}
+		widget_set_error (GTK_WIDGET (method->password_entry));
+		if (ret) {
+			g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("missing EAP-LEAP password"));
+			ret = FALSE;
+		}
+	} else
+		widget_unset_error (GTK_WIDGET (method->password_entry));
 
-	return TRUE;
+	return ret;
 }
 
 static void

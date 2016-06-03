@@ -28,6 +28,7 @@
 #include "eap-method.h"
 #include "wireless-security.h"
 #include "utils.h"
+#include "helpers.h"
 
 #define I_NAME_COLUMN   0
 #define I_METHOD_COLUMN 1
@@ -58,7 +59,7 @@ validate (EAPMethod *parent, GError **error)
 	EAPMethod *eap = NULL;
 	const char *file;
 	gboolean provisioning;
-	gboolean valid = FALSE;
+	gboolean valid = TRUE;
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_fast_pac_provision_checkbutton"));
 	g_assert (widget);
@@ -67,9 +68,11 @@ validate (EAPMethod *parent, GError **error)
 	g_assert (widget);
 	file = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
 	if (!provisioning && !file) {
+		widget_set_error (widget);
 		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("missing EAP-FAST PAC file"));
-		return FALSE;
-	}
+		valid = FALSE;
+	} else
+		widget_unset_error (widget);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_fast_inner_auth_combo"));
 	g_assert (widget);
@@ -77,7 +80,7 @@ validate (EAPMethod *parent, GError **error)
 	gtk_combo_box_get_active_iter (GTK_COMBO_BOX (widget), &iter);
 	gtk_tree_model_get (model, &iter, I_METHOD_COLUMN, &eap, -1);
 	g_assert (eap);
-	valid = eap_method_validate (eap, error);
+	valid = eap_method_validate (eap, valid ? error : NULL) && valid;
 	eap_method_unref (eap);
 	return valid;
 }

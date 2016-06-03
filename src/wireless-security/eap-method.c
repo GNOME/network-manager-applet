@@ -32,6 +32,7 @@
 #include "eap-method.h"
 #include "nm-utils.h"
 #include "utils.h"
+#include "helpers.h"
 
 G_DEFINE_BOXED_TYPE (EAPMethod, eap_method, eap_method_ref, eap_method_unref)
 
@@ -216,29 +217,32 @@ eap_method_validate_filepicker (GtkBuilder *builder,
 	GtkWidget *widget;
 	char *filename;
 	NMSetting8021x *setting;
-	gboolean success = FALSE;
+	gboolean success = TRUE;
 
 	if (item_type == TYPE_PRIVATE_KEY) {
-		g_return_val_if_fail (password != NULL, FALSE);
-		g_return_val_if_fail (strlen (password), FALSE);
+		if (!password || *password == '\0')
+			success = FALSE;
 	}
 
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, name));
 	g_assert (widget);
 	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
 	if (!filename) {
-		if (item_type == TYPE_CA_CERT)
-			success = TRUE;
-		else
+		if (item_type != TYPE_CA_CERT) {
+			success = FALSE;
 			g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("no file selected"));
+		}
 		goto out;
 	}
 
-	if (!g_file_test (filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR))
+	if (!g_file_test (filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR)) {
+		success = FALSE;
 		goto out;
+	}
 
 	setting = (NMSetting8021x *) nm_setting_802_1x_new ();
 
+	success = FALSE;
 	if (item_type == TYPE_PRIVATE_KEY) {
 		if (nm_setting_802_1x_set_private_key (setting, filename, password, NM_SETTING_802_1X_CK_SCHEME_PATH, out_format, error))
 			success = TRUE;
@@ -258,6 +262,11 @@ out:
 
 	if (!success && error && !*error)
 		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("unspecified error validating eap-method file"));
+
+	if (success)
+		widget_unset_error (widget);
+	else
+		widget_set_error (widget);
 	return success;
 }
 

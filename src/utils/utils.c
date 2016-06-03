@@ -370,3 +370,18 @@ utils_fake_return_key (GdkEventKey *event)
 	g_free (keys);
 }
 
+void
+widget_set_error (GtkWidget *widget)
+{
+	g_return_if_fail (GTK_IS_WIDGET (widget));
+
+	gtk_style_context_add_class (gtk_widget_get_style_context (widget), "error");
+}
+
+void
+widget_unset_error (GtkWidget *widget)
+{
+	g_return_if_fail (GTK_IS_WIDGET (widget));
+
+	gtk_style_context_remove_class (gtk_widget_get_style_context (widget), "error");
+}

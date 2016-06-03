@@ -66,6 +66,7 @@ validate (WirelessSecurity *parent, GError **error)
 	key = gtk_entry_get_text (GTK_ENTRY (entry));
 	len = key ? strlen (key) : 0;
 	if ((len < 8) || (len > 64)) {
+		widget_set_error (entry);
 		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("invalid wpa-psk: invalid key-length %zu. Must be [8,63] bytes or 64 hex digits"), len);
 		return FALSE;
 	}
@@ -74,11 +75,13 @@ validate (WirelessSecurity *parent, GError **error)
 		/* Hex PSK */
 		for (i = 0; i < len; i++) {
 			if (!isxdigit (key[i])) {
+				widget_set_error (entry);
 				g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("invalid wpa-psk: cannot interpret key with 64 bytes as hex"));
 				return FALSE;
 			}
 		}
 	}
+	widget_unset_error (entry);
 
 	/* passphrase can be between 8 and 63 characters inclusive */
 
