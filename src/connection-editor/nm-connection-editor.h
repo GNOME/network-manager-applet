@@ -99,11 +99,11 @@ void                nm_connection_editor_set_busy (NMConnectionEditor *editor, g
 void                nm_connection_editor_error (GtkWindow *parent,
                                                 const char *heading,
                                                 const char *format,
-                                                ...);
+                                                ...) _nm_printf(3,4);
 void                nm_connection_editor_warning (GtkWindow *parent,
                                                   const char *heading,
                                                   const char *format,
-                                                  ...);
+                                                  ...) _nm_printf(3,4);
 
 void               nm_connection_editor_inter_page_set_value (NMConnectionEditor *editor,
                                                               InterPageChangeType type,
