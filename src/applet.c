@@ -1096,7 +1096,7 @@ applet_get_active_vpn_connection (NMApplet *applet,
 {
 	const GPtrArray *active_list;
 	NMActiveConnection *ret = NULL;
-	NMVpnConnectionState state;
+	NMVpnConnectionState state = NM_VPN_CONNECTION_STATE_UNKNOWN;
 	int i;
 
 	active_list = nm_client_get_active_connections (applet->nm_client);
