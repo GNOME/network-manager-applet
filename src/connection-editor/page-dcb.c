@@ -47,6 +47,25 @@ typedef struct {
 
 /***************************************************************************/
 
+static char *
+_strdup_printf_uint (const char *format, guint i)
+{
+#if NM_MORE_ASSERTS
+	const char *f = format;
+
+	g_assert (f);
+	f = strchr (f, '%');
+	g_assert (f);
+	f++;
+	g_assert (!strchr (f, '%'));
+	g_assert (f[0] == 'u');
+#endif
+
+	NM_PRAGMA_WARNING_DISABLE("-Wformat-nonliteral")
+	return g_strdup_printf (format, i);
+	NM_PRAGMA_WARNING_REENABLE
+}
+
 static void
 pfc_dialog_show (CEPageDcb *self)
 {
@@ -107,7 +126,7 @@ uint_entries_validate (GtkBuilder *builder, const char *fmt, gint max, gboolean 
 	gdk_rgba_parse (&bgcolor, "red3");
 
 	for (i = 0; i < 8; i++) {
-		tmp = g_strdup_printf (fmt, i);
+		tmp = _strdup_printf_uint (fmt, i);
 		entry = GTK_ENTRY (gtk_builder_get_object (builder, tmp));
 		g_free (tmp);
 		g_assert (entry);
@@ -166,7 +185,7 @@ combos_handle (GtkBuilder *builder,
 	guint i, num;
 
 	for (i = 0; i < 8; i++) {
-		tmp = g_strdup_printf (fmt, i);
+		tmp = _strdup_printf_uint (fmt, i);
 		combo = GTK_COMBO_BOX (gtk_builder_get_object (builder, tmp));
 		g_free (tmp);
 		g_assert (combo);
@@ -216,7 +235,7 @@ uint_entries_handle (GtkBuilder *builder,
 	const char *text;
 
 	for (i = 0; i < 8; i++) {
-		tmp = g_strdup_printf (fmt, i);
+		tmp = _strdup_printf_uint (fmt, i);
 		entry = GTK_ENTRY (gtk_builder_get_object (builder, tmp));
 		g_free (tmp);
 		g_assert (entry);
@@ -255,7 +274,7 @@ bool_entries_handle (GtkBuilder *builder,
 	guint i;
 
 	for (i = 0; i < 8; i++) {
-		tmp = g_strdup_printf (fmt, i);
+		tmp = _strdup_printf_uint (fmt, i);
 		toggle = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, tmp));
 		g_free (tmp);
 		g_assert (toggle);

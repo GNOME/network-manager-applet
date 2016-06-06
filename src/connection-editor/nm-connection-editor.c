@@ -1093,10 +1093,9 @@ nm_connection_editor_set_busy (NMConnectionEditor *editor, gboolean busy)
 
 static void
 nm_connection_editor_dialog (GtkWindow *parent, GtkMessageType type, const char *heading,
-                             const char *format, va_list args)
+                             const char *message)
 {
 	GtkWidget *dialog;
-	char *message;
 
 	dialog = gtk_message_dialog_new (parent,
 	                                 GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -1104,10 +1103,7 @@ nm_connection_editor_dialog (GtkWindow *parent, GtkMessageType type, const char 
 	                                 GTK_BUTTONS_CLOSE,
 	                                 "%s", heading);
 
-	message = g_strdup_vprintf (format, args);
-
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), "%s", message);
-	g_free (message);
 
 	gtk_widget_show_all (dialog);
 	gtk_window_present (GTK_WINDOW (dialog));
@@ -1119,20 +1115,24 @@ void
 nm_connection_editor_error (GtkWindow *parent, const char *heading, const char *format, ...)
 {
 	va_list args;
+	gs_free char *message = NULL;
 
 	va_start (args, format);
-	nm_connection_editor_dialog (parent, GTK_MESSAGE_ERROR, heading, format, args);
+	message = g_strdup_vprintf (format, args);
 	va_end (args);
+	nm_connection_editor_dialog (parent, GTK_MESSAGE_ERROR, heading, message);
 }
 
 void
 nm_connection_editor_warning (GtkWindow *parent, const char *heading, const char *format, ...)
 {
 	va_list args;
+	gs_free char *message = NULL;
 
 	va_start (args, format);
-	nm_connection_editor_dialog (parent, GTK_MESSAGE_WARNING, heading, format, args);
+	message = g_strdup_vprintf (format, args);
 	va_end (args);
+	nm_connection_editor_dialog (parent, GTK_MESSAGE_WARNING, heading, message);
 }
 
 void

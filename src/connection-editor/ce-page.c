@@ -509,7 +509,9 @@ ce_page_get_next_available_name (const GPtrArray *connections, const char *forma
 		char *temp;
 		gboolean found = FALSE;
 
+		NM_PRAGMA_WARNING_DISABLE("-Wformat-nonliteral")
 		temp = g_strdup_printf (format, i);
+		NM_PRAGMA_WARNING_REENABLE
 		for (iter = names; iter; iter = g_slist_next (iter)) {
 			if (!strcmp (iter->data, temp)) {
 				found = TRUE;
