@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-14 15:32+0300\n"
-"PO-Revision-Date: 2016-05-14 15:33+0300\n"
+"POT-Creation-Date: 2016-06-07 11:22+0200\n"
+"PO-Revision-Date: 2016-06-07 11:23+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -604,7 +604,7 @@ msgstr "Konfigurowanie połączenia komórkowego „%s”…"
 msgid "User authentication required for mobile broadband connection '%s'..."
 msgstr "Wymagane uwierzytelnienie dla połączenia komórkowego „%s”…"
 
-#: ../src/applet-device-bt.c:129 ../src/mobile-helpers.c:624
+#: ../src/applet-device-bt.c:129 ../src/mobile-helpers.c:627
 #, c-format
 msgid "Mobile broadband connection '%s' active"
 msgstr "Nawiązano połączenie komórkowe „%s”"
@@ -762,7 +762,7 @@ msgid "Error displaying connection information:"
 msgstr "Błąd podczas wyświetlania informacji o połączeniu:"
 
 #: ../src/applet-dialogs.c:72 ../src/connection-editor/page-wifi-security.c:332
-#: ../src/libnma/nma-wifi-dialog.c:932 ../src/libnm-gtk/nm-wifi-dialog.c:948
+#: ../src/libnma/nma-wifi-dialog.c:946 ../src/libnm-gtk/nm-wifi-dialog.c:948
 #: ../src/wireless-security/wireless-security.c:448
 msgid "LEAP"
 msgstr "LEAP"
@@ -945,33 +945,41 @@ msgstr ""
 msgid "NetworkManager Website"
 msgstr "Witryna programu NetworkManager"
 
-#: ../src/applet-dialogs.c:1005
+#: ../src/applet-dialogs.c:1001
+msgid ""
+"The NetworkManager Applet could not find some required resources (the .ui "
+"file was not found)."
+msgstr ""
+"Aplet NetworkManager nie może odnaleźć niektórych wymaganych zasobów (nie "
+"odnaleziono pliku .ui)."
+
+#: ../src/applet-dialogs.c:1006
 msgid "Missing resources"
 msgstr "Brakujące zasoby"
 
-#: ../src/applet-dialogs.c:1030
+#: ../src/applet-dialogs.c:1031
 msgid "Mobile broadband network password"
 msgstr "Hasło do sieci komórkowej"
 
-#: ../src/applet-dialogs.c:1039
+#: ../src/applet-dialogs.c:1040
 #, c-format
 msgid "A password is required to connect to '%s'."
 msgstr "Wymagane hasło do połączenia z „%s”."
 
-#: ../src/applet-dialogs.c:1054
+#: ../src/applet-dialogs.c:1055
 msgid "Password:"
 msgstr "Hasło:"
 
-#: ../src/applet-dialogs.c:1336
+#: ../src/applet-dialogs.c:1337
 msgid "SIM PIN unlock required"
 msgstr "Wymagany kod PIN odblokowania karty SIM"
 
-#: ../src/applet-dialogs.c:1337
+#: ../src/applet-dialogs.c:1338
 msgid "SIM PIN Unlock Required"
 msgstr "Wymagany kod PIN odblokowania karty SIM"
 
 #. FIXME: some warning about # of times you can enter incorrect PIN
-#: ../src/applet-dialogs.c:1339
+#: ../src/applet-dialogs.c:1340
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PIN code before it can be "
@@ -979,25 +987,25 @@ msgid ""
 msgstr "Urządzenie komórkowe „%s” wymaga kodu PIN karty SIM przed użyciem."
 
 #. Translators: PIN code entry label
-#: ../src/applet-dialogs.c:1341
+#: ../src/applet-dialogs.c:1342
 msgid "PIN code:"
 msgstr "Kod PIN:"
 
 #. Translators: Show/obscure PIN checkbox label
-#: ../src/applet-dialogs.c:1345
+#: ../src/applet-dialogs.c:1346
 msgid "Show PIN code"
 msgstr "Wyświetlanie kodu PIN"
 
-#: ../src/applet-dialogs.c:1347
+#: ../src/applet-dialogs.c:1348
 msgid "SIM PUK unlock required"
 msgstr "Wymagany kod PUK odblokowania karty SIM"
 
-#: ../src/applet-dialogs.c:1348
+#: ../src/applet-dialogs.c:1349
 msgid "SIM PUK Unlock Required"
 msgstr "Wymagany kod PUK odblokowania karty SIM"
 
 #. FIXME: some warning about # of times you can enter incorrect PUK
-#: ../src/applet-dialogs.c:1350
+#: ../src/applet-dialogs.c:1351
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PUK code before it can be "
@@ -1005,22 +1013,22 @@ msgid ""
 msgstr "Urządzenie komórkowe „%s” wymaga kodu PUK karty SIM przed użyciem."
 
 #. Translators: PUK code entry label
-#: ../src/applet-dialogs.c:1352
+#: ../src/applet-dialogs.c:1353
 msgid "PUK code:"
 msgstr "Kod PUK:"
 
 #. Translators: New PIN entry label
-#: ../src/applet-dialogs.c:1355
+#: ../src/applet-dialogs.c:1356
 msgid "New PIN code:"
 msgstr "Nowy kod PIN:"
 
 #. Translators: New PIN verification entry label
-#: ../src/applet-dialogs.c:1357
+#: ../src/applet-dialogs.c:1358
 msgid "Re-enter new PIN code:"
 msgstr "Proszę ponownie wprowadzić nowy kod PIN:"
 
 #. Translators: Show/obscure PIN/PUK checkbox label
-#: ../src/applet-dialogs.c:1362
+#: ../src/applet-dialogs.c:1363
 msgid "Show PIN/PUK codes"
 msgstr "Wyświetlanie kodów PIN/PUK"
 
@@ -1330,7 +1338,7 @@ msgstr "nieprawidłowe „interface-name” (%s)"
 msgid "device"
 msgstr "urządzenie"
 
-#: ../src/connection-editor/ce-page.c:591
+#: ../src/connection-editor/ce-page.c:593
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr ""
 "Zaktualizowanie ustawień połączenia się nie powiodło z powodu nieznanego "
@@ -2391,24 +2399,25 @@ msgstr "Usunięcie zaznaczonego połączenia"
 msgid "Authenticate to delete the selected connection"
 msgstr "Należy się uwierzytelnić, aby usunąć zaznaczone połączenie"
 
+#: ../src/connection-editor/nm-connection-list.c:911
+#: ../src/connection-editor/nm-connection-list.c:914
+msgid "Error creating connection"
+msgstr "Błąd podczas tworzenia połączenia"
+
 #: ../src/connection-editor/nm-connection-list.c:912
 msgid "No VPN plugins are installed."
 msgstr "Żadna wtyczka VPN nie jest zainstalowana."
 
-#: ../src/connection-editor/nm-connection-list.c:914
+#: ../src/connection-editor/nm-connection-list.c:915
 #, c-format
 msgid "Don't know how to create '%s' connections"
 msgstr "Nie wiadomo, jak utworzyć połączenia „%s”"
 
-#: ../src/connection-editor/nm-connection-list.c:916
-msgid "Error creating connection"
-msgstr "Błąd podczas tworzenia połączenia"
-
-#: ../src/connection-editor/nm-connection-list.c:938
+#: ../src/connection-editor/nm-connection-list.c:937
 msgid "Error editing connection"
 msgstr "Błąd podczas modyfikowania połączenia"
 
-#: ../src/connection-editor/nm-connection-list.c:939
+#: ../src/connection-editor/nm-connection-list.c:938
 #, c-format
 msgid "Did not find a connection with UUID '%s'"
 msgstr "Nie odnaleziono połączenia z UUID „%s”"
@@ -2492,11 +2501,11 @@ msgstr "Port mostkowania"
 msgid "Could not load bridge port user interface."
 msgstr "Nie można wczytać interfejsu użytkownika portu mostkowania."
 
-#: ../src/connection-editor/page-dcb.c:603
+#: ../src/connection-editor/page-dcb.c:622
 msgid "DCB"
 msgstr "DCB"
 
-#: ../src/connection-editor/page-dcb.c:605
+#: ../src/connection-editor/page-dcb.c:624
 msgid "Could not load DCB user interface."
 msgstr "Nie można wczytać interfejsu użytkownika DCB."
 
@@ -2968,27 +2977,27 @@ msgid "Wi-Fi connection %d"
 msgstr "Połączenie Wi-Fi %d"
 
 #: ../src/connection-editor/page-wifi-security.c:309
-#: ../src/libnma/nma-wifi-dialog.c:906 ../src/libnm-gtk/nm-wifi-dialog.c:922
+#: ../src/libnma/nma-wifi-dialog.c:920 ../src/libnm-gtk/nm-wifi-dialog.c:922
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "40/128-bitowy klucz WEP (szesnastkowy lub ASCII)"
 
 #: ../src/connection-editor/page-wifi-security.c:319
-#: ../src/libnma/nma-wifi-dialog.c:915 ../src/libnm-gtk/nm-wifi-dialog.c:931
+#: ../src/libnma/nma-wifi-dialog.c:929 ../src/libnm-gtk/nm-wifi-dialog.c:931
 msgid "WEP 128-bit Passphrase"
 msgstr "128-bitowe hasło WEP"
 
 #: ../src/connection-editor/page-wifi-security.c:345
-#: ../src/libnma/nma-wifi-dialog.c:945 ../src/libnm-gtk/nm-wifi-dialog.c:961
+#: ../src/libnma/nma-wifi-dialog.c:959 ../src/libnm-gtk/nm-wifi-dialog.c:961
 msgid "Dynamic WEP (802.1x)"
 msgstr "Dynamiczny WEP (802.1x)"
 
 #: ../src/connection-editor/page-wifi-security.c:358
-#: ../src/libnma/nma-wifi-dialog.c:959 ../src/libnm-gtk/nm-wifi-dialog.c:975
+#: ../src/libnma/nma-wifi-dialog.c:973 ../src/libnm-gtk/nm-wifi-dialog.c:975
 msgid "WPA & WPA2 Personal"
 msgstr "WPA i WPA2 Personal"
 
 #: ../src/connection-editor/page-wifi-security.c:371
-#: ../src/libnma/nma-wifi-dialog.c:973 ../src/libnm-gtk/nm-wifi-dialog.c:989
+#: ../src/libnma/nma-wifi-dialog.c:987 ../src/libnm-gtk/nm-wifi-dialog.c:989
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA i WPA2 Enterprise"
 
@@ -3068,14 +3077,6 @@ msgstr ""
 #: ../src/connection-editor/vpn-helpers.c:292
 msgid "Export VPN connection..."
 msgstr "Wyeksportuj połączenie VPN…"
-
-#: ../src/ethernet-dialog.c:86 ../src/ethernet-dialog.c:94
-msgid ""
-"The NetworkManager Applet could not find some required resources (the .ui "
-"file was not found)."
-msgstr ""
-"Aplet NetworkManager nie może odnaleźć niektórych wymaganych zasobów (nie "
-"odnaleziono pliku .ui)."
 
 #: ../src/gsm-unlock.ui.h:2
 msgid "_Unlock"
@@ -3333,55 +3334,55 @@ msgstr ""
 "Brak hasła lub połączenie jest nieprawidłowe. W tym drugim przypadku należy "
 "najpierw zmodyfikować połączenie za pomocą programu nm-connection-editor"
 
-#: ../src/libnma/nma-wifi-dialog.c:455 ../src/libnm-gtk/nm-wifi-dialog.c:465
+#: ../src/libnma/nma-wifi-dialog.c:465 ../src/libnm-gtk/nm-wifi-dialog.c:465
 msgid "New..."
 msgstr "Nowe…"
 
-#: ../src/libnma/nma-wifi-dialog.c:889 ../src/libnm-gtk/nm-wifi-dialog.c:905
+#: ../src/libnma/nma-wifi-dialog.c:903 ../src/libnm-gtk/nm-wifi-dialog.c:905
 msgctxt "Wifi/wired security"
 msgid "None"
 msgstr "Brak"
 
-#: ../src/libnma/nma-wifi-dialog.c:1057 ../src/libnm-gtk/nm-wifi-dialog.c:1075
+#: ../src/libnma/nma-wifi-dialog.c:1071 ../src/libnm-gtk/nm-wifi-dialog.c:1075
 msgid "C_reate"
 msgstr "_Utwórz"
 
-#: ../src/libnma/nma-wifi-dialog.c:1143 ../src/libnm-gtk/nm-wifi-dialog.c:1161
+#: ../src/libnma/nma-wifi-dialog.c:1157 ../src/libnm-gtk/nm-wifi-dialog.c:1161
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the Wi-Fi network '%s'."
 msgstr ""
 "Do połączenia z siecią Wi-Fi „%s” wymagane są hasła lub klucze szyfrujące."
 
-#: ../src/libnma/nma-wifi-dialog.c:1145 ../src/libnm-gtk/nm-wifi-dialog.c:1163
+#: ../src/libnma/nma-wifi-dialog.c:1159 ../src/libnm-gtk/nm-wifi-dialog.c:1163
 msgid "Wi-Fi Network Authentication Required"
 msgstr "Wymagane uwierzytelnienie w sieci Wi-Fi"
 
-#: ../src/libnma/nma-wifi-dialog.c:1147 ../src/libnm-gtk/nm-wifi-dialog.c:1165
+#: ../src/libnma/nma-wifi-dialog.c:1161 ../src/libnm-gtk/nm-wifi-dialog.c:1165
 msgid "Authentication required by Wi-Fi network"
 msgstr "Wymagane uwierzytelnienie w sieci Wi-Fi"
 
-#: ../src/libnma/nma-wifi-dialog.c:1152 ../src/libnm-gtk/nm-wifi-dialog.c:1170
+#: ../src/libnma/nma-wifi-dialog.c:1166 ../src/libnm-gtk/nm-wifi-dialog.c:1170
 msgid "Create New Wi-Fi Network"
 msgstr "Tworzenie nowej sieci Wi-Fi"
 
-#: ../src/libnma/nma-wifi-dialog.c:1154 ../src/libnm-gtk/nm-wifi-dialog.c:1172
+#: ../src/libnma/nma-wifi-dialog.c:1168 ../src/libnm-gtk/nm-wifi-dialog.c:1172
 msgid "New Wi-Fi network"
 msgstr "Nowa sieć Wi-Fi"
 
-#: ../src/libnma/nma-wifi-dialog.c:1155 ../src/libnm-gtk/nm-wifi-dialog.c:1173
+#: ../src/libnma/nma-wifi-dialog.c:1169 ../src/libnm-gtk/nm-wifi-dialog.c:1173
 msgid "Enter a name for the Wi-Fi network you wish to create."
 msgstr "Proszę wprowadzić nazwę sieci Wi-Fi, jaka ma zostać utworzona."
 
-#: ../src/libnma/nma-wifi-dialog.c:1157 ../src/libnm-gtk/nm-wifi-dialog.c:1175
+#: ../src/libnma/nma-wifi-dialog.c:1171 ../src/libnm-gtk/nm-wifi-dialog.c:1175
 msgid "Connect to Hidden Wi-Fi Network"
 msgstr "Połączenie z ukrytą siecią Wi-Fi"
 
-#: ../src/libnma/nma-wifi-dialog.c:1159 ../src/libnm-gtk/nm-wifi-dialog.c:1177
+#: ../src/libnma/nma-wifi-dialog.c:1173 ../src/libnm-gtk/nm-wifi-dialog.c:1177
 msgid "Hidden Wi-Fi network"
 msgstr "Ukryta sieć Wi-Fi"
 
-#: ../src/libnma/nma-wifi-dialog.c:1160 ../src/libnm-gtk/nm-wifi-dialog.c:1178
+#: ../src/libnma/nma-wifi-dialog.c:1174 ../src/libnm-gtk/nm-wifi-dialog.c:1178
 msgid ""
 "Enter the name and security details of the hidden Wi-Fi network you wish to "
 "connect to."
@@ -3547,12 +3548,12 @@ msgstr "Wymagany kod PIN"
 msgid "PIN code is needed for the mobile broadband device"
 msgstr "Wymagany kod PIN dla urządzenia dostępowego do sieci komórkowej"
 
-#: ../src/mobile-helpers.c:619
+#: ../src/mobile-helpers.c:622
 #, c-format
 msgid "Mobile broadband connection '%s' active: (%d%%%s%s)"
 msgstr "Połączenie komórkowe „%s” jest aktywne: (%d%%%s%s)"
 
-#: ../src/mobile-helpers.c:622
+#: ../src/mobile-helpers.c:625
 msgid "roaming"
 msgstr "roaming"
 
@@ -3594,8 +3595,8 @@ msgid "GTC"
 msgstr "GTC"
 
 #: ../src/wireless-security/eap-method-fast.c:403
-msgid "Choose a PAC file..."
-msgstr "Wybierz plik PAC…"
+msgid "Choose a PAC file"
+msgstr "Wybór pliku PAC"
 
 #: ../src/wireless-security/eap-method-fast.c:410
 msgid "PAC files (*.pac)"
@@ -3663,8 +3664,8 @@ msgstr "MD5"
 #: ../src/wireless-security/eap-method-peap.c:381
 #: ../src/wireless-security/eap-method-tls.c:481
 #: ../src/wireless-security/eap-method-ttls.c:412
-msgid "Choose a Certificate Authority certificate..."
-msgstr "Wybór certyfikatu CA…"
+msgid "Choose a Certificate Authority certificate"
+msgstr "Wybór certyfikatu CA"
 
 #: ../src/wireless-security/eap-method-peap.ui.h:3
 msgid "Version 0"
@@ -3744,12 +3745,12 @@ msgstr ""
 "(można ochronić klucz prywatny hasłem za pomocą oprogramowania OpenSSL)"
 
 #: ../src/wireless-security/eap-method-tls.c:475
-msgid "Choose your personal certificate..."
-msgstr "Wybór prywatnego certyfikatu…"
+msgid "Choose your personal certificate"
+msgstr "Wybór prywatnego certyfikatu"
 
 #: ../src/wireless-security/eap-method-tls.c:487
-msgid "Choose your private key..."
-msgstr "Wybór klucza prywatnego…"
+msgid "Choose your private key"
+msgstr "Wybór klucza prywatnego"
 
 #: ../src/wireless-security/eap-method-tls.ui.h:1
 msgid "I_dentity:"
