@@ -332,7 +332,8 @@ vpn_supports_ipv6 (NMConnection *connection)
 	g_return_val_if_fail (service_type != NULL, FALSE);
 
 	plugin = vpn_get_plugin_by_service (service_type);
-	g_return_val_if_fail (plugin != NULL, FALSE);
+	if (!plugin)
+		return FALSE;
 
 	capabilities = nm_vpn_editor_plugin_get_capabilities (plugin);
 	return (capabilities & NM_VPN_EDITOR_PLUGIN_CAPABILITY_IPV6) != 0;
