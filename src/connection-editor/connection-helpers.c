@@ -40,8 +40,9 @@
 #define COL_MARKUP     0
 #define COL_SENSITIVE  1
 #define COL_NEW_FUNC   2
-#define COL_VPN_PLUGIN 3
-#define COL_VPN_SERVICE_TYPE 4
+#define COL_DESCRIPTION 3
+#define COL_VPN_PLUGIN 4
+#define COL_VPN_SERVICE_TYPE 5
 
 static gint
 sort_types (gconstpointer a, gconstpointer b)
@@ -143,36 +144,26 @@ combo_changed_cb (GtkComboBox *combo, gpointer user_data)
 	GtkLabel *label = GTK_LABEL (user_data);
 	GtkTreeModel *model;
 	GtkTreeIter iter;
-	gs_unref_object NMVpnEditorPlugin *plugin = NULL;
-	gs_free char *service_type = NULL;
 	gs_free char *description = NULL;
-	gs_free char *markup = NULL;
 
 	if (!gtk_combo_box_get_active_iter (combo, &iter))
-		goto error;
-
+		goto no_description;
 	model = gtk_combo_box_get_model (combo);
 	if (!model)
-		goto error;
+		goto no_description;
 
 	gtk_tree_model_get (model, &iter,
-	                    COL_VPN_PLUGIN, &plugin,
-	                    COL_VPN_SERVICE_TYPE, &service_type,
+	                    COL_DESCRIPTION, &description,
 	                    -1);
-	if (!plugin || !service_type)
-		goto error;
+	if (description) {
+		gs_free char *markup = NULL;
 
-	if (!nm_vpn_editor_plugin_get_service_info (plugin, service_type, NULL, NULL, &description, NULL))
-		g_object_get (G_OBJECT (plugin), NM_VPN_EDITOR_PLUGIN_DESCRIPTION, &description, NULL);
+		markup = g_markup_printf_escaped ("<i>%s</i>", description);
+		gtk_label_set_markup (label, markup);
+		return;
+	}
 
-	if (!description)
-		goto error;
-
-	markup = g_markup_printf_escaped ("<i>%s</i>", description);
-	gtk_label_set_markup (label, markup);
-	return;
-
-error:
+no_description:
 	gtk_label_set_text (label, "");
 }
 
@@ -280,12 +271,16 @@ set_up_connection_type_combo (GtkComboBox *combo,
 
 		for (;;) {
 			gs_free char *pretty_name = NULL;
+			gs_free char *description = NULL;
 			NMVpnEditorPluginServiceFlags flags;
 
-			if (!nm_vpn_editor_plugin_get_service_info (plugin, service_type, NULL, &pretty_name, NULL, &flags)) {
+			if (!nm_vpn_editor_plugin_get_service_info (plugin, service_type, NULL, &pretty_name, &description, &flags)) {
 				if (is_alias)
 					goto next;
-				g_object_get (plugin, NM_VPN_EDITOR_PLUGIN_NAME, &pretty_name, NULL);
+				g_object_get (plugin,
+				              NM_VPN_EDITOR_PLUGIN_NAME, &pretty_name,
+				              NM_VPN_EDITOR_PLUGIN_DESCRIPTION, &description,
+				              NULL);
 				flags = NM_VPN_EDITOR_PLUGIN_SERVICE_FLAGS_CAN_ADD;
 			}
 			if (!pretty_name)
@@ -303,6 +298,7 @@ set_up_connection_type_combo (GtkComboBox *combo,
 			                    COL_MARKUP, markup,
 			                    COL_SENSITIVE, TRUE,
 			                    COL_NEW_FUNC, list[vpn_index].new_connection_func,
+			                    COL_DESCRIPTION, description,
 			                    COL_VPN_PLUGIN, plugin,
 			                    COL_VPN_SERVICE_TYPE, service_type,
 			                    -1);
