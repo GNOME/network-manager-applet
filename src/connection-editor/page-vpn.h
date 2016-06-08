@@ -56,6 +56,7 @@ gboolean ce_page_vpn_can_export (CEPageVpn *page);
 
 void vpn_connection_new (GtkWindow *parent,
                          const char *detail,
+                         gpointer detail_data,
                          NMClient *client,
                          PageNewConnectionResultFunc result_func,
                          gpointer user_data);

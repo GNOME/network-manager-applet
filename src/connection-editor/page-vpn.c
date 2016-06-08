@@ -281,6 +281,7 @@ vpn_type_result_func (NMConnection *connection, gpointer user_data)
 void
 vpn_connection_new (GtkWindow *parent,
                     const char *detail,
+                    gpointer detail_data,
                     NMClient *client,
                     PageNewConnectionResultFunc result_func,
                     gpointer user_data)

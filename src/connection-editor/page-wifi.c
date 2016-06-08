@@ -609,6 +609,7 @@ ce_page_wifi_class_init (CEPageWifiClass *wifi_class)
 void
 wifi_connection_new (GtkWindow *parent,
                      const char *detail,
+                     gpointer detail_data,
                      NMClient *client,
                      PageNewConnectionResultFunc result_func,
                      gpointer user_data)

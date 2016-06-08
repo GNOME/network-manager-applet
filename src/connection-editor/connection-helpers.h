@@ -54,6 +54,7 @@ void new_connection_dialog_full (GtkWindow *parent_window,
 
 void new_connection_of_type (GtkWindow *parent_window,
                              const char *detail,
+                             gpointer detail_data,
                              NMClient *client,
                              PageNewConnectionFunc new_func,
                              NewConnectionResultFunc result_func,

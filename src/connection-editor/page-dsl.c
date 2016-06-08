@@ -204,6 +204,7 @@ ce_page_dsl_class_init (CEPageDslClass *dsl_class)
 void
 dsl_connection_new (GtkWindow *parent,
                     const char *detail,
+                    gpointer detail_data,
                     NMClient *client,
                     PageNewConnectionResultFunc result_func,
                     gpointer user_data)

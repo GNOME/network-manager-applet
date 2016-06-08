@@ -52,6 +52,7 @@ CEPage *ce_page_infiniband_new (NMConnectionEditor *editor,
 
 void infiniband_connection_new (GtkWindow *parent,
                                 const char *detail,
+                                gpointer detail_data,
                                 NMClient *client,
                                 PageNewConnectionResultFunc result_func,
                                 gpointer user_data);

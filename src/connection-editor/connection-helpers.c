@@ -372,6 +372,7 @@ new_connection_result (NMConnection *connection,
 void
 new_connection_of_type (GtkWindow *parent_window,
                         const char *detail,
+                        gpointer detail_data,
                         NMClient *client,
                         PageNewConnectionFunc new_func,
                         NewConnectionResultFunc result_func,
@@ -387,6 +388,7 @@ new_connection_of_type (GtkWindow *parent_window,
 
 	new_func (parent_window,
 	          detail,
+	          detail_data,
 	          client,
 	          new_connection_result,
 	          ncd);
@@ -424,6 +426,7 @@ new_connection_dialog_full (GtkWindow *parent_window,
 	int response;
 	PageNewConnectionFunc new_func = NULL;
 	gs_free char *vpn_service_type = NULL;
+	const char *detail = NULL;
 	GError *error = NULL;
 
 	/* load GUI */
@@ -460,13 +463,15 @@ new_connection_dialog_full (GtkWindow *parent_window,
 		                    COL_NEW_FUNC, &new_func,
 		                    COL_VPN_SERVICE_TYPE, &vpn_service_type,
 		                    -1);
+		if (vpn_service_type)
+			detail = vpn_service_type;
 	}
 
 	gtk_widget_destroy (GTK_WIDGET (type_dialog));
 	g_object_unref (gui);
 
 	if (new_func)
-		new_connection_of_type (parent_window, vpn_service_type, client, new_func, result_func, user_data);
+		new_connection_of_type (parent_window, detail, NULL, client, new_func, result_func, user_data);
 	else
 		result_func (NULL, user_data);
 }
