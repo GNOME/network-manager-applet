@@ -287,6 +287,8 @@ vpn_connection_new (GtkWindow *parent,
 {
 	NMConnection *connection;
 	NMSetting *s_vpn;
+	const char *service_type;
+	gs_free char *service_type_free = NULL;
 
 	if (!detail) {
 		NewVpnInfo *info;
@@ -306,13 +308,16 @@ vpn_connection_new (GtkWindow *parent,
 		return;
 	}
 
+	service_type_free = nm_vpn_plugin_info_list_find_service_type (vpn_get_plugin_infos (), detail);
+	service_type = service_type_free ?: detail;
+
 	connection = ce_page_new_connection (_("VPN connection %d"),
 	                                     NM_SETTING_VPN_SETTING_NAME,
 	                                     FALSE,
 	                                     client,
 	                                     user_data);
 	s_vpn = nm_setting_vpn_new ();
-	g_object_set (s_vpn, NM_SETTING_VPN_SERVICE_TYPE, detail, NULL);
+	g_object_set (s_vpn, NM_SETTING_VPN_SERVICE_TYPE, service_type, NULL);
 	nm_connection_add_setting (connection, s_vpn);
 
 	(*result_func) (connection, FALSE, NULL, user_data);
