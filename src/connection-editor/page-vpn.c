@@ -28,6 +28,7 @@
 #include "connection-helpers.h"
 #include "nm-connection-editor.h"
 #include "vpn-helpers.h"
+#include "nm-vpn-editor-plugin-call.h"
 
 G_DEFINE_TYPE (CEPageVpn, ce_page_vpn, CE_TYPE_PAGE)
 
@@ -290,6 +291,12 @@ vpn_connection_new (GtkWindow *parent,
 	NMSetting *s_vpn;
 	const char *service_type;
 	gs_free char *service_type_free = NULL;
+	gs_free char *add_detail_key_free = NULL;
+	gs_free char *add_detail_val_free = NULL;
+	const CEPageVpnDetailData *vpn_data = detail_data;
+	gssize split_idx, l;
+	const char *add_detail_key = NULL;
+	const char *add_detail_val = NULL;
 
 	if (!detail) {
 		NewVpnInfo *info;
@@ -309,8 +316,48 @@ vpn_connection_new (GtkWindow *parent,
 		return;
 	}
 
+	service_type = detail;
+	add_detail_key = vpn_data ? vpn_data->add_detail_key : NULL;
+	add_detail_val = vpn_data ? vpn_data->add_detail_val : NULL;
+
 	service_type_free = nm_vpn_plugin_info_list_find_service_type (vpn_get_plugin_infos (), detail);
-	service_type = service_type_free ?: detail;
+	if (service_type_free)
+		service_type = service_type_free;
+	else if (!vpn_data) {
+		/* when called without @vpn_data, it means that @detail may contain "<SERVICE_TYPE>:<ADD_DETAIL>".
+		 * Try to parse them by spliting @detail at the colons and try to interpret the first part as
+		 * @service_type and the remainder as add-detail. */
+		l = strlen (detail);
+		for (split_idx = 1; split_idx < l - 1; split_idx++) {
+			if (detail[split_idx] == ':') {
+				gs_free char *detail_main = g_strndup (detail, split_idx);
+				NMVpnEditorPlugin *plugin;
+
+				service_type_free = nm_vpn_plugin_info_list_find_service_type (vpn_get_plugin_infos (), detail_main);
+				if (!service_type_free)
+					continue;
+				plugin = vpn_get_plugin_by_service (service_type_free);
+				if (!plugin) {
+					g_clear_pointer (&service_type_free, g_free);
+					continue;
+				}
+
+				/* we found a @service_type. Try to use the remainder as add-detail. */
+				service_type = service_type_free;
+				if (nm_vpn_editor_plugin_get_service_add_detail (plugin, service_type, &detail[split_idx + 1],
+				                                                 NULL, NULL,
+				                                                 &add_detail_key_free, &add_detail_val_free, NULL)
+				    && add_detail_key_free && add_detail_key_free[0]
+				    && add_detail_val_free && add_detail_val_free[0]) {
+					add_detail_key = add_detail_key_free;
+					add_detail_val = add_detail_val_free;
+				}
+				break;
+			}
+		}
+	}
+	if (!service_type)
+		service_type = detail;
 
 	connection = ce_page_new_connection (_("VPN connection %d"),
 	                                     NM_SETTING_VPN_SETTING_NAME,
@@ -319,6 +366,10 @@ vpn_connection_new (GtkWindow *parent,
 	                                     user_data);
 	s_vpn = nm_setting_vpn_new ();
 	g_object_set (s_vpn, NM_SETTING_VPN_SERVICE_TYPE, service_type, NULL);
+
+	if (add_detail_key)
+		nm_setting_vpn_add_data_item ((NMSettingVpn *) s_vpn, add_detail_key, add_detail_val);
+
 	nm_connection_add_setting (connection, s_vpn);
 
 	(*result_func) (connection, FALSE, NULL, user_data);

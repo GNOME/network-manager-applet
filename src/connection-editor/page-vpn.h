@@ -43,6 +43,11 @@ typedef struct {
 	CEPageClass parent;
 } CEPageVpnClass;
 
+typedef struct {
+	char *add_detail_key;
+	char *add_detail_val;
+} CEPageVpnDetailData;
+
 GType ce_page_vpn_get_type (void);
 
 CEPage *ce_page_vpn_new (NMConnectionEditor *editor,

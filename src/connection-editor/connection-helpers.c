@@ -43,6 +43,8 @@
 #define COL_DESCRIPTION 3
 #define COL_VPN_PLUGIN 4
 #define COL_VPN_SERVICE_TYPE 5
+#define COL_VPN_ADD_DETAIL_KEY 6
+#define COL_VPN_ADD_DETAIL_VAL 7
 
 static gint
 sort_types (gconstpointer a, gconstpointer b)
@@ -273,6 +275,9 @@ set_up_connection_type_combo (GtkComboBox *combo,
 			gs_free char *pretty_name = NULL;
 			gs_free char *description = NULL;
 			NMVpnEditorPluginServiceFlags flags;
+			gs_strfreev char **add_details_free = NULL;
+			char **add_details;
+			const char *i_add_detail;
 
 			if (!nm_vpn_editor_plugin_get_service_info (plugin, service_type, NULL, &pretty_name, &description, &flags)) {
 				if (is_alias)
@@ -288,21 +293,61 @@ set_up_connection_type_combo (GtkComboBox *combo,
 			if (!NM_FLAGS_HAS (flags, NM_VPN_EDITOR_PLUGIN_SERVICE_FLAGS_CAN_ADD))
 				goto next;
 
-			if (show_headers)
-				markup = g_markup_printf_escaped ("    %s", pretty_name);
-			else
-				markup = g_markup_escape_text (pretty_name, -1);
+			add_details_free = nm_vpn_editor_plugin_get_service_add_details (plugin, service_type);
+			add_details = add_details_free;
+			i_add_detail = add_details ? add_details[0] : NULL;
+			do {
+				const char *i_pretty_name, *i_description;
+				gs_free char *i_pretty_name_free = NULL;
+				gs_free char *i_description_free = NULL;
+				gs_free char *i_add_detail_key = NULL;
+				gs_free char *i_add_detail_val = NULL;
 
-			gtk_list_store_append (model, &iter);
-			gtk_list_store_set (model, &iter,
-			                    COL_MARKUP, markup,
-			                    COL_SENSITIVE, TRUE,
-			                    COL_NEW_FUNC, list[vpn_index].new_connection_func,
-			                    COL_DESCRIPTION, description,
-			                    COL_VPN_PLUGIN, plugin,
-			                    COL_VPN_SERVICE_TYPE, service_type,
-			                    -1);
-			g_free (markup);
+				if (i_add_detail) {
+					if (i_add_detail[0] == '\0')
+						goto i_next;
+					if (!nm_vpn_editor_plugin_get_service_add_detail (plugin, service_type, i_add_detail,
+					                                                  &i_pretty_name_free, &i_description_free,
+					                                                  &i_add_detail_key, &i_add_detail_val, NULL))
+						goto i_next;
+					if (!i_pretty_name_free)
+						goto i_next;
+					if (i_add_detail_key && !i_add_detail_key[0])
+						goto i_next;
+					if (i_add_detail_val && !i_add_detail_val[0])
+						goto next;
+					if (!i_add_detail_key ^ !i_add_detail_val)
+						goto next;
+					i_pretty_name = i_pretty_name_free;
+					i_description = i_description_free;
+				} else {
+					i_pretty_name = pretty_name;
+					i_description = description;
+				}
+
+				if (show_headers)
+					markup = g_markup_printf_escaped ("    %s", i_pretty_name);
+				else
+					markup = g_markup_escape_text (i_pretty_name, -1);
+
+				gtk_list_store_append (model, &iter);
+				gtk_list_store_set (model, &iter,
+				                    COL_MARKUP, markup,
+				                    COL_SENSITIVE, TRUE,
+				                    COL_NEW_FUNC, list[vpn_index].new_connection_func,
+				                    COL_DESCRIPTION, i_description,
+				                    COL_VPN_PLUGIN, plugin,
+				                    COL_VPN_SERVICE_TYPE, service_type,
+				                    COL_VPN_ADD_DETAIL_KEY, i_add_detail_key,
+				                    COL_VPN_ADD_DETAIL_VAL, i_add_detail_val,
+				                    -1);
+				g_free (markup);
+
+i_next:
+				if (!add_details)
+					break;
+				i_add_detail = (++add_details)[0];
+			} while (i_add_detail);
 
 next:
 			if (!aliases || !aliases[0])
@@ -426,8 +471,12 @@ new_connection_dialog_full (GtkWindow *parent_window,
 	int response;
 	PageNewConnectionFunc new_func = NULL;
 	gs_free char *vpn_service_type = NULL;
+	gs_free char *vpn_add_detail_key = NULL;
+	gs_free char *vpn_add_detail_val = NULL;
 	const char *detail = NULL;
+	gpointer detail_data = NULL;
 	GError *error = NULL;
+	CEPageVpnDetailData vpn_data;
 
 	/* load GUI */
 	gui = gtk_builder_new ();
@@ -462,16 +511,24 @@ new_connection_dialog_full (GtkWindow *parent_window,
 		gtk_tree_model_get (gtk_combo_box_get_model (combo), &iter,
 		                    COL_NEW_FUNC, &new_func,
 		                    COL_VPN_SERVICE_TYPE, &vpn_service_type,
+		                    COL_VPN_ADD_DETAIL_KEY, &vpn_add_detail_key,
+		                    COL_VPN_ADD_DETAIL_VAL, &vpn_add_detail_val,
 		                    -1);
-		if (vpn_service_type)
+		if (vpn_service_type) {
+			memset (&vpn_data, 0, sizeof (vpn_data));
+			vpn_data.add_detail_key = vpn_add_detail_key;
+			vpn_data.add_detail_val = vpn_add_detail_val;
+
 			detail = vpn_service_type;
+			detail_data = &vpn_data;
+		}
 	}
 
 	gtk_widget_destroy (GTK_WIDGET (type_dialog));
 	g_object_unref (gui);
 
 	if (new_func)
-		new_connection_of_type (parent_window, detail, NULL, client, new_func, result_func, user_data);
+		new_connection_of_type (parent_window, detail, detail_data, client, new_func, result_func, user_data);
 	else
 		result_func (NULL, user_data);
 }
