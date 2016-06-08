@@ -248,7 +248,7 @@ set_up_connection_type_combo (GtkComboBox *combo,
 		added++;
 	}
 
-	vpn_plugins = vpn_get_plugins ();
+	vpn_plugins = vpn_get_plugin_infos ();
 	if (!vpn_plugins || vpn_index == -1) {
 		gtk_combo_box_set_active (combo, show_headers ? active + 1 : active);
 		return;

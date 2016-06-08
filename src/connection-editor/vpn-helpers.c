@@ -33,7 +33,7 @@ vpn_get_plugin_by_service (const char *service)
 {
 	NMVpnPluginInfo *plugin_info;
 
-	plugin_info = nm_vpn_plugin_info_list_find_by_service (vpn_get_plugins (), service);
+	plugin_info = nm_vpn_plugin_info_list_find_by_service (vpn_get_plugin_infos (), service);
 	if (plugin_info)
 		return nm_vpn_plugin_info_get_editor_plugin (plugin_info);
 	return NULL;
@@ -46,7 +46,7 @@ _sort_vpn_plugins (NMVpnPluginInfo *aa, NMVpnPluginInfo *bb)
 }
 
 GSList *
-vpn_get_plugins (void)
+vpn_get_plugin_infos (void)
 {
 	static gboolean plugins_loaded = FALSE;
 	static GSList *plugins = NULL;
@@ -120,7 +120,7 @@ import_vpn_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 		goto out;
 	}
 
-	for (iter = vpn_get_plugins (); !connection && iter; iter = iter->next) {
+	for (iter = vpn_get_plugin_infos (); !connection && iter; iter = iter->next) {
 		NMVpnEditorPlugin *plugin;
 
 		plugin = nm_vpn_plugin_info_get_editor_plugin (iter->data);
