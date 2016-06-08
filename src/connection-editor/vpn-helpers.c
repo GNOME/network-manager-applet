@@ -64,9 +64,12 @@ vpn_get_plugins (void)
 
 		/* load the editor plugin, and preserve only those NMVpnPluginInfo that can
 		 * successfully load the plugin. */
-		if (nm_vpn_plugin_info_load_editor_plugin (plugin_info, &error))
+		if (nm_vpn_plugin_info_load_editor_plugin (plugin_info, &error)) {
 			plugins = g_slist_prepend (plugins, plugin_info);
-		else {
+			g_info ("vpn: (%s,%s) loaded",
+			        nm_vpn_plugin_info_get_name (plugin_info),
+			        nm_vpn_plugin_info_get_filename (plugin_info));
+		} else {
 			if (   !nm_vpn_plugin_info_get_plugin (plugin_info)
 			    && nm_vpn_plugin_info_lookup_property (plugin_info, NM_VPN_PLUGIN_INFO_KF_GROUP_GNOME, "properties")) {
 				g_message ("vpn: (%s,%s) cannot load legacy-only plugin",
