@@ -28,7 +28,7 @@
 
 #include <NetworkManager.h>
 
-GSList *vpn_get_plugins (void);
+GSList *vpn_get_plugin_infos (void);
 
 NMVpnEditorPlugin *vpn_get_plugin_by_service (const char *service);
 

@@ -54,6 +54,7 @@ CEPage *ce_page_dsl_new (NMConnectionEditor *editor,
 
 void dsl_connection_new (GtkWindow *parent,
                          const char *detail,
+                         gpointer detail_data,
                          NMClient *client,
                          PageNewConnectionResultFunc callback,
                          gpointer user_data);

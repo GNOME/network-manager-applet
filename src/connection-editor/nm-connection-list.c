@@ -917,6 +917,7 @@ nm_connection_list_create (NMConnectionList *self, GType ctype, const char *deta
 	} else {
 		new_connection_of_type (GTK_WINDOW (self->dialog),
 		                        detail,
+		                        NULL,
 		                        self->client,
 		                        types[i].new_connection_func,
 		                        really_add_connection,

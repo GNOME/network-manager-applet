@@ -390,6 +390,7 @@ add_slave (CEPageMaster *master, NewConnectionResultFunc result_func)
 	if (priv->slave_arptype == ARPHRD_INFINIBAND) {
 		new_connection_of_type (priv->toplevel,
 		                        NULL,
+		                        NULL,
 		                        CE_PAGE (self)->client,
 		                        infiniband_connection_new,
 		                        result_func,
@@ -601,6 +602,7 @@ ce_page_bond_class_init (CEPageBondClass *bond_class)
 void
 bond_connection_new (GtkWindow *parent,
                      const char *detail,
+                     gpointer detail_data,
                      NMClient *client,
                      PageNewConnectionResultFunc result_func,
                      gpointer user_data)

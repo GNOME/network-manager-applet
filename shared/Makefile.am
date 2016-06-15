@@ -4,4 +4,5 @@ EXTRA_DIST = \
      nm-default.h \
      nm-glib.h \
      nm-macros-internal.h \
-     nm-test-utils.h
+     nm-test-utils.h \
+     nm-vpn-editor-plugin-call.h

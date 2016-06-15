@@ -788,6 +788,7 @@ ce_page_vlan_class_init (CEPageVlanClass *vlan_class)
 void
 vlan_connection_new (GtkWindow *parent,
                      const char *detail,
+                     gpointer detail_data,
                      NMClient *client,
                      PageNewConnectionResultFunc result_func,
                      gpointer user_data)

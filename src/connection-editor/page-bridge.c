@@ -295,6 +295,7 @@ ce_page_bridge_class_init (CEPageBridgeClass *bridge_class)
 void
 bridge_connection_new (GtkWindow *parent,
                        const char *detail,
+                       gpointer detail_data,
                        NMClient *client,
                        PageNewConnectionResultFunc result_func,
                        gpointer user_data)

@@ -502,6 +502,7 @@ cancel_dialog (GtkDialog *dialog)
 void
 mobile_connection_new (GtkWindow *parent,
                        const char *detail,
+                       gpointer detail_data,
                        NMClient *client,
                        PageNewConnectionResultFunc result_func,
                        gpointer user_data)
@@ -519,7 +520,7 @@ mobile_connection_new (GtkWindow *parent,
 	info->user_data = user_data;
 
 	wizard = nma_mobile_wizard_new (parent, NULL, NM_DEVICE_MODEM_CAPABILITY_NONE, FALSE,
-									new_connection_mobile_wizard_done, info);
+	                                new_connection_mobile_wizard_done, info);
 	if (wizard) {
 		nma_mobile_wizard_present (wizard);
 		return;

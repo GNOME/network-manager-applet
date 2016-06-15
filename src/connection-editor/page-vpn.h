@@ -43,6 +43,11 @@ typedef struct {
 	CEPageClass parent;
 } CEPageVpnClass;
 
+typedef struct {
+	char *add_detail_key;
+	char *add_detail_val;
+} CEPageVpnDetailData;
+
 GType ce_page_vpn_get_type (void);
 
 CEPage *ce_page_vpn_new (NMConnectionEditor *editor,
@@ -56,6 +61,7 @@ gboolean ce_page_vpn_can_export (CEPageVpn *page);
 
 void vpn_connection_new (GtkWindow *parent,
                          const char *detail,
+                         gpointer detail_data,
                          NMClient *client,
                          PageNewConnectionResultFunc result_func,
                          gpointer user_data);
