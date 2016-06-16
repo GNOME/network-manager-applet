@@ -85,6 +85,8 @@ const char *nma_vpn_password_dialog_get_password_secondary (NMAVpnPasswordDialog
 
 const char *nma_vpn_password_dialog_get_password_ternary (NMAVpnPasswordDialog *dialog);
 
+void nma_vpn_password_dialog_set_expired (NMAVpnPasswordDialog *dialog, const char *reason);
+
 G_END_DECLS
 
 #endif /* NMA_VPN_PASSWORD_DIALOG_H */

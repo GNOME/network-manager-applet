@@ -43,6 +43,7 @@ typedef struct {
 	GtkWidget *password_entry_secondary;
 	GtkWidget *password_entry_ternary;
 	GtkWidget *show_passwords_checkbox;
+	GtkWidget *warning_label;
 
 	GtkWidget *grid_alignment;
 	GtkWidget *grid;
@@ -190,7 +191,7 @@ nma_vpn_password_dialog_new (const char *title,
 {
 	GtkWidget *dialog;
 	NMAVpnPasswordDialogPrivate *priv;
-	GtkLabel *message_label;
+	GtkLabel *message_label, *warning_label;
 	GtkWidget *hbox;
 	GtkWidget *vbox;
 	GtkWidget *main_vbox;
@@ -292,9 +293,18 @@ nma_vpn_password_dialog_new (const char *title,
 		gtk_size_group_add_widget (priv->group, priv->grid_alignment);
 	}
 
+	priv->warning_label = gtk_label_new ("");
+	warning_label = GTK_LABEL (priv->warning_label);
+	gtk_label_set_justify (warning_label, GTK_JUSTIFY_LEFT);
+	gtk_widget_set_halign (priv->warning_label, GTK_ALIGN_START);
+	gtk_label_set_line_wrap (warning_label, TRUE);
+	gtk_label_set_max_width_chars (warning_label, 35);
+	gtk_size_group_add_widget (priv->group, priv->warning_label);
+
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
 	gtk_box_pack_start (GTK_BOX (main_vbox), vbox, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (vbox), priv->grid_alignment, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (main_vbox), priv->warning_label, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), main_vbox, FALSE, FALSE, 0);
 	gtk_box_pack_start (content, hbox, FALSE, FALSE, 0);
 	gtk_widget_show_all (GTK_WIDGET (content));
@@ -533,3 +543,26 @@ nma_vpn_password_dialog_set_password_ternary_label (NMAVpnPasswordDialog *dialog
 		add_grid_rows (dialog);
 }
 
+void
+nma_vpn_password_dialog_set_expired (NMAVpnPasswordDialog *dialog,
+                                     const char *reason)
+{
+	NMAVpnPasswordDialogPrivate *priv;
+	gs_free char *text = NULL;
+	const char *base = _("Request expired");
+
+	g_return_if_fail (dialog != NULL);
+	g_return_if_fail (NMA_VPN_IS_PASSWORD_DIALOG (dialog));
+
+	priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
+
+	gtk_widget_set_sensitive (priv->password_entry, FALSE);
+	gtk_widget_set_sensitive (priv->password_entry_secondary, FALSE);
+	gtk_widget_set_sensitive (priv->password_entry_ternary, FALSE);
+	gtk_widget_set_sensitive (priv->show_passwords_checkbox, FALSE);
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_OK, FALSE);
+
+	text = g_strdup_printf ("<b>%s%s%s</b>", base, reason ? ": " : "", reason ?: "");
+
+	gtk_label_set_markup (GTK_LABEL (priv->warning_label), text);
+}
