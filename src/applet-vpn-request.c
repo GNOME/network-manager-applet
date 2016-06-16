@@ -147,6 +147,8 @@ child_stdout_data_cb (GIOChannel *source, GIOCondition condition, gpointer user_
 		return TRUE;
 
 	if (g_io_channel_read_line (source, &str, NULL, NULL, NULL) == G_IO_STATUS_NORMAL) {
+		gs_free char *str_free = str;
+
 		len = strlen (str);
 		if (len == 1 && str[0] == '\n') {
 			/* on second line with a newline newline */
@@ -159,6 +161,7 @@ child_stdout_data_cb (GIOChannel *source, GIOCondition condition, gpointer user_
 			/* remove terminating newline */
 			str[len - 1] = '\0';
 			priv->lines = g_slist_append (priv->lines, str);
+			str_free = NULL;
 		}
 	}
 	return TRUE;
