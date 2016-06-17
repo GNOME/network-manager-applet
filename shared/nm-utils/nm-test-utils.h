@@ -71,6 +71,8 @@
  *
  * "TRACE", this is shorthand for "log-level=TRACE".
  *
+ * "D", this is shorthand for "log-level=TRACE,no-expect-message".
+ *
  * "sudo-cmd=PATH": when running root tests as normal user, the test will execute
  *   itself by invoking sudo at PATH.
  *   For example
@@ -90,6 +92,11 @@
 
 #include "nm-default.h"
 
+#if defined(NM_ASSERT_NO_MSG) && NM_ASSERT_NO_MSG
+#undef g_return_if_fail_warning
+#undef g_assertion_message_expr
+#endif
+
 #include <arpa/inet.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -99,12 +106,10 @@
 
 #include "nm-utils.h"
 
-#ifdef __NETWORKMANAGER_LOGGING_H__
-/* We are running tests under src/. Let's include some files by default.
- * They are useful, and affect how nm-test-utils.h itself behaves. */
-#include "NetworkManagerUtils.h"
-#include "nm-keyfile-internal.h"
-#endif
+/*******************************************************************************/
+
+#define NMTST_G_RETURN_MSG_S(expr) "*: assertion '"NM_ASSERT_G_RETURN_EXPR(expr)"' failed"
+#define NMTST_G_RETURN_MSG(expr)   NMTST_G_RETURN_MSG_S(#expr)
 
 /*******************************************************************************/
 
@@ -151,13 +156,11 @@
 			g_assert_not_reached (); \
 	} G_STMT_END
 
-inline static void
-_nmtst_assert_success (gboolean success, GError *error, const char *file, int line)
-{
-	if (!success || error)
-		g_error ("(%s:%d) FAILURE success=%d, error=%s", file, line, success, error ? error->message : "(no error)");
-}
-#define nmtst_assert_success(success, error) _nmtst_assert_success ((success), (error), __FILE__, __LINE__)
+#define nmtst_assert_success(success, error) \
+	G_STMT_START { \
+		g_assert_no_error (error); \
+		g_assert ((success)); \
+	} G_STMT_END
 
 #define nmtst_assert_no_success(success, error) \
 	G_STMT_START { \
@@ -341,9 +344,14 @@ __nmtst_init (int *argc, char ***argv, gboolean assert_logging, const char *log_
 			} else if (!g_ascii_strncasecmp (debug, "log-level=", strlen ("log-level="))) {
 				g_free (c_log_level);
 				log_level = c_log_level = g_strdup (&debug[strlen ("log-level=")]);
+			} else if (!g_ascii_strcasecmp (debug, "D")) {
+				/* shorthand for "log-level=TRACE,no-expect-message" */
+				g_free (c_log_level);
+				log_level = c_log_level = g_strdup ("TRACE");
+				no_expect_message = TRUE;
 			} else if (!g_ascii_strcasecmp (debug, "TRACE")) {
 				g_free (c_log_level);
-				log_level = c_log_level = g_strdup (debug);
+				log_level = c_log_level = g_strdup ("TRACE");
 			} else if (!g_ascii_strncasecmp (debug, "log-domains=", strlen ("log-domains="))) {
 				g_free (c_log_domains);
 				log_domains = c_log_domains = g_strdup (&debug[strlen ("log-domains=")]);
@@ -505,7 +513,7 @@ __nmtst_init (int *argc, char ***argv, gboolean assert_logging, const char *log_
 
 	if (!__nmtst_internal.assert_logging) {
 		gboolean success = TRUE;
-#ifdef __NETWORKMANAGER_LOGGING_H__
+#ifdef _NMTST_INSIDE_CORE
 		success = nm_logging_setup (log_level, log_domains, NULL, NULL);
 		*out_set_logging = TRUE;
 #endif
@@ -522,7 +530,7 @@ __nmtst_init (int *argc, char ***argv, gboolean assert_logging, const char *log_
 		 * This transforms g_test_expect_message() into a NOP, but we also have to relax
 		 * g_log_set_always_fatal(), which was set by g_test_init(). */
 		g_log_set_always_fatal (G_LOG_FATAL_MASK);
-#ifdef __NETWORKMANAGER_LOGGING_H__
+#ifdef _NMTST_INSIDE_CORE
 		if (c_log_domains || c_log_level) {
 			/* Normally, tests with assert_logging do not overwrite the logging level/domains because
 			 * the logging statements are part of the assertions. But if the test is run with
@@ -583,27 +591,7 @@ __nmtst_init (int *argc, char ***argv, gboolean assert_logging, const char *log_
 #endif
 }
 
-#ifdef __NETWORKMANAGER_LOGGING_H__
-inline static void
-nmtst_init_with_logging (int *argc, char ***argv, const char *log_level, const char *log_domains)
-{
-	__nmtst_init (argc, argv, FALSE, log_level, log_domains, NULL);
-}
-inline static void
-nmtst_init_assert_logging (int *argc, char ***argv, const char *log_level, const char *log_domains)
-{
-	gboolean set_logging;
-
-	__nmtst_init (argc, argv, TRUE, NULL, NULL, &set_logging);
-
-	if (!set_logging) {
-		gboolean success;
-
-		success = nm_logging_setup (log_level, log_domains, NULL, NULL);
-		g_assert (success);
-	}
-}
-#else
+#ifndef _NMTST_INSIDE_CORE
 inline static void
 nmtst_init (int *argc, char ***argv, gboolean assert_logging)
 {
@@ -773,6 +761,34 @@ inline static guint32
 nmtst_get_rand_int (void)
 {
 	return g_rand_int (nmtst_get_rand ());
+}
+
+inline static gpointer
+nmtst_rand_buf (GRand *rand, gpointer buffer, gsize buffer_length)
+{
+	guint32 v;
+	guint8 *b = buffer;
+
+	if (!buffer_length)
+		return buffer;
+
+	g_assert (buffer);
+
+	if (!rand)
+		rand = nmtst_get_rand ();
+
+	for (; buffer_length >= sizeof (guint32); buffer_length -= sizeof (guint32), b += sizeof (guint32)) {
+		v = g_rand_int (rand);
+		memcpy (b, &v, sizeof (guint32));
+	}
+	if (buffer_length > 0) {
+		v = g_rand_int (rand);
+		do {
+			*(b++) = v & 0xFF;
+			v >>= 8;
+		} while (--buffer_length > 0);
+	}
+	return buffer;
 }
 
 inline static void *
@@ -1141,200 +1157,6 @@ _nmtst_assert_resolve_relative_path_equals (const char *f1, const char *f2, cons
 #define nmtst_assert_resolve_relative_path_equals(f1, f2) _nmtst_assert_resolve_relative_path_equals (f1, f2, __FILE__, __LINE__);
 
 /*******************************************************************************/
-
-#ifdef __NETWORKMANAGER_PLATFORM_H__
-
-inline static NMPlatformIP6Address *
-nmtst_platform_ip6_address (const char *address, const char *peer_address, guint plen)
-{
-	static NMPlatformIP6Address addr;
-
-	memset (&addr, 0, sizeof (addr));
-	addr.address = *nmtst_inet6_from_string (address);
-	addr.peer_address = *nmtst_inet6_from_string (peer_address);
-	addr.plen = plen;
-
-	return &addr;
-}
-
-inline static NMPlatformIP6Address *
-nmtst_platform_ip6_address_full (const char *address, const char *peer_address, guint plen,
-                                 int ifindex, NMIPConfigSource source, guint32 timestamp,
-                                 guint32 lifetime, guint32 preferred, guint32 flags)
-{
-	NMPlatformIP6Address *addr = nmtst_platform_ip6_address (address, peer_address, plen);
-
-	addr->ifindex = ifindex;
-	addr->source = source;
-	addr->timestamp = timestamp;
-	addr->lifetime = lifetime;
-	addr->preferred = preferred;
-	addr->n_ifa_flags = flags;
-
-	return addr;
-}
-
-inline static NMPlatformIP4Route *
-nmtst_platform_ip4_route (const char *network, guint plen, const char *gateway)
-{
-	static NMPlatformIP4Route route;
-
-	memset (&route, 0, sizeof (route));
-	route.network = nmtst_inet4_from_string (network);
-	route.plen = plen;
-	route.gateway = nmtst_inet4_from_string (gateway);
-
-	return &route;
-}
-
-inline static NMPlatformIP4Route *
-nmtst_platform_ip4_route_full (const char *network, guint plen, const char *gateway,
-                               int ifindex, NMIPConfigSource source,
-                               guint metric, guint mss,
-                               guint8 scope,
-                               const char *pref_src)
-{
-	NMPlatformIP4Route *route = nmtst_platform_ip4_route (network, plen, gateway);
-
-	route->ifindex = ifindex;
-	route->source = source;
-	route->metric = metric;
-	route->mss = mss;
-	route->scope_inv = nm_platform_route_scope_inv (scope);
-	route->pref_src = nmtst_inet4_from_string (pref_src);
-
-	return route;
-}
-
-inline static NMPlatformIP6Route *
-nmtst_platform_ip6_route (const char *network, guint plen, const char *gateway)
-{
-	static NMPlatformIP6Route route;
-
-	memset (&route, 0, sizeof (route));
-	route.network = *nmtst_inet6_from_string (network);
-	route.plen = plen;
-	route.gateway = *nmtst_inet6_from_string (gateway);
-
-	return &route;
-}
-
-inline static NMPlatformIP6Route *
-nmtst_platform_ip6_route_full (const char *network, guint plen, const char *gateway,
-                               int ifindex, NMIPConfigSource source,
-                               guint metric, guint mss)
-{
-	NMPlatformIP6Route *route = nmtst_platform_ip6_route (network, plen, gateway);
-
-	route->ifindex = ifindex;
-	route->source = source;
-	route->metric = metric;
-	route->mss = mss;
-
-	return route;
-}
-
-inline static int
-_nmtst_platform_ip4_routes_equal_sort (gconstpointer a, gconstpointer b, gpointer user_data)
-{
-	return nm_platform_ip4_route_cmp ((const NMPlatformIP4Route *) a, (const NMPlatformIP4Route *) b);
-}
-
-inline static void
-nmtst_platform_ip4_routes_equal (const NMPlatformIP4Route *a, const NMPlatformIP4Route *b, gsize len, gboolean ignore_order)
-{
-	gsize i;
-	gs_free const NMPlatformIP4Route *c_a = NULL, *c_b = NULL;
-
-	g_assert (a);
-	g_assert (b);
-
-	if (ignore_order) {
-		a = c_a = g_memdup (a, sizeof (NMPlatformIP4Route) * len);
-		b = c_b = g_memdup (b, sizeof (NMPlatformIP4Route) * len);
-		g_qsort_with_data (c_a, len, sizeof (NMPlatformIP4Route), _nmtst_platform_ip4_routes_equal_sort, NULL);
-		g_qsort_with_data (c_b, len, sizeof (NMPlatformIP4Route), _nmtst_platform_ip4_routes_equal_sort, NULL);
-	}
-
-	for (i = 0; i < len; i++) {
-		if (nm_platform_ip4_route_cmp (&a[i], &b[i]) != 0) {
-			char buf[sizeof (_nm_utils_to_string_buffer)];
-
-			g_error ("Error comparing IPv4 route[%lu]: %s vs %s", (long unsigned) i,
-			         nm_platform_ip4_route_to_string (&a[i], NULL, 0),
-			         nm_platform_ip4_route_to_string (&b[i], buf, sizeof (buf)));
-			g_assert_not_reached ();
-		}
-	}
-}
-
-inline static int
-_nmtst_platform_ip6_routes_equal_sort (gconstpointer a, gconstpointer b, gpointer user_data)
-{
-	return nm_platform_ip6_route_cmp ((const NMPlatformIP6Route *) a, (const NMPlatformIP6Route *) b);
-}
-
-inline static void
-nmtst_platform_ip6_routes_equal (const NMPlatformIP6Route *a, const NMPlatformIP6Route *b, gsize len, gboolean ignore_order)
-{
-	gsize i;
-	gs_free const NMPlatformIP6Route *c_a = NULL, *c_b = NULL;
-
-	g_assert (a);
-	g_assert (b);
-
-	if (ignore_order) {
-		a = c_a = g_memdup (a, sizeof (NMPlatformIP6Route) * len);
-		b = c_b = g_memdup (b, sizeof (NMPlatformIP6Route) * len);
-		g_qsort_with_data (c_a, len, sizeof (NMPlatformIP6Route), _nmtst_platform_ip6_routes_equal_sort, NULL);
-		g_qsort_with_data (c_b, len, sizeof (NMPlatformIP6Route), _nmtst_platform_ip6_routes_equal_sort, NULL);
-	}
-
-	for (i = 0; i < len; i++) {
-		if (nm_platform_ip6_route_cmp (&a[i], &b[i]) != 0) {
-			char buf[sizeof (_nm_utils_to_string_buffer)];
-
-			g_error ("Error comparing IPv6 route[%lu]: %s vs %s", (long unsigned) i,
-			         nm_platform_ip6_route_to_string (&a[i], NULL, 0),
-			         nm_platform_ip6_route_to_string (&b[i], buf, sizeof (buf)));
-			g_assert_not_reached ();
-		}
-	}
-}
-
-#endif
-
-
-#ifdef __NETWORKMANAGER_IP4_CONFIG_H__
-
-inline static NMIP4Config *
-nmtst_ip4_config_clone (NMIP4Config *config)
-{
-	NMIP4Config *copy = nm_ip4_config_new (-1);
-
-	g_assert (copy);
-	g_assert (config);
-	nm_ip4_config_replace (copy, config, NULL);
-	return copy;
-}
-
-#endif
-
-
-#ifdef __NETWORKMANAGER_IP6_CONFIG_H__
-
-inline static NMIP6Config *
-nmtst_ip6_config_clone (NMIP6Config *config)
-{
-	NMIP6Config *copy = nm_ip6_config_new (-1);
-
-	g_assert (copy);
-	g_assert (config);
-	nm_ip6_config_replace (copy, config, NULL);
-	return copy;
-}
-
-#endif
 
 #ifdef NM_SETTING_IP_CONFIG_H
 inline static void
@@ -1786,6 +1608,27 @@ nmtst_create_connection_from_keyfile (const char *keyfile_str, const char *keyfi
 
 #ifdef __NM_CONNECTION_H__
 
+inline static GVariant *
+_nmtst_variant_new_vardict (int dummy, ...)
+{
+	GVariantBuilder builder;
+	va_list ap;
+	const char *name;
+	GVariant *variant;
+
+	g_variant_builder_init (&builder, G_VARIANT_TYPE_VARDICT);
+
+	va_start (ap, dummy);
+	while ((name = va_arg (ap, const char *))) {
+		variant = va_arg (ap, GVariant *);
+		g_variant_builder_add (&builder, "{sv}", name, variant);
+	}
+	va_end (ap);
+
+	return g_variant_builder_end (&builder);
+}
+#define nmtst_variant_new_vardict(...) _nmtst_variant_new_vardict (0, __VA_ARGS__, NULL)
+
 #define nmtst_assert_variant_is_of_type(variant, type) \
 	G_STMT_START { \
 		GVariant *_variantx = (variant); \
@@ -1856,6 +1699,8 @@ typedef enum {
 			 \
 			if (__cur_setting_name) \
 				g_variant_builder_add (&__connection_builder, "{sa{sv}}", __cur_setting_name, &__setting_builder); \
+			else \
+				g_variant_builder_clear (&__setting_builder); \
 			g_variant_iter_free (__setting_iter); \
 		} \
 		 \

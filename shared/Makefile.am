@@ -1,7 +1,8 @@
 EXTRA_DIST = \
-     gsystem-local-alloc.h \
+     nm-utils/gsystem-local-alloc.h \
+     nm-utils/nm-glib.h \
+     nm-utils/nm-macros-internal.h \
+     nm-utils/nm-test-utils.h \
+     nm-utils/nm-vpn-editor-plugin-call.h \
      nm-default.h \
-     nm-glib.h \
-     nm-macros-internal.h \
-     nm-test-utils.h \
-     nm-vpn-editor-plugin-call.h
+     $(NULL)

@@ -28,7 +28,6 @@
 
 #include <glib-unix.h>
 
-#include "gsystem-local-alloc.h"
 #include "nm-connection-list.h"
 #include "nm-connection-editor.h"
 

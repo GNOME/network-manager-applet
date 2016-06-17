@@ -24,6 +24,8 @@
 #include <gio/gio.h>
 #include <string.h>
 
+#include "gsystem-local-alloc.h"
+
 #ifdef __clang__
 
 #undef G_GNUC_BEGIN_IGNORE_DEPRECATIONS
@@ -372,6 +374,24 @@ _nm_g_hash_table_get_keys_as_array (GHashTable *hash_table,
 #define g_info(...)     g_log (G_LOG_DOMAIN,         \
                                G_LOG_LEVEL_INFO,     \
                                __VA_ARGS__)
+#endif
+
+#if !GLIB_CHECK_VERSION(2, 44, 0)
+static inline gpointer
+g_steal_pointer (gpointer pp)
+{
+	gpointer *ptr = (gpointer *) pp;
+	gpointer ref;
+
+	ref = *ptr;
+	*ptr = NULL;
+
+	return ref;
+}
+
+/* type safety */
+#define g_steal_pointer(pp) \
+  (0 ? (*(pp)) : (g_steal_pointer) (pp))
 #endif
 
 #endif  /* __NM_GLIB_H__ */
