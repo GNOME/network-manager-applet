@@ -27,6 +27,8 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 
+#include <nm-dbus-interface.h>
+
 #include <net/ethernet.h>
 
 #include <libnotify/notify.h>
@@ -164,6 +166,8 @@ struct _SecretsRequest {
 	NMApplet *applet;
 	AppletAgentSecretsCallback callback;
 	gpointer callback_data;
+	gboolean canceled;
+	NMSecretAgentCancelReason cancel_reason;
 
 	NMConnection *connection;
 
@@ -180,6 +184,7 @@ void applet_secrets_request_complete_setting (SecretsRequest *req,
                                               const char *setting_name,
                                               GError *error);
 void applet_secrets_request_free (SecretsRequest *req);
+void applet_secrets_request_cancel (SecretsRequest *req, NMSecretAgentCancelReason reason);
 
 struct NMADeviceClass {
 	gboolean       (*new_auto_connection)  (NMDevice *device,

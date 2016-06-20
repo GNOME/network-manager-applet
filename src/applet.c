@@ -2767,6 +2767,14 @@ applet_secrets_request_free (SecretsRequest *req)
 	g_free (req);
 }
 
+void
+applet_secrets_request_cancel (SecretsRequest *req, NMSecretAgentCancelReason reason)
+{
+	req->canceled = TRUE;
+	req->cancel_reason = reason;
+	applet_secrets_request_free (req);
+}
+
 static void
 get_existing_secrets_cb (NMSecretAgentOld *agent,
                          NMConnection *connection,
@@ -2883,6 +2891,7 @@ error:
 static void
 applet_agent_cancel_secrets_cb (AppletAgent *agent,
                                 gpointer request_id,
+                                NMSecretAgentCancelReason reason,
                                 gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
@@ -2895,7 +2904,7 @@ applet_agent_cancel_secrets_cb (AppletAgent *agent,
 
 		if (req->reqid == request_id) {
 			/* cancel and free this password request */
-			applet_secrets_request_free (req);
+			applet_secrets_request_cancel (req, reason);
 			break;
 		}
 	}

@@ -73,6 +73,7 @@ typedef struct {
 	int num_newlines;
 	GIOChannel *channel;
 	guint channel_eventid;
+	NMSecretAgentCancelReason cancel_reason;
 } AppletVpnRequestPrivate;
 
 /****************************************************************/

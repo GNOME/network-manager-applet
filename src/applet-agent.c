@@ -28,6 +28,7 @@
 
 #include "applet-agent.h"
 #include "utils.h"
+#include "nm-dbus-interface.h"
 
 #define KEYRING_UUID_TAG "connection-uuid"
 #define KEYRING_SN_TAG "setting-name"
@@ -488,9 +489,10 @@ get_secrets (NMSecretAgentOld *agent,
 /*******************************************************/
 
 static void
-cancel_get_secrets (NMSecretAgentOld *agent,
-                    const char *connection_path,
-                    const char *setting_name)
+cancel_get_secrets_with_reason (NMSecretAgentOld *agent,
+                                const char *connection_path,
+                                const char *setting_name,
+                                NMSecretAgentCancelReason reason)
 {
 	AppletAgentPrivate *priv = APPLET_AGENT_GET_PRIVATE (agent);
 	GHashTableIter iter;
@@ -515,11 +517,23 @@ cancel_get_secrets (NMSecretAgentOld *agent,
 
 			r->get_callback (NM_SECRET_AGENT_OLD (r->agent), r->connection, NULL, error, r->callback_data);
 			g_hash_table_iter_remove (&iter);
-			g_signal_emit (r->agent, signals[CANCEL_SECRETS], 0, GUINT_TO_POINTER (r->id));
+			g_signal_emit (r->agent, signals[CANCEL_SECRETS], 0,
+			               GUINT_TO_POINTER (r->id), GUINT_TO_POINTER (reason));
 		}
 	}
 
 	g_error_free (error);
+}
+
+static void
+cancel_get_secrets (NMSecretAgentOld *agent,
+                    const char *connection_path,
+                    const char *setting_name)
+{
+	cancel_get_secrets_with_reason (agent,
+	                                connection_path,
+	                                setting_name,
+	                                NM_SECRET_AGENT_CANCEL_REASON_UNKNOWN);
 }
 
 /*******************************************************/
@@ -834,6 +848,7 @@ applet_agent_class_init (AppletAgentClass *agent_class)
 	object_class->dispose = dispose;
 	parent_class->get_secrets = get_secrets;
 	parent_class->cancel_get_secrets = cancel_get_secrets;
+	parent_class->cancel_get_secrets_with_reason = cancel_get_secrets_with_reason;
 	parent_class->save_secrets = save_secrets;
 	parent_class->delete_secrets = delete_secrets;
 
@@ -853,6 +868,6 @@ applet_agent_class_init (AppletAgentClass *agent_class)
 		              G_SIGNAL_RUN_FIRST,
 		              G_STRUCT_OFFSET (AppletAgentClass, cancel_secrets),
 		              NULL, NULL, NULL,
-		              G_TYPE_NONE, 1, G_TYPE_POINTER);
+		              G_TYPE_NONE, 2, G_TYPE_POINTER, G_TYPE_UINT);
 }
 
