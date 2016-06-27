@@ -249,6 +249,7 @@ import_cb (NMConnection *connection, gpointer user_data)
 void
 vpn_connection_import (GtkWindow *parent,
                        const char *detail,
+                       gpointer detail_data,
                        NMClient *client,
                        PageNewConnectionResultFunc result_func,
                        gpointer user_data)
