@@ -125,6 +125,18 @@ AM_CONDITIONAL(WITH_WWAN, test "${with_wwan}" != "no")
 dnl Check for gudev
 PKG_CHECK_MODULES(GUDEV, gudev-1.0 >= 147)
 
+dnl Jansson for team configuration editing
+AC_ARG_WITH(team, AS_HELP_STRING([--with-team], [Enable team configuration editor in libnm (default: yes)]))
+if (test "${with_team}" == "no"); then
+    AC_DEFINE(WITH_JANSSON, 0, [Define if Jansson is available])
+else
+    PKG_CHECK_MODULES(JANSSON,
+                      [jansson >= 2.3],,
+                      AC_MSG_ERROR([jansson is needed for team configuration editor. Use --without-team to build without it.]))
+    AC_DEFINE(WITH_JANSSON, 1, [Define if Jansson is available])
+fi
+AM_CONDITIONAL(WITH_JANSSON, test "${with_team}" != "no")
+
 dnl Check for gobject introspection
 GOBJECT_INTROSPECTION_CHECK([0.9.6])
 
