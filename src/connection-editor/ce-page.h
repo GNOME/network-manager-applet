@@ -131,13 +131,8 @@ gboolean ce_page_device_entry_get (GtkEntry *entry, int type,
 
 void ce_page_changed (CEPage *self);
 
-gboolean ce_spin_output_with_automatic (GtkSpinButton *spin, gpointer user_data);
-
-gboolean ce_spin_output_with_default (GtkSpinButton *spin, gpointer user_data);
-
-gboolean ce_spin_input_with_automatic (GtkSpinButton *spin, gdouble *new_val, gpointer user_data);
-
-gboolean ce_spin_input_with_default (GtkSpinButton *spin, gdouble *new_val, gpointer user_data);
+void ce_spin_automatic_val (GtkSpinButton *spin, int defvalue);
+void ce_spin_default_val (GtkSpinButton *spin, int defvalue);
 
 int ce_get_property_default (NMSetting *setting, const char *property_name);
 

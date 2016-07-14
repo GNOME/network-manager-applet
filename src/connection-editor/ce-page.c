@@ -70,7 +70,7 @@ spin_output_with_default_string (GtkSpinButton *spin,
 	return TRUE;
 }
 
-gboolean
+static gboolean
 ce_spin_output_with_automatic (GtkSpinButton *spin, gpointer user_data)
 {
 	return spin_output_with_default_string (spin,
@@ -78,7 +78,7 @@ ce_spin_output_with_automatic (GtkSpinButton *spin, gpointer user_data)
 	                                        _("automatic"));
 }
 
-gboolean
+static gboolean
 ce_spin_output_with_default (GtkSpinButton *spin, gpointer user_data)
 {
 	return spin_output_with_default_string (spin,
@@ -103,7 +103,7 @@ spin_input_with_default_string (GtkSpinButton *spin,
 	return FALSE;
 }
 
-gint
+static gint
 ce_spin_input_with_automatic (GtkSpinButton *spin, gdouble *new_val, gpointer user_data)
 {
 	return spin_input_with_default_string (spin,
@@ -112,13 +112,35 @@ ce_spin_input_with_automatic (GtkSpinButton *spin, gdouble *new_val, gpointer us
 	                                       _("automatic"));
 }
 
-gint
+static gint
 ce_spin_input_with_default (GtkSpinButton *spin, gdouble *new_val, gpointer user_data)
 {
 	return spin_input_with_default_string (spin,
 	                                       GPOINTER_TO_INT (user_data),
 	                                       new_val,
 	                                       _("default"));
+}
+
+void
+ce_spin_automatic_val (GtkSpinButton *spin, int defvalue)
+{
+	g_signal_connect (spin, "output",
+	                  G_CALLBACK (ce_spin_output_with_automatic),
+	                  GINT_TO_POINTER (defvalue));
+	g_signal_connect (spin, "input",
+	                  G_CALLBACK (ce_spin_input_with_automatic),
+	                  GINT_TO_POINTER (defvalue));
+}
+
+void
+ce_spin_default_val (GtkSpinButton *spin, int defvalue)
+{
+	g_signal_connect (spin, "output",
+	                  G_CALLBACK (ce_spin_output_with_default),
+	                  GINT_TO_POINTER (defvalue));
+	g_signal_connect (spin, "input",
+	                  G_CALLBACK (ce_spin_input_with_default),
+	                  GINT_TO_POINTER (defvalue));
 }
 
 int
