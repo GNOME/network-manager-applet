@@ -86,6 +86,41 @@ ce_spin_output_with_default (GtkSpinButton *spin, gpointer user_data)
 	                                        _("default"));
 }
 
+static gint
+spin_input_with_default_string (GtkSpinButton *spin,
+                                int defvalue,
+                                gdouble *new_val,
+                                const char *defstring)
+{
+	const gchar *buf;
+
+	buf = gtk_entry_get_text (GTK_ENTRY (spin));
+	if (strcmp (buf, defstring) == 0) {
+		*new_val = defvalue;
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+gint
+ce_spin_input_with_automatic (GtkSpinButton *spin, gdouble *new_val, gpointer user_data)
+{
+	return spin_input_with_default_string (spin,
+	                                       GPOINTER_TO_INT (user_data),
+	                                       new_val,
+	                                       _("automatic"));
+}
+
+gint
+ce_spin_input_with_default (GtkSpinButton *spin, gdouble *new_val, gpointer user_data)
+{
+	return spin_input_with_default_string (spin,
+	                                       GPOINTER_TO_INT (user_data),
+	                                       new_val,
+	                                       _("default"));
+}
+
 int
 ce_get_property_default (NMSetting *setting, const char *property_name)
 {

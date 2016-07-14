@@ -135,6 +135,10 @@ gboolean ce_spin_output_with_automatic (GtkSpinButton *spin, gpointer user_data)
 
 gboolean ce_spin_output_with_default (GtkSpinButton *spin, gpointer user_data);
 
+gboolean ce_spin_input_with_automatic (GtkSpinButton *spin, gdouble *new_val, gpointer user_data);
+
+gboolean ce_spin_input_with_default (GtkSpinButton *spin, gdouble *new_val, gpointer user_data);
+
 int ce_get_property_default (NMSetting *setting, const char *property_name);
 
 void ce_page_complete_init (CEPage *self,
