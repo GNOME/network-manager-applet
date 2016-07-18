@@ -111,28 +111,16 @@ fi
 AM_CONDITIONAL(HAVE_GBT, test x"$have_gbt" = "xyes")
 
 dnl ModemManager1 with libmm-glib for WWAN support
-AC_ARG_WITH(wwan, AS_HELP_STRING([--with-wwan], [Enable WWAN support]),,[with_wwan=auto])
-if (test "${with_wwan}" != "no"); then
-    PKG_CHECK_MODULES(MM_GLIB,
-                      [mm-glib],
-                      [have_libmm_glib=yes],
-                      [have_libmm_glib=no])
-
-    if (test "${have_libmm_glib}" = "no"); then
-        if (test "${with_wwan}" = "yes"); then
-            AC_MSG_ERROR([Couldn't find libmm-glib])
-        fi
-    else
-        with_wwan="yes"
-    fi
-fi
-
-if (test "${with_wwan}" = "yes"); then
-    AC_DEFINE(WITH_WWAN, 1, [Define if you have ModemManager/WWAN support])
+AC_ARG_WITH(wwan, AS_HELP_STRING([--with-wwan], [Enable WWAN support (default: yes)]))
+if (test "${with_wwan}" == "no"); then
+    AC_DEFINE(WITH_WWAN, 0, [Define if you have ModemManager/WWAN support])
 else
-	AC_DEFINE(WITH_WWAN, 0, [Define if you have ModemManager/WWAN support])
+    PKG_CHECK_MODULES(MM_GLIB,
+                      [mm-glib],,
+                      AC_MSG_ERROR([libmm-glib is needed for WWAN support. Use --without-wwan to build without it.]))
+    AC_DEFINE(WITH_WWAN, 1, [Define if you have ModemManager/WWAN support])
 fi
-AM_CONDITIONAL(WITH_WWAN, test "${with_wwan}" = "yes")
+AM_CONDITIONAL(WITH_WWAN, test "${with_wwan}" != "no")
 
 dnl Check for gudev
 PKG_CHECK_MODULES(GUDEV, gudev-1.0 >= 147)
