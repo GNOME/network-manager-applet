@@ -543,9 +543,7 @@ populate_ui (CEPageVlan *self)
 	} else {
 		mtu_def = mtu_val = 1500;
 	}
-	g_signal_connect (priv->mtu, "output",
-	                  G_CALLBACK (ce_spin_output_with_automatic),
-	                  GINT_TO_POINTER (mtu_def));
+	ce_spin_automatic_val (priv->mtu, mtu_def);
 
 	gtk_spin_button_set_value (priv->mtu, (gdouble) mtu_val);
 	g_signal_connect (priv->mtu, "value-changed", G_CALLBACK (stuff_changed), self);

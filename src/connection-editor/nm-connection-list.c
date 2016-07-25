@@ -857,9 +857,12 @@ nm_connection_list_new (void)
 
 	gtk_window_set_default_icon_name ("preferences-system-network");
 
-	list->client = nm_client_new (NULL, NULL);
-	if (!list->client)
+	list->client = nm_client_new (NULL, &error);
+	if (!list->client) {
+		g_warning ("Couldn't construct the client instance: %s", error->message);
+		g_error_free (error);
 		goto error;
+	}
 	g_signal_connect (list->client,
 	                  NM_CLIENT_CONNECTION_ADDED,
 	                  G_CALLBACK (connection_added),
