@@ -99,7 +99,7 @@ nma_vpn_password_dialog_init (NMAVpnPasswordDialog *dialog)
 	priv->secondary_password_label = g_strdup ( _("_Secondary Password:") );
 	/* Make ternary password entry hidden by default */
 	priv->show_password_ternary = FALSE;
-	priv->ternary_password_label = g_strdup ( _("_Ternary Password:") );
+	priv->ternary_password_label = g_strdup ( _("_Tertiary Password:") );
 }
 
 /* GtkDialog callbacks */
