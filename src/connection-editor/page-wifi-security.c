@@ -66,7 +66,7 @@ get_default_type_for_security (NMSettingWirelessSecurity *sec)
 	key_mgmt = nm_setting_wireless_security_get_key_mgmt (sec);
 	auth_alg = nm_setting_wireless_security_get_auth_alg (sec);
 
-	/* No IEEE 802.1x */
+	/* No IEEE 802.1X */
 	if (!strcmp (key_mgmt, "none"))
 		return NMU_SEC_STATIC_WEP;
 
@@ -342,7 +342,7 @@ finish_setup (CEPageWifiSecurity *self, gpointer unused, GError *error, gpointer
 		ws_dynamic_wep = ws_dynamic_wep_new (connection, TRUE, FALSE);
 		if (ws_dynamic_wep) {
 			add_security_item (self, WIRELESS_SECURITY (ws_dynamic_wep), sec_model,
-			                   &iter, _("Dynamic WEP (802.1x)"), FALSE, FALSE);
+			                   &iter, _("Dynamic WEP (802.1X)"), FALSE, FALSE);
 			if ((active < 0) && (default_type == NMU_SEC_DYNAMIC_WEP))
 				active = item;
 			item++;
@@ -434,7 +434,7 @@ ce_page_wifi_security_new (NMConnectionEditor *editor,
 	if (s_wsec)
 		default_type = get_default_type_for_security (s_wsec);
 
-	/* Get secrets if the connection is not 802.1x enabled */
+	/* Get secrets if the connection is not 802.1X enabled */
 	if (   default_type == NMU_SEC_STATIC_WEP
 	    || default_type == NMU_SEC_LEAP
 	    || default_type == NMU_SEC_WPA_PSK
@@ -442,7 +442,7 @@ ce_page_wifi_security_new (NMConnectionEditor *editor,
 		*out_secrets_setting_name = NM_SETTING_WIRELESS_SECURITY_SETTING_NAME;
 	}
 
-	/* Or if it is 802.1x enabled */
+	/* Or if it is 802.1X enabled */
 	if (   default_type == NMU_SEC_DYNAMIC_WEP
 	    || default_type == NMU_SEC_WPA_ENTERPRISE
 	    || default_type == NMU_SEC_WPA2_ENTERPRISE) {
