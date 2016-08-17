@@ -1597,18 +1597,20 @@ has_usable_wifi (NMApplet *applet)
  */
 static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 {
-    GtkWidget *toplevel;
+	GtkWidget *toplevel;
+	GdkScreen *screen;
+	GdkVisual *visual;
+	GtkStyleContext *context;
 
 	g_return_if_fail (menu != NULL);
 	g_return_if_fail (applet != NULL);
 	/*Set up theme and transparency support*/
 	toplevel = gtk_widget_get_toplevel (menu);
 	/* Fix any failures of compiz/other wm's to communicate with gtk for transparency */
-	GdkScreen *screen = gtk_widget_get_screen(GTK_WIDGET(toplevel));
-	GdkVisual *visual = gdk_screen_get_rgba_visual(screen);
+	screen = gtk_widget_get_screen(GTK_WIDGET(toplevel));
+	visual = gdk_screen_get_rgba_visual(screen);
 	gtk_widget_set_visual(GTK_WIDGET(toplevel), visual); 
 	/* Set menu and it's toplevel window to follow panel theme */
-	GtkStyleContext *context;
 	context = gtk_widget_get_style_context (GTK_WIDGET(toplevel));
 	gtk_style_context_add_class(context,"gnome-panel-menu-bar");
 	gtk_style_context_add_class(context,"mate-panel-menu-bar");
@@ -1906,7 +1908,7 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 	}
 
 	/*Set up theme and transparency support*/
-	toplevel = gtk_widget_get_toplevel (menu);
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (menu));
 	/* Fix any failures of compiz/other wm's to communicate with gtk for transparency */
 	screen = gtk_widget_get_screen(GTK_WIDGET(toplevel));
 	visual = gdk_screen_get_rgba_visual(screen);
