@@ -54,7 +54,7 @@ eap_method_validate (EAPMethod *method, GError **error)
 	g_assert (method->validate);
 	result = (*(method->validate)) (method, error);
 	if (!result && error && !*error)
-		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("undefined error in 802.1x security (wpa-eap)"));
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("undefined error in 802.1X security (wpa-eap)"));
 	return result;
 }
 

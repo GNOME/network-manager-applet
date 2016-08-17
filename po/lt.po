@@ -5,14 +5,15 @@
 # Gintautas Miliauskas <gintas@akl.lt>, 2008.
 # Rimas Kudelis <rq@akl.lt>, 2010.
 # Algimantas Margevičius <gymka@mail.ru>, 2011.
-# Aurimas Černius <aurisc4@gmail.com>, 2010, 2013, 2014, 2015.
+# Aurimas Černius <aurisc4@gmail.com>, 2010, 2013, 2014, 2015, 2016.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager HEAD\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-05 14:02+0200\n"
-"PO-Revision-Date: 2016-01-08 19:31+0200\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
+"POT-Creation-Date: 2016-08-04 07:41+0000\n"
+"PO-Revision-Date: 2016-08-15 14:17+0300\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -21,10 +22,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
 "%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Gtranslator 2.91.7\n"
 "X-Project-Style: gnome\n"
 
-#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3105
+#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3104
 msgid "Network"
 msgstr "Tinklas"
 
@@ -133,15 +134,16 @@ msgstr ""
 "Nustatyti teigiamą išjungti įspėjimams apei LĮ liudijimus antroje EAP "
 "tapatybės patvirtinimo fazėje."
 
-#: ../org.gnome.nm-connection-editor.appdata.xml.in.h:1
+#: ../nm-connection-editor.appdata.xml.in.h:1
 msgid "NetworkManager"
 msgstr "NetworkManager"
 
-#: ../org.gnome.nm-connection-editor.appdata.xml.in.h:2
-msgid "NetworkManager for GNOME"
-msgstr "NetworkManager GNOME aplinkai"
+#: ../nm-connection-editor.appdata.xml.in.h:2
+#| msgid "No network connection"
+msgid "NetworkManager connection editor"
+msgstr "NetworkManager ryšio redaktorius"
 
-#: ../org.gnome.nm-connection-editor.appdata.xml.in.h:3
+#: ../nm-connection-editor.appdata.xml.in.h:3
 msgid ""
 "NetworkManager is a system service for managing and configuring your network "
 "connections and devices."
@@ -149,13 +151,18 @@ msgstr ""
 "NetworkManager yra sisteminė tarnyba tinklo ryšių bei įrenginių valdymui bei "
 "konfigūravimui."
 
-#: ../org.gnome.nm-connection-editor.appdata.xml.in.h:4
+#: ../nm-connection-editor.appdata.xml.in.h:4
 msgid ""
 "The nm-connection-editor program works with NetworkManager to create and "
 "edit existing connection profiles for NetworkManager."
 msgstr ""
 "nm-connection-editor programa dirba su NetworkManager ryšių profilių kūrimui "
 "bei redagavimui."
+
+#: ../nm-connection-editor.appdata.xml.in.h:5
+#| msgid "NetworkManager Applet"
+msgid "The NetworkManager Developers"
+msgstr "NetworkManager kūrėjai"
 
 #: ../src/8021x.ui.h:1 ../src/ethernet-dialog.c:99
 msgid "802.1X authentication"
@@ -377,144 +384,146 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1280
+#: ../src/applet.c:1285
 msgid "device not ready (firmware missing)"
 msgstr "įrenginys nepasiruošęs (trūksta aparatinės programinės įrangos)"
 
-#: ../src/applet.c:1282
+#: ../src/applet.c:1287
 msgid "device not ready"
 msgstr "įrenginys nepasiruošęs"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet.c:1292 ../src/applet-device-ethernet.c:109
+#: ../src/applet.c:1297 ../src/applet-device-ethernet.c:109
 msgid "disconnected"
 msgstr "atjungta"
 
-#: ../src/applet.c:1308
+#: ../src/applet.c:1313
 msgid "Disconnect"
 msgstr "Atsijungti"
 
-#: ../src/applet.c:1322
+#: ../src/applet.c:1327
 msgid "device not managed"
 msgstr "įrenginys nevaldomas"
 
-#: ../src/applet.c:1395
+#: ../src/applet.c:1400
 msgid "No network devices available"
 msgstr "Tinklo įrenginių nerasta"
 
-#: ../src/applet.c:1449
+#: ../src/applet.c:1454
 msgid "_VPN Connections"
 msgstr "_VPN ryšiai"
 
-#: ../src/applet.c:1503
+#: ../src/applet.c:1498
 msgid "_Configure VPN..."
 msgstr "_Konfigūruoti VPN…"
 
-#: ../src/applet.c:1508
-msgid "_Disconnect VPN"
-msgstr "_Atjungti VPN"
+#: ../src/applet.c:1501
+#| msgid "Export VPN connection..."
+msgid "_Add a VPN connection..."
+msgstr "_Pridėti VPN ryšį…"
 
-#: ../src/applet.c:1615
+#: ../src/applet.c:1607
 msgid "NetworkManager is not running..."
 msgstr "NetworkManager programa nepaleista…"
 
-#: ../src/applet.c:1620 ../src/applet.c:2612
+#: ../src/applet.c:1612 ../src/applet.c:2604
 msgid "Networking disabled"
 msgstr "Tinklo sąsajos atjungtos"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1830
+#: ../src/applet.c:1822
 msgid "Enable _Networking"
 msgstr "Įjungti _tinklą"
 
 #. 'Enable Wi-Fi' item
-#: ../src/applet.c:1839
+#: ../src/applet.c:1831
 msgid "Enable _Wi-Fi"
 msgstr "Įjungti _belaidį"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:1848
+#: ../src/applet.c:1840
 msgid "Enable _Mobile Broadband"
 msgstr "Įjungti _mobilųjį plačiajuostį ryšį"
 
 #. Toggle notifications item
-#: ../src/applet.c:1860
+#: ../src/applet.c:1852
 msgid "Enable N_otifications"
 msgstr "Įjungti p_ranešimus"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1872
+#: ../src/applet.c:1864
 msgid "Connection _Information"
 msgstr "Ryšio _informacija"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1880
+#: ../src/applet.c:1872
 msgid "Edit Connections..."
 msgstr "Taisyti ryšius…"
 
-#: ../src/applet.c:1894
+#: ../src/applet.c:1886
 msgid "_About"
 msgstr "_Apie"
 
-#: ../src/applet.c:2179
+#: ../src/applet.c:2171
 #, c-format
 msgid "You are now connected to '%s'."
 msgstr "Esate prisijungę prie „%s“."
 
-#: ../src/applet.c:2222
+#: ../src/applet.c:2214
 msgid "Disconnected"
 msgstr "Atjungta"
 
-#: ../src/applet.c:2223
+#: ../src/applet.c:2215
 msgid "The network connection has been disconnected."
 msgstr "Atsijungta nuo tinklo."
 
-#: ../src/applet.c:2474
+#: ../src/applet.c:2466
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "Ruošiamas tinklo ryšys „%s“…"
 
-#: ../src/applet.c:2477
+#: ../src/applet.c:2469
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "Tinklo ryšys „%s“ reikalauja nustatyti jūsų tapatybę…"
 
-#: ../src/applet.c:2480 ../src/applet-device-bt.c:125
+#: ../src/applet.c:2472 ../src/applet-device-bt.c:125
 #: ../src/mobile-helpers.c:608
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "„%s“ prašoma tinklo adreso…"
 
-#: ../src/applet.c:2483
+#: ../src/applet.c:2475
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "Tinklo ryšys „%s“ aktyvus"
 
-#: ../src/applet.c:2557
+#: ../src/applet.c:2549
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "Pradedamas VPN ryšys „%s“…"
 
-#: ../src/applet.c:2560
+#: ../src/applet.c:2552
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "VPN ryšys „%s“ reikalauja nustatyti jūsų tapatybę…"
 
-#: ../src/applet.c:2563
+#: ../src/applet.c:2555
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "„%s“ prašoma VPN adreso…"
 
-#: ../src/applet.c:2566
+#: ../src/applet.c:2558
 #, c-format
-msgid "VPN connection '%s' active"
-msgstr "VPN ryšys „%s“ aktyvus."
+#| msgid "VPN connection '%s' active"
+msgid "VPN connection active"
+msgstr "VPN ryšys aktyvus"
 
-#: ../src/applet.c:2616
+#: ../src/applet.c:2608
 msgid "No network connection"
 msgstr "Nėra tinklo ryšio"
 
-#: ../src/applet.c:3204
+#: ../src/applet.c:3203
 msgid "NetworkManager Applet"
 msgstr "NetworkManager įtaisas"
 
@@ -537,7 +546,7 @@ msgid "Mobile Broadband (%s)"
 msgstr "Mobilusis plačiajuostis ryšys (%s)"
 
 #: ../src/applet-device-broadband.c:736
-#: ../src/connection-editor/connection-helpers.c:100
+#: ../src/connection-editor/connection-helpers.c:106
 #: ../src/connection-editor/page-mobile.c:308
 #: ../src/libnm-gtk/nm-ui-utils.c:329
 msgid "Mobile Broadband"
@@ -593,7 +602,7 @@ msgstr "Konfigūruojamas mobilusis plačiajuostis ryšys „%s“…"
 msgid "User authentication required for mobile broadband connection '%s'..."
 msgstr "Mobilusis plačiajuostis ryšys „%s“ reikalauja nustatyti tapatybę…"
 
-#: ../src/applet-device-bt.c:129 ../src/mobile-helpers.c:624
+#: ../src/applet-device-bt.c:129 ../src/mobile-helpers.c:627
 #, c-format
 msgid "Mobile broadband connection '%s' active"
 msgstr "Mobilusis plačiajuostis ryšys „%s“ aktyvus"
@@ -751,7 +760,7 @@ msgid "Error displaying connection information:"
 msgstr "Klaida rodant ryšio informaciją:"
 
 #: ../src/applet-dialogs.c:72 ../src/connection-editor/page-wifi-security.c:332
-#: ../src/libnma/nma-wifi-dialog.c:932 ../src/libnm-gtk/nm-wifi-dialog.c:948
+#: ../src/libnma/nma-wifi-dialog.c:946 ../src/libnm-gtk/nm-wifi-dialog.c:948
 #: ../src/wireless-security/wireless-security.c:448
 msgid "LEAP"
 msgstr "LEAP"
@@ -841,6 +850,8 @@ msgstr "CDMA (%s)"
 
 #. --- General ---
 #: ../src/applet-dialogs.c:512 ../src/applet-dialogs.c:810
+#: ../src/connection-editor/ce-page-team-port.ui.h:23
+#: ../src/connection-editor/ce-page-team.ui.h:48
 #: ../src/connection-editor/page-general.c:347
 msgid "General"
 msgstr "Bendra"
@@ -868,6 +879,7 @@ msgstr "Sauga:"
 
 #. --- IPv4 ---
 #: ../src/applet-dialogs.c:618 ../src/applet-dialogs.c:851
+#: ../src/connection-editor/ce-page-team.ui.h:29
 msgid "IPv4"
 msgstr "IPv4"
 
@@ -877,6 +889,7 @@ msgstr "Numatytasis maršrutas:"
 
 #. --- IPv6 ---
 #: ../src/applet-dialogs.c:658 ../src/applet-dialogs.c:873
+#: ../src/connection-editor/ce-page-team.ui.h:30
 msgid "IPv6"
 msgstr "IPv6"
 
@@ -932,33 +945,41 @@ msgstr "Pranešimų vietos įtaisas jūsų tinklo įrenginiams ir ryšiams valdy
 msgid "NetworkManager Website"
 msgstr "NetworkManager tinklalapis"
 
-#: ../src/applet-dialogs.c:1005
+#: ../src/applet-dialogs.c:1001
+msgid ""
+"The NetworkManager Applet could not find some required resources (the .ui "
+"file was not found)."
+msgstr ""
+"NetworkManager įtaisas nerado kai kurių reikalingų išteklių (nerastas .ui "
+"failas)."
+
+#: ../src/applet-dialogs.c:1006
 msgid "Missing resources"
 msgstr "Trūkstami resursai"
 
-#: ../src/applet-dialogs.c:1030
+#: ../src/applet-dialogs.c:1031
 msgid "Mobile broadband network password"
 msgstr "Mobiliojo plačiajuosčio tinklo slaptažodis"
 
-#: ../src/applet-dialogs.c:1039
+#: ../src/applet-dialogs.c:1040
 #, c-format
 msgid "A password is required to connect to '%s'."
 msgstr "Norint prisijungti prie „%s“ reikalingas slaptažodis."
 
-#: ../src/applet-dialogs.c:1054
+#: ../src/applet-dialogs.c:1055
 msgid "Password:"
 msgstr "Slaptažodis:"
 
-#: ../src/applet-dialogs.c:1336
+#: ../src/applet-dialogs.c:1337
 msgid "SIM PIN unlock required"
 msgstr "Reikalingas SIM PIN atrakinimas"
 
-#: ../src/applet-dialogs.c:1337
+#: ../src/applet-dialogs.c:1338
 msgid "SIM PIN Unlock Required"
 msgstr "Reikalingas SIM PIN atrakinimas"
 
 #. FIXME: some warning about # of times you can enter incorrect PIN
-#: ../src/applet-dialogs.c:1339
+#: ../src/applet-dialogs.c:1340
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PIN code before it can be "
@@ -968,25 +989,25 @@ msgstr ""
 "pradedant jį naudoti."
 
 #. Translators: PIN code entry label
-#: ../src/applet-dialogs.c:1341
+#: ../src/applet-dialogs.c:1342
 msgid "PIN code:"
 msgstr "PIN kodas:"
 
 #. Translators: Show/obscure PIN checkbox label
-#: ../src/applet-dialogs.c:1345
+#: ../src/applet-dialogs.c:1346
 msgid "Show PIN code"
 msgstr "Rodyti PIN kodą"
 
-#: ../src/applet-dialogs.c:1347
+#: ../src/applet-dialogs.c:1348
 msgid "SIM PUK unlock required"
 msgstr "Reikalingas SIM PUK atrakinimas"
 
-#: ../src/applet-dialogs.c:1348
+#: ../src/applet-dialogs.c:1349
 msgid "SIM PUK Unlock Required"
 msgstr "Reikalingas SIM PUK atrakinimas"
 
 #. FIXME: some warning about # of times you can enter incorrect PUK
-#: ../src/applet-dialogs.c:1350
+#: ../src/applet-dialogs.c:1351
 #, c-format
 msgid ""
 "The mobile broadband device '%s' requires a SIM PUK code before it can be "
@@ -996,22 +1017,22 @@ msgstr ""
 "pradedant jį naudoti."
 
 #. Translators: PUK code entry label
-#: ../src/applet-dialogs.c:1352
+#: ../src/applet-dialogs.c:1353
 msgid "PUK code:"
 msgstr "PUK kodas:"
 
 #. Translators: New PIN entry label
-#: ../src/applet-dialogs.c:1355
+#: ../src/applet-dialogs.c:1356
 msgid "New PIN code:"
 msgstr "Naujas PIN kodas:"
 
 #. Translators: New PIN verification entry label
-#: ../src/applet-dialogs.c:1357
+#: ../src/applet-dialogs.c:1358
 msgid "Re-enter new PIN code:"
 msgstr "Dar kartą įveskite naują PIN kodą:"
 
 #. Translators: Show/obscure PIN/PUK checkbox label
-#: ../src/applet-dialogs.c:1362
+#: ../src/applet-dialogs.c:1363
 msgid "Show PIN/PUK codes"
 msgstr "Rodyti PIN/PUK kodus"
 
@@ -1039,7 +1060,7 @@ msgstr ""
 #: ../src/connection-editor/ce-page-bridge.ui.h:2
 #: ../src/connection-editor/ce-page-ip4.ui.h:9
 #: ../src/connection-editor/ce-page-ip6.ui.h:12
-#: ../src/connection-editor/ce-page-team.ui.h:4
+#: ../src/connection-editor/ce-page-team.ui.h:13
 #: ../src/connection-editor/nm-connection-editor.ui.h:3
 msgid "_Add"
 msgstr "_Pridėti"
@@ -1051,7 +1072,7 @@ msgstr "_Pridėti"
 #: ../src/connection-editor/ce-page-bridge.ui.h:4
 #: ../src/connection-editor/ce-page-ip4.ui.h:10
 #: ../src/connection-editor/ce-page-ip6.ui.h:13
-#: ../src/connection-editor/ce-page-team.ui.h:6
+#: ../src/connection-editor/ce-page-team.ui.h:15
 #: ../src/connection-editor/nm-connection-list.c:699
 msgid "_Delete"
 msgstr "Pa_šalinti"
@@ -1105,10 +1126,12 @@ msgstr ""
 "reikiamas VPN įskiepis."
 
 #: ../src/connection-editor/ce-page-bond.ui.h:1
+#: ../src/connection-editor/ce-page-team.ui.h:21
 msgid "Round-robin"
 msgstr "Round-robin"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:2
+#: ../src/connection-editor/ce-page-team.ui.h:22
 msgid "Active backup"
 msgstr "Aktyvi atsarginė kopija"
 
@@ -1117,6 +1140,7 @@ msgid "XOR"
 msgstr "XOR"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:4
+#: ../src/connection-editor/ce-page-team.ui.h:20
 msgid "Broadcast"
 msgstr "Transliacija"
 
@@ -1152,7 +1176,7 @@ msgstr "_Veiksena:"
 #. Edit
 #: ../src/connection-editor/ce-page-bond.ui.h:13
 #: ../src/connection-editor/ce-page-bridge.ui.h:3
-#: ../src/connection-editor/ce-page-team.ui.h:5
+#: ../src/connection-editor/ce-page-team.ui.h:14
 #: ../src/connection-editor/nm-connection-list.c:683
 msgid "_Edit"
 msgstr "K_eisti"
@@ -1167,7 +1191,7 @@ msgstr "ms"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:17
 #: ../src/connection-editor/ce-page-bridge.ui.h:6
-#: ../src/connection-editor/ce-page-team.ui.h:7
+#: ../src/connection-editor/ce-page-team.ui.h:16
 msgid "_Interface name:"
 msgstr "Sąsajos pavad_inimas:"
 
@@ -1210,7 +1234,7 @@ msgstr ""
 #: ../src/connection-editor/ce-page-bond.ui.h:25
 #: ../src/connection-editor/ce-page-ethernet.ui.h:17
 #: ../src/connection-editor/ce-page-infiniband.ui.h:4
-#: ../src/connection-editor/ce-page-team.ui.h:8
+#: ../src/connection-editor/ce-page-team.ui.h:17
 #: ../src/connection-editor/ce-page-vlan.ui.h:4
 #: ../src/connection-editor/ce-page-wifi.ui.h:8
 msgid "_MTU:"
@@ -1219,7 +1243,7 @@ msgstr "_MTU:"
 #: ../src/connection-editor/ce-page-bond.ui.h:26
 #: ../src/connection-editor/ce-page-ethernet.ui.h:18
 #: ../src/connection-editor/ce-page-infiniband.ui.h:3
-#: ../src/connection-editor/ce-page-team.ui.h:9
+#: ../src/connection-editor/ce-page-team.ui.h:18
 #: ../src/connection-editor/ce-page-vlan.ui.h:5
 #: ../src/connection-editor/ce-page-wifi.ui.h:7
 msgid "bytes"
@@ -1270,11 +1294,11 @@ msgstr "_Didžiausias amžius:"
 msgid "_Aging time:"
 msgstr "_Senėjimo laikas:"
 
-#: ../src/connection-editor/ce-page.c:78
+#: ../src/connection-editor/ce-page.c:78 ../src/connection-editor/ce-page.c:112
 msgid "automatic"
 msgstr "automatinis"
 
-#: ../src/connection-editor/ce-page.c:86
+#: ../src/connection-editor/ce-page.c:86 ../src/connection-editor/ce-page.c:121
 #: ../src/connection-editor/ce-page-dcb.ui.h:13
 #: ../src/connection-editor/page-wifi.c:168
 #: ../src/connection-editor/page-wifi.c:172
@@ -1283,44 +1307,44 @@ msgstr "automatinis"
 msgid "default"
 msgstr "numatytasis"
 
-#: ../src/connection-editor/ce-page.c:132
+#: ../src/connection-editor/ce-page.c:189
 msgid "unspecified error"
 msgstr "nenurodyta klaida"
 
-#: ../src/connection-editor/ce-page.c:245
+#: ../src/connection-editor/ce-page.c:302
 msgid "MAC address"
 msgstr "MAC adresas"
 
-#: ../src/connection-editor/ce-page.c:245
+#: ../src/connection-editor/ce-page.c:302
 msgid "HW address"
 msgstr "HW adresas"
 
-#: ../src/connection-editor/ce-page.c:248
+#: ../src/connection-editor/ce-page.c:305
 #, c-format
 msgid "invalid %s for %s (%s)"
 msgstr "netinkamas %s %s (%s)"
 
-#: ../src/connection-editor/ce-page.c:252
-#: ../src/connection-editor/ce-page.c:484
+#: ../src/connection-editor/ce-page.c:309
+#: ../src/connection-editor/ce-page.c:541
 #, c-format
 msgid "invalid %s (%s)"
 msgstr "netinkamas %s (%s)"
 
-#: ../src/connection-editor/ce-page.c:268
+#: ../src/connection-editor/ce-page.c:325
 #, c-format
 msgid "invalid interface-name for %s (%s)"
 msgstr "netinkamas %s sąsajos pavadinimas (%s)"
 
-#: ../src/connection-editor/ce-page.c:272
+#: ../src/connection-editor/ce-page.c:329
 #, c-format
 msgid "invalid interface-name (%s)"
 msgstr "netinkamas sąsajos pavadinimas (%s)"
 
-#: ../src/connection-editor/ce-page.c:485
+#: ../src/connection-editor/ce-page.c:542
 msgid "device"
 msgstr "įrenginys"
 
-#: ../src/connection-editor/ce-page.c:591
+#: ../src/connection-editor/ce-page.c:650
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr "Nepavyko atnaujinti ryšio paslapčių dėl nežinomos klaidos."
 
@@ -1635,9 +1659,8 @@ msgid "De_fault"
 msgstr "_Numatytasis"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:21
-#, fuzzy
 msgid "_Ignore"
-msgstr "Nepaisyti"
+msgstr "Nepa_isyti"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:22
 msgid "_Phy"
@@ -1840,6 +1863,7 @@ msgstr ""
 "konfigūracija pavyksta, bet IPv4 konfigūracija sėkminga."
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:1
+#: ../src/connection-editor/ce-page-team.ui.h:26
 msgid "Basic"
 msgstr "Pagrindiniai"
 
@@ -1924,21 +1948,523 @@ msgid "Send PPP _echo packets"
 msgstr "Siųsti PPP _aido paketus"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:1
-#: ../src/connection-editor/ce-page-team.ui.h:2
-msgid "_JSON config:"
-msgstr "_JSON konfigūracija:"
+#: ../src/connection-editor/ce-page-team.ui.h:19
+#| msgid "Advanced"
+msgid "Ad_vanced..."
+msgstr "Su_dėtingesni..."
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:2
-msgid "_Import team configuration from a file..."
-msgstr "Importuoti komandinio ryšio konfigūraciją iš failo..."
+msgid "Set by master"
+msgstr "Nustatyta pagrindinio"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:3
+#: ../src/connection-editor/ce-page-team.ui.h:9
+#| msgid "Ethernet Networks"
+msgid "Ethernet port state"
+msgstr "Laidiniai prievado būsena"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:4
+#: ../src/connection-editor/ce-page-team.ui.h:10
+msgid "ARP (IPv4)"
+msgstr "ARP (IPv4)"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:5
+#: ../src/connection-editor/ce-page-team.ui.h:11
+msgid "NDP (IPv6)"
+msgstr "NDP (IPv6)"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:6
+#: ../src/connection-editor/ce-page-team.ui.h:37
+msgid "Team Advanced Options"
+msgstr "Komandos sudėtingesni nustatymai"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:7
+msgid "_Queue ID:"
+msgstr "_Eilės ID:"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:8
+#: ../src/connection-editor/ce-page-team.ui.h:42
+msgid ""
+"Number of bursts of unsolicited NAs and gratuitous ARP packets sent after "
+"port is enabled or disabled."
+msgstr ""
+"Pliūpsnių skaičius siunčiamiems NA pastangų ir papildomiems ARP paketams po "
+"prievado įjungimo ar išjungimo."
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:9
+msgid "ID of queue which this port should be mapped to."
+msgstr "Eilės ID, su kuria šis prievadas turi būti susietas."
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:10
+#| msgid "_Priority:"
+msgid "_Port priority:"
+msgstr "_Prievado prioritetas:"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:11
+msgid "Port _sticky"
+msgstr "_Nuolatinis prievadas"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:12
+#: ../src/connection-editor/ce-page-team.ui.h:82
+msgid ""
+"Validate received ARP packets on active ports. If this is not checked, all "
+"incoming ARP packets will be considered as a good reply."
+msgstr ""
+"Patikrinti gautus ARP paketus aktyviems prievadams. Jei nepažymėta, visi "
+"gaunami ARP paketai bus laikomi gerais."
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:13
+#: ../src/connection-editor/ce-page-team.ui.h:44
+msgid ""
+"Value is positive number in milliseconds. Specifies an interval between "
+"bursts of notify-peer packets."
+msgstr ""
+"Teigiamas skaičius milisekundėmis. Nurodo intervalą tarp pranešimo "
+"porininkams paketų pliūpsnių."
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:14
+msgid "Port priority. The higher number means higher priority."
+msgstr "Prievado prioritetas. Didesnis skaičius reiškia didesnį prioritetą."
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:15
+msgid "Active-Backup runner options"
+msgstr "Aktyvios atsarginės kopijos vykdytojo parametrai"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:16
+#| msgid "_Priority:"
+msgid "_LACP port priority:"
+msgstr "_LACP prioritetas:"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:17
+#| msgid "Private _key:"
+msgid "LACP port _key:"
+msgstr "LACP prievado _raktas:"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:18
+#: ../src/connection-editor/ce-page-team.ui.h:43
+msgid ""
+"Number of bursts of multicast group rejoin requests sent after port is "
+"enabled or disabled."
+msgstr ""
+"Pliūpsnių skaičius prisijungimo prie masinio siuntimo grupės užklausoms po "
+"prievado įjungimo ar išjungimo."
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:19
+msgid ""
+"Port priority according to LACP standard. The lower number means higher "
+"priority."
+msgstr ""
+"Prievado prioritetas pagal LACP standartą. Mažesnis skaičius reiškia didesnį "
+"prioritetą."
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:20
+#: ../src/connection-editor/ce-page-team.ui.h:45
+msgid ""
+"Value is positive number in milliseconds. Specifies an interval between "
+"bursts of multicast group rejoin requests."
+msgstr ""
+"Teigiamas milisekundžių skaičius. Nurodo intervalą tarp pliūpsnių "
+"prisijungimo masinio siuntimo grupės užklausoms."
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:21
+msgid ""
+"Port key according to LACP standard. It is only possible to aggregate ports "
+"with the same key."
+msgstr ""
+"Prievado raktas pagal LACP standartą. Galima sujungti tik prievadus su tuo "
+"pačiu raktu."
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:22
+msgid "LACP runner options"
+msgstr "LACP vykdytojo parametrai"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:24
+#: ../src/connection-editor/ce-page-team.ui.h:70
+msgid "_Link watcher:"
+msgstr "_Saitų stebėtojas:"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:25
+#: ../src/connection-editor/ce-page-team.ui.h:71
+#| msgid "Link _up delay:"
+msgid "_Up delay:"
+msgstr "Į_jungimo delsa:"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:26
+#: ../src/connection-editor/ce-page-team.ui.h:72
+#| msgid "Link _down delay:"
+msgid "_Down delay:"
+msgstr "Išjungtimo _delsa:"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:27
+#: ../src/connection-editor/ce-page-team.ui.h:73
+#| msgid "_Parent interface:"
+msgid "Send _interval:"
+msgstr "Siuntimo _intervalas:"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:28
+#: ../src/connection-editor/ce-page-team.ui.h:74
+msgid "Delay _before first send:"
+msgstr "Delsa _prieš pirmą siuntimą:"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:29
+#: ../src/connection-editor/ce-page-team.ui.h:75
+msgid "_Maximum missed replies:"
+msgstr "_Didžiausias praleistų atsakymų skaičius:"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:30
+#: ../src/connection-editor/ce-page-team.ui.h:76
+msgid "_Source host:"
+msgstr "_Šaltinio serveris:"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:31
+#: ../src/connection-editor/ce-page-team.ui.h:77
+#| msgid "ARP _targets:"
+msgid "_Target host:"
+msgstr "Paskir_ties serveris:"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:32
+#: ../src/connection-editor/ce-page-team.ui.h:78
+msgid ""
+"Maximum number of missed replies. If this number is exceeded, link is "
+"reported as down."
+msgstr ""
+"Daugiausia praleistų atsakymų. Jei šis skaičius viršijamas, saitas laikomas "
+"išjungtu."
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:33
+#: ../src/connection-editor/ce-page-team.ui.h:79
+msgid ""
+"Hostname to be converted to IP address which will be filled into ARP request "
+"as source address."
+msgstr ""
+"Serverio pavadinimas, konvertuojamas į IP adresą, kuris bus įvestas į ARP "
+"užklausą kaip šaltinio adresas."
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:34
+#: ../src/connection-editor/ce-page-team.ui.h:80
+msgid ""
+"Hostname to be converted to IP address which will be filled into request as "
+"destination address."
+msgstr ""
+"Serverio pavadinimas, konvertuojamas į IP adresą, kuris bus įvestas į "
+"užklausą kaip paskirties adresas."
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:35
+#: ../src/connection-editor/ce-page-team.ui.h:81
+msgid "Ignore invalid packets from _active ports"
+msgstr "Nepaisyti sugadintų paketų iš _aktyvių prievadų"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:36
+#: ../src/connection-editor/ce-page-team.ui.h:83
+msgid "Ignore invalid packets from i_nactive ports"
+msgstr "Nepaisyti sugadintų paketų iš _neaktyvių prievadų"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:37
+#: ../src/connection-editor/ce-page-team.ui.h:84
+msgid ""
+"Validate received ARP packets on inactive ports. If this is not checked, all "
+"incoming ARP packets will be considered as a good reply."
+msgstr ""
+"Patikrinti gaunamus ARP paketus neaktyviuose prievaduose. Jei nepažymėta, "
+"visi gaunami ARP paketai bus laikomi gerais atsakymais."
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:38
+#: ../src/connection-editor/ce-page-team.ui.h:85
+msgid "S_end on inactive ports"
+msgstr "Siųsti n_eaktyviuose prievaduose"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:39
+#: ../src/connection-editor/ce-page-team.ui.h:86
+msgid ""
+"By default, ARP requests are sent on active ports only. This option allows "
+"sending even on inactive ports."
+msgstr ""
+"Numatytai ARP užklausos siunčiamos tik aktyviuose prievaduose. Šis "
+"parametras leidžia siųsti ir neaktyviuose prievaduose."
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:40
+#: ../src/connection-editor/ce-page-team.ui.h:87
+msgid ""
+"The delay between the link coming up and the runner being notified about it."
+msgstr "Delsa tarp saito įjungimo ir pranešimo apie tai vykdytojui."
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:41
+#: ../src/connection-editor/ce-page-team.ui.h:88
+msgid ""
+"The delay between the link going down and the runner being notified about it."
+msgstr "Delsa tarp saito išjungimo ir pranešimo apie tai vykdytojui."
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:42
+#: ../src/connection-editor/ce-page-team.ui.h:89
+msgid "The interval between requests being sent."
+msgstr "Intervalas tarp užklausų siuntimo."
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:43
+#: ../src/connection-editor/ce-page-team.ui.h:90
+msgid ""
+"The delay between link watch initialization and the first request being sent."
+msgstr "Delsa tarp saito stebėjimo inicijavimo ir pirmos užklausos siuntimo."
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:44
+#: ../src/connection-editor/ce-page-team.ui.h:91
+msgid "The link watcher to be used."
+msgstr "Naudotinas saitų stebėtojas."
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:45
+#: ../src/connection-editor/ce-page-team.ui.h:92
+msgid "Link Watcher"
+msgstr "Saitų stebėtojas"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:46
+#: ../src/connection-editor/ce-page-team.ui.h:93
+msgid "Im_port team configuration from a file..."
+msgstr "Im_portuoti komandinio ryšio konfigūraciją iš failo..."
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:47
+#: ../src/connection-editor/ce-page-team.ui.h:94
+#| msgid "_JSON config:"
+msgid "Edit _JSON configuration:"
+msgstr "Redaguoti _JSON konfigūraciją:"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:48
+#: ../src/connection-editor/ce-page-team.ui.h:95
+msgid "Raw Configuration"
+msgstr "Tiesioginė konfigūracija"
 
 #: ../src/connection-editor/ce-page-team.ui.h:1
+msgid "Highest priority"
+msgstr "Aukščiausias prioritetas"
+
+#: ../src/connection-editor/ce-page-team.ui.h:2
+msgid "Highest priority (stable)"
+msgstr "Aukščiausias prioritetas (stabilus)"
+
+#: ../src/connection-editor/ce-page-team.ui.h:3
+#| msgid "Group Bandwidth:"
+msgid "Bandwidth"
+msgstr "Sparta"
+
+#: ../src/connection-editor/ce-page-team.ui.h:4
+msgid "Highest number of ports"
+msgstr "Didžiausias prievadų skaičius"
+
+#: ../src/connection-editor/ce-page-team.ui.h:5
+#| msgid "Priority"
+msgid "Port priority"
+msgstr "Prievado prioritetas"
+
+#: ../src/connection-editor/ce-page-team.ui.h:6
+#| msgid "Ethernet device"
+msgid "From the team device"
+msgstr "Iš komandos įrenginio"
+
+#: ../src/connection-editor/ce-page-team.ui.h:7
+msgid "From the active port"
+msgstr "Iš aktyvaus prievado"
+
+#: ../src/connection-editor/ce-page-team.ui.h:8
+msgid "From active to team device"
+msgstr "Iš aktyvaus į komandos įrenginį"
+
+#: ../src/connection-editor/ce-page-team.ui.h:12
 msgid "_Teamed connections:"
 msgstr "_Komandiniai ryšiai:"
 
-#: ../src/connection-editor/ce-page-team.ui.h:3
-msgid "Im_port team configuration from a file..."
-msgstr "Im_portuoti komandinio ryšio konfigūraciją iš failo..."
+#: ../src/connection-editor/ce-page-team.ui.h:23
+msgid "Load balance"
+msgstr "Apkrovos balansavimas"
+
+#: ../src/connection-editor/ce-page-team.ui.h:24
+msgid "LACP"
+msgstr "LACP"
+
+#: ../src/connection-editor/ce-page-team.ui.h:25
+#| msgctxt "Wi-Fi/Ethernet security"
+#| msgid "None"
+msgid "None"
+msgstr "Nėra"
+
+#: ../src/connection-editor/ce-page-team.ui.h:27
+#: ../src/connection-editor/connection-helpers.c:103
+#: ../src/connection-editor/page-ethernet.c:324
+#: ../src/libnm-gtk/nm-ui-utils.c:321
+msgid "Ethernet"
+msgstr "Laidinis tinklas"
+
+#: ../src/connection-editor/ce-page-team.ui.h:28
+#: ../src/connection-editor/connection-helpers.c:118
+#: ../src/connection-editor/page-vlan.c:592 ../src/libnm-gtk/nm-ui-utils.c:339
+#: ../src/libnm-gtk/nm-ui-utils.c:583
+msgid "VLAN"
+msgstr "VLAN"
+
+#: ../src/connection-editor/ce-page-team.ui.h:31
+#| msgid "FIP"
+msgid "IP"
+msgstr "IP"
+
+#: ../src/connection-editor/ce-page-team.ui.h:32
+msgid "Any L3 protocol"
+msgstr "Bet kuris L3 protokolas"
+
+#: ../src/connection-editor/ce-page-team.ui.h:33
+#| msgid "GTC"
+msgid "TCP"
+msgstr "TCP"
+
+#: ../src/connection-editor/ce-page-team.ui.h:34
+msgid "UDP"
+msgstr "UDP"
+
+#: ../src/connection-editor/ce-page-team.ui.h:35
+msgid "SCTP"
+msgstr "SCTP"
+
+#: ../src/connection-editor/ce-page-team.ui.h:36
+msgid "Any L4 protocol"
+msgstr "Bet kuris L4 protokolas"
+
+#: ../src/connection-editor/ce-page-team.ui.h:38
+msgid "_Peer notification count:"
+msgstr "Pranešimų _porininkui skaičius:"
+
+#: ../src/connection-editor/ce-page-team.ui.h:39
+msgid "Peer _notification interval:"
+msgstr "Pra_nešimų porininkui intervalas:"
+
+#: ../src/connection-editor/ce-page-team.ui.h:40
+msgid "_Multicast rejoin count:"
+msgstr "Prisijungimų prie _masinio siuntimo skaičius:"
+
+#: ../src/connection-editor/ce-page-team.ui.h:41
+msgid "Multicast _rejoin interval:"
+msgstr "Paka_rtotinių prisijungimų prie masinio siuntimo skaičius:"
+
+#: ../src/connection-editor/ce-page-team.ui.h:46
+#| msgid "Hardware Address:"
+msgid "_Hardware Address:"
+msgstr "_Aparatinis adresas:"
+
+#: ../src/connection-editor/ce-page-team.ui.h:47
+msgid ""
+"Desired hardware address of new team device. Usual MAC address format is "
+"accepted."
+msgstr ""
+"Pageidautinas aparatinis adresas naujam komandos įrenginiui. Priimamas "
+"įprastinis MAC adresas."
+
+#: ../src/connection-editor/ce-page-team.ui.h:49
+msgid "_Runner:"
+msgstr "_Vykdytojas:"
+
+#: ../src/connection-editor/ce-page-team.ui.h:50
+#| msgid "Hardware Address:"
+msgid "_Hardware address policy:"
+msgstr "_Aparatinis adreso politika:"
+
+#: ../src/connection-editor/ce-page-team.ui.h:51
+msgid "Name of runner to be used."
+msgstr "Naudotinas vykdytojo pavadinimas."
+
+#: ../src/connection-editor/ce-page-team.ui.h:52
+msgid ""
+"This  defines the policy of how hardware addresses of team device and port "
+"devices should be set during the team lifetime."
+msgstr ""
+"Čia aprašomas politika aparatiniams komandos įrenginio adresų ir prievadų "
+"įrenginiams nustatymui komandos egzistavimo metu."
+
+#: ../src/connection-editor/ce-page-team.ui.h:53
+msgid "Send LACPDU frames _periodically"
+msgstr "_Periodiškai siųsti LACPDU kadrus"
+
+#: ../src/connection-editor/ce-page-team.ui.h:54
+msgid ""
+"If checked, LACPDU frames are sent along the configured links periodically. "
+"If not, it acts as \"speak when spoken to\"."
+msgstr ""
+"Jei pažymėta, LACPDU kadrai siunčiami per nustatytus saitus periodiškai. Jei "
+"ne, veikia principu „atsiliept, kai kreipiamasi“."
+
+#: ../src/connection-editor/ce-page-team.ui.h:55
+msgid "Send a LACPDU frame _every second"
+msgstr "Siųsti LACPDU kadrą _kiekvieną sekundę"
+
+#: ../src/connection-editor/ce-page-team.ui.h:56
+msgid ""
+"Option specifies the rate at which our link partner is asked to transmit "
+"LACPDU packets. If checked, packets will be sent once  per second. Otherwise "
+"they will be sent every 30 seconds."
+msgstr ""
+"Parametras nurodo dažnį, kuriuo saito partnerio prašoma perduoti LACPDU "
+"paketus. Jei pažymėta, paketai bus siunčiami kartą per sekundę. Priešingu "
+"atveju jie bus siunčiami kas 30 sekundžių."
+
+#: ../src/connection-editor/ce-page-team.ui.h:57
+#| msgid "_Priority:"
+msgid "_System priority:"
+msgstr "_Sistemos prioritetas:"
+
+#: ../src/connection-editor/ce-page-team.ui.h:58
+msgid "_Minimum ports:"
+msgstr "_Mažiausiai prievadų:"
+
+#: ../src/connection-editor/ce-page-team.ui.h:59
+msgid "_Aggregator selection policy:"
+msgstr "Su_jungėjo pasirinkimo politika:"
+
+#: ../src/connection-editor/ce-page-team.ui.h:60
+msgid "System priority, value can be 0 – 65535."
+msgstr "Sistemos prioritetas, vertė gali būti 0-65535."
+
+#: ../src/connection-editor/ce-page-team.ui.h:61
+msgid ""
+"Specifies the minimum number of ports that must be active before asserting "
+"carrier in the master interface, value can be 1 – 255."
+msgstr ""
+"Nurodo mažiausią prievadų skaičių, kuris turi būti aktyvus prie pranešant "
+"perdavimą pagrindinei sąsajai, vertė gali būti 1-255."
+
+#: ../src/connection-editor/ce-page-team.ui.h:62
+msgid "This selects the policy of how the aggregators will be selected."
+msgstr "Tai nurodo politiką, kaip bus pasirenkami sujungėjai."
+
+#: ../src/connection-editor/ce-page-team.ui.h:63
+msgid ""
+"List of fragment types (strings) which should be used for packet Tx hash "
+"computation."
+msgstr ""
+"Fragmentuotų tipų (eilučių) sąrašas, kuris turi būti naudojamas paketo Tx "
+"maišos skaičiavimui."
+
+#: ../src/connection-editor/ce-page-team.ui.h:64
+msgid "_Fields for tramsmission hash"
+msgstr "_Laukai perdavimo maišai"
+
+#: ../src/connection-editor/ce-page-team.ui.h:65
+msgid "In tenths of a second. Periodic interval between rebalancing."
+msgstr ""
+"Dešimtosiomis sekundės dalimis. Periodinis intervalas tarp perbalansavimo."
+
+#: ../src/connection-editor/ce-page-team.ui.h:66
+msgid "Name of active Tx balancer. Active Tx balancing is disabled by default."
+msgstr ""
+"Atyvaus Tx balansatoriaus pavadinimas. Aktyvus Tx balansavimas numatytai yra "
+"išjungtas."
+
+#: ../src/connection-editor/ce-page-team.ui.h:67
+#| msgid "Transmission po_wer:"
+msgid "Transmission _balancing interval:"
+msgstr "Perdavimo _balansavimo intervalas:"
+
+#: ../src/connection-editor/ce-page-team.ui.h:68
+#| msgid "Transmission po_wer:"
+msgid "_Transmission balancer:"
+msgstr "_Perdavimo balansuotojas:"
+
+#: ../src/connection-editor/ce-page-team.ui.h:69
+msgid "Runner"
+msgstr "Vykdytojas"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:1
 msgid "_Parent interface:"
@@ -2098,92 +2624,80 @@ msgstr ""
 "Daugeliu atvejų tiekėjo PPP serveriai palaiko visus tapatybės nustatymo "
 "metodus. Jei nepavyksta prisijungti, pabandykite kai kurių metodų palaikymą."
 
-#: ../src/connection-editor/connection-helpers.c:97
-#: ../src/connection-editor/page-ethernet.c:326
-#: ../src/libnm-gtk/nm-ui-utils.c:321
-msgid "Ethernet"
-msgstr "Laidinis tinklas"
-
-#: ../src/connection-editor/connection-helpers.c:98
-#: ../src/connection-editor/page-wifi.c:448 ../src/libnm-gtk/nm-ui-utils.c:323
+#: ../src/connection-editor/connection-helpers.c:104
+#: ../src/connection-editor/page-wifi.c:441 ../src/libnm-gtk/nm-ui-utils.c:323
 msgid "Wi-Fi"
 msgstr "Belaidis"
 
-#: ../src/connection-editor/connection-helpers.c:106
+#: ../src/connection-editor/connection-helpers.c:112
 #: ../src/connection-editor/page-bluetooth.c:123
 #: ../src/libnm-gtk/nm-ui-utils.c:325
 msgid "Bluetooth"
 msgstr "Bluetooth"
 
-#: ../src/connection-editor/connection-helpers.c:107
+#: ../src/connection-editor/connection-helpers.c:113
 #: ../src/connection-editor/page-dsl.c:127
 msgid "DSL"
 msgstr "DSL"
 
-#: ../src/connection-editor/connection-helpers.c:108
-#: ../src/connection-editor/page-infiniband.c:150
+#: ../src/connection-editor/connection-helpers.c:114
+#: ../src/connection-editor/page-infiniband.c:148
 #: ../src/libnm-gtk/nm-ui-utils.c:331
 msgid "InfiniBand"
 msgstr "InfiniBand"
 
-#: ../src/connection-editor/connection-helpers.c:109
-#: ../src/connection-editor/page-bond.c:444 ../src/libnm-gtk/nm-ui-utils.c:333
+#: ../src/connection-editor/connection-helpers.c:115
+#: ../src/connection-editor/page-bond.c:443 ../src/libnm-gtk/nm-ui-utils.c:333
 #: ../src/libnm-gtk/nm-ui-utils.c:577
 msgid "Bond"
 msgstr "Bond"
 
-#: ../src/connection-editor/connection-helpers.c:110
-#: ../src/connection-editor/page-team.c:267 ../src/libnm-gtk/nm-ui-utils.c:335
+#: ../src/connection-editor/connection-helpers.c:116
+#: ../src/connection-editor/page-team.c:1028 ../src/libnm-gtk/nm-ui-utils.c:335
 #: ../src/libnm-gtk/nm-ui-utils.c:579
 msgid "Team"
 msgstr "Team"
 
-#: ../src/connection-editor/connection-helpers.c:111
+#: ../src/connection-editor/connection-helpers.c:117
 #: ../src/connection-editor/page-bridge.c:210
 #: ../src/libnm-gtk/nm-ui-utils.c:337 ../src/libnm-gtk/nm-ui-utils.c:581
 msgid "Bridge"
 msgstr "Bridge"
 
-#: ../src/connection-editor/connection-helpers.c:112
-#: ../src/connection-editor/page-vlan.c:594 ../src/libnm-gtk/nm-ui-utils.c:339
-#: ../src/libnm-gtk/nm-ui-utils.c:583
-msgid "VLAN"
-msgstr "VLAN"
-
-#: ../src/connection-editor/connection-helpers.c:116
-#: ../src/connection-editor/connection-helpers.c:254
-#: ../src/connection-editor/page-vpn.c:101
+#: ../src/connection-editor/connection-helpers.c:120
+#: ../src/connection-editor/connection-helpers.c:252
+#: ../src/connection-editor/page-vpn.c:96
 msgid "VPN"
 msgstr "VPN"
 
-#: ../src/connection-editor/connection-helpers.c:196
+#: ../src/connection-editor/connection-helpers.c:194
 msgid "Hardware"
 msgstr "Aparatinė įranga"
 
-#: ../src/connection-editor/connection-helpers.c:223
+#: ../src/connection-editor/connection-helpers.c:221
 msgid "Virtual"
 msgstr "Virtualus"
 
-#: ../src/connection-editor/connection-helpers.c:292
-#: ../src/connection-editor/connection-helpers.c:294
+#: ../src/connection-editor/connection-helpers.c:370
+#: ../src/connection-editor/connection-helpers.c:372
 msgid "Import a saved VPN configuration..."
 msgstr "Importuoti VPN ryšio konfigūraciją..."
 
-#: ../src/connection-editor/connection-helpers.c:323
+#: ../src/connection-editor/connection-helpers.c:401
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
 msgstr "Nepavyko inicijuoti ryšių rengyklės dialogo dėl nežinomos klaidos."
 
-#: ../src/connection-editor/connection-helpers.c:332
+#: ../src/connection-editor/connection-helpers.c:410
 msgid "Could not create new connection"
 msgstr "Nepavyko sukurti naujo ryšio"
 
-#: ../src/connection-editor/connection-helpers.c:469
+#: ../src/connection-editor/connection-helpers.c:556
 msgid "Connection delete failed"
 msgstr "Nepavyko ištrinti ryšio"
 
-#: ../src/connection-editor/connection-helpers.c:517
+#: ../src/connection-editor/connection-helpers.c:604
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Ar tikrai norite ištrinti ryšį %s?"
@@ -2371,35 +2885,36 @@ msgstr "Pašalinti pasirinktą ryšį"
 msgid "Authenticate to delete the selected connection"
 msgstr "Norint pašalinti pasirinktą ryšį, reikia nustatyti tapatybę"
 
-#: ../src/connection-editor/nm-connection-list.c:929
+#: ../src/connection-editor/nm-connection-list.c:914
+#: ../src/connection-editor/nm-connection-list.c:917
+msgid "Error creating connection"
+msgstr "Klaida kuriant ryšį"
+
+#: ../src/connection-editor/nm-connection-list.c:915
 msgid "No VPN plugins are installed."
 msgstr "Nėra įdiegtų VPN įskiepių."
 
-#: ../src/connection-editor/nm-connection-list.c:931
+#: ../src/connection-editor/nm-connection-list.c:918
 #, c-format
 msgid "Don't know how to create '%s' connections"
 msgstr "Nežinoma, kaip sukurti „%s“ ryšius"
 
-#: ../src/connection-editor/nm-connection-list.c:933
-msgid "Error creating connection"
-msgstr "Klaida kuriant ryšį"
-
-#: ../src/connection-editor/nm-connection-list.c:955
+#: ../src/connection-editor/nm-connection-list.c:941
 msgid "Error editing connection"
 msgstr "Klaida taisant ryšio nustatymus"
 
-#: ../src/connection-editor/nm-connection-list.c:956
+#: ../src/connection-editor/nm-connection-list.c:942
 #, c-format
 msgid "Did not find a connection with UUID '%s'"
 msgstr "Nepavyko rasti ryšio, kurio UUID „%s“"
 
 #: ../src/connection-editor/page-8021x-security.c:109
-msgid "802.1x Security"
-msgstr "802.1x sauga"
+msgid "802.1X Security"
+msgstr "802.1X sauga"
 
 #: ../src/connection-editor/page-8021x-security.c:111
-msgid "Could not load 802.1x Security user interface."
-msgstr "Nepavyko įkelti 802.1x saugos naudotojo sąsajos."
+msgid "Could not load 802.1X Security user interface."
+msgstr "Nepavyko įkelti 802.1X saugos naudotojo sąsajos."
 
 #: ../src/connection-editor/page-8021x-security.c:125
 msgid "Use 802.1_X security for this connection"
@@ -2423,27 +2938,27 @@ msgstr "neteisingas Bluetooth įrenginys (%s)"
 msgid "Bluetooth connection %d"
 msgstr "Bluetooth ryšys %d"
 
-#: ../src/connection-editor/page-bluetooth.c:302
+#: ../src/connection-editor/page-bluetooth.c:303
 msgid "Bluetooth Type"
 msgstr "Bluetooth tipas"
 
-#: ../src/connection-editor/page-bluetooth.c:320
+#: ../src/connection-editor/page-bluetooth.c:321
 msgid "Select the type of the Bluetooth connection profile."
 msgstr "Pasirinkite Bluetooth ryšio profilio tipą"
 
-#: ../src/connection-editor/page-bluetooth.c:325
+#: ../src/connection-editor/page-bluetooth.c:326
 msgid "_Personal Area Network"
 msgstr "_Asmeninės erdvės tinklas"
 
-#: ../src/connection-editor/page-bluetooth.c:330
+#: ../src/connection-editor/page-bluetooth.c:331
 msgid "_Dial-Up Network"
 msgstr "_Telefoninis tinklas"
 
-#: ../src/connection-editor/page-bond.c:447
+#: ../src/connection-editor/page-bond.c:446
 msgid "Could not load bond user interface."
 msgstr "Nepavyko įkelti bond naudotojo sąsajos."
 
-#: ../src/connection-editor/page-bond.c:566
+#: ../src/connection-editor/page-bond.c:565
 msgid "primary"
 msgstr "pirminis"
 
@@ -2456,7 +2971,7 @@ msgstr "Bond ryšys %d"
 msgid "Could not load bridge user interface."
 msgstr "Nepavyko įkelti bridge naudotojo sąsajos."
 
-#: ../src/connection-editor/page-bridge.c:310
+#: ../src/connection-editor/page-bridge.c:311
 #, c-format
 msgid "Bridge connection %d"
 msgstr "Bridge ryšys %d"
@@ -2472,11 +2987,11 @@ msgstr "Bridge prievadas"
 msgid "Could not load bridge port user interface."
 msgstr "Nepavyko įkelti bridge prievado naudotojo sąsajos."
 
-#: ../src/connection-editor/page-dcb.c:603
+#: ../src/connection-editor/page-dcb.c:622
 msgid "DCB"
 msgstr "DCB"
 
-#: ../src/connection-editor/page-dcb.c:605
+#: ../src/connection-editor/page-dcb.c:624
 msgid "Could not load DCB user interface."
 msgstr "Nepavyko įkelti DSB naudotojo sąsajos."
 
@@ -2484,7 +2999,7 @@ msgstr "Nepavyko įkelti DSB naudotojo sąsajos."
 msgid "Could not load DSL user interface."
 msgstr "Nepavyko įkelti DSL naudotojo sąsajos."
 
-#: ../src/connection-editor/page-dsl.c:214
+#: ../src/connection-editor/page-dsl.c:215
 #, c-format
 msgid "DSL connection %d"
 msgstr "DSL ryšys %d"
@@ -2499,25 +3014,25 @@ msgstr ""
 "pavadinimas arba nuolatinis MAC adresas. Pavyzdžiai: „em1“, "
 "„3C:97:0E:42:1A:19“, „em1 (3C:97:0E:42:1A:19)“"
 
-#: ../src/connection-editor/page-ethernet.c:328
+#: ../src/connection-editor/page-ethernet.c:326
 msgid "Could not load ethernet user interface."
 msgstr "Nepavyko įkelti laidinio ryšio naudotojo sąsajos."
 
-#: ../src/connection-editor/page-ethernet.c:457
+#: ../src/connection-editor/page-ethernet.c:455
 msgid "Ethernet device"
 msgstr "Laidinis tinklas"
 
-#: ../src/connection-editor/page-ethernet.c:461
-#: ../src/connection-editor/page-vlan.c:741
-#: ../src/connection-editor/page-wifi.c:581
+#: ../src/connection-editor/page-ethernet.c:459
+#: ../src/connection-editor/page-vlan.c:739
+#: ../src/connection-editor/page-wifi.c:574
 msgid "cloned MAC"
 msgstr "klonuotas MAC"
 
-#: ../src/connection-editor/page-ethernet.c:465
+#: ../src/connection-editor/page-ethernet.c:463
 msgid "Wake-on-LAN password"
 msgstr "Atsibusti su LAN slaptažodžiu"
 
-#: ../src/connection-editor/page-ethernet.c:500
+#: ../src/connection-editor/page-ethernet.c:499
 #, c-format
 msgid "Ethernet connection %d"
 msgstr "Laidinis ryšys %d"
@@ -2559,15 +3074,15 @@ msgstr ""
 "„80:00:00:48:fe:80:00:00:00:00:00:00:00:02:c9:03:00:00:0f:65“, „ib0 "
 "(80:00:00:48:fe:80:00:00:00:00:00:00:00:02:c9:03:00:00:0f:65)“"
 
-#: ../src/connection-editor/page-infiniband.c:153
+#: ../src/connection-editor/page-infiniband.c:151
 msgid "Could not load InfiniBand user interface."
 msgstr "Nepavyko įkelti InfiniBand naudotojo sąsajos."
 
-#: ../src/connection-editor/page-infiniband.c:216
+#: ../src/connection-editor/page-infiniband.c:214
 msgid "infiniband device"
 msgstr "infiniband įrenginys"
 
-#: ../src/connection-editor/page-infiniband.c:251
+#: ../src/connection-editor/page-infiniband.c:250
 #, c-format
 msgid "InfiniBand connection %d"
 msgstr "InfiniBand ryšys %d"
@@ -2727,11 +3242,11 @@ msgid "Unsupported mobile broadband connection type."
 msgstr "Nepalaikomas mobiliojo plačiajuosčio ryšio tipas."
 
 #. Fall back to just asking for GSM vs. CDMA
-#: ../src/connection-editor/page-mobile.c:529
+#: ../src/connection-editor/page-mobile.c:530
 msgid "Select Mobile Broadband Provider Type"
 msgstr "Pasirinkite mobiliojo plačiajuosčio ryšio tiekėjo tipą"
 
-#: ../src/connection-editor/page-mobile.c:556
+#: ../src/connection-editor/page-mobile.c:557
 msgid ""
 "Select the technology your mobile broadband provider uses.  If you are "
 "unsure, ask your provider."
@@ -2739,22 +3254,22 @@ msgstr ""
 "Pasirinkite technologiją, naudojamą jūsų mobiliojo plačiajuosčio ryšio "
 "tiekėjo. Jei abejojate, klauskite tiekėjo."
 
-#: ../src/connection-editor/page-mobile.c:561
+#: ../src/connection-editor/page-mobile.c:562
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr ""
 "Mano tiekėjas naudoja _GSM paremtą technologiją (t. y. GPRS, EDGE, UMTS, "
 "HSDPA)"
 
-#: ../src/connection-editor/page-mobile.c:568
+#: ../src/connection-editor/page-mobile.c:569
 msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr "Mano tiekėjas naudoja C_DMA paremtą technologiją (t. y. 1xRTT, EVDO)"
 
-#: ../src/connection-editor/page-mobile.c:578 ../src/mb-menu-item.c:50
+#: ../src/connection-editor/page-mobile.c:579 ../src/mb-menu-item.c:50
 #: ../src/mobile-helpers.c:283
 msgid "CDMA"
 msgstr "CDMA"
 
-#: ../src/connection-editor/page-mobile.c:581 ../src/mb-menu-item.c:54
+#: ../src/connection-editor/page-mobile.c:582 ../src/mb-menu-item.c:54
 #: ../src/mobile-helpers.c:281
 msgid "GSM"
 msgstr "GSM"
@@ -2774,7 +3289,7 @@ msgid "CHAP"
 msgstr "CHAP"
 
 #: ../src/connection-editor/page-ppp.c:132
-#: ../src/wireless-security/eap-method-fast.c:280
+#: ../src/wireless-security/eap-method-fast.c:283
 #: ../src/wireless-security/eap-method-peap.c:272
 #: ../src/wireless-security/eap-method-ttls.c:288
 msgid "MSCHAPv2"
@@ -2803,22 +3318,22 @@ msgstr "PPP nustatymai"
 msgid "Could not load PPP user interface."
 msgstr "Nepavyko įkelti PPP naudotojo sąsajos."
 
-#: ../src/connection-editor/page-team.c:98
-#: ../src/connection-editor/page-team-port.c:71
-#: ../src/connection-editor/vpn-helpers.c:165
+#: ../src/connection-editor/page-team.c:341
+#: ../src/connection-editor/page-team-port.c:203
+#: ../src/connection-editor/vpn-helpers.c:168
 msgid "Select file to import"
 msgstr "Pasirinkite importuotiną failą"
 
-#: ../src/connection-editor/page-team.c:118
-#: ../src/connection-editor/page-team-port.c:91
+#: ../src/connection-editor/page-team.c:361
+#: ../src/connection-editor/page-team-port.c:223
 msgid "Error: file doesn't contain a valid JSON configuration"
 msgstr "Klaida: failas neturi tinkamos JSON konfigūracijos"
 
-#: ../src/connection-editor/page-team.c:270
+#: ../src/connection-editor/page-team.c:1031
 msgid "Could not load team user interface."
 msgstr "Nepavyko įkelti team naudotojo sąsajos."
 
-#: ../src/connection-editor/page-team.c:377
+#: ../src/connection-editor/page-team.c:1124
 #, c-format
 msgid "Team connection %d"
 msgstr "Komandinis ryšys %d"
@@ -2826,11 +3341,11 @@ msgstr "Komandinis ryšys %d"
 #. Translators: a "Team Port" is a network
 #. * device that is part of a team.
 #.
-#: ../src/connection-editor/page-team-port.c:151
+#: ../src/connection-editor/page-team-port.c:655
 msgid "Team Port"
 msgstr "Team prievadas"
 
-#: ../src/connection-editor/page-team-port.c:153
+#: ../src/connection-editor/page-team-port.c:657
 msgid "Could not load team port user interface."
 msgstr "Nepavyko įkelti team prievado naudotojo sąsajos."
 
@@ -2847,35 +3362,47 @@ msgstr "%s (per „%s“)"
 msgid "New connection..."
 msgstr "Naujas ryšys..."
 
-#: ../src/connection-editor/page-vlan.c:596
+#: ../src/connection-editor/page-vlan.c:594
 msgid "Could not load vlan user interface."
 msgstr "Nepavyko įkelti vlan naudotojo sąsajos."
 
-#: ../src/connection-editor/page-vlan.c:734
+#: ../src/connection-editor/page-vlan.c:732
 msgid "vlan parent"
 msgstr "vlan tėvas"
 
-#: ../src/connection-editor/page-vlan.c:797
+#: ../src/connection-editor/page-vlan.c:796
 #, c-format
 msgid "VLAN connection %d"
 msgstr "VLAN ryšys %d"
 
-#: ../src/connection-editor/page-vpn.c:103
+#: ../src/connection-editor/page-vpn.c:98
 msgid "Could not load VPN user interface."
 msgstr "Nepavyko įkelti VPN naudotojo sąsajos."
 
-#: ../src/connection-editor/page-vpn.c:118
+#: ../src/connection-editor/page-vpn.c:113
 #, c-format
-msgid "Could not find VPN plugin service for '%s'."
-msgstr "Nepavyko rasti „%s“ reikalingos VPN įskiepių tarnybos."
+#| msgid "Could not find VPN plugin service for '%s'."
+msgid "Could not find VPN plugin for '%s'."
+msgstr "Nepavyko rasti „%s“ VPN įskiepio."
 
-#: ../src/connection-editor/page-vpn.c:205
-#: ../src/connection-editor/page-vpn.c:300
+#: ../src/connection-editor/page-vpn.c:122
+#, c-format
+#| msgid "Could not find VPN plugin service for '%s'."
+msgid "Could not load editor VPN plugin for '%s' (%s)."
+msgstr "Nepavyko įkelti „%s“ VPN redaktoriaus įskiepio (%s)."
+
+#: ../src/connection-editor/page-vpn.c:123
+#| msgid "Connection failure"
+msgid "unknown failure"
+msgstr "nežinoma klaida"
+
+#: ../src/connection-editor/page-vpn.c:216
+#: ../src/connection-editor/page-vpn.c:364
 #, c-format
 msgid "VPN connection %d"
 msgstr "VPN ryšys %d"
 
-#: ../src/connection-editor/page-vpn.c:229
+#: ../src/connection-editor/page-vpn.c:240
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
@@ -2885,11 +3412,11 @@ msgstr ""
 "\n"
 "Klaida: nenurodytas VPN paslaugos tipas."
 
-#: ../src/connection-editor/page-vpn.c:254
+#: ../src/connection-editor/page-vpn.c:266
 msgid "Choose a VPN Connection Type"
 msgstr "Pasirinkite VPN ryšio tipą"
 
-#: ../src/connection-editor/page-vpn.c:255
+#: ../src/connection-editor/page-vpn.c:267
 msgid ""
 "Select the type of VPN you wish to use for the new connection.  If the type "
 "of VPN connection you wish to create does not appear in the list, you may "
@@ -2921,45 +3448,44 @@ msgstr ""
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wifi.c:450
+#: ../src/connection-editor/page-wifi.c:443
 msgid "Could not load Wi-Fi user interface."
 msgstr "Nepavyko įkelti Wi-Fi naudotojo sąsajos."
 
-#: ../src/connection-editor/page-wifi.c:571
+#: ../src/connection-editor/page-wifi.c:564
 msgid "bssid"
 msgstr "bssid"
 
-#: ../src/connection-editor/page-wifi.c:577
+#: ../src/connection-editor/page-wifi.c:570
 msgid "Wi-Fi device"
 msgstr "Wi-Fi įrenginys"
 
-#: ../src/connection-editor/page-wifi.c:619
+#: ../src/connection-editor/page-wifi.c:613
 #, c-format
 msgid "Wi-Fi connection %d"
 msgstr "Belaidis ryšys %d"
 
 #: ../src/connection-editor/page-wifi-security.c:309
-#: ../src/libnma/nma-wifi-dialog.c:906 ../src/libnm-gtk/nm-wifi-dialog.c:922
+#: ../src/libnma/nma-wifi-dialog.c:920 ../src/libnm-gtk/nm-wifi-dialog.c:922
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "WEP 40/128 bitų raktas (šešioliktainis arba ASCII)"
 
 #: ../src/connection-editor/page-wifi-security.c:319
-#: ../src/libnma/nma-wifi-dialog.c:915 ../src/libnm-gtk/nm-wifi-dialog.c:931
+#: ../src/libnma/nma-wifi-dialog.c:929 ../src/libnm-gtk/nm-wifi-dialog.c:931
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128 bitų slaptažodis"
 
 #: ../src/connection-editor/page-wifi-security.c:345
-#: ../src/libnma/nma-wifi-dialog.c:945 ../src/libnm-gtk/nm-wifi-dialog.c:961
-msgid "Dynamic WEP (802.1x)"
-msgstr "Dinaminis WEP (802.1x)"
+msgid "Dynamic WEP (802.1X)"
+msgstr "Dinaminis WEP (802.1X)"
 
 #: ../src/connection-editor/page-wifi-security.c:358
-#: ../src/libnma/nma-wifi-dialog.c:959 ../src/libnm-gtk/nm-wifi-dialog.c:975
+#: ../src/libnma/nma-wifi-dialog.c:973 ../src/libnm-gtk/nm-wifi-dialog.c:975
 msgid "WPA & WPA2 Personal"
 msgstr "WPA ir WPA2 asmeninis"
 
 #: ../src/connection-editor/page-wifi-security.c:371
-#: ../src/libnma/nma-wifi-dialog.c:973 ../src/libnm-gtk/nm-wifi-dialog.c:989
+#: ../src/libnma/nma-wifi-dialog.c:987 ../src/libnm-gtk/nm-wifi-dialog.c:989
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA ir WPA2 industrinis"
 
@@ -2985,11 +3511,11 @@ msgstr "trūksta SSID"
 msgid "Security not compatible with Ad-Hoc mode"
 msgstr "Saugumas nesuderinamas su Ad-Hoc veiksena"
 
-#: ../src/connection-editor/vpn-helpers.c:138
+#: ../src/connection-editor/vpn-helpers.c:141
 msgid "Cannot import VPN connection"
 msgstr "Nepavyko importuoti VPN ryšio"
 
-#: ../src/connection-editor/vpn-helpers.c:140
+#: ../src/connection-editor/vpn-helpers.c:143
 #, c-format
 msgid ""
 "The file '%s' could not be read or does not contain recognized VPN "
@@ -3002,29 +3528,29 @@ msgstr ""
 "\n"
 "Klaida: %s."
 
-#: ../src/connection-editor/vpn-helpers.c:141
+#: ../src/connection-editor/vpn-helpers.c:144
 msgid "unknown error"
 msgstr "nežinoma klaida"
 
-#: ../src/connection-editor/vpn-helpers.c:215
+#: ../src/connection-editor/vpn-helpers.c:218
 #, c-format
 msgid "A file named \"%s\" already exists."
 msgstr "Failas pavadinimu „%s“ jau yra."
 
-#: ../src/connection-editor/vpn-helpers.c:217
+#: ../src/connection-editor/vpn-helpers.c:220
 msgid "_Replace"
 msgstr "_Pakeisti"
 
-#: ../src/connection-editor/vpn-helpers.c:219
+#: ../src/connection-editor/vpn-helpers.c:222
 #, c-format
 msgid "Do you want to replace %s with the VPN connection you are saving?"
 msgstr "Ar norite pakeisti %s VPN ryšiu, kurį bandote įrašyti?"
 
-#: ../src/connection-editor/vpn-helpers.c:255
+#: ../src/connection-editor/vpn-helpers.c:258
 msgid "Cannot export VPN connection"
 msgstr "Nepavyko eksportuoti VPN ryšio"
 
-#: ../src/connection-editor/vpn-helpers.c:257
+#: ../src/connection-editor/vpn-helpers.c:260
 #, c-format
 msgid ""
 "The VPN connection '%s' could not be exported to %s.\n"
@@ -3035,17 +3561,9 @@ msgstr ""
 "\n"
 "Klaida: %s."
 
-#: ../src/connection-editor/vpn-helpers.c:292
+#: ../src/connection-editor/vpn-helpers.c:295
 msgid "Export VPN connection..."
 msgstr "Eksportuoti VPN ryšį…"
-
-#: ../src/ethernet-dialog.c:86 ../src/ethernet-dialog.c:94
-msgid ""
-"The NetworkManager Applet could not find some required resources (the .ui "
-"file was not found)."
-msgstr ""
-"NetworkManager įtaisas nerado kai kurių reikalingų išteklių (nerastas .ui "
-"failas)."
 
 #: ../src/gsm-unlock.ui.h:2
 msgid "_Unlock"
@@ -3286,7 +3804,7 @@ msgstr "_Antrinis slaptažodis:"
 
 #: ../src/libnma/nma-vpn-password-dialog.c:102
 #: ../src/libnm-gtk/nm-vpn-password-dialog.c:102
-msgid "_Ternary Password:"
+msgid "_Tertiary Password:"
 msgstr "_Antrinis slaptažodis:"
 
 #: ../src/libnma/nma-vpn-password-dialog.c:247
@@ -3306,20 +3824,25 @@ msgstr ""
 "Trūksta slaptažodžio arba ryšys yra netinkamas. Pastaruoju atveju reikia "
 "pirma paredaguoti ryšį naudojant nm-connection-editor"
 
-#: ../src/libnma/nma-wifi-dialog.c:455 ../src/libnm-gtk/nm-wifi-dialog.c:465
+#: ../src/libnma/nma-wifi-dialog.c:465 ../src/libnm-gtk/nm-wifi-dialog.c:465
 msgid "New..."
 msgstr "Naujas…"
 
-#: ../src/libnma/nma-wifi-dialog.c:889 ../src/libnm-gtk/nm-wifi-dialog.c:905
+#: ../src/libnma/nma-wifi-dialog.c:903 ../src/libnm-gtk/nm-wifi-dialog.c:905
 msgctxt "Wifi/wired security"
 msgid "None"
 msgstr "Nėra"
 
-#: ../src/libnma/nma-wifi-dialog.c:1057 ../src/libnm-gtk/nm-wifi-dialog.c:1075
+#: ../src/libnma/nma-wifi-dialog.c:959 ../src/libnm-gtk/nm-wifi-dialog.c:961
+#| msgid "Dynamic WEP (802.1X)"
+msgid "Dynamic WEP (802.1x)"
+msgstr "Dinaminis WEP (802.1X)"
+
+#: ../src/libnma/nma-wifi-dialog.c:1071 ../src/libnm-gtk/nm-wifi-dialog.c:1075
 msgid "C_reate"
 msgstr "Suku_rti"
 
-#: ../src/libnma/nma-wifi-dialog.c:1143 ../src/libnm-gtk/nm-wifi-dialog.c:1161
+#: ../src/libnma/nma-wifi-dialog.c:1157 ../src/libnm-gtk/nm-wifi-dialog.c:1161
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the Wi-Fi network '%s'."
@@ -3327,35 +3850,35 @@ msgstr ""
 "Norint prisijungti prie belaidžio tinklo „%s“ reikalingi slaptažodžiai ar "
 "šifravimo raktai."
 
-#: ../src/libnma/nma-wifi-dialog.c:1145 ../src/libnm-gtk/nm-wifi-dialog.c:1163
+#: ../src/libnma/nma-wifi-dialog.c:1159 ../src/libnm-gtk/nm-wifi-dialog.c:1163
 msgid "Wi-Fi Network Authentication Required"
 msgstr "Reikia patvirtinti jūsų tapatybę belaidžiame tinkle"
 
-#: ../src/libnma/nma-wifi-dialog.c:1147 ../src/libnm-gtk/nm-wifi-dialog.c:1165
+#: ../src/libnma/nma-wifi-dialog.c:1161 ../src/libnm-gtk/nm-wifi-dialog.c:1165
 msgid "Authentication required by Wi-Fi network"
 msgstr "Belaidis tinklas prašo patvirtinti jūsų tapatybę"
 
-#: ../src/libnma/nma-wifi-dialog.c:1152 ../src/libnm-gtk/nm-wifi-dialog.c:1170
+#: ../src/libnma/nma-wifi-dialog.c:1166 ../src/libnm-gtk/nm-wifi-dialog.c:1170
 msgid "Create New Wi-Fi Network"
 msgstr "Sukurti naują belaidį tinklą"
 
-#: ../src/libnma/nma-wifi-dialog.c:1154 ../src/libnm-gtk/nm-wifi-dialog.c:1172
+#: ../src/libnma/nma-wifi-dialog.c:1168 ../src/libnm-gtk/nm-wifi-dialog.c:1172
 msgid "New Wi-Fi network"
 msgstr "Naujas belaidis tinklas"
 
-#: ../src/libnma/nma-wifi-dialog.c:1155 ../src/libnm-gtk/nm-wifi-dialog.c:1173
+#: ../src/libnma/nma-wifi-dialog.c:1169 ../src/libnm-gtk/nm-wifi-dialog.c:1173
 msgid "Enter a name for the Wi-Fi network you wish to create."
 msgstr "Įveskite pageidaujamo sukurti belaidžio tinklo pavadinimą."
 
-#: ../src/libnma/nma-wifi-dialog.c:1157 ../src/libnm-gtk/nm-wifi-dialog.c:1175
+#: ../src/libnma/nma-wifi-dialog.c:1171 ../src/libnm-gtk/nm-wifi-dialog.c:1175
 msgid "Connect to Hidden Wi-Fi Network"
 msgstr "Prisijungti prie paslėpto belaidžio tinklo"
 
-#: ../src/libnma/nma-wifi-dialog.c:1159 ../src/libnm-gtk/nm-wifi-dialog.c:1177
+#: ../src/libnma/nma-wifi-dialog.c:1173 ../src/libnm-gtk/nm-wifi-dialog.c:1177
 msgid "Hidden Wi-Fi network"
 msgstr "Paslėptas belaidis tinklas"
 
-#: ../src/libnma/nma-wifi-dialog.c:1160 ../src/libnm-gtk/nm-wifi-dialog.c:1178
+#: ../src/libnma/nma-wifi-dialog.c:1174 ../src/libnm-gtk/nm-wifi-dialog.c:1178
 msgid ""
 "Enter the name and security details of the hidden Wi-Fi network you wish to "
 "connect to."
@@ -3521,12 +4044,12 @@ msgstr "Reikalingas PIN kodas"
 msgid "PIN code is needed for the mobile broadband device"
 msgstr "Mobiliojo plačiajuosčio ryšio įrenginiui reikia PIN kodo"
 
-#: ../src/mobile-helpers.c:619
+#: ../src/mobile-helpers.c:622
 #, c-format
 msgid "Mobile broadband connection '%s' active: (%d%%%s%s)"
 msgstr "Mobilusis plačiajuostis ryšys „%s“ aktyvus: (%d%%%s%s)"
 
-#: ../src/mobile-helpers.c:622
+#: ../src/mobile-helpers.c:625
 msgid "roaming"
 msgstr "tarptinklinis ryšys"
 
@@ -3536,41 +4059,46 @@ msgstr "tarptinklinis ryšys"
 msgid "%s connection"
 msgstr "%s ryšys"
 
-#: ../src/wireless-security/eap-method.c:56
-msgid "undefined error in 802.1x security (wpa-eap)"
-msgstr "neapibrėžta 802.1x saugumo klaida (wpa-eap)"
+#: ../src/wireless-security/eap-method.c:57
+msgid "undefined error in 802.1X security (wpa-eap)"
+msgstr "neapibrėžta 802.1X saugumo klaida (wpa-eap)"
 
-#: ../src/wireless-security/eap-method.c:255
+#: ../src/wireless-security/eap-method.c:233
+msgid "no file selected"
+msgstr "nepasirinktas failas"
+
+#: ../src/wireless-security/eap-method.c:264
 msgid "unspecified error validating eap-method file"
 msgstr "nenurodyta klaida tikrinant eap-method failą"
 
-#: ../src/wireless-security/eap-method.c:452
+#: ../src/wireless-security/eap-method.c:468
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "DER, PEM ar PKCS#12 privatūs raktai (*.der, *.pem, *.p12, *.key)"
 
-#: ../src/wireless-security/eap-method.c:455
+#: ../src/wireless-security/eap-method.c:471
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
 msgstr "DER arba PEM liudijimai (*.der, *.pem, *.crt, *.cer)"
 
-#: ../src/wireless-security/eap-method-fast.c:70
+#: ../src/wireless-security/eap-method-fast.c:72
 msgid "missing EAP-FAST PAC file"
 msgstr "trūksta EAP-FAST PAC failo"
 
-#: ../src/wireless-security/eap-method-fast.c:265
+#: ../src/wireless-security/eap-method-fast.c:268
 #: ../src/wireless-security/eap-method-peap.c:302
 #: ../src/wireless-security/eap-method-ttls.c:333
 msgid "GTC"
 msgstr "GTC"
 
-#: ../src/wireless-security/eap-method-fast.c:403
-msgid "Choose a PAC file..."
-msgstr "Pasirinkite PAC failą..."
+#: ../src/wireless-security/eap-method-fast.c:406
+#| msgid "Choose a PAC file..."
+msgid "Choose a PAC file"
+msgstr "Pasirinkite PAC failą"
 
-#: ../src/wireless-security/eap-method-fast.c:410
+#: ../src/wireless-security/eap-method-fast.c:413
 msgid "PAC files (*.pac)"
 msgstr "PAC failai (*.pac)"
 
-#: ../src/wireless-security/eap-method-fast.c:414
+#: ../src/wireless-security/eap-method-fast.c:417
 msgid "All files"
 msgstr "Visi failai"
 
@@ -3606,11 +4134,11 @@ msgstr "_Vidinis tapatybės nustatymas:"
 msgid "Allow automatic PAC pro_visioning"
 msgstr "Leisti automatinį PAC _teikimą"
 
-#: ../src/wireless-security/eap-method-leap.c:63
+#: ../src/wireless-security/eap-method-leap.c:65
 msgid "missing EAP-LEAP username"
 msgstr "trūksta EAP-LEAP naudotojo vardo"
 
-#: ../src/wireless-security/eap-method-leap.c:69
+#: ../src/wireless-security/eap-method-leap.c:74
 msgid "missing EAP-LEAP password"
 msgstr "trūksta EAP-LEAP slaptažodžio"
 
@@ -3630,10 +4158,11 @@ msgid "MD5"
 msgstr "MD5"
 
 #: ../src/wireless-security/eap-method-peap.c:381
-#: ../src/wireless-security/eap-method-tls.c:481
+#: ../src/wireless-security/eap-method-tls.c:501
 #: ../src/wireless-security/eap-method-ttls.c:412
-msgid "Choose a Certificate Authority certificate..."
-msgstr "Pasirinkite liudijimų įstaigos liudijimą…"
+#| msgid "Choose a Certificate Authority certificate..."
+msgid "Choose a Certificate Authority certificate"
+msgstr "Pasirinkite liudijimų įstaigos liudijimą"
 
 #: ../src/wireless-security/eap-method-peap.ui.h:3
 msgid "Version 0"
@@ -3659,46 +4188,46 @@ msgstr "Ne_būtinas LĮ liudijimas"
 msgid "PEAP _version:"
 msgstr "PEAP _versija:"
 
-#: ../src/wireless-security/eap-method-simple.c:72
+#: ../src/wireless-security/eap-method-simple.c:74
 msgid "missing EAP username"
 msgstr "trūksta EAP naudotojo vardo"
 
-#: ../src/wireless-security/eap-method-simple.c:82
+#: ../src/wireless-security/eap-method-simple.c:87
 msgid "missing EAP password"
 msgstr "trūksta EAP slaptažodžio"
 
-#: ../src/wireless-security/eap-method-tls.c:66
+#: ../src/wireless-security/eap-method-tls.c:68
 msgid "missing EAP-TLS identity"
 msgstr "trūksta EAP-TLS identiteto"
 
-#: ../src/wireless-security/eap-method-tls.c:71
+#: ../src/wireless-security/eap-method-tls.c:77
 #, c-format
 msgid "invalid EAP-TLS CA certificate: %s"
 msgstr "netinkamas EAP-TLS LĮ liudijimas: %s"
 
-#: ../src/wireless-security/eap-method-tls.c:76
+#: ../src/wireless-security/eap-method-tls.c:84
 msgid "invalid EAP-TLS CA certificate: no certificate specified"
 msgstr "netinkamas EAP-TSL LĮ liudijimas: nenurodytas liudijimas"
 
-#: ../src/wireless-security/eap-method-tls.c:84
+#: ../src/wireless-security/eap-method-tls.c:95
 msgid "invalid EAP-TLS password: missing"
 msgstr "netinkamas EAP-TLS slaptažodis: trūksta"
 
-#: ../src/wireless-security/eap-method-tls.c:94
+#: ../src/wireless-security/eap-method-tls.c:109
 #, c-format
 msgid "invalid EAP-TLS private-key: %s"
 msgstr "netinkamas EAP-TLS privatusis raktas: %s"
 
-#: ../src/wireless-security/eap-method-tls.c:101
+#: ../src/wireless-security/eap-method-tls.c:119
 #, c-format
 msgid "invalid EAP-TLS user-certificate: %s"
 msgstr "netinkamas EAP-TLS naudotojo liudijimas: %s"
 
-#: ../src/wireless-security/eap-method-tls.c:296
+#: ../src/wireless-security/eap-method-tls.c:316
 msgid "Unencrypted private keys are insecure"
 msgstr "Nešifruoti asmeniniai raktai yra nesaugūs"
 
-#: ../src/wireless-security/eap-method-tls.c:299
+#: ../src/wireless-security/eap-method-tls.c:319
 msgid ""
 "The selected private key does not appear to be protected by a password.  "
 "This could allow your security credentials to be compromised.  Please select "
@@ -3712,13 +4241,15 @@ msgstr ""
 "\n"
 "(Galite slaptažodžiu apsaugoti savo asmeninį raktą su openssl)"
 
-#: ../src/wireless-security/eap-method-tls.c:475
-msgid "Choose your personal certificate..."
-msgstr "Pasirinkite savo asmeninį liudijimą…"
+#: ../src/wireless-security/eap-method-tls.c:495
+#| msgid "Choose your personal certificate..."
+msgid "Choose your personal certificate"
+msgstr "Pasirinkite savo asmeninį liudijimą"
 
-#: ../src/wireless-security/eap-method-tls.c:487
-msgid "Choose your private key..."
-msgstr "Pasirinkite savo asmeninį raktą…"
+#: ../src/wireless-security/eap-method-tls.c:507
+#| msgid "Choose your private key..."
+msgid "Choose your private key"
+msgstr "Pasirinkite savo privatų raktą"
 
 #: ../src/wireless-security/eap-method-tls.ui.h:1
 msgid "I_dentity:"
@@ -3746,8 +4277,8 @@ msgid "invalid EAP-TTLS CA certificate: no certificate specified"
 msgstr "netinkamas EAP-TTLS LĮ liudijimas: nenurodytas liudijimas"
 
 #: ../src/wireless-security/wireless-security.c:72
-msgid "Unknown error validating 802.1x security"
-msgstr "Nežinoma klaida tikrinant 802.1x saugumą"
+msgid "Unknown error validating 802.1X security"
+msgstr "Nežinoma klaida tikrinant 802.1X saugumą"
 
 #: ../src/wireless-security/wireless-security.c:436
 msgid "TLS"
@@ -3775,32 +4306,32 @@ msgstr "Apsaugotas EAP (PEAP)"
 msgid "Au_thentication:"
 msgstr "_Tapatybės nustatymas:"
 
-#: ../src/wireless-security/ws-leap.c:61
+#: ../src/wireless-security/ws-leap.c:63
 msgid "missing leap-username"
 msgstr "trūksta leap-username"
 
-#: ../src/wireless-security/ws-leap.c:69
+#: ../src/wireless-security/ws-leap.c:74
 msgid "missing leap-password"
 msgstr "trūksta leap-password"
 
-#: ../src/wireless-security/ws-wep-key.c:105
+#: ../src/wireless-security/ws-wep-key.c:107
 msgid "missing wep-key"
 msgstr "trūksta wep-key"
 
-#: ../src/wireless-security/ws-wep-key.c:113
+#: ../src/wireless-security/ws-wep-key.c:116
 #, c-format
 msgid "invalid wep-key: key with a length of %zu must contain only hex-digits"
 msgstr ""
 "netinkamas wep-key: %zu ilgio raktas turi turėti tik šešioliktainius "
 "skaitmenis"
 
-#: ../src/wireless-security/ws-wep-key.c:120
+#: ../src/wireless-security/ws-wep-key.c:124
 #, c-format
 msgid ""
 "invalid wep-key: key with a length of %zu must contain only ascii characters"
 msgstr "netinkamas wep-key: %zu ilgio raktas turi turėti tik ascii simbolius"
 
-#: ../src/wireless-security/ws-wep-key.c:125
+#: ../src/wireless-security/ws-wep-key.c:130
 #, c-format
 msgid ""
 "invalid wep-key: wrong key length %zu. A key must be either of length 5/13 "
@@ -3809,11 +4340,11 @@ msgstr ""
 "netinkamas wep-key: blogas %zu ilgio raktas. Raktas turi būti 5/13 (ascii) "
 "arba 10/26 (šešioliktainis) ilgio"
 
-#: ../src/wireless-security/ws-wep-key.c:131
+#: ../src/wireless-security/ws-wep-key.c:137
 msgid "invalid wep-key: passphrase must be non-empty"
 msgstr "netinkamas wep-key: slaptafrazė negali būti tuščia"
 
-#: ../src/wireless-security/ws-wep-key.c:133
+#: ../src/wireless-security/ws-wep-key.c:139
 msgid "invalid wep-key: passphrase must be shorter than 64 characters"
 msgstr "netinkamas wep-key: slaptafrazė turi būti trumpesnė nei 64 simboliai"
 
@@ -3841,7 +4372,7 @@ msgstr "R_odyti raktą"
 msgid "WEP inde_x:"
 msgstr "WEP inde_ksas:"
 
-#: ../src/wireless-security/ws-wpa-psk.c:69
+#: ../src/wireless-security/ws-wpa-psk.c:70
 #, c-format
 msgid ""
 "invalid wpa-psk: invalid key-length %zu. Must be [8,63] bytes or 64 hex "
@@ -3850,7 +4381,7 @@ msgstr ""
 "netinkamas wpa-psk: netinamas rakto ilgis %zu. Turi būti [8.63] baitai arba "
 "64 šešioliktainiai skaitmenys"
 
-#: ../src/wireless-security/ws-wpa-psk.c:77
+#: ../src/wireless-security/ws-wpa-psk.c:79
 msgid "invalid wpa-psk: cannot interpret key with 64 bytes as hex"
 msgstr ""
 "netinkamas wpa-psk: negalima interpretuoti 64 baitų kaip šešioliktainio "
@@ -3859,6 +4390,15 @@ msgstr ""
 #: ../src/wireless-security/ws-wpa-psk.ui.h:2
 msgid "_Type:"
 msgstr "_Tipas:"
+
+#~ msgid "NetworkManager for GNOME"
+#~ msgstr "NetworkManager GNOME aplinkai"
+
+#~ msgid "_Disconnect VPN"
+#~ msgstr "_Atjungti VPN"
+
+#~ msgid "_Import team configuration from a file..."
+#~ msgstr "Importuoti komandinio ryšio konfigūraciją iš failo..."
 
 #~ msgid "_Help"
 #~ msgstr "_Žinynas"

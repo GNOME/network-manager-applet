@@ -26,7 +26,7 @@
 
 #include "utils.h"
 
-#include "nm-test-utils.h"
+#include "nm-utils/nm-test-utils.h"
 
 typedef struct {
 	char *foobar_infra_open;

@@ -68,7 +68,7 @@ finish_setup (CEPage8021xSecurity *self, gpointer unused, GError *error, gpointe
 
 	priv->security = (WirelessSecurity *) ws_wpa_eap_new (parent->connection, TRUE, FALSE);
 	if (!priv->security) {
-		g_warning ("Could not load 802.1x user interface.");
+		g_warning ("Could not load 802.1X user interface.");
 		return;
 	}
 
@@ -106,9 +106,9 @@ ce_page_8021x_security_new (NMConnectionEditor *editor,
 	                                            client,
 	                                            NULL,
 	                                            NULL,
-	                                            _("802.1x Security")));
+	                                            _("802.1X Security")));
 	if (!self) {
-		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load 802.1x Security user interface."));
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load 802.1X Security user interface."));
 		return NULL;
 	}
 

@@ -70,7 +70,7 @@ spin_output_with_default_string (GtkSpinButton *spin,
 	return TRUE;
 }
 
-gboolean
+static gboolean
 ce_spin_output_with_automatic (GtkSpinButton *spin, gpointer user_data)
 {
 	return spin_output_with_default_string (spin,
@@ -78,12 +78,69 @@ ce_spin_output_with_automatic (GtkSpinButton *spin, gpointer user_data)
 	                                        _("automatic"));
 }
 
-gboolean
+static gboolean
 ce_spin_output_with_default (GtkSpinButton *spin, gpointer user_data)
 {
 	return spin_output_with_default_string (spin,
 	                                        GPOINTER_TO_INT (user_data),
 	                                        _("default"));
+}
+
+static gint
+spin_input_with_default_string (GtkSpinButton *spin,
+                                int defvalue,
+                                gdouble *new_val,
+                                const char *defstring)
+{
+	const gchar *buf;
+
+	buf = gtk_entry_get_text (GTK_ENTRY (spin));
+	if (strcmp (buf, defstring) == 0) {
+		*new_val = defvalue;
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+static gint
+ce_spin_input_with_automatic (GtkSpinButton *spin, gdouble *new_val, gpointer user_data)
+{
+	return spin_input_with_default_string (spin,
+	                                       GPOINTER_TO_INT (user_data),
+	                                       new_val,
+	                                       _("automatic"));
+}
+
+static gint
+ce_spin_input_with_default (GtkSpinButton *spin, gdouble *new_val, gpointer user_data)
+{
+	return spin_input_with_default_string (spin,
+	                                       GPOINTER_TO_INT (user_data),
+	                                       new_val,
+	                                       _("default"));
+}
+
+void
+ce_spin_automatic_val (GtkSpinButton *spin, int defvalue)
+{
+	g_signal_connect (spin, "output",
+	                  G_CALLBACK (ce_spin_output_with_automatic),
+	                  GINT_TO_POINTER (defvalue));
+	g_signal_connect (spin, "input",
+	                  G_CALLBACK (ce_spin_input_with_automatic),
+	                  GINT_TO_POINTER (defvalue));
+}
+
+void
+ce_spin_default_val (GtkSpinButton *spin, int defvalue)
+{
+	g_signal_connect (spin, "output",
+	                  G_CALLBACK (ce_spin_output_with_default),
+	                  GINT_TO_POINTER (defvalue));
+	g_signal_connect (spin, "input",
+	                  G_CALLBACK (ce_spin_input_with_default),
+	                  GINT_TO_POINTER (defvalue));
 }
 
 int

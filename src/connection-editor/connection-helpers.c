@@ -21,6 +21,7 @@
 #include "nm-default.h"
 
 #include "connection-helpers.h"
+
 #include "nm-connection-list.h"
 #include "nm-connection-editor.h"
 #include "page-ethernet.h"
@@ -35,7 +36,7 @@
 #include "page-vlan.h"
 #include "page-vpn.h"
 #include "vpn-helpers.h"
-#include "nm-vpn-editor-plugin-call.h"
+#include "nm-utils/nm-vpn-editor-plugin-call.h"
 
 #define COL_MARKUP     0
 #define COL_SENSITIVE  1

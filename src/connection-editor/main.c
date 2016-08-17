@@ -28,10 +28,8 @@
 
 #include <glib-unix.h>
 
-#include "gsystem-local-alloc.h"
 #include "nm-connection-list.h"
 #include "nm-connection-editor.h"
-#include "nm-dbus-compat.h"
 
 gboolean nm_ce_keep_above;
 
@@ -213,9 +211,9 @@ try_existing_instance (GDBusConnection *bus,
 	g_assert (bus);
 
 	reply = g_dbus_connection_call_sync (bus,
-	                                     DBUS_SERVICE_DBUS,
-	                                     DBUS_PATH_DBUS,
-	                                     DBUS_INTERFACE_DBUS,
+	                                     "org.freedesktop.DBus",
+	                                     "/org/freedesktop/DBus",
+	                                     "org.freedesktop.DBus",
 	                                     "GetNameOwner",
 	                                     g_variant_new ("(s)", NM_CE_DBUS_SERVICE),
 	                                     G_VARIANT_TYPE ("(s)"),

@@ -3,6 +3,7 @@ bin_PROGRAMS = nm-connection-editor
 nm_connection_editor_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	$(LIBNM_CFLAGS) \
+	$(JANSSON_CFLAGS) \
 	-DLIBNM_BUILD \
 	-DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_4 \
 	-DNM_VERSION_MAX_ALLOWED=NM_VERSION_1_4 \
@@ -87,6 +88,7 @@ nm_connection_editor_LDADD = \
 	${top_builddir}/src/libnma/libnma.la \
 	$(GTK_LIBS) \
 	$(LIBNM_LIBS) \
+	$(JANSSON_LIBS) \
 	-lm
 
 uidir = $(datadir)/nm-applet

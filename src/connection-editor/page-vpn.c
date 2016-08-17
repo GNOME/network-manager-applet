@@ -22,13 +22,14 @@
 
 #include "nm-default.h"
 
+#include "page-vpn.h"
+
 #include <string.h>
 
-#include "page-vpn.h"
 #include "connection-helpers.h"
 #include "nm-connection-editor.h"
 #include "vpn-helpers.h"
-#include "nm-vpn-editor-plugin-call.h"
+#include "nm-utils/nm-vpn-editor-plugin-call.h"
 
 G_DEFINE_TYPE (CEPageVpn, ce_page_vpn, CE_TYPE_PAGE)
 
@@ -248,6 +249,7 @@ import_cb (NMConnection *connection, gpointer user_data)
 void
 vpn_connection_import (GtkWindow *parent,
                        const char *detail,
+                       gpointer detail_data,
                        NMClient *client,
                        PageNewConnectionResultFunc result_func,
                        gpointer user_data)

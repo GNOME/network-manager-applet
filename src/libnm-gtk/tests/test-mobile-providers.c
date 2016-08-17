@@ -20,7 +20,7 @@
 
 #include "nm-mobile-providers.h"
 
-#include "nm-test-utils.h"
+#include "nm-utils/nm-test-utils.h"
 
 #if defined TEST_DATA_DIR
 #  define COUNTRY_CODES_FILE     TEST_DATA_DIR "/iso3166-test.xml"

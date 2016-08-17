@@ -304,21 +304,14 @@ populate_ui (CEPageWifi *self)
 	guint32 idx;
 
 	rate_def = ce_get_property_default (NM_SETTING (setting), NM_SETTING_WIRELESS_RATE);
-	g_signal_connect (priv->rate, "output",
-	                  G_CALLBACK (ce_spin_output_with_automatic),
-	                  GINT_TO_POINTER (rate_def));
-	g_signal_connect_swapped (priv->rate, "value-changed", G_CALLBACK (ce_page_changed), self);
+	ce_spin_automatic_val (priv->mtu, rate_def);
 
 	tx_power_def = ce_get_property_default (NM_SETTING (setting), NM_SETTING_WIRELESS_TX_POWER);
-	g_signal_connect (priv->tx_power, "output",
-	                  G_CALLBACK (ce_spin_output_with_automatic),
-	                  GINT_TO_POINTER (tx_power_def));
+	ce_spin_automatic_val (priv->mtu, tx_power_def);
 	g_signal_connect_swapped (priv->tx_power, "value-changed", G_CALLBACK (ce_page_changed), self);
 
 	mtu_def = ce_get_property_default (NM_SETTING (setting), NM_SETTING_WIRELESS_MTU);
-	g_signal_connect (priv->mtu, "output",
-	                  G_CALLBACK (ce_spin_output_with_automatic),
-	                  GINT_TO_POINTER (mtu_def));
+	ce_spin_automatic_val (priv->mtu, mtu_def);
 	g_signal_connect_swapped (priv->mtu, "value-changed", G_CALLBACK (ce_page_changed), self);
 
 	ssid = nm_setting_wireless_get_ssid (setting);
