@@ -164,7 +164,6 @@ select_in_tree (GtkTreeView *tree, json_t *arr, GError **error)
 	const gchar *name;
 	GtkTreeSelection *selection;
 	size_t i;
-	json_t *val;
 
 	model = gtk_tree_view_get_model (tree);
 	selection = gtk_tree_view_get_selection (tree);
@@ -174,7 +173,8 @@ select_in_tree (GtkTreeView *tree, json_t *arr, GError **error)
 	if (!arr)
 		return TRUE;
 
-	json_array_foreach (arr, i, val) {
+	for (i = 0; i < json_array_size (arr); i++) {
+		json_t *val = json_array_get (arr, i);
 		const char *str;
 
 		if (!json_is_string (val)) {
