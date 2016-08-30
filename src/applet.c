@@ -2291,6 +2291,13 @@ foo_manager_permission_changed (NMClient *client,
 		applet->permissions[permission] = result;
 }
 
+static void
+foo_wireless_enabled_changed_cb (NMClient *client, GParamSpec *pspec, NMApplet *applet)
+{
+	applet_schedule_update_icon (applet);
+	applet_schedule_update_menu (applet);
+}
+
 static gboolean
 foo_set_initial_state (gpointer data)
 {
@@ -2338,6 +2345,14 @@ foo_client_setup (NMApplet *applet)
 
 	g_signal_connect (applet->nm_client, "permission-changed",
 	                  G_CALLBACK (foo_manager_permission_changed),
+	                  applet);
+
+	g_signal_connect (applet->nm_client, "notify::wireless-enabled",
+	                  G_CALLBACK (foo_wireless_enabled_changed_cb),
+	                  applet);
+
+	g_signal_connect (applet->nm_client, "notify::wwan-enabled",
+	                  G_CALLBACK (foo_wireless_enabled_changed_cb),
 	                  applet);
 
 	/* Initialize permissions - the initial 'permission-changed' signal is emitted from NMClient constructor, and thus not caught */
