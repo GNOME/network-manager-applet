@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-17 18:41+0200\n"
-"PO-Revision-Date: 2016-08-17 18:42+0200\n"
+"POT-Creation-Date: 2016-09-10 00:09+0200\n"
+"PO-Revision-Date: 2016-09-10 00:10+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
 
-#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3104
+#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3119
 msgid "Network"
 msgstr "Sieć"
 
@@ -80,7 +80,7 @@ msgstr "Ustawienie na „true” wyłącza powiadomienia o dostępności sieci 
 
 #: ../org.gnome.nm-applet.gschema.xml.in.h:9
 msgid "Stamp"
-msgstr "Okres czasowy"
+msgstr "Czas"
 
 #: ../org.gnome.nm-applet.gschema.xml.in.h:10
 msgid "Used to determine whether settings should be migrated to a new version."
@@ -425,7 +425,7 @@ msgstr "_Dodaj połączenie VPN…"
 msgid "NetworkManager is not running..."
 msgstr "Usługa NetworkManager nie jest uruchomiona…"
 
-#: ../src/applet.c:1612 ../src/applet.c:2604
+#: ../src/applet.c:1612 ../src/applet.c:2619
 msgid "Networking disabled"
 msgstr "Sieć jest wyłączona"
 
@@ -476,52 +476,52 @@ msgstr "Rozłączony"
 msgid "The network connection has been disconnected."
 msgstr "Połączenie sieciowe zostało rozłączone."
 
-#: ../src/applet.c:2466
+#: ../src/applet.c:2481
 #, c-format
 msgid "Preparing network connection '%s'..."
 msgstr "Przygotowywanie połączenia sieciowego „%s”…"
 
-#: ../src/applet.c:2469
+#: ../src/applet.c:2484
 #, c-format
 msgid "User authentication required for network connection '%s'..."
 msgstr "Wymagane uwierzytelnienie dla połączenia sieciowego „%s”…"
 
-#: ../src/applet.c:2472 ../src/applet-device-bt.c:125
+#: ../src/applet.c:2487 ../src/applet-device-bt.c:125
 #: ../src/mobile-helpers.c:608
 #, c-format
 msgid "Requesting a network address for '%s'..."
 msgstr "Żądanie adresu sieciowego dla „%s”…"
 
-#: ../src/applet.c:2475
+#: ../src/applet.c:2490
 #, c-format
 msgid "Network connection '%s' active"
 msgstr "Nawiązano połączenie sieciowe „%s”"
 
-#: ../src/applet.c:2549
+#: ../src/applet.c:2564
 #, c-format
 msgid "Starting VPN connection '%s'..."
 msgstr "Nawiązywanie połączenia VPN „%s”…"
 
-#: ../src/applet.c:2552
+#: ../src/applet.c:2567
 #, c-format
 msgid "User authentication required for VPN connection '%s'..."
 msgstr "Wymagane uwierzytelnienie dla połączenia VPN „%s”…"
 
-#: ../src/applet.c:2555
+#: ../src/applet.c:2570
 #, c-format
 msgid "Requesting a VPN address for '%s'..."
 msgstr "Żądanie adresu VPN dla „%s”…"
 
-#: ../src/applet.c:2558
+#: ../src/applet.c:2573
 #, c-format
 msgid "VPN connection active"
 msgstr "Nawiązano połączenie VPN"
 
-#: ../src/applet.c:2608
+#: ../src/applet.c:2623
 msgid "No network connection"
 msgstr "Brak połączenia sieciowego"
 
-#: ../src/applet.c:3203
+#: ../src/applet.c:3218
 msgid "NetworkManager Applet"
 msgstr "Aplet NetworkManager"
 
@@ -2999,7 +2999,7 @@ msgid ""
 "\"3C:97:0E:42:1A:19\", \"em1 (3C:97:0E:42:1A:19)\""
 msgstr ""
 "Ta opcja blokuje to połączenie z urządzeniem sieciowym określonym przez jego "
-"nazwę interfejsu i/lub trwały adres MAC. Przykłady: „em1”, "
+"nazwę interfejsu lub trwały adres MAC. Przykłady: „em1”, "
 "„3C:97:0E:42:1A:19”, „em1 (3C:97:0E:42:1A:19)”"
 
 #: ../src/connection-editor/page-ethernet.c:326
@@ -3058,7 +3058,7 @@ msgid ""
 "(80:00:00:48:fe:80:00:00:00:00:00:00:00:02:c9:03:00:00:0f:65)\""
 msgstr ""
 "Ta opcja blokuje to połączenie z urządzeniem sieciowym określonym przez jego "
-"nazwę interfejsu i/lub trwały adres MAC. Przykłady: „ib0”, „80:00:00:48:"
+"nazwę interfejsu lub trwały adres MAC. Przykłady: „ib0”, „80:00:00:48:"
 "fe:80:00:00:00:00:00:00:00:02:c9:03:00:00:0f:65”, „ib0 (80:00:00:48:"
 "fe:80:00:00:00:00:00:00:00:02:c9:03:00:00:0f:65)”"
 
@@ -3425,7 +3425,7 @@ msgid ""
 "\"3C:97:0E:42:1A:19\", \"wlan0 (3C:97:0E:42:1A:19)\""
 msgstr ""
 "Ta opcja blokuje to połączenie z urządzeniem sieciowym określonym przez jego "
-"nazwę interfejsu i/lub trwały adres MAC. Przykłady: „wlan0”, "
+"nazwę interfejsu lub trwały adres MAC. Przykłady: „wlan0”, "
 "„3C:97:0E:42:1A:19”, „wlan0 (3C:97:0E:42:1A:19)”"
 
 #: ../src/connection-editor/page-wifi.c:197
@@ -3601,7 +3601,7 @@ msgid ""
 "connection settings, choose \"Network Connections\" from the System >> "
 "Preferences menu."
 msgstr ""
-"Zostanie utworzone połączenie do dostawcy Internetu używając wybranych "
+"Zostanie utworzone połączenie do dostawcy Internetu za pomocą wybranych "
 "ustawień. Jeśli połączenie nie powiedzie się lub nie będzie można uzyskać "
 "dostępu do zasobów sieciowych, należy powtórnie sprawdzić ustawienia. Aby je "
 "zmodyfikować, należy wybrać „Połączenia sieciowe” z menu System → "
@@ -3742,7 +3742,7 @@ msgstr "Nazwa planu taryfowego"
 #: ../src/libnm-gtk/nm-mobile-wizard.c:1384
 msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
 msgstr ""
-"(w niektórych przypadkach) nazwa punktu dostępowego (APN) planu taryfowego"
+"(w niektórych przypadkach) nazwa punktu dostępowego (APN) planu taryfowego"
 
 #: ../src/libnma/nma-mobile-wizard.c:1412
 #: ../src/libnm-gtk/nm-mobile-wizard.c:1413
@@ -3868,7 +3868,7 @@ msgstr ""
 
 #: ../src/libnma/wifi.ui.h:2 ../src/libnm-gtk/wifi.ui.h:2
 msgid "Wi-Fi _security:"
-msgstr "Zabezpieczenia sieci_Wi-Fi:"
+msgstr "Zabezpieczenia sieci _Wi-Fi:"
 
 #: ../src/libnma/wifi.ui.h:4 ../src/libnm-gtk/wifi.ui.h:4
 msgid "C_onnection:"
