@@ -810,7 +810,7 @@ gateway_matches_address (const char *gw_str, const char *addr_str, guint32 prefi
 static gboolean
 possibly_wrong_gateway (GtkTreeModel *model, GtkTreeIter *iter, const char *gw_str)
 {
-	char *addr_str, *prefix_str;
+	gs_free char *addr_str = NULL, *prefix_str = NULL;
 	gboolean addr_valid;
 	guint32 prefix;
 
