@@ -99,6 +99,14 @@ typedef CEPage* (*CEPageNewFunc)(NMConnectionEditor *editor,
                                  const char **out_secrets_setting_name,
                                  GError **error);
 
+#define CE_TOOLTIP_ADDR_AUTO _("IP addresses identify your computer on the network.  " \
+                               "Click the \"Add\" button to add static IP address to be " \
+                               "configured in addition to the automatic ones.")
+#define CE_TOOLTIP_ADDR_MANUAL _("IP addresses identify your computer on the network.  " \
+                                 "Click the \"Add\" button to add an IP address.")
+
+#define CE_LABEL_ADDR_AUTO _("Additional static addresses")
+#define CE_LABEL_ADDR_MANUAL _("Addresses")
 
 GType ce_page_get_type (void);
 

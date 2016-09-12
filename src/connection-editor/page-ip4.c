@@ -248,6 +248,7 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 	gboolean method_auto = FALSE;
 	GtkTreeIter iter;
 	GtkListStore *store;
+	const char *tooltip = NULL, *label = NULL;
 
 	if (gtk_combo_box_get_active_iter (priv->method, &iter)) {
 		gtk_tree_model_get (GTK_TREE_MODEL (priv->method_store), &iter,
@@ -256,24 +257,34 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 
 	switch (method) {
 	case IP4_METHOD_AUTO:
-		addr_enabled = FALSE;
+		addr_enabled = TRUE;
 		dhcp_enabled = routes_enabled = TRUE;
 		dns_enabled = TRUE;
 		method_auto = TRUE;
+		tooltip = CE_TOOLTIP_ADDR_AUTO;
+		label = CE_LABEL_ADDR_AUTO;
 		break;
 	case IP4_METHOD_AUTO_ADDRESSES:
-		addr_enabled = FALSE;
+		addr_enabled = TRUE;
 		dns_enabled = dhcp_enabled = routes_enabled = TRUE;
+		tooltip = CE_TOOLTIP_ADDR_AUTO;
+		label = CE_LABEL_ADDR_AUTO;
 		break;
 	case IP4_METHOD_MANUAL:
 		addr_enabled = dns_enabled = routes_enabled = TRUE;
+		tooltip = CE_TOOLTIP_ADDR_MANUAL;
+		label = CE_LABEL_ADDR_MANUAL;
 		break;
+	case IP4_METHOD_SHARED:
 	case IP4_METHOD_DISABLED:
 		addr_enabled = dns_enabled = dhcp_enabled = routes_enabled = ip4_required_enabled = FALSE;
 		break;
 	default:
 		break;
 	}
+
+	gtk_widget_set_tooltip_text (GTK_WIDGET (priv->addr_list), tooltip);
+	gtk_label_set_text (GTK_LABEL (priv->addr_label), label);
 
 	/* Disable DHCP stuff for VPNs (though in the future we should support
 	 * DHCP over tap interfaces for OpenVPN and vpnc).
