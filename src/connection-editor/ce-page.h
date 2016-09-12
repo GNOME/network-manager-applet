@@ -104,9 +104,15 @@ typedef CEPage* (*CEPageNewFunc)(NMConnectionEditor *editor,
                                "configured in addition to the automatic ones.")
 #define CE_TOOLTIP_ADDR_MANUAL _("IP addresses identify your computer on the network.  " \
                                  "Click the \"Add\" button to add an IP address.")
+#define CE_TOOLTIP_ADDR_SHARED _("The IP address identify your computer on the network and " \
+                                 "determines the address range distributed to other computers.  " \
+                                 "Click the \"Add\" button to add an IP address.  "\
+                                 "If no address is provided, one in the 10.42.x.x range will " \
+                                 "be used.")
 
 #define CE_LABEL_ADDR_AUTO _("Additional static addresses")
 #define CE_LABEL_ADDR_MANUAL _("Addresses")
+#define CE_LABEL_ADDR_SHARED _("Address (optional)")
 
 GType ce_page_get_type (void);
 
