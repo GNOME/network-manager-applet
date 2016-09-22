@@ -308,6 +308,63 @@ link_watcher_changed (GtkComboBox *combo, gpointer user_data)
 
 #if WITH_JANSSON
 
+#if JANSSON_VERSION_HEX >= 0x020700
+static inline gboolean
+check_unknown_keys (json_t *json, GError **error)
+{
+	return TRUE;
+}
+#else
+static inline gboolean
+check_unknown_keys (json_t *json, GError **error)
+{
+	const char *key1, *key2;
+	json_t *value1, *value2;
+
+	if (!json_is_object (json))
+		return TRUE;
+
+	json_object_foreach(json, key1, value1) {
+		if (!json_is_object (value1))
+			continue;
+
+			if (   strcmp (key1, "queue_id") == 0
+			    || strcmp (key1, "prio") == 0
+			    || strcmp (key1, "sticky") == 0
+			    || strcmp (key1, "lacp_prio") == 0
+			    || strcmp (key1, "lacp_key") == 0) {
+				continue;
+			} else if (strcmp (key1, "link_watch") == 0) {
+				json_object_foreach(value1, key2, value2) {
+					if (   strcmp (key2, "name") == 0
+					    || strcmp (key2, "delay_up") == 0
+					    || strcmp (key2, "delay_down") == 0
+					    || strcmp (key2, "interval") == 0
+					    || strcmp (key2, "init_wait") == 0
+					    || strcmp (key2, "missed_max") == 0
+					    || strcmp (key2, "source_host") == 0
+					    || strcmp (key2, "target_host") == 0
+					    || strcmp (key2, "validate_active") == 0
+					    || strcmp (key2, "validate_inactive") == 0
+					    || strcmp (key2, "send_always") == 0) {
+						continue;
+					} else {
+						g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
+						             "Unrecognized key: %s.%s", key1, key2);
+						return FALSE;
+					}
+				}
+			} else {
+				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
+				             "Unrecognized key: %s", key1);
+				return FALSE;
+			}
+	}
+
+	return TRUE;
+}
+#endif
+
 static gboolean
 json_to_dialog (CEPageTeamPort *self)
 {
@@ -356,10 +413,17 @@ json_to_dialog (CEPageTeamPort *self)
 		success = FALSE;
 	}
 
+	if (!check_unknown_keys (json, &error)) {
+		g_message ("Failed to unpack JSON: %s", error->message);
+		g_clear_error (&error);
+		success = FALSE;
+	}
+
 	/* For simplicity, we proceed with json==NULL. The attempt to
 	 * unpack will produce an error which we'll ignore. */
 	g_free (json_config);
 	ret = json_unpack_ex (json, &json_error, 0,
+#if JANSSON_VERSION_HEX >= 0x020700
 	                      "{"
 	                      " s?:i,"
 	                      " s?:i,"
@@ -368,6 +432,19 @@ json_to_dialog (CEPageTeamPort *self)
 	                      " s?:i,"
 	                      " s?:{s?:s, s?:i, s?:i, s?:i, s?:i, s?:i, s?:s, s?:s, s?:b, s?:b, s?:b !}"
 	                      "!}",
+#else
+	                      /* Old jansson versions (before 2.7's 7a0b9af66) break when "?" is used
+	                       * in conjunction with "!". The above call to check_unknown_keys() ensures
+	                       * we'll not be left with unpacked values. */
+	                      "{"
+	                      " s?:i,"
+	                      " s?:i,"
+	                      " s?:b,"
+	                      " s?:i,"
+	                      " s?:i,"
+	                      " s?:{s?:s, s?:i, s?:i, s?:i, s?:i, s?:i, s?:s, s?:s, s?:b, s?:b, s?:b}"
+	                      "}",
+#endif
 	                      "queue_id", &queue_id,
 	                      "prio", &port_prio,
 	                      "sticky", &port_sticky,
@@ -387,7 +464,7 @@ json_to_dialog (CEPageTeamPort *self)
 	                          "send_always", &link_watch_send_always);
 
 	if (success == TRUE && ret == -1) {
-		g_message ("Failed to parse JSON: %s on line %d", json_error.text, json_error.line);
+		g_message ("Failed to unpack JSON: %s on line %d", json_error.text, json_error.line);
 		success = FALSE;
 	}
 

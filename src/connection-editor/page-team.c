@@ -498,6 +498,109 @@ link_watcher_changed (GtkComboBox *combo, gpointer user_data)
 
 #if WITH_JANSSON
 
+#if JANSSON_VERSION_HEX >= 0x020700
+static inline gboolean
+check_unknown_keys (json_t *json, GError **error)
+{
+	return TRUE;
+}
+#else
+static inline gboolean
+check_unknown_keys (json_t *json, GError **error)
+{
+	const char *key1, *key2, *key3;
+	json_t *value1, *value2, *value3;
+
+	if (!json_is_object (json))
+		return TRUE;
+
+	json_object_foreach(json, key1, value1) {
+		if (!json_is_object (value1))
+			continue;
+
+			if (strcmp (key1, "hwaddr") == 0)
+				continue;
+			else if (strcmp (key1, "notify_peers") == 0) {
+				json_object_foreach(value1, key2, value2) {
+					if (   strcmp (key2, "interval") == 0
+					    || strcmp (key2, "count") == 0) {
+						continue;
+					} else {
+						g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
+						             "Unrecognized key: %s.%s", key1, key2);
+						return FALSE;
+					}
+				}
+			} else if (strcmp (key1, "mcast_rejoin") == 0) {
+				json_object_foreach(value1, key2, value2) {
+					if (   strcmp (key2, "count") == 0
+					    || strcmp (key2, "interval") == 0) {
+						continue;
+					} else {
+						g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
+						             "Unrecognized key: %s.%s", key1, key2);
+						return FALSE;
+					}
+				}
+			} else if (strcmp (key1, "runner") == 0) {
+				json_object_foreach(value1, key2, value2) {
+					if (   strcmp (key2, "name") == 0
+					    || strcmp (key2, "hwaddr_policy") == 0
+					    || strcmp (key2, "tx_hash") == 0
+					    || strcmp (key2, "active") == 0
+					    || strcmp (key2, "fast_rate") == 0
+					    || strcmp (key2, "sys_prio") == 0
+					    || strcmp (key2, "min_ports") == 0
+					    || strcmp (key2, "agg_select_policy") == 0) {
+						continue;
+					} else if (strcmp (key2, "tx_balancer") == 0) {
+						json_object_foreach(value2, key3, value3) {
+							if (   strcmp (key3, "name") == 0
+							    || strcmp (key3, "balancing_interval") == 0) {
+								continue;
+							} else {
+								g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
+								             "Unrecognized key: %s.%s.%s", key1, key2, key3);
+								return FALSE;
+							}
+						}
+					} else {
+						g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
+						             "Unrecognized key: %s.%s", key1, key2);
+						return FALSE;
+					}
+				}
+			} else if (strcmp (key1, "link_watch") == 0) {
+				json_object_foreach(value1, key2, value2) {
+					if (   strcmp (key2, "name") == 0
+					    || strcmp (key2, "delay_up") == 0
+					    || strcmp (key2, "delay_down") == 0
+					    || strcmp (key2, "interval") == 0
+					    || strcmp (key2, "init_wait") == 0
+					    || strcmp (key2, "missed_max") == 0
+					    || strcmp (key2, "source_host") == 0
+					    || strcmp (key2, "target_host") == 0
+					    || strcmp (key2, "validate_active") == 0
+					    || strcmp (key2, "validate_inactive") == 0
+					    || strcmp (key2, "send_always") == 0) {
+						continue;
+					} else {
+						g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
+						             "Unrecognized key: %s.%s", key1, key2);
+						return FALSE;
+					}
+				}
+			} else {
+				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
+				             "Unrecognized key: %s", key1);
+				return FALSE;
+			}
+	}
+
+	return TRUE;
+}
+#endif
+
 static gboolean
 json_to_dialog (CEPageTeam *self)
 {
@@ -557,10 +660,17 @@ json_to_dialog (CEPageTeam *self)
 		success = FALSE;
 	}
 
+	if (!check_unknown_keys (json, &error)) {
+		g_message ("Failed to unpack JSON: %s", error->message);
+		g_clear_error (&error);
+		success = FALSE;
+	}
+
 	/* For simplicity, we proceed with json==NULL. The attempt to
 	 * unpack will produce an error which we'll ignore. */
 	g_free (json_config);
 	ret = json_unpack_ex (json, &json_error, 0,
+#if JANSSON_VERSION_HEX >= 0x020700
 	                      "{"
 	                      " s?:s,"
 	                      " s?:{s?:i, s?:i !},"
@@ -568,6 +678,18 @@ json_to_dialog (CEPageTeam *self)
 	                      " s?:{s?:s, s?:s, s?:o, s?:{s?:s, s?:i !}, s?:b, s?:b, s?:i, s?:i, s?:s !},"
 	                      " s?:{s?:s, s?:i, s?:i, s?:i, s?:i, s?:i, s?:s, s?:s, s?:b, s?:b, s?:b !}"
 	                      "!}",
+#else
+	                      /* Old jansson versions (before 2.7's 7a0b9af66) break when "?" is used
+	                       * in conjunction with "!". The above call to check_unknown_keys() ensures
+	                       * we'll not be left with unpacked values. */
+	                      "{"
+	                      " s?:s,"
+	                      " s?:{s?:i, s?:i},"
+	                      " s?:{s?:i, s?:i},"
+	                      " s?:{s?:s, s?:s, s?:o, s?:{s?:s, s?:i !}, s?:b, s?:b, s?:i, s?:i, s?:s},"
+	                      " s?:{s?:s, s?:i, s?:i, s?:i, s?:i, s?:i, s?:s, s?:s, s?:b, s?:b, s?:b}"
+	                      "}",
+#endif
 	                      "hwaddr", &hwaddr,
 	                      "notify_peers",
 	                          "interval", &notify_peers_interval,
@@ -601,7 +723,7 @@ json_to_dialog (CEPageTeam *self)
 	                          "send_always", &link_watch_send_always);
 
 	if (success == TRUE && ret == -1) {
-		g_message ("Failed to parse JSON: %s on line %d", json_error.text, json_error.line);
+		g_message ("Failed to unpack JSON: %s on line %d", json_error.text, json_error.line);
 		success = FALSE;
 	}
 
