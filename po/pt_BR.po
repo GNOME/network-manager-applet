@@ -22,8 +22,8 @@ msgstr ""
 "Project-Id-Version: network-nanager-applet\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=Network"
 "Manager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2016-06-16 06:16+0000\n"
-"PO-Revision-Date: 2016-06-23 13:58-0200\n"
+"POT-Creation-Date: 2016-09-22 13:59+0000\n"
+"PO-Revision-Date: 2016-09-22 22:33-0200\n"
 "Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
@@ -429,7 +429,6 @@ msgid "_Configure VPN..."
 msgstr "_Configurar VPN..."
 
 #: ../src/applet.c:1501
-#| msgid "Export VPN connection..."
 msgid "_Add a VPN connection..."
 msgstr "_Adicionar uma conexão VPN..."
 
@@ -526,7 +525,6 @@ msgstr "Requisitando um endereço de rede VPN para \"%s\"..."
 
 #: ../src/applet.c:2558
 #, c-format
-#| msgid "VPN connection '%s' active"
 msgid "VPN connection active"
 msgstr "Conexão VPN ativa"
 
@@ -2182,7 +2180,7 @@ msgstr "VLAN"
 
 #: ../src/connection-editor/connection-helpers.c:116
 #: ../src/connection-editor/connection-helpers.c:254
-#: ../src/connection-editor/page-vpn.c:101
+#: ../src/connection-editor/page-vpn.c:94
 msgid "VPN"
 msgstr "VPN"
 
@@ -2894,22 +2892,34 @@ msgstr "vlan pai"
 msgid "VLAN connection %d"
 msgstr "Conexão VLAN %d"
 
-#: ../src/connection-editor/page-vpn.c:103
+#: ../src/connection-editor/page-vpn.c:96
 msgid "Could not load VPN user interface."
 msgstr "Não foi possível carregar a interface gráfica para VPN."
 
-#: ../src/connection-editor/page-vpn.c:118
+#: ../src/connection-editor/page-vpn.c:111
 #, c-format
-msgid "Could not find VPN plugin service for '%s'."
-msgstr "Não foi possível encontrar o plug-in de serviço VPN para \"%s\"."
+#| msgid "Could not find VPN plugin service for '%s'."
+msgid "Could not find VPN plugin for '%s'."
+msgstr "Não foi possível encontrar o plug-in de VPN para \"%s\"."
 
-#: ../src/connection-editor/page-vpn.c:205
-#: ../src/connection-editor/page-vpn.c:300
+#: ../src/connection-editor/page-vpn.c:120
+#, c-format
+#| msgid "Could not find VPN plugin service for '%s'."
+msgid "Could not load editor VPN plugin for '%s' (%s)."
+msgstr "Não foi possível encontrar o plug-in de VPN para \"%s\" (%s)."
+
+#: ../src/connection-editor/page-vpn.c:121
+#| msgid "Connection failure"
+msgid "unknown failure"
+msgstr "falha desconhecida"
+
+#: ../src/connection-editor/page-vpn.c:214
+#: ../src/connection-editor/page-vpn.c:309
 #, c-format
 msgid "VPN connection %d"
 msgstr "Conexão VPN %d"
 
-#: ../src/connection-editor/page-vpn.c:229
+#: ../src/connection-editor/page-vpn.c:238
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
@@ -2919,11 +2929,11 @@ msgstr ""
 "\n"
 "Erro: nenhum tipo de serviço VPN."
 
-#: ../src/connection-editor/page-vpn.c:254
+#: ../src/connection-editor/page-vpn.c:263
 msgid "Choose a VPN Connection Type"
 msgstr "Escolha o tipo de conexão VPN"
 
-#: ../src/connection-editor/page-vpn.c:255
+#: ../src/connection-editor/page-vpn.c:264
 msgid ""
 "Select the type of VPN you wish to use for the new connection.  If the type "
 "of VPN connection you wish to create does not appear in the list, you may "
