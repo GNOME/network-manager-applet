@@ -478,6 +478,7 @@ new_connection_dialog_full (GtkWindow *parent_window,
 	gpointer detail_data = NULL;
 	GError *error = NULL;
 	CEPageVpnDetailData vpn_data;
+	GtkButton *create_button;
 
 	/* load GUI */
 	gui = gtk_builder_new ();
@@ -495,7 +496,12 @@ new_connection_dialog_full (GtkWindow *parent_window,
 
 	combo = GTK_COMBO_BOX (gtk_builder_get_object (gui, "new_connection_type_combo"));
 	label = GTK_LABEL (gtk_builder_get_object (gui, "new_connection_desc_label"));
+	create_button = GTK_BUTTON (gtk_builder_get_object (gui, "create_button"));
 	set_up_connection_type_combo (combo, label, type_filter_func, user_data);
+
+	/* Disable "Create" button if no item is available */
+	if (!gtk_tree_model_iter_n_children (gtk_combo_box_get_model (combo), NULL))
+		gtk_widget_set_sensitive (GTK_WIDGET (create_button), FALSE);
 
 	if (primary_label) {
 		label = GTK_LABEL (gtk_builder_get_object (gui, "new_connection_primary_label"));
@@ -508,20 +514,21 @@ new_connection_dialog_full (GtkWindow *parent_window,
 
 	response = gtk_dialog_run (type_dialog);
 	if (response == GTK_RESPONSE_OK) {
-		gtk_combo_box_get_active_iter (combo, &iter);
-		gtk_tree_model_get (gtk_combo_box_get_model (combo), &iter,
-		                    COL_NEW_FUNC, &new_func,
-		                    COL_VPN_SERVICE_TYPE, &vpn_service_type,
-		                    COL_VPN_ADD_DETAIL_KEY, &vpn_add_detail_key,
-		                    COL_VPN_ADD_DETAIL_VAL, &vpn_add_detail_val,
-		                    -1);
-		if (vpn_service_type) {
-			memset (&vpn_data, 0, sizeof (vpn_data));
-			vpn_data.add_detail_key = vpn_add_detail_key;
-			vpn_data.add_detail_val = vpn_add_detail_val;
+		if (gtk_combo_box_get_active_iter (combo, &iter)) {
+			gtk_tree_model_get (gtk_combo_box_get_model (combo), &iter,
+			                    COL_NEW_FUNC, &new_func,
+			                    COL_VPN_SERVICE_TYPE, &vpn_service_type,
+			                    COL_VPN_ADD_DETAIL_KEY, &vpn_add_detail_key,
+			                    COL_VPN_ADD_DETAIL_VAL, &vpn_add_detail_val,
+			                    -1);
+			if (vpn_service_type) {
+				memset (&vpn_data, 0, sizeof (vpn_data));
+				vpn_data.add_detail_key = vpn_add_detail_key;
+				vpn_data.add_detail_val = vpn_add_detail_val;
 
-			detail = vpn_service_type;
-			detail_data = &vpn_data;
+				detail = vpn_service_type;
+				detail_data = &vpn_data;
+			}
 		}
 	}
 
