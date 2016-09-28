@@ -50,17 +50,18 @@ static char *last_path = NULL;   /* row in treeview */
 static int last_column = -1;     /* column in treeview */
 
 static gboolean
-get_one_int (GtkTreeModel *model,
-             GtkTreeIter *iter,
-             int column,
-             guint32 max_value,
-             gboolean fail_if_missing,
-             guint *out,
-             char **out_raw)
+get_one_int64 (GtkTreeModel *model,
+               GtkTreeIter *iter,
+               int column,
+               gint64 min_value,
+               gint64 max_value,
+               gboolean fail_if_missing,
+               gint64 *out,
+               char **out_raw)
 {
 	char *item = NULL;
 	gboolean success = FALSE;
-	long int tmp_int;
+	long long int tmp_int;
 
 	gtk_tree_model_get (model, iter, column, &item, -1);
 	if (out_raw)
@@ -72,11 +73,11 @@ get_one_int (GtkTreeModel *model,
 	}
 
 	errno = 0;
-	tmp_int = strtol (item, NULL, 10);
-	if (errno || tmp_int < 0 || tmp_int > max_value)
+	tmp_int = strtoll (item, NULL, 10);
+	if (errno || tmp_int < min_value || tmp_int > max_value)
 		goto out;
 
-	*out = (guint) tmp_int;
+	*out = (gint64) tmp_int;
 	success = TRUE;
 
 out:
@@ -139,7 +140,7 @@ validate (GtkWidget *dialog)
 
 	while (iter_valid) {
 		char *dest = NULL, *next_hop = NULL;
-		guint prefix = 0, metric = 0;
+		gint64 prefix = 0, metric = -1;
 
 		/* Address */
 		if (!get_one_addr (model, &tree_iter, COL_ADDRESS, TRUE, &dest, NULL))
@@ -147,8 +148,7 @@ validate (GtkWidget *dialog)
 		g_free (dest);
 
 		/* Prefix */
-		if (   !get_one_int (model, &tree_iter, COL_PREFIX, 128, TRUE, &prefix, NULL)
-		    || prefix == 0)
+		if (!get_one_int64 (model, &tree_iter, COL_PREFIX, 1, 128, TRUE, &prefix, NULL))
 			goto done;
 
 		/* Next hop (optional) */
@@ -157,7 +157,7 @@ validate (GtkWidget *dialog)
 		g_free (next_hop);
 
 		/* Metric (optional) */
-		if (!get_one_int (model, &tree_iter, COL_METRIC, G_MAXUINT32, FALSE, &metric, NULL))
+		if (!get_one_int64 (model, &tree_iter, COL_METRIC, 0, G_MAXUINT32, FALSE, &metric, NULL))
 			goto done;
 
 		iter_valid = gtk_tree_model_iter_next (model, &tree_iter);
@@ -635,19 +635,18 @@ cell_error_data_func (GtkTreeViewColumn *tree_column,
 	guint32 col = GPOINTER_TO_UINT (data);
 	char *value = NULL;
 	char *addr, *next_hop;
-	guint32 prefix, metric;
+	gint64 prefix, metric;
 	const char *color = "red";
 	gboolean invalid = FALSE;
 
 	if (col == COL_ADDRESS)
 		invalid = !get_one_addr (tree_model, iter, COL_ADDRESS, TRUE, &addr, &value);
 	else if (col == COL_PREFIX)
-		invalid =    !get_one_int (tree_model, iter, COL_PREFIX, 128, TRUE, &prefix, &value)
-		          || prefix == 0;
+		invalid = !get_one_int64 (tree_model, iter, COL_PREFIX, 1, 128, TRUE, &prefix, &value);
 	else if (col == COL_NEXT_HOP)
 		invalid = !get_one_addr (tree_model, iter, COL_NEXT_HOP, FALSE, &next_hop, &value);
 	else if (col == COL_METRIC)
-		invalid = !get_one_int (tree_model, iter, COL_METRIC, G_MAXUINT32, FALSE, &metric, &value);
+		invalid = !get_one_int64 (tree_model, iter, COL_METRIC, 0, G_MAXUINT32, FALSE, &metric, &value);
 	else
 		g_warn_if_reached ();
 
@@ -708,6 +707,7 @@ ip6_routes_dialog_new (NMSettingIPConfig *s_ip6, gboolean automatic)
 	for (i = 0; i < nm_setting_ip_config_get_num_routes (s_ip6); i++) {
 		NMIPRoute *route = nm_setting_ip_config_get_route (s_ip6, i);
 		char prefix[32], metric[32];
+		gint64 metric_int;
 
 		if (!route) {
 			g_warning ("%s: empty IP6 route structure!", __func__);
@@ -716,9 +716,14 @@ ip6_routes_dialog_new (NMSettingIPConfig *s_ip6, gboolean automatic)
 
 		g_snprintf (prefix, sizeof (prefix), "%u", nm_ip_route_get_prefix (route));
 
-		/* FIXME */
-		g_snprintf (metric, sizeof (metric), "%u",
-		            (guint32) MIN (0, nm_ip_route_get_metric (route)));
+		metric_int = nm_ip_route_get_metric (route);
+		if (metric_int >= 0 && metric_int <= G_MAXUINT32)
+			g_snprintf (metric, sizeof (metric), "%lu", (unsigned long) metric_int);
+		else {
+			if (metric_int != -1)
+				g_warning ("invalid metric %lld", (long long int) metric_int);
+			metric[0] = 0;
+		}
 
 		gtk_list_store_append (store, &model_iter);
 		gtk_list_store_set (store, &model_iter,
@@ -864,7 +869,7 @@ ip6_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIPConfig *s_ip6)
 
 	while (iter_valid) {
 		char *dest = NULL, *next_hop = NULL;
-		guint prefix = 0, metric = 0;
+		gint64 prefix = 0, metric = -1;
 		NMIPRoute *route;
 
 		/* Address */
@@ -874,8 +879,7 @@ ip6_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIPConfig *s_ip6)
 		}
 
 		/* Prefix */
-		if (   !get_one_int (model, &tree_iter, COL_PREFIX, 128, TRUE, &prefix, NULL)
-		    || prefix == 0) {
+		if (!get_one_int64 (model, &tree_iter, COL_PREFIX, 1, 128, TRUE, &prefix, NULL)) {
 			g_warning ("%s: IPv6 prefix missing or invalid!", __func__);
 			g_free (dest);
 			goto next;
@@ -889,7 +893,7 @@ ip6_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIPConfig *s_ip6)
 		}
 
 		/* Metric (optional) */
-		if (!get_one_int (model, &tree_iter, COL_METRIC, G_MAXUINT32, FALSE, &metric, NULL)) {
+		if (!get_one_int64 (model, &tree_iter, COL_METRIC, 0, G_MAXUINT32, FALSE, &metric, NULL)) {
 			g_warning ("%s: IPv6 metric invalid!", __func__);
 			g_free (dest);
 			g_free (next_hop);
