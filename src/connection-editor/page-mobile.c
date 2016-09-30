@@ -554,7 +554,7 @@ mobile_connection_new (GtkWindow *parent,
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
 	gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, FALSE, 0);
 
-	label = gtk_label_new (_("Select the technology your mobile broadband provider uses.  If you are unsure, ask your provider."));
+	label = gtk_label_new (_("Select the technology your mobile broadband provider uses. If you are unsure, ask your provider."));
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 12);

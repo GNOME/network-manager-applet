@@ -246,7 +246,7 @@ confirm_setup (NMAMobileWizard *self)
 
 	if (self->will_connect_after) {
 		alignment = gtk_alignment_new (0, 0.5, 1, 0);
-		label = gtk_label_new (_("A connection will now be made to your mobile broadband provider using the settings you selected.  If the connection fails or you cannot access network resources, double-check your settings.  To modify your mobile broadband connection settings, choose “Network Connections” from the System → Preferences menu."));
+		label = gtk_label_new (_("A connection will now be made to your mobile broadband provider using the settings you selected. If the connection fails or you cannot access network resources, double-check your settings. To modify your mobile broadband connection settings, choose “Network Connections” from the System → Preferences menu."));
 		gtk_widget_set_size_request (label, 500, -1);
 		gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 		gtk_misc_set_padding (GTK_MISC (label), 0, 6);
