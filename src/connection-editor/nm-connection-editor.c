@@ -184,7 +184,7 @@ connection_editor_validate (NMConnectionEditor *editor)
 	GError *error = NULL;
 
 	if (!editor_is_initialized (editor)) {
-		validation_error = g_strdup (_("Editor initializing..."));
+		validation_error = g_strdup (_("Editor initializing…"));
 		goto done;
 	}
 

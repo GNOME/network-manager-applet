@@ -73,7 +73,7 @@ ethernet_private_init (CEPageEthernet *self)
 	gtk_widget_set_tooltip_text (GTK_WIDGET (priv->device_combo),
 	                             _("This option locks this connection to the network device specified "
 	                               "either by its interface name or permanent MAC or both. Examples: "
-	                               "\"em1\", \"3C:97:0E:42:1A:19\", \"em1 (3C:97:0E:42:1A:19)\""));
+	                               "“em1”, “3C:97:0E:42:1A:19”, “em1 (3C:97:0E:42:1A:19)”"));
 
 	vbox = GTK_WIDGET (gtk_builder_get_object (builder, "ethernet_device_vbox"));
 	gtk_container_add (GTK_CONTAINER (vbox), GTK_WIDGET (priv->device_combo));

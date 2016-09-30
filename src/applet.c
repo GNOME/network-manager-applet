@@ -754,7 +754,7 @@ void applet_do_notify_with_pref (NMApplet *applet,
 		return;
 	
 	applet_do_notify (applet, NOTIFY_URGENCY_LOW, summary, message, icon, pref,
-	                  _("Don't show this message again"),
+	                  _("Don’t show this message again"),
 	                  notify_dont_show_cb,
 	                  applet);
 }
@@ -841,35 +841,35 @@ make_vpn_failure_message (NMVpnConnection *vpn,
 
 	switch (reason) {
 	case NM_VPN_CONNECTION_STATE_REASON_DEVICE_DISCONNECTED:
-		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the network connection was interrupted."),
+		return g_strdup_printf (_("\nThe VPN connection “%s” failed because the network connection was interrupted."),
 								nm_connection_get_id (connection));
 	case NM_VPN_CONNECTION_STATE_REASON_SERVICE_STOPPED:
-		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the VPN service stopped unexpectedly."),
+		return g_strdup_printf (_("\nThe VPN connection “%s” failed because the VPN service stopped unexpectedly."),
 								nm_connection_get_id (connection));
 	case NM_VPN_CONNECTION_STATE_REASON_IP_CONFIG_INVALID:
-		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the VPN service returned invalid configuration."),
+		return g_strdup_printf (_("\nThe VPN connection “%s” failed because the VPN service returned invalid configuration."),
 								nm_connection_get_id (connection));
 	case NM_VPN_CONNECTION_STATE_REASON_CONNECT_TIMEOUT:
-		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the connection attempt timed out."),
+		return g_strdup_printf (_("\nThe VPN connection “%s” failed because the connection attempt timed out."),
 								nm_connection_get_id (connection));
 	case NM_VPN_CONNECTION_STATE_REASON_SERVICE_START_TIMEOUT:
-		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the VPN service did not start in time."),
+		return g_strdup_printf (_("\nThe VPN connection “%s” failed because the VPN service did not start in time."),
 								nm_connection_get_id (connection));
 	case NM_VPN_CONNECTION_STATE_REASON_SERVICE_START_FAILED:
-		return g_strdup_printf (_("\nThe VPN connection '%s' failed because the VPN service failed to start."),
+		return g_strdup_printf (_("\nThe VPN connection “%s” failed because the VPN service failed to start."),
 								nm_connection_get_id (connection));
 	case NM_VPN_CONNECTION_STATE_REASON_NO_SECRETS:
-		return g_strdup_printf (_("\nThe VPN connection '%s' failed because there were no valid VPN secrets."),
+		return g_strdup_printf (_("\nThe VPN connection “%s” failed because there were no valid VPN secrets."),
 								nm_connection_get_id (connection));
 	case NM_VPN_CONNECTION_STATE_REASON_LOGIN_FAILED:
-		return g_strdup_printf (_("\nThe VPN connection '%s' failed because of invalid VPN secrets."),
+		return g_strdup_printf (_("\nThe VPN connection “%s” failed because of invalid VPN secrets."),
 								nm_connection_get_id (connection));
 
 	default:
 		break;
 	}
 
-	return g_strdup_printf (_("\nThe VPN connection '%s' failed."), nm_connection_get_id (connection));
+	return g_strdup_printf (_("\nThe VPN connection “%s” failed."), nm_connection_get_id (connection));
 }
 
 static char *
@@ -885,16 +885,16 @@ make_vpn_disconnection_message (NMVpnConnection *vpn,
 
 	switch (reason) {
 	case NM_VPN_CONNECTION_STATE_REASON_DEVICE_DISCONNECTED:
-		return g_strdup_printf (_("\nThe VPN connection '%s' disconnected because the network connection was interrupted."),
+		return g_strdup_printf (_("\nThe VPN connection “%s” disconnected because the network connection was interrupted."),
 								nm_connection_get_id (connection));
 	case NM_VPN_CONNECTION_STATE_REASON_SERVICE_STOPPED:
-		return g_strdup_printf (_("\nThe VPN connection '%s' disconnected because the VPN service stopped."),
+		return g_strdup_printf (_("\nThe VPN connection “%s” disconnected because the VPN service stopped."),
 								nm_connection_get_id (connection));
 	default:
 		break;
 	}
 
-	return g_strdup_printf (_("\nThe VPN connection '%s' disconnected."), nm_connection_get_id (connection));
+	return g_strdup_printf (_("\nThe VPN connection “%s” disconnected."), nm_connection_get_id (connection));
 }
 
 static void
@@ -987,10 +987,10 @@ activate_vpn_cb (GObject *client,
 
 		name = g_dbus_error_get_remote_error (error);
 		if (strstr (name, "ServiceStartFailed")) {
-			msg = g_strdup_printf (_("\nThe VPN connection '%s' failed because the VPN service failed to start.\n\n%s"),
+			msg = g_strdup_printf (_("\nThe VPN connection “%s” failed because the VPN service failed to start.\n\n%s"),
 			                       info->vpn_name, error->message);
 		} else {
-			msg = g_strdup_printf (_("\nThe VPN connection '%s' failed to start.\n\n%s"),
+			msg = g_strdup_printf (_("\nThe VPN connection “%s” failed to start.\n\n%s"),
 			                       info->vpn_name, error->message);
 		}
 
@@ -1495,10 +1495,10 @@ nma_menu_add_vpn_submenu (GtkWidget *menu, NMApplet *applet)
 	/* Draw a separator, but only if we have VPN connections above it */
 	if (list->len) {
 		nma_menu_add_separator_item (GTK_WIDGET (vpn_menu));
-		item = GTK_MENU_ITEM (gtk_menu_item_new_with_mnemonic (_("_Configure VPN...")));
+		item = GTK_MENU_ITEM (gtk_menu_item_new_with_mnemonic (_("_Configure VPN…")));
 		g_signal_connect (item, "activate", G_CALLBACK (nma_menu_configure_vpn_item_activate), applet);
 	} else {
-		item = GTK_MENU_ITEM (gtk_menu_item_new_with_mnemonic (_("_Add a VPN connection...")));
+		item = GTK_MENU_ITEM (gtk_menu_item_new_with_mnemonic (_("_Add a VPN connection…")));
 		g_signal_connect (item, "activate", G_CALLBACK (nma_menu_add_vpn_item_activate), applet);
 	}
 	gtk_menu_shell_append (GTK_MENU_SHELL (vpn_menu), GTK_WIDGET (item));
@@ -1604,7 +1604,7 @@ static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 		gtk_status_icon_set_tooltip_text (applet->status_icon, NULL);
 
 	if (!nm_client_get_nm_running (applet->nm_client)) {
-		nma_menu_add_text_item (menu, _("NetworkManager is not running..."));
+		nma_menu_add_text_item (menu, _("NetworkManager is not running…"));
 		return;
 	}
 
@@ -1869,7 +1869,7 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 	gtk_menu_shell_append (menu, applet->info_menu_item);
 
 	/* 'Edit Connections...' item */
-	applet->connections_menu_item = gtk_menu_item_new_with_mnemonic (_("Edit Connections..."));
+	applet->connections_menu_item = gtk_menu_item_new_with_mnemonic (_("Edit Connections…"));
 	g_signal_connect (applet->connections_menu_item,
 				   "activate",
 				   G_CALLBACK (nma_edit_connections_cb),
@@ -2168,7 +2168,7 @@ foo_device_state_changed_cb (NMDevice *device,
 
 		connection = applet_find_active_connection_for_device (device, applet, NULL);
 		if (connection) {
-			str = g_strdup_printf (_("You are now connected to '%s'."),
+			str = g_strdup_printf (_("You are now connected to “%s”."),
 			                       nm_connection_get_id (connection));
 		}
 
@@ -2478,16 +2478,16 @@ get_tip_for_device_state (NMDevice *device,
 	switch (state) {
 	case NM_DEVICE_STATE_PREPARE:
 	case NM_DEVICE_STATE_CONFIG:
-		tip = g_strdup_printf (_("Preparing network connection '%s'..."), id);
+		tip = g_strdup_printf (_("Preparing network connection “%s”…"), id);
 		break;
 	case NM_DEVICE_STATE_NEED_AUTH:
-		tip = g_strdup_printf (_("User authentication required for network connection '%s'..."), id);
+		tip = g_strdup_printf (_("User authentication required for network connection “%s”…"), id);
 		break;
 	case NM_DEVICE_STATE_IP_CONFIG:
-		tip = g_strdup_printf (_("Requesting a network address for '%s'..."), id);
+		tip = g_strdup_printf (_("Requesting a network address for “%s”…"), id);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
-		tip = g_strdup_printf (_("Network connection '%s' active"), id);
+		tip = g_strdup_printf (_("Network connection “%s” active"), id);
 		break;
 	default:
 		break;
@@ -2561,13 +2561,13 @@ get_tip_for_vpn (NMActiveConnection *active, NMVpnConnectionState state, NMApple
 	switch (state) {
 	case NM_VPN_CONNECTION_STATE_CONNECT:
 	case NM_VPN_CONNECTION_STATE_PREPARE:
-		tip = g_strdup_printf (_("Starting VPN connection '%s'..."), id);
+		tip = g_strdup_printf (_("Starting VPN connection “%s”…"), id);
 		break;
 	case NM_VPN_CONNECTION_STATE_NEED_AUTH:
-		tip = g_strdup_printf (_("User authentication required for VPN connection '%s'..."), id);
+		tip = g_strdup_printf (_("User authentication required for VPN connection “%s”…"), id);
 		break;
 	case NM_VPN_CONNECTION_STATE_IP_CONFIG_GET:
-		tip = g_strdup_printf (_("Requesting a VPN address for '%s'..."), id);
+		tip = g_strdup_printf (_("Requesting a VPN address for “%s”…"), id);
 		break;
 	case NM_VPN_CONNECTION_STATE_ACTIVATED:
 		tip = g_strdup_printf (_("VPN connection active"));

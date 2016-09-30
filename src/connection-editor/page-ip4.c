@@ -1318,7 +1318,7 @@ ui_to_setting (CEPageIP4 *self, GError **error)
 		if (   !addr
 		    || !nm_utils_ipaddr_valid (AF_INET, addr)
 		    || is_address_unspecified (addr)) {
-			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv4 address \"%s\" invalid"), addr ? addr : "");
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv4 address “%s” invalid"), addr ? addr : "");
 			g_free (addr);
 			g_free (netmask);
 			g_free (addr_gw);
@@ -1326,7 +1326,7 @@ ui_to_setting (CEPageIP4 *self, GError **error)
 		}
 
 		if (!parse_netmask (netmask, &prefix)) {
-			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv4 address netmask \"%s\" invalid"), netmask ? netmask : "");
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv4 address netmask “%s” invalid"), netmask ? netmask : "");
 			g_free (addr);
 			g_free (netmask);
 			g_free (addr_gw);
@@ -1335,7 +1335,7 @@ ui_to_setting (CEPageIP4 *self, GError **error)
 
 		/* Gateway is optional... */
 		if (addr_gw && *addr_gw && !nm_utils_ipaddr_valid (AF_INET, addr_gw)) {
-			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv4 gateway \"%s\" invalid"), addr_gw);
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv4 gateway “%s” invalid"), addr_gw);
 			g_free (addr);
 			g_free (netmask);
 			g_free (addr_gw);
@@ -1378,7 +1378,7 @@ ui_to_setting (CEPageIP4 *self, GError **error)
 			if (inet_pton (AF_INET, stripped, &tmp_addr))
 				g_ptr_array_add (tmp_array, g_strdup (stripped));
 			else {
-				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv4 DNS server \"%s\" invalid"), stripped);
+				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv4 DNS server “%s” invalid"), stripped);
 				g_strfreev (items);
 				g_ptr_array_free (tmp_array, TRUE);
 				goto out;

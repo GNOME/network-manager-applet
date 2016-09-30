@@ -56,8 +56,8 @@ infiniband_private_init (CEPageInfiniband *self)
 	gtk_widget_set_tooltip_text (GTK_WIDGET (priv->device_combo),
 	                             _("This option locks this connection to the network device specified "
 	                               "either by its interface name or permanent MAC or both. Examples: "
-	                               "\"ib0\", \"80:00:00:48:fe:80:00:00:00:00:00:00:00:02:c9:03:00:00:0f:65\", "
-	                               "\"ib0 (80:00:00:48:fe:80:00:00:00:00:00:00:00:02:c9:03:00:00:0f:65)\""));
+	                               "“ib0”, “80:00:00:48:fe:80:00:00:00:00:00:00:00:02:c9:03:00:00:0f:65”, "
+	                               "“ib0 (80:00:00:48:fe:80:00:00:00:00:00:00:00:02:c9:03:00:00:0f:65)”"));
 
 	vbox = GTK_WIDGET (gtk_builder_get_object (builder, "infiniband_device_vbox"));
 	gtk_container_add (GTK_CONTAINER (vbox), GTK_WIDGET (priv->device_combo));

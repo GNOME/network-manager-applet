@@ -158,20 +158,20 @@ ethernet_get_icon (NMDevice *device,
 
 	switch (state) {
 	case NM_DEVICE_STATE_PREPARE:
-		*tip = g_strdup_printf (_("Preparing ethernet network connection '%s'..."), id);
+		*tip = g_strdup_printf (_("Preparing ethernet network connection “%s”…"), id);
 		break;
 	case NM_DEVICE_STATE_CONFIG:
-		*tip = g_strdup_printf (_("Configuring ethernet network connection '%s'..."), id);
+		*tip = g_strdup_printf (_("Configuring ethernet network connection “%s”…"), id);
 		break;
 	case NM_DEVICE_STATE_NEED_AUTH:
-		*tip = g_strdup_printf (_("User authentication required for ethernet network connection '%s'..."), id);
+		*tip = g_strdup_printf (_("User authentication required for ethernet network connection “%s”…"), id);
 		break;
 	case NM_DEVICE_STATE_IP_CONFIG:
-		*tip = g_strdup_printf (_("Requesting an ethernet network address for '%s'..."), id);
+		*tip = g_strdup_printf (_("Requesting an ethernet network address for “%s”…"), id);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
 		*out_icon_name = "nm-device-wired";
-		*tip = g_strdup_printf (_("Ethernet network connection '%s' active"), id);
+		*tip = g_strdup_printf (_("Ethernet network connection “%s” active"), id);
 		break;
 	default:
 		break;

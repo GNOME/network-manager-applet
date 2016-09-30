@@ -110,7 +110,7 @@ ce_page_vpn_new (NMConnectionEditor *editor,
 
 	priv->plugin = vpn_get_plugin_by_service (service_type);
 	if (!priv->plugin) {
-		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not find VPN plugin for '%s'."), service_type);
+		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not find VPN plugin for “%s”."), service_type);
 		g_object_unref (self);
 		return NULL;
 	}
@@ -119,7 +119,7 @@ ce_page_vpn_new (NMConnectionEditor *editor,
 	priv->editor = nm_vpn_editor_plugin_get_editor (priv->plugin, CE_PAGE (self)->connection, &local);
 	if (!priv->editor) {
 		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
-		             _("Could not load editor VPN plugin for '%s' (%s)."),
+		             _("Could not load editor VPN plugin for “%s” (%s)."),
 		             service_type, local ? local->message : _("unknown failure"));
 		g_clear_error (&local);
 		g_object_unref (self);

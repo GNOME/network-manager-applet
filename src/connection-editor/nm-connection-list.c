@@ -915,7 +915,7 @@ nm_connection_list_create (NMConnectionList *self, GType ctype, const char *deta
 			                            _("No VPN plugins are installed."));
 		} else {
 			nm_connection_editor_error (NULL, _("Error creating connection"),
-			                            _("Don't know how to create '%s' connections"), g_type_name (ctype));
+			                            _("Don’t know how to create “%s” connections"), g_type_name (ctype));
 		}
 	} else {
 		new_connection_of_type (GTK_WINDOW (self->dialog),
@@ -939,7 +939,7 @@ nm_connection_list_edit (NMConnectionList *self, const gchar *uuid)
 	if (!connection) {
 		nm_connection_editor_error (NULL,
 		                            _("Error editing connection"),
-		                            _("Did not find a connection with UUID '%s'"), uuid);
+		                            _("Did not find a connection with UUID “%s”"), uuid);
 		return;
 	}
 
