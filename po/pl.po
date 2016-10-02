@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-10 00:09+0200\n"
-"PO-Revision-Date: 2016-09-10 00:10+0200\n"
+"POT-Creation-Date: 2016-10-02 12:54+0200\n"
+"PO-Revision-Date: 2016-10-02 12:55+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -850,7 +850,7 @@ msgstr "CDMA (%s)"
 #: ../src/applet-dialogs.c:512 ../src/applet-dialogs.c:810
 #: ../src/connection-editor/ce-page-team-port.ui.h:23
 #: ../src/connection-editor/ce-page-team.ui.h:48
-#: ../src/connection-editor/page-general.c:347
+#: ../src/connection-editor/page-general.c:344
 msgid "General"
 msgstr "Ogólne"
 
@@ -1041,8 +1041,7 @@ msgstr "_OK"
 
 #: ../src/connection-editor/ce-ip4-routes.ui.h:3
 #: ../src/connection-editor/ce-ip6-routes.ui.h:3
-#: ../src/connection-editor/ce-page-ip4.ui.h:8
-#: ../src/connection-editor/ce-page-ip6.ui.h:11
+#: ../src/connection-editor/ce-page.h:105
 msgid ""
 "IP addresses identify your computer on the network.  Click the \"Add\" "
 "button to add an IP address."
@@ -1054,8 +1053,8 @@ msgstr ""
 #: ../src/connection-editor/ce-ip6-routes.ui.h:4
 #: ../src/connection-editor/ce-page-bond.ui.h:12
 #: ../src/connection-editor/ce-page-bridge.ui.h:2
-#: ../src/connection-editor/ce-page-ip4.ui.h:9
-#: ../src/connection-editor/ce-page-ip6.ui.h:12
+#: ../src/connection-editor/ce-page-ip4.ui.h:7
+#: ../src/connection-editor/ce-page-ip6.ui.h:10
 #: ../src/connection-editor/ce-page-team.ui.h:13
 #: ../src/connection-editor/nm-connection-editor.ui.h:3
 msgid "_Add"
@@ -1066,8 +1065,8 @@ msgstr "_Dodaj"
 #: ../src/connection-editor/ce-ip6-routes.ui.h:5
 #: ../src/connection-editor/ce-page-bond.ui.h:14
 #: ../src/connection-editor/ce-page-bridge.ui.h:4
-#: ../src/connection-editor/ce-page-ip4.ui.h:10
-#: ../src/connection-editor/ce-page-ip6.ui.h:13
+#: ../src/connection-editor/ce-page-ip4.ui.h:8
+#: ../src/connection-editor/ce-page-ip6.ui.h:11
 #: ../src/connection-editor/ce-page-team.ui.h:15
 #: ../src/connection-editor/nm-connection-list.c:699
 msgid "_Delete"
@@ -1577,8 +1576,8 @@ msgstr "_Hasło:"
 #: ../src/connection-editor/ce-page-ip4.ui.h:1
 #: ../src/connection-editor/ce-page-ip6.ui.h:1
 #: ../src/connection-editor/ce-page-wifi.ui.h:1
-#: ../src/connection-editor/page-ip4.c:129
-#: ../src/connection-editor/page-ip6.c:135
+#: ../src/connection-editor/page-ip4.c:131
+#: ../src/connection-editor/page-ip6.c:136
 #: ../src/wireless-security/eap-method-peap.ui.h:2
 msgid "Automatic"
 msgstr "Automatycznie"
@@ -1716,6 +1715,39 @@ msgstr "_Automatyczne łączenie z tą siecią, kiedy jest dostępna"
 msgid "Firewall _zone:"
 msgstr "_Strefa zapory sieciowej:"
 
+#: ../src/connection-editor/ce-page.h:102
+msgid ""
+"IP addresses identify your computer on the network.  Click the \"Add\" "
+"button to add static IP address to be configured in addition to the "
+"automatic ones."
+msgstr ""
+"Adresy IP identyfikują komputer w sieci. Proszę nacisnąć przycisk „Dodaj”, "
+"aby dodać statyczny adres IP do skonfigurowania poza automatycznymi."
+
+#: ../src/connection-editor/ce-page.h:107
+msgid ""
+"The IP address identify your computer on the network and determines the "
+"address range distributed to other computers.  Click the \"Add\" button to "
+"add an IP address.  If no address is provided, one in the 10.42.x.x range "
+"will be used."
+msgstr ""
+"Adres IP identyfikuje komputer w sieci i wyznacza zakres adresów "
+"rozprowadzanych do innych komputerów. Proszę nacisnąć przycisk „Dodaj”, aby "
+"dodać adres IP. Jeśli nie podano żadnego adresu, to zostanie użyty adres "
+"w zakresie 10.42.x.x."
+
+#: ../src/connection-editor/ce-page.h:113
+msgid "Additional static addresses"
+msgstr "Dodatkowe adresy statyczne"
+
+#: ../src/connection-editor/ce-page.h:114
+msgid "Addresses"
+msgstr "Adresy"
+
+#: ../src/connection-editor/ce-page.h:115
+msgid "Address (optional)"
+msgstr "Adres (opcjonalnie)"
+
 #: ../src/connection-editor/ce-page-infiniband.ui.h:1
 msgid "_Transport mode:"
 msgstr "_Tryb przesyłania:"
@@ -1737,8 +1769,8 @@ msgstr "Automatycznie z ręcznymi ustawieniami DNS"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:3
 #: ../src/connection-editor/ce-page-ip6.ui.h:3
-#: ../src/connection-editor/page-ip4.c:166
-#: ../src/connection-editor/page-ip6.c:184
+#: ../src/connection-editor/page-ip4.c:168
+#: ../src/connection-editor/page-ip6.c:185
 msgid "Manual"
 msgstr "Ręczne"
 
@@ -1749,8 +1781,8 @@ msgstr "Link-Local"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:5
 #: ../src/connection-editor/ce-page-ip6.ui.h:5
-#: ../src/connection-editor/page-ip4.c:186
-#: ../src/connection-editor/page-ip6.c:204
+#: ../src/connection-editor/page-ip4.c:188
+#: ../src/connection-editor/page-ip6.c:205
 msgid "Shared to other computers"
 msgstr "Współdzielone z innymi komputerami"
 
@@ -1759,12 +1791,7 @@ msgstr "Współdzielone z innymi komputerami"
 msgid "_Method:"
 msgstr "_Metoda:"
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:7
-#: ../src/connection-editor/ce-page-ip6.ui.h:10
-msgid "Addresses"
-msgstr "Adresy"
-
-#: ../src/connection-editor/ce-page-ip4.ui.h:11
+#: ../src/connection-editor/ce-page-ip4.ui.h:9
 msgid ""
 "The DHCP client identifier allows the network administrator to customize "
 "your computer's configuration.  If you wish to use a DHCP client identifier, "
@@ -1774,8 +1801,8 @@ msgstr ""
 "konfigurację komputerów. Aby użyć identyfikatora, należy go podać w tym "
 "miejscu."
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:12
-#: ../src/connection-editor/ce-page-ip6.ui.h:14
+#: ../src/connection-editor/ce-page-ip4.ui.h:10
+#: ../src/connection-editor/ce-page-ip6.ui.h:12
 msgid ""
 "Domains used when resolving host names. Use commas to separate multiple "
 "domains."
@@ -1783,25 +1810,25 @@ msgstr ""
 "Domeny używane do znajdowania nazw komputerów. Aby podać wiele domen, należy "
 "je rozdzielić przecinkami."
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:13
+#: ../src/connection-editor/ce-page-ip4.ui.h:11
 msgid "D_HCP client ID:"
 msgstr "Identyfikator klienta D_HCP:"
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:14
-#: ../src/connection-editor/ce-page-ip6.ui.h:15
-#: ../src/connection-editor/page-ip4.c:308
-#: ../src/connection-editor/page-ip6.c:306
+#: ../src/connection-editor/ce-page-ip4.ui.h:12
+#: ../src/connection-editor/ce-page-ip6.ui.h:13
+#: ../src/connection-editor/page-ip4.c:372
+#: ../src/connection-editor/page-ip6.c:330
 msgid "S_earch domains:"
 msgstr "Dom_eny wyszukiwania:"
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:15
-#: ../src/connection-editor/ce-page-ip6.ui.h:16
-#: ../src/connection-editor/page-ip4.c:299
-#: ../src/connection-editor/page-ip6.c:297
+#: ../src/connection-editor/ce-page-ip4.ui.h:13
+#: ../src/connection-editor/ce-page-ip6.ui.h:14
+#: ../src/connection-editor/page-ip4.c:363
+#: ../src/connection-editor/page-ip6.c:321
 msgid "DNS ser_vers:"
 msgstr "Serwery _DNS:"
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:16
+#: ../src/connection-editor/ce-page-ip4.ui.h:14
 msgid ""
 "IP addresses of domain name servers used to resolve host names. Use commas "
 "to separate multiple domain name server addresses."
@@ -1809,11 +1836,11 @@ msgstr ""
 "Adresy IP serwerów nazw domen używane do znajdowania nazw komputerów. Aby "
 "podać wiele adresów, należy je rozdzielić przecinkami."
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:17
+#: ../src/connection-editor/ce-page-ip4.ui.h:15
 msgid "Require IPv_4 addressing for this connection to complete"
 msgstr "Wymaganie adresowania IPv_4 do ukończenia tego połączenia"
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:18
+#: ../src/connection-editor/ce-page-ip4.ui.h:16
 msgid ""
 "When connecting to IPv6-capable networks, allows the connection to complete "
 "if IPv4 configuration fails but IPv6 configuration succeeds."
@@ -1821,13 +1848,13 @@ msgstr ""
 "Podczas łączenia się z sieciami IPv6 umożliwia ukończenie nawiązania "
 "połączenia, jeśli konfiguracja IPv4 się nie powiedzie, a IPv6 tak."
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:19
-#: ../src/connection-editor/ce-page-ip6.ui.h:21
+#: ../src/connection-editor/ce-page-ip4.ui.h:17
+#: ../src/connection-editor/ce-page-ip6.ui.h:19
 msgid "_Routes…"
 msgstr "_Trasy…"
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:6
-#: ../src/connection-editor/page-ip4.c:196
+#: ../src/connection-editor/page-ip4.c:198
 msgid "Disabled"
 msgstr "Wyłączone"
 
@@ -1839,7 +1866,7 @@ msgstr "Włączone (preferowanie publicznego adresu)"
 msgid "Enabled (prefer temporary address)"
 msgstr "Włączone (preferowanie tymczasowego adresu)"
 
-#: ../src/connection-editor/ce-page-ip6.ui.h:17
+#: ../src/connection-editor/ce-page-ip6.ui.h:15
 msgid ""
 "IP addresses of domain name servers used to resolve host names. Use commas "
 "to separate multiple domain name server addresses. Link-local addresses will "
@@ -1849,15 +1876,15 @@ msgstr ""
 "podać wiele adresów, należy je rozdzielić przecinkami. Adresy Link-Local "
 "będą automatycznie dołączane do łączącego się interfejsu."
 
-#: ../src/connection-editor/ce-page-ip6.ui.h:18
+#: ../src/connection-editor/ce-page-ip6.ui.h:16
 msgid "IPv6 _privacy extensions:"
 msgstr "_Rozszerzenia prywatności IPv6:"
 
-#: ../src/connection-editor/ce-page-ip6.ui.h:19
+#: ../src/connection-editor/ce-page-ip6.ui.h:17
 msgid "Require IPv_6 addressing for this connection to complete"
 msgstr "Wymaganie adresowania IPv_6 do ukończenia nawiązania tego połączenia"
 
-#: ../src/connection-editor/ce-page-ip6.ui.h:20
+#: ../src/connection-editor/ce-page-ip6.ui.h:18
 msgid ""
 "When connecting to IPv4-capable networks, allows the connection to complete "
 "if IPv6 configuration fails but IPv4 configuration succeeds."
@@ -2637,7 +2664,7 @@ msgid "Bond"
 msgstr "Łączenie"
 
 #: ../src/connection-editor/connection-helpers.c:116
-#: ../src/connection-editor/page-team.c:1028 ../src/libnm-gtk/nm-ui-utils.c:335
+#: ../src/connection-editor/page-team.c:1150 ../src/libnm-gtk/nm-ui-utils.c:335
 #: ../src/libnm-gtk/nm-ui-utils.c:579
 msgid "Team"
 msgstr "Zespołowe"
@@ -2679,31 +2706,31 @@ msgstr ""
 msgid "Could not create new connection"
 msgstr "Nie można utworzyć nowego połączenia"
 
-#: ../src/connection-editor/connection-helpers.c:556
+#: ../src/connection-editor/connection-helpers.c:563
 msgid "Connection delete failed"
 msgstr "Usunięcie połączenia się nie powiodło"
 
-#: ../src/connection-editor/connection-helpers.c:604
+#: ../src/connection-editor/connection-helpers.c:611
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Na pewno usunąć połączenie %s?"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:804
 #: ../src/connection-editor/ip6-routes-dialog.c:746
-#: ../src/connection-editor/page-ip4.c:1068
-#: ../src/connection-editor/page-ip6.c:1066
+#: ../src/connection-editor/page-ip4.c:1136
+#: ../src/connection-editor/page-ip6.c:1090
 msgid "Address"
 msgstr "Adres"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:823
-#: ../src/connection-editor/page-ip4.c:1087
+#: ../src/connection-editor/page-ip4.c:1155
 msgid "Netmask"
 msgstr "Maska sieci"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:842
 #: ../src/connection-editor/ip6-routes-dialog.c:784
-#: ../src/connection-editor/page-ip4.c:1106
-#: ../src/connection-editor/page-ip6.c:1104
+#: ../src/connection-editor/page-ip4.c:1174
+#: ../src/connection-editor/page-ip6.c:1128
 msgid "Gateway"
 msgstr "Brama"
 
@@ -2714,7 +2741,7 @@ msgid "Metric"
 msgstr "Parametry"
 
 #: ../src/connection-editor/ip6-routes-dialog.c:765
-#: ../src/connection-editor/page-ip6.c:1085
+#: ../src/connection-editor/page-ip6.c:1109
 msgid "Prefix"
 msgstr "Przedrostek"
 
@@ -3026,13 +3053,13 @@ msgid "Ethernet connection %d"
 msgstr "Połączenie ethernetowe %d"
 
 #. TRANSLATORS: Default zone set for firewall, when no zone is selected
-#: ../src/connection-editor/page-general.c:51
+#: ../src/connection-editor/page-general.c:52
 #: ../src/libnma/nma-mobile-providers.c:806
 #: ../src/libnm-gtk/nm-mobile-providers.c:806
 msgid "Default"
 msgstr "Domyślne"
 
-#: ../src/connection-editor/page-general.c:52
+#: ../src/connection-editor/page-general.c:53
 msgid ""
 "The zone defines the trust level of the connection. Default is not a regular "
 "zone, selecting it results in the use of the default zone set in the "
@@ -3042,11 +3069,7 @@ msgstr ""
 "wybranie jej powoduje użycie domyślnej strefy ustawionej w zaporze "
 "sieciowej. Można tego używać tylko, jeśli usługa firewalld jest aktywna."
 
-#: ../src/connection-editor/page-general.c:53
-msgid "FirewallD is not running."
-msgstr "Usługa firewalld nie jest uruchomiona."
-
-#: ../src/connection-editor/page-general.c:350
+#: ../src/connection-editor/page-general.c:347
 msgid "Could not load General user interface."
 msgstr "Nie można wczytać interfejsu użytkownika karty ogólnej."
 
@@ -3075,124 +3098,124 @@ msgstr "urządzenie InfiniBand"
 msgid "InfiniBand connection %d"
 msgstr "Połączenie InfiniBand %d"
 
-#: ../src/connection-editor/page-ip4.c:125
-#: ../src/connection-editor/page-ip6.c:129
+#: ../src/connection-editor/page-ip4.c:127
+#: ../src/connection-editor/page-ip6.c:130
 msgid "Automatic (VPN)"
 msgstr "Automatycznie (VPN)"
 
-#: ../src/connection-editor/page-ip4.c:126
-#: ../src/connection-editor/page-ip6.c:130
+#: ../src/connection-editor/page-ip4.c:128
+#: ../src/connection-editor/page-ip6.c:131
 msgid "Automatic (VPN) addresses only"
 msgstr "Automatycznie (VPN), tylko adresy"
 
-#: ../src/connection-editor/page-ip4.c:130
-#: ../src/connection-editor/page-ip6.c:136
+#: ../src/connection-editor/page-ip4.c:132
+#: ../src/connection-editor/page-ip6.c:137
 msgid "Automatic, addresses only"
 msgstr "Automatycznie, tylko adresy"
 
-#: ../src/connection-editor/page-ip4.c:132
-#: ../src/connection-editor/page-ip6.c:132
+#: ../src/connection-editor/page-ip4.c:134
+#: ../src/connection-editor/page-ip6.c:133
 msgid "Automatic (PPPoE)"
 msgstr "Automatycznie (PPPoE)"
 
-#: ../src/connection-editor/page-ip4.c:133
-#: ../src/connection-editor/page-ip6.c:133
+#: ../src/connection-editor/page-ip4.c:135
+#: ../src/connection-editor/page-ip6.c:134
 msgid "Automatic (PPPoE) addresses only"
 msgstr "Automatycznie (PPPoE), tylko adresy"
 
-#: ../src/connection-editor/page-ip4.c:135
+#: ../src/connection-editor/page-ip4.c:137
 msgid "Automatic (DHCP)"
 msgstr "Automatycznie (DHCP)"
 
-#: ../src/connection-editor/page-ip4.c:136
+#: ../src/connection-editor/page-ip4.c:138
 msgid "Automatic (DHCP) addresses only"
 msgstr "Automatycznie (DHCP), tylko adresy"
 
-#: ../src/connection-editor/page-ip4.c:179
-#: ../src/connection-editor/page-ip6.c:197
+#: ../src/connection-editor/page-ip4.c:181
+#: ../src/connection-editor/page-ip6.c:198
 msgid "Link-Local Only"
 msgstr "Tylko Link-Local"
 
-#: ../src/connection-editor/page-ip4.c:297
-#: ../src/connection-editor/page-ip6.c:295
+#: ../src/connection-editor/page-ip4.c:361
+#: ../src/connection-editor/page-ip6.c:319
 msgid "Additional DNS ser_vers:"
 msgstr "_Dodatkowe serwery DNS:"
 
-#: ../src/connection-editor/page-ip4.c:306
-#: ../src/connection-editor/page-ip6.c:304
+#: ../src/connection-editor/page-ip4.c:370
+#: ../src/connection-editor/page-ip6.c:328
 msgid "Additional s_earch domains:"
 msgstr "Dodatkowe dom_eny wyszukiwania:"
 
-#: ../src/connection-editor/page-ip4.c:965
+#: ../src/connection-editor/page-ip4.c:1033
 #, c-format
 msgid "Editing IPv4 routes for %s"
 msgstr "Modyfikowanie tras IPv4 dla %s"
 
-#: ../src/connection-editor/page-ip4.c:1158
+#: ../src/connection-editor/page-ip4.c:1226
 msgid "IPv4 Settings"
 msgstr "Ustawienia IPv4"
 
-#: ../src/connection-editor/page-ip4.c:1160
+#: ../src/connection-editor/page-ip4.c:1228
 msgid "Could not load IPv4 user interface."
 msgstr "Nie można wczytać interfejsu użytkownika IPv4."
 
-#: ../src/connection-editor/page-ip4.c:1253
+#: ../src/connection-editor/page-ip4.c:1321
 #, c-format
 msgid "IPv4 address \"%s\" invalid"
 msgstr "Adres IPv4 „%s” jest nieprawidłowy"
 
-#: ../src/connection-editor/page-ip4.c:1261
+#: ../src/connection-editor/page-ip4.c:1329
 #, c-format
 msgid "IPv4 address netmask \"%s\" invalid"
 msgstr "Maska sieci adresu IPv4 „%s” jest nieprawidłowa"
 
-#: ../src/connection-editor/page-ip4.c:1270
+#: ../src/connection-editor/page-ip4.c:1338
 #, c-format
 msgid "IPv4 gateway \"%s\" invalid"
 msgstr "Brama IPv4 „%s” jest nieprawidłowa"
 
-#: ../src/connection-editor/page-ip4.c:1313
+#: ../src/connection-editor/page-ip4.c:1381
 #, c-format
 msgid "IPv4 DNS server \"%s\" invalid"
 msgstr "Serwer DNS IPv4 „%s” jest nieprawidłowy"
 
-#: ../src/connection-editor/page-ip6.c:148
+#: ../src/connection-editor/page-ip6.c:149
 msgid "Ignore"
 msgstr "Ignorowanie"
 
-#: ../src/connection-editor/page-ip6.c:172
+#: ../src/connection-editor/page-ip6.c:173
 msgid "Automatic, DHCP only"
 msgstr "Automatycznie, tylko DHCP"
 
-#: ../src/connection-editor/page-ip6.c:964
+#: ../src/connection-editor/page-ip6.c:988
 #, c-format
 msgid "Editing IPv6 routes for %s"
 msgstr "Modyfikowanie tras IPv6 dla %s"
 
-#: ../src/connection-editor/page-ip6.c:1155
+#: ../src/connection-editor/page-ip6.c:1179
 msgid "IPv6 Settings"
 msgstr "Ustawienia IPv6"
 
-#: ../src/connection-editor/page-ip6.c:1157
+#: ../src/connection-editor/page-ip6.c:1181
 msgid "Could not load IPv6 user interface."
 msgstr "Nie można wczytać interfejsu użytkownika IPv6."
 
-#: ../src/connection-editor/page-ip6.c:1248
+#: ../src/connection-editor/page-ip6.c:1272
 #, c-format
 msgid "IPv6 address \"%s\" invalid"
 msgstr "Adres IPv6 „%s” jest nieprawidłowy"
 
-#: ../src/connection-editor/page-ip6.c:1256
+#: ../src/connection-editor/page-ip6.c:1280
 #, c-format
 msgid "IPv6 prefix \"%s\" invalid"
 msgstr "Przedrostek IPv6 „%s” jest nieprawidłowy"
 
-#: ../src/connection-editor/page-ip6.c:1265
+#: ../src/connection-editor/page-ip6.c:1289
 #, c-format
 msgid "IPv6 gateway \"%s\" invalid"
 msgstr "Brama IPv6 „%s” jest nieprawidłowa"
 
-#: ../src/connection-editor/page-ip6.c:1307
+#: ../src/connection-editor/page-ip6.c:1331
 #, c-format
 msgid "IPv6 DNS server \"%s\" invalid"
 msgstr "Serwer DNS IPv6 „%s” jest nieprawidłowy"
@@ -3316,11 +3339,11 @@ msgstr "Wybór pliku do zaimportowania"
 msgid "Error: file doesn't contain a valid JSON configuration"
 msgstr "Błąd: plik nie zawiera prawidłowej konfiguracji JSON"
 
-#: ../src/connection-editor/page-team.c:1031
+#: ../src/connection-editor/page-team.c:1153
 msgid "Could not load team user interface."
 msgstr "Nie można wczytać interfejsu użytkownika zespołu."
 
-#: ../src/connection-editor/page-team.c:1124
+#: ../src/connection-editor/page-team.c:1246
 #, c-format
 msgid "Team connection %d"
 msgstr "Połączenie zespołowe %d"
@@ -3328,11 +3351,11 @@ msgstr "Połączenie zespołowe %d"
 #. Translators: a "Team Port" is a network
 #. * device that is part of a team.
 #.
-#: ../src/connection-editor/page-team-port.c:655
+#: ../src/connection-editor/page-team-port.c:732
 msgid "Team Port"
 msgstr "Port zespołowy"
 
-#: ../src/connection-editor/page-team-port.c:657
+#: ../src/connection-editor/page-team-port.c:734
 msgid "Could not load team port user interface."
 msgstr "Nie można wczytać interfejsu użytkownika portu zespołowego."
 
