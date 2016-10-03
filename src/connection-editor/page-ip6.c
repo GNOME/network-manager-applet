@@ -58,6 +58,7 @@ typedef struct {
 	GtkButton *addr_delete;
 	GtkTreeView *addr_list;
 	GtkCellRenderer *addr_cells[COL_LAST + 1];
+	GtkTreeModel *addr_saved;
 
 	/* DNS servers */
 	GtkWidget *dns_servers_label;
@@ -246,6 +247,8 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 	gboolean ip6_required_enabled = TRUE;
 	gboolean method_auto = FALSE;
 	GtkTreeIter iter;
+	GtkListStore *store;
+	const char *tooltip = NULL, *label = NULL;
 
 	if (gtk_combo_box_get_active_iter (priv->method, &iter)) {
 		gtk_tree_model_get (GTK_TREE_MODEL (priv->method_store), &iter,
@@ -254,23 +257,31 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 
 	switch (method) {
 	case IP6_METHOD_AUTO:
-		addr_enabled = FALSE;
+		addr_enabled = TRUE;
 		routes_enabled = TRUE;
 		dns_enabled = TRUE;
 		method_auto = TRUE;
 		ip6_privacy_enabled = TRUE;
+		tooltip = CE_TOOLTIP_ADDR_AUTO;
+		label = CE_LABEL_ADDR_AUTO;
 		break;
 	case IP6_METHOD_AUTO_ADDRESSES:
-		addr_enabled = FALSE;
+		addr_enabled = TRUE;
 		dns_enabled = routes_enabled = TRUE;
 		ip6_privacy_enabled = TRUE;
+		tooltip = CE_TOOLTIP_ADDR_AUTO;
+		label = CE_LABEL_ADDR_AUTO;
 		break;
 	case IP6_METHOD_AUTO_DHCP_ONLY:
-		addr_enabled = FALSE;
+		addr_enabled = TRUE;
 		routes_enabled = TRUE;
+		tooltip = CE_TOOLTIP_ADDR_AUTO;
+		label = CE_LABEL_ADDR_AUTO;
 		break;
 	case IP6_METHOD_MANUAL:
 		addr_enabled = dns_enabled = routes_enabled = TRUE;
+		tooltip = CE_TOOLTIP_ADDR_MANUAL;
+		label = CE_LABEL_ADDR_MANUAL;
 		break;
 	case IP6_METHOD_IGNORE:
 		ip6_required_enabled = FALSE;
@@ -279,15 +290,28 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 		break;
 	}
 
+	gtk_widget_set_tooltip_text (GTK_WIDGET (priv->addr_list), tooltip);
+	gtk_label_set_text (GTK_LABEL (priv->addr_label), label);
+
 	gtk_widget_set_sensitive (priv->addr_label, addr_enabled);
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_add), addr_enabled);
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_delete), addr_enabled);
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_list), addr_enabled);
-	if (!addr_enabled) {
-		GtkListStore *store;
 
-		store = GTK_LIST_STORE (gtk_tree_view_get_model (priv->addr_list));
-		gtk_list_store_clear (store);
+	if (addr_enabled) {
+		if (priv->addr_saved) {
+			/* Restore old entries */
+			gtk_tree_view_set_model (priv->addr_list, priv->addr_saved);
+			g_clear_object (&priv->addr_saved);
+		}
+	} else {
+		if (!priv->addr_saved) {
+			/* Save current entries, set empty list */
+			priv->addr_saved = g_object_ref (gtk_tree_view_get_model (priv->addr_list));
+			store = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
+			gtk_tree_view_set_model (priv->addr_list, GTK_TREE_MODEL (store));
+			g_object_unref (store);
+		}
 	}
 
 	gtk_widget_set_sensitive (priv->dns_servers_label, dns_enabled);

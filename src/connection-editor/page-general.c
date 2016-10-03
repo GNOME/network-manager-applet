@@ -34,6 +34,7 @@ typedef struct {
 	GDBusProxy *fw_proxy;
 	GCancellable *cancellable;
 	GtkComboBoxText *firewall_zone;
+	GtkLabel *firewall_zone_label;
 	char **zones;
 	gboolean got_zones;
 
@@ -49,8 +50,7 @@ typedef struct {
 
 /* TRANSLATORS: Default zone set for firewall, when no zone is selected */
 #define FIREWALL_ZONE_DEFAULT _("Default")
-#define FIREWALL_ZONE_TOOLTIP_AVAILBALE _("The zone defines the trust level of the connection. Default is not a regular zone, selecting it results in the use of the default zone set in the firewall. Only usable if firewalld is active.")
-#define FIREWALL_ZONE_TOOLTIP_UNAVAILBALE _("FirewallD is not running.")
+#define FIREWALL_ZONE_TOOLTIP _("The zone defines the trust level of the connection. Default is not a regular zone, selecting it results in the use of the default zone set in the firewall. Only usable if firewalld is active.")
 
 enum {
 	COL_ID,
@@ -132,7 +132,6 @@ general_private_init (CEPageGeneral *self)
 	CEPageGeneralPrivate *priv = CE_PAGE_GENERAL_GET_PRIVATE (self);
 	GtkBuilder *builder;
 	GtkWidget *vbox;
-	GtkLabel *label;
 
 	builder = CE_PAGE (self)->builder;
 
@@ -141,7 +140,6 @@ general_private_init (CEPageGeneral *self)
 
 	vbox = GTK_WIDGET (gtk_builder_get_object (builder, "firewall_zone_vbox"));
 	gtk_container_add (GTK_CONTAINER (vbox), GTK_WIDGET (priv->firewall_zone));
-	gtk_widget_show_all (GTK_WIDGET (priv->firewall_zone));
 
 	/* Get zones from FirewallD */
 	priv->cancellable = g_cancellable_new ();
@@ -156,8 +154,8 @@ general_private_init (CEPageGeneral *self)
 	                          self);
 
 	/* Set mnemonic widget for device Firewall zone label */
-	label = GTK_LABEL (gtk_builder_get_object (builder, "firewall_zone_label"));
-	gtk_label_set_mnemonic_widget (label, GTK_WIDGET (priv->firewall_zone));
+	priv->firewall_zone_label = GTK_LABEL (gtk_builder_get_object (builder, "firewall_zone_label"));
+	gtk_label_set_mnemonic_widget (priv->firewall_zone_label, GTK_WIDGET (priv->firewall_zone));
 
 	/*-- Dependent VPN connection --*/
 	priv->dependent_vpn_checkbox = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "dependent_vpn_checkbox"));
@@ -228,11 +226,10 @@ populate_firewall_zones_ui (CEPageGeneral *self)
 
 	/* Zone tooltip and availability */
 	if (priv->zones) {
-		gtk_widget_set_tooltip_text (GTK_WIDGET (priv->firewall_zone), FIREWALL_ZONE_TOOLTIP_AVAILBALE);
+		gtk_widget_set_tooltip_text (GTK_WIDGET (priv->firewall_zone), FIREWALL_ZONE_TOOLTIP);
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->firewall_zone), TRUE);
-	} else {
-		gtk_widget_set_tooltip_text (GTK_WIDGET (priv->firewall_zone), FIREWALL_ZONE_TOOLTIP_UNAVAILBALE);
-		gtk_widget_set_sensitive (GTK_WIDGET (priv->firewall_zone), FALSE);
+		gtk_widget_show_all (GTK_WIDGET (priv->firewall_zone));
+		gtk_widget_show (GTK_WIDGET (priv->firewall_zone_label));
 	}
 
 	stuff_changed (NULL, self);

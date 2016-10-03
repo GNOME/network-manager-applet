@@ -59,6 +59,8 @@ typedef struct {
 	GtkButton *addr_delete;
 	GtkTreeView *addr_list;
 	GtkCellRenderer *addr_cells[COL_LAST + 1];
+	GtkTreeModel *addr_saved;
+	guint32 addr_method;
 
 	/* DNS servers */
 	GtkWidget *dns_servers_label;
@@ -235,6 +237,22 @@ ip4_private_init (CEPageIP4 *self, NMConnection *connection)
 }
 
 static void
+address_list_changed (CEPageIP4 *self)
+{
+	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (self);
+	GtkTreeModel *model;
+	int num_rows;
+
+	if (priv->addr_method != IP4_METHOD_SHARED)
+		return;
+
+	/* Only one address is allowed in shared mode */
+	model = gtk_tree_view_get_model (priv->addr_list);
+	num_rows = gtk_tree_model_iter_n_children (model, NULL);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_add), num_rows == 0);
+}
+
+static void
 method_changed (GtkComboBox *combo, gpointer user_data)
 {
 	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (user_data);
@@ -246,6 +264,8 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 	gboolean ip4_required_enabled = TRUE;
 	gboolean method_auto = FALSE;
 	GtkTreeIter iter;
+	GtkListStore *store;
+	const char *tooltip = NULL, *label = NULL;
 
 	if (gtk_combo_box_get_active_iter (priv->method, &iter)) {
 		gtk_tree_model_get (GTK_TREE_MODEL (priv->method_store), &iter,
@@ -254,23 +274,39 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 
 	switch (method) {
 	case IP4_METHOD_AUTO:
-		addr_enabled = FALSE;
+		addr_enabled = TRUE;
 		dhcp_enabled = routes_enabled = TRUE;
 		dns_enabled = TRUE;
 		method_auto = TRUE;
+		tooltip = CE_TOOLTIP_ADDR_AUTO;
+		label = CE_LABEL_ADDR_AUTO;
 		break;
 	case IP4_METHOD_AUTO_ADDRESSES:
-		addr_enabled = FALSE;
+		addr_enabled = TRUE;
 		dns_enabled = dhcp_enabled = routes_enabled = TRUE;
+		tooltip = CE_TOOLTIP_ADDR_AUTO;
+		label = CE_LABEL_ADDR_AUTO;
 		break;
 	case IP4_METHOD_MANUAL:
 		addr_enabled = dns_enabled = routes_enabled = TRUE;
+		tooltip = CE_TOOLTIP_ADDR_MANUAL;
+		label = CE_LABEL_ADDR_MANUAL;
+		break;
+	case IP4_METHOD_SHARED:
+		addr_enabled = TRUE;
+		tooltip = CE_TOOLTIP_ADDR_SHARED;
+		label = CE_LABEL_ADDR_SHARED;
 		break;
 	case IP4_METHOD_DISABLED:
 		addr_enabled = dns_enabled = dhcp_enabled = routes_enabled = ip4_required_enabled = FALSE;
+		break;
 	default:
 		break;
 	}
+
+	priv->addr_method = method;
+	gtk_widget_set_tooltip_text (GTK_WIDGET (priv->addr_list), tooltip);
+	gtk_label_set_text (GTK_LABEL (priv->addr_label), label);
 
 	/* Disable DHCP stuff for VPNs (though in the future we should support
 	 * DHCP over tap interfaces for OpenVPN and vpnc).
@@ -285,12 +321,40 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_add), addr_enabled);
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_delete), addr_enabled);
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_list), addr_enabled);
-	if (!addr_enabled) {
-		GtkListStore *store;
 
-		store = GTK_LIST_STORE (gtk_tree_view_get_model (priv->addr_list));
-		gtk_list_store_clear (store);
+	if (addr_enabled) {
+		if (priv->addr_saved) {
+			/* Restore old entries */
+			gtk_tree_view_set_model (priv->addr_list, priv->addr_saved);
+			g_clear_object (&priv->addr_saved);
+		}
+	} else {
+		if (!priv->addr_saved) {
+			/* Save current entries, set empty list */
+			priv->addr_saved = g_object_ref (gtk_tree_view_get_model (priv->addr_list));
+			store = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
+			gtk_tree_view_set_model (priv->addr_list, GTK_TREE_MODEL (store));
+			g_object_unref (store);
+		}
 	}
+
+	if (method == IP4_METHOD_SHARED) {
+		GtkTreeModel *model;
+		gboolean iter_valid;
+		int i;
+
+		/* Remove all rows except first */
+		model = gtk_tree_view_get_model (priv->addr_list);
+		iter_valid = gtk_tree_model_get_iter_first (model, &iter);
+		for (i = 0; iter_valid; i++) {
+			if (i > 0)
+				iter_valid = gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
+			else
+				iter_valid = gtk_tree_model_iter_next (model, &iter);
+		}
+	}
+
+	address_list_changed (user_data);
 
 	gtk_widget_set_sensitive (priv->dns_servers_label, dns_enabled);
 	if (method_auto)
@@ -470,12 +534,14 @@ addr_add_clicked (GtkButton *button, gpointer user_data)
 
 	g_list_free (cells);
 	gtk_tree_path_free (path);
+	address_list_changed (user_data);
 }
 
 static void
 addr_delete_clicked (GtkButton *button, gpointer user_data)
 {
-	GtkTreeView *treeview = GTK_TREE_VIEW (user_data);
+	CEPageIP4Private *priv = CE_PAGE_IP4_GET_PRIVATE (user_data);
+	GtkTreeView *treeview = priv->addr_list;
 	GtkTreeSelection *selection;
 	GList *selected_rows;
 	GtkTreeModel *model = NULL;
@@ -501,6 +567,8 @@ addr_delete_clicked (GtkButton *button, gpointer user_data)
 		selection = gtk_tree_view_get_selection (treeview);
 		gtk_tree_selection_select_iter (selection, &iter);
 	}
+
+	address_list_changed (user_data);
 }
 
 static void
@@ -742,7 +810,7 @@ gateway_matches_address (const char *gw_str, const char *addr_str, guint32 prefi
 static gboolean
 possibly_wrong_gateway (GtkTreeModel *model, GtkTreeIter *iter, const char *gw_str)
 {
-	char *addr_str, *prefix_str;
+	gs_free char *addr_str = NULL, *prefix_str = NULL;
 	gboolean addr_valid;
 	guint32 prefix;
 
@@ -1118,7 +1186,7 @@ finish_setup (CEPageIP4 *self, gpointer unused, GError *error, gpointer user_dat
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->addr_delete), FALSE);
 
 	g_signal_connect (priv->addr_add, "clicked", G_CALLBACK (addr_add_clicked), self);
-	g_signal_connect (priv->addr_delete, "clicked", G_CALLBACK (addr_delete_clicked), priv->addr_list);
+	g_signal_connect (priv->addr_delete, "clicked", G_CALLBACK (addr_delete_clicked), self);
 	selection = gtk_tree_view_get_selection (priv->addr_list);
 	g_signal_connect (selection, "changed", G_CALLBACK (list_selection_changed), priv->addr_delete);
 
