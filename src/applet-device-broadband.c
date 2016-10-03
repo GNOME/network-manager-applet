@@ -249,7 +249,7 @@ unlock_dialog_response (GtkDialog *dialog,
 	g_assert (lock == MM_MODEM_LOCK_SIM_PIN || lock == MM_MODEM_LOCK_SIM_PUK);
 
 	/* Start the spinner to show the progress of the unlock */
-	applet_mobile_pin_dialog_start_spinner (info->dialog, _("Sending unlock code..."));
+	applet_mobile_pin_dialog_start_spinner (info->dialog, _("Sending unlock code…"));
 
 	code1 = applet_mobile_pin_dialog_get_entry1 (info->dialog);
 	if (!code1 || !strlen (code1)) {
@@ -798,7 +798,7 @@ add_menu_item (NMDevice *device,
 			}
 		} else {
 			/* Default connection item */
-			item = gtk_check_menu_item_new_with_label (_("New Mobile Broadband connection..."));
+			item = gtk_check_menu_item_new_with_label (_("New Mobile Broadband connection…"));
 			add_connection_item (device, NULL, item, menu, applet);
 		}
 	}

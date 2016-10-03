@@ -227,7 +227,7 @@ nma_menu_add_hidden_network_item (GtkWidget *menu, NMApplet *applet)
 	GtkWidget *label;
 
 	menu_item = gtk_menu_item_new ();
-	label = gtk_label_new_with_mnemonic (_("_Connect to Hidden Wi-Fi Network..."));
+	label = gtk_label_new_with_mnemonic (_("_Connect to Hidden Wi-Fi Network…"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_container_add (GTK_CONTAINER (menu_item), label);
 	gtk_widget_show_all (menu_item);
@@ -278,7 +278,7 @@ nma_menu_add_create_network_item (GtkWidget *menu, NMApplet *applet)
 	GtkWidget *label;
 
 	menu_item = gtk_menu_item_new ();
-	label = gtk_label_new_with_mnemonic (_("Create _New Wi-Fi Network..."));
+	label = gtk_label_new_with_mnemonic (_("Create _New Wi-Fi Network…"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_container_add (GTK_CONTAINER (menu_item), label);
 	gtk_widget_show_all (menu_item);
@@ -1181,7 +1181,7 @@ idle_check_avail_access_point_notification (gpointer datap)
 	                  _("Use the network menu to connect to a Wi-Fi network"),
 	                  "nm-device-wireless",
 	                  "dont-show",
-	                  _("Don't show this message again"),
+	                  _("Don’t show this message again"),
 	                  wifi_available_dont_show_cb,
 	                  applet);
 	return FALSE;
@@ -1361,7 +1361,7 @@ wifi_notify_connected (NMDevice *device,
 	else
 		signal_strength_icon = mobile_helper_get_quality_icon_name (nm_access_point_get_strength (ap));
 
-	ssid_msg = g_strdup_printf (_("You are now connected to the Wi-Fi network '%s'."), esc_ssid);
+	ssid_msg = g_strdup_printf (_("You are now connected to the Wi-Fi network “%s”."), esc_ssid);
 	applet_do_notify_with_pref (applet, _("Connection Established"),
 	                            ssid_msg, signal_strength_icon,
 	                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
@@ -1396,16 +1396,16 @@ wifi_get_icon (NMDevice *device,
 
 	switch (state) {
 	case NM_DEVICE_STATE_PREPARE:
-		*tip = g_strdup_printf (_("Preparing Wi-Fi network connection '%s'..."), id);
+		*tip = g_strdup_printf (_("Preparing Wi-Fi network connection “%s”…"), id);
 		break;
 	case NM_DEVICE_STATE_CONFIG:
-		*tip = g_strdup_printf (_("Configuring Wi-Fi network connection '%s'..."), id);
+		*tip = g_strdup_printf (_("Configuring Wi-Fi network connection “%s”…"), id);
 		break;
 	case NM_DEVICE_STATE_NEED_AUTH:
-		*tip = g_strdup_printf (_("User authentication required for Wi-Fi network '%s'..."), id);
+		*tip = g_strdup_printf (_("User authentication required for Wi-Fi network “%s”…"), id);
 		break;
 	case NM_DEVICE_STATE_IP_CONFIG:
-		*tip = g_strdup_printf (_("Requesting a Wi-Fi network address for '%s'..."), id);
+		*tip = g_strdup_printf (_("Requesting a Wi-Fi network address for “%s”…"), id);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
 		strength = ap ? nm_access_point_get_strength (ap) : 0;
@@ -1416,11 +1416,11 @@ wifi_get_icon (NMDevice *device,
 		if (ap) {
 			char *ssid = get_ssid_utf8 (ap);
 
-			*tip = g_strdup_printf (_("Wi-Fi network connection '%s' active: %s (%d%%)"),
+			*tip = g_strdup_printf (_("Wi-Fi network connection “%s” active: %s (%d%%)"),
 			                        id, ssid, strength);
 			g_free (ssid);
 		} else
-			*tip = g_strdup_printf (_("Wi-Fi network connection '%s' active"), id);
+			*tip = g_strdup_printf (_("Wi-Fi network connection “%s” active"), id);
 		break;
 	default:
 		break;

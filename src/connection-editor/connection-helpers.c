@@ -367,9 +367,9 @@ next:
 		gtk_list_store_append (model, &iter);
 
 		if (show_headers)
-			markup = g_strdup_printf ("    %s", _("Import a saved VPN configuration..."));
+			markup = g_strdup_printf ("    %s", _("Import a saved VPN configuration…"));
 		else
-			markup = g_strdup (_("Import a saved VPN configuration..."));
+			markup = g_strdup (_("Import a saved VPN configuration…"));
 		gtk_list_store_append (model, &iter);
 		gtk_list_store_set (model, &iter,
 		                    COL_MARKUP, markup,

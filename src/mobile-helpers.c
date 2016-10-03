@@ -328,7 +328,7 @@ mobile_helper_save_pin_in_keyring (const char *devid,
 	char *name;
 	char *error_msg;
 
-	name = g_strdup_printf (_("PIN code for SIM card '%s' on '%s'"),
+	name = g_strdup_printf (_("PIN code for SIM card “%s” on “%s”"),
 	                        simid ? simid : "unknown",
 	                        devid);
 
@@ -596,16 +596,16 @@ mobile_helper_get_icon (NMDevice *device,
 
 	switch (state) {
 	case NM_DEVICE_STATE_PREPARE:
-		*tip = g_strdup_printf (_("Preparing mobile broadband connection '%s'..."), id);
+		*tip = g_strdup_printf (_("Preparing mobile broadband connection “%s”…"), id);
 		break;
 	case NM_DEVICE_STATE_CONFIG:
-		*tip = g_strdup_printf (_("Configuring mobile broadband connection '%s'..."), id);
+		*tip = g_strdup_printf (_("Configuring mobile broadband connection “%s”…"), id);
 		break;
 	case NM_DEVICE_STATE_NEED_AUTH:
-		*tip = g_strdup_printf (_("User authentication required for mobile broadband connection '%s'..."), id);
+		*tip = g_strdup_printf (_("User authentication required for mobile broadband connection “%s”…"), id);
 		break;
 	case NM_DEVICE_STATE_IP_CONFIG:
-		*tip = g_strdup_printf (_("Requesting a network address for '%s'..."), id);
+		*tip = g_strdup_printf (_("Requesting a network address for “%s”…"), id);
 		break;
 	case NM_DEVICE_STATE_ACTIVATED:
 		*out_pixbuf = mobile_helper_get_status_pixbuf (quality,
@@ -619,12 +619,12 @@ mobile_helper_get_icon (NMDevice *device,
 		if ((mb_state != MB_STATE_UNKNOWN) && quality_valid) {
 			gboolean roaming = (mb_state == MB_STATE_ROAMING);
 
-			*tip = g_strdup_printf (_("Mobile broadband connection '%s' active: (%d%%%s%s)"),
+			*tip = g_strdup_printf (_("Mobile broadband connection “%s” active: (%d%%%s%s)"),
 			                        id, quality,
 			                        roaming ? ", " : "",
 			                        roaming ? _("roaming") : "");
 		} else
-			*tip = g_strdup_printf (_("Mobile broadband connection '%s' active"), id);
+			*tip = g_strdup_printf (_("Mobile broadband connection “%s” active"), id);
 		break;
 	default:
 		break;

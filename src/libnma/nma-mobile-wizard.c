@@ -245,7 +245,7 @@ confirm_setup (NMAMobileWizard *self)
 
 	if (self->will_connect_after) {
 		alignment = gtk_alignment_new (0, 0.5, 1, 0);
-		label = gtk_label_new (_("A connection will now be made to your mobile broadband provider using the settings you selected.  If the connection fails or you cannot access network resources, double-check your settings.  To modify your mobile broadband connection settings, choose \"Network Connections\" from the System >> Preferences menu."));
+		label = gtk_label_new (_("A connection will now be made to your mobile broadband provider using the settings you selected. If the connection fails or you cannot access network resources, double-check your settings. To modify your mobile broadband connection settings, choose “Network Connections” from the System → Preferences menu."));
 		gtk_widget_set_size_request (label, 500, -1);
 		gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 		gtk_misc_set_padding (GTK_MISC (label), 0, 6);
@@ -497,7 +497,7 @@ plan_setup (NMAMobileWizard *self)
 	gtk_misc_set_alignment (GTK_MISC (image), 0.5, 0.0);
 	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
 
-	label = gtk_label_new (_("Warning: Selecting an incorrect plan may result in billing issues for your broadband account or may prevent connectivity.\n\nIf you are unsure of your plan please ask your provider for your plan's APN."));
+	label = gtk_label_new (_("Warning: Selecting an incorrect plan may result in billing issues for your broadband account or may prevent connectivity.\n\nIf you are unsure of your plan please ask your provider for your plan’s APN."));
 	gtk_widget_set_size_request (label, 500, -1);
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 	gtk_label_set_max_width_chars (GTK_LABEL (label), 60);
@@ -554,7 +554,7 @@ plan_prepare (NMAMobileWizard *self)
 	gtk_tree_store_set (GTK_TREE_STORE (self->plan_store),
 	                    &method_iter,
 	                    PLAN_COL_NAME,
-	                    _("My plan is not listed..."),
+	                    _("My plan is not listed…"),
 	                    PLAN_COL_MANUAL,
 	                    TRUE,
 	                    -1);
@@ -745,7 +745,7 @@ providers_setup (NMAMobileWizard *self)
 	gtk_box_pack_start (GTK_BOX (vbox), alignment, TRUE, TRUE, 0);
 
 	self->provider_unlisted_radio = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (self->providers_view_radio),
-	                                            _("I can't find my provider and I wish to enter it _manually:"));
+	                                            _("I can’t find my provider and I wish to enter it _manually:"));
 	g_signal_connect (self->providers_view_radio, "toggled", G_CALLBACK (providers_radio_toggled), self);
 	gtk_box_pack_start (GTK_BOX (vbox), self->provider_unlisted_radio, FALSE, TRUE, 0);
 
@@ -1123,7 +1123,7 @@ country_setup (NMAMobileWizard *self)
 	gtk_box_pack_start (GTK_BOX (vbox), alignment, TRUE, TRUE, 6);
 
 	self->country_idx = gtk_assistant_append_page (GTK_ASSISTANT (self->assistant), vbox);
-	gtk_assistant_set_page_title (GTK_ASSISTANT (self->assistant), vbox, _("Choose your Provider's Country or Region"));
+	gtk_assistant_set_page_title (GTK_ASSISTANT (self->assistant), vbox, _("Choose your Provider’s Country or Region"));
 	gtk_assistant_set_page_type (GTK_ASSISTANT (self->assistant), vbox, GTK_ASSISTANT_PAGE_CONTENT);
 	gtk_assistant_set_page_complete (GTK_ASSISTANT (self->assistant), vbox, TRUE);
 	gtk_widget_show_all (vbox);
@@ -1368,7 +1368,7 @@ intro_setup (NMAMobileWizard *self)
 	gtk_container_add (GTK_CONTAINER (alignment), info_vbox);
 	gtk_box_pack_start (GTK_BOX (vbox), alignment, FALSE, FALSE, 6);
 
-	s = g_strdup_printf ("• %s", _("Your broadband provider's name"));
+	s = g_strdup_printf ("• %s", _("Your broadband provider’s name"));
 	label = gtk_label_new (s);
 	g_free (s);
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);

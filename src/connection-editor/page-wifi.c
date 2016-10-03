@@ -74,7 +74,7 @@ wifi_private_init (CEPageWifi *self)
 	priv->bssid = GTK_COMBO_BOX_TEXT (gtk_combo_box_text_new_with_entry ());
 	gtk_combo_box_set_entry_text_column (GTK_COMBO_BOX (priv->bssid), 0);
 	gtk_widget_set_tooltip_text (GTK_WIDGET (priv->bssid),
-	                             _("This option locks this connection to the Wi-Fi access point (AP) specified by the BSSID entered here.  Example: 00:11:22:33:44:55"));
+	                             _("This option locks this connection to the Wi-Fi access point (AP) specified by the BSSID entered here. Example: 00:11:22:33:44:55"));
 
 	vbox = GTK_WIDGET (gtk_builder_get_object (builder, "wifi_bssid_vbox"));
 	gtk_container_add (GTK_CONTAINER (vbox), GTK_WIDGET (priv->bssid));
@@ -87,7 +87,7 @@ wifi_private_init (CEPageWifi *self)
 	gtk_widget_set_tooltip_text (GTK_WIDGET (priv->device_combo),
 	                             _("This option locks this connection to the network device specified "
 	                               "either by its interface name or permanent MAC or both. Examples: "
-	                               "\"wlan0\", \"3C:97:0E:42:1A:19\", \"wlan0 (3C:97:0E:42:1A:19)\""));
+	                               "“wlan0”, “3C:97:0E:42:1A:19”, “wlan0 (3C:97:0E:42:1A:19)”"));
 
 	vbox = GTK_WIDGET (gtk_builder_get_object (builder, "wifi_device_vbox"));
 	gtk_container_add (GTK_CONTAINER (vbox), GTK_WIDGET (priv->device_combo));

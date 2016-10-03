@@ -1037,7 +1037,7 @@ applet_mobile_password_dialog_new (NMConnection *connection,
 	s_con = nm_connection_get_setting_connection (connection);
 	id = nm_setting_connection_get_id (s_con);
 	g_assert (id);
-	tmp = g_strdup_printf (_("A password is required to connect to '%s'."), id);
+	tmp = g_strdup_printf (_("A password is required to connect to “%s”."), id);
 	w = gtk_label_new (tmp);
 	g_free (tmp);
 
@@ -1337,7 +1337,7 @@ applet_mobile_pin_dialog_new (const char *unlock_required,
 		title = _("SIM PIN unlock required");
 		header = _("SIM PIN Unlock Required");
 		/* FIXME: some warning about # of times you can enter incorrect PIN */
-		desc = g_strdup_printf (_("The mobile broadband device '%s' requires a SIM PIN code before it can be used."), device_description);
+		desc = g_strdup_printf (_("The mobile broadband device “%s” requires a SIM PIN code before it can be used."), device_description);
 		/* Translators: PIN code entry label */
 		label1 = _("PIN code:");
 		label1_min = 4;
@@ -1348,7 +1348,7 @@ applet_mobile_pin_dialog_new (const char *unlock_required,
 		title = _("SIM PUK unlock required");
 		header = _("SIM PUK Unlock Required");
 		/* FIXME: some warning about # of times you can enter incorrect PUK */
-		desc = g_strdup_printf (_("The mobile broadband device '%s' requires a SIM PUK code before it can be used."), device_description);
+		desc = g_strdup_printf (_("The mobile broadband device “%s” requires a SIM PUK code before it can be used."), device_description);
 		/* Translators: PUK code entry label */
 		label1 = _("PUK code:");
 		label1_min = label1_max = 8;

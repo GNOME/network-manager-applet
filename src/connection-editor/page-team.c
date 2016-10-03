@@ -358,7 +358,7 @@ import_button_clicked_cb (GtkWidget *widget, CEPageTeam *self)
 		g_file_get_contents (filename, &buf, &buf_len, NULL);
 		if (buf_len > 100000) {
 			g_free (buf);
-			buf = g_strdup (_("Error: file doesn't contain a valid JSON configuration"));
+			buf = g_strdup (_("Error: file doesn’t contain a valid JSON configuration"));
 		}
 
 		buffer = gtk_text_view_get_buffer (priv->json_config_widget);

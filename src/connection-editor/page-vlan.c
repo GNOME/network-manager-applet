@@ -411,7 +411,7 @@ build_vlan_parent_list (CEPageVlan *self, GSList *devices)
 				/* Translators: the first %s is a device name (eg, "em1"), the
 				 * second is a connection name (eg, "Auto Ethernet").
 				 */
-				parent->label = g_strdup_printf (_("%s (via \"%s\")"), iface, id);
+				parent->label = g_strdup_printf (_("%s (via “%s”)"), iface, id);
 				g_ptr_array_add (parents, parent);
 				/* no break here; the connection may apply to multiple devices */
 			}
@@ -423,7 +423,7 @@ build_vlan_parent_list (CEPageVlan *self, GSList *devices)
 	parent = g_slice_new (VlanParent);
 	parent->device = NULL;
 	parent->connection = NULL;
-	parent->label = g_strdup_printf (_("New connection..."));
+	parent->label = g_strdup_printf (_("New connection…"));
 	g_ptr_array_add (parents, parent);
 
 	g_ptr_array_add (parents, NULL);

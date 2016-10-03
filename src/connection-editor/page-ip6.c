@@ -1269,7 +1269,7 @@ ui_to_setting (CEPageIP6 *self, GError **error)
 		if (   !addr_str
 		    || !nm_utils_ipaddr_valid (AF_INET6, addr_str)
 		    || is_address_unspecified (addr_str)) {
-			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv6 address \"%s\" invalid"), addr_str ? addr_str : "");
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv6 address “%s” invalid"), addr_str ? addr_str : "");
 			g_free (addr_str);
 			g_free (prefix_str);
 			g_free (addr_gw_str);
@@ -1277,7 +1277,7 @@ ui_to_setting (CEPageIP6 *self, GError **error)
 		}
 
 		if (!is_prefix_valid (prefix_str, &prefix)) {
-			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv6 prefix \"%s\" invalid"), prefix_str ? prefix_str : "");
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv6 prefix “%s” invalid"), prefix_str ? prefix_str : "");
 			g_free (addr_str);
 			g_free (prefix_str);
 			g_free (addr_gw_str);
@@ -1286,7 +1286,7 @@ ui_to_setting (CEPageIP6 *self, GError **error)
 
 		/* Gateway is optional... */
 		if (addr_gw_str && *addr_gw_str && !nm_utils_ipaddr_valid (AF_INET6, addr_gw_str)) {
-			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv6 gateway \"%s\" invalid"), addr_gw_str);
+			g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv6 gateway “%s” invalid"), addr_gw_str);
 			g_free (addr_str);
 			g_free (prefix_str);
 			g_free (addr_gw_str);
@@ -1328,7 +1328,7 @@ ui_to_setting (CEPageIP6 *self, GError **error)
 			if (inet_pton (AF_INET6, stripped, &tmp_addr)) {
 				nm_setting_ip_config_add_dns (priv->setting, stripped);
 			} else {
-				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv6 DNS server \"%s\" invalid"), stripped);
+				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv6 DNS server “%s” invalid"), stripped);
 				g_strfreev (items);
 				goto out;
 			}
