@@ -23,24 +23,11 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <glib.h>
-#include <gtk/gtk.h>
-
 #include <net/ethernet.h>
-
-#if defined (LIBNM_BUILD)
-#include <NetworkManager.h>
-#elif defined (LIBNM_GLIB_BUILD)
-#include <nm-connection.h>
-#include <nm-device.h>
-#include <nm-access-point.h>
-#else
-#error neither LIBNM_BUILD nor LIBNM_GLIB_BUILD defined
-#endif
 
 gboolean utils_ether_addr_valid (const struct ether_addr *test_addr);
 
-#ifdef LIBNM_BUILD
+#if LIBNM_BUILD
 char *utils_hash_ap (GBytes *ssid,
                      NM80211Mode mode,
                      guint32 flags,

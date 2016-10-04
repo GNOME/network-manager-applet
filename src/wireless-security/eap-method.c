@@ -270,7 +270,7 @@ out:
 	return success;
 }
 
-#ifdef LIBNM_GLIB_BUILD
+#if !LIBNM_BUILD
 static const char *
 find_tag (const char *tag, const char *buf, gsize len)
 {
@@ -403,16 +403,14 @@ out:
 static gboolean
 default_filter_privkey (const GtkFileFilterInfo *filter_info, gpointer user_data)
 {
-#ifdef LIBNM_GLIB_BUILD
-	const char *extensions[] = { ".der", ".pem", ".p12", ".key", NULL };
-#endif
+	_nm_unused const char *extensions[] = { ".der", ".pem", ".p12", ".key", NULL };
 	gboolean require_encrypted = !!user_data;
 	gboolean is_encrypted;
 
 	if (!filter_info->filename)
 		return FALSE;
 
-#if defined (LIBNM_GLIB_BUILD)
+#if !LIBNM_BUILD
 	if (!file_has_extension (filter_info->filename, extensions))
 		return FALSE;
 
@@ -420,12 +418,10 @@ default_filter_privkey (const GtkFileFilterInfo *filter_info, gpointer user_data
 	if (   !file_is_der_or_pem (filter_info->filename, TRUE, &is_encrypted)
 	    && !nm_utils_file_is_pkcs12 (filter_info->filename))
 		return FALSE;
-#elif defined (LIBNM_BUILD)
+#else
 	is_encrypted = FALSE;
 	if (!nm_utils_file_is_private_key (filter_info->filename, &is_encrypted))
 		return FALSE;
-#else
-#error neither LIBNM_BUILD nor LIBNM_GLIB_BUILD defined
 #endif
 
 	return require_encrypted ? is_encrypted : TRUE;
@@ -434,24 +430,20 @@ default_filter_privkey (const GtkFileFilterInfo *filter_info, gpointer user_data
 static gboolean
 default_filter_cert (const GtkFileFilterInfo *filter_info, gpointer user_data)
 {
-#ifdef LIBNM_GLIB_BUILD
-	const char *extensions[] = { ".der", ".pem", ".crt", ".cer", NULL };
-#endif
+	_nm_unused const char *extensions[] = { ".der", ".pem", ".crt", ".cer", NULL };
 
 	if (!filter_info->filename)
 		return FALSE;
 
-#if defined (LIBNM_GLIB_BUILD)
+#if !LIBNM_BUILD
 	if (!file_has_extension (filter_info->filename, extensions))
 		return FALSE;
 
 	if (!file_is_der_or_pem (filter_info->filename, FALSE, NULL))
 		return FALSE;
-#elif defined (LIBNM_BUILD)
+#else
 	if (!nm_utils_file_is_certificate (filter_info->filename))
 		return FALSE;
-#else
-#error neither LIBNM_BUILD nor LIBNM_GLIB_BUILD defined
 #endif
 
 	return TRUE;

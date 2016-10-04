@@ -23,17 +23,6 @@
 #ifndef WIRELESS_SECURITY_H
 #define WIRELESS_SECURITY_H
 
-#include <glib.h>
-#include <gtk/gtk.h>
-
-#if defined (LIBNM_BUILD)
-#include <NetworkManager.h>
-#elif defined (LIBNM_GLIB_BUILD)
-#include <nm-connection.h>
-#else
-#error neither LIBNM_BUILD nor LIBNM_GLIB_BUILD defined
-#endif
-
 typedef struct _WirelessSecurity WirelessSecurity;
 
 typedef void (*WSChangedFunc) (WirelessSecurity *sec, gpointer user_data);

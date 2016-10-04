@@ -45,24 +45,35 @@
 #endif
 
 #include <stdlib.h>
+#include <glib.h>
 
 #include "nm-utils/nm-macros-internal.h"
 
-#include "nm-version.h"
+#include <nm-version.h>
 
 #include <gtk/gtk.h>
 
 /*****************************************************************************/
 
-#if ((NETWORKMANAGER_COMPILATION) == NM_NETWORKMANAGER_COMPILATION_LIB) || ((NETWORKMANAGER_COMPILATION) == NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY)
-
-#include <glib/gi18n-lib.h>
-
+#if !((NETWORKMANAGER_COMPILATION) & NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY)
+#define LIBNM_BUILD 1
 #else
+#define LIBNM_BUILD 0
+#endif
 
+
+#if ((NETWORKMANAGER_COMPILATION) & NM_NETWORKMANAGER_COMPILATION_LIB) || ((NETWORKMANAGER_COMPILATION) & NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY)
+#include <glib/gi18n-lib.h>
+#else
 #include <glib/gi18n.h>
+#endif
 
-#endif /* NM_NETWORKMANAGER_COMPILATION_LIB || NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY */
+
+#if ((NETWORKMANAGER_COMPILATION) & NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY)
+#include <nm-connection.h>
+#else
+#include <NetworkManager.h>
+#endif /* NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY */
 
 /*****************************************************************************/
 

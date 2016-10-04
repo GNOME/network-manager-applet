@@ -24,7 +24,6 @@ libnma_la_CFLAGS = \
 	$(GTK_CFLAGS) \
 	$(LIBNM_CFLAGS) \
 	$(GUDEV_CFLAGS) \
-	-DLIBNM_BUILD \
 	-DICONDIR=\""$(datadir)/icons"\" \
 	-DUIDIR=\""$(uidir)"\" \
 	-DBINDIR=\""$(bindir)"\" \

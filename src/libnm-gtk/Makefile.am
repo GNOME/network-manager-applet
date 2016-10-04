@@ -28,7 +28,7 @@ libnm_gtk_la_CFLAGS = \
 	$(GTK_CFLAGS) \
 	$(LIBNM_GLIB_CFLAGS) \
 	$(GUDEV_CFLAGS) \
-	-DLIBNM_GLIB_BUILD \
+	-DNETWORKMANAGER_COMPILATION=NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY \
 	-DICONDIR=\""$(datadir)/icons"\" \
 	-DUIDIR=\""$(uidir)"\" \
 	-DBINDIR=\""$(bindir)"\" \
@@ -37,7 +37,6 @@ libnm_gtk_la_CFLAGS = \
 	-DDATADIR=\""$(datadir)"\" \
 	-DAUTOSTARTDIR=\""$(sysconfdir)/xdg/autostart"\" \
 	-DNMALOCALEDIR=\"$(datadir)/locale\" \
-	-DNETWORKMANAGER_COMPILATION=NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY \
 	"-I${top_srcdir}/shared/" \
 	-I${top_srcdir}/src/utils \
 	-I${top_srcdir}/src/wireless-security

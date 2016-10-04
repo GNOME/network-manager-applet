@@ -22,10 +22,10 @@
 
 #include "nm-default.h"
 
+#include "utils.h"
+
 #include <string.h>
 #include <netinet/ether.h>
-
-#include "utils.h"
 
 /*
  * utils_ether_addr_valid
@@ -64,7 +64,7 @@ utils_ether_addr_valid (const struct ether_addr *test_addr)
 
 char *
 utils_hash_ap (
-#ifdef LIBNM_BUILD
+#if LIBNM_BUILD
                GBytes *ssid,
 #else
                const GByteArray *ssid,
@@ -79,7 +79,7 @@ utils_hash_ap (
 	memset (&input[0], 0, sizeof (input));
 
 	if (ssid) {
-#ifdef LIBNM_BUILD
+#if LIBNM_BUILD
 		memcpy (input, g_bytes_get_data (ssid, NULL), g_bytes_get_size (ssid));
 #else
 		memcpy (input, ssid->data, ssid->len);

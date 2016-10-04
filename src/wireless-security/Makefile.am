@@ -38,7 +38,7 @@ libwireless_security_libnm_glib_la_SOURCES = \
 libwireless_security_libnm_glib_la_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	-DUIDIR=\""$(uidir)"\" \
-	-DLIBNM_GLIB_BUILD \
+	-DNETWORKMANAGER_COMPILATION=NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY \
 	$(LIBNM_GLIB_CFLAGS) \
 	"-I${top_srcdir}/shared/" \
 	-I${top_srcdir}/src/utils \
@@ -55,7 +55,6 @@ libwireless_security_libnm_la_SOURCES = \
 libwireless_security_libnm_la_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	-DUIDIR=\""$(uidir)"\" \
-	-DLIBNM_BUILD \
 	$(LIBNM_CFLAGS) \
 	"-I${top_srcdir}/shared/" \
 	-I${top_srcdir}/src/utils \

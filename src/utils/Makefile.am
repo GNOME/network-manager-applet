@@ -9,7 +9,7 @@ libutils_libnm_glib_la_SOURCES = \
 	utils.h
 
 libutils_libnm_glib_la_CPPFLAGS = \
-	-DLIBNM_GLIB_BUILD \
+	-DNETWORKMANAGER_COMPILATION=NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY \
 	$(GTK_CFLAGS) \
 	$(LIBNM_GLIB_CFLAGS) \
 	"-I${top_srcdir}/shared/"
@@ -23,7 +23,6 @@ libutils_libnm_la_SOURCES = \
 	utils.h
 
 libutils_libnm_la_CPPFLAGS = \
-	-DLIBNM_BUILD \
 	$(GTK_CFLAGS) \
 	$(LIBNM_CFLAGS) \
 	"-I${top_srcdir}/shared/"
