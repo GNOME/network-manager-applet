@@ -20,11 +20,14 @@
 
 #include "nm-default.h"
 
+#if NM_LIBNM_COMPAT_PROXY_SUPPORTED
+
+#include "page-proxy.h"
+
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
 
-#include "page-proxy.h"
 #include "nm-connection-editor.h"
 
 G_DEFINE_TYPE (CEPageProxy, ce_page_proxy, CE_TYPE_PAGE)
@@ -314,3 +317,5 @@ ce_page_proxy_class_init (CEPageProxyClass *proxy_class)
 	/* virtual methods */
 	parent_class->ce_page_validate_v = ce_page_validate_v;
 }
+
+#endif /* NM_LIBNM_COMPAT_PROXY_SUPPORTED */
