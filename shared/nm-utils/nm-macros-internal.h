@@ -26,7 +26,7 @@
 
 #include "nm-glib.h"
 
-/********************************************************/
+/*****************************************************************************/
 
 #define _nm_packed __attribute__ ((packed))
 #define _nm_unused __attribute__ ((unused))
@@ -51,7 +51,15 @@ _nm_auto_unset_gvalue_impl (GValue *v)
 }
 #define nm_auto_unset_gvalue nm_auto(_nm_auto_unset_gvalue_impl)
 
-/********************************************************/
+static inline void
+_nm_auto_free_gstring_impl (GString **str)
+{
+	if (*str)
+		g_string_free (*str, TRUE);
+}
+#define nm_auto_free_gstring nm_auto(_nm_auto_free_gstring_impl)
+
+/*****************************************************************************/
 
 /* http://stackoverflow.com/a/11172679 */
 #define  _NM_UTILS_MACRO_FIRST(...)                           __NM_UTILS_MACRO_FIRST_HELPER(__VA_ARGS__, throwaway)
@@ -70,7 +78,7 @@ _nm_auto_unset_gvalue_impl (GValue *v)
                 TWOORMORE, TWOORMORE, TWOORMORE, ONE, throwaway)
 #define __NM_UTILS_MACRO_REST_SELECT_20TH(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, ...) a20
 
-/********************************************************/
+/*****************************************************************************/
 
 /* http://stackoverflow.com/a/2124385/354393 */
 
@@ -95,7 +103,7 @@ _nm_auto_unset_gvalue_impl (GValue *v)
          19,18,17,16,15,14,13,12,11,10, \
          9,8,7,6,5,4,3,2,1,0
 
-/********************************************************/
+/*****************************************************************************/
 
 #if defined (__GNUC__)
 #define _NM_PRAGMA_WARNING_DO(warning)       G_STRINGIFY(GCC diagnostic ignored warning)
@@ -131,7 +139,7 @@ _nm_auto_unset_gvalue_impl (GValue *v)
 #define NM_PRAGMA_WARNING_REENABLE
 #endif
 
-/********************************************************/
+/*****************************************************************************/
 
 /**
  * NM_G_ERROR_MSG:
@@ -151,11 +159,16 @@ NM_G_ERROR_MSG (GError *error)
 	return error ? (error->message ? : "(null)") : "(no-error)"; \
 }
 
-/********************************************************/
+/*****************************************************************************/
 
 /* macro to return strlen() of a compile time string. */
 #define NM_STRLEN(str)     ( sizeof ("" str) - 1 )
 
+/* Note: @value is only evaluated when *out_val is present.
+ * Thus,
+ *    NM_SET_OUT (out_str, g_strdup ("hallo"));
+ * does the right thing.
+ */
 #define NM_SET_OUT(out_val, value) \
 	G_STMT_START { \
 		typeof(*(out_val)) *_out_val = (out_val); \
@@ -165,47 +178,26 @@ NM_G_ERROR_MSG (GError *error)
 		} \
 	} G_STMT_END
 
-/********************************************************/
+/*****************************************************************************/
 
-#define _NM_IN_SET_EVAL_1(op, _x, y1)                               \
-    (_x == (y1))
+#define _NM_IN_SET_EVAL_1( op, _x, y)           (_x == (y))
+#define _NM_IN_SET_EVAL_2( op, _x, y, ...)      (_x == (y)) op _NM_IN_SET_EVAL_1  (op, _x, __VA_ARGS__)
+#define _NM_IN_SET_EVAL_3( op, _x, y, ...)      (_x == (y)) op _NM_IN_SET_EVAL_2  (op, _x, __VA_ARGS__)
+#define _NM_IN_SET_EVAL_4( op, _x, y, ...)      (_x == (y)) op _NM_IN_SET_EVAL_3  (op, _x, __VA_ARGS__)
+#define _NM_IN_SET_EVAL_5( op, _x, y, ...)      (_x == (y)) op _NM_IN_SET_EVAL_4  (op, _x, __VA_ARGS__)
+#define _NM_IN_SET_EVAL_6( op, _x, y, ...)      (_x == (y)) op _NM_IN_SET_EVAL_5  (op, _x, __VA_ARGS__)
+#define _NM_IN_SET_EVAL_7( op, _x, y, ...)      (_x == (y)) op _NM_IN_SET_EVAL_6  (op, _x, __VA_ARGS__)
+#define _NM_IN_SET_EVAL_8( op, _x, y, ...)      (_x == (y)) op _NM_IN_SET_EVAL_7  (op, _x, __VA_ARGS__)
+#define _NM_IN_SET_EVAL_9( op, _x, y, ...)      (_x == (y)) op _NM_IN_SET_EVAL_8  (op, _x, __VA_ARGS__)
+#define _NM_IN_SET_EVAL_10(op, _x, y, ...)      (_x == (y)) op _NM_IN_SET_EVAL_9  (op, _x, __VA_ARGS__)
+#define _NM_IN_SET_EVAL_11(op, _x, y, ...)      (_x == (y)) op _NM_IN_SET_EVAL_10 (op, _x, __VA_ARGS__)
+#define _NM_IN_SET_EVAL_12(op, _x, y, ...)      (_x == (y)) op _NM_IN_SET_EVAL_11 (op, _x, __VA_ARGS__)
+#define _NM_IN_SET_EVAL_13(op, _x, y, ...)      (_x == (y)) op _NM_IN_SET_EVAL_12 (op, _x, __VA_ARGS__)
+#define _NM_IN_SET_EVAL_14(op, _x, y, ...)      (_x == (y)) op _NM_IN_SET_EVAL_13 (op, _x, __VA_ARGS__)
+#define _NM_IN_SET_EVAL_15(op, _x, y, ...)      (_x == (y)) op _NM_IN_SET_EVAL_14 (op, _x, __VA_ARGS__)
+#define _NM_IN_SET_EVAL_16(op, _x, y, ...)      (_x == (y)) op _NM_IN_SET_EVAL_15 (op, _x, __VA_ARGS__)
 
-#define _NM_IN_SET_EVAL_2(op, _x, y1, y2)                           \
-    (   (_x == (y1))                                                \
-     op (_x == (y2))                                                \
-    )
-
-#define _NM_IN_SET_EVAL_3(op, _x, y1, y2, y3)                       \
-    (   (_x == (y1))                                                \
-     op (_x == (y2))                                                \
-     op (_x == (y3))                                                \
-    )
-
-#define _NM_IN_SET_EVAL_4(op, _x, y1, y2, y3, y4)                   \
-    (   (_x == (y1))                                                \
-     op (_x == (y2))                                                \
-     op (_x == (y3))                                                \
-     op (_x == (y4))                                                \
-    )
-
-#define _NM_IN_SET_EVAL_5(op, _x, y1, y2, y3, y4, y5)               \
-    (   (_x == (y1))                                                \
-     op (_x == (y2))                                                \
-     op (_x == (y3))                                                \
-     op (_x == (y4))                                                \
-     op (_x == (y5))                                                \
-    )
-
-#define _NM_IN_SET_EVAL_6(op, _x, y1, y2, y3, y4, y5, y6)           \
-    (   (_x == (y1))                                                \
-     op (_x == (y2))                                                \
-     op (_x == (y3))                                                \
-     op (_x == (y4))                                                \
-     op (_x == (y5))                                                \
-     op (_x == (y6))                                                \
-    )
-
-#define _NM_IN_SET_EVAL_N2(op, _x, n, ...)        _NM_IN_SET_EVAL_##n(op, _x, __VA_ARGS__)
+#define _NM_IN_SET_EVAL_N2(op, _x, n, ...)      (_NM_IN_SET_EVAL_##n(op, _x, __VA_ARGS__))
 #define _NM_IN_SET_EVAL_N(op, x, n, ...)                            \
     ({                                                              \
         typeof(x) _x = (x);                                         \
@@ -222,7 +214,7 @@ NM_G_ERROR_MSG (GError *error)
  * side-effects. */
 #define NM_IN_SET_SE(x, ...)            _NM_IN_SET_EVAL_N(|, x, NM_NARG (__VA_ARGS__), __VA_ARGS__)
 
-/********************************************************/
+/*****************************************************************************/
 
 static inline gboolean
 _NM_IN_STRSET_streq (const char *x, const char *s)
@@ -230,45 +222,24 @@ _NM_IN_STRSET_streq (const char *x, const char *s)
 	return s && strcmp (x, s) == 0;
 }
 
-#define _NM_IN_STRSET_EVAL_1(op, _x, y1)                            \
-    _NM_IN_STRSET_streq (_x, y1)
+#define _NM_IN_STRSET_EVAL_1( op, _x, y)        _NM_IN_STRSET_streq (_x, y)
+#define _NM_IN_STRSET_EVAL_2( op, _x, y, ...)   _NM_IN_STRSET_streq (_x, y) op _NM_IN_STRSET_EVAL_1  (op, _x, __VA_ARGS__)
+#define _NM_IN_STRSET_EVAL_3( op, _x, y, ...)   _NM_IN_STRSET_streq (_x, y) op _NM_IN_STRSET_EVAL_2  (op, _x, __VA_ARGS__)
+#define _NM_IN_STRSET_EVAL_4( op, _x, y, ...)   _NM_IN_STRSET_streq (_x, y) op _NM_IN_STRSET_EVAL_3  (op, _x, __VA_ARGS__)
+#define _NM_IN_STRSET_EVAL_5( op, _x, y, ...)   _NM_IN_STRSET_streq (_x, y) op _NM_IN_STRSET_EVAL_4  (op, _x, __VA_ARGS__)
+#define _NM_IN_STRSET_EVAL_6( op, _x, y, ...)   _NM_IN_STRSET_streq (_x, y) op _NM_IN_STRSET_EVAL_5  (op, _x, __VA_ARGS__)
+#define _NM_IN_STRSET_EVAL_7( op, _x, y, ...)   _NM_IN_STRSET_streq (_x, y) op _NM_IN_STRSET_EVAL_6  (op, _x, __VA_ARGS__)
+#define _NM_IN_STRSET_EVAL_8( op, _x, y, ...)   _NM_IN_STRSET_streq (_x, y) op _NM_IN_STRSET_EVAL_7  (op, _x, __VA_ARGS__)
+#define _NM_IN_STRSET_EVAL_9( op, _x, y, ...)   _NM_IN_STRSET_streq (_x, y) op _NM_IN_STRSET_EVAL_8  (op, _x, __VA_ARGS__)
+#define _NM_IN_STRSET_EVAL_10(op, _x, y, ...)   _NM_IN_STRSET_streq (_x, y) op _NM_IN_STRSET_EVAL_9  (op, _x, __VA_ARGS__)
+#define _NM_IN_STRSET_EVAL_11(op, _x, y, ...)   _NM_IN_STRSET_streq (_x, y) op _NM_IN_STRSET_EVAL_10 (op, _x, __VA_ARGS__)
+#define _NM_IN_STRSET_EVAL_12(op, _x, y, ...)   _NM_IN_STRSET_streq (_x, y) op _NM_IN_STRSET_EVAL_11 (op, _x, __VA_ARGS__)
+#define _NM_IN_STRSET_EVAL_13(op, _x, y, ...)   _NM_IN_STRSET_streq (_x, y) op _NM_IN_STRSET_EVAL_12 (op, _x, __VA_ARGS__)
+#define _NM_IN_STRSET_EVAL_14(op, _x, y, ...)   _NM_IN_STRSET_streq (_x, y) op _NM_IN_STRSET_EVAL_13 (op, _x, __VA_ARGS__)
+#define _NM_IN_STRSET_EVAL_15(op, _x, y, ...)   _NM_IN_STRSET_streq (_x, y) op _NM_IN_STRSET_EVAL_14 (op, _x, __VA_ARGS__)
+#define _NM_IN_STRSET_EVAL_16(op, _x, y, ...)   _NM_IN_STRSET_streq (_x, y) op _NM_IN_STRSET_EVAL_15 (op, _x, __VA_ARGS__)
 
-#define _NM_IN_STRSET_EVAL_2(op, _x, y1, y2)                        \
-    (   _NM_IN_STRSET_streq (_x, y1)                                \
-     op _NM_IN_STRSET_streq (_x, y2)                                \
-    )
-
-#define _NM_IN_STRSET_EVAL_3(op, _x, y1, y2, y3)                    \
-    (   _NM_IN_STRSET_streq (_x, y1)                                \
-     op _NM_IN_STRSET_streq (_x, y2)                                \
-     op _NM_IN_STRSET_streq (_x, y3)                                \
-    )
-
-#define _NM_IN_STRSET_EVAL_4(op, _x, y1, y2, y3, y4)                \
-    (   _NM_IN_STRSET_streq (_x, y1)                                \
-     op _NM_IN_STRSET_streq (_x, y2)                                \
-     op _NM_IN_STRSET_streq (_x, y3)                                \
-     op _NM_IN_STRSET_streq (_x, y4)                                \
-    )
-
-#define _NM_IN_STRSET_EVAL_5(op, _x, y1, y2, y3, y4, y5)            \
-    (   _NM_IN_STRSET_streq (_x, y1)                                \
-     op _NM_IN_STRSET_streq (_x, y2)                                \
-     op _NM_IN_STRSET_streq (_x, y3)                                \
-     op _NM_IN_STRSET_streq (_x, y4)                                \
-     op _NM_IN_STRSET_streq (_x, y5)                                \
-    )
-
-#define _NM_IN_STRSET_EVAL_6(op, _x, y1, y2, y3, y4, y5, y6)        \
-    (   _NM_IN_STRSET_streq (_x, y1)                                \
-     op _NM_IN_STRSET_streq (_x, y2)                                \
-     op _NM_IN_STRSET_streq (_x, y3)                                \
-     op _NM_IN_STRSET_streq (_x, y4)                                \
-     op _NM_IN_STRSET_streq (_x, y5)                                \
-     op _NM_IN_STRSET_streq (_x, y6)                                \
-    )
-
-#define _NM_IN_STRSET_EVAL_N2(op, _x, n, ...) _NM_IN_STRSET_EVAL_##n(op, _x, __VA_ARGS__)
+#define _NM_IN_STRSET_EVAL_N2(op, _x, n, ...)   (_NM_IN_STRSET_EVAL_##n(op, _x, __VA_ARGS__))
 #define _NM_IN_STRSET_EVAL_N(op, x, n, ...)                       \
     ({                                                            \
         const char *_x = (x);                                     \
@@ -291,6 +262,22 @@ _NM_IN_STRSET_streq (const char *x, const char *s)
 
 #define nm_streq(s1, s2)  (strcmp (s1, s2) == 0)
 #define nm_streq0(s1, s2) (g_strcmp0 (s1, s2) == 0)
+
+/*****************************************************************************/
+
+#define nm_str_not_empty(str) \
+	({ \
+		/* implemented as macro to preserve constness */ \
+		typeof (str) __str = (str); \
+		_nm_unused const char *__str_type_check = __str; \
+		((__str && __str[0]) ? __str : ((char *) NULL)); \
+	})
+
+static inline char *
+nm_strdup_not_empty (const char *str)
+{
+	return str && str[0] ? g_strdup (str) : NULL;
+}
 
 /*****************************************************************************/
 
@@ -348,6 +335,24 @@ _notify (obj_type *obj, _PropertyEnums prop) \
 
 /*****************************************************************************/
 
+#define __NM_GET_PRIVATE(self, type, is_check, result_cmd) \
+	({ \
+		/* preserve the const-ness of self. Unfortunately, that
+		 * way, @self cannot be a void pointer */ \
+		typeof (self) _self = (self); \
+		\
+		/* Get compiler error if variable is of wrong type */ \
+		_nm_unused const type *_self2 = (_self); \
+		\
+		nm_assert (is_check (_self)); \
+		( result_cmd ); \
+	})
+
+#define _NM_GET_PRIVATE(self, type, is_check)     __NM_GET_PRIVATE(self, type, is_check, &_self->_priv)
+#define _NM_GET_PRIVATE_PTR(self, type, is_check) __NM_GET_PRIVATE(self, type, is_check,  _self->_priv)
+
+/*****************************************************************************/
+
 static inline gpointer
 nm_g_object_ref (gpointer obj)
 {
@@ -367,6 +372,27 @@ nm_g_object_unref (gpointer obj)
 	if (obj)
 		g_object_unref (obj);
 }
+
+/* basically, replaces
+ *   g_clear_pointer (&location, g_free)
+ * with
+ *   nm_clear_g_free (&location)
+ *
+ * Another advantage is that by using a macro and typeof(), it is more
+ * typesafe and gives you for example a compiler warning when pp is a const
+ * pointer or points to a const-pointer.
+ */
+#define nm_clear_g_free(pp) \
+	({  \
+		typeof (*(pp)) *_pp = (pp); \
+		typeof (**_pp) *_p = *_pp; \
+		\
+		if (_p) { \
+			*_pp = NULL; \
+			g_free (_p); \
+		} \
+		!!_p; \
+	})
 
 static inline gboolean
 nm_clear_g_source (guint *id)
@@ -516,6 +542,63 @@ nm_strcmp_p_with_data (gconstpointer a, gconstpointer b, gpointer user_data)
 	return strcmp (s1, s2);
 }
 
+static inline int
+nm_cmp_uint32_p_with_data (gconstpointer p_a, gconstpointer p_b, gpointer user_data)
+{
+	const guint32 a = *((const guint32 *) p_a);
+	const guint32 b = *((const guint32 *) p_b);
+
+	if (a < b)
+		return -1;
+	if (a > b)
+		return 1;
+	return 0;
+}
+
+/*****************************************************************************/
+
+/* Taken from systemd's UNIQ_T and UNIQ macros. */
+
+#define NM_UNIQ_T(x, uniq) G_PASTE(__unique_prefix_, G_PASTE(x, uniq))
+#define NM_UNIQ __COUNTER__
+
+/*****************************************************************************/
+
+/* glib's MIN()/MAX() macros don't have function-like behavior, in that they evaluate
+ * the argument possibly twice.
+ *
+ * Taken from systemd's MIN()/MAX() macros. */
+
+#define NM_MIN(a, b) __NM_MIN(NM_UNIQ, a, NM_UNIQ, b)
+#define __NM_MIN(aq, a, bq, b) \
+	({ \
+		typeof (a) NM_UNIQ_T(A, aq) = (a); \
+		typeof (b) NM_UNIQ_T(B, bq) = (b); \
+		((NM_UNIQ_T(A, aq) < NM_UNIQ_T(B, bq)) ? NM_UNIQ_T(A, aq) : NM_UNIQ_T(B, bq)); \
+	})
+
+#define NM_MAX(a, b) __NM_MAX(NM_UNIQ, a, NM_UNIQ, b)
+#define __NM_MAX(aq, a, bq, b) \
+	({ \
+		typeof (a) NM_UNIQ_T(A, aq) = (a); \
+		typeof (b) NM_UNIQ_T(B, bq) = (b); \
+		((NM_UNIQ_T(A, aq) > NM_UNIQ_T(B, bq)) ? NM_UNIQ_T(A, aq) : NM_UNIQ_T(B, bq)); \
+	})
+
+#define NM_CLAMP(x, low, high) __NM_CLAMP(NM_UNIQ, x, NM_UNIQ, low, NM_UNIQ, high)
+#define __NM_CLAMP(xq, x, lowq, low, highq, high) \
+	({ \
+		typeof(x)NM_UNIQ_T(X,xq) = (x); \
+		typeof(low) NM_UNIQ_T(LOW,lowq) = (low); \
+		typeof(high) NM_UNIQ_T(HIGH,highq) = (high); \
+		\
+		( (NM_UNIQ_T(X,xq) > NM_UNIQ_T(HIGH,highq)) \
+		  ? NM_UNIQ_T(HIGH,highq) \
+		  : (NM_UNIQ_T(X,xq) < NM_UNIQ_T(LOW,lowq)) \
+		     ? NM_UNIQ_T(LOW,lowq) \
+		     : NM_UNIQ_T(X,xq)); \
+	})
+
 /*****************************************************************************/
 
 static inline guint
@@ -531,6 +614,35 @@ nm_decode_version (guint version, guint *major, guint *minor, guint *micro) {
 	*micro = (version & 0x000000FFu);
 }
 /*****************************************************************************/
+
+/* if @str is NULL, return "(null)". Otherwise, allocate a buffer using
+ * alloca() of size @bufsize and fill it with @str. @str will be quoted with
+ * single quote, and in case @str is too long, the final quote will be '^'. */
+#define nm_strquote_a(bufsize, str) \
+	({ \
+		G_STATIC_ASSERT ((bufsize) >= 6); \
+		const gsize _BUFSIZE = (bufsize); \
+		const char *const _s = (str); \
+		char *_r; \
+		gsize _l; \
+		gboolean _truncated; \
+		\
+		nm_assert (_BUFSIZE >= 6); \
+		\
+		if (_s) { \
+			_l = strlen (_s) + 3; \
+			if ((_truncated = (_BUFSIZE < _l))) \
+				_l = _BUFSIZE; \
+			\
+			_r = g_alloca (_l); \
+			_r[0] = '\''; \
+			memcpy (&_r[1], _s, _l - 3); \
+			_r[_l - 2] = _truncated ? '^' : '\''; \
+			_r[_l - 1] = '\0'; \
+		} else \
+			_r = "(null)"; \
+		_r; \
+	})
 
 #define nm_sprintf_buf(buf, format, ...) ({ \
 		char * _buf = (buf); \
