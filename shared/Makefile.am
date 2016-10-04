@@ -7,4 +7,5 @@ EXTRA_DIST = \
      nm-utils/nm-test-utils.h \
      nm-utils/nm-vpn-editor-plugin-call.h \
      nm-default.h \
+     nm-libnm-compat.h \
      $(NULL)
