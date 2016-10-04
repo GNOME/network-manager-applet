@@ -84,5 +84,29 @@ void utils_fake_return_key (GdkEventKey *event);
 void widget_set_error   (GtkWidget *widget);
 void widget_unset_error (GtkWidget *widget);
 
+gboolean utils_tree_model_get_int64 (GtkTreeModel *model,
+                                     GtkTreeIter *iter,
+                                     int column,
+                                     gint64 min_value,
+                                     gint64 max_value,
+                                     gboolean fail_if_missing,
+                                     gint64 *out,
+                                     char **out_raw);
+
+gboolean utils_tree_model_get_address (GtkTreeModel *model,
+                                       GtkTreeIter *iter,
+                                       int column,
+                                       int family,
+                                       gboolean fail_if_missing,
+                                       char **out,
+                                       char **out_raw);
+
+gboolean utils_tree_model_get_ip4_prefix (GtkTreeModel *model,
+                                          GtkTreeIter *iter,
+                                          int column,
+                                          gboolean fail_if_missing,
+                                          guint32 *out,
+                                          char **out_raw);
+
 #endif /* UTILS_H */
 
