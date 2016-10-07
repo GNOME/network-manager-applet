@@ -180,12 +180,12 @@ connection_editor_validate (NMConnectionEditor *editor)
 {
 	NMSettingConnection *s_con;
 	GSList *iter;
-	char *validation_error = NULL;
+	gs_free char *validation_error = NULL;
 	GError *error = NULL;
 
 	if (!editor_is_initialized (editor)) {
 		validation_error = g_strdup (_("Editor initializing…"));
-		goto done;
+		goto done_silent;
 	}
 
 	s_con = nm_connection_get_setting_connection (editor->connection);
@@ -221,12 +221,12 @@ done:
 		g_free (editor->last_validation_error);
 		editor->last_validation_error = g_strdup (validation_error);
 	}
+
+done_silent:
 	ce_polkit_button_set_validation_error (CE_POLKIT_BUTTON (editor->ok_button), validation_error);
 	gtk_widget_set_sensitive (editor->export_button, !validation_error);
 
 	update_sensitivity (editor);
-
-	g_free (validation_error);
 }
 
 static void
