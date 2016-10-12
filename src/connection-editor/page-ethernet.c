@@ -205,11 +205,11 @@ populate_ui (CEPageEthernet *self)
 		gtk_toggle_button_set_active (priv->duplex, TRUE);
 
 	/* Autonegotiate */
-	gtk_toggle_button_set_active (priv->autonegotiate, 
+	gtk_toggle_button_set_active (priv->autonegotiate,
 	                              nm_setting_wired_get_auto_negotiate (setting));
 
 	/* Device ifname/MAC */
-        s_ifname = nm_connection_get_interface_name (CE_PAGE (self)->connection);
+	s_ifname = nm_connection_get_interface_name (CE_PAGE (self)->connection);
 	s_mac = nm_setting_wired_get_mac_address (setting);
 	ce_page_setup_device_combo (CE_PAGE (self), GTK_COMBO_BOX (priv->device_combo),
 	                            NM_TYPE_DEVICE_ETHERNET, s_ifname,
