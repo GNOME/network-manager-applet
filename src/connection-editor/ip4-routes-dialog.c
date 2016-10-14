@@ -47,121 +47,6 @@ static char *last_edited = NULL; /* cell text */
 static char *last_path = NULL;   /* row in treeview */
 static int last_column = -1;     /* column in treeview */
 
-static gboolean
-get_one_int (GtkTreeModel *model,
-             GtkTreeIter *iter,
-             int column,
-             guint32 max_value,
-             gboolean fail_if_missing,
-             guint32 *out,
-             char **out_raw)
-{
-	char *item = NULL;
-	gboolean success = FALSE;
-	long int tmp_int;
-
-	gtk_tree_model_get (model, iter, column, &item, -1);
-	if (out_raw)
-		*out_raw = item;
-	if (!item || !strlen (item)) {
-		if (!out_raw)
-			g_free (item);
-		return fail_if_missing ? FALSE : TRUE;
-	}
-
-	errno = 0;
-	tmp_int = strtol (item, NULL, 10);
-	if (errno || tmp_int < 0 || tmp_int > max_value)
-		goto out;
-
-	*out = (guint32) tmp_int;
-	success = TRUE;
-
-out:
-	if (!out_raw)
-		g_free (item);
-	return success;
-}
-
-static gboolean
-get_one_prefix (GtkTreeModel *model,
-                GtkTreeIter *iter,
-                int column,
-                gboolean fail_if_missing,
-                guint32 *out,
-                char **out_raw)
-{
-	char *item = NULL;
-	struct in_addr tmp_addr = { 0 };
-	gboolean success = FALSE;
-	glong tmp_prefix;
-
-	gtk_tree_model_get (model, iter, column, &item, -1);
-	if (out_raw)
-		*out_raw = item;
-	if (!item || !strlen (item)) {
-		if (!out_raw)
-			g_free (item);
-		return fail_if_missing ? FALSE : TRUE;
-	}
-
-	errno = 0;
-
-	/* Is it a prefix? */
-	if (!strchr (item, '.')) {
-		tmp_prefix = strtol (item, NULL, 10);
-		if (!errno && tmp_prefix >= 0 && tmp_prefix <= 32) {
-			*out = tmp_prefix;
-			success = TRUE;
-			goto out;
-		}
-	}
-
-	/* Is it a netmask? */
-	if (inet_pton (AF_INET, item, &tmp_addr) > 0) {
-		*out = nm_utils_ip4_netmask_to_prefix (tmp_addr.s_addr);
-		success = TRUE;
-	}
-
-out:
-	if (!out_raw)
-		g_free (item);
-	return success;
-}
-
-static gboolean
-get_one_addr (GtkTreeModel *model,
-              GtkTreeIter *iter,
-              int column,
-              gboolean fail_if_missing,
-              char **out,
-              char **out_raw)
-{
-	char *item = NULL;
-	struct in_addr tmp_addr = { 0 };
-
-	gtk_tree_model_get (model, iter, column, &item, -1);
-	if (out_raw)
-		*out_raw = item;
-	if (!item || !strlen (item)) {
-		if (!out_raw)
-			g_free (item);
-		return fail_if_missing ? FALSE : TRUE;
-	}
-
-	if (inet_pton (AF_INET, item, &tmp_addr) == 0)
-		return FALSE;
-
-	if (tmp_addr.s_addr == 0) {
-		if (!out_raw)
-			g_free (item);
-		return fail_if_missing ? FALSE : TRUE;
-	}
-
-	*out = item;
-	return TRUE;
-}
-
 static void
 validate (GtkWidget *dialog)
 {
@@ -183,27 +68,28 @@ validate (GtkWidget *dialog)
 
 	while (iter_valid) {
 		char *addr = NULL, *next_hop = NULL;
-		guint32 prefix = 0, metric = 0;
+		guint32 prefix = 0;
+		gint64 metric = -1;
 
 		/* Address */
-		if (!get_one_addr (model, &tree_iter, COL_ADDRESS, TRUE, &addr, NULL))
+		if (!utils_tree_model_get_address (model, &tree_iter, COL_ADDRESS, AF_INET, TRUE, &addr, NULL))
 			goto done;
 		g_free (addr);
 
 		/* Prefix */
-		if (!get_one_prefix (model, &tree_iter, COL_PREFIX, TRUE, &prefix, NULL))
+		if (!utils_tree_model_get_ip4_prefix (model, &tree_iter, COL_PREFIX, TRUE, &prefix, NULL))
 			goto done;
 		/* Don't allow zero prefix for now - that's not supported in libnm-util */
 		if (prefix == 0)
 			goto done;
 
 		/* Next hop (optional) */
-		if (!get_one_addr (model, &tree_iter, COL_NEXT_HOP, FALSE, &next_hop, NULL))
+		if (!utils_tree_model_get_address (model, &tree_iter, COL_NEXT_HOP, AF_INET, FALSE, &next_hop, NULL))
 			goto done;
 		g_free (next_hop);
 
 		/* Metric (optional) */
-		if (!get_one_int (model, &tree_iter, COL_METRIC, G_MAXUINT32, FALSE, &metric, NULL))
+		if (!utils_tree_model_get_int64 (model, &tree_iter, COL_METRIC, 0, G_MAXUINT32, FALSE, &metric, NULL))
 			goto done;
 
 		iter_valid = gtk_tree_model_iter_next (model, &tree_iter);
@@ -690,19 +576,20 @@ cell_error_data_func (GtkTreeViewColumn *tree_column,
 	guint32 col = GPOINTER_TO_UINT (data);
 	char *value = NULL;
 	char *addr, *next_hop;
-	guint32 prefix, metric;
+	guint32 prefix;
+	gint64 metric;
 	const char *color = "red";
 	gboolean invalid = FALSE;
 
 	if (col == COL_ADDRESS)
-		invalid = !get_one_addr (tree_model, iter, COL_ADDRESS, TRUE, &addr, &value);
+		invalid = !utils_tree_model_get_address (tree_model, iter, COL_ADDRESS, AF_INET, TRUE, &addr, &value);
 	else if (col == COL_PREFIX)
-		invalid =    !get_one_prefix (tree_model, iter, COL_PREFIX, TRUE, &prefix, &value)
+		invalid =    !utils_tree_model_get_ip4_prefix (tree_model, iter, COL_PREFIX, TRUE, &prefix, &value)
 		          || prefix == 0;
 	else if (col == COL_NEXT_HOP)
-		invalid = !get_one_addr (tree_model, iter, COL_NEXT_HOP, FALSE, &next_hop, &value);
+		invalid = !utils_tree_model_get_address (tree_model, iter, COL_NEXT_HOP, AF_INET, FALSE, &next_hop, &value);
 	else if (col == COL_METRIC)
-		invalid = !get_one_int (tree_model, iter, COL_METRIC, G_MAXUINT32, FALSE, &metric, &value);
+		invalid = !utils_tree_model_get_int64 (tree_model, iter, COL_METRIC, 0, G_MAXUINT32, FALSE, &metric, &value);
 	else
 		g_warn_if_reached ();
 
@@ -764,6 +651,7 @@ ip4_routes_dialog_new (NMSettingIPConfig *s_ip4, gboolean automatic)
 		NMIPRoute *route = nm_setting_ip_config_get_route (s_ip4, i);
 		struct in_addr tmp_addr;
 		char netmask[INET_ADDRSTRLEN], metric[32];
+		gint64 metric_int;
 
 		if (!route) {
 			g_warning ("%s: empty IP4 route structure!", __func__);
@@ -774,9 +662,14 @@ ip4_routes_dialog_new (NMSettingIPConfig *s_ip4, gboolean automatic)
 		if (!inet_ntop (AF_INET, &tmp_addr, netmask, sizeof (netmask)))
 			*netmask = '\0';
 
-		/* FIXME */
-		g_snprintf (metric, sizeof (metric), "%u",
-		            (guint32) MIN (0, nm_ip_route_get_metric (route)));
+		metric_int = nm_ip_route_get_metric (route);
+		if (metric_int >= 0 && metric_int <= G_MAXUINT32)
+			g_snprintf (metric, sizeof (metric), "%lu", (unsigned long) metric_int);
+		else {
+			if (metric_int != -1)
+				g_warning ("invalid metric %lld", (long long int) metric_int);
+			metric[0] = 0;
+		}
 
 		gtk_list_store_append (store, &model_iter);
 		gtk_list_store_set (store, &model_iter,
@@ -922,31 +815,32 @@ ip4_routes_dialog_update_setting (GtkWidget *dialog, NMSettingIPConfig *s_ip4)
 
 	while (iter_valid) {
 		char *addr = NULL, *next_hop = NULL;
-		guint32 prefix = 0, metric = 0;
+		guint32 prefix = 0;
+		gint64 metric = -1;
 		NMIPRoute *route;
 
 		/* Address */
-		if (!get_one_addr (model, &tree_iter, COL_ADDRESS, TRUE, &addr, NULL)) {
+		if (!utils_tree_model_get_address (model, &tree_iter, COL_ADDRESS, AF_INET, TRUE, &addr, NULL)) {
 			g_warning ("%s: IPv4 address missing or invalid!", __func__);
 			goto next;
 		}
 
 		/* Prefix */
-		if (!get_one_prefix (model, &tree_iter, COL_PREFIX, TRUE, &prefix, NULL)) {
+		if (!utils_tree_model_get_ip4_prefix (model, &tree_iter, COL_PREFIX, TRUE, &prefix, NULL)) {
 			g_warning ("%s: IPv4 prefix/netmask missing or invalid!", __func__);
 			g_free (addr);
 			goto next;
 		}
 
 		/* Next hop (optional) */
-		if (!get_one_addr (model, &tree_iter, COL_NEXT_HOP, FALSE, &next_hop, NULL)) {
+		if (!utils_tree_model_get_address (model, &tree_iter, COL_NEXT_HOP, AF_INET, FALSE, &next_hop, NULL)) {
 			g_warning ("%s: IPv4 next hop invalid!", __func__);
 			g_free (addr);
 			goto next;
 		}
 
 		/* Metric (optional) */
-		if (!get_one_int (model, &tree_iter, COL_METRIC, G_MAXUINT32, FALSE, &metric, NULL)) {
+		if (!utils_tree_model_get_int64 (model, &tree_iter, COL_METRIC, 0, G_MAXUINT32, FALSE, &metric, NULL)) {
 			g_warning ("%s: IPv4 metric invalid!", __func__);
 			g_free (addr);
 			g_free (next_hop);

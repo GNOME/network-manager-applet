@@ -25,7 +25,12 @@
 #include "utils.h"
 
 #include <string.h>
+#include <errno.h>
+#include <arpa/inet.h>
 #include <netinet/ether.h>
+
+#include "nm-utils.h"
+#include "nm-utils/nm-shared-utils.h"
 
 /*
  * utils_ether_addr_valid
@@ -384,4 +389,133 @@ widget_unset_error (GtkWidget *widget)
 	g_return_if_fail (GTK_IS_WIDGET (widget));
 
 	gtk_style_context_remove_class (gtk_widget_get_style_context (widget), "error");
+}
+
+gboolean
+utils_tree_model_get_int64 (GtkTreeModel *model,
+                            GtkTreeIter *iter,
+                            int column,
+                            gint64 min_value,
+                            gint64 max_value,
+                            gboolean fail_if_missing,
+                            gint64 *out,
+                            char **out_raw)
+{
+	char *item = NULL;
+	gboolean success = FALSE;
+	gint64 val;
+
+	g_return_val_if_fail (model, FALSE);
+	g_return_val_if_fail (iter, FALSE);
+
+	gtk_tree_model_get (model, iter, column, &item, -1);
+	if (out_raw)
+		*out_raw = item;
+	if (!item || !strlen (item)) {
+		if (!out_raw)
+			g_free (item);
+		return fail_if_missing ? FALSE : TRUE;
+	}
+
+	val = _nm_utils_ascii_str_to_int64 (item, 10, min_value, max_value, 0);
+	if (errno)
+		goto out;
+
+	*out = val;
+	success = TRUE;
+out:
+	if (!out_raw)
+		g_free (item);
+	return success;
+}
+
+gboolean
+utils_tree_model_get_address (GtkTreeModel *model,
+                              GtkTreeIter *iter,
+                              int column,
+                              int family,
+                              gboolean fail_if_missing,
+                              char **out,
+                              char **out_raw)
+{
+	char *item = NULL;
+	union {
+		struct in_addr addr4;
+		struct in6_addr addr6;
+	} tmp_addr;
+
+	g_return_val_if_fail (model, FALSE);
+	g_return_val_if_fail (iter, FALSE);
+	g_return_val_if_fail (family == AF_INET || family == AF_INET6, FALSE);
+
+	gtk_tree_model_get (model, iter, column, &item, -1);
+	if (out_raw)
+		*out_raw = item;
+	if (!item || !strlen (item)) {
+		if (!out_raw)
+			g_free (item);
+		return fail_if_missing ? FALSE : TRUE;
+	}
+
+	if (inet_pton (family, item, &tmp_addr) == 0)
+		return FALSE;
+
+	if (   (family == AF_INET && tmp_addr.addr4.s_addr == 0)
+	    || (family == AF_INET6 && IN6_IS_ADDR_UNSPECIFIED (&tmp_addr.addr6))) {
+		if (!out_raw)
+			g_free (item);
+		return fail_if_missing ? FALSE : TRUE;
+	}
+
+	*out = item;
+	return TRUE;
+}
+
+gboolean
+utils_tree_model_get_ip4_prefix (GtkTreeModel *model,
+                                 GtkTreeIter *iter,
+                                 int column,
+                                 gboolean fail_if_missing,
+                                 guint32 *out,
+                                 char **out_raw)
+{
+	char *item = NULL;
+	struct in_addr tmp_addr = { 0 };
+	gboolean success = FALSE;
+	glong tmp_prefix;
+
+	g_return_val_if_fail (model, FALSE);
+	g_return_val_if_fail (iter, FALSE);
+
+	gtk_tree_model_get (model, iter, column, &item, -1);
+	if (out_raw)
+		*out_raw = item;
+	if (!item || !strlen (item)) {
+		if (!out_raw)
+			g_free (item);
+		return fail_if_missing ? FALSE : TRUE;
+	}
+
+	errno = 0;
+
+	/* Is it a prefix? */
+	if (!strchr (item, '.')) {
+		tmp_prefix = strtol (item, NULL, 10);
+		if (!errno && tmp_prefix >= 0 && tmp_prefix <= 32) {
+			*out = tmp_prefix;
+			success = TRUE;
+			goto out;
+		}
+	}
+
+	/* Is it a netmask? */
+	if (inet_pton (AF_INET, item, &tmp_addr) > 0) {
+		*out = nm_utils_ip4_netmask_to_prefix (tmp_addr.s_addr);
+		success = TRUE;
+	}
+
+out:
+	if (!out_raw)
+		g_free (item);
+	return success;
 }
