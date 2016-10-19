@@ -67,8 +67,8 @@ handle_arguments (NMConnectionList *list,
                   gboolean quit_after)
 {
 	gboolean show_list = TRUE;
-	GType ctype;
-	char *type_tmp = NULL;
+	GType ctype = 0;
+	gs_free char *type_tmp = NULL;
 	const char *p, *detail = NULL;
 
 	if (type) {
@@ -77,36 +77,29 @@ handle_arguments (NMConnectionList *list,
 			type = type_tmp = g_strndup (type, p - type);
 			detail = p + 1;
 		}
-	} else
-		type = NM_SETTING_WIRED_SETTING_NAME;
-
-	/* Grab type to create or show */
-	ctype = nm_setting_lookup_type (type);
-	if (ctype == 0) {
-		g_warning ("Unknown connection type '%s'", type);
-		g_free (type_tmp);
-		return TRUE;
+		ctype = nm_setting_lookup_type (type);
+		if (ctype == 0) {
+			g_warning ("Unknown connection type '%s'", type);
+			return TRUE;
+		}
 	}
 
 	if (show) {
 		/* Just show the given connection type page */
 		nm_connection_list_set_type (list, ctype);
 	} else if (create) {
-		if (!type) {
-			g_warning ("'create' requested but no connection type given.");
-			g_free (type_tmp);
-			return TRUE;
+		if (!ctype)
+			nm_connection_list_add (list);
+		else {
+			/* If type is "vpn" and the user cancels the "vpn type" dialog, we need
+			 * to quit. But we haven't even started yet. So postpone this to an idle.
+			 */
+			g_idle_add (idle_create_connection, list);
+			g_object_set_data (G_OBJECT (list), "nm-connection-editor-ctype",
+			                   GSIZE_TO_POINTER (ctype));
+			g_object_set_data_full (G_OBJECT (list), "nm-connection-editor-detail",
+			                        g_strdup (detail), g_free);
 		}
-
-		/* If type is "vpn" and the user cancels the "vpn type" dialog, we need
-		 * to quit. But we haven't even started yet. So postpone this to an idle.
-		 */
-		g_idle_add (idle_create_connection, list);
-		g_object_set_data (G_OBJECT (list), "nm-connection-editor-ctype",
-		                   GSIZE_TO_POINTER (ctype));
-		g_object_set_data_full (G_OBJECT (list), "nm-connection-editor-detail",
-		                        g_strdup (detail), g_free);
-
 		show_list = FALSE;
 	} else if (edit_uuid) {
 		/* Show the edit dialog for the given UUID */
@@ -118,7 +111,6 @@ handle_arguments (NMConnectionList *list,
 	if (show_list == FALSE && quit_after == TRUE)
 		g_signal_connect_swapped (list, "editing-done", G_CALLBACK (g_main_loop_quit), loop);
 
-	g_free (type_tmp);
 	return show_list;
 }
 

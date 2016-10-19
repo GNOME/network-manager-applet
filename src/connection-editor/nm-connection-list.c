@@ -296,7 +296,13 @@ really_add_connection (NMConnection *connection,
 static void
 add_clicked (GtkButton *button, gpointer user_data)
 {
-	NMConnectionList *list = user_data;
+	nm_connection_list_add (user_data);
+}
+
+void
+nm_connection_list_add (NMConnectionList *list)
+{
+	g_return_if_fail (NM_IS_CONNECTION_LIST (list));
 
 	new_connection_dialog (GTK_WINDOW (list->dialog),
 	                       list->client,
