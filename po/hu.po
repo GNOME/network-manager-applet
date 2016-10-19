@@ -11,16 +11,16 @@ msgstr ""
 "Project-Id-Version: network-manager-applet master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2016-10-03 19:13+0000\n"
-"PO-Revision-Date: 2016-10-04 12:54+0200\n"
-"Last-Translator: Meskó Balázs <meskobalazs@gmail.com>\n"
-"Language-Team: Hungarian <openscope at gmail dot com>\n"
+"POT-Creation-Date: 2016-10-14 17:59+0000\n"
+"PO-Revision-Date: 2016-10-19 05:25+0200\n"
+"Last-Translator: Gabor Kelemen <kelemeng at ubuntu dot com>\n"
+"Language-Team: Hungarian <openscope at googlegroups dot com>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.8\n"
+"X-Generator: Lokalize 1.5\n"
 
 #: ../nm-applet.desktop.in.h:1 ../src/applet.c:3119
 msgid "Network"
@@ -159,6 +159,45 @@ msgstr ""
 msgid "The NetworkManager Developers"
 msgstr "A Hálózatkezelő fejlesztői"
 
+#: ../shared/nm-utils/nm-shared-utils.c:185
+#, c-format
+msgid "object class '%s' has no property named '%s'"
+msgstr "a(z) „%s” objektumosztálynak nincs „%s” nevű tulajdonsága"
+
+#: ../shared/nm-utils/nm-shared-utils.c:192
+#, c-format
+msgid "property '%s' of object class '%s' is not writable"
+msgstr "„%2$s” osztály „%1$s” tulajdonsága nem írható"
+
+#: ../shared/nm-utils/nm-shared-utils.c:199
+#, c-format
+msgid ""
+"construct property \"%s\" for object '%s' can't be set after construction"
+msgstr ""
+"„%2$s” objektum „%1$s” konstuktortulajdonsága nem állítható be a létrehozás "
+"után"
+
+#: ../shared/nm-utils/nm-shared-utils.c:207
+#, c-format
+msgid "'%s::%s' is not a valid property name; '%s' is not a GObject subtype"
+msgstr "„%s::%s” nem érvényes tulajdonságnév, „%s” nem egy GObject résztípus"
+
+#: ../shared/nm-utils/nm-shared-utils.c:216
+#, c-format
+msgid "unable to set property '%s' of type '%s' from value of type '%s'"
+msgstr ""
+"nem állítható be „%2$s” típusú „%1$s” tulajdonság „%3$s” típusú értékre"
+
+#: ../shared/nm-utils/nm-shared-utils.c:227
+#, c-format
+msgid ""
+"value \"%s\" of type '%s' is invalid or out of range for property '%s' of "
+"type '%s'"
+msgstr ""
+"a(z) „%2$s” típusú „%1$s” érték érvénytelen vagy kívül esik a tartományon „%"
+"4$s” típusú „%3$s” tulajdonsághoz"
+
+#. ***************************************************************************
 #: ../src/8021x.ui.h:1 ../src/ethernet-dialog.c:99
 msgid "802.1X authentication"
 msgstr "802.1X hitelesítés"
@@ -2664,31 +2703,31 @@ msgstr "A kapcsolat törlése meghiúsult"
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Valóban törölni kívánja a(z) %s kapcsolatot?"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:804
-#: ../src/connection-editor/ip6-routes-dialog.c:746
+#: ../src/connection-editor/ip4-routes-dialog.c:697
+#: ../src/connection-editor/ip6-routes-dialog.c:718
 #: ../src/connection-editor/page-ip4.c:1136
 #: ../src/connection-editor/page-ip6.c:1090
 msgid "Address"
 msgstr "Cím"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:823
+#: ../src/connection-editor/ip4-routes-dialog.c:716
 #: ../src/connection-editor/page-ip4.c:1155
 msgid "Netmask"
 msgstr "Hálózati maszk"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:842
-#: ../src/connection-editor/ip6-routes-dialog.c:784
+#: ../src/connection-editor/ip4-routes-dialog.c:735
+#: ../src/connection-editor/ip6-routes-dialog.c:756
 #: ../src/connection-editor/page-ip4.c:1174
 #: ../src/connection-editor/page-ip6.c:1128
 msgid "Gateway"
 msgstr "Átjáró"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:861
-#: ../src/connection-editor/ip6-routes-dialog.c:803
+#: ../src/connection-editor/ip4-routes-dialog.c:754
+#: ../src/connection-editor/ip6-routes-dialog.c:775
 msgid "Metric"
 msgstr "Metrika"
 
-#: ../src/connection-editor/ip6-routes-dialog.c:765
+#: ../src/connection-editor/ip6-routes-dialog.c:737
 #: ../src/connection-editor/page-ip6.c:1109
 msgid "Prefix"
 msgstr "Előtag"
@@ -4005,7 +4044,7 @@ msgid "roaming"
 msgstr "barangoló"
 
 #. The %s is a mobile provider name, eg "T-Mobile"
-#: ../src/utils/utils.c:179
+#: ../src/utils/utils.c:184
 #, c-format
 msgid "%s connection"
 msgstr "%s kapcsolat"
@@ -4022,11 +4061,11 @@ msgstr "nincs fájl kiválasztva"
 msgid "unspecified error validating eap-method file"
 msgstr "meghatározatlan hiba az eap-method fájl ellenőrzése közben"
 
-#: ../src/wireless-security/eap-method.c:468
+#: ../src/wireless-security/eap-method.c:439
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "DER, PEM vagy PKCS#12 személyes kulcsok (*.der, *.pem, *.p12, *.key)"
 
-#: ../src/wireless-security/eap-method.c:471
+#: ../src/wireless-security/eap-method.c:442
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
 msgstr "DER vagy PEM tanúsítványok (*.der, *.pem, *.crt, *.cer)"
 
