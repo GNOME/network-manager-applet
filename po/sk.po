@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2016-10-12 14:53+0000\n"
-"PO-Revision-Date: 2016-10-12 20:44+0200\n"
+"POT-Creation-Date: 2016-10-14 17:59+0000\n"
+"PO-Revision-Date: 2016-10-22 11:38+0200\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
 "Language: sk\n"
@@ -176,7 +176,41 @@ msgstr ""
 msgid "The NetworkManager Developers"
 msgstr "Vývojári správcu siete NetworkManager"
 
+#: ../shared/nm-utils/nm-shared-utils.c:185
+#, c-format
+msgid "object class '%s' has no property named '%s'"
+msgstr ""
+
+#: ../shared/nm-utils/nm-shared-utils.c:192
+#, c-format
+msgid "property '%s' of object class '%s' is not writable"
+msgstr ""
+
+#: ../shared/nm-utils/nm-shared-utils.c:199
+#, c-format
+msgid ""
+"construct property \"%s\" for object '%s' can't be set after construction"
+msgstr ""
+
+#: ../shared/nm-utils/nm-shared-utils.c:207
+#, c-format
+msgid "'%s::%s' is not a valid property name; '%s' is not a GObject subtype"
+msgstr ""
+
+#: ../shared/nm-utils/nm-shared-utils.c:216
+#, c-format
+msgid "unable to set property '%s' of type '%s' from value of type '%s'"
+msgstr ""
+
+#: ../shared/nm-utils/nm-shared-utils.c:227
+#, c-format
+msgid ""
+"value \"%s\" of type '%s' is invalid or out of range for property '%s' of "
+"type '%s'"
+msgstr ""
+
 # GtkDialog title
+#. ***************************************************************************
 #: ../src/8021x.ui.h:1 ../src/ethernet-dialog.c:99
 msgid "802.1X authentication"
 msgstr "Overenie totožnosti protokolom 802.1X"
@@ -576,10 +610,8 @@ msgstr "Dostupné"
 
 #. Default connection item
 #: ../src/applet-device-broadband.c:801
-#, fuzzy
-#| msgid "New Mobile Broadband Connection"
 msgid "New Mobile Broadband connection…"
-msgstr "Nové mobilné pripojenie"
+msgstr "Nové mobilné pripojenie…"
 
 #: ../src/applet-device-broadband.c:815 ../src/applet-device-bt.c:87
 #: ../src/applet-device-ethernet.c:132 ../src/applet-device-wifi.c:1365
@@ -665,8 +697,7 @@ msgid "Configuring ethernet network connection “%s”…"
 msgstr "Nastavuje sa sieťové pripojenie ethernet „%s“…"
 
 #: ../src/applet-device-ethernet.c:167
-#, fuzzy, c-format
-#| msgid "User authentication required for ethernet network connection '%s'..."
+#, c-format
 msgid "User authentication required for ethernet network connection “%s”…"
 msgstr ""
 "Pripojenie k sieti ethernet „%s“ vyžaduje overenie totožnosti používateľa…"
@@ -687,17 +718,13 @@ msgstr "Overenie totožnosti k DSL"
 
 # dialog title
 #: ../src/applet-device-wifi.c:230
-#, fuzzy
-#| msgid "Connect to Hidden Wi-Fi Network"
 msgid "_Connect to Hidden Wi-Fi Network…"
-msgstr "Pripojenie k skrytej sieti Wi-Fi"
+msgstr "_Pripojiť k skrytej sieti Wi-Fi…"
 
 #  window title
 #: ../src/applet-device-wifi.c:281
-#, fuzzy
-#| msgid "Create New Wi-Fi Network"
 msgid "Create _New Wi-Fi Network…"
-msgstr "Vytvorenie novej siete Wi-Fi"
+msgstr "Vytvoriť _novú sieť Wi-Fi…"
 
 # ssid
 #: ../src/applet-device-wifi.c:431
@@ -1016,10 +1043,7 @@ msgstr "Vyžaduje sa kód PIN na odomknutie SIM"
 
 #. FIXME: some warning about # of times you can enter incorrect PIN
 #: ../src/applet-dialogs.c:1340
-#, fuzzy, c-format
-#| msgid ""
-#| "The mobile broadband device '%s' requires a SIM PIN code before it can be "
-#| "used."
+#, c-format
 msgid ""
 "The mobile broadband device “%s” requires a SIM PIN code before it can be "
 "used."
@@ -1049,10 +1073,7 @@ msgstr "Vyžaduje sa kód PUK na odomknutie SIM"
 
 #. FIXME: some warning about # of times you can enter incorrect PUK
 #: ../src/applet-dialogs.c:1351
-#, fuzzy, c-format
-#| msgid ""
-#| "The mobile broadband device '%s' requires a SIM PUK code before it can be "
-#| "used."
+#, c-format
 msgid ""
 "The mobile broadband device “%s” requires a SIM PUK code before it can be "
 "used."
@@ -1090,10 +1111,6 @@ msgstr "_OK"
 #: ../src/connection-editor/ce-ip4-routes.ui.h:3
 #: ../src/connection-editor/ce-ip6-routes.ui.h:3
 #: ../src/connection-editor/ce-page.h:105
-#, fuzzy
-#| msgid ""
-#| "IP addresses identify your computer on the network.  Click the \"Add\" "
-#| "button to add an IP address."
 msgid ""
 "IP addresses identify your computer on the network. Click the “Add” button "
 "to add an IP address."
@@ -1733,15 +1750,12 @@ msgstr "_Zóna Firewall:"
 
 #: ../src/connection-editor/ce-page.h:102
 #, fuzzy
-#| msgid ""
-#| "IP addresses identify your computer on the network.  Click the \"Add\" "
-#| "button to add an IP address."
 msgid ""
 "IP addresses identify your computer on the network. Click the “Add” button "
 "to add static IP address to be configured in addition to the automatic ones."
 msgstr ""
 "Adresy IP identifikujú váš počítač v sieti. Kliknite na tlačidlo „Pridať“ na "
-"pridanie adresy IP."
+"pridanie statickej adresy IP."
 
 #: ../src/connection-editor/ce-page.h:107
 msgid ""
@@ -1750,12 +1764,13 @@ msgid ""
 "an IP address. If no address is provided, one in the 10.42.x.x range will be "
 "used."
 msgstr ""
+"Adresa IP identifikuje váš počítač v sieti a určuje rozsah adries šírených "
+"iným počítačom. Kliknite na tlačidlo „Pridať“ na pridanie adresy IP. Ak nie "
+"je poskytnutá žiadna adresa, použije sa jedna z rozsahu 10.42.x.x."
 
 #: ../src/connection-editor/ce-page.h:113
-#, fuzzy
-#| msgid "Automatic, addresses only"
 msgid "Additional static addresses"
-msgstr "Automaticky, len adresy"
+msgstr "Dodatočné statické adresy"
 
 #: ../src/connection-editor/ce-page.h:114
 msgid "Addresses"
@@ -1763,7 +1778,7 @@ msgstr "Adresy"
 
 #: ../src/connection-editor/ce-page.h:115
 msgid "Address (optional)"
-msgstr ""
+msgstr "Adresa (voliteľné)"
 
 #: ../src/connection-editor/ce-page-infiniband.ui.h:1
 msgid "_Transport mode:"
@@ -2009,7 +2024,6 @@ msgstr "Posielať pakety _echo cez PPP"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:1
 #: ../src/connection-editor/ce-page-team.ui.h:19
-#| msgid "Advanced"
 msgid "Ad_vanced…"
 msgstr "_Rozšírené…"
 
@@ -2715,31 +2729,31 @@ msgstr "Odstránenie pripojenia zlyhalo"
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Naozaj chcete odstrániť pripojenie %s?"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:804
-#: ../src/connection-editor/ip6-routes-dialog.c:746
+#: ../src/connection-editor/ip4-routes-dialog.c:697
+#: ../src/connection-editor/ip6-routes-dialog.c:718
 #: ../src/connection-editor/page-ip4.c:1136
 #: ../src/connection-editor/page-ip6.c:1090
 msgid "Address"
 msgstr "Adresa"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:823
+#: ../src/connection-editor/ip4-routes-dialog.c:716
 #: ../src/connection-editor/page-ip4.c:1155
 msgid "Netmask"
 msgstr "Maska podsiete"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:842
-#: ../src/connection-editor/ip6-routes-dialog.c:784
+#: ../src/connection-editor/ip4-routes-dialog.c:735
+#: ../src/connection-editor/ip6-routes-dialog.c:756
 #: ../src/connection-editor/page-ip4.c:1174
 #: ../src/connection-editor/page-ip6.c:1128
 msgid "Gateway"
 msgstr "Brána"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:861
-#: ../src/connection-editor/ip6-routes-dialog.c:803
+#: ../src/connection-editor/ip4-routes-dialog.c:754
+#: ../src/connection-editor/ip6-routes-dialog.c:775
 msgid "Metric"
 msgstr "Metrika"
 
-#: ../src/connection-editor/ip6-routes-dialog.c:765
+#: ../src/connection-editor/ip6-routes-dialog.c:737
 #: ../src/connection-editor/page-ip6.c:1109
 msgid "Prefix"
 msgstr "Prefix"
@@ -2923,8 +2937,7 @@ msgid "Error editing connection"
 msgstr "Chyba pri úprave pripojenia"
 
 #: ../src/connection-editor/nm-connection-list.c:942
-#, fuzzy, c-format
-#| msgid "Did not find a connection with UUID '%s'"
+#, c-format
 msgid "Did not find a connection with UUID “%s”"
 msgstr "Nenašlo sa pripojenie s UUID „%s“"
 
@@ -3573,12 +3586,7 @@ msgid "Cannot import VPN connection"
 msgstr "Nedá sa importovať pripojenie k VPN"
 
 #: ../src/connection-editor/vpn-helpers.c:143
-#, fuzzy, c-format
-#| msgid ""
-#| "The file '%s' could not be read or does not contain recognized VPN "
-#| "connection information\n"
-#| "\n"
-#| "Error: %s."
+#, c-format
 msgid ""
 "The file “%s” could not be read or does not contain recognized VPN "
 "connection information\n"
@@ -3595,8 +3603,7 @@ msgid "unknown error"
 msgstr "neznáma chyba"
 
 #: ../src/connection-editor/vpn-helpers.c:218
-#, fuzzy, c-format
-#| msgid "A file named \"%s\" already exists."
+#, c-format
 msgid "A file named “%s” already exists."
 msgstr "Súbor s názvom „%s“ už existuje."
 
@@ -3614,11 +3621,7 @@ msgid "Cannot export VPN connection"
 msgstr "Nedá sa exportovať pripojenie k VPN"
 
 #: ../src/connection-editor/vpn-helpers.c:260
-#, fuzzy, c-format
-#| msgid ""
-#| "The VPN connection '%s' could not be exported to %s.\n"
-#| "\n"
-#| "Error: %s."
+#, c-format
 msgid ""
 "The VPN connection “%s” could not be exported to %s.\n"
 "\n"
@@ -3629,8 +3632,6 @@ msgstr ""
 "Chyba: %s."
 
 #: ../src/connection-editor/vpn-helpers.c:295
-#, fuzzy
-#| msgid "Export VPN connection..."
 msgid "Export VPN connection…"
 msgstr "Exportovať pripojenie k VPN…"
 
@@ -3721,13 +3722,6 @@ msgstr "_APN (názov prípojného bodu) zvoleného programu:"
 
 #: ../src/libnma/nma-mobile-wizard.c:500
 #: ../src/libnm-gtk/nm-mobile-wizard.c:501
-#, fuzzy
-#| msgid ""
-#| "Warning: Selecting an incorrect plan may result in billing issues for "
-#| "your broadband account or may prevent connectivity.\n"
-#| "\n"
-#| "If you are unsure of your plan please ask your provider for your plan's "
-#| "APN."
 msgid ""
 "Warning: Selecting an incorrect plan may result in billing issues for your "
 "broadband account or may prevent connectivity.\n"
@@ -3912,7 +3906,7 @@ msgstr ""
 
 #: ../src/libnma/nma-wifi-dialog.c:465 ../src/libnm-gtk/nm-wifi-dialog.c:465
 msgid "New…"
-msgstr ""
+msgstr "Nové…"
 
 #: ../src/libnma/nma-wifi-dialog.c:903 ../src/libnm-gtk/nm-wifi-dialog.c:905
 msgctxt "Wifi/wired security"
@@ -4151,7 +4145,7 @@ msgid "roaming"
 msgstr "roaming"
 
 #. The %s is a mobile provider name, eg "T-Mobile"
-#: ../src/utils/utils.c:179
+#: ../src/utils/utils.c:184
 #, c-format
 msgid "%s connection"
 msgstr "pripojenie k sieti %s"
@@ -4330,13 +4324,6 @@ msgid "Unencrypted private keys are insecure"
 msgstr "Nešifrované súkromné kľúče nie sú bezpečné"
 
 #: ../src/wireless-security/eap-method-tls.c:319
-#, fuzzy
-#| msgid ""
-#| "The selected private key does not appear to be protected by a password.  "
-#| "This could allow your security credentials to be compromised.  Please "
-#| "select a password-protected private key.\n"
-#| "\n"
-#| "(You can password-protect your private key with openssl)"
 msgid ""
 "The selected private key does not appear to be protected by a password. This "
 "could allow your security credentials to be compromised. Please select a "
