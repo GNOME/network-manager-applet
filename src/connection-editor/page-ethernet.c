@@ -44,6 +44,7 @@ typedef struct {
 	GtkToggleButton *wol_default, *wol_ignore, *wol_phy, *wol_unicast, *wol_multicast,
 	                *wol_broadcast, *wol_arp, *wol_magic;
 	GtkEntry *wol_passwd;
+	gboolean mtu_enabled;
 } CEPageEthernetPrivate;
 
 #define PORT_DEFAULT  0
@@ -99,6 +100,8 @@ ethernet_private_init (CEPageEthernet *self)
 	priv->wol_arp = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "wol_arp"));
 	priv->wol_magic = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "wol_magic"));
 	priv->wol_passwd = GTK_ENTRY (gtk_builder_get_object (builder, "ethernet_wol_passwd"));
+
+	gtk_widget_set_sensitive(GTK_WIDGET (priv->mtu), priv->mtu_enabled);
 }
 
 static void
@@ -223,10 +226,14 @@ populate_ui (CEPageEthernet *self)
 	g_signal_connect (priv->cloned_mac, "changed", G_CALLBACK (stuff_changed), self);
 
 	/* MTU */
-	mtu_def = ce_get_property_default (NM_SETTING (setting), NM_SETTING_WIRED_MTU);
-	ce_spin_automatic_val (priv->mtu, mtu_def);
+	if (priv->mtu_enabled) {
+		mtu_def = ce_get_property_default (NM_SETTING (setting), NM_SETTING_WIRED_MTU);
+		ce_spin_automatic_val (priv->mtu, mtu_def);
 
-	gtk_spin_button_set_value (priv->mtu, (gdouble) nm_setting_wired_get_mtu (setting));
+		gtk_spin_button_set_value (priv->mtu, (gdouble) nm_setting_wired_get_mtu (setting));
+	} else {
+		gtk_entry_set_text (GTK_ENTRY (priv->mtu), _("ignored"));
+	}
 
 	/* Wake-on-LAN */
 	wol = nm_setting_wired_get_wake_on_lan (priv->setting);
@@ -327,8 +334,15 @@ ce_page_ethernet_new (NMConnectionEditor *editor,
 		return NULL;
 	}
 
-	ethernet_private_init (self);
 	priv = CE_PAGE_ETHERNET_GET_PRIVATE (self);
+
+	if (nm_streq0 (nm_connection_get_connection_type (connection),
+	               NM_SETTING_PPPOE_SETTING_NAME))
+		priv->mtu_enabled = FALSE;
+	else
+		priv->mtu_enabled = TRUE;
+
+	ethernet_private_init (self);
 
 	priv->setting = nm_connection_get_setting_wired (connection);
 	if (!priv->setting) {
@@ -434,10 +448,15 @@ ui_to_setting (CEPageEthernet *self)
 	              NM_SETTING_WIRED_SPEED, speed,
 	              NM_SETTING_WIRED_DUPLEX, gtk_toggle_button_get_active (priv->duplex) ? "full" : "half",
 	              NM_SETTING_WIRED_AUTO_NEGOTIATE, gtk_toggle_button_get_active (priv->autonegotiate),
-	              NM_SETTING_WIRED_MTU, (guint32) gtk_spin_button_get_value_as_int (priv->mtu),
 	              NM_SETTING_WIRED_WAKE_ON_LAN, wol,
 	              NM_SETTING_WIRED_WAKE_ON_LAN_PASSWORD, wol_passwd && *wol_passwd ? wol_passwd : NULL,
 	              NULL);
+
+	if (priv->mtu_enabled) {
+		g_object_set (priv->setting,
+		              NM_SETTING_WIRED_MTU, (guint32) gtk_spin_button_get_value_as_int (priv->mtu),
+		              NULL);
+	}
 
 	g_free (ifname);
 	g_free (device_mac);
