@@ -191,82 +191,12 @@ typedef struct {
 	gpointer user_data;
 } NewVpnInfo;
 
-static void
-import_cb (NMConnection *connection, gpointer user_data)
-{
-	NewVpnInfo *info = (NewVpnInfo *) user_data;
-	NMSettingConnection *s_con;
-	NMSettingVpn *s_vpn;
-	const char *service_type;
-	char *s;
-	GError *error = NULL;
+typedef void (*VpnImportSuccessCallback) (NMConnection *connection, gpointer user_data);
 
-	/* Basic sanity checks of the connection */
-	s_con = nm_connection_get_setting_connection (connection);
-	if (!s_con) {
-		s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
-		nm_connection_add_setting (connection, NM_SETTING (s_con));
-	}
-
-	s = (char *) nm_setting_connection_get_id (s_con);
-	if (!s) {
-		const GPtrArray *connections;
-
-		connections = nm_client_get_connections (info->client);
-		s = ce_page_get_next_available_name (connections, _("VPN connection %d"));
-		g_object_set (s_con, NM_SETTING_CONNECTION_ID, s, NULL);
-		g_free (s);
-	}
-
-	s = (char *) nm_setting_connection_get_connection_type (s_con);
-	if (!s || strcmp (s, NM_SETTING_VPN_SETTING_NAME))
-		g_object_set (s_con, NM_SETTING_CONNECTION_TYPE, NM_SETTING_VPN_SETTING_NAME, NULL);
-
-	s = (char *) nm_setting_connection_get_uuid (s_con);
-	if (!s) {
-		s = nm_utils_uuid_generate ();
-		g_object_set (s_con, NM_SETTING_CONNECTION_UUID, s, NULL);
-		g_free (s);
-	}
-
-	s_vpn = nm_connection_get_setting_vpn (connection);
-	service_type = s_vpn ? nm_setting_vpn_get_service_type (s_vpn) : NULL;
-
-	if (!service_type || !strlen (service_type)) {
-		g_object_unref (connection);
-		connection = NULL;
-
-		error = g_error_new_literal (NMA_ERROR, NMA_ERROR_GENERIC,
-		                             _("The VPN plugin failed to import the VPN connection correctly\n\nError: no VPN service type."));
-	}
-
-	info->result_func (connection, FALSE, error, info->user_data);
-	g_clear_error (&error);
-	g_object_unref (info->client);
-	g_slice_free (NewVpnInfo, info);
-}
-
-void
-vpn_connection_import (GtkWindow *parent,
-                       const char *detail,
-                       gpointer detail_data,
-                       NMConnection *connection,
-                       NMClient *client,
-                       PageNewConnectionResultFunc result_func,
-                       gpointer user_data)
-{
-	NewVpnInfo *info;
-
-	/* We're not going to need this one. We'll create another
-	* when we know the file name to import from. */
-	g_object_unref (connection);
-
-	info = g_slice_new (NewVpnInfo);
-	info->result_func = result_func;
-	info->client = g_object_ref (client);
-	info->user_data = user_data;
-	vpn_import (import_cb, info);
-}
+typedef struct {
+	VpnImportSuccessCallback callback;
+	gpointer user_data;
+} ActionInfo;
 
 static void
 complete_vpn_connection (NMConnection *connection, NMClient *client)
@@ -315,7 +245,7 @@ vpn_connection_new (GtkWindow *parent,
 	const char *add_detail_key = NULL;
 	const char *add_detail_val = NULL;
 
-	if (!detail) {
+	if (!detail && !connection) {
 		NewVpnInfo *info;
 
 		/* This will happen if nm-c-e is launched from the command line
@@ -333,58 +263,60 @@ vpn_connection_new (GtkWindow *parent,
 		return;
 	}
 
-	service_type = detail;
-	add_detail_key = vpn_data ? vpn_data->add_detail_key : NULL;
-	add_detail_val = vpn_data ? vpn_data->add_detail_val : NULL;
+	if (detail) {
+		service_type = detail;
+		add_detail_key = vpn_data ? vpn_data->add_detail_key : NULL;
+		add_detail_val = vpn_data ? vpn_data->add_detail_val : NULL;
 
-	service_type_free = nm_vpn_plugin_info_list_find_service_type (vpn_get_plugin_infos (), detail);
-	if (service_type_free)
-		service_type = service_type_free;
-	else if (!vpn_data) {
-		/* when called without @vpn_data, it means that @detail may contain "<SERVICE_TYPE>:<ADD_DETAIL>".
-		 * Try to parse them by spliting @detail at the colons and try to interpret the first part as
-		 * @service_type and the remainder as add-detail. */
-		l = strlen (detail);
-		for (split_idx = 1; split_idx < l - 1; split_idx++) {
-			if (detail[split_idx] == ':') {
-				gs_free char *detail_main = g_strndup (detail, split_idx);
-				NMVpnEditorPlugin *plugin;
+		service_type_free = nm_vpn_plugin_info_list_find_service_type (vpn_get_plugin_infos (), detail);
+		if (service_type_free)
+			service_type = service_type_free;
+		else if (!vpn_data) {
+			/* when called without @vpn_data, it means that @detail may contain "<SERVICE_TYPE>:<ADD_DETAIL>".
+			 * Try to parse them by spliting @detail at the colons and try to interpret the first part as
+			 * @service_type and the remainder as add-detail. */
+			l = strlen (detail);
+			for (split_idx = 1; split_idx < l - 1; split_idx++) {
+				if (detail[split_idx] == ':') {
+					gs_free char *detail_main = g_strndup (detail, split_idx);
+					NMVpnEditorPlugin *plugin;
 
-				service_type_free = nm_vpn_plugin_info_list_find_service_type (vpn_get_plugin_infos (), detail_main);
-				if (!service_type_free)
-					continue;
-				plugin = vpn_get_plugin_by_service (service_type_free);
-				if (!plugin) {
-					g_clear_pointer (&service_type_free, g_free);
-					continue;
+					service_type_free = nm_vpn_plugin_info_list_find_service_type (vpn_get_plugin_infos (), detail_main);
+					if (!service_type_free)
+						continue;
+					plugin = vpn_get_plugin_by_service (service_type_free);
+					if (!plugin) {
+						g_clear_pointer (&service_type_free, g_free);
+						continue;
+					}
+
+					/* we found a @service_type. Try to use the remainder as add-detail. */
+					service_type = service_type_free;
+					if (nm_vpn_editor_plugin_get_service_add_detail (plugin, service_type, &detail[split_idx + 1],
+					                                                 NULL, NULL,
+					                                                 &add_detail_key_free, &add_detail_val_free, NULL)
+					    && add_detail_key_free && add_detail_key_free[0]
+					    && add_detail_val_free && add_detail_val_free[0]) {
+						add_detail_key = add_detail_key_free;
+						add_detail_val = add_detail_val_free;
+					}
+					break;
 				}
-
-				/* we found a @service_type. Try to use the remainder as add-detail. */
-				service_type = service_type_free;
-				if (nm_vpn_editor_plugin_get_service_add_detail (plugin, service_type, &detail[split_idx + 1],
-				                                                 NULL, NULL,
-				                                                 &add_detail_key_free, &add_detail_val_free, NULL)
-				    && add_detail_key_free && add_detail_key_free[0]
-				    && add_detail_val_free && add_detail_val_free[0]) {
-					add_detail_key = add_detail_key_free;
-					add_detail_val = add_detail_val_free;
-				}
-				break;
 			}
 		}
+		if (!service_type)
+			service_type = detail;
+
+		s_vpn = nm_setting_vpn_new ();
+		g_object_set (s_vpn, NM_SETTING_VPN_SERVICE_TYPE, service_type, NULL);
+
+		if (add_detail_key)
+			nm_setting_vpn_add_data_item ((NMSettingVpn *) s_vpn, add_detail_key, add_detail_val);
+
+		nm_connection_add_setting (connection, s_vpn);
 	}
-	if (!service_type)
-		service_type = detail;
 
 	complete_vpn_connection (connection, client);
-
-	s_vpn = nm_setting_vpn_new ();
-	g_object_set (s_vpn, NM_SETTING_VPN_SERVICE_TYPE, service_type, NULL);
-
-	if (add_detail_key)
-		nm_setting_vpn_add_data_item ((NMSettingVpn *) s_vpn, add_detail_key, add_detail_val);
-
-	nm_connection_add_setting (connection, s_vpn);
 
 	(*result_func) (connection, FALSE, NULL, user_data);
 }

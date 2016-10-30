@@ -67,12 +67,4 @@ void vpn_connection_new (GtkWindow *parent,
                          PageNewConnectionResultFunc result_func,
                          gpointer user_data);
 
-void vpn_connection_import (GtkWindow *parent,
-                            const char *detail,
-                            gpointer detail_data,
-                            NMConnection *connection,
-                            NMClient *client,
-                            PageNewConnectionResultFunc result_func,
-                            gpointer user_data);
-
 #endif  /* __PAGE_VPN_H__ */

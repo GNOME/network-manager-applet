@@ -170,6 +170,149 @@ no_description:
 	gtk_label_set_text (label, "");
 }
 
+NMConnection *
+vpn_connection_from_file (const char *filename)
+{
+	NMConnection *connection = NULL;
+	GError *error = NULL;
+	GSList *iter;
+
+	for (iter = vpn_get_plugin_infos (); !connection && iter; iter = iter->next) {
+		NMVpnEditorPlugin *plugin;
+
+		plugin = nm_vpn_plugin_info_get_editor_plugin (iter->data);
+		g_clear_error (&error);
+		connection = nm_vpn_editor_plugin_import (plugin, filename, &error);
+		if (connection)
+			break;
+	}
+
+	if (connection) {
+		NMSettingVpn *s_vpn;
+		const char *service_type;
+
+		s_vpn = nm_connection_get_setting_vpn (connection);
+		service_type = s_vpn ? nm_setting_vpn_get_service_type (s_vpn) : NULL;
+
+		/* Check connection sanity. */
+		if (!service_type || !strlen (service_type)) {
+			g_object_unref (connection);
+			connection = NULL;
+
+			error = g_error_new_literal (NMA_ERROR, NMA_ERROR_GENERIC,
+			                             _("The VPN plugin failed to import the VPN connection correctly\n\nError: no VPN service type."));
+		}
+	}
+
+	if (!connection) {
+		GtkWidget *err_dialog;
+		char *bname = g_path_get_basename (filename);
+
+		err_dialog = gtk_message_dialog_new (NULL,
+		                                     GTK_DIALOG_DESTROY_WITH_PARENT,
+		                                     GTK_MESSAGE_ERROR,
+		                                     GTK_BUTTONS_OK,
+		                                     _("Cannot import VPN connection"));
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (err_dialog),
+		                                 _("The file “%s” could not be read or does not contain recognized VPN connection information\n\nError: %s."),
+		                                 bname, error ? error->message : _("unknown error"));
+		g_free (bname);
+		g_signal_connect (err_dialog, "delete-event", G_CALLBACK (gtk_widget_destroy), NULL);
+		g_signal_connect (err_dialog, "response", G_CALLBACK (gtk_widget_destroy), NULL);
+		gtk_widget_show_all (err_dialog);
+		gtk_window_present (GTK_WINDOW (err_dialog));
+	}
+
+	g_clear_error (&error);
+
+	return connection;
+}
+
+typedef struct {
+	GtkWindow *parent;
+	NMClient *client;
+	PageNewConnectionResultFunc result_func;
+	gpointer user_data;
+} ImportVpnInfo;
+
+static void
+import_vpn_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
+{
+	char *filename = NULL;
+	ImportVpnInfo *info = (ImportVpnInfo *) user_data;
+	NMConnection *connection = NULL;
+
+	if (response != GTK_RESPONSE_ACCEPT)
+		goto out;
+
+	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+	if (!filename) {
+		g_warning ("%s: didn't get a filename back from the chooser!", __func__);
+		goto out;
+	}
+
+	connection = vpn_connection_from_file (filename);
+	if (connection) {
+		/* Wrap around the actual new function so that the page can complete
+		 * the missing parts, such as UUID or make up the connection name. */
+		vpn_connection_new (info->parent,
+		                    NULL,
+		                    NULL,
+		                    connection,
+		                    info->client,
+		                    info->result_func,
+		                    info->user_data);
+	}
+
+	g_free (filename);
+out:
+	gtk_widget_hide (dialog);
+	gtk_widget_destroy (dialog);
+	g_object_unref (info->parent);
+	g_object_unref (info->client);
+	g_slice_free (ImportVpnInfo, info);
+}
+
+static void
+vpn_connection_import (GtkWindow *parent,
+                       const char *detail,
+                       gpointer detail_data,
+                       NMConnection *connection,
+                       NMClient *client,
+                       PageNewConnectionResultFunc result_func,
+                       gpointer user_data)
+{
+	ImportVpnInfo *info;
+	GtkWidget *dialog;
+	const char *home_folder;
+
+	/* The import function decides about the type. */
+	g_return_if_fail (!detail);
+
+	/* We're not going to need this one. We'll create another
+	 * when we know the file name to import from. */
+	g_object_unref (connection);
+
+	info = g_slice_new (ImportVpnInfo);
+	info->parent = g_object_ref (parent);
+	info->result_func = result_func;
+	info->client = g_object_ref (client);
+	info->user_data = user_data;
+
+	dialog = gtk_file_chooser_dialog_new (_("Select file to import"),
+	                                      NULL,
+	                                      GTK_FILE_CHOOSER_ACTION_OPEN,
+	                                      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+	                                      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+	                                      NULL);
+	home_folder = g_get_home_dir ();
+	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), home_folder);
+
+	g_signal_connect (G_OBJECT (dialog), "response", G_CALLBACK (import_vpn_from_file_cb), info);
+	gtk_widget_show_all (dialog);
+	gtk_window_present (GTK_WINDOW (dialog));
+}
+
 static void
 set_up_connection_type_combo (GtkComboBox *combo,
                               GtkLabel *description_label,

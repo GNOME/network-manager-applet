@@ -73,5 +73,7 @@ void delete_connection (GtkWindow *parent_window,
 gboolean connection_supports_ip4 (NMConnection *connection);
 gboolean connection_supports_ip6 (NMConnection *connection);
 
+NMConnection *vpn_connection_from_file (const char *filename);
+
 #endif  /* __CONNECTION_HELPERS_H__ */
 
