@@ -901,7 +901,7 @@ nm_connection_list_set_type (NMConnectionList *self, GType ctype)
 }
 
 void
-nm_connection_list_create (NMConnectionList *self, GType ctype, const char *detail)
+nm_connection_list_create (NMConnectionList *self, GType ctype, const char *detail, NMConnection *connection)
 {
 	ConnectionTypeData *types;
 	int i;
@@ -927,6 +927,7 @@ nm_connection_list_create (NMConnectionList *self, GType ctype, const char *deta
 		new_connection_of_type (GTK_WINDOW (self->dialog),
 		                        detail,
 		                        NULL,
+		                        g_object_ref (connection),
 		                        self->client,
 		                        types[i].new_connection_func,
 		                        really_add_connection,

@@ -205,18 +205,18 @@ void
 dsl_connection_new (GtkWindow *parent,
                     const char *detail,
                     gpointer detail_data,
+                    NMConnection *connection,
                     NMClient *client,
                     PageNewConnectionResultFunc result_func,
                     gpointer user_data)
 {
-	NMConnection *connection;
 	NMSetting *setting;
 
-	connection = ce_page_new_connection (_("DSL connection %d"),
-	                                     NM_SETTING_PPPOE_SETTING_NAME,
-	                                     FALSE,
-	                                     client,
-	                                     user_data);
+	ce_page_complete_connection (connection,
+	                             _("DSL connection %d"),
+	                             NM_SETTING_PPPOE_SETTING_NAME,
+	                             FALSE,
+	                             client);
 	nm_connection_add_setting (connection, nm_setting_pppoe_new ());
 	nm_connection_add_setting (connection, nm_setting_wired_new ());
 	setting = nm_setting_ppp_new ();
@@ -229,5 +229,3 @@ dsl_connection_new (GtkWindow *parent,
 
 	(*result_func) (connection, FALSE, NULL, user_data);
 }
-
-

@@ -54,7 +54,7 @@ idle_create_connection (gpointer user_data)
 	GType ctype = (GType) GPOINTER_TO_SIZE (g_object_get_data (G_OBJECT (list), "nm-connection-editor-ctype"));
 	char *detail = g_object_get_data (G_OBJECT (list), "nm-connection-editor-detail");
 
-	nm_connection_list_create (list, ctype, detail);
+	nm_connection_list_create (list, ctype, detail, nm_simple_connection_new ());
 	return FALSE;
 }
 

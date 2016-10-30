@@ -250,17 +250,32 @@ void
 vpn_connection_import (GtkWindow *parent,
                        const char *detail,
                        gpointer detail_data,
+                       NMConnection *connection,
                        NMClient *client,
                        PageNewConnectionResultFunc result_func,
                        gpointer user_data)
 {
 	NewVpnInfo *info;
 
+	/* We're not going to need this one. We'll create another
+	* when we know the file name to import from. */
+	g_object_unref (connection);
+
 	info = g_slice_new (NewVpnInfo);
 	info->result_func = result_func;
 	info->client = g_object_ref (client);
 	info->user_data = user_data;
 	vpn_import (import_cb, info);
+}
+
+static void
+complete_vpn_connection (NMConnection *connection, NMClient *client)
+{
+	ce_page_complete_connection (connection,
+	                             _("VPN connection %d"),
+	                             NM_SETTING_VPN_SETTING_NAME,
+	                             FALSE,
+	                             client);
 }
 
 #define NEW_VPN_CONNECTION_PRIMARY_LABEL _("Choose a VPN Connection Type")
@@ -285,11 +300,11 @@ void
 vpn_connection_new (GtkWindow *parent,
                     const char *detail,
                     gpointer detail_data,
+                    NMConnection *connection,
                     NMClient *client,
                     PageNewConnectionResultFunc result_func,
                     gpointer user_data)
 {
-	NMConnection *connection;
 	NMSetting *s_vpn;
 	const char *service_type;
 	gs_free char *service_type_free = NULL;
@@ -361,11 +376,8 @@ vpn_connection_new (GtkWindow *parent,
 	if (!service_type)
 		service_type = detail;
 
-	connection = ce_page_new_connection (_("VPN connection %d"),
-	                                     NM_SETTING_VPN_SETTING_NAME,
-	                                     FALSE,
-	                                     client,
-	                                     user_data);
+	complete_vpn_connection (connection, client);
+
 	s_vpn = nm_setting_vpn_new ();
 	g_object_set (s_vpn, NM_SETTING_VPN_SERVICE_TYPE, service_type, NULL);
 
@@ -376,5 +388,3 @@ vpn_connection_new (GtkWindow *parent,
 
 	(*result_func) (connection, FALSE, NULL, user_data);
 }
-
-

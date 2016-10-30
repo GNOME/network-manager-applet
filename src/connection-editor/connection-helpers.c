@@ -419,6 +419,7 @@ void
 new_connection_of_type (GtkWindow *parent_window,
                         const char *detail,
                         gpointer detail_data,
+                        NMConnection *connection,
                         NMClient *client,
                         PageNewConnectionFunc new_func,
                         NewConnectionResultFunc result_func,
@@ -435,6 +436,7 @@ new_connection_of_type (GtkWindow *parent_window,
 	new_func (parent_window,
 	          detail,
 	          detail_data,
+	          connection,
 	          client,
 	          new_connection_result,
 	          ncd);
@@ -535,9 +537,16 @@ new_connection_dialog_full (GtkWindow *parent_window,
 	gtk_widget_destroy (GTK_WIDGET (type_dialog));
 	g_object_unref (gui);
 
-	if (new_func)
-		new_connection_of_type (parent_window, detail, detail_data, client, new_func, result_func, user_data);
-	else
+	if (new_func) {
+		new_connection_of_type (parent_window,
+		                        detail,
+		                        detail_data,
+		                        nm_simple_connection_new (),
+		                        client,
+		                        new_func,
+		                        result_func,
+		                        user_data);
+	} else
 		result_func (NULL, user_data);
 }
 

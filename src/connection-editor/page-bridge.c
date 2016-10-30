@@ -296,11 +296,11 @@ void
 bridge_connection_new (GtkWindow *parent,
                        const char *detail,
                        gpointer detail_data,
+                       NMConnection *connection,
                        NMClient *client,
                        PageNewConnectionResultFunc result_func,
                        gpointer user_data)
 {
-	NMConnection *connection;
 	NMSettingConnection *s_con;
 	int bridge_num = 0, num, i;
 	const GPtrArray *connections;
@@ -308,11 +308,11 @@ bridge_connection_new (GtkWindow *parent,
 	const char *iface;
 	char *my_iface;
 
-	connection = ce_page_new_connection (_("Bridge connection %d"),
-	                                     NM_SETTING_BRIDGE_SETTING_NAME,
-	                                     TRUE,
-	                                     client,
-	                                     user_data);
+	ce_page_complete_connection (connection,
+	                             _("Bridge connection %d"),
+	                             NM_SETTING_BRIDGE_SETTING_NAME,
+	                             TRUE,
+	                             client);
 	nm_connection_add_setting (connection, nm_setting_bridge_new ());
 
 	/* Find an available interface name */
@@ -340,4 +340,3 @@ bridge_connection_new (GtkWindow *parent,
 
 	(*result_func) (connection, FALSE, NULL, user_data);
 }
-

@@ -53,6 +53,7 @@ CEPage *ce_page_bridge_new (NMConnectionEditor *editor,
 void bridge_connection_new (GtkWindow *parent,
                             const char *detail,
                             gpointer detail_data,
+                            NMConnection *connection,
                             NMClient *client,
                             PageNewConnectionResultFunc result_func,
                             gpointer user_data);

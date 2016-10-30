@@ -808,39 +808,37 @@ ce_page_class_init (CEPageClass *page_class)
 }
 
 
-NMConnection *
-ce_page_new_connection (const char *format,
-                        const char *ctype,
-                        gboolean autoconnect,
-                        NMClient *client,
-                        gpointer user_data)
+void
+ce_page_complete_connection (NMConnection *connection,
+                             const char *format,
+                             const char *ctype,
+                             gboolean autoconnect,
+                             NMClient *client)
 {
-	NMConnection *connection;
 	NMSettingConnection *s_con;
-	char *uuid, *id;
+	char *id, *uuid;
 	const GPtrArray *connections;
 
-	connection = nm_simple_connection_new ();
+	s_con = nm_connection_get_setting_connection (connection);
+	if (!s_con) {
+		s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
+		nm_connection_add_setting (connection, NM_SETTING (s_con));
+	}
 
-	s_con = NM_SETTING_CONNECTION (nm_setting_connection_new ());
-	nm_connection_add_setting (connection, NM_SETTING (s_con));
+	if (!nm_setting_connection_get_id (s_con)) {
+		connections = nm_client_get_connections (client);
+		id = ce_page_get_next_available_name (connections, format);
+		g_object_set (s_con, NM_SETTING_CONNECTION_ID, id, NULL);
+		g_free (id);
+	}
 
 	uuid = nm_utils_uuid_generate ();
-
-	connections = nm_client_get_connections (client);
-	id = ce_page_get_next_available_name (connections, format);
-
 	g_object_set (s_con,
 	              NM_SETTING_CONNECTION_UUID, uuid,
-	              NM_SETTING_CONNECTION_ID, id,
 	              NM_SETTING_CONNECTION_TYPE, ctype,
 	              NM_SETTING_CONNECTION_AUTOCONNECT, autoconnect,
 	              NULL);
-
 	g_free (uuid);
-	g_free (id);
-
-	return connection;
 }
 
 CEPage *
