@@ -345,7 +345,7 @@ set_up_connection_type_combo (GtkComboBox *combo,
 				g_free (markup);
 
 i_next:
-				if (!add_details)
+				if (!i_add_detail)
 					break;
 				i_add_detail = (++add_details)[0];
 			} while (i_add_detail);
