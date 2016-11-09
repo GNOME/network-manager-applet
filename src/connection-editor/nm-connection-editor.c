@@ -40,6 +40,7 @@
 #include "page-wifi-security.h"
 #include "page-ip4.h"
 #include "page-ip6.h"
+#include "page-ip-tunnel.h"
 #include "page-dsl.h"
 #include "page-mobile.h"
 #include "page-bluetooth.h"
@@ -753,6 +754,9 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 			goto out;
 	} else if (!strcmp (connection_type, NM_SETTING_VPN_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_vpn_new, editor->connection, error))
+			goto out;
+	} else if (!strcmp (connection_type, NM_SETTING_IP_TUNNEL_SETTING_NAME)) {
+		if (!add_page (editor, ce_page_ip_tunnel_new, editor->connection, error))
 			goto out;
 	} else if (!strcmp (connection_type, NM_SETTING_PPPOE_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_dsl_new, editor->connection, error))
