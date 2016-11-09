@@ -204,7 +204,7 @@ ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 		gtk_list_store_set (priv->method_store, &iter,
 		                    METHOD_COL_NAME, _("Shared to other computers"),
 		                    METHOD_COL_NUM, IP6_METHOD_SHARED,
-		                    METHOD_COL_ENABLED, FALSE,
+		                    METHOD_COL_ENABLED, TRUE,
 		                    -1);
 	}
 
@@ -282,6 +282,11 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 		addr_enabled = dns_enabled = routes_enabled = TRUE;
 		tooltip = CE_TOOLTIP_ADDR_MANUAL;
 		label = CE_LABEL_ADDR_MANUAL;
+		break;
+	case IP6_METHOD_SHARED:
+		addr_enabled = dns_enabled = routes_enabled = TRUE;
+		tooltip = CE_TOOLTIP_ADDR_SHARED;
+		label = CE_LABEL_ADDR_SHARED;
 		break;
 	case IP6_METHOD_IGNORE:
 		ip6_required_enabled = FALSE;
@@ -1446,10 +1451,14 @@ change_method_combo (CEPage *page, gboolean is_hotspot)
 
 	/* Set active method */
 	if (is_hotspot) {
-		if (priv->hotspot_method_idx != -1)
+		if (priv->hotspot_method_idx == -1) {
+			int method = IP6_METHOD_SHARED;
+			if (g_strcmp0 (nm_setting_ip_config_get_method (priv->setting),
+			               NM_SETTING_IP6_CONFIG_METHOD_IGNORE) == 0)
+				method = IP6_METHOD_IGNORE;
+			gtk_combo_box_set_active (priv->method, method);
+		} else
 			gtk_combo_box_set_active (priv->method, priv->hotspot_method_idx);
-		else
-			gtk_combo_box_set_active (priv->method, IP6_METHOD_IGNORE);
 	} else {
 		if (priv->normal_method_idx != -1)
 			gtk_combo_box_set_active (priv->method, priv->normal_method_idx);

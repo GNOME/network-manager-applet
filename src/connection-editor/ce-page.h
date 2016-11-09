@@ -116,8 +116,7 @@ typedef CEPage* (*CEPageNewFunc)(NMConnectionEditor *editor,
 #define CE_TOOLTIP_ADDR_SHARED _("The IP address identify your computer on the network and " \
                                  "determines the address range distributed to other computers. " \
                                  "Click the “Add” button to add an IP address. "\
-                                 "If no address is provided, one in the 10.42.x.x range will " \
-                                 "be used.")
+                                 "If no address is provided, range will be determined automatically.")
 
 #define CE_LABEL_ADDR_AUTO _("Additional static addresses")
 #define CE_LABEL_ADDR_MANUAL _("Addresses")
