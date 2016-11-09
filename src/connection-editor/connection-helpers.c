@@ -30,6 +30,7 @@
 #include "page-bluetooth.h"
 #include "page-dsl.h"
 #include "page-infiniband.h"
+#include "page-ip-tunnel.h"
 #include "page-bond.h"
 #include "page-team.h"
 #include "page-bridge.h"
@@ -116,6 +117,7 @@ get_connection_type_list (void)
 	add_type_data_virtual (array, _("Team"), team_connection_new, NM_TYPE_SETTING_TEAM);
 	add_type_data_virtual (array, _("Bridge"), bridge_connection_new, NM_TYPE_SETTING_BRIDGE);
 	add_type_data_virtual (array, _("VLAN"), vlan_connection_new, NM_TYPE_SETTING_VLAN);
+	add_type_data_virtual (array, _("IP tunnel"), ip_tunnel_connection_new, NM_TYPE_SETTING_IP_TUNNEL);
 
 	add_type_data_virtual (array, _("VPN"), vpn_connection_new, NM_TYPE_SETTING_VPN);
 
