@@ -424,8 +424,8 @@ nm_connection_editor_new (GtkWindow *parent_window,
 	}
 
 	if (!active_editors)
-		active_editors = g_hash_table_new (NULL, NULL);
-	g_hash_table_insert (active_editors, connection, editor);
+		active_editors = g_hash_table_new_full (NULL, NULL, g_object_unref, NULL);
+	g_hash_table_insert (active_editors, g_object_ref (connection), editor);
 
 	return editor;
 }
@@ -433,10 +433,7 @@ nm_connection_editor_new (GtkWindow *parent_window,
 NMConnectionEditor *
 nm_connection_editor_get (NMConnection *connection)
 {
-	if (!active_editors)
-		return NULL;
-
-	return g_hash_table_lookup (active_editors, connection);
+	return active_editors ? g_hash_table_lookup (active_editors, connection) : NULL;
 }
 
 /* Returns an editor for @slave's master, if any */
