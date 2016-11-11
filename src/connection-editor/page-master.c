@@ -485,7 +485,8 @@ connection_double_clicked_cb (GtkTreeView *tree_view,
 }
 
 static void
-delete_result_cb (NMRemoteConnection *connection,
+delete_result_cb (FUNC_TAG_DELETE_CONNECTION_RESULT_IMPL,
+                  NMRemoteConnection *connection,
                   gboolean deleted,
                   gpointer user_data)
 {

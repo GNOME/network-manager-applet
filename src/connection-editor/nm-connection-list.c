@@ -359,7 +359,10 @@ do_edit (NMConnectionList *list)
 }
 
 static void
-delete_connection_cb (NMRemoteConnection *connection, gboolean deleted, gpointer user_data)
+delete_connection_cb (FUNC_TAG_DELETE_CONNECTION_RESULT_IMPL,
+                      NMRemoteConnection *connection,
+                      gboolean deleted,
+                      gpointer user_data)
 {
 	NMConnectionList *list = user_data;
 

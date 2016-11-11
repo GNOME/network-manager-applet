@@ -732,7 +732,7 @@ delete_cb (GObject *connection,
 	g_clear_error (&error);
 
 	if (result_func)
-		(*result_func) (NM_REMOTE_CONNECTION (connection), error == NULL, user_data);
+		(*result_func) (FUNC_TAG_DELETE_CONNECTION_RESULT_CALL, NM_REMOTE_CONNECTION (connection), error == NULL, user_data);
 }
 
 void
