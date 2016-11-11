@@ -360,7 +360,8 @@ _get_device_list (CEPage *self,
 		char *mac = NULL;
 		char *item;
 
-		if (!G_TYPE_CHECK_INSTANCE_TYPE (dev, device_type))
+		if (   device_type != G_TYPE_NONE
+		    && !G_TYPE_CHECK_INSTANCE_TYPE (dev, device_type))
 			continue;
 
 		if (device_type == NM_TYPE_DEVICE_BT)
