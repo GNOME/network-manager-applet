@@ -31,6 +31,7 @@
 #include "nm-connection-list.h"
 #include "nm-connection-editor.h"
 #include "connection-helpers.h"
+#include "vpn-helpers.h"
 
 gboolean nm_ce_keep_above;
 
@@ -104,6 +105,16 @@ handle_arguments (NMConnectionList *list,
 			detail = p + 1;
 		}
 		ctype = nm_setting_lookup_type (type);
+		if (ctype == 0 && !p) {
+			gs_free char *service_type = NULL;
+
+			/* allow using the VPN name directly, without "vpn:" prefix. */
+			service_type = nm_vpn_plugin_info_list_find_service_type (vpn_get_plugin_infos (), type);
+			if (service_type) {
+				ctype = NM_TYPE_SETTING_VPN;
+				detail = type;
+			}
+		}
 		if (ctype == 0) {
 			g_warning ("Unknown connection type '%s'", type);
 			return TRUE;
