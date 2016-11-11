@@ -218,7 +218,9 @@ vpn_type_filter_func (GType type, gpointer user_data)
 }
 
 static void
-vpn_type_result_func (NMConnection *connection, gpointer user_data)
+vpn_type_result_func (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
+                      NMConnection *connection,
+                      gpointer user_data)
 {
 	NewVpnInfo *info = user_data;
 

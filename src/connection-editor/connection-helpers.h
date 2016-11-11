@@ -36,7 +36,12 @@ ConnectionTypeData *get_connection_type_list (void);
 
 typedef gboolean (*NewConnectionTypeFilterFunc) (GType type,
                                                  gpointer user_data);
-typedef void (*NewConnectionResultFunc) (NMConnection *connection,
+
+struct _func_tag_new_connection_result;
+#define FUNC_TAG_NEW_CONNECTION_RESULT_IMPL struct _func_tag_new_connection_result *_dummy
+#define FUNC_TAG_NEW_CONNECTION_RESULT_CALL ((struct _func_tag_new_connection_result *) NULL)
+typedef void (*NewConnectionResultFunc) (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
+                                         NMConnection *connection,
                                          gpointer user_data);
 
 void new_connection_dialog      (GtkWindow *parent_window,

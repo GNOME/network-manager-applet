@@ -224,8 +224,9 @@ finish:
 }
 
 static void
-edit_parent (NMConnection *connection,
-                           gpointer user_data)
+edit_parent (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
+             NMConnection *connection,
+             gpointer user_data)
 {
 	CEPageVlan *self = user_data;
 	CEPageVlanPrivate *priv = CE_PAGE_VLAN_GET_PRIVATE (self);

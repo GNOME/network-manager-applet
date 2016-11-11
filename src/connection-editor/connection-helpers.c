@@ -555,7 +555,7 @@ new_connection_result (NMConnection *connection,
 		                            (error && error->message) ? error->message : default_message);
 	}
 
-	result_func (connection, user_data);
+	result_func (FUNC_TAG_NEW_CONNECTION_RESULT_CALL, connection, user_data);
 }
 
 void
@@ -690,7 +690,7 @@ new_connection_dialog_full (GtkWindow *parent_window,
 		                        result_func,
 		                        user_data);
 	} else
-		result_func (NULL, user_data);
+		result_func (FUNC_TAG_NEW_CONNECTION_RESULT_CALL, NULL, user_data);
 }
 
 typedef struct {

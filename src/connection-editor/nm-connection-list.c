@@ -266,7 +266,8 @@ add_response_cb (NMConnectionEditor *editor, GtkResponseType response, gpointer 
 }
 
 static void
-really_add_connection (NMConnection *connection,
+really_add_connection (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
+                       NMConnection *connection,
                        gpointer user_data)
 {
 	NMConnectionList *list = user_data;
