@@ -59,6 +59,7 @@ GBytes *ce_page_wifi_get_ssid (CEPageWifi *self);
 void wifi_connection_new (GtkWindow *parent,
                           const char *detail,
                           gpointer detail_data,
+                          NMConnection *connection,
                           NMClient *client,
                           PageNewConnectionResultFunc result_func,
                           gpointer user_data);

@@ -46,6 +46,7 @@ typedef GSList * (*PageGetConnectionsFunc) (gpointer user_data);
 typedef void (*PageNewConnectionFunc) (GtkWindow *parent,
                                        const char *detail,
                                        gpointer detail_data,
+                                       NMConnection *connection,
                                        NMClient *client,
                                        PageNewConnectionResultFunc result_func,
                                        gpointer user_data);
@@ -160,11 +161,11 @@ gboolean ce_page_get_initialized (CEPage *self);
 char *ce_page_get_next_available_name (const GPtrArray *connections, const char *format);
 
 /* Only for subclasses */
-NMConnection *ce_page_new_connection (const char *format,
-                                      const char *ctype,
-                                      gboolean autoconnect,
-                                      NMClient *client,
-                                      gpointer user_data);
+void ce_page_complete_connection (NMConnection *connection,
+                                  const char *format,
+                                  const char *ctype,
+                                  gboolean autoconnect,
+                                  NMClient *client);
 
 CEPage *ce_page_new (GType page_type,
                      NMConnectionEditor *editor,

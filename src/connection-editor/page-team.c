@@ -1103,6 +1103,7 @@ add_slave (CEPageMaster *master, NewConnectionResultFunc result_func)
 		new_connection_of_type (GTK_WINDOW (toplevel),
 		                        NULL,
 		                        NULL,
+		                        nm_simple_connection_new (),
 		                        CE_PAGE (self)->client,
 		                        infiniband_connection_new,
 		                        result_func,
@@ -1231,11 +1232,11 @@ void
 team_connection_new (GtkWindow *parent,
                      const char *detail,
                      gpointer detail_data,
+                     NMConnection *connection,
                      NMClient *client,
                      PageNewConnectionResultFunc result_func,
                      gpointer user_data)
 {
-	NMConnection *connection;
 	NMSettingConnection *s_con;
 	int team_num, num, i;
 	const GPtrArray *connections;
@@ -1243,11 +1244,11 @@ team_connection_new (GtkWindow *parent,
 	const char *iface;
 	char *my_iface;
 
-	connection = ce_page_new_connection (_("Team connection %d"),
-	                                     NM_SETTING_TEAM_SETTING_NAME,
-	                                     TRUE,
-	                                     client,
-	                                     user_data);
+	ce_page_complete_connection (connection,
+	                             _("Team connection %d"),
+	                             NM_SETTING_TEAM_SETTING_NAME,
+	                             TRUE,
+	                             client);
 	nm_connection_add_setting (connection, nm_setting_team_new ());
 
 	/* Find an available interface name */
@@ -1276,4 +1277,3 @@ team_connection_new (GtkWindow *parent,
 
 	(*result_func) (connection, FALSE, NULL, user_data);
 }
-

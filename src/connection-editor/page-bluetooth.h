@@ -57,6 +57,7 @@ CEPage *ce_page_bluetooth_new (NMConnectionEditor *edit,
 void bluetooth_connection_new (GtkWindow *parent,
                                const char *detail,
                                gpointer detail_data,
+                               NMConnection *connection,
                                NMClient *client,
                                PageNewConnectionResultFunc result_func,
                                gpointer user_data);

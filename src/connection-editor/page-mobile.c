@@ -427,9 +427,10 @@ ce_page_mobile_class_init (CEPageMobileClass *mobile_class)
 }
 
 typedef struct {
-    NMClient *client;
-    PageNewConnectionResultFunc result_func;
-    gpointer user_data;
+	NMClient *client;
+	PageNewConnectionResultFunc result_func;
+	gpointer user_data;
+	NMConnection *connection;
 } WizardInfo;
 
 static void
@@ -439,7 +440,6 @@ new_connection_mobile_wizard_done (NMAMobileWizard *wizard,
                                    gpointer user_data)
 {
 	WizardInfo *info = user_data;
-	NMConnection *connection = NULL;
 
 	if (!canceled && method) {
 		NMSetting *type_setting;
@@ -477,19 +477,26 @@ new_connection_mobile_wizard_done (NMAMobileWizard *wizard,
 			detail = g_strdup_printf ("%s %s %%d", method->provider_name, method->plan_name);
 		else
 			detail = g_strdup_printf ("%s connection %%d", method->provider_name);
-		connection = ce_page_new_connection (detail, ctype, FALSE, info->client, info->user_data);
+		if (!info->connection)
+			info->connection = nm_simple_connection_new ();
+		ce_page_complete_connection (info->connection,
+		                             detail,
+                                             ctype,
+                                             FALSE,
+                                             info->client);
 		g_free (detail);
 
-		nm_connection_add_setting (connection, type_setting);
-		nm_connection_add_setting (connection, nm_setting_ppp_new ());
+		nm_connection_add_setting (info->connection, type_setting);
+		nm_connection_add_setting (info->connection, nm_setting_ppp_new ());
 	}
 
-	(*info->result_func) (connection, canceled, NULL, info->user_data);
+	(*info->result_func) (info->connection, canceled, NULL, info->user_data);
 
 	if (wizard)
 		nma_mobile_wizard_destroy (wizard);
 
 	g_object_unref (info->client);
+	g_object_unref (info->connection);
 	g_free (info);
 }
 
@@ -503,6 +510,7 @@ void
 mobile_connection_new (GtkWindow *parent,
                        const char *detail,
                        gpointer detail_data,
+                       NMConnection *connection,
                        NMClient *client,
                        PageNewConnectionResultFunc result_func,
                        gpointer user_data)
@@ -518,6 +526,7 @@ mobile_connection_new (GtkWindow *parent,
 	info->result_func = result_func;
 	info->client = g_object_ref (client);
 	info->user_data = user_data;
+	info->connection = g_object_ref (connection);
 
 	wizard = nma_mobile_wizard_new (parent, NULL, NM_DEVICE_MODEM_CAPABILITY_NONE, FALSE,
 	                                new_connection_mobile_wizard_done, info);

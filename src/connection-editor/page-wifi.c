@@ -603,23 +603,21 @@ void
 wifi_connection_new (GtkWindow *parent,
                      const char *detail,
                      gpointer detail_data,
+                     NMConnection *connection,
                      NMClient *client,
                      PageNewConnectionResultFunc result_func,
                      gpointer user_data)
 {
-	NMConnection *connection;
 	NMSetting *s_wifi;
 
-	connection = ce_page_new_connection (_("Wi-Fi connection %d"),
-	                                     NM_SETTING_WIRELESS_SETTING_NAME,
-	                                     TRUE,
-	                                     client,
-	                                     user_data);
+	ce_page_complete_connection (connection,
+	                             _("Wi-Fi connection %d"),
+	                             NM_SETTING_WIRELESS_SETTING_NAME,
+	                             TRUE,
+	                             client);
 	s_wifi = nm_setting_wireless_new ();
 	g_object_set (s_wifi, NM_SETTING_WIRELESS_MODE, "infrastructure", NULL);
 	nm_connection_add_setting (connection, s_wifi);
 
 	(*result_func) (connection, FALSE, NULL, user_data);
 }
-
-

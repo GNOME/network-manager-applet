@@ -241,19 +241,17 @@ void
 infiniband_connection_new (GtkWindow *parent,
                            const char *detail,
                            gpointer detail_data,
+                           NMConnection *connection,
                            NMClient *client,
                            PageNewConnectionResultFunc result_func,
                            gpointer user_data)
 {
-	NMConnection *connection;
-
-	connection = ce_page_new_connection (_("InfiniBand connection %d"),
-	                                     NM_SETTING_INFINIBAND_SETTING_NAME,
-	                                     TRUE,
-	                                     client,
-	                                     user_data);
+	ce_page_complete_connection (connection,
+	                             _("InfiniBand connection %d"),
+	                             NM_SETTING_INFINIBAND_SETTING_NAME,
+	                             TRUE,
+	                             client);
 	nm_connection_add_setting (connection, nm_setting_infiniband_new ());
 
 	(*result_func) (connection, FALSE, NULL, user_data);
 }
-

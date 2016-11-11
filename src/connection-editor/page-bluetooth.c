@@ -206,6 +206,7 @@ typedef struct {
 	PageNewConnectionResultFunc result_func;
 	gpointer user_data;
 	const gchar *type;
+	NMConnection *connection;
 } WizardInfo;
 
 static void
@@ -215,7 +216,6 @@ new_connection_mobile_wizard_done (NMAMobileWizard *wizard,
                                    gpointer user_data)
 {
 	WizardInfo *info = user_data;
-	NMConnection *connection = NULL;
 	char *detail = NULL;
 	NMSetting *type_setting = NULL;
 
@@ -256,28 +256,31 @@ new_connection_mobile_wizard_done (NMAMobileWizard *wizard,
 
 	if (!detail)
 		detail = g_strdup (_("Bluetooth connection %d"));
-	connection = ce_page_new_connection (detail,
-	                                     NM_SETTING_BLUETOOTH_SETTING_NAME,
-	                                     FALSE,
-	                                     info->client,
-	                                     user_data);
+	if (!info->connection)
+		info->connection = nm_simple_connection_new ();
+	ce_page_complete_connection (info->connection,
+	                             detail,
+	                             NM_SETTING_BLUETOOTH_SETTING_NAME,
+	                             FALSE,
+	                             info->client);
 	g_free (detail);
-	nm_connection_add_setting (connection, nm_setting_bluetooth_new ());
-	g_object_set (nm_connection_get_setting_bluetooth (connection),
+	nm_connection_add_setting (info->connection, nm_setting_bluetooth_new ());
+	g_object_set (nm_connection_get_setting_bluetooth (info->connection),
 	              NM_SETTING_BLUETOOTH_TYPE, info->type, NULL);
 
 	if (type_setting) {
-		nm_connection_add_setting (connection, type_setting);
-		nm_connection_add_setting (connection, nm_setting_ppp_new ());
+		nm_connection_add_setting (info->connection, type_setting);
+		nm_connection_add_setting (info->connection, nm_setting_ppp_new ());
 	}
 
 out:
-	(*info->result_func) (connection, canceled, NULL, info->user_data);
+	(*info->result_func) (info->connection, canceled, NULL, info->user_data);
 
 	if (wizard)
 		nma_mobile_wizard_destroy (wizard);
 
 	g_object_unref (info->client);
+	g_object_unref (info->connection);
 	g_free (info);
 }
 
@@ -285,6 +288,7 @@ void
 bluetooth_connection_new (GtkWindow *parent,
                           const char *detail,
                           gpointer detail_data,
+                          NMConnection *connection,
                           NMClient *client,
                           PageNewConnectionResultFunc result_func,
                           gpointer user_data)
@@ -299,6 +303,7 @@ bluetooth_connection_new (GtkWindow *parent,
 	info->client = g_object_ref (client);
 	info->user_data = user_data;
 	info->type = NM_SETTING_BLUETOOTH_TYPE_PANU;
+	info->connection = g_object_ref (connection);
 
 	dialog = gtk_dialog_new_with_buttons (_("Bluetooth Type"),
 	                                      parent,

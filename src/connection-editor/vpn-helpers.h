@@ -32,9 +32,6 @@ GSList *vpn_get_plugin_infos (void);
 
 NMVpnEditorPlugin *vpn_get_plugin_by_service (const char *service);
 
-typedef void (*VpnImportSuccessCallback) (NMConnection *connection, gpointer user_data);
-void vpn_import (VpnImportSuccessCallback callback, gpointer user_data);
-
 void vpn_export (NMConnection *connection);
 
 gboolean vpn_supports_ipv6 (NMConnection *connection);

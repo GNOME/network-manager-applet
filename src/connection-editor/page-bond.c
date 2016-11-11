@@ -389,6 +389,7 @@ add_slave (CEPageMaster *master, NewConnectionResultFunc result_func)
 		new_connection_of_type (priv->toplevel,
 		                        NULL,
 		                        NULL,
+		                        nm_simple_connection_new (),
 		                        CE_PAGE (self)->client,
 		                        infiniband_connection_new,
 		                        result_func,
@@ -601,11 +602,11 @@ void
 bond_connection_new (GtkWindow *parent,
                      const char *detail,
                      gpointer detail_data,
+                     NMConnection *connection,
                      NMClient *client,
                      PageNewConnectionResultFunc result_func,
                      gpointer user_data)
 {
-	NMConnection *connection;
 	NMSettingConnection *s_con;
 	int bond_num = 0, num, i;
 	const GPtrArray *connections;
@@ -613,11 +614,11 @@ bond_connection_new (GtkWindow *parent,
 	const char *iface;
 	char *my_iface;
 
-	connection = ce_page_new_connection (_("Bond connection %d"),
-	                                     NM_SETTING_BOND_SETTING_NAME,
-	                                     TRUE,
-	                                     client,
-	                                     user_data);
+	ce_page_complete_connection (connection,
+	                             _("Bond connection %d"),
+	                             NM_SETTING_BOND_SETTING_NAME,
+	                             TRUE,
+	                             client);
 	nm_connection_add_setting (connection, nm_setting_bond_new ());
 
 	/* Find an available interface name */

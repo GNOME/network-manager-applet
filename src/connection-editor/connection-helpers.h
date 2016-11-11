@@ -55,6 +55,7 @@ void new_connection_dialog_full (GtkWindow *parent_window,
 void new_connection_of_type (GtkWindow *parent_window,
                              const char *detail,
                              gpointer detail_data,
+                             NMConnection *connection,
                              NMClient *client,
                              PageNewConnectionFunc new_func,
                              NewConnectionResultFunc result_func,
@@ -71,6 +72,8 @@ void delete_connection (GtkWindow *parent_window,
 
 gboolean connection_supports_ip4 (NMConnection *connection);
 gboolean connection_supports_ip6 (NMConnection *connection);
+
+NMConnection *vpn_connection_from_file (const char *filename);
 
 #endif  /* __CONNECTION_HELPERS_H__ */
 
