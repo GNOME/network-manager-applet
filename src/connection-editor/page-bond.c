@@ -361,7 +361,9 @@ populate_ui (CEPageBond *self)
 }
 
 static gboolean
-connection_type_filter (GType type, gpointer self)
+connection_type_filter (FUNC_TAG_NEW_CONNECTION_TYPE_FILTER_IMPL,
+                        GType type,
+                        gpointer self)
 {
 	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
 

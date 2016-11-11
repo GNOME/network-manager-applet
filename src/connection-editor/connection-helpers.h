@@ -34,7 +34,11 @@ typedef struct {
 
 ConnectionTypeData *get_connection_type_list (void);
 
-typedef gboolean (*NewConnectionTypeFilterFunc) (GType type,
+struct _func_tag_new_connection_type_filter;
+#define FUNC_TAG_NEW_CONNECTION_TYPE_FILTER_IMPL struct _func_tag_new_connection_type_filter *_dummy
+#define FUNC_TAG_NEW_CONNECTION_TYPE_FILTER_CALL ((struct _func_tag_new_connection_type_filter *) NULL)
+typedef gboolean (*NewConnectionTypeFilterFunc) (FUNC_TAG_NEW_CONNECTION_TYPE_FILTER_IMPL,
+                                                 GType type,
                                                  gpointer user_data);
 
 struct _func_tag_new_connection_result;

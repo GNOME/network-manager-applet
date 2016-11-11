@@ -1070,7 +1070,9 @@ create_connection (CEPageMaster *master, NMConnection *connection)
 }
 
 static gboolean
-connection_type_filter (GType type, gpointer self)
+connection_type_filter (FUNC_TAG_NEW_CONNECTION_TYPE_FILTER_IMPL,
+                        GType type,
+                        gpointer self)
 {
 	CEPageTeamPrivate *priv = CE_PAGE_TEAM_GET_PRIVATE (self);
 

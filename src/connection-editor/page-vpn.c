@@ -212,7 +212,9 @@ complete_vpn_connection (NMConnection *connection, NMClient *client)
 #define NEW_VPN_CONNECTION_SECONDARY_LABEL _("Select the type of VPN you wish to use for the new connection. If the type of VPN connection you wish to create does not appear in the list, you may not have the correct VPN plugin installed.")
 
 static gboolean
-vpn_type_filter_func (GType type, gpointer user_data)
+vpn_type_filter_func (FUNC_TAG_NEW_CONNECTION_TYPE_FILTER_IMPL,
+                      GType type,
+                      gpointer user_data)
 {
 	return type == NM_TYPE_SETTING_VPN;
 }

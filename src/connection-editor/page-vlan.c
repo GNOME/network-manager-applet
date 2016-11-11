@@ -238,13 +238,13 @@ edit_parent (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
 
 	s_con = nm_connection_get_setting_connection (CE_PAGE (self)->connection);
 	g_object_set (G_OBJECT (s_con),
-		      NM_SETTING_CONNECTION_AUTOCONNECT, TRUE,
-		      NULL);
+	              NM_SETTING_CONNECTION_AUTOCONNECT, TRUE,
+	              NULL);
 
 
 	editor = nm_connection_editor_new (priv->toplevel,
-					   connection,
-					   CE_PAGE (self)->client);
+	                                   connection,
+	                                   CE_PAGE (self)->client);
 	if (!editor) {
 		g_object_unref (connection);
 		return;
@@ -255,7 +255,9 @@ edit_parent (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
 }
 
 static gboolean
-connection_type_filter (GType type, gpointer user_data)
+connection_type_filter (FUNC_TAG_NEW_CONNECTION_TYPE_FILTER_IMPL,
+                        GType type,
+                        gpointer self)
 {
 	return nm_utils_check_virtual_device_compatibility (NM_TYPE_SETTING_VLAN, type);
 }
@@ -273,10 +275,10 @@ parent_changed (GtkWidget *widget, gpointer user_data)
 	if (parent_id == priv->parents_len - 1) {
 		gtk_entry_set_text (priv->parent_entry, "");
 		new_connection_dialog (priv->toplevel,
-				       CE_PAGE (self)->client,
-				       connection_type_filter,
-				       edit_parent,
-				       self);
+		                       CE_PAGE (self)->client,
+		                       connection_type_filter,
+		                       edit_parent,
+		                       self);
 		return;
 	}
 

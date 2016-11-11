@@ -162,7 +162,9 @@ create_connection (CEPageMaster *master, NMConnection *connection)
 }
 
 static gboolean
-connection_type_filter (GType type, gpointer user_data)
+connection_type_filter (FUNC_TAG_NEW_CONNECTION_TYPE_FILTER_IMPL,
+                        GType type,
+                        gpointer self)
 {
 	return nm_utils_check_virtual_device_compatibility (NM_TYPE_SETTING_BRIDGE, type);
 }
