@@ -507,7 +507,8 @@ cancel_dialog (GtkDialog *dialog)
 }
 
 void
-mobile_connection_new (GtkWindow *parent,
+mobile_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
+                       GtkWindow *parent,
                        const char *detail,
                        gpointer detail_data,
                        NMConnection *connection,

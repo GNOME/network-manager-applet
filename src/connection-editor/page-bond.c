@@ -599,7 +599,8 @@ ce_page_bond_class_init (CEPageBondClass *bond_class)
 
 
 void
-bond_connection_new (GtkWindow *parent,
+bond_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
+                     GtkWindow *parent,
                      const char *detail,
                      gpointer detail_data,
                      NMConnection *connection,

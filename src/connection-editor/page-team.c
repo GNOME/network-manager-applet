@@ -1229,7 +1229,8 @@ ce_page_team_class_init (CEPageTeamClass *team_class)
 
 
 void
-team_connection_new (GtkWindow *parent,
+team_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
+                     GtkWindow *parent,
                      const char *detail,
                      gpointer detail_data,
                      NMConnection *connection,

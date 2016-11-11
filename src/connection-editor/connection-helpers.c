@@ -255,7 +255,8 @@ import_vpn_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 	if (connection) {
 		/* Wrap around the actual new function so that the page can complete
 		 * the missing parts, such as UUID or make up the connection name. */
-		vpn_connection_new (info->parent,
+		vpn_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_CALL,
+		                    info->parent,
 		                    NULL,
 		                    NULL,
 		                    connection,
@@ -274,7 +275,8 @@ out:
 }
 
 static void
-vpn_connection_import (GtkWindow *parent,
+vpn_connection_import (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
+                       GtkWindow *parent,
                        const char *detail,
                        gpointer detail_data,
                        NMConnection *connection,
@@ -576,7 +578,8 @@ new_connection_of_type (GtkWindow *parent_window,
 	ncd->result_func = result_func;
 	ncd->user_data = user_data;
 
-	new_func (parent_window,
+	new_func (FUNC_TAG_PAGE_NEW_CONNECTION_CALL,
+	          parent_window,
 	          detail,
 	          detail_data,
 	          connection,

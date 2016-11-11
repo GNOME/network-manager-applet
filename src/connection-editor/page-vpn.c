@@ -229,7 +229,8 @@ vpn_type_result_func (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
 }
 
 void
-vpn_connection_new (GtkWindow *parent,
+vpn_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
+                    GtkWindow *parent,
                     const char *detail,
                     gpointer detail_data,
                     NMConnection *connection,

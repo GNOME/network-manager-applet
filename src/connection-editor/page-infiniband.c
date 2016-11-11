@@ -238,7 +238,8 @@ ce_page_infiniband_class_init (CEPageInfinibandClass *infiniband_class)
 
 
 void
-infiniband_connection_new (GtkWindow *parent,
+infiniband_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
+                           GtkWindow *parent,
                            const char *detail,
                            gpointer detail_data,
                            NMConnection *connection,

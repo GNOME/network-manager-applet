@@ -43,7 +43,11 @@ typedef void (*PageNewConnectionResultFunc) (NMConnection *connection,
 
 typedef GSList * (*PageGetConnectionsFunc) (gpointer user_data);
 
-typedef void (*PageNewConnectionFunc) (GtkWindow *parent,
+struct _func_tag_page_new_connection;
+#define FUNC_TAG_PAGE_NEW_CONNECTION_IMPL struct _func_tag_page_new_connection *_dummy
+#define FUNC_TAG_PAGE_NEW_CONNECTION_CALL ((struct _func_tag_page_new_connection *) NULL)
+typedef void (*PageNewConnectionFunc) (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
+                                       GtkWindow *parent,
                                        const char *detail,
                                        gpointer detail_data,
                                        NMConnection *connection,

@@ -285,7 +285,8 @@ out:
 }
 
 void
-bluetooth_connection_new (GtkWindow *parent,
+bluetooth_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
+                          GtkWindow *parent,
                           const char *detail,
                           gpointer detail_data,
                           NMConnection *connection,

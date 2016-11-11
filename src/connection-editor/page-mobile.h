@@ -52,7 +52,8 @@ CEPage *ce_page_mobile_new (NMConnectionEditor *editor,
                             const char **out_secrets_setting_name,
                             GError **error);
 
-void mobile_connection_new (GtkWindow *parent,
+void mobile_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
+                            GtkWindow *parent,
                             const char *detail,
                             gpointer detail_data,
                             NMConnection *connection,

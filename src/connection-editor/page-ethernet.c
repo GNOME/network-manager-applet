@@ -506,7 +506,8 @@ ce_page_ethernet_class_init (CEPageEthernetClass *ethernet_class)
 
 
 void
-ethernet_connection_new (GtkWindow *parent,
+ethernet_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
+                         GtkWindow *parent,
                          const char *detail,
                          gpointer detail_data,
                          NMConnection *connection,

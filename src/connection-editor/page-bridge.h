@@ -50,7 +50,8 @@ CEPage *ce_page_bridge_new (NMConnectionEditor *editor,
                             const char **out_secrets_setting_name,
                             GError **error);
 
-void bridge_connection_new (GtkWindow *parent,
+void bridge_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
+                            GtkWindow *parent,
                             const char *detail,
                             gpointer detail_data,
                             NMConnection *connection,

@@ -202,7 +202,8 @@ ce_page_dsl_class_init (CEPageDslClass *dsl_class)
 
 
 void
-dsl_connection_new (GtkWindow *parent,
+dsl_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
+                    GtkWindow *parent,
                     const char *detail,
                     gpointer detail_data,
                     NMConnection *connection,
