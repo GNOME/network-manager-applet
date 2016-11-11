@@ -50,6 +50,7 @@ static GDBusNodeInfo *introspection_data = NULL;
 /*************************************************/
 
 typedef struct {
+	gboolean create;
 	NMConnectionList *list;
 	GType ctype;
 	char *detail;
@@ -61,8 +62,18 @@ idle_create_connection (gpointer user_data)
 {
 	CreateConnectionInfo *info = user_data;
 
-	nm_connection_list_create (info->list, info->ctype,
-	                           info->detail, info->connection);
+	if (info->create) {
+		if (!info->ctype)
+			nm_connection_list_add (info->list);
+		else {
+			nm_connection_list_create (info->list, info->ctype,
+			                           info->detail, NULL);
+		}
+	} else {
+		/* import */
+		nm_connection_list_create (info->list, info->ctype,
+		                           info->detail, info->connection);
+	}
 
 	g_object_unref (info->list);
 	g_free (info->detail);
@@ -102,25 +113,20 @@ handle_arguments (NMConnectionList *list,
 	if (show) {
 		/* Just show the given connection type page */
 		nm_connection_list_set_type (list, ctype);
-	} else if (create) {
-		if (!ctype)
-			nm_connection_list_add (list);
-		else {
-			/* If type is "vpn" and the user cancels the "vpn type" dialog, we need
-			 * to quit. But we haven't even started yet. So postpone this to an idle.
-			 */
-			info = g_slice_new0 (CreateConnectionInfo);
-			info->list = g_object_ref (list);
-			info->ctype = ctype;
-			info->detail = g_strdup (detail);
-			g_idle_add (idle_create_connection, info);
-		}
-		show_list = FALSE;
-	} else if (import) {
+	} else if (create || import) {
+		/* If type is "vpn" and the user cancels the "vpn type" dialog, we need
+		 * to quit. But we haven't even started yet. So postpone this to an idle.
+		 */
 		info = g_slice_new0 (CreateConnectionInfo);
 		info->list = g_object_ref (list);
-		info->ctype = NM_TYPE_SETTING_VPN;
-		info->connection = vpn_connection_from_file (import);
+		info->create = create;
+		info->detail = g_strdup (detail);
+		if (create)
+			info->ctype = ctype;
+		else {
+			info->ctype = NM_TYPE_SETTING_VPN;
+			info->connection = vpn_connection_from_file (import);
+		}
 		g_idle_add (idle_create_connection, info);
 		show_list = FALSE;
 	} else if (edit_uuid) {
