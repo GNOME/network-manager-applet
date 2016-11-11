@@ -43,6 +43,8 @@ typedef struct {
 	GtkListStore *dependent_vpn_store;
 
 	GtkWidget *autoconnect;
+	GtkWidget *autoconnect_prio_label;
+	GtkSpinButton *autoconnect_prio;
 	GtkWidget *all_checkbutton;
 
 	gboolean setup_finished;
@@ -163,6 +165,8 @@ general_private_init (CEPageGeneral *self)
 	priv->dependent_vpn_store = GTK_LIST_STORE (gtk_builder_get_object (builder, "dependent_vpn_model"));
 
 	priv->autoconnect = GTK_WIDGET (gtk_builder_get_object (builder, "connection_autoconnect"));
+	priv->autoconnect_prio_label = GTK_WIDGET (gtk_builder_get_object (builder, "autoconnect_prio_label"));
+	priv->autoconnect_prio = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "autoconnect_prio"));
 	priv->all_checkbutton = GTK_WIDGET (gtk_builder_get_object (builder, "system_checkbutton"));
 }
 
@@ -194,6 +198,16 @@ vpn_checkbox_toggled (GtkToggleButton *button, gpointer user_data)
 	CEPageGeneralPrivate *priv = CE_PAGE_GENERAL_GET_PRIVATE (user_data);
 
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->dependent_vpn), gtk_toggle_button_get_active (priv->dependent_vpn_checkbox));
+	ce_page_changed (CE_PAGE (user_data));
+}
+
+static void
+autoconnect_checkbox_toggled (GtkToggleButton *button, gpointer user_data)
+{
+	CEPageGeneralPrivate *priv = CE_PAGE_GENERAL_GET_PRIVATE (user_data);
+
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->autoconnect_prio),
+	                          gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->autoconnect)));
 	ce_page_changed (CE_PAGE (user_data));
 }
 
@@ -283,12 +297,19 @@ populate_ui (CEPageGeneral *self)
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->autoconnect),
 	                              nm_setting_connection_get_autoconnect (priv->setting));
 
+	/* Connection priority */
+	gtk_spin_button_set_value (priv->autoconnect_prio,
+	                           nm_setting_connection_get_autoconnect_priority(priv->setting));
+
 	/* VPN connections don't have a blanket "autoconnect" as that is too coarse
 	 * a behavior, instead the user configures another connection to start the
 	 * VPN on success.
 	 */
-	if (priv->is_vpn)
+	if (priv->is_vpn) {
 		gtk_widget_hide (priv->autoconnect);
+		gtk_widget_hide (priv->autoconnect_prio_label);
+		gtk_widget_hide (GTK_WIDGET (priv->autoconnect_prio));
+	}
 
 	/* 'All users may connect to this network' checkbox */
 	if (nm_setting_connection_get_num_permissions (priv->setting))
@@ -319,7 +340,9 @@ finish_setup (CEPageGeneral *self, gpointer unused, GError *error, gpointer user
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->dependent_vpn), any_dependent_vpn);
 	g_signal_connect (priv->dependent_vpn, "changed", G_CALLBACK (stuff_changed), self);
 
-	g_signal_connect (priv->autoconnect, "toggled", G_CALLBACK (stuff_changed), self);
+	g_signal_connect (priv->autoconnect, "toggled", G_CALLBACK (autoconnect_checkbox_toggled), self);
+	g_signal_connect (priv->autoconnect_prio, "value-changed", G_CALLBACK (stuff_changed), self);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->autoconnect_prio), nm_setting_connection_get_autoconnect (priv->setting));
 	g_signal_connect (priv->all_checkbutton, "toggled", G_CALLBACK (stuff_changed), self);
 }
 
@@ -371,6 +394,7 @@ ui_to_setting (CEPageGeneral *self)
 	char *uuid = NULL;
 	GtkTreeIter iter;
 	gboolean autoconnect = FALSE, everyone = FALSE;
+	int prio;
 
 	/* We can't take and save zone until the combo was properly initialized. Zones
 	 * are received from FirewallD asynchronously; got_zones indicates we are ready.
@@ -396,7 +420,11 @@ ui_to_setting (CEPageGeneral *self)
 	g_free (uuid);
 
 	autoconnect = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->autoconnect));
-	g_object_set (G_OBJECT (priv->setting), NM_SETTING_CONNECTION_AUTOCONNECT, autoconnect, NULL);
+	prio = gtk_spin_button_get_value_as_int (priv->autoconnect_prio);
+	g_object_set (G_OBJECT (priv->setting),
+	              NM_SETTING_CONNECTION_AUTOCONNECT, autoconnect,
+	              NM_SETTING_CONNECTION_AUTOCONNECT_PRIORITY, prio,
+	              NULL);
 
 	/* Handle visibility */
 	everyone = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->all_checkbutton));
