@@ -152,10 +152,16 @@
       </packing>
     </child>
     <child>
-      <object class="GtkEntry" id="wifi_cloned_mac">
+      <object class="GtkComboBoxText" id="wifi_cloned_mac">
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="tooltip_text" translatable="yes">The MAC address entered here will be used as hardware address for the network device this connection is activated on. This feature is known as MAC cloning or spoofing. Example: 00:11:22:33:44:55</property>
+        <property name="can_focus">False</property>
+        <property name="has_entry">True</property>
+        <property name="active_id">0</property>
+        <child internal-child="entry">
+          <object class="GtkEntry">
+            <property name="can_focus">True</property>
+          </object>
+        </child>
       </object>
       <packing>
         <property name="left_attach">1</property>

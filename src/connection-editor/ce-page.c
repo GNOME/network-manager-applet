@@ -287,14 +287,53 @@ ce_page_setup_mac_combo (CEPage *self, GtkComboBox *combo,
 	_set_active_combo_item (combo, mac, active_mac, active_idx);
 }
 
-gboolean
-ce_page_mac_entry_valid (GtkEntry *entry, int type, const char *property_name, GError **error)
+void
+ce_page_setup_cloned_mac_combo (GtkComboBoxText *combo, const char *current)
 {
-	const char *mac;
+	GtkWidget *entry;
+	static const char *entries[][2] = { { "preserve",  N_("Preserve") },
+	                                    { "permanent", N_("Permanent") },
+	                                    { "random",    N_("Random") },
+	                                    { "stable",    N_("Stable") } };
+	int i, active = -1;
 
-	g_return_val_if_fail (GTK_IS_ENTRY (entry), FALSE);
+	gtk_widget_set_tooltip_text (GTK_WIDGET (combo),
+		_("The MAC address entered here will be used as hardware address for "
+		  "the network device this connection is activated on. This feature is "
+		  "known as MAC cloning or spoofing. Example: 00:11:22:33:44:55"));
 
-	mac = gtk_entry_get_text (entry);
+	gtk_combo_box_text_remove_all (combo);
+
+	for (i = 0; i < G_N_ELEMENTS (entries); i++) {
+		gtk_combo_box_text_append (combo, entries[i][0], _(entries[i][1]));
+		if (nm_streq0 (current, entries[i][0]))
+			active = i;
+	}
+
+	if (active != -1) {
+		gtk_combo_box_set_active (GTK_COMBO_BOX (combo), active);
+	} else if (current && current[0]) {
+		entry = gtk_bin_get_child (GTK_BIN (combo));
+		g_assert (entry);
+		gtk_entry_set_text (GTK_ENTRY (entry), current);
+	}
+}
+
+const char *
+ce_page_cloned_mac_get (GtkComboBoxText *combo)
+{
+	const char *id;
+
+	id = gtk_combo_box_get_active_id (GTK_COMBO_BOX (combo));
+	if (id)
+		return id;
+
+	return gtk_combo_box_text_get_active_text (combo);
+}
+
+static gboolean
+mac_valid (const char *mac, int type, const char *property_name, GError **error)
+{
 	if (mac && *mac) {
 		if (!nm_utils_hwaddr_valid (mac, nm_utils_hwaddr_len (type))) {
 			const char *addr_type;
@@ -312,7 +351,28 @@ ce_page_mac_entry_valid (GtkEntry *entry, int type, const char *property_name, G
 			return FALSE;
 		}
 	}
+
 	return TRUE;
+}
+
+gboolean
+ce_page_cloned_mac_combo_valid (GtkComboBoxText *combo, int type, const char *property_name, GError **error)
+{
+	if (gtk_combo_box_get_active (GTK_COMBO_BOX (combo)) != -1)
+		return TRUE;
+
+	return mac_valid (gtk_combo_box_text_get_active_text (combo),
+	                  type,
+	                  property_name,
+	                  error);
+}
+
+gboolean
+ce_page_mac_entry_valid (GtkEntry *entry, int type, const char *property_name, GError **error)
+{
+	g_return_val_if_fail (GTK_IS_ENTRY (entry), FALSE);
+
+	return mac_valid (gtk_entry_get_text (entry), type, property_name, error);
 }
 
 gboolean

@@ -52,7 +52,7 @@ typedef struct {
 	GtkEntry *parent_entry;
 	GtkSpinButton *id_entry;
 	GtkEntry *name_entry;
-	GtkEntry *cloned_mac;
+	GtkComboBoxText *cloned_mac;
 	GtkSpinButton *mtu;
 	GtkToggleButton *flag_reorder_hdr, *flag_gvrp, *flag_loose_binding, *flag_mvrp;
 
@@ -84,7 +84,7 @@ vlan_private_init (CEPageVlan *self)
 
 	priv->id_entry = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "vlan_id_entry"));
 	priv->name_entry = GTK_ENTRY (gtk_builder_get_object (builder, "vlan_name_entry"));
-	priv->cloned_mac = GTK_ENTRY (gtk_builder_get_object (builder, "vlan_cloned_mac_entry"));
+	priv->cloned_mac = GTK_COMBO_BOX_TEXT (gtk_builder_get_object (builder, "vlan_cloned_mac_entry"));
 	priv->mtu = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "vlan_mtu"));
 	priv->flag_reorder_hdr = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "reorder_hdr_flag"));
 	priv->flag_gvrp = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "gvrp_flag"));
@@ -285,7 +285,7 @@ parent_changed (GtkWidget *widget, gpointer user_data)
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->mtu), TRUE);
 	} else {
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->cloned_mac), FALSE);
-		gtk_entry_set_text (priv->cloned_mac, "");
+		ce_page_setup_cloned_mac_combo (priv->cloned_mac, NULL);
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->mtu), FALSE);
 		gtk_spin_button_set_value (priv->mtu, 1500);
 	}
@@ -532,8 +532,9 @@ populate_ui (CEPageVlan *self)
 	/* Cloned MAC address */
 	if (NM_IS_SETTING_WIRED (priv->s_hw)) {
 		const char *mac = nm_setting_wired_get_cloned_mac_address (NM_SETTING_WIRED (priv->s_hw));
-		if (mac)
-			gtk_entry_set_text (priv->cloned_mac, mac);
+		ce_page_setup_cloned_mac_combo (priv->cloned_mac, mac);
+	} else {
+		ce_page_setup_cloned_mac_combo (priv->cloned_mac, NULL);
 	}
 	g_signal_connect (priv->cloned_mac, "changed", G_CALLBACK (stuff_changed), self);
 
@@ -693,7 +694,7 @@ ui_to_setting (CEPageVlan *self)
 	              NULL);
 
 	if (hwtype != G_TYPE_NONE) {
-		cloned_mac = gtk_entry_get_text (priv->cloned_mac);
+		cloned_mac = ce_page_cloned_mac_get (priv->cloned_mac);
 		if (cloned_mac && !*cloned_mac)
 			cloned_mac = NULL;
 		mtu_set = g_ascii_isdigit (*gtk_entry_get_text (GTK_ENTRY (priv->mtu)));
@@ -737,7 +738,7 @@ ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 		g_free (parent_iface);
 	}
 
-	if (!ce_page_mac_entry_valid (priv->cloned_mac, ARPHRD_ETHER, _("cloned MAC"), error))
+	if (!ce_page_cloned_mac_combo_valid (priv->cloned_mac, ARPHRD_ETHER, _("cloned MAC"), error))
 		return FALSE;
 
 	ui_to_setting (self);

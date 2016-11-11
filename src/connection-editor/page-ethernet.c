@@ -35,7 +35,7 @@ typedef struct {
 	NMSettingWired *setting;
 
 	GtkComboBoxText *device_combo; /* Device identification (ifname and/or MAC) */
-	GtkEntry *cloned_mac;          /* Cloned MAC - used for MAC spoofing */
+	GtkComboBoxText *cloned_mac;   /* Cloned MAC - used for MAC spoofing */
 	GtkComboBox *port;
 	GtkComboBox *speed;
 	GtkComboBox *duplex;
@@ -91,7 +91,7 @@ ethernet_private_init (CEPageEthernet *self)
 	label = GTK_LABEL (gtk_builder_get_object (builder, "ethernet_device_label"));
 	gtk_label_set_mnemonic_widget (label, GTK_WIDGET (priv->device_combo));
 
-	priv->cloned_mac = GTK_ENTRY (gtk_builder_get_object (builder, "ethernet_cloned_mac"));
+	priv->cloned_mac = GTK_COMBO_BOX_TEXT (gtk_builder_get_object (builder, "ethernet_cloned_mac"));
 	priv->port = GTK_COMBO_BOX (gtk_builder_get_object (builder, "ethernet_port"));
 	priv->speed = GTK_COMBO_BOX (gtk_builder_get_object (builder, "ethernet_speed"));
 	priv->duplex = GTK_COMBO_BOX (gtk_builder_get_object (builder, "ethernet_duplex"));
@@ -249,8 +249,7 @@ populate_ui (CEPageEthernet *self)
 
 	/* Cloned MAC address */
 	s_mac = nm_setting_wired_get_cloned_mac_address (setting);
-	if (s_mac)
-		gtk_entry_set_text (priv->cloned_mac, s_mac);
+	ce_page_setup_cloned_mac_combo (priv->cloned_mac, s_mac);
 	g_signal_connect (priv->cloned_mac, "changed", G_CALLBACK (stuff_changed), self);
 
 	/* MTU */
@@ -454,7 +453,7 @@ ui_to_setting (CEPageEthernet *self)
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_combo));
 	if (entry)
 		ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, TRUE, &ifname, &device_mac, NULL, NULL);
-	cloned_mac = gtk_entry_get_text (priv->cloned_mac);
+	cloned_mac = ce_page_cloned_mac_get (priv->cloned_mac);
 
 	/* Wake-on-LAN */
 	if (gtk_toggle_button_get_active (priv->wol_default))
@@ -516,7 +515,7 @@ ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 			return FALSE;
 	}
 
-	if (!ce_page_mac_entry_valid (priv->cloned_mac, ARPHRD_ETHER, _("cloned MAC"), error))
+	if (!ce_page_cloned_mac_combo_valid (priv->cloned_mac, ARPHRD_ETHER, _("cloned MAC"), error))
 		return FALSE;
 
 	if (gtk_widget_get_sensitive (GTK_WIDGET (priv->wol_passwd))) {

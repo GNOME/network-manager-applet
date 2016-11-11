@@ -38,7 +38,7 @@ typedef struct {
 	GtkEntry *ssid;
 	GtkComboBoxText *bssid;
 	GtkComboBoxText *device_combo; /* Device identification (ifname and/or MAC) */
-	GtkEntry *cloned_mac;          /* Cloned MAC - used for MAC spoofing */
+	GtkComboBoxText *cloned_mac;   /* Cloned MAC - used for MAC spoofing */
 	GtkComboBox *mode;
 	GtkComboBox *band;
 	GtkSpinButton *channel;
@@ -65,7 +65,7 @@ wifi_private_init (CEPageWifi *self)
 	priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
 	priv->ssid     = GTK_ENTRY (gtk_builder_get_object (builder, "wifi_ssid"));
-	priv->cloned_mac = GTK_ENTRY (gtk_builder_get_object (builder, "wifi_cloned_mac"));
+	priv->cloned_mac = GTK_COMBO_BOX_TEXT (gtk_builder_get_object (builder, "wifi_cloned_mac"));
 	priv->mode     = GTK_COMBO_BOX (gtk_builder_get_object (builder, "wifi_mode"));
 	priv->band     = GTK_COMBO_BOX (gtk_builder_get_object (builder, "wifi_band"));
 	priv->channel  = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "wifi_channel"));
@@ -387,8 +387,7 @@ populate_ui (CEPageWifi *self)
 
 	/* Cloned MAC address */
 	s_mac = nm_setting_wireless_get_cloned_mac_address (setting);
-	if (s_mac)
-		gtk_entry_set_text (priv->cloned_mac, s_mac);
+	ce_page_setup_cloned_mac_combo (priv->cloned_mac, s_mac);
 	g_signal_connect_swapped (priv->cloned_mac, "changed", G_CALLBACK (ce_page_changed), self);
 
 	gtk_spin_button_set_value (priv->rate, (gdouble) nm_setting_wireless_get_rate (setting));
@@ -528,7 +527,7 @@ ui_to_setting (CEPageWifi *self)
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_combo));
 	if (entry)
 		ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, TRUE, &ifname, &device_mac, NULL, NULL);
-	cloned_mac = gtk_entry_get_text (priv->cloned_mac);
+	cloned_mac = ce_page_cloned_mac_get (priv->cloned_mac);
 
 	g_object_set (s_con,
 	              NM_SETTING_CONNECTION_INTERFACE_NAME, ifname,
@@ -571,7 +570,7 @@ ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 			return FALSE;
 	}
 
-	if (!ce_page_mac_entry_valid (priv->cloned_mac, ARPHRD_ETHER, _("cloned MAC"), error))
+	if (!ce_page_cloned_mac_combo_valid (priv->cloned_mac, ARPHRD_ETHER, _("cloned MAC"), error))
 		return FALSE;
 
 	ui_to_setting (self);
