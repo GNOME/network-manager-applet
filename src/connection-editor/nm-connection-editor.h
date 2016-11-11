@@ -40,7 +40,7 @@ typedef struct {
 
 	GtkWindow *parent_window;
 	NMClient *client;
-	guint permission_id;
+	gulong permission_id;
 
 	/* private data */
 	NMConnection *connection;
