@@ -620,5 +620,5 @@ wifi_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
 	g_object_set (s_wifi, NM_SETTING_WIRELESS_MODE, "infrastructure", NULL);
 	nm_connection_add_setting (connection, s_wifi);
 
-	(*result_func) (connection, FALSE, NULL, user_data);
+	(*result_func) (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_CALL, connection, FALSE, NULL, user_data);
 }

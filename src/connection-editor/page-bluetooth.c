@@ -274,7 +274,7 @@ new_connection_mobile_wizard_done (NMAMobileWizard *wizard,
 	}
 
 out:
-	(*info->result_func) (info->connection, canceled, NULL, info->user_data);
+	(*info->result_func) (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_CALL, info->connection, canceled, NULL, info->user_data);
 
 	if (wizard)
 		nma_mobile_wizard_destroy (wizard);

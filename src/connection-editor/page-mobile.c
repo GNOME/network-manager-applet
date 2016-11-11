@@ -490,7 +490,7 @@ new_connection_mobile_wizard_done (NMAMobileWizard *wizard,
 		nm_connection_add_setting (info->connection, nm_setting_ppp_new ());
 	}
 
-	(*info->result_func) (info->connection, canceled, NULL, info->user_data);
+	(*info->result_func) (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_CALL, info->connection, canceled, NULL, info->user_data);
 
 	if (wizard)
 		nma_mobile_wizard_destroy (wizard);

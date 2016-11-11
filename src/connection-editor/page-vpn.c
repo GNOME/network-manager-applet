@@ -224,7 +224,7 @@ vpn_type_result_func (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
 {
 	NewVpnInfo *info = user_data;
 
-	info->result_func (connection, connection == NULL, NULL, info->user_data);
+	info->result_func (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_CALL, connection, connection == NULL, NULL, info->user_data);
 	g_slice_free (NewVpnInfo, info);
 }
 
@@ -321,5 +321,5 @@ vpn_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
 
 	complete_vpn_connection (connection, client);
 
-	(*result_func) (connection, FALSE, NULL, user_data);
+	(*result_func) (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_CALL, connection, FALSE, NULL, user_data);
 }

@@ -254,5 +254,5 @@ infiniband_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
 	                             client);
 	nm_connection_add_setting (connection, nm_setting_infiniband_new ());
 
-	(*result_func) (connection, FALSE, NULL, user_data);
+	(*result_func) (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_CALL, connection, FALSE, NULL, user_data);
 }

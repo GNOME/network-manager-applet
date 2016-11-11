@@ -228,5 +228,5 @@ dsl_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
 	              NULL);
 	nm_connection_add_setting (connection, setting);
 
-	(*result_func) (connection, FALSE, NULL, user_data);
+	(*result_func) (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_CALL, connection, FALSE, NULL, user_data);
 }

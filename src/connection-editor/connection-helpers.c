@@ -535,7 +535,8 @@ typedef struct {
 } NewConnectionData;
 
 static void
-new_connection_result (NMConnection *connection,
+new_connection_result (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_IMPL,
+                       NMConnection *connection,
                        gboolean canceled,
                        GError *error,
                        gpointer user_data)

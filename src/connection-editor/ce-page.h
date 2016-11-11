@@ -36,7 +36,11 @@
 /* for ARPHRD_ETHER / ARPHRD_INFINIBAND for MAC utilies */
 #include <net/if_arp.h>
 
-typedef void (*PageNewConnectionResultFunc) (NMConnection *connection,
+struct _func_tag_page_new_connection_result;
+#define FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_IMPL struct _func_tag_page_new_connection_result *_dummy
+#define FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_CALL ((struct _func_tag_page_new_connection_result *) NULL)
+typedef void (*PageNewConnectionResultFunc) (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_IMPL,
+                                             NMConnection *connection,
                                              gboolean canceled,
                                              GError *error,
                                              gpointer user_data);
