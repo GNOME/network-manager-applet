@@ -128,6 +128,7 @@ void ce_page_setup_mac_combo (CEPage *self, GtkComboBox *combo,
                               const char *mac, char **mac_list);
 void ce_page_setup_data_combo (CEPage *self, GtkComboBox *combo,
                                const char *data, char **list);
+void ce_page_init_cloned_mac_combo (GtkComboBoxText *combo, const char *current);
 void ce_page_setup_device_combo (CEPage *self,
                                  GtkComboBox *combo,
                                  GType device_type,
@@ -142,6 +143,8 @@ gboolean ce_page_device_entry_get (GtkEntry *entry, int type,
                                    char **ifname, char **mac,
                                    const char *device_name,
                                    GError **error);
+const char *ce_page_cloned_mac_get (GtkComboBoxText *combo);
+gboolean ce_page_cloned_mac_combo_valid (GtkComboBoxText *combo, int type, const char *property_name, GError **error);
 
 void ce_page_changed (CEPage *self);
 
