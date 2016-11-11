@@ -212,7 +212,9 @@ dsl_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
                     gpointer user_data)
 {
 	NMSetting *setting;
+	gs_unref_object NMConnection *connection_tmp = NULL;
 
+	connection = _ensure_connection_other (connection, &connection_tmp);
 	ce_page_complete_connection (connection,
 	                             _("DSL connection %d"),
 	                             NM_SETTING_PPPOE_SETTING_NAME,

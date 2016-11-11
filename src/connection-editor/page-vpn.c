@@ -249,6 +249,7 @@ vpn_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
 	gssize split_idx, l;
 	const char *add_detail_key = NULL;
 	const char *add_detail_val = NULL;
+	gs_unref_object NMConnection *connection_tmp = NULL;
 
 	if (!detail && !connection) {
 		NewVpnInfo *info;
@@ -268,6 +269,7 @@ vpn_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
 		return;
 	}
 
+	connection = _ensure_connection_other (connection, &connection_tmp);
 	if (detail) {
 		service_type = detail;
 		add_detail_key = vpn_data ? vpn_data->add_detail_key : NULL;

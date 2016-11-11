@@ -285,7 +285,6 @@ really_add_connection (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
 
 	editor = nm_connection_editor_new (GTK_WINDOW (list->dialog), connection, list->client);
 	if (!editor) {
-		g_object_unref (connection);
 		g_signal_emit (list, list_signals[EDITING_DONE], 0, 0);
 		return;
 	}
@@ -905,7 +904,10 @@ nm_connection_list_set_type (NMConnectionList *self, GType ctype)
 }
 
 void
-nm_connection_list_create (NMConnectionList *self, GType ctype, const char *detail, NMConnection *connection)
+nm_connection_list_create (NMConnectionList *self,
+                           GType ctype,
+                           const char *detail,
+                           NMConnection *connection)
 {
 	ConnectionTypeData *types;
 	int i;
@@ -931,7 +933,7 @@ nm_connection_list_create (NMConnectionList *self, GType ctype, const char *deta
 		new_connection_of_type (GTK_WINDOW (self->dialog),
 		                        detail,
 		                        NULL,
-		                        g_object_ref (connection),
+		                        connection,
 		                        self->client,
 		                        types[i].new_connection_func,
 		                        really_add_connection,

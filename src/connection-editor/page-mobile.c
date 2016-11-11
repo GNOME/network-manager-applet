@@ -477,13 +477,13 @@ new_connection_mobile_wizard_done (NMAMobileWizard *wizard,
 			detail = g_strdup_printf ("%s %s %%d", method->provider_name, method->plan_name);
 		else
 			detail = g_strdup_printf ("%s connection %%d", method->provider_name);
-		if (!info->connection)
-			info->connection = nm_simple_connection_new ();
+
+		_ensure_connection_own (&info->connection);
 		ce_page_complete_connection (info->connection,
 		                             detail,
-                                             ctype,
-                                             FALSE,
-                                             info->client);
+		                             ctype,
+		                             FALSE,
+		                             info->client);
 		g_free (detail);
 
 		nm_connection_add_setting (info->connection, type_setting);
@@ -496,7 +496,7 @@ new_connection_mobile_wizard_done (NMAMobileWizard *wizard,
 		nma_mobile_wizard_destroy (wizard);
 
 	g_object_unref (info->client);
-	g_object_unref (info->connection);
+	nm_g_object_unref (info->connection);
 	g_free (info);
 }
 
@@ -527,7 +527,7 @@ mobile_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
 	info->result_func = result_func;
 	info->client = g_object_ref (client);
 	info->user_data = user_data;
-	info->connection = g_object_ref (connection);
+	info->connection = nm_g_object_ref (connection);
 
 	wizard = nma_mobile_wizard_new (parent, NULL, NM_DEVICE_MODEM_CAPABILITY_NONE, FALSE,
 	                                new_connection_mobile_wizard_done, info);

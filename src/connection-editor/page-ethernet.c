@@ -515,6 +515,9 @@ ethernet_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
                          PageNewConnectionResultFunc result_func,
                          gpointer user_data)
 {
+	gs_unref_object NMConnection *connection_tmp = NULL;
+
+	connection = _ensure_connection_other (connection, &connection_tmp);
 	ce_page_complete_connection (connection,
 	                             _("Ethernet connection %d"),
 	                             NM_SETTING_WIRED_SETTING_NAME,

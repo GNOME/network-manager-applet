@@ -399,10 +399,8 @@ add_connection (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
 	editor = nm_connection_editor_new (priv->toplevel,
 	                                   connection,
 	                                   CE_PAGE (self)->client);
-	if (!editor) {
-		g_object_unref (connection);
+	if (!editor)
 		return;
-	}
 
 	g_signal_connect (editor, "done", G_CALLBACK (add_response_cb), self);
 	nm_connection_editor_run (editor);

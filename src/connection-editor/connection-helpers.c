@@ -290,10 +290,7 @@ vpn_connection_import (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
 
 	/* The import function decides about the type. */
 	g_return_if_fail (!detail);
-
-	/* We're not going to need this one. We'll create another
-	 * when we know the file name to import from. */
-	g_object_unref (connection);
+	g_warn_if_fail (!connection);
 
 	info = g_slice_new (ImportVpnInfo);
 	info->parent = g_object_ref (parent);
@@ -536,7 +533,7 @@ typedef struct {
 
 static void
 new_connection_result (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_IMPL,
-                       NMConnection *connection,
+                       NMConnection *connection, /* allow-none, don't transfer reference, allow-keep */
                        gboolean canceled,
                        GError *error,
                        gpointer user_data)
@@ -688,7 +685,7 @@ new_connection_dialog_full (GtkWindow *parent_window,
 		new_connection_of_type (parent_window,
 		                        detail,
 		                        detail_data,
-		                        nm_simple_connection_new (),
+		                        NULL,
 		                        client,
 		                        new_func,
 		                        result_func,

@@ -610,7 +610,9 @@ wifi_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
                      gpointer user_data)
 {
 	NMSetting *s_wifi;
+	gs_unref_object NMConnection *connection_tmp = NULL;
 
+	connection = _ensure_connection_other (connection, &connection_tmp);
 	ce_page_complete_connection (connection,
 	                             _("Wi-Fi connection %d"),
 	                             NM_SETTING_WIRELESS_SETTING_NAME,

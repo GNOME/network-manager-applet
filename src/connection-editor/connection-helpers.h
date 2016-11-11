@@ -45,7 +45,7 @@ struct _func_tag_new_connection_result;
 #define FUNC_TAG_NEW_CONNECTION_RESULT_IMPL struct _func_tag_new_connection_result *_dummy
 #define FUNC_TAG_NEW_CONNECTION_RESULT_CALL ((struct _func_tag_new_connection_result *) NULL)
 typedef void (*NewConnectionResultFunc) (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
-                                         NMConnection *connection,
+                                         NMConnection *connection, /* allow-none, don't transfer reference, allow-keep */
                                          gpointer user_data);
 
 void new_connection_dialog      (GtkWindow *parent_window,

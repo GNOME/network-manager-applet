@@ -61,14 +61,12 @@ idle_create_connection (gpointer user_data)
 {
 	CreateConnectionInfo *info = user_data;
 
-	if (!info->connection)
-		info->connection = nm_simple_connection_new ();
 	nm_connection_list_create (info->list, info->ctype,
 	                           info->detail, info->connection);
 
 	g_object_unref (info->list);
 	g_free (info->detail);
-	g_object_unref (info->connection);
+	nm_g_object_unref (info->connection);
 	g_slice_free (CreateConnectionInfo, info);
 	return FALSE;
 }

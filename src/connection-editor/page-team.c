@@ -1105,7 +1105,7 @@ add_slave (CEPageMaster *master, NewConnectionResultFunc result_func)
 		new_connection_of_type (GTK_WINDOW (toplevel),
 		                        NULL,
 		                        NULL,
-		                        nm_simple_connection_new (),
+		                        NULL,
 		                        CE_PAGE (self)->client,
 		                        infiniband_connection_new,
 		                        result_func,
@@ -1246,7 +1246,9 @@ team_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
 	NMConnection *conn2;
 	const char *iface;
 	char *my_iface;
+	gs_unref_object NMConnection *connection_tmp = NULL;
 
+	connection = _ensure_connection_other (connection, &connection_tmp);
 	ce_page_complete_connection (connection,
 	                             _("Team connection %d"),
 	                             NM_SETTING_TEAM_SETTING_NAME,

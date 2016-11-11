@@ -40,7 +40,7 @@ struct _func_tag_page_new_connection_result;
 #define FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_IMPL struct _func_tag_page_new_connection_result *_dummy
 #define FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_CALL ((struct _func_tag_page_new_connection_result *) NULL)
 typedef void (*PageNewConnectionResultFunc) (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_IMPL,
-                                             NMConnection *connection,
+                                             NMConnection *connection, /* allow-none, don't transfer reference, allow-keep */
                                              gboolean canceled,
                                              GError *error,
                                              gpointer user_data);
@@ -174,6 +174,22 @@ void ce_page_complete_connection (NMConnection *connection,
                                   const char *ctype,
                                   gboolean autoconnect,
                                   NMClient *client);
+
+static inline NMConnection *
+_ensure_connection_own (NMConnection **connection)
+{
+	return (*connection) ?: (*connection = nm_simple_connection_new ());
+}
+
+static inline NMConnection *
+_ensure_connection_other (NMConnection *connection, NMConnection **connection_to_free)
+{
+	if (connection) {
+		*connection_to_free = NULL;
+		return connection;
+	}
+	return (*connection_to_free = nm_simple_connection_new ());
+}
 
 CEPage *ce_page_new (GType page_type,
                      NMConnectionEditor *editor,

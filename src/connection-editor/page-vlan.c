@@ -245,10 +245,8 @@ edit_parent (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
 	editor = nm_connection_editor_new (priv->toplevel,
 	                                   connection,
 	                                   CE_PAGE (self)->client);
-	if (!editor) {
-		g_object_unref (connection);
+	if (!editor)
 		return;
-	}
 
 	g_signal_connect (editor, "done", G_CALLBACK (edit_parent_cb), self);
 	nm_connection_editor_run (editor);
@@ -336,7 +334,7 @@ get_vlan_devices (CEPageVlan *self)
 	GSList *devices;
 	NMDevice *device;
 	int i;
-	
+
 	devices_array = nm_client_get_devices (CE_PAGE (self)->client);
 	devices = NULL;
 	for (i = 0; i < devices_array->len; i++) {
@@ -796,6 +794,9 @@ vlan_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
                      PageNewConnectionResultFunc result_func,
                      gpointer user_data)
 {
+	gs_unref_object NMConnection *connection_tmp = NULL;
+
+	connection = _ensure_connection_other (connection, &connection_tmp);
 	ce_page_complete_connection (connection,
 	                             _("VLAN connection %d"),
 	                             NM_SETTING_VLAN_SETTING_NAME,

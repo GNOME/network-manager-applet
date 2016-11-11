@@ -310,7 +310,9 @@ bridge_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
 	NMConnection *conn2;
 	const char *iface;
 	char *my_iface;
+	gs_unref_object NMConnection *connection_tmp = NULL;
 
+	connection = _ensure_connection_other (connection, &connection_tmp);
 	ce_page_complete_connection (connection,
 	                             _("Bridge connection %d"),
 	                             NM_SETTING_BRIDGE_SETTING_NAME,
