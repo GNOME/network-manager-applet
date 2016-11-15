@@ -1048,8 +1048,6 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 	                                     activate_vpn_cb,
 	                                     info);
 	start_animation_timeout (applet);
-		
-//	nmi_dbus_signal_user_interface_activated (applet->connection);
 }
 
 
@@ -1065,8 +1063,6 @@ nma_menu_configure_vpn_item_activate (GtkMenuItem *item, gpointer user_data)
 	const char *argv[] = { BINDIR "/nm-connection-editor", "--show", "--type", NM_SETTING_VPN_SETTING_NAME, NULL};
 
 	g_spawn_async (NULL, (gchar **) argv, NULL, 0, NULL, NULL, NULL, NULL);
-
-//	nmi_dbus_signal_user_interface_activated (applet->connection);
 }
 
 /*
@@ -1625,8 +1621,6 @@ static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 
 	if (!INDICATOR_ENABLED (applet))
 		gtk_widget_show_all (menu);
-
-//	nmi_dbus_signal_user_interface_activated (applet->connection);
 }
 
 static gboolean
