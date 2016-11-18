@@ -113,6 +113,7 @@ static void
 _active_ap_set_weakref (gpointer data, GObject *where_the_object_was)
 {
 	ActiveAPData *d = data;
+	NMApplet *applet = d->applet;
 
 	if ((GObject *) d->ap == where_the_object_was)
 		d->ap = NULL;
@@ -120,9 +121,9 @@ _active_ap_set_weakref (gpointer data, GObject *where_the_object_was)
 		d->device = NULL;
 	else
 		g_return_if_reached ();
-	_active_ap_set (d->applet, NULL, NULL);
+	_active_ap_set (applet, NULL, NULL);
 
-	applet_schedule_update_icon (d->applet);
+	applet_schedule_update_icon (applet);
 }
 
 static void
