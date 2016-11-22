@@ -341,7 +341,7 @@ main (int argc, char *argv[])
 	g_option_context_set_summary (opt_ctx, "Allows users to view and edit network connection settings");
 	g_option_context_add_main_entries (opt_ctx, entries, NULL);
 	if (!g_option_context_parse (opt_ctx, &argc, &argv, &error)) {
-		g_warning ("Failed to parse options: %s", error->message);
+		g_printerr ("Failed to parse options: %s\n", error->message);
 		goto out;
 	}
 
