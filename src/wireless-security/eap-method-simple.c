@@ -115,13 +115,14 @@ typedef struct {
 
 /* Indexed by EAP_METHOD_SIMPLE_TYPE_* */
 static const EapType eap_table[EAP_METHOD_SIMPLE_TYPE_LAST] = {
-	[EAP_METHOD_SIMPLE_TYPE_PAP]       = { "pap",      FALSE },
-	[EAP_METHOD_SIMPLE_TYPE_MSCHAP]    = { "mschap",   FALSE },
-	[EAP_METHOD_SIMPLE_TYPE_MSCHAP_V2] = { "mschapv2", TRUE  },
-	[EAP_METHOD_SIMPLE_TYPE_MD5]       = { "md5",      TRUE  },
-	[EAP_METHOD_SIMPLE_TYPE_PWD]       = { "pwd",      TRUE  },
-	[EAP_METHOD_SIMPLE_TYPE_CHAP]      = { "chap",     FALSE },
-	[EAP_METHOD_SIMPLE_TYPE_GTC]       = { "gtc",      TRUE  },
+	[EAP_METHOD_SIMPLE_TYPE_PAP]             = { "pap",      FALSE },
+	[EAP_METHOD_SIMPLE_TYPE_MSCHAP]          = { "mschap",   FALSE },
+	[EAP_METHOD_SIMPLE_TYPE_MSCHAP_V2]       = { "mschapv2", TRUE  },
+	[EAP_METHOD_SIMPLE_TYPE_PLAIN_MSCHAP_V2] = { "mschapv2", FALSE },
+	[EAP_METHOD_SIMPLE_TYPE_MD5]             = { "md5",      TRUE  },
+	[EAP_METHOD_SIMPLE_TYPE_PWD]             = { "pwd",      TRUE  },
+	[EAP_METHOD_SIMPLE_TYPE_CHAP]            = { "chap",     FALSE },
+	[EAP_METHOD_SIMPLE_TYPE_GTC]             = { "gtc",      TRUE  },
 };
 
 static void
