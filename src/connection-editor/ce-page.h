@@ -36,14 +36,22 @@
 /* for ARPHRD_ETHER / ARPHRD_INFINIBAND for MAC utilies */
 #include <net/if_arp.h>
 
-typedef void (*PageNewConnectionResultFunc) (NMConnection *connection,
+struct _func_tag_page_new_connection_result;
+#define FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_IMPL struct _func_tag_page_new_connection_result *_dummy
+#define FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_CALL ((struct _func_tag_page_new_connection_result *) NULL)
+typedef void (*PageNewConnectionResultFunc) (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_IMPL,
+                                             NMConnection *connection, /* allow-none, don't transfer reference, allow-keep */
                                              gboolean canceled,
                                              GError *error,
                                              gpointer user_data);
 
 typedef GSList * (*PageGetConnectionsFunc) (gpointer user_data);
 
-typedef void (*PageNewConnectionFunc) (GtkWindow *parent,
+struct _func_tag_page_new_connection;
+#define FUNC_TAG_PAGE_NEW_CONNECTION_IMPL struct _func_tag_page_new_connection *_dummy
+#define FUNC_TAG_PAGE_NEW_CONNECTION_CALL ((struct _func_tag_page_new_connection *) NULL)
+typedef void (*PageNewConnectionFunc) (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
+                                       GtkWindow *parent,
                                        const char *detail,
                                        gpointer detail_data,
                                        NMConnection *connection,
@@ -166,6 +174,22 @@ void ce_page_complete_connection (NMConnection *connection,
                                   const char *ctype,
                                   gboolean autoconnect,
                                   NMClient *client);
+
+static inline NMConnection *
+_ensure_connection_own (NMConnection **connection)
+{
+	return (*connection) ?: (*connection = nm_simple_connection_new ());
+}
+
+static inline NMConnection *
+_ensure_connection_other (NMConnection *connection, NMConnection **connection_to_free)
+{
+	if (connection) {
+		*connection_to_free = NULL;
+		return connection;
+	}
+	return (*connection_to_free = nm_simple_connection_new ());
+}
 
 CEPage *ce_page_new (GType page_type,
                      NMConnectionEditor *editor,

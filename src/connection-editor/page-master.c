@@ -357,7 +357,8 @@ add_response_cb (NMConnectionEditor *editor, GtkResponseType response, gpointer 
 }
 
 static void
-add_connection (NMConnection *connection,
+add_connection (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
+                NMConnection *connection,
                 gpointer user_data)
 {
 	CEPageMaster *self = user_data;
@@ -398,10 +399,8 @@ add_connection (NMConnection *connection,
 	editor = nm_connection_editor_new (priv->toplevel,
 	                                   connection,
 	                                   CE_PAGE (self)->client);
-	if (!editor) {
-		g_object_unref (connection);
+	if (!editor)
 		return;
-	}
 
 	g_signal_connect (editor, "done", G_CALLBACK (add_response_cb), self);
 	nm_connection_editor_run (editor);
@@ -484,7 +483,8 @@ connection_double_clicked_cb (GtkTreeView *tree_view,
 }
 
 static void
-delete_result_cb (NMRemoteConnection *connection,
+delete_result_cb (FUNC_TAG_DELETE_CONNECTION_RESULT_IMPL,
+                  NMRemoteConnection *connection,
                   gboolean deleted,
                   gpointer user_data)
 {

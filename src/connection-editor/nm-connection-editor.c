@@ -308,68 +308,49 @@ static void
 dispose (GObject *object)
 {
 	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (object);
-	GSList *iter;
 
-	if (editor->disposed)
-		goto out;
 	editor->disposed = TRUE;
 
-	if (active_editors)
+	if (active_editors && editor->orig_connection)
 		g_hash_table_remove (active_editors, editor->orig_connection);
 
-	g_slist_foreach (editor->initializing_pages, (GFunc) g_object_unref, NULL);
-	g_slist_free (editor->initializing_pages);
+	g_slist_free_full (editor->initializing_pages, g_object_unref);
 	editor->initializing_pages = NULL;
 
-	g_slist_foreach (editor->pages, (GFunc) g_object_unref, NULL);
-	g_slist_free (editor->pages);
+	g_slist_free_full (editor->pages, g_object_unref);
 	editor->pages = NULL;
 
 	/* Mark any in-progress secrets call as canceled; it will clean up after itself. */
 	if (editor->secrets_call)
 		editor->secrets_call->canceled = TRUE;
 
-	/* Kill any pending secrets calls */
-	for (iter = editor->pending_secrets_calls; iter; iter = g_slist_next (iter)) {
-		get_secrets_info_free ((GetSecretsInfo *) iter->data);
-	}
-	g_slist_free (editor->pending_secrets_calls);
-	editor->pending_secrets_calls = NULL;
-
-	if (editor->validate_id) {
-		g_source_remove (editor->validate_id);
-		editor->validate_id = 0;
+	while (editor->pending_secrets_calls) {
+		get_secrets_info_free ((GetSecretsInfo *) editor->pending_secrets_calls->data);
+		editor->pending_secrets_calls = g_slist_delete_link (editor->pending_secrets_calls, editor->pending_secrets_calls);
 	}
 
-	if (editor->connection) {
-		g_object_unref (editor->connection);
-		editor->connection = NULL;
-	}
-	if (editor->orig_connection) {
-		g_object_unref (editor->orig_connection);
-		editor->orig_connection = NULL;
-	}
+	nm_clear_g_source (&editor->validate_id);
+
+	g_clear_object (&editor->connection);
+	g_clear_object (&editor->orig_connection);
+
 	if (editor->window) {
 		gtk_widget_destroy (editor->window);
 		editor->window = NULL;
 	}
-	if (editor->parent_window) {
-		g_object_unref (editor->parent_window);
-		editor->parent_window = NULL;
-	}
-	if (editor->builder) {
-		g_object_unref (editor->builder);
-		editor->builder = NULL;
-	}
+	g_clear_object (&editor->parent_window);
+	g_clear_object (&editor->builder);
 
-	g_signal_handler_disconnect (editor->client, editor->permission_id);
-	g_object_unref (editor->client);
+	nm_clear_g_signal_handler (editor->client, &editor->permission_id);
+	g_clear_object (&editor->client);
 
 	g_clear_pointer (&editor->last_validation_error, g_free);
 
-	g_hash_table_destroy (editor->inter_page_hash);
+	if (editor->inter_page_hash) {
+		g_hash_table_destroy (editor->inter_page_hash);
+		editor->inter_page_hash = NULL;
+	}
 
-out:
 	G_OBJECT_CLASS (nm_connection_editor_parent_class)->dispose (object);
 }
 
@@ -443,8 +424,8 @@ nm_connection_editor_new (GtkWindow *parent_window,
 	}
 
 	if (!active_editors)
-		active_editors = g_hash_table_new (NULL, NULL);
-	g_hash_table_insert (active_editors, connection, editor);
+		active_editors = g_hash_table_new_full (NULL, NULL, g_object_unref, NULL);
+	g_hash_table_insert (active_editors, g_object_ref (connection), editor);
 
 	return editor;
 }
@@ -452,10 +433,7 @@ nm_connection_editor_new (GtkWindow *parent_window,
 NMConnectionEditor *
 nm_connection_editor_get (NMConnection *connection)
 {
-	if (!active_editors)
-		return NULL;
-
-	return g_hash_table_lookup (active_editors, connection);
+	return active_editors ? g_hash_table_lookup (active_editors, connection) : NULL;
 }
 
 /* Returns an editor for @slave's master, if any */

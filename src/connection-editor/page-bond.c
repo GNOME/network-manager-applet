@@ -361,7 +361,9 @@ populate_ui (CEPageBond *self)
 }
 
 static gboolean
-connection_type_filter (GType type, gpointer self)
+connection_type_filter (FUNC_TAG_NEW_CONNECTION_TYPE_FILTER_IMPL,
+                        GType type,
+                        gpointer self)
 {
 	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
 
@@ -389,7 +391,7 @@ add_slave (CEPageMaster *master, NewConnectionResultFunc result_func)
 		new_connection_of_type (priv->toplevel,
 		                        NULL,
 		                        NULL,
-		                        nm_simple_connection_new (),
+		                        NULL,
 		                        CE_PAGE (self)->client,
 		                        infiniband_connection_new,
 		                        result_func,
@@ -599,7 +601,8 @@ ce_page_bond_class_init (CEPageBondClass *bond_class)
 
 
 void
-bond_connection_new (GtkWindow *parent,
+bond_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
+                     GtkWindow *parent,
                      const char *detail,
                      gpointer detail_data,
                      NMConnection *connection,
@@ -613,7 +616,9 @@ bond_connection_new (GtkWindow *parent,
 	NMConnection *conn2;
 	const char *iface;
 	char *my_iface;
+	gs_unref_object NMConnection *connection_tmp = NULL;
 
+	connection = _ensure_connection_other (connection, &connection_tmp);
 	ce_page_complete_connection (connection,
 	                             _("Bond connection %d"),
 	                             NM_SETTING_BOND_SETTING_NAME,
@@ -644,6 +649,6 @@ bond_connection_new (GtkWindow *parent,
 	              NULL);
 	g_free (my_iface);
 
-	(*result_func) (connection, FALSE, NULL, user_data);
+	(*result_func) (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_CALL, connection, FALSE, NULL, user_data);
 }
 

@@ -600,7 +600,8 @@ ce_page_wifi_class_init (CEPageWifiClass *wifi_class)
 
 
 void
-wifi_connection_new (GtkWindow *parent,
+wifi_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
+                     GtkWindow *parent,
                      const char *detail,
                      gpointer detail_data,
                      NMConnection *connection,
@@ -609,7 +610,9 @@ wifi_connection_new (GtkWindow *parent,
                      gpointer user_data)
 {
 	NMSetting *s_wifi;
+	gs_unref_object NMConnection *connection_tmp = NULL;
 
+	connection = _ensure_connection_other (connection, &connection_tmp);
 	ce_page_complete_connection (connection,
 	                             _("Wi-Fi connection %d"),
 	                             NM_SETTING_WIRELESS_SETTING_NAME,
@@ -619,5 +622,5 @@ wifi_connection_new (GtkWindow *parent,
 	g_object_set (s_wifi, NM_SETTING_WIRELESS_MODE, "infrastructure", NULL);
 	nm_connection_add_setting (connection, s_wifi);
 
-	(*result_func) (connection, FALSE, NULL, user_data);
+	(*result_func) (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_CALL, connection, FALSE, NULL, user_data);
 }

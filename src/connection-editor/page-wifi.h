@@ -56,7 +56,8 @@ CEPage *ce_page_wifi_new (NMConnectionEditor *editor,
 GBytes *ce_page_wifi_get_ssid (CEPageWifi *self);
 
 
-void wifi_connection_new (GtkWindow *parent,
+void wifi_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
+                          GtkWindow *parent,
                           const char *detail,
                           gpointer detail_data,
                           NMConnection *connection,

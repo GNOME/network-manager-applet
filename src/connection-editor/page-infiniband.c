@@ -238,7 +238,8 @@ ce_page_infiniband_class_init (CEPageInfinibandClass *infiniband_class)
 
 
 void
-infiniband_connection_new (GtkWindow *parent,
+infiniband_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
+                           GtkWindow *parent,
                            const char *detail,
                            gpointer detail_data,
                            NMConnection *connection,
@@ -246,6 +247,9 @@ infiniband_connection_new (GtkWindow *parent,
                            PageNewConnectionResultFunc result_func,
                            gpointer user_data)
 {
+	gs_unref_object NMConnection *connection_tmp = NULL;
+
+	connection = _ensure_connection_other (connection, &connection_tmp);
 	ce_page_complete_connection (connection,
 	                             _("InfiniBand connection %d"),
 	                             NM_SETTING_INFINIBAND_SETTING_NAME,
@@ -253,5 +257,5 @@ infiniband_connection_new (GtkWindow *parent,
 	                             client);
 	nm_connection_add_setting (connection, nm_setting_infiniband_new ());
 
-	(*result_func) (connection, FALSE, NULL, user_data);
+	(*result_func) (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_CALL, connection, FALSE, NULL, user_data);
 }

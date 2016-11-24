@@ -255,7 +255,8 @@ import_vpn_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 	if (connection) {
 		/* Wrap around the actual new function so that the page can complete
 		 * the missing parts, such as UUID or make up the connection name. */
-		vpn_connection_new (info->parent,
+		vpn_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_CALL,
+		                    info->parent,
 		                    NULL,
 		                    NULL,
 		                    connection,
@@ -274,7 +275,8 @@ out:
 }
 
 static void
-vpn_connection_import (GtkWindow *parent,
+vpn_connection_import (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
+                       GtkWindow *parent,
                        const char *detail,
                        gpointer detail_data,
                        NMConnection *connection,
@@ -288,10 +290,7 @@ vpn_connection_import (GtkWindow *parent,
 
 	/* The import function decides about the type. */
 	g_return_if_fail (!detail);
-
-	/* We're not going to need this one. We'll create another
-	 * when we know the file name to import from. */
-	g_object_unref (connection);
+	g_warn_if_fail (!connection);
 
 	info = g_slice_new (ImportVpnInfo);
 	info->parent = g_object_ref (parent);
@@ -346,11 +345,11 @@ set_up_connection_type_combo (GtkComboBox *combo,
 	for (i = 0; list[i].name; i++) {
 		if (type_filter_func) {
 			if (   (   list[i].setting_types[0] == G_TYPE_INVALID
-			        || !type_filter_func (list[i].setting_types[0], user_data))
+			        || !type_filter_func (FUNC_TAG_NEW_CONNECTION_TYPE_FILTER_CALL, list[i].setting_types[0], user_data))
 			    && (   list[i].setting_types[1] == G_TYPE_INVALID
-			        || !type_filter_func (list[i].setting_types[1], user_data))
+			        || !type_filter_func (FUNC_TAG_NEW_CONNECTION_TYPE_FILTER_CALL, list[i].setting_types[1], user_data))
 			    && (   list[i].setting_types[2] == G_TYPE_INVALID
-			        || !type_filter_func (list[i].setting_types[2], user_data)))
+			        || !type_filter_func (FUNC_TAG_NEW_CONNECTION_TYPE_FILTER_CALL, list[i].setting_types[2], user_data)))
 				continue;
 		}
 
@@ -533,7 +532,8 @@ typedef struct {
 } NewConnectionData;
 
 static void
-new_connection_result (NMConnection *connection,
+new_connection_result (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_IMPL,
+                       NMConnection *connection, /* allow-none, don't transfer reference, allow-keep */
                        gboolean canceled,
                        GError *error,
                        gpointer user_data)
@@ -555,7 +555,7 @@ new_connection_result (NMConnection *connection,
 		                            (error && error->message) ? error->message : default_message);
 	}
 
-	result_func (connection, user_data);
+	result_func (FUNC_TAG_NEW_CONNECTION_RESULT_CALL, connection, user_data);
 }
 
 void
@@ -576,7 +576,8 @@ new_connection_of_type (GtkWindow *parent_window,
 	ncd->result_func = result_func;
 	ncd->user_data = user_data;
 
-	new_func (parent_window,
+	new_func (FUNC_TAG_PAGE_NEW_CONNECTION_CALL,
+	          parent_window,
 	          detail,
 	          detail_data,
 	          connection,
@@ -684,13 +685,13 @@ new_connection_dialog_full (GtkWindow *parent_window,
 		new_connection_of_type (parent_window,
 		                        detail,
 		                        detail_data,
-		                        nm_simple_connection_new (),
+		                        NULL,
 		                        client,
 		                        new_func,
 		                        result_func,
 		                        user_data);
 	} else
-		result_func (NULL, user_data);
+		result_func (FUNC_TAG_NEW_CONNECTION_RESULT_CALL, NULL, user_data);
 }
 
 typedef struct {
@@ -729,7 +730,7 @@ delete_cb (GObject *connection,
 	g_clear_error (&error);
 
 	if (result_func)
-		(*result_func) (NM_REMOTE_CONNECTION (connection), error == NULL, user_data);
+		(*result_func) (FUNC_TAG_DELETE_CONNECTION_RESULT_CALL, NM_REMOTE_CONNECTION (connection), error == NULL, user_data);
 }
 
 void

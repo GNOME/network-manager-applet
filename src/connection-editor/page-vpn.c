@@ -212,22 +212,27 @@ complete_vpn_connection (NMConnection *connection, NMClient *client)
 #define NEW_VPN_CONNECTION_SECONDARY_LABEL _("Select the type of VPN you wish to use for the new connection. If the type of VPN connection you wish to create does not appear in the list, you may not have the correct VPN plugin installed.")
 
 static gboolean
-vpn_type_filter_func (GType type, gpointer user_data)
+vpn_type_filter_func (FUNC_TAG_NEW_CONNECTION_TYPE_FILTER_IMPL,
+                      GType type,
+                      gpointer user_data)
 {
 	return type == NM_TYPE_SETTING_VPN;
 }
 
 static void
-vpn_type_result_func (NMConnection *connection, gpointer user_data)
+vpn_type_result_func (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
+                      NMConnection *connection,
+                      gpointer user_data)
 {
 	NewVpnInfo *info = user_data;
 
-	info->result_func (connection, connection == NULL, NULL, info->user_data);
+	info->result_func (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_CALL, connection, connection == NULL, NULL, info->user_data);
 	g_slice_free (NewVpnInfo, info);
 }
 
 void
-vpn_connection_new (GtkWindow *parent,
+vpn_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
+                    GtkWindow *parent,
                     const char *detail,
                     gpointer detail_data,
                     NMConnection *connection,
@@ -244,6 +249,7 @@ vpn_connection_new (GtkWindow *parent,
 	gssize split_idx, l;
 	const char *add_detail_key = NULL;
 	const char *add_detail_val = NULL;
+	gs_unref_object NMConnection *connection_tmp = NULL;
 
 	if (!detail && !connection) {
 		NewVpnInfo *info;
@@ -263,6 +269,7 @@ vpn_connection_new (GtkWindow *parent,
 		return;
 	}
 
+	connection = _ensure_connection_other (connection, &connection_tmp);
 	if (detail) {
 		service_type = detail;
 		add_detail_key = vpn_data ? vpn_data->add_detail_key : NULL;
@@ -318,5 +325,5 @@ vpn_connection_new (GtkWindow *parent,
 
 	complete_vpn_connection (connection, client);
 
-	(*result_func) (connection, FALSE, NULL, user_data);
+	(*result_func) (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_CALL, connection, FALSE, NULL, user_data);
 }

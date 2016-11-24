@@ -34,9 +34,18 @@ typedef struct {
 
 ConnectionTypeData *get_connection_type_list (void);
 
-typedef gboolean (*NewConnectionTypeFilterFunc) (GType type,
+struct _func_tag_new_connection_type_filter;
+#define FUNC_TAG_NEW_CONNECTION_TYPE_FILTER_IMPL struct _func_tag_new_connection_type_filter *_dummy
+#define FUNC_TAG_NEW_CONNECTION_TYPE_FILTER_CALL ((struct _func_tag_new_connection_type_filter *) NULL)
+typedef gboolean (*NewConnectionTypeFilterFunc) (FUNC_TAG_NEW_CONNECTION_TYPE_FILTER_IMPL,
+                                                 GType type,
                                                  gpointer user_data);
-typedef void (*NewConnectionResultFunc) (NMConnection *connection,
+
+struct _func_tag_new_connection_result;
+#define FUNC_TAG_NEW_CONNECTION_RESULT_IMPL struct _func_tag_new_connection_result *_dummy
+#define FUNC_TAG_NEW_CONNECTION_RESULT_CALL ((struct _func_tag_new_connection_result *) NULL)
+typedef void (*NewConnectionResultFunc) (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
+                                         NMConnection *connection, /* allow-none, don't transfer reference, allow-keep */
                                          gpointer user_data);
 
 void new_connection_dialog      (GtkWindow *parent_window,
@@ -61,7 +70,11 @@ void new_connection_of_type (GtkWindow *parent_window,
                              NewConnectionResultFunc result_func,
                              gpointer user_data);
 
-typedef void (*DeleteConnectionResultFunc) (NMRemoteConnection *connection,
+struct _func_tag_delete_connection_result;
+#define FUNC_TAG_DELETE_CONNECTION_RESULT_IMPL struct _func_tag_delete_connection_result *_dummy
+#define FUNC_TAG_DELETE_CONNECTION_RESULT_CALL ((struct _func_tag_delete_connection_result *) NULL)
+typedef void (*DeleteConnectionResultFunc) (FUNC_TAG_DELETE_CONNECTION_RESULT_IMPL,
+                                            NMRemoteConnection *connection,
                                             gboolean deleted,
                                             gpointer user_data);
 

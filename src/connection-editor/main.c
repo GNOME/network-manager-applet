@@ -31,6 +31,7 @@
 #include "nm-connection-list.h"
 #include "nm-connection-editor.h"
 #include "connection-helpers.h"
+#include "vpn-helpers.h"
 
 gboolean nm_ce_keep_above;
 
@@ -50,6 +51,7 @@ static GDBusNodeInfo *introspection_data = NULL;
 /*************************************************/
 
 typedef struct {
+	gboolean create;
 	NMConnectionList *list;
 	GType ctype;
 	char *detail;
@@ -61,14 +63,22 @@ idle_create_connection (gpointer user_data)
 {
 	CreateConnectionInfo *info = user_data;
 
-	if (!info->connection)
-		info->connection = nm_simple_connection_new ();
-	nm_connection_list_create (info->list, info->ctype,
-	                           info->detail, info->connection);
+	if (info->create) {
+		if (!info->ctype)
+			nm_connection_list_add (info->list);
+		else {
+			nm_connection_list_create (info->list, info->ctype,
+			                           info->detail, NULL);
+		}
+	} else {
+		/* import */
+		nm_connection_list_create (info->list, info->ctype,
+		                           info->detail, info->connection);
+	}
 
 	g_object_unref (info->list);
 	g_free (info->detail);
-	g_object_unref (info->connection);
+	nm_g_object_unref (info->connection);
 	g_slice_free (CreateConnectionInfo, info);
 	return FALSE;
 }
@@ -95,6 +105,16 @@ handle_arguments (NMConnectionList *list,
 			detail = p + 1;
 		}
 		ctype = nm_setting_lookup_type (type);
+		if (ctype == 0 && !p) {
+			gs_free char *service_type = NULL;
+
+			/* allow using the VPN name directly, without "vpn:" prefix. */
+			service_type = nm_vpn_plugin_info_list_find_service_type (vpn_get_plugin_infos (), type);
+			if (service_type) {
+				ctype = NM_TYPE_SETTING_VPN;
+				detail = type;
+			}
+		}
 		if (ctype == 0) {
 			g_warning ("Unknown connection type '%s'", type);
 			return TRUE;
@@ -104,25 +124,20 @@ handle_arguments (NMConnectionList *list,
 	if (show) {
 		/* Just show the given connection type page */
 		nm_connection_list_set_type (list, ctype);
-	} else if (create) {
-		if (!ctype)
-			nm_connection_list_add (list);
-		else {
-			/* If type is "vpn" and the user cancels the "vpn type" dialog, we need
-			 * to quit. But we haven't even started yet. So postpone this to an idle.
-			 */
-			info = g_slice_new0 (CreateConnectionInfo);
-			info->list = g_object_ref (list);
-			info->ctype = ctype;
-			info->detail = g_strdup (detail);
-			g_idle_add (idle_create_connection, info);
-		}
-		show_list = FALSE;
-	} else if (import) {
+	} else if (create || import) {
+		/* If type is "vpn" and the user cancels the "vpn type" dialog, we need
+		 * to quit. But we haven't even started yet. So postpone this to an idle.
+		 */
 		info = g_slice_new0 (CreateConnectionInfo);
 		info->list = g_object_ref (list);
-		info->ctype = NM_TYPE_SETTING_VPN;
-		info->connection = vpn_connection_from_file (import);
+		info->create = create;
+		info->detail = g_strdup (detail);
+		if (create)
+			info->ctype = ctype;
+		else {
+			info->ctype = NM_TYPE_SETTING_VPN;
+			info->connection = vpn_connection_from_file (import);
+		}
 		g_idle_add (idle_create_connection, info);
 		show_list = FALSE;
 	} else if (edit_uuid) {
@@ -326,7 +341,7 @@ main (int argc, char *argv[])
 	g_option_context_set_summary (opt_ctx, "Allows users to view and edit network connection settings");
 	g_option_context_add_main_entries (opt_ctx, entries, NULL);
 	if (!g_option_context_parse (opt_ctx, &argc, &argv, &error)) {
-		g_warning ("Failed to parse options: %s", error->message);
+		g_printerr ("Failed to parse options: %s\n", error->message);
 		goto out;
 	}
 

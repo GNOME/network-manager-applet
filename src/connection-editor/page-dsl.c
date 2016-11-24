@@ -202,7 +202,8 @@ ce_page_dsl_class_init (CEPageDslClass *dsl_class)
 
 
 void
-dsl_connection_new (GtkWindow *parent,
+dsl_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
+                    GtkWindow *parent,
                     const char *detail,
                     gpointer detail_data,
                     NMConnection *connection,
@@ -211,7 +212,9 @@ dsl_connection_new (GtkWindow *parent,
                     gpointer user_data)
 {
 	NMSetting *setting;
+	gs_unref_object NMConnection *connection_tmp = NULL;
 
+	connection = _ensure_connection_other (connection, &connection_tmp);
 	ce_page_complete_connection (connection,
 	                             _("DSL connection %d"),
 	                             NM_SETTING_PPPOE_SETTING_NAME,
@@ -227,5 +230,5 @@ dsl_connection_new (GtkWindow *parent,
 	              NULL);
 	nm_connection_add_setting (connection, setting);
 
-	(*result_func) (connection, FALSE, NULL, user_data);
+	(*result_func) (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_CALL, connection, FALSE, NULL, user_data);
 }

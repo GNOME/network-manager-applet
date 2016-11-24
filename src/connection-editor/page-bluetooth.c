@@ -256,8 +256,7 @@ new_connection_mobile_wizard_done (NMAMobileWizard *wizard,
 
 	if (!detail)
 		detail = g_strdup (_("Bluetooth connection %d"));
-	if (!info->connection)
-		info->connection = nm_simple_connection_new ();
+	_ensure_connection_own (&info->connection);
 	ce_page_complete_connection (info->connection,
 	                             detail,
 	                             NM_SETTING_BLUETOOTH_SETTING_NAME,
@@ -274,7 +273,7 @@ new_connection_mobile_wizard_done (NMAMobileWizard *wizard,
 	}
 
 out:
-	(*info->result_func) (info->connection, canceled, NULL, info->user_data);
+	(*info->result_func) (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_CALL, info->connection, canceled, NULL, info->user_data);
 
 	if (wizard)
 		nma_mobile_wizard_destroy (wizard);
@@ -285,7 +284,8 @@ out:
 }
 
 void
-bluetooth_connection_new (GtkWindow *parent,
+bluetooth_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
+                          GtkWindow *parent,
                           const char *detail,
                           gpointer detail_data,
                           NMConnection *connection,
@@ -303,7 +303,7 @@ bluetooth_connection_new (GtkWindow *parent,
 	info->client = g_object_ref (client);
 	info->user_data = user_data;
 	info->type = NM_SETTING_BLUETOOTH_TYPE_PANU;
-	info->connection = g_object_ref (connection);
+	info->connection = nm_g_object_ref (connection);
 
 	dialog = gtk_dialog_new_with_buttons (_("Bluetooth Type"),
 	                                      parent,
