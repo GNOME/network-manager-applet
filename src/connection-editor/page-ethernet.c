@@ -446,7 +446,6 @@ ui_to_setting (CEPageEthernet *self)
 	              NM_SETTING_WIRED_CLONED_MAC_ADDRESS, cloned_mac && *cloned_mac ? cloned_mac : NULL,
 	              NM_SETTING_WIRED_PORT, port,
 	              NM_SETTING_WIRED_SPEED, speed,
-	              NM_SETTING_WIRED_DUPLEX, gtk_toggle_button_get_active (priv->duplex) ? "full" : "half",
 	              NM_SETTING_WIRED_AUTO_NEGOTIATE, gtk_toggle_button_get_active (priv->autonegotiate),
 	              NM_SETTING_WIRED_WAKE_ON_LAN, wol,
 	              NM_SETTING_WIRED_WAKE_ON_LAN_PASSWORD, wol_passwd && *wol_passwd ? wol_passwd : NULL,
