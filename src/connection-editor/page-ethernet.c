@@ -115,6 +115,26 @@ stuff_changed (GtkWidget *w, gpointer user_data)
 }
 
 static void
+link_special_toggled_cb (GtkWidget *widget, gpointer user_data)
+{
+	CEPageEthernet *self = CE_PAGE_ETHERNET (user_data);
+	CEPageEthernetPrivate *priv = CE_PAGE_ETHERNET_GET_PRIVATE (self);
+	gboolean enabled;
+
+	enabled = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
+
+	if (enabled) {
+		gtk_combo_box_set_active (priv->speed, SPEED_DEFAULT);
+		gtk_combo_box_set_active (priv->duplex, DUPLEX_DEFAULT);
+	}
+
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->speed), !enabled);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->duplex), !enabled);
+
+	stuff_changed (NULL, self);
+}
+
+static void
 wol_special_toggled_cb (GtkWidget *widget, gpointer user_data)
 {
 	CEPageEthernet *self = CE_PAGE_ETHERNET (user_data);
@@ -283,10 +303,10 @@ finish_setup (CEPageEthernet *self, gpointer unused, GError *error, gpointer use
 
 	populate_ui (self);
 
+	g_signal_connect (priv->autonegotiate, "toggled", G_CALLBACK (link_special_toggled_cb), self);
 	g_signal_connect (priv->port, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->speed, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->duplex, "changed", G_CALLBACK (stuff_changed), self);
-	g_signal_connect (priv->autonegotiate, "toggled", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->mtu, "value-changed", G_CALLBACK (stuff_changed), self);
 
 	g_signal_connect (priv->wol_default,   "toggled", G_CALLBACK (wol_special_toggled_cb), self);
@@ -307,19 +327,6 @@ finish_setup (CEPageEthernet *self, gpointer unused, GError *error, gpointer use
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_port_label"));
 	gtk_widget_hide (widget);
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_port"));
-	gtk_widget_hide (widget);
-
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_speed_label"));
-	gtk_widget_hide (widget);
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_speed"));
-	gtk_widget_hide (widget);
-
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_duplex_label"));
-	gtk_widget_hide (widget);
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_duplex"));
-	gtk_widget_hide (widget);
-
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_autonegotiate"));
 	gtk_widget_hide (widget);
 }
 
