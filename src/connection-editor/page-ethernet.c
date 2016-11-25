@@ -39,7 +39,7 @@ typedef struct {
 	GtkComboBox *port;
 	GtkComboBox *speed;
 	GtkComboBox *duplex;
-	GtkToggleButton *autonegotiate;
+	GtkComboBox *linkneg;
 	GtkSpinButton *mtu;
 	GtkToggleButton *wol_default, *wol_ignore, *wol_phy, *wol_unicast, *wol_multicast,
 	                *wol_broadcast, *wol_arp, *wol_magic;
@@ -47,21 +47,23 @@ typedef struct {
 	gboolean mtu_enabled;
 } CEPageEthernetPrivate;
 
-#define PORT_DEFAULT  0
-#define PORT_TP       1
-#define PORT_AUI      2
-#define PORT_BNC      3
-#define PORT_MII      4
+#define PORT_DEFAULT 0
+#define PORT_TP      1
+#define PORT_AUI     2
+#define PORT_BNC     3
+#define PORT_MII     4
 
-#define SPEED_DEFAULT 0
-#define SPEED_10      1
-#define SPEED_100     2
-#define SPEED_1000    3
-#define SPEED_10000   4
+#define LINKNEG_IGNORE 0
+#define LINKNEG_AUTO   1
+#define LINKNEG_MANUAL 2
 
-#define DUPLEX_DEFAULT 0
-#define DUPLEX_HALF    1
-#define DUPLEX_FULL    2
+#define SPEED_10    0
+#define SPEED_100   1
+#define SPEED_1000  2
+#define SPEED_10000 3
+
+#define DUPLEX_HALF 0
+#define DUPLEX_FULL 1
 
 static void
 ethernet_private_init (CEPageEthernet *self)
@@ -93,7 +95,7 @@ ethernet_private_init (CEPageEthernet *self)
 	priv->port = GTK_COMBO_BOX (gtk_builder_get_object (builder, "ethernet_port"));
 	priv->speed = GTK_COMBO_BOX (gtk_builder_get_object (builder, "ethernet_speed"));
 	priv->duplex = GTK_COMBO_BOX (gtk_builder_get_object (builder, "ethernet_duplex"));
-	priv->autonegotiate = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "ethernet_autonegotiate"));
+	priv->linkneg = GTK_COMBO_BOX (gtk_builder_get_object (builder, "ethernet_linkneg"));
 	priv->mtu = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "ethernet_mtu"));
 	priv->wol_default = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "wol_default"));
 	priv->wol_ignore = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "wol_ignore"));
@@ -112,6 +114,21 @@ static void
 stuff_changed (GtkWidget *w, gpointer user_data)
 {
 	ce_page_changed (CE_PAGE (user_data));
+}
+
+static void
+link_special_changed_cb (GtkWidget *widget, gpointer user_data)
+{
+	CEPageEthernet *self = CE_PAGE_ETHERNET (user_data);
+	CEPageEthernetPrivate *priv = CE_PAGE_ETHERNET_GET_PRIVATE (self);
+	gboolean enable = false;
+
+	if (gtk_combo_box_get_active (GTK_COMBO_BOX (widget)) == LINKNEG_MANUAL)
+		enable = true;
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->speed), enable);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->duplex), enable);
+
+	stuff_changed (NULL, self);
 }
 
 static void
@@ -163,10 +180,12 @@ populate_ui (CEPageEthernet *self)
 	CEPageEthernetPrivate *priv = CE_PAGE_ETHERNET_GET_PRIVATE (self);
 	NMSettingWired *setting = priv->setting;
 	const char *port;
+	guint32 speed;
 	const char *duplex;
 	int port_idx = PORT_DEFAULT;
-	int speed_idx;
-	int duplex_idx = DUPLEX_DEFAULT;
+	int speed_idx = SPEED_100;
+	int duplex_idx = DUPLEX_FULL;
+	int linkneg_idx = LINKNEG_IGNORE;
 	int mtu_def;
 	const char *s_mac, *s_ifname, *s_wol_passwd;
 	NMSettingWiredWakeOnLan wol;
@@ -186,7 +205,8 @@ populate_ui (CEPageEthernet *self)
 	gtk_combo_box_set_active (priv->port, port_idx);
 
 	/* Speed */
-	switch (nm_setting_wired_get_speed (setting)) {
+	speed = nm_setting_wired_get_speed (setting);
+	switch (speed) {
 	case 10:
 		speed_idx = SPEED_10;
 		break;
@@ -198,9 +218,6 @@ populate_ui (CEPageEthernet *self)
 		break;
 	case 10000:
 		speed_idx = SPEED_10000;
-		break;
-	default:
-		speed_idx = SPEED_DEFAULT;
 		break;
 	}
 	gtk_combo_box_set_active (priv->speed, speed_idx);
@@ -215,9 +232,12 @@ populate_ui (CEPageEthernet *self)
 	}
 	gtk_combo_box_set_active (priv->duplex, duplex_idx);
 
-	/* Autonegotiate */
-	gtk_toggle_button_set_active (priv->autonegotiate,
-	                              nm_setting_wired_get_auto_negotiate (setting));
+	/* Link Negotiation */
+	if (nm_setting_wired_get_auto_negotiate (setting))
+		linkneg_idx = LINKNEG_AUTO;
+	else if (speed && duplex)
+		linkneg_idx = LINKNEG_MANUAL;
+	gtk_combo_box_set_active (priv->linkneg, linkneg_idx);
 
 	/* Device ifname/MAC */
 	s_ifname = nm_connection_get_interface_name (CE_PAGE (self)->connection);
@@ -283,10 +303,11 @@ finish_setup (CEPageEthernet *self, gpointer unused, GError *error, gpointer use
 
 	populate_ui (self);
 
+	g_signal_connect (priv->linkneg, "changed", G_CALLBACK (link_special_changed_cb), self);
+	link_special_changed_cb (GTK_WIDGET (priv->linkneg), self);
 	g_signal_connect (priv->port, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->speed, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->duplex, "changed", G_CALLBACK (stuff_changed), self);
-	g_signal_connect (priv->autonegotiate, "toggled", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->mtu, "value-changed", G_CALLBACK (stuff_changed), self);
 
 	g_signal_connect (priv->wol_default,   "toggled", G_CALLBACK (wol_special_toggled_cb), self);
@@ -319,8 +340,11 @@ finish_setup (CEPageEthernet *self, gpointer unused, GError *error, gpointer use
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_duplex"));
 	gtk_widget_hide (widget);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_autonegotiate"));
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_linkneg_label"));
 	gtk_widget_hide (widget);
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_linkneg"));
+	gtk_widget_hide (widget);
+
 }
 
 CEPage *
@@ -405,36 +429,42 @@ ui_to_setting (CEPageEthernet *self)
 		break;
 	}
 
-	/* Speed */
-	switch (gtk_combo_box_get_active (priv->speed)) {
-	case SPEED_10:
-		speed = 10;
-		break;
-	case SPEED_100:
-		speed = 100;
-		break;
-	case SPEED_1000:
-		speed = 1000;
-		break;
-	case SPEED_10000:
-		speed = 10000;
-		break;
-	default:
+	/* Speed & Duplex */
+	if (gtk_combo_box_get_active (priv->linkneg) != LINKNEG_MANUAL) {
 		speed = 0;
-		break;
-	}
-
-	/* Duplex */
-	switch (gtk_combo_box_get_active (priv->duplex)) {
-	case DUPLEX_HALF:
-		duplex = "half";
-		break;
-	case DUPLEX_FULL:
-		duplex = "full";
-		break;
-	default:
 		duplex = NULL;
-		break;
+	} else {
+		switch (gtk_combo_box_get_active (priv->speed)) {
+		case SPEED_10:
+			speed = 10;
+			break;
+		case SPEED_100:
+			speed = 100;
+			break;
+		case SPEED_1000:
+			speed = 1000;
+			break;
+		case SPEED_10000:
+			speed = 10000;
+			break;
+		default:
+			g_warn_if_reached();
+			speed = 0;
+			break;
+		}
+
+		switch (gtk_combo_box_get_active (priv->duplex)) {
+		case DUPLEX_HALF:
+			duplex = "half";
+			break;
+		case DUPLEX_FULL:
+			duplex = "full";
+			break;
+		default:
+			g_warn_if_reached();
+			duplex = NULL;
+			break;
+		}
 	}
 
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_combo));
@@ -474,7 +504,7 @@ ui_to_setting (CEPageEthernet *self)
 	              NM_SETTING_WIRED_PORT, port,
 	              NM_SETTING_WIRED_SPEED, speed,
 	              NM_SETTING_WIRED_DUPLEX, duplex,
-	              NM_SETTING_WIRED_AUTO_NEGOTIATE, gtk_toggle_button_get_active (priv->autonegotiate),
+	              NM_SETTING_WIRED_AUTO_NEGOTIATE, (gtk_combo_box_get_active (priv->linkneg) == LINKNEG_AUTO),
 	              NM_SETTING_WIRED_WAKE_ON_LAN, wol,
 	              NM_SETTING_WIRED_WAKE_ON_LAN_PASSWORD, wol_passwd && *wol_passwd ? wol_passwd : NULL,
 	              NULL);
