@@ -283,8 +283,10 @@ finish_setup (CEPageEthernet *self, gpointer unused, GError *error, gpointer use
 
 	g_signal_connect (priv->wol_default,   "toggled", G_CALLBACK (wol_special_toggled_cb), self);
 	g_signal_connect (priv->wol_ignore,    "toggled", G_CALLBACK (wol_special_toggled_cb), self);
-	wol_special_toggled_cb (GTK_WIDGET (priv->wol_default), self);
-	wol_special_toggled_cb (GTK_WIDGET (priv->wol_ignore), self);
+	if (gtk_toggle_button_get_active (priv->wol_default))
+		wol_special_toggled_cb (GTK_WIDGET (priv->wol_default), self);
+	else
+		wol_special_toggled_cb (GTK_WIDGET (priv->wol_ignore), self);
 	g_signal_connect (priv->wol_phy,       "toggled", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->wol_unicast,   "toggled", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->wol_multicast, "toggled", G_CALLBACK (stuff_changed), self);
