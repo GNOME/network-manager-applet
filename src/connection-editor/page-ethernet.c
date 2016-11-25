@@ -38,7 +38,7 @@ typedef struct {
 	GtkEntry *cloned_mac;          /* Cloned MAC - used for MAC spoofing */
 	GtkComboBox *port;
 	GtkComboBox *speed;
-	GtkToggleButton *duplex;
+	GtkComboBox *duplex;
 	GtkToggleButton *autonegotiate;
 	GtkSpinButton *mtu;
 	GtkToggleButton *wol_default, *wol_ignore, *wol_phy, *wol_unicast, *wol_multicast,
@@ -58,6 +58,10 @@ typedef struct {
 #define SPEED_100     2
 #define SPEED_1000    3
 #define SPEED_10000   4
+
+#define DUPLEX_DEFAULT 0
+#define DUPLEX_HALF    1
+#define DUPLEX_FULL    2
 
 static void
 ethernet_private_init (CEPageEthernet *self)
@@ -88,7 +92,7 @@ ethernet_private_init (CEPageEthernet *self)
 	priv->cloned_mac = GTK_ENTRY (gtk_builder_get_object (builder, "ethernet_cloned_mac"));
 	priv->port = GTK_COMBO_BOX (gtk_builder_get_object (builder, "ethernet_port"));
 	priv->speed = GTK_COMBO_BOX (gtk_builder_get_object (builder, "ethernet_speed"));
-	priv->duplex = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "ethernet_duplex"));
+	priv->duplex = GTK_COMBO_BOX (gtk_builder_get_object (builder, "ethernet_duplex"));
 	priv->autonegotiate = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "ethernet_autonegotiate"));
 	priv->mtu = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "ethernet_mtu"));
 	priv->wol_default = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "wol_default"));
@@ -162,6 +166,7 @@ populate_ui (CEPageEthernet *self)
 	const char *duplex;
 	int port_idx = PORT_DEFAULT;
 	int speed_idx;
+	int duplex_idx = DUPLEX_DEFAULT;
 	int mtu_def;
 	const char *s_mac, *s_ifname, *s_wol_passwd;
 	NMSettingWiredWakeOnLan wol;
@@ -202,10 +207,13 @@ populate_ui (CEPageEthernet *self)
 
 	/* Duplex */
 	duplex = nm_setting_wired_get_duplex (setting);
-	if (duplex && !strcmp (duplex, "half"))
-		gtk_toggle_button_set_active (priv->duplex, FALSE);
-	else
-		gtk_toggle_button_set_active (priv->duplex, TRUE);
+	if (duplex) {
+		if (!strcmp (duplex, "half"))
+			duplex_idx = DUPLEX_HALF;
+		else
+			duplex_idx = DUPLEX_FULL;
+	}
+	gtk_combo_box_set_active (priv->duplex, duplex_idx);
 
 	/* Autonegotiate */
 	gtk_toggle_button_set_active (priv->autonegotiate,
@@ -277,7 +285,7 @@ finish_setup (CEPageEthernet *self, gpointer unused, GError *error, gpointer use
 
 	g_signal_connect (priv->port, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->speed, "changed", G_CALLBACK (stuff_changed), self);
-	g_signal_connect (priv->duplex, "toggled", G_CALLBACK (stuff_changed), self);
+	g_signal_connect (priv->duplex, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->autonegotiate, "toggled", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->mtu, "value-changed", G_CALLBACK (stuff_changed), self);
 
@@ -306,8 +314,11 @@ finish_setup (CEPageEthernet *self, gpointer unused, GError *error, gpointer use
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_speed"));
 	gtk_widget_hide (widget);
 
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_duplex_label"));
+	gtk_widget_hide (widget);
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_duplex"));
 	gtk_widget_hide (widget);
+
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_autonegotiate"));
 	gtk_widget_hide (widget);
 }
@@ -364,6 +375,7 @@ ui_to_setting (CEPageEthernet *self)
 	NMSettingConnection *s_con;
 	const char *port;
 	guint32 speed;
+	const char *duplex;
 	char *ifname = NULL;
 	char *device_mac = NULL;
 	const char *cloned_mac;
@@ -412,6 +424,19 @@ ui_to_setting (CEPageEthernet *self)
 		break;
 	}
 
+	/* Duplex */
+	switch (gtk_combo_box_get_active (priv->duplex)) {
+	case DUPLEX_HALF:
+		duplex = "half";
+		break;
+	case DUPLEX_FULL:
+		duplex = "full";
+		break;
+	default:
+		duplex = NULL;
+		break;
+	}
+
 	entry = gtk_bin_get_child (GTK_BIN (priv->device_combo));
 	if (entry)
 		ce_page_device_entry_get (GTK_ENTRY (entry), ARPHRD_ETHER, TRUE, &ifname, &device_mac, NULL, NULL);
@@ -448,6 +473,7 @@ ui_to_setting (CEPageEthernet *self)
 	              NM_SETTING_WIRED_CLONED_MAC_ADDRESS, cloned_mac && *cloned_mac ? cloned_mac : NULL,
 	              NM_SETTING_WIRED_PORT, port,
 	              NM_SETTING_WIRED_SPEED, speed,
+	              NM_SETTING_WIRED_DUPLEX, duplex,
 	              NM_SETTING_WIRED_AUTO_NEGOTIATE, gtk_toggle_button_get_active (priv->autonegotiate),
 	              NM_SETTING_WIRED_WAKE_ON_LAN, wol,
 	              NM_SETTING_WIRED_WAKE_ON_LAN_PASSWORD, wol_passwd && *wol_passwd ? wol_passwd : NULL,
