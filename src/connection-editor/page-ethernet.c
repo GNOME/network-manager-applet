@@ -329,22 +329,6 @@ finish_setup (CEPageEthernet *self, gpointer unused, GError *error, gpointer use
 	gtk_widget_hide (widget);
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_port"));
 	gtk_widget_hide (widget);
-
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_speed_label"));
-	gtk_widget_hide (widget);
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_speed"));
-	gtk_widget_hide (widget);
-
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_duplex_label"));
-	gtk_widget_hide (widget);
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_duplex"));
-	gtk_widget_hide (widget);
-
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_linkneg_label"));
-	gtk_widget_hide (widget);
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "ethernet_linkneg"));
-	gtk_widget_hide (widget);
-
 }
 
 CEPage *
