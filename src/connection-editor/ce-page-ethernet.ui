@@ -36,9 +36,6 @@
     </columns>
     <data>
       <row>
-        <col id="0" translatable="yes">Automatic</col>
-      </row>
-      <row>
         <col id="0" translatable="yes">10 Mb/s</col>
       </row>
       <row>
@@ -49,6 +46,37 @@
       </row>
       <row>
         <col id="0" translatable="yes">10 Gb/s</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="model3">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Half</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Full</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="model4">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Ignore</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Automatic</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Manual</col>
       </row>
     </data>
   </object>
@@ -93,76 +121,6 @@
       </packing>
     </child>
     <child>
-      <object class="GtkLabel" id="ethernet_speed_label">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="xalign">0</property>
-        <property name="label" translatable="yes">_Speed:</property>
-        <property name="use_underline">True</property>
-        <property name="mnemonic_widget">ethernet_speed</property>
-      </object>
-      <packing>
-        <property name="top_attach">1</property>
-        <property name="bottom_attach">2</property>
-        <property name="x_options">GTK_FILL</property>
-        <property name="y_options"/>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkComboBox" id="ethernet_speed">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="model">model2</property>
-        <child>
-          <object class="GtkCellRendererText" id="renderer2"/>
-          <attributes>
-            <attribute name="text">0</attribute>
-          </attributes>
-        </child>
-      </object>
-      <packing>
-        <property name="left_attach">1</property>
-        <property name="right_attach">2</property>
-        <property name="top_attach">1</property>
-        <property name="bottom_attach">2</property>
-        <property name="y_options"/>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkCheckButton" id="ethernet_duplex">
-        <property name="label" translatable="yes">Full duple_x</property>
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">False</property>
-        <property name="use_underline">True</property>
-        <property name="draw_indicator">True</property>
-      </object>
-      <packing>
-        <property name="right_attach">2</property>
-        <property name="top_attach">2</property>
-        <property name="bottom_attach">3</property>
-        <property name="x_options">GTK_FILL</property>
-        <property name="y_options"/>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkCheckButton" id="ethernet_autonegotiate">
-        <property name="label" translatable="yes">Aut_onegotiate</property>
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">False</property>
-        <property name="use_underline">True</property>
-        <property name="draw_indicator">True</property>
-      </object>
-      <packing>
-        <property name="right_attach">2</property>
-        <property name="top_attach">3</property>
-        <property name="bottom_attach">4</property>
-        <property name="x_options">GTK_FILL</property>
-        <property name="y_options"/>
-      </packing>
-    </child>
-    <child>
       <object class="GtkLabel" id="ethernet_device_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -171,8 +129,8 @@
         <property name="use_underline">True</property>
       </object>
       <packing>
-        <property name="top_attach">4</property>
-        <property name="bottom_attach">5</property>
+        <property name="top_attach">1</property>
+        <property name="bottom_attach">2</property>
         <property name="x_options">GTK_FILL</property>
         <property name="y_options"/>
       </packing>
@@ -188,8 +146,8 @@
       <packing>
         <property name="left_attach">1</property>
         <property name="right_attach">2</property>
-        <property name="top_attach">4</property>
-        <property name="bottom_attach">5</property>
+        <property name="top_attach">1</property>
+        <property name="bottom_attach">2</property>
         <property name="y_options"/>
       </packing>
     </child>
@@ -203,8 +161,8 @@
         <property name="mnemonic_widget">ethernet_cloned_mac</property>
       </object>
       <packing>
-        <property name="top_attach">5</property>
-        <property name="bottom_attach">6</property>
+        <property name="top_attach">2</property>
+        <property name="bottom_attach">3</property>
         <property name="x_options">GTK_FILL</property>
         <property name="y_options"/>
       </packing>
@@ -218,8 +176,8 @@
       <packing>
         <property name="left_attach">1</property>
         <property name="right_attach">2</property>
-        <property name="top_attach">5</property>
-        <property name="bottom_attach">6</property>
+        <property name="top_attach">2</property>
+        <property name="bottom_attach">3</property>
         <property name="y_options"/>
       </packing>
     </child>
@@ -233,8 +191,8 @@
         <property name="mnemonic_widget">ethernet_mtu</property>
       </object>
       <packing>
-        <property name="top_attach">6</property>
-        <property name="bottom_attach">7</property>
+        <property name="top_attach">3</property>
+        <property name="bottom_attach">4</property>
         <property name="x_options">GTK_FILL</property>
         <property name="y_options"/>
       </packing>
@@ -273,8 +231,8 @@
       <packing>
         <property name="left_attach">1</property>
         <property name="right_attach">2</property>
-        <property name="top_attach">6</property>
-        <property name="bottom_attach">7</property>
+        <property name="top_attach">3</property>
+        <property name="bottom_attach">4</property>
         <property name="x_options">GTK_FILL</property>
         <property name="y_options">GTK_FILL</property>
       </packing>
@@ -287,8 +245,8 @@
         <property name="label" translatable="yes">Wake on LAN:</property>
       </object>
       <packing>
-        <property name="top_attach">7</property>
-        <property name="bottom_attach">8</property>
+        <property name="top_attach">4</property>
+        <property name="bottom_attach">5</property>
         <property name="x_options">GTK_FILL</property>
         <property name="y_options"></property>
       </packing>
@@ -425,8 +383,8 @@
       <packing>
         <property name="left_attach">1</property>
         <property name="right_attach">2</property>
-        <property name="top_attach">7</property>
-        <property name="bottom_attach">8</property>
+        <property name="top_attach">4</property>
+        <property name="bottom_attach">5</property>
         <property name="y_options"/>
       </packing>
     </child>
@@ -440,8 +398,8 @@
         <property name="mnemonic_widget">ethernet_wol_passwd</property>
       </object>
       <packing>
-        <property name="top_attach">8</property>
-        <property name="bottom_attach">9</property>
+        <property name="top_attach">5</property>
+        <property name="bottom_attach">6</property>
         <property name="x_options">GTK_FILL</property>
         <property name="y_options"/>
       </packing>
@@ -451,6 +409,118 @@
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="tooltip_text" translatable="yes">Wake-on-LAN password (an Ethernet MAC). It is only valid for magic packets.</property>
+      </object>
+      <packing>
+        <property name="left_attach">1</property>
+        <property name="right_attach">2</property>
+        <property name="top_attach">5</property>
+        <property name="bottom_attach">6</property>
+        <property name="y_options"/>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="ethernet_linkneg_label">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="xalign">0</property>
+        <property name="label" translatable="yes">Link negotiation:</property>
+        <property name="use_underline">True</property>
+      </object>
+      <packing>
+        <property name="top_attach">6</property>
+        <property name="bottom_attach">7</property>
+        <property name="x_options">GTK_FILL</property>
+        <property name="y_options"/>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkComboBox" id="ethernet_linkneg">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="tooltip_text" translatable="yes">Device link negotiation. If "Manual" is chosen, "Speed" and "Duplex" values will be forced without checking the device compatibility. If unsure, leave here "Ignore" or pick "Automatic".</property>
+        <property name="model">model4</property>
+        <child>
+          <object class="GtkCellRendererText" id="renderer4"/>
+          <attributes>
+            <attribute name="text">0</attribute>
+          </attributes>
+        </child>
+      </object>
+      <packing>
+        <property name="left_attach">1</property>
+        <property name="right_attach">2</property>
+        <property name="top_attach">6</property>
+        <property name="bottom_attach">7</property>
+        <property name="y_options"/>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="ethernet_speed_label">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="xalign">0</property>
+        <property name="label" translatable="yes">_Speed:</property>
+        <property name="use_underline">True</property>
+	<property name="margin_left">26</property>
+        <property name="mnemonic_widget">ethernet_speed</property>
+      </object>
+      <packing>
+        <property name="top_attach">7</property>
+        <property name="bottom_attach">8</property>
+        <property name="x_options">GTK_FILL</property>
+        <property name="y_options"/>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkComboBox" id="ethernet_speed">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="tooltip_text" translatable="yes">Speed value for static link negotiation, required only when "Ignore" and "Automatic" options are not selected. Before specifying a speed value be sure your device supports it.</property>
+        <property name="model">model2</property>
+        <child>
+          <object class="GtkCellRendererText" id="renderer2"/>
+          <attributes>
+            <attribute name="text">0</attribute>
+          </attributes>
+        </child>
+      </object>
+      <packing>
+        <property name="left_attach">1</property>
+        <property name="right_attach">2</property>
+        <property name="top_attach">7</property>
+        <property name="bottom_attach">8</property>
+        <property name="y_options"/>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="ethernet_duplex_label">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="xalign">0</property>
+        <property name="label" translatable="yes">_Duplex:</property>
+        <property name="use_underline">True</property>
+	<property name="margin_left">26</property>
+        <property name="mnemonic_widget">ethernet_duplex</property>
+      </object>
+      <packing>
+        <property name="top_attach">8</property>
+        <property name="bottom_attach">9</property>
+        <property name="x_options">GTK_FILL</property>
+        <property name="y_options"/>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkComboBox" id="ethernet_duplex">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="tooltip_text" translatable="yes">Duplex value for static link negotiation, required only when "Ignore" and "Automatic" options are not selected. Before specifying a duplex mode be sure your device supports it.</property>
+        <property name="model">model3</property>
+        <child>
+          <object class="GtkCellRendererText" id="renderer3"/>
+          <attributes>
+            <attribute name="text">0</attribute>
+          </attributes>
+        </child>
       </object>
       <packing>
         <property name="left_attach">1</property>
