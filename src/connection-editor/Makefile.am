@@ -38,6 +38,8 @@ nm_connection_editor_SOURCES = \
 	page-wifi-security.c \
 	page-infiniband.h \
 	page-infiniband.c \
+	page-ip-tunnel.h \
+	page-ip-tunnel.c \
 	page-ip4.h \
 	page-ip4.c \
 	page-ip6.h \
@@ -108,6 +110,7 @@ ui_DATA = \
 	ce-ip4-routes.ui \
 	ce-page-ip6.ui \
 	ce-ip6-routes.ui \
+	ce-page-ip-tunnel.ui \
 	ce-page-dsl.ui \
 	ce-page-mobile.ui \
 	ce-page-bluetooth.ui \
