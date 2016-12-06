@@ -2,48 +2,6 @@
 <!-- Generated with glade 3.19.0 -->
 <interface>
   <requires lib="gtk+" version="3.4"/>
-  <object class="GtkAdjustment" id="ftp_port_adjustment">
-    <property name="upper">65535</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
-  <object class="GtkAdjustment" id="http_port_adjustment">
-    <property name="upper">65535</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
-  <object class="GtkListStore" id="proxy_method_liststore">
-    <columns>
-      <!-- column-name method -->
-      <column type="gchararray"/>
-      <!-- column-name Value -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Automatic</col>
-        <col id="1" translatable="yes">auto</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Manual</col>
-        <col id="1" translatable="yes">manual</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">None</col>
-        <col id="1" translatable="yes">none</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkAdjustment" id="socks_port_adjustment">
-    <property name="upper">65535</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
-  <object class="GtkAdjustment" id="ssl_port_adjustment">
-    <property name="upper">65535</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
   <object class="GtkBox" id="ProxyPage">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -51,7 +9,7 @@
     <property name="orientation">vertical</property>
     <property name="spacing">6</property>
     <child>
-      <object class="GtkBox" id="box2">
+      <object class="GtkBox" id="box1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="spacing">12</property>
@@ -73,9 +31,8 @@
             <property name="can_focus">False</property>
             <property name="active_id">0</property>
             <items>
-              <item id="0" translatable="yes">Automatic</item>
-              <item id="1" translatable="yes">Manual</item>
-              <item id="2" translatable="yes">None</item>
+              <item id="0" translatable="yes">None</item>
+              <item id="1" translatable="yes">Automatic</item>
             </items>
           </object>
           <packing>
@@ -92,315 +49,6 @@
       </packing>
     </child>
     <child>
-      <object class="GtkBox" id="box1">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="spacing">10</property>
-        <child>
-          <object class="GtkLabel" id="proxy_http_label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">HTTP Proxy:</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkEntry" id="proxy_http_entry">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-          </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="proxy_http_port_label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Port:</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSpinButton" id="proxy_http_port_spin">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="adjustment">http_port_adjustment</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">3</property>
-          </packing>
-        </child>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">1</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkCheckButton" id="proxy_http_default_checkbutton">
-        <property name="label" translatable="yes">Default</property>
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">False</property>
-        <property name="tooltip_text" translatable="yes">Make HTTP proxy default for all protocols.</property>
-        <property name="halign">start</property>
-        <property name="margin_left">100</property>
-        <property name="xalign">0.5</property>
-        <property name="image_position">bottom</property>
-        <property name="draw_indicator">True</property>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">False</property>
-        <property name="position">2</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkBox" id="box5">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="spacing">10</property>
-        <child>
-          <object class="GtkLabel" id="proxy_ssl_label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">SSL Proxy:  </property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkEntry" id="proxy_ssl_entry">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-          </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="proxy_ssl_port_label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Port:</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSpinButton" id="proxy_ssl_port_spin">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="adjustment">ssl_port_adjustment</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">3</property>
-          </packing>
-        </child>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">3</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkBox" id="box6">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="spacing">10</property>
-        <child>
-          <object class="GtkLabel" id="proxy_ftp_label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">FTP Proxy:   </property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkEntry" id="proxy_ftp_entry">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-          </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="proxy_ftp_port_label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Port:</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSpinButton" id="proxy_ftp_port_spin">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="adjustment">ftp_port_adjustment</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">3</property>
-          </packing>
-        </child>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">4</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkBox" id="box7">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="spacing">10</property>
-        <child>
-          <object class="GtkLabel" id="proxy_socks_label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">SOCKS Proxy:</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkEntry" id="proxy_socks_entry">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-          </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="proxy_socks_port_label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Port:</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSpinButton" id="proxy_socks_port_spin">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="adjustment">socks_port_adjustment</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">3</property>
-          </packing>
-        </child>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">5</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkCheckButton" id="proxy_socks_version_checkbutton">
-        <property name="label" translatable="yes">SOCKS v5</property>
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">False</property>
-        <property name="tooltip_text" translatable="yes">Default is SOCKS v4.</property>
-        <property name="halign">start</property>
-        <property name="margin_left">100</property>
-        <property name="xalign">0.5</property>
-        <property name="draw_indicator">True</property>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">False</property>
-        <property name="position">6</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkBox" id="box8">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="spacing">10</property>
-        <child>
-          <object class="GtkLabel" id="proxy_no_proxy_for_label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">No Proxy For:</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkEntry" id="proxy_no_proxy_for_entry">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="tooltip_text" translatable="yes">List of hosts for proxy exclusion eg: "*mydomain.com".</property>
-          </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">7</property>
-      </packing>
-    </child>
-    <child>
       <object class="GtkCheckButton" id="proxy_browser_only_checkbutton">
         <property name="label" translatable="yes">For Browser Only</property>
         <property name="visible">True</property>
@@ -408,18 +56,17 @@
         <property name="receives_default">False</property>
         <property name="tooltip_text" translatable="yes">Use this Proxy Configuration for Only Browser Clients/schemes.</property>
         <property name="halign">start</property>
-        <property name="margin_left">100</property>
         <property name="xalign">0.5</property>
         <property name="draw_indicator">True</property>
       </object>
       <packing>
         <property name="expand">False</property>
         <property name="fill">False</property>
-        <property name="position">8</property>
+        <property name="position">1</property>
       </packing>
     </child>
     <child>
-      <object class="GtkBox" id="box9">
+      <object class="GtkBox" id="box2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="spacing">10</property>
@@ -451,7 +98,7 @@
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
-        <property name="position">9</property>
+        <property name="position">2</property>
       </packing>
     </child>
     <child>
@@ -472,10 +119,11 @@
           </packing>
         </child>
         <child>
-          <object class="GtkFileChooserButton" id="proxy_pac_script_button">
+          <object class="GtkButton" id="proxy_pac_script_import_button">
+            <property name="label" translatable="yes">Import script from a file...</property>
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="title" translatable="yes">Select a PAC File</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -487,7 +135,39 @@
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
-        <property name="position">10</property>
+        <property name="position">3</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox" id="box4">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="vexpand">True</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkScrolledWindow" id="scrolledwindow1">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="shadow_type">in</property>
+            <property name="min_content_height">100</property>
+            <child>
+              <object class="GtkTextView" id="proxy_pac_script_window">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">4</property>
       </packing>
     </child>
   </object>
