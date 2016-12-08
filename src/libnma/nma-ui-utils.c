@@ -297,6 +297,8 @@ nma_utils_setup_password_storage (GtkWidget *passwd_entry,
 		popup_menu_item_info_register (item[3], setting, password_flags_name, ITEM_STORAGE_UNUSED, passwd_entry);
 
 	g_signal_connect (passwd_entry, "icon-release", G_CALLBACK (icon_release_cb), popup_menu);
+	gtk_entry_set_icon_activatable (GTK_ENTRY (passwd_entry), GTK_ENTRY_ICON_SECONDARY,
+	                                !ask_mode);
 	gtk_menu_attach_to_widget (GTK_MENU (popup_menu), passwd_entry, NULL);
 
 	/* Initialize active item for password-storage popup menu */
