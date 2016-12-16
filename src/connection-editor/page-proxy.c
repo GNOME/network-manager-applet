@@ -216,7 +216,7 @@ ce_page_proxy_new (NMConnectionEditor *editor,
 	                                   "ProxyPage",
 	                                   _("Proxy")));
 	if (!self) {
-		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load Proxy user interface."));
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load proxy user interface."));
 		return NULL;
 	}
 
