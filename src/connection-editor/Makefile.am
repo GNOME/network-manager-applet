@@ -52,6 +52,8 @@ nm_connection_editor_SOURCES = \
 	page-bluetooth.c \
 	page-ppp.h \
 	page-ppp.c \
+	page-proxy.h \
+	page-proxy.c \
 	page-vpn.h \
 	page-vpn.c \
 	page-master.h \
@@ -106,6 +108,7 @@ ui_DATA = \
 	ce-page-team-port.ui \
 	ce-page-bridge.ui \
 	ce-page-bridge-port.ui \
+	ce-page-proxy.ui \
 	ce-page-ip4.ui \
 	ce-ip4-routes.ui \
 	ce-page-ip6.ui \

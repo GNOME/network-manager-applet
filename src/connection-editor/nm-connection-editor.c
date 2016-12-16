@@ -38,6 +38,7 @@
 #include "page-8021x-security.h"
 #include "page-wifi.h"
 #include "page-wifi-security.h"
+#include "page-proxy.h"
 #include "page-ip4.h"
 #include "page-ip6.h"
 #include "page-ip-tunnel.h"
@@ -812,6 +813,13 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 			goto out;
 	}
 
+#if NM_LIBNM_COMPAT_PROXY_SUPPORTED
+	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+	if (   nm_connection_get_setting_proxy (editor->connection)
+	    && !add_page (editor, ce_page_proxy_new, editor->connection, error))
+		goto out;
+	G_GNUC_END_IGNORE_DEPRECATIONS
+#endif
 	if (   nm_connection_get_setting_ip4_config (editor->connection)
 	    && !add_page (editor, ce_page_ip4_new, editor->connection, error))
 		goto out;

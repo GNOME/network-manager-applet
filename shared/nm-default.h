@@ -75,6 +75,8 @@
 #include <NetworkManager.h>
 #endif /* NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY */
 
+#include "nm-libnm-compat.h"
+
 /*****************************************************************************/
 
 #endif /* __NM_DEFAULT_H__ */
