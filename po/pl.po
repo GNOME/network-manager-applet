@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-15 16:44+0100\n"
-"PO-Revision-Date: 2016-12-15 16:45+0100\n"
+"POT-Creation-Date: 2016-12-18 16:18+0100\n"
+"PO-Revision-Date: 2016-12-18 16:19+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -1108,7 +1108,7 @@ msgstr "_Dodaj"
 #: ../src/connection-editor/ce-page-ip4.ui.h:8
 #: ../src/connection-editor/ce-page-ip6.ui.h:11
 #: ../src/connection-editor/ce-page-team.ui.h:15
-#: ../src/connection-editor/nm-connection-list.c:708
+#: ../src/connection-editor/nm-connection-list.c:714
 msgid "_Delete"
 msgstr "_Usuń"
 
@@ -1204,7 +1204,7 @@ msgstr "_Tryb:"
 #: ../src/connection-editor/ce-page-bond.ui.h:13
 #: ../src/connection-editor/ce-page-bridge.ui.h:3
 #: ../src/connection-editor/ce-page-team.ui.h:14
-#: ../src/connection-editor/nm-connection-list.c:692
+#: ../src/connection-editor/nm-connection-list.c:698
 msgid "_Edit"
 msgstr "_Modyfikuj"
 
@@ -1567,6 +1567,7 @@ msgstr "_Hasło:"
 #: ../src/connection-editor/ce-page-ethernet.ui.h:1
 #: ../src/connection-editor/ce-page-ip4.ui.h:1
 #: ../src/connection-editor/ce-page-ip6.ui.h:1
+#: ../src/connection-editor/ce-page-proxy.ui.h:3
 #: ../src/connection-editor/ce-page-wifi.ui.h:1
 #: ../src/connection-editor/page-ip4.c:131
 #: ../src/connection-editor/page-ip6.c:136
@@ -2094,6 +2095,40 @@ msgstr "Echo"
 msgid "Send PPP _echo packets"
 msgstr "Wysyłanie pakietów _echo PPP"
 
+#: ../src/connection-editor/ce-page-proxy.ui.h:1
+msgid "Method:"
+msgstr "Metoda:"
+
+#: ../src/connection-editor/ce-page-proxy.ui.h:2
+#: ../src/connection-editor/ce-page-team.ui.h:25
+msgid "None"
+msgstr "Brak"
+
+#: ../src/connection-editor/ce-page-proxy.ui.h:4
+msgid "For browser only"
+msgstr "Tylko dla przeglądarki"
+
+#: ../src/connection-editor/ce-page-proxy.ui.h:5
+msgid "Use this proxy configuration for only browser clients/schemes."
+msgstr ""
+"Używa tej konfiguracji pośrednika tylko dla klientów/schematów przeglądarek."
+
+#: ../src/connection-editor/ce-page-proxy.ui.h:6
+msgid "PAC URL:"
+msgstr "Adres URL do PAC:"
+
+#: ../src/connection-editor/ce-page-proxy.ui.h:7
+msgid "URL from where the PAC script is to be obtained."
+msgstr "Adres URL, z którego pobrać skrypt PAC."
+
+#: ../src/connection-editor/ce-page-proxy.ui.h:8
+msgid "PAC script:"
+msgstr "Skrypt PAC:"
+
+#: ../src/connection-editor/ce-page-proxy.ui.h:9
+msgid "Import script from a file…"
+msgstr "Zaimportuj skrypt z pliku…"
+
 #: ../src/connection-editor/ce-page-team-port.ui.h:1
 #: ../src/connection-editor/ce-page-team.ui.h:19
 msgid "Ad_vanced…"
@@ -2414,10 +2449,6 @@ msgstr "Równoważenie obciążenia"
 #: ../src/connection-editor/ce-page-team.ui.h:24
 msgid "LACP"
 msgstr "LACP"
-
-#: ../src/connection-editor/ce-page-team.ui.h:25
-msgid "None"
-msgstr "Brak"
 
 #: ../src/connection-editor/ce-page-team.ui.h:27
 #: ../src/connection-editor/connection-helpers.c:104
@@ -2835,6 +2866,7 @@ msgid "unknown error"
 msgstr "nieznany błąd"
 
 #: ../src/connection-editor/connection-helpers.c:303
+#: ../src/connection-editor/page-proxy.c:120
 #: ../src/connection-editor/page-team.c:341
 #: ../src/connection-editor/page-team-port.c:203
 msgid "Select file to import"
@@ -2904,34 +2936,34 @@ msgstr "Parametry"
 msgid "Prefix"
 msgstr "Przedrostek"
 
-#: ../src/connection-editor/nm-connection-editor.c:101
+#: ../src/connection-editor/nm-connection-editor.c:102
 #, c-format
 msgid "Editing %s"
 msgstr "Modyfikowanie %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:105
+#: ../src/connection-editor/nm-connection-editor.c:106
 msgid "Editing un-named connection"
 msgstr "Modyfikowanie połączenia bez nazwy"
 
-#: ../src/connection-editor/nm-connection-editor.c:125
+#: ../src/connection-editor/nm-connection-editor.c:126
 msgid "Missing connection name"
 msgstr "Brak nazwy połączenia"
 
-#: ../src/connection-editor/nm-connection-editor.c:188
+#: ../src/connection-editor/nm-connection-editor.c:189
 msgid "Editor initializing…"
 msgstr "Inicjowanie edytora…"
 
-#: ../src/connection-editor/nm-connection-editor.c:195
-#: ../src/connection-editor/nm-connection-list.c:406
+#: ../src/connection-editor/nm-connection-editor.c:196
+#: ../src/connection-editor/nm-connection-list.c:412
 msgid "Connection cannot be modified"
 msgstr "Nie można modyfikować połączenia"
 
-#: ../src/connection-editor/nm-connection-editor.c:208
+#: ../src/connection-editor/nm-connection-editor.c:209
 #, c-format
 msgid "Invalid setting %s: %s"
 msgstr "Nieprawidłowe ustawienie %s: %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:284
+#: ../src/connection-editor/nm-connection-editor.c:285
 msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
@@ -2939,37 +2971,37 @@ msgstr ""
 "Edytor połączeń nie może odnaleźć niektórych wymaganych zasobów (plik .ui "
 "nie został odnaleziony)."
 
-#: ../src/connection-editor/nm-connection-editor.c:401
+#: ../src/connection-editor/nm-connection-editor.c:402
 msgid "_Save"
 msgstr "_Zapisz"
 
-#: ../src/connection-editor/nm-connection-editor.c:402
+#: ../src/connection-editor/nm-connection-editor.c:403
 msgid "Save any changes made to this connection."
 msgstr "Zapis zmian dokonanych na tym połączeniu."
 
-#: ../src/connection-editor/nm-connection-editor.c:403
+#: ../src/connection-editor/nm-connection-editor.c:404
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Należy się uwierzytelnić, aby zapisać to połączenie dla wszystkich "
 "użytkowników komputera."
 
-#: ../src/connection-editor/nm-connection-editor.c:419
+#: ../src/connection-editor/nm-connection-editor.c:420
 msgid "Could not create connection"
 msgstr "Nie można utworzyć połączenia"
 
-#: ../src/connection-editor/nm-connection-editor.c:419
+#: ../src/connection-editor/nm-connection-editor.c:420
 msgid "Could not edit connection"
 msgstr "Nie można zmodyfikować połączenia"
 
-#: ../src/connection-editor/nm-connection-editor.c:421
+#: ../src/connection-editor/nm-connection-editor.c:422
 msgid "Unknown error creating connection editor dialog."
 msgstr "Nieznany błąd podczas tworzenia okna dialogowego edytora połączeń."
 
-#: ../src/connection-editor/nm-connection-editor.c:560
+#: ../src/connection-editor/nm-connection-editor.c:561
 msgid "Error initializing editor"
 msgstr "Błąd podczas inicjowania edytora"
 
-#: ../src/connection-editor/nm-connection-editor.c:903
+#: ../src/connection-editor/nm-connection-editor.c:911
 msgid "Connection add failed"
 msgstr "Dodanie połączenia się nie powiodło"
 
@@ -3035,49 +3067,49 @@ msgstr[0] "%d rok temu"
 msgstr[1] "%d lata temu"
 msgstr[2] "%d lat temu"
 
-#: ../src/connection-editor/nm-connection-list.c:632
+#: ../src/connection-editor/nm-connection-list.c:638
 msgid "Name"
 msgstr "Nazwa"
 
-#: ../src/connection-editor/nm-connection-list.c:645
+#: ../src/connection-editor/nm-connection-list.c:651
 msgid "Last Used"
 msgstr "Ostatnie użycie"
 
-#: ../src/connection-editor/nm-connection-list.c:693
+#: ../src/connection-editor/nm-connection-list.c:699
 msgid "Edit the selected connection"
 msgstr "Modyfikowanie zaznaczonego połączenia"
 
-#: ../src/connection-editor/nm-connection-list.c:694
+#: ../src/connection-editor/nm-connection-list.c:700
 msgid "Authenticate to edit the selected connection"
 msgstr "Należy się uwierzytelnić, aby modyfikować zaznaczone połączenie"
 
-#: ../src/connection-editor/nm-connection-list.c:709
+#: ../src/connection-editor/nm-connection-list.c:715
 msgid "Delete the selected connection"
 msgstr "Usunięcie zaznaczonego połączenia"
 
-#: ../src/connection-editor/nm-connection-list.c:710
+#: ../src/connection-editor/nm-connection-list.c:716
 msgid "Authenticate to delete the selected connection"
 msgstr "Należy się uwierzytelnić, aby usunąć zaznaczone połączenie"
 
-#: ../src/connection-editor/nm-connection-list.c:926
-#: ../src/connection-editor/nm-connection-list.c:929
+#: ../src/connection-editor/nm-connection-list.c:932
+#: ../src/connection-editor/nm-connection-list.c:935
 msgid "Error creating connection"
 msgstr "Błąd podczas tworzenia połączenia"
 
-#: ../src/connection-editor/nm-connection-list.c:927
+#: ../src/connection-editor/nm-connection-list.c:933
 msgid "No VPN plugins are installed."
 msgstr "Żadna wtyczka VPN nie jest zainstalowana."
 
-#: ../src/connection-editor/nm-connection-list.c:930
+#: ../src/connection-editor/nm-connection-list.c:936
 #, c-format
 msgid "Don’t know how to create “%s” connections"
 msgstr "Nie wiadomo, jak tworzyć połączenia „%s”"
 
-#: ../src/connection-editor/nm-connection-list.c:954
+#: ../src/connection-editor/nm-connection-list.c:960
 msgid "Error editing connection"
 msgstr "Błąd podczas modyfikowania połączenia"
 
-#: ../src/connection-editor/nm-connection-list.c:955
+#: ../src/connection-editor/nm-connection-list.c:961
 #, c-format
 msgid "Did not find a connection with UUID “%s”"
 msgstr "Nie odnaleziono połączenia z UUID „%s”"
@@ -3495,6 +3527,14 @@ msgstr "Ustawienia PPP"
 #: ../src/connection-editor/page-ppp.c:281
 msgid "Could not load PPP user interface."
 msgstr "Nie można wczytać interfejsu użytkownika PPP."
+
+#: ../src/connection-editor/page-proxy.c:217
+msgid "Proxy"
+msgstr "Pośrednik"
+
+#: ../src/connection-editor/page-proxy.c:219
+msgid "Could not load proxy user interface."
+msgstr "Nie można wczytać interfejsu użytkownika pośrednika."
 
 #: ../src/connection-editor/page-team.c:361
 #: ../src/connection-editor/page-team-port.c:223
