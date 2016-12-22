@@ -269,23 +269,14 @@ destroy (EAPMethod *parent)
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_notebook"));
 	g_assert (widget);
+	g_signal_handlers_disconnect_by_data (widget, method);
 
-	g_signal_handlers_disconnect_by_func (G_OBJECT (widget),
-	                                      (GCallback) widgets_realized,
-	                                      method);
-	g_signal_handlers_disconnect_by_func (G_OBJECT (widget),
-	                                      (GCallback) widgets_unrealized,
-	                                      method);
+	g_signal_handlers_disconnect_by_data (method->username_entry, method->ws_parent);
+	g_signal_handlers_disconnect_by_data (method->password_entry, method->ws_parent);
+	g_signal_handlers_disconnect_by_data (method->password_entry, method);
+	g_signal_handlers_disconnect_by_data (method->show_password, method);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_simple_password_entry"));
-	g_assert (widget);
-	g_signal_handlers_disconnect_by_func (G_OBJECT (widget),
-	                                      (GCallback) password_storage_changed,
-	                                      method);
-	if (method->idle_func_id > 0) {
-		g_source_remove (method->idle_func_id);
-		method->idle_func_id = 0;
-	}
+	nm_clear_g_source (&method->idle_func_id);
 }
 
 EAPMethodSimple *
