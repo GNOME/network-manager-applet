@@ -724,7 +724,7 @@ ce_page_team_port_new (NMConnectionEditor *editor,
 	                                       connection,
 	                                       parent_window,
 	                                       client,
-	                                       UIDIR "/ce-page-team-port.ui",
+	                                       "/org/freedesktop/network-manager-applet/ce-page-team-port.ui",
 	                                       "TeamPortPage",
 	                                       /* Translators: a "Team Port" is a network
 	                                        * device that is part of a team.

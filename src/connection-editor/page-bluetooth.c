@@ -118,7 +118,7 @@ ce_page_bluetooth_new (NMConnectionEditor *editor,
 	                          connection,
 	                          parent_window,
 	                          client,
-	                          UIDIR "/ce-page-bluetooth.ui",
+	                          "/org/freedesktop/network-manager-applet/ce-page-bluetooth.ui",
 	                          "BluetoothPage",
 	                          _("Bluetooth")));
 	if (!self) {

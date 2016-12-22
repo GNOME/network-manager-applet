@@ -212,7 +212,7 @@ ce_page_proxy_new (NMConnectionEditor *editor,
 	                                   connection,
 	                                   parent_window,
 	                                   client,
-	                                   UIDIR "/ce-page-proxy.ui",
+	                                   "/org/freedesktop/network-manager-applet/ce-page-proxy.ui",
 	                                   "ProxyPage",
 	                                   _("Proxy")));
 	if (!self) {

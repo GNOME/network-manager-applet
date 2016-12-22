@@ -122,7 +122,7 @@ ce_page_dsl_new (NMConnectionEditor *editor,
 	                                 connection,
 	                                 parent_window,
 	                                 client,
-	                                 UIDIR "/ce-page-dsl.ui",
+	                                 "/org/freedesktop/network-manager-applet/ce-page-dsl.ui",
 	                                 "DslPage",
 	                                 _("DSL")));
 	if (!self) {

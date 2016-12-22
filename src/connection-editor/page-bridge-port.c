@@ -100,7 +100,7 @@ ce_page_bridge_port_new (NMConnectionEditor *editor,
 	                                         connection,
 	                                         parent_window,
 	                                         client,
-	                                         UIDIR "/ce-page-bridge-port.ui",
+	                                         "/org/freedesktop/network-manager-applet/ce-page-bridge-port.ui",
 	                                         "BridgePortPage",
 	                                         /* Translators: a "Bridge Port" is a network
 	                                          * device that is part of a bridge.

@@ -3234,7 +3234,7 @@ applet_startup (GApplication *app, gpointer user_data)
 
 	applet->info_dialog_ui = gtk_builder_new ();
 
-	if (!gtk_builder_add_from_file (applet->info_dialog_ui, UIDIR "/info.ui", &error)) {
+	if (!gtk_builder_add_from_resource (applet->info_dialog_ui, "/org/freedesktop/network-manager-applet/info.ui", &error)) {
 		g_warning ("Could not load info dialog UI file: %s", error->message);
 		g_application_quit (app);
 		return;

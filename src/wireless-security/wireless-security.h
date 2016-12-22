@@ -107,7 +107,7 @@ WirelessSecurity *wireless_security_init (gsize obj_size,
                                           WSFillConnectionFunc fill_connection,
                                           WSUpdateSecretsFunc update_secrets,
                                           WSDestroyFunc destroy,
-                                          const char *ui_file,
+                                          const char *ui_resource,
                                           const char *ui_widget_name,
                                           const char *default_field);
 

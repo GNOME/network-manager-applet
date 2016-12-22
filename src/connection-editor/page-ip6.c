@@ -1174,7 +1174,7 @@ ce_page_ip6_new (NMConnectionEditor *editor,
 	                                 connection,
 	                                 parent_window,
 	                                 client,
-	                                 UIDIR "/ce-page-ip6.ui",
+	                                 "/org/freedesktop/network-manager-applet/ce-page-ip6.ui",
 	                                 "IP6Page",
 	                                 _("IPv6 Settings")));
 	if (!self) {

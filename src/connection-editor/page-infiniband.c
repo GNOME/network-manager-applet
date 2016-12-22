@@ -143,7 +143,7 @@ ce_page_infiniband_new (NMConnectionEditor *editor,
 	                                        connection,
 	                                        parent_window,
 	                                        client,
-	                                        UIDIR "/ce-page-infiniband.ui",
+	                                        "/org/freedesktop/network-manager-applet/ce-page-infiniband.ui",
 	                                        "InfinibandPage",
 	                                        _("InfiniBand")));
 	if (!self) {

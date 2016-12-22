@@ -617,7 +617,7 @@ ce_page_dcb_new (NMConnectionEditor *editor,
 	                                 connection,
 	                                 parent_window,
 	                                 client,
-	                                 UIDIR "/ce-page-dcb.ui",
+	                                 "/org/freedesktop/network-manager-applet/ce-page-dcb.ui",
 	                                 "DcbPage",
 	                                 _("DCB")));
 	if (!self) {

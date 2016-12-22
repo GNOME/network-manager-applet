@@ -362,7 +362,7 @@ ce_page_general_new (NMConnectionEditor *editor,
 	                                     connection,
 	                                     parent_window,
 	                                     client,
-	                                     UIDIR "/ce-page-general.ui",
+	                                     "/org/freedesktop/network-manager-applet/ce-page-general.ui",
 	                                     "GeneralPage",
 	                                     _("General")));
 	if (!self) {

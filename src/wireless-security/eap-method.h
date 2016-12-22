@@ -87,7 +87,7 @@ EAPMethod *eap_method_init (gsize obj_size,
                             EMFillConnectionFunc fill_connection,
                             EMUpdateSecretsFunc update_secrets,
                             EMDestroyFunc destroy,
-                            const char *ui_file,
+                            const char *ui_resource,
                             const char *ui_widget_name,
                             const char *default_field,
                             gboolean phase2);

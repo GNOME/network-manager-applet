@@ -436,7 +436,7 @@ ce_page_wifi_new (NMConnectionEditor *editor,
 	                                  connection,
 	                                  parent_window,
 	                                  client,
-	                                  UIDIR "/ce-page-wifi.ui",
+	                                  "/org/freedesktop/network-manager-applet/ce-page-wifi.ui",
 	                                  "WifiPage",
 	                                  _("Wi-Fi")));
 	if (!self) {

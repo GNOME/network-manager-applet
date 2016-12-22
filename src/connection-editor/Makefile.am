@@ -7,7 +7,6 @@ nm_connection_editor_CPPFLAGS = \
 	-DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_4 \
 	-DNM_VERSION_MAX_ALLOWED=NM_VERSION_1_4 \
 	-DICONDIR=\""$(datadir)/icons"\" \
-	-DUIDIR=\""$(uidir)"\" \
 	-DBINDIR=\""$(bindir)"\" \
 	-DSYSCONFDIR=\""$(sysconfdir)"\" \
 	-DLIBDIR=\""$(libdir)"\" \
@@ -18,7 +17,13 @@ nm_connection_editor_CPPFLAGS = \
 	-I${top_srcdir}/src/wireless-security \
 	-I${top_srcdir}/src/libnma
 
+BUILT_SOURCES = \
+	ce-resources.h \
+	ce-resources.c
+
 nm_connection_editor_SOURCES = \
+	ce-resources.h \
+	ce-resources.c \
 	nm-connection-editor.c \
 	nm-connection-editor.h \
 	nm-connection-list.c \
@@ -94,33 +99,8 @@ nm_connection_editor_LDADD = \
 	$(JANSSON_LIBS) \
 	-lm
 
-uidir = $(datadir)/nm-applet
-ui_DATA = \
-	nm-connection-editor.ui \
-	ce-new-connection.ui \
-	ce-page-general.ui \
-	ce-page-ethernet.ui \
-	ce-page-wifi.ui \
-	ce-page-wifi-security.ui \
-	ce-page-infiniband.ui \
-	ce-page-bond.ui \
-	ce-page-team.ui \
-	ce-page-team-port.ui \
-	ce-page-bridge.ui \
-	ce-page-bridge-port.ui \
-	ce-page-proxy.ui \
-	ce-page-ip4.ui \
-	ce-ip4-routes.ui \
-	ce-page-ip6.ui \
-	ce-ip6-routes.ui \
-	ce-page-ip-tunnel.ui \
-	ce-page-dsl.ui \
-	ce-page-mobile.ui \
-	ce-page-bluetooth.ui \
-	ce-page-ppp.ui \
-	ce-ppp-auth-methods.ui \
-	ce-page-vlan.ui \
-	ce-page-dcb.ui
+ce-resources.h: ce.gresource.xml
+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir) --generate-header --internal
 
-EXTRA_DIST = $(ui_DATA)
-
+ce-resources.c: ce.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir) --generate-dependencies $(builddir)/ce.gresource.xml)
+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir) --generate-source --internal

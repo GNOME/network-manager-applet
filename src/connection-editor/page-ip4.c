@@ -1221,7 +1221,7 @@ ce_page_ip4_new (NMConnectionEditor *editor,
 	                                 connection,
 	                                 parent_window,
 	                                 client,
-	                                 UIDIR "/ce-page-ip4.ui",
+	                                 "/org/freedesktop/network-manager-applet/ce-page-ip4.ui",
 	                                 "IP4Page",
 	                                 _("IPv4 Settings")));
 	if (!self) {

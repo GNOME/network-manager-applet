@@ -195,7 +195,7 @@ CEPage *ce_page_new (GType page_type,
                      NMConnection *connection,
                      GtkWindow *parent_window,
                      NMClient *client,
-                     const char *ui_file,
+                     const char *ui_resource,
                      const char *widget_name,
                      const char *title);
 

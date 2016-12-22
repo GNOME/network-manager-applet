@@ -441,7 +441,7 @@ ce_page_bond_new (NMConnectionEditor *editor,
 	                                  connection,
 	                                  parent_window,
 	                                  client,
-	                                  UIDIR "/ce-page-bond.ui",
+	                                  "/org/freedesktop/network-manager-applet/ce-page-bond.ui",
 	                                  "BondPage",
 	                                  _("Bond")));
 	if (!self) {

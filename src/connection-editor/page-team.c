@@ -1148,7 +1148,7 @@ ce_page_team_new (NMConnectionEditor *editor,
 	                                  connection,
 	                                  parent_window,
 	                                  client,
-	                                  UIDIR "/ce-page-team.ui",
+	                                  "/org/freedesktop/network-manager-applet/ce-page-team.ui",
 	                                  "TeamPage",
 	                                  _("Team")));
 	if (!self) {

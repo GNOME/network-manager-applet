@@ -420,7 +420,7 @@ ce_page_wifi_security_new (NMConnectionEditor *editor,
 	                                           connection,
 	                                           parent_window,
 	                                           client,
-	                                           UIDIR "/ce-page-wifi-security.ui",
+	                                           "/org/freedesktop/network-manager-applet/ce-page-wifi-security.ui",
 	                                           "WifiSecurityPage",
 	                                           _("Wi-Fi Security")));
 	if (!self) {

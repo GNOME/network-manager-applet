@@ -207,7 +207,7 @@ ce_page_bridge_new (NMConnectionEditor *editor,
 	                                  connection,
 	                                  parent_window,
 	                                  client,
-	                                  UIDIR "/ce-page-bridge.ui",
+	                                  "/org/freedesktop/network-manager-applet/ce-page-bridge.ui",
 	                                  "BridgePage",
 	                                  _("Bridge")));
 	if (!self) {

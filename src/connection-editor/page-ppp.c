@@ -274,7 +274,7 @@ ce_page_ppp_new (NMConnectionEditor *editor,
 	                                 connection,
 	                                 parent_window,
 	                                 client,
-	                                 UIDIR "/ce-page-ppp.ui",
+	                                 "/org/freedesktop/network-manager-applet/ce-page-ppp.ui",
 	                                 "PppPage",
 	                                 _("PPP Settings")));
 	if (!self) {

@@ -1317,8 +1317,8 @@ applet_mobile_pin_dialog_new (const char *unlock_required,
 
 	builder = gtk_builder_new ();
 
-	if (!gtk_builder_add_from_file (builder, UIDIR "/gsm-unlock.ui", &error)) {
-		g_warning ("Couldn't load builder file: %s", error->message);
+	if (!gtk_builder_add_from_resource (builder, "/org/freedesktop/network-manager-applet/gsm-unlock.ui", &error)) {
+		g_warning ("Couldn't load builder resource: %s", error->message);
 		g_error_free (error);
 		g_object_unref (builder);
 		return NULL;

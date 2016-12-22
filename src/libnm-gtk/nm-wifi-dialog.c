@@ -1396,8 +1396,8 @@ nma_wifi_dialog_init (NMAWifiDialog *self)
 
 	priv->builder = gtk_builder_new ();
 
-	if (!gtk_builder_add_from_file (priv->builder, UIDIR "/wifi.ui", &error)) {
-		g_warning ("Couldn't load builder file: %s", error->message);
+	if (!gtk_builder_add_from_resource (priv->builder, "/org/freedesktop/network-manager-applet/wifi.ui", &error)) {
+		g_warning ("Couldn't load builder resource: %s", error->message);
 		g_error_free (error);
 	}
 }

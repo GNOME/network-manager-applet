@@ -847,7 +847,7 @@ ce_page_new (GType page_type,
              NMConnection *connection,
              GtkWindow *parent_window,
              NMClient *client,
-             const char *ui_file,
+             const char *ui_resource,
              const char *widget_name,
              const char *title)
 {
@@ -855,7 +855,7 @@ ce_page_new (GType page_type,
 	GError *error = NULL;
 
 	g_return_val_if_fail (title != NULL, NULL);
-	if (ui_file)
+	if (ui_resource)
 		g_return_val_if_fail (widget_name != NULL, NULL);
 
 	self = CE_PAGE (g_object_new (page_type,
@@ -866,9 +866,9 @@ ce_page_new (GType page_type,
 	self->client = client;
 	self->editor = editor;
 
-	if (ui_file) {
-		if (!gtk_builder_add_from_file (self->builder, ui_file, &error)) {
-			g_warning ("Couldn't load builder file: %s", error->message);
+	if (ui_resource) {
+		if (!gtk_builder_add_from_resource (self->builder, ui_resource, &error)) {
+			g_warning ("Couldn't load builder resource: %s", error->message);
 			g_error_free (error);
 			g_object_unref (self);
 			return NULL;
@@ -876,7 +876,7 @@ ce_page_new (GType page_type,
 
 		self->page = GTK_WIDGET (gtk_builder_get_object (self->builder, widget_name));
 		if (!self->page) {
-			g_warning ("Couldn't load page widget '%s' from %s", widget_name, ui_file);
+			g_warning ("Couldn't load page widget '%s' from %s", widget_name, ui_resource);
 			g_object_unref (self);
 			return NULL;
 		}

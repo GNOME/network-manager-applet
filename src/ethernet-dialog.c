@@ -80,8 +80,8 @@ nma_ethernet_dialog_new (NMConnection *connection)
 
 	builder = gtk_builder_new ();
 
-	if (!gtk_builder_add_from_file (builder, UIDIR "/8021x.ui", &error)) {
-		g_warning ("Couldn't load builder file: %s", error->message);
+	if (!gtk_builder_add_from_resource (builder, "/org/freedesktop/network-manager-applet/8021x.ui", &error)) {
+		g_warning ("Couldn't load builder resource: %s", error->message);
 		g_error_free (error);
 		applet_missing_ui_warning_dialog_show ();
 		g_object_unref (builder);

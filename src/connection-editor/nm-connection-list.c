@@ -861,11 +861,11 @@ nm_connection_list_new (void)
 	/* load GUI */
 	list->gui = gtk_builder_new ();
 
-	if (!gtk_builder_add_objects_from_file (list->gui,
-	                                        UIDIR "/nm-connection-editor.ui",
-	                                        (char **) objects,
-	                                        &error)) {
-		g_warning ("Couldn't load builder file: %s", error->message);
+	if (!gtk_builder_add_objects_from_resource (list->gui,
+	                                            "/org/freedesktop/network-manager-applet/nm-connection-editor.ui",
+	                                            (char **) objects,
+	                                            &error)) {
+		g_warning ("Couldn't load builder resource: %s", error->message);
 		g_error_free (error);
 		goto error;
 	}

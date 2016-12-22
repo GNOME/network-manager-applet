@@ -2,9 +2,15 @@ noinst_LTLIBRARIES = \
 	libwireless-security-libnm-glib.la \
 	libwireless-security-libnm.la
 
+BUILT_SOURCES = \
+	ws-resources.h \
+	ws-resources.c
+
 wireless_security_sources = \
 	wireless-security.h \
 	wireless-security.c \
+	ws-resources.h \
+	ws-resources.c \
 	ws-wep-key.h \
 	ws-wep-key.c \
 	ws-wpa-psk.h \
@@ -37,7 +43,6 @@ libwireless_security_libnm_glib_la_SOURCES = \
 
 libwireless_security_libnm_glib_la_CPPFLAGS = \
 	$(GTK_CFLAGS) \
-	-DUIDIR=\""$(uidir)"\" \
 	-DNETWORKMANAGER_COMPILATION=NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY \
 	$(LIBNM_GLIB_CFLAGS) \
 	"-I${top_srcdir}/shared/" \
@@ -54,7 +59,6 @@ libwireless_security_libnm_la_SOURCES = \
 
 libwireless_security_libnm_la_CPPFLAGS = \
 	$(GTK_CFLAGS) \
-	-DUIDIR=\""$(uidir)"\" \
 	$(LIBNM_CFLAGS) \
 	"-I${top_srcdir}/shared/" \
 	-I${top_srcdir}/src/utils \
@@ -65,20 +69,8 @@ libwireless_security_libnm_la_LIBADD = \
 	$(LIBNM_LIBS) \
 	${top_builddir}/src/utils/libutils-libnm.la
 
-uidir = $(datadir)/nm-applet
-ui_DATA = \
-	eap-method-leap.ui \
-	eap-method-fast.ui \
-	eap-method-peap.ui \
-	eap-method-simple.ui \
-	eap-method-tls.ui \
-	eap-method-ttls.ui \
-	ws-dynamic-wep.ui \
-	ws-leap.ui \
-	ws-wep-key.ui \
-	ws-wpa-eap.ui \
-	ws-wpa-psk.ui
+ws-resources.h: ws.gresource.xml
+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir) --generate-header --internal
 
-EXTRA_DIST = \
-	$(ui_DATA)
-
+ws-resources.c: ws.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir) --generate-dependencies $(builddir)/ws.gresource.xml)
+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir) --generate-source --internal

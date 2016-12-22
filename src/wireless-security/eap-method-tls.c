@@ -458,7 +458,7 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 	                          fill_connection,
 	                          update_secrets,
 	                          NULL,
-	                          UIDIR "/eap-method-tls.ui",
+	                          "/org/freedesktop/network-manager-applet/eap-method-tls.ui",
 	                          "eap_tls_notebook",
 	                          "eap_tls_identity_entry",
 	                          phase2);
