@@ -286,8 +286,6 @@ destroy (EAPMethod *parent)
 		g_source_remove (method->idle_func_id);
 		method->idle_func_id = 0;
 	}
-
-	wireless_security_unref (method->ws_parent);
 }
 
 EAPMethodSimple *
@@ -316,7 +314,7 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 
 	parent->password_flags_name = NM_SETTING_802_1X_PASSWORD;
 	method = (EAPMethodSimple *) parent;
-	method->ws_parent = wireless_security_ref (ws_parent);
+	method->ws_parent = ws_parent;
 	method->flags = flags;
 	method->type = type;
 	g_assert (type < EAP_METHOD_SIMPLE_TYPE_LAST);

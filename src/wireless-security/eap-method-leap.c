@@ -183,8 +183,6 @@ destroy (EAPMethod *parent)
 	g_signal_handlers_disconnect_by_func (G_OBJECT (widget),
 	                                      (GCallback) widgets_unrealized,
 	                                      method);
-
-	wireless_security_unref (method->ws_parent);
 }
 
 EAPMethodLEAP *
@@ -213,7 +211,7 @@ eap_method_leap_new (WirelessSecurity *ws_parent,
 	parent->password_flags_name = NM_SETTING_802_1X_PASSWORD;
 	method = (EAPMethodLEAP *) parent;
 	method->editing_connection = secrets_only ? FALSE : TRUE;
-	method->ws_parent = wireless_security_ref (ws_parent);
+	method->ws_parent = ws_parent;
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_leap_notebook"));
 	g_assert (widget);
