@@ -373,7 +373,8 @@ main (int argc, char *argv[])
 	}
 	g_signal_connect_swapped (list, "done", G_CALLBACK (g_main_loop_quit), loop);
 
-	owner_id = start_service (bus, list, &registration_id);
+	if (bus)
+		owner_id = start_service (bus, list, &registration_id);
 
 	/* Figure out what page or editor window we'll show initially */
 	if (handle_arguments (list, type, create, show, uuid, import, (create || show || uuid || import)))
