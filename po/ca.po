@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-07 21:25+0200\n"
-"PO-Revision-Date: 2016-09-06 17:31+0200\n"
+"POT-Creation-Date: 2016-12-24 07:17+0100\n"
+"PO-Revision-Date: 2016-12-19 14:05+0100\n"
 "Last-Translator: Walter Garcia-Fontes <walter.garcia@upf.esu>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Gtranslator 2.91.6\n"
 
-#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3119
+#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3113
 msgid "Network"
 msgstr "Xarxa"
 
@@ -163,14 +163,55 @@ msgstr ""
 msgid "The NetworkManager Developers"
 msgstr "Els desenvolupadors del NetworkManager"
 
+#: ../shared/nm-utils/nm-shared-utils.c:185
+#, c-format
+msgid "object class '%s' has no property named '%s'"
+msgstr "la classe d'objecte «%s» no té cap propieatat anomenada «%s»"
+
+#: ../shared/nm-utils/nm-shared-utils.c:192
+#, c-format
+msgid "property '%s' of object class '%s' is not writable"
+msgstr "la propietat «%s» de la classe d'objecte «%s» no és pot escriure"
+
+#: ../shared/nm-utils/nm-shared-utils.c:199
+#, c-format
+msgid ""
+"construct property \"%s\" for object '%s' can't be set after construction"
+msgstr ""
+"la propietat «%s» de construcció per a l'objecte «%s» no es pot establir "
+"després de la construcció"
+
+#: ../shared/nm-utils/nm-shared-utils.c:207
+#, c-format
+msgid "'%s::%s' is not a valid property name; '%s' is not a GObject subtype"
+msgstr ""
+"«%s::%s» no és un nom vàlid de propietat: «%s» no és un subtipus de GObject"
+
+#: ../shared/nm-utils/nm-shared-utils.c:216
+#, c-format
+msgid "unable to set property '%s' of type '%s' from value of type '%s'"
+msgstr ""
+"no es pot establir la propietat «%s» de tipus «%s» a partir d'un valor de "
+"tipus «%s»"
+
+#: ../shared/nm-utils/nm-shared-utils.c:227
+#, c-format
+msgid ""
+"value \"%s\" of type '%s' is invalid or out of range for property '%s' of "
+"type '%s'"
+msgstr ""
+"el valor «%s» de tipus «%s» no és vàlid o està fora de rang per a la "
+"propietat «%s» de tipus «%s»"
+
+#. ***************************************************************************
 #: ../src/8021x.ui.h:1 ../src/ethernet-dialog.c:99
 msgid "802.1X authentication"
 msgstr "Autenticació 802.1X"
 
 #: ../src/8021x.ui.h:2 ../src/connection-editor/ce-ip4-routes.ui.h:1
 #: ../src/connection-editor/ce-ip6-routes.ui.h:1
-#: ../src/connection-editor/ce-new-connection.ui.h:2
-#: ../src/connection-editor/ce-page-dcb.ui.h:25
+#: ../src/connection-editor/ce-new-connection.ui.h:1
+#: ../src/connection-editor/ce-page-dcb.ui.h:17
 #: ../src/connection-editor/ce-ppp-auth-methods.ui.h:1
 #: ../src/connection-editor/nm-connection-editor.ui.h:6
 #: ../src/gsm-unlock.ui.h:1
@@ -181,7 +222,7 @@ msgstr "_Cancel·la"
 msgid "C_onnect"
 msgstr "C_onnecta"
 
-#: ../src/8021x.ui.h:4 ../src/libnma/wifi.ui.h:3 ../src/libnm-gtk/wifi.ui.h:3
+#: ../src/8021x.ui.h:4 ../src/libnma/wifi.ui.h:2 ../src/libnm-gtk/wifi.ui.h:2
 msgid "_Network name:"
 msgstr "Nom de _xarxa:"
 
@@ -198,12 +239,12 @@ msgid "Failed to add/activate connection"
 msgstr "Ha fallat l'addició/activació de la connexió"
 
 #: ../src/applet.c:347 ../src/applet.c:401 ../src/applet.c:436
-#: ../src/applet-device-wifi.c:1444 ../src/applet-device-wifi.c:1467
+#: ../src/applet-device-wifi.c:1445 ../src/applet-device-wifi.c:1468
 msgid "Unknown error"
 msgstr "Error desconegut"
 
-#: ../src/applet.c:350 ../src/applet.c:439 ../src/applet-device-wifi.c:1447
-#: ../src/applet-device-wifi.c:1470
+#: ../src/applet.c:350 ../src/applet.c:439 ../src/applet-device-wifi.c:1448
+#: ../src/applet-device-wifi.c:1471
 msgid "Connection failure"
 msgstr "Ha fallat la connexió"
 
@@ -219,15 +260,15 @@ msgstr "Ha fallat la desconnexió"
 msgid "Connection activation failed"
 msgstr "Ha fallat l'activació de la connexió"
 
-#: ../src/applet.c:757 ../src/applet-device-wifi.c:1184
-msgid "Don't show this message again"
+#: ../src/applet.c:757 ../src/applet-device-wifi.c:1185
+msgid "Don’t show this message again"
 msgstr "No tornis a mostrar aquest missatge"
 
 #: ../src/applet.c:844
 #, c-format
 msgid ""
 "\n"
-"The VPN connection '%s' failed because the network connection was "
+"The VPN connection “%s” failed because the network connection was "
 "interrupted."
 msgstr ""
 "\n"
@@ -238,7 +279,7 @@ msgstr ""
 #, c-format
 msgid ""
 "\n"
-"The VPN connection '%s' failed because the VPN service stopped unexpectedly."
+"The VPN connection “%s” failed because the VPN service stopped unexpectedly."
 msgstr ""
 "\n"
 "No s'ha pogut establir la connexió VPN «%s» perquè el servei VPN s'ha aturat "
@@ -248,7 +289,7 @@ msgstr ""
 #, c-format
 msgid ""
 "\n"
-"The VPN connection '%s' failed because the VPN service returned invalid "
+"The VPN connection “%s” failed because the VPN service returned invalid "
 "configuration."
 msgstr ""
 "\n"
@@ -259,7 +300,7 @@ msgstr ""
 #, c-format
 msgid ""
 "\n"
-"The VPN connection '%s' failed because the connection attempt timed out."
+"The VPN connection “%s” failed because the connection attempt timed out."
 msgstr ""
 "\n"
 "No s'ha pogut establir la connexió VPN «%s» perquè s'ha acabat el temps "
@@ -269,7 +310,7 @@ msgstr ""
 #, c-format
 msgid ""
 "\n"
-"The VPN connection '%s' failed because the VPN service did not start in time."
+"The VPN connection “%s” failed because the VPN service did not start in time."
 msgstr ""
 "\n"
 "No s'ha pogut establir la connexió VPN «%s» perquè el servei VPN no s'ha "
@@ -279,7 +320,7 @@ msgstr ""
 #, c-format
 msgid ""
 "\n"
-"The VPN connection '%s' failed because the VPN service failed to start."
+"The VPN connection “%s” failed because the VPN service failed to start."
 msgstr ""
 "\n"
 "No s'ha pogut establir la connexió VPN «%s» perquè no s'ha pogut iniciar el "
@@ -289,7 +330,7 @@ msgstr ""
 #, c-format
 msgid ""
 "\n"
-"The VPN connection '%s' failed because there were no valid VPN secrets."
+"The VPN connection “%s” failed because there were no valid VPN secrets."
 msgstr ""
 "\n"
 "No s'ha pogut establir la connexió VPN «%s» perquè no s'ha trobat cap secret "
@@ -299,7 +340,7 @@ msgstr ""
 #, c-format
 msgid ""
 "\n"
-"The VPN connection '%s' failed because of invalid VPN secrets."
+"The VPN connection “%s” failed because of invalid VPN secrets."
 msgstr ""
 "\n"
 "No s'ha pogut establir la connexió VPN «%s» perquè els secrets VPN no són "
@@ -309,7 +350,7 @@ msgstr ""
 #, c-format
 msgid ""
 "\n"
-"The VPN connection '%s' failed."
+"The VPN connection “%s” failed."
 msgstr ""
 "\n"
 "No s'ha pogut establir la connexió VPN «%s»."
@@ -318,7 +359,7 @@ msgstr ""
 #, c-format
 msgid ""
 "\n"
-"The VPN connection '%s' disconnected because the network connection was "
+"The VPN connection “%s” disconnected because the network connection was "
 "interrupted."
 msgstr ""
 "\n"
@@ -329,7 +370,7 @@ msgstr ""
 #, c-format
 msgid ""
 "\n"
-"The VPN connection '%s' disconnected because the VPN service stopped."
+"The VPN connection “%s” disconnected because the VPN service stopped."
 msgstr ""
 "\n"
 "S'ha desconnectat la connexió VPN «%s» perquè s'ha aturat el servei VPN."
@@ -338,7 +379,7 @@ msgstr ""
 #, c-format
 msgid ""
 "\n"
-"The VPN connection '%s' disconnected."
+"The VPN connection “%s” disconnected."
 msgstr ""
 "\n"
 "S'ha desconnectat la connexió VPN «%s»."
@@ -370,7 +411,7 @@ msgstr "No s'ha pogut establir la connexió VPN"
 #, c-format
 msgid ""
 "\n"
-"The VPN connection '%s' failed because the VPN service failed to start.\n"
+"The VPN connection “%s” failed because the VPN service failed to start.\n"
 "\n"
 "%s"
 msgstr ""
@@ -384,7 +425,7 @@ msgstr ""
 #, c-format
 msgid ""
 "\n"
-"The VPN connection '%s' failed to start.\n"
+"The VPN connection “%s” failed to start.\n"
 "\n"
 "%s"
 msgstr ""
@@ -393,144 +434,144 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1285
+#: ../src/applet.c:1281
 msgid "device not ready (firmware missing)"
 msgstr "el dispositiu no està preparat (manca el microprogramari)"
 
-#: ../src/applet.c:1287
+#: ../src/applet.c:1283
 msgid "device not ready"
 msgstr "el dispositiu no està preparat"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet.c:1297 ../src/applet-device-ethernet.c:109
+#: ../src/applet.c:1293 ../src/applet-device-ethernet.c:109
 msgid "disconnected"
 msgstr "desconnectat"
 
-#: ../src/applet.c:1313
+#: ../src/applet.c:1309
 msgid "Disconnect"
 msgstr "Desconnecta"
 
-#: ../src/applet.c:1327
+#: ../src/applet.c:1323
 msgid "device not managed"
 msgstr "no es gestiona el dispositiu"
 
-#: ../src/applet.c:1400
+#: ../src/applet.c:1396
 msgid "No network devices available"
 msgstr "No hi ha cap dispositiu de xarxa disponible"
 
-#: ../src/applet.c:1454
+#: ../src/applet.c:1450
 msgid "_VPN Connections"
 msgstr "Connexions _VPN"
 
-#: ../src/applet.c:1498
-msgid "_Configure VPN..."
-msgstr "_Configura la VPN..."
+#: ../src/applet.c:1494
+msgid "_Configure VPN…"
+msgstr "_Configura la VPN…"
 
-#: ../src/applet.c:1501
-msgid "_Add a VPN connection..."
-msgstr "_Afegeix una connexió VPN..."
+#: ../src/applet.c:1497
+msgid "_Add a VPN connection…"
+msgstr "_Afegeix una connexió VPN…"
 
-#: ../src/applet.c:1607
-msgid "NetworkManager is not running..."
-msgstr "No s'està executant el NetworkManager..."
+#: ../src/applet.c:1603
+msgid "NetworkManager is not running…"
+msgstr "No s'està executant el NetworkManager…"
 
-#: ../src/applet.c:1612 ../src/applet.c:2619
+#: ../src/applet.c:1608 ../src/applet.c:2613
 msgid "Networking disabled"
 msgstr "S'ha inhabilitat la gestió de xarxes"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1822
+#: ../src/applet.c:1816
 msgid "Enable _Networking"
 msgstr "Habilita la gestió de _xarxes"
 
 #. 'Enable Wi-Fi' item
-#: ../src/applet.c:1831
+#: ../src/applet.c:1825
 msgid "Enable _Wi-Fi"
 msgstr "Habilita el _sense fil"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:1840
+#: ../src/applet.c:1834
 msgid "Enable _Mobile Broadband"
 msgstr "Habilita la banda ampla _mòbil"
 
 #. Toggle notifications item
-#: ../src/applet.c:1852
+#: ../src/applet.c:1846
 msgid "Enable N_otifications"
 msgstr "Habilita les n_otificacions"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1864
+#: ../src/applet.c:1858
 msgid "Connection _Information"
 msgstr "_Informació de la connexió"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1872
-msgid "Edit Connections..."
-msgstr "Edita les connexions..."
+#: ../src/applet.c:1866
+msgid "Edit Connections…"
+msgstr "Edita les connexions…"
 
-#: ../src/applet.c:1886
+#: ../src/applet.c:1880
 msgid "_About"
 msgstr "_Quant a"
 
-#: ../src/applet.c:2171
+#: ../src/applet.c:2165
 #, c-format
-msgid "You are now connected to '%s'."
+msgid "You are now connected to “%s”."
 msgstr "Esteu connectat a «%s»."
 
-#: ../src/applet.c:2214
+#: ../src/applet.c:2208
 msgid "Disconnected"
 msgstr "Desconnectat"
 
-#: ../src/applet.c:2215
+#: ../src/applet.c:2209
 msgid "The network connection has been disconnected."
 msgstr "S'ha desconnectat la connexió de xarxa."
 
-#: ../src/applet.c:2481
+#: ../src/applet.c:2475
 #, c-format
-msgid "Preparing network connection '%s'..."
-msgstr "S'està preparant la connexió de xarxa «%s»..."
+msgid "Preparing network connection “%s”…"
+msgstr "S'està preparant la connexió de xarxa «%s»…"
+
+#: ../src/applet.c:2478
+#, c-format
+msgid "User authentication required for network connection “%s”…"
+msgstr "Cal l'autenticació d'usuari per a la connexió de xarxa «%s»…"
+
+#: ../src/applet.c:2481 ../src/applet-device-bt.c:125
+#: ../src/mobile-helpers.c:608
+#, c-format
+msgid "Requesting a network address for “%s”…"
+msgstr "S'està sol·licitant una adreça de xarxa per a «%s»…"
 
 #: ../src/applet.c:2484
 #, c-format
-msgid "User authentication required for network connection '%s'..."
-msgstr "Cal l'autenticació d'usuari per a la connexió de xarxa «%s»..."
-
-#: ../src/applet.c:2487 ../src/applet-device-bt.c:125
-#: ../src/mobile-helpers.c:608
-#, c-format
-msgid "Requesting a network address for '%s'..."
-msgstr "S'està sol·licitant una adreça de xarxa per a «%s»..."
-
-#: ../src/applet.c:2490
-#, c-format
-msgid "Network connection '%s' active"
+msgid "Network connection “%s” active"
 msgstr "La connexió de xarxa «%s» és activa"
+
+#: ../src/applet.c:2558
+#, c-format
+msgid "Starting VPN connection “%s”…"
+msgstr "S'està iniciant la connexió VPN «%s»…"
+
+#: ../src/applet.c:2561
+#, c-format
+msgid "User authentication required for VPN connection “%s”…"
+msgstr "Cal l'autenticació d'usuari per a la connexió VPN «%s»…"
 
 #: ../src/applet.c:2564
 #, c-format
-msgid "Starting VPN connection '%s'..."
-msgstr "S'està iniciant la connexió VPN «%s»..."
+msgid "Requesting a VPN address for “%s”…"
+msgstr "S'està sol·licitant una adreça de xarxa per a la xarxa VPN «%s»…"
 
 #: ../src/applet.c:2567
-#, c-format
-msgid "User authentication required for VPN connection '%s'..."
-msgstr "Cal l'autenticació d'usuari per a la connexió VPN «%s»..."
-
-#: ../src/applet.c:2570
-#, c-format
-msgid "Requesting a VPN address for '%s'..."
-msgstr "S'està sol·licitant una adreça de xarxa per a la xarxa VPN «%s»..."
-
-#: ../src/applet.c:2573
 #, c-format
 msgid "VPN connection active"
 msgstr "La connexió VPN és activa"
 
-#: ../src/applet.c:2623
+#: ../src/applet.c:2617
 msgid "No network connection"
 msgstr "No hi ha cap connexió de xarxa"
 
-#: ../src/applet.c:3218
+#: ../src/applet.c:3212
 msgid "NetworkManager Applet"
 msgstr "Miniaplicació NetworkManager"
 
@@ -544,8 +585,8 @@ msgstr "El codi PIN no és correcte. Contacteu amb el vostre proveïdor."
 
 #. Start the spinner to show the progress of the unlock
 #: ../src/applet-device-broadband.c:252
-msgid "Sending unlock code..."
-msgstr "S'està enviant el codi de desbloqueig..."
+msgid "Sending unlock code…"
+msgstr "S'està enviant el codi de desbloqueig…"
 
 #: ../src/applet-device-broadband.c:734 ../src/applet-dialogs.c:506
 #, c-format
@@ -553,24 +594,24 @@ msgid "Mobile Broadband (%s)"
 msgstr "Banda ampla mòbil (%s)"
 
 #: ../src/applet-device-broadband.c:736
-#: ../src/connection-editor/connection-helpers.c:106
+#: ../src/connection-editor/connection-helpers.c:107
 #: ../src/connection-editor/page-mobile.c:308
 #: ../src/libnm-gtk/nm-ui-utils.c:329
 msgid "Mobile Broadband"
 msgstr "Banda ampla mòbil"
 
 #: ../src/applet-device-broadband.c:788 ../src/applet-device-bt.c:75
-#: ../src/applet-device-ethernet.c:117 ../src/applet-device-wifi.c:969
+#: ../src/applet-device-ethernet.c:117 ../src/applet-device-wifi.c:970
 msgid "Available"
 msgstr "Disponible"
 
 #. Default connection item
 #: ../src/applet-device-broadband.c:801
-msgid "New Mobile Broadband connection..."
-msgstr "Connexió de banda ampla mòbil nova..."
+msgid "New Mobile Broadband connection…"
+msgstr "Connexió de banda ampla mòbil nova…"
 
 #: ../src/applet-device-broadband.c:815 ../src/applet-device-bt.c:87
-#: ../src/applet-device-ethernet.c:132 ../src/applet-device-wifi.c:1365
+#: ../src/applet-device-ethernet.c:132 ../src/applet-device-wifi.c:1366
 msgid "Connection Established"
 msgstr "S'ha establert la connexió"
 
@@ -596,23 +637,23 @@ msgstr "Esteu connectat a la xarxa de banda ampla mòbil."
 
 #: ../src/applet-device-bt.c:116 ../src/mobile-helpers.c:599
 #, c-format
-msgid "Preparing mobile broadband connection '%s'..."
-msgstr "S'està preparant la connexió de banda ampla mòbil «%s»..."
+msgid "Preparing mobile broadband connection “%s”…"
+msgstr "S'està preparant la connexió de banda ampla mòbil «%s»…"
 
 #: ../src/applet-device-bt.c:119 ../src/mobile-helpers.c:602
 #, c-format
-msgid "Configuring mobile broadband connection '%s'..."
-msgstr "S'està configurant la connexió de banda ampla mòbil «%s»..."
+msgid "Configuring mobile broadband connection “%s”…"
+msgstr "S'està configurant la connexió de banda ampla mòbil «%s»…"
 
 #: ../src/applet-device-bt.c:122 ../src/mobile-helpers.c:605
 #, c-format
-msgid "User authentication required for mobile broadband connection '%s'..."
+msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr ""
-"Cal l'autenticació d'usuari per a la connexió de banda ampla mòbil «%s»..."
+"Cal l'autenticació d'usuari per a la connexió de banda ampla mòbil «%s»…"
 
 #: ../src/applet-device-bt.c:129 ../src/mobile-helpers.c:627
 #, c-format
-msgid "Mobile broadband connection '%s' active"
+msgid "Mobile broadband connection “%s” active"
 msgstr "La connexió de banda ampla mòbil «%s» és activa"
 
 #: ../src/applet-device-ethernet.c:30
@@ -643,122 +684,121 @@ msgstr "Esteu connectat a la xarxa amb fil."
 
 #: ../src/applet-device-ethernet.c:161
 #, c-format
-msgid "Preparing ethernet network connection '%s'..."
-msgstr "S'està preparant la connexió de xarxa amb fil «%s»..."
+msgid "Preparing ethernet network connection “%s”…"
+msgstr "S'està preparant la connexió de xarxa amb fil «%s»…"
 
 #: ../src/applet-device-ethernet.c:164
 #, c-format
-msgid "Configuring ethernet network connection '%s'..."
-msgstr "S'està configurant la connexió de xarxa amb fil «%s»..."
+msgid "Configuring ethernet network connection “%s”…"
+msgstr "S'està configurant la connexió de xarxa amb fil «%s»…"
 
 #: ../src/applet-device-ethernet.c:167
 #, c-format
-msgid "User authentication required for ethernet network connection '%s'..."
-msgstr "Cal l'autenticació d'usuari per a la connexió de xarxa amb fil «%s»..."
+msgid "User authentication required for ethernet network connection “%s”…"
+msgstr "Cal l'autenticació d'usuari per a la connexió de xarxa amb fil «%s»…"
 
 #: ../src/applet-device-ethernet.c:170
 #, c-format
-msgid "Requesting an ethernet network address for '%s'..."
-msgstr "S'està sol·licitant una adreça de xarxa per a la xarxa amb fil «%s»..."
+msgid "Requesting an ethernet network address for “%s”…"
+msgstr "S'està sol·licitant una adreça de xarxa per a la xarxa amb fil «%s»…"
 
 #: ../src/applet-device-ethernet.c:174
 #, c-format
-msgid "Ethernet network connection '%s' active"
+msgid "Ethernet network connection “%s” active"
 msgstr "La connexió de xarxa amb fil «%s» és activa"
 
 #: ../src/applet-device-ethernet.c:346
 msgid "DSL authentication"
 msgstr "Autenticació DSL"
 
-#: ../src/applet-device-wifi.c:230
-msgid "_Connect to Hidden Wi-Fi Network..."
-msgstr "_Connecta a una xarxa sense fil oculta..."
+#: ../src/applet-device-wifi.c:231
+msgid "_Connect to Hidden Wi-Fi Network…"
+msgstr "_Connecta't a la xarxa sense fil oculta…"
 
-#: ../src/applet-device-wifi.c:281
-msgid "Create _New Wi-Fi Network..."
-msgstr "Crea una xarxa sense fil _nova..."
+#: ../src/applet-device-wifi.c:282
+msgid "Create _New Wi-Fi Network…"
+msgstr "Crea una xarxa sense fil _nova…"
 
-#: ../src/applet-device-wifi.c:431
+#: ../src/applet-device-wifi.c:432
 msgid "(none)"
 msgstr "(cap)"
 
-#: ../src/applet-device-wifi.c:901
+#: ../src/applet-device-wifi.c:902
 #, c-format
 msgid "Wi-Fi Networks (%s)"
 msgstr "Xarxes sense fil (%s)"
 
-#: ../src/applet-device-wifi.c:903
+#: ../src/applet-device-wifi.c:904
 #, c-format
 msgid "Wi-Fi Network (%s)"
 msgstr "Xarxa sense fil (%s)"
 
-#: ../src/applet-device-wifi.c:905
+#: ../src/applet-device-wifi.c:906
 msgid "Wi-Fi Network"
 msgid_plural "Wi-Fi Networks"
 msgstr[0] "Xarxa sense fil"
 msgstr[1] "Xarxes sense fil"
 
-#: ../src/applet-device-wifi.c:934
+#: ../src/applet-device-wifi.c:935
 msgid "Wi-Fi is disabled"
 msgstr "Les xarxes sense fil estan inhabilitades"
 
-#: ../src/applet-device-wifi.c:935
+#: ../src/applet-device-wifi.c:936
 msgid "Wi-Fi is disabled by hardware switch"
 msgstr "L'interruptor de maquinari ha inhabilitat la xarxa sense fil"
 
-#: ../src/applet-device-wifi.c:996
+#: ../src/applet-device-wifi.c:997
 msgid "More networks"
 msgstr "Més xarxes"
 
-#: ../src/applet-device-wifi.c:1180
+#: ../src/applet-device-wifi.c:1181
 msgid "Wi-Fi Networks Available"
 msgstr "Hi ha xarxes sense fil disponibles"
 
-#: ../src/applet-device-wifi.c:1181
+#: ../src/applet-device-wifi.c:1182
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Utilitzeu el menú de xarxa per connectar-vos a una xarxa sense fil"
 
-#: ../src/applet-device-wifi.c:1364
+#: ../src/applet-device-wifi.c:1365
 #, c-format
-msgid "You are now connected to the Wi-Fi network '%s'."
+msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "Esteu connectat a la xarxa sense fil «%s»."
 
-#: ../src/applet-device-wifi.c:1399
+#: ../src/applet-device-wifi.c:1400
 #, c-format
-msgid "Preparing Wi-Fi network connection '%s'..."
-msgstr "S'està preparant la connexió de xarxa sense fil «%s»..."
+msgid "Preparing Wi-Fi network connection “%s”…"
+msgstr "S'està preparant la connexió de xarxa sense fil «%s»…"
 
-#: ../src/applet-device-wifi.c:1402
+#: ../src/applet-device-wifi.c:1403
 #, c-format
-msgid "Configuring Wi-Fi network connection '%s'..."
-msgstr "S'està configurant la connexió de xarxa sense fil «%s»..."
+msgid "Configuring Wi-Fi network connection “%s”…"
+msgstr "S'està configurant la connexió de xarxa sense fil «%s»…"
 
-#: ../src/applet-device-wifi.c:1405
+#: ../src/applet-device-wifi.c:1406
 #, c-format
-msgid "User authentication required for Wi-Fi network '%s'..."
-msgstr ""
-"Cal l'autenticació d'usuari per a la connexió de xarxa sense fil «%s»..."
+msgid "User authentication required for Wi-Fi network “%s”…"
+msgstr "Cal l'autenticació d'usuari per a la connexió de xarxa sense fil «%s»…"
 
-#: ../src/applet-device-wifi.c:1408
+#: ../src/applet-device-wifi.c:1409
 #, c-format
-msgid "Requesting a Wi-Fi network address for '%s'..."
-msgstr "S'està sol·licitant una adreça de xarxa sense fil per a «%s»..."
+msgid "Requesting a Wi-Fi network address for “%s”…"
+msgstr "S'està sol·licitant una adreça de xarxa sense fil per a «%s»…"
 
-#: ../src/applet-device-wifi.c:1419
+#: ../src/applet-device-wifi.c:1420
 #, c-format
-msgid "Wi-Fi network connection '%s' active: %s (%d%%)"
+msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "La connexió de xarxa sense fil «%s» és activa: %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1423
+#: ../src/applet-device-wifi.c:1424
 #, c-format
-msgid "Wi-Fi network connection '%s' active"
+msgid "Wi-Fi network connection “%s” active"
 msgstr "La connexió de xarxa sense fil «%s» és activa"
 
-#: ../src/applet-device-wifi.c:1442
+#: ../src/applet-device-wifi.c:1443
 msgid "Failed to activate connection"
 msgstr "Ha fallat l'activació de la connexió"
 
-#: ../src/applet-device-wifi.c:1465
+#: ../src/applet-device-wifi.c:1466
 msgid "Failed to add new connection"
 msgstr "No s'ha pogut afegir una connexió nova"
 
@@ -859,7 +899,7 @@ msgstr "CDMA (%s)"
 #: ../src/applet-dialogs.c:512 ../src/applet-dialogs.c:810
 #: ../src/connection-editor/ce-page-team-port.ui.h:23
 #: ../src/connection-editor/ce-page-team.ui.h:48
-#: ../src/connection-editor/page-general.c:347
+#: ../src/connection-editor/page-general.c:367
 msgid "General"
 msgstr "General"
 
@@ -972,7 +1012,7 @@ msgstr "Contrasenya de la xarxa de banda ampla mòbil"
 
 #: ../src/applet-dialogs.c:1040
 #, c-format
-msgid "A password is required to connect to '%s'."
+msgid "A password is required to connect to “%s”."
 msgstr "Cal que introduïu una contrasenya per connectar-vos a «%s»."
 
 #: ../src/applet-dialogs.c:1055
@@ -991,7 +1031,7 @@ msgstr "Cal el codi PIN de desbloqueig de la SIM"
 #: ../src/applet-dialogs.c:1340
 #, c-format
 msgid ""
-"The mobile broadband device '%s' requires a SIM PIN code before it can be "
+"The mobile broadband device “%s” requires a SIM PIN code before it can be "
 "used."
 msgstr ""
 "Cal el codi PIN de la SIM per poder utilitzar el dispositiu de banda ampla "
@@ -1019,7 +1059,7 @@ msgstr "Cal el codi PUK de desbloqueig de la SIM"
 #: ../src/applet-dialogs.c:1351
 #, c-format
 msgid ""
-"The mobile broadband device '%s' requires a SIM PUK code before it can be "
+"The mobile broadband device “%s” requires a SIM PUK code before it can be "
 "used."
 msgstr ""
 "Cal el codi PUK de la SIM per poder utilitzar el dispositiu de banda ampla "
@@ -1047,18 +1087,17 @@ msgstr "Mostra els codis PIN/PUK"
 
 #: ../src/connection-editor/ce-ip4-routes.ui.h:2
 #: ../src/connection-editor/ce-ip6-routes.ui.h:2
-#: ../src/connection-editor/ce-page-dcb.ui.h:26
+#: ../src/connection-editor/ce-page-dcb.ui.h:18
 #: ../src/connection-editor/ce-ppp-auth-methods.ui.h:2
 msgid "_OK"
 msgstr "D'ac_ord"
 
 #: ../src/connection-editor/ce-ip4-routes.ui.h:3
 #: ../src/connection-editor/ce-ip6-routes.ui.h:3
-#: ../src/connection-editor/ce-page-ip4.ui.h:8
-#: ../src/connection-editor/ce-page-ip6.ui.h:11
+#: ../src/connection-editor/ce-page.h:114
 msgid ""
-"IP addresses identify your computer on the network.  Click the \"Add\" "
-"button to add an IP address."
+"IP addresses identify your computer on the network. Click the “Add” button "
+"to add an IP address."
 msgstr ""
 "Les adreces IP identifiquen el vostre ordinador a la xarxa. Feu clic al botó "
 "«Afegeix» per afegir una adreça IP."
@@ -1067,8 +1106,8 @@ msgstr ""
 #: ../src/connection-editor/ce-ip6-routes.ui.h:4
 #: ../src/connection-editor/ce-page-bond.ui.h:12
 #: ../src/connection-editor/ce-page-bridge.ui.h:2
-#: ../src/connection-editor/ce-page-ip4.ui.h:9
-#: ../src/connection-editor/ce-page-ip6.ui.h:12
+#: ../src/connection-editor/ce-page-ip4.ui.h:7
+#: ../src/connection-editor/ce-page-ip6.ui.h:10
 #: ../src/connection-editor/ce-page-team.ui.h:13
 #: ../src/connection-editor/nm-connection-editor.ui.h:3
 msgid "_Add"
@@ -1079,10 +1118,10 @@ msgstr "_Afegeix"
 #: ../src/connection-editor/ce-ip6-routes.ui.h:5
 #: ../src/connection-editor/ce-page-bond.ui.h:14
 #: ../src/connection-editor/ce-page-bridge.ui.h:4
-#: ../src/connection-editor/ce-page-ip4.ui.h:10
-#: ../src/connection-editor/ce-page-ip6.ui.h:13
+#: ../src/connection-editor/ce-page-ip4.ui.h:8
+#: ../src/connection-editor/ce-page-ip6.ui.h:11
 #: ../src/connection-editor/ce-page-team.ui.h:15
-#: ../src/connection-editor/nm-connection-list.c:699
+#: ../src/connection-editor/nm-connection-list.c:714
 msgid "_Delete"
 msgstr "_Suprimeix"
 
@@ -1105,24 +1144,15 @@ msgstr ""
 "Si s'habilita, aquesta connexió no s'utilitzarà mai com a connexió de xarxa "
 "predeterminada."
 
-#: ../src/connection-editor/ce-new-connection.ui.h:1 ../src/libnma/wifi.ui.h:1
-#: ../src/libnm-gtk/wifi.ui.h:1 ../src/wireless-security/eap-method-fast.ui.h:1
-#: ../src/wireless-security/eap-method-peap.ui.h:1
-#: ../src/wireless-security/eap-method-ttls.ui.h:1
-#: ../src/wireless-security/ws-dynamic-wep.ui.h:1
-#: ../src/wireless-security/ws-wpa-eap.ui.h:1
-msgid " "
-msgstr " "
-
-#: ../src/connection-editor/ce-new-connection.ui.h:3
+#: ../src/connection-editor/ce-new-connection.ui.h:2
 msgid "Create…"
 msgstr "Crea..."
 
-#: ../src/connection-editor/ce-new-connection.ui.h:4
+#: ../src/connection-editor/ce-new-connection.ui.h:3
 msgid "Choose a Connection Type"
 msgstr "Seleccioneu un tipus de connexió"
 
-#: ../src/connection-editor/ce-new-connection.ui.h:5
+#: ../src/connection-editor/ce-new-connection.ui.h:4
 msgid ""
 "Select the type of connection you wish to create.\n"
 "\n"
@@ -1186,7 +1216,7 @@ msgstr "M_ode:"
 #: ../src/connection-editor/ce-page-bond.ui.h:13
 #: ../src/connection-editor/ce-page-bridge.ui.h:3
 #: ../src/connection-editor/ce-page-team.ui.h:14
-#: ../src/connection-editor/nm-connection-list.c:683
+#: ../src/connection-editor/nm-connection-list.c:698
 msgid "_Edit"
 msgstr "_Edita"
 
@@ -1241,7 +1271,7 @@ msgstr ""
 "dispositiu serà sempre l'esclau actiu quan estigui disponible."
 
 #: ../src/connection-editor/ce-page-bond.ui.h:25
-#: ../src/connection-editor/ce-page-ethernet.ui.h:17
+#: ../src/connection-editor/ce-page-ethernet.ui.h:18
 #: ../src/connection-editor/ce-page-infiniband.ui.h:4
 #: ../src/connection-editor/ce-page-team.ui.h:17
 #: ../src/connection-editor/ce-page-vlan.ui.h:4
@@ -1250,7 +1280,7 @@ msgid "_MTU:"
 msgstr "_MTU:"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:26
-#: ../src/connection-editor/ce-page-ethernet.ui.h:18
+#: ../src/connection-editor/ce-page-ethernet.ui.h:19
 #: ../src/connection-editor/ce-page-infiniband.ui.h:3
 #: ../src/connection-editor/ce-page-team.ui.h:18
 #: ../src/connection-editor/ce-page-vlan.ui.h:5
@@ -1334,7 +1364,7 @@ msgid "invalid %s for %s (%s)"
 msgstr "%s no vàlid per a  %s (%s)"
 
 #: ../src/connection-editor/ce-page.c:309
-#: ../src/connection-editor/ce-page.c:541
+#: ../src/connection-editor/ce-page.c:542
 #, c-format
 msgid "invalid %s (%s)"
 msgstr "%s no vàlid (%s)"
@@ -1349,11 +1379,11 @@ msgstr "nom no vàlid d'interfície per a %s (%s)"
 msgid "invalid interface-name (%s)"
 msgstr "nom no vàlid d'interfície (%s)"
 
-#: ../src/connection-editor/ce-page.c:542
+#: ../src/connection-editor/ce-page.c:543
 msgid "device"
 msgstr "dispositiu"
 
-#: ../src/connection-editor/ce-page.c:650
+#: ../src/connection-editor/ce-page.c:651
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr ""
 "No s'han pogut actualitzar els secrets de la connexió per un error "
@@ -1400,154 +1430,115 @@ msgid "Priority"
 msgstr "Prioritat"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:11
-msgid "Options..."
-msgstr "Opcions..."
+msgid "Options…"
+msgstr "Opcions…"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:12
 msgid "Priority Groups"
 msgstr "Grups prioritaris"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:14
-msgid "0"
-msgstr "0"
-
-#: ../src/connection-editor/ce-page-dcb.ui.h:15
-msgid "1"
-msgstr "1"
-
-#: ../src/connection-editor/ce-page-dcb.ui.h:16
-#: ../src/wireless-security/ws-wep-key.ui.h:2
-msgid "2"
-msgstr "2"
-
-#: ../src/connection-editor/ce-page-dcb.ui.h:17
-#: ../src/wireless-security/ws-wep-key.ui.h:3
-msgid "3"
-msgstr "3"
-
-#: ../src/connection-editor/ce-page-dcb.ui.h:18
-#: ../src/wireless-security/ws-wep-key.ui.h:4
-msgid "4"
-msgstr "4"
-
-#: ../src/connection-editor/ce-page-dcb.ui.h:19
-msgid "5"
-msgstr "5"
-
-#: ../src/connection-editor/ce-page-dcb.ui.h:20
-msgid "6"
-msgstr "6"
-
-#: ../src/connection-editor/ce-page-dcb.ui.h:21
-msgid "7"
-msgstr "7"
-
-#: ../src/connection-editor/ce-page-dcb.ui.h:22
 msgid "Fabric"
 msgstr "Fabric"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:23
+#: ../src/connection-editor/ce-page-dcb.ui.h:15
 msgid "VN2VN"
 msgstr "VN2VN"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:24
+#: ../src/connection-editor/ce-page-dcb.ui.h:16
 msgid "Priority Flow Control"
 msgstr "Control de prioritat de flux"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:27
+#: ../src/connection-editor/ce-page-dcb.ui.h:19
 msgid "Enable or disable priority pause transmission for each User Priority."
 msgstr ""
 "Habilita o inhabilita la prioritat de transmissió en pausa per a cada "
 "prioritat d'usuari."
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:28
+#: ../src/connection-editor/ce-page-dcb.ui.h:20
 msgid "Priority:"
 msgstr "Prioritat:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:29
+#: ../src/connection-editor/ce-page-dcb.ui.h:21
 msgid "0:"
 msgstr "0:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:30
+#: ../src/connection-editor/ce-page-dcb.ui.h:22
 msgid "1:"
 msgstr "1:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:31
+#: ../src/connection-editor/ce-page-dcb.ui.h:23
 msgid "2:"
 msgstr "2:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:32
+#: ../src/connection-editor/ce-page-dcb.ui.h:24
 msgid "3:"
 msgstr "3:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:33
+#: ../src/connection-editor/ce-page-dcb.ui.h:25
 msgid "4:"
 msgstr "4:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:34
+#: ../src/connection-editor/ce-page-dcb.ui.h:26
 msgid "5:"
 msgstr "5:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:35
+#: ../src/connection-editor/ce-page-dcb.ui.h:27
 msgid "6:"
 msgstr "6:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:36
+#: ../src/connection-editor/ce-page-dcb.ui.h:28
 msgid "7:"
 msgstr "7:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:37
+#: ../src/connection-editor/ce-page-dcb.ui.h:29
 msgid "Traffic Class:"
 msgstr "Classe de trànsit:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:38
+#: ../src/connection-editor/ce-page-dcb.ui.h:30
 msgid "Strict Bandwidth:"
 msgstr "Amplada de banda estricta:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:39
+#: ../src/connection-editor/ce-page-dcb.ui.h:31
 msgid "Priority Bandwidth:"
 msgstr "Amplada de banda prioritària:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:40
+#: ../src/connection-editor/ce-page-dcb.ui.h:32
 msgid "Group Bandwidth:"
 msgstr "Amplada de banda del grup:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:41
+#: ../src/connection-editor/ce-page-dcb.ui.h:33
 msgid "Group ID:"
 msgstr "Identificador de grup:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:42
-msgid "15"
-msgstr "15"
-
-#: ../src/connection-editor/ce-page-dcb.ui.h:43
+#: ../src/connection-editor/ce-page-dcb.ui.h:34
 msgid "Enter the priority group ID for each User Priority."
 msgstr ""
 "Introduïu l'identificador de grup de prioritat per cada prioritat d'usuari."
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:45
+#: ../src/connection-editor/ce-page-dcb.ui.h:36
 #, no-c-format
 msgid ""
-"Enter the allowed link bandwidth percent each Priority Group may use.  The "
+"Enter the allowed link bandwidth percent each Priority Group may use. The "
 "sum of all groups must total 100%."
 msgstr ""
 "Introduïu l'amplada de banda permesa, en percentatge, que cada grup de "
 "prioritat utilitzarà. La suma de tots els grups ha d'ésser 100%."
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:46
+#: ../src/connection-editor/ce-page-dcb.ui.h:37
 msgid ""
 "Enter the percentage of priority group bandwidth each user priority may use."
 msgstr ""
 "Introduïu el percentatge de l'amplada de banda de prioritat de grup que cada "
 "prioritat d'usuari pot utilitzar."
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:47
+#: ../src/connection-editor/ce-page-dcb.ui.h:38
 msgid "Enable or disable strict bandwidth for each user priority."
 msgstr ""
 "Habilita o inhabilita l'amplada de banda estricta per a cada prioritat "
 "d'usuari."
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:48
+#: ../src/connection-editor/ce-page-dcb.ui.h:39
 msgid "Enter the traffic class for each user priority."
 msgstr "Introduïu la classe de trànsit per a cada prioritat d'usuari."
 
@@ -1586,10 +1577,11 @@ msgstr "_Contrasenya:"
 #: ../src/connection-editor/ce-page-ethernet.ui.h:1
 #: ../src/connection-editor/ce-page-ip4.ui.h:1
 #: ../src/connection-editor/ce-page-ip6.ui.h:1
+#: ../src/connection-editor/ce-page-proxy.ui.h:3
 #: ../src/connection-editor/ce-page-wifi.ui.h:1
-#: ../src/connection-editor/page-ip4.c:129
-#: ../src/connection-editor/page-ip6.c:135
-#: ../src/wireless-security/eap-method-peap.ui.h:2
+#: ../src/connection-editor/page-ip4.c:131
+#: ../src/connection-editor/page-ip6.c:136
+#: ../src/wireless-security/eap-method-peap.ui.h:1
 msgid "Automatic"
 msgstr "Automàtic"
 
@@ -1626,90 +1618,142 @@ msgid "10 Gb/s"
 msgstr "10 Gb/s"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:10
+msgid "Half"
+msgstr "Mig"
+
+#: ../src/connection-editor/ce-page-ethernet.ui.h:11
+msgid "Full"
+msgstr "Complet"
+
+#: ../src/connection-editor/ce-page-ethernet.ui.h:12
+#: ../src/connection-editor/page-ip6.c:149
+msgid "Ignore"
+msgstr "Ignora"
+
+#: ../src/connection-editor/ce-page-ethernet.ui.h:13
+#: ../src/connection-editor/ce-page-ip4.ui.h:3
+#: ../src/connection-editor/ce-page-ip6.ui.h:3
+#: ../src/connection-editor/page-ip4.c:168
+#: ../src/connection-editor/page-ip6.c:185
+msgid "Manual"
+msgstr "Manual"
+
+#: ../src/connection-editor/ce-page-ethernet.ui.h:14
 msgid "_Port:"
 msgstr "_Port:"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:11
-msgid "_Speed:"
-msgstr "_Velocitat:"
-
-# FIXME (dpm)
-#: ../src/connection-editor/ce-page-ethernet.ui.h:12
-msgid "Full duple_x"
-msgstr "Dúple_x complet"
-
-#: ../src/connection-editor/ce-page-ethernet.ui.h:13
-msgid "Aut_onegotiate"
-msgstr "Negociació aut_omàtica"
-
-#: ../src/connection-editor/ce-page-ethernet.ui.h:14
+#: ../src/connection-editor/ce-page-ethernet.ui.h:15
 #: ../src/connection-editor/ce-page-infiniband.ui.h:2
 #: ../src/connection-editor/ce-page-wifi.ui.h:9
 msgid "_Device:"
 msgstr "_Dispositiu:"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:15
+#: ../src/connection-editor/ce-page-ethernet.ui.h:16
 #: ../src/connection-editor/ce-page-wifi.ui.h:11
 msgid "C_loned MAC address:"
 msgstr "Adreça _MAC clonada:"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:16
+#: ../src/connection-editor/ce-page-ethernet.ui.h:17
 #: ../src/connection-editor/ce-page-wifi.ui.h:10
 msgid ""
 "The MAC address entered here will be used as hardware address for the "
-"network device this connection is activated on.  This feature is known as "
-"MAC cloning or spoofing.  Example: 00:11:22:33:44:55"
+"network device this connection is activated on. This feature is known as MAC "
+"cloning or spoofing. Example: 00:11:22:33:44:55"
 msgstr ""
 "El dispositiu de xarxa sobre el que s'activa la connexió utilitzarà aquesta "
 "adreça MAC com a adreça de maquinari. Aquest mètode es coneix com a "
 "falsejament d'identitat MAC. Exemple: 00:11:22:33:44:55"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:19
+#: ../src/connection-editor/ce-page-ethernet.ui.h:20
 msgid "Wake on LAN:"
 msgstr "Activació per LAN:"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:20
+#: ../src/connection-editor/ce-page-ethernet.ui.h:21
 msgid "De_fault"
 msgstr "Per de_fecte"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:21
+#: ../src/connection-editor/ce-page-ethernet.ui.h:22
 msgid "_Ignore"
 msgstr "_Ignora"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:22
+#: ../src/connection-editor/ce-page-ethernet.ui.h:23
 msgid "_Phy"
 msgstr "_Phy"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:23
+#: ../src/connection-editor/ce-page-ethernet.ui.h:24
 msgid "_Unicast"
 msgstr "_Unidifusió"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:24
+#: ../src/connection-editor/ce-page-ethernet.ui.h:25
 msgid "Mul_ticast"
 msgstr "Mul_tidifusió"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:25
+#: ../src/connection-editor/ce-page-ethernet.ui.h:26
 msgid "_Broadcast"
 msgstr "_Difusió"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:26
+#: ../src/connection-editor/ce-page-ethernet.ui.h:27
 msgid "_Arp"
 msgstr "_Arp"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:27
+#: ../src/connection-editor/ce-page-ethernet.ui.h:28
 msgid "Ma_gic"
 msgstr "Mà_gic"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:28
+#: ../src/connection-editor/ce-page-ethernet.ui.h:29
 msgid "_Wake on LAN password:"
 msgstr "_Reactiva'l per contrasenya de LAN:"
 
-#: ../src/connection-editor/ce-page-ethernet.ui.h:29
+#: ../src/connection-editor/ce-page-ethernet.ui.h:30
 msgid ""
 "Wake-on-LAN password (an Ethernet MAC). It is only valid for magic packets."
 msgstr ""
 "Contrasenya d'activació per LAN (una MAC Ethernet). Sols és vàlida per a "
 "paquets màgics."
+
+#: ../src/connection-editor/ce-page-ethernet.ui.h:31
+msgid "Lin_k negotiation:"
+msgstr "Negociació d'enlla_ç:"
+
+#: ../src/connection-editor/ce-page-ethernet.ui.h:32
+msgid ""
+"Device link negotiation. If “Manual” is chosen, “Speed” and “Duplex” values "
+"will be forced without checking the device compatibility. If unsure, leave "
+"here “Ignore” or pick “Automatic”."
+msgstr ""
+"Negociació d'enllaç de dispositiu. Si s'escull «Manual», es forçaran els "
+"valors de «Velocitat» i «Dúplex» sense verificar la compatibilitat del "
+"dispositiu. Si no teniu seguretat, deixeu aquí «Ignora» o trieu «Automàtic»."
+
+#: ../src/connection-editor/ce-page-ethernet.ui.h:33
+msgid "_Speed:"
+msgstr "_Velocitat:"
+
+#: ../src/connection-editor/ce-page-ethernet.ui.h:34
+msgid ""
+"Speed value for static link negotiation, required only when “Ignore” and "
+"“Automatic” options are not selected. Before specifying a speed value be "
+"sure your device supports it."
+msgstr ""
+"El valor de velocitat per a la negociació d'enllaç estàtic, sols requerit "
+"quan no se seleccionen les opcions «Ignora» i «Automàtic». Abans "
+"d'especificar un valor de velocitat assegureu-vos que està suportat pel "
+"vostre dispositiu."
+
+# FIXME (dpm)
+#: ../src/connection-editor/ce-page-ethernet.ui.h:35
+msgid "Duple_x:"
+msgstr "Dúple_x:"
+
+#: ../src/connection-editor/ce-page-ethernet.ui.h:36
+msgid ""
+"Duplex value for static link negotiation, required only when “Ignore” and "
+"“Automatic” options are not selected. Before specifying a duplex mode be "
+"sure your device supports it."
+msgstr ""
+"Valor dúplex per a la negociació d'enllaç estàtic, sols requerit si no se "
+"seleccionen les opcions «Ignora» i «Automàtic». Abans d'especificar un mode "
+"de dúplex assegureu-vos que el vostre dispositiu el suporta."
 
 #: ../src/connection-editor/ce-page-general.ui.h:1
 msgid "Automatically connect to _VPN when using this connection"
@@ -1724,8 +1768,54 @@ msgid "_Automatically connect to this network when it is available"
 msgstr "Connecta't _automàticament a aquesta xarxa quan estigui disponible"
 
 #: ../src/connection-editor/ce-page-general.ui.h:4
+msgid "Connection _priority for auto-activation:"
+msgstr "_Prioritat de la connexió per l'activació automàtica:"
+
+#: ../src/connection-editor/ce-page-general.ui.h:5
+msgid ""
+"Connection priority for automatic activation. Connections with higher "
+"numbers are preferred when selecting profiles for automatic activation. "
+"Default value is 0."
+msgstr ""
+"Prioritat de connexió per a l'activació automàtica. Es prefereixen les "
+"connexions amb números més alts quan se seleccionen perfils per a "
+"l'activació automàtica. El valor predeterminat és 0."
+
+#: ../src/connection-editor/ce-page-general.ui.h:6
 msgid "Firewall _zone:"
 msgstr "_Zona del tallafoc:"
+
+#: ../src/connection-editor/ce-page.h:111
+msgid ""
+"IP addresses identify your computer on the network. Click the “Add” button "
+"to add static IP address to be configured in addition to the automatic ones."
+msgstr ""
+"Les adreces IP identifiquen el vostre ordinador a la xarxa. Feu clic al botó "
+"«Afegeix» per afegir una adreça IP."
+
+#: ../src/connection-editor/ce-page.h:116
+msgid ""
+"The IP address identify your computer on the network and determines the "
+"address range distributed to other computers. Click the “Add” button to add "
+"an IP address. If no address is provided, one in the 10.42.x.x range will be "
+"used."
+msgstr ""
+"L'adreça IP identifica el vostre ordinador a la xarxa i determina el rang "
+"d'adreces distribuïdes a altres ordinadors. Cliqueu el botó «Afegeix» per "
+"afegir una adreça IP. Si no es proveeix cap adreça, s'usarà una en el rang "
+"10.42.x.x."
+
+#: ../src/connection-editor/ce-page.h:122
+msgid "Additional static addresses"
+msgstr "Adreces addicionals estàtiques"
+
+#: ../src/connection-editor/ce-page.h:123
+msgid "Addresses"
+msgstr "Adreces"
+
+#: ../src/connection-editor/ce-page.h:124
+msgid "Address (optional)"
+msgstr "Adreça (opcional)"
 
 #: ../src/connection-editor/ce-page-infiniband.ui.h:1
 msgid "_Transport mode:"
@@ -1741,17 +1831,78 @@ msgstr "Datagrama"
 msgid "Connected"
 msgstr "Connectat"
 
+#: ../src/connection-editor/ce-page-ip-tunnel.ui.h:1
+msgid "IPIP"
+msgstr "IPIP"
+
+#: ../src/connection-editor/ce-page-ip-tunnel.ui.h:2
+msgid "GRE"
+msgstr "GRE"
+
+#: ../src/connection-editor/ce-page-ip-tunnel.ui.h:3
+msgid "SIT"
+msgstr "SIT"
+
+#: ../src/connection-editor/ce-page-ip-tunnel.ui.h:4
+msgid "ISATAP"
+msgstr "ISATAP"
+
+#: ../src/connection-editor/ce-page-ip-tunnel.ui.h:5
+msgid "VTI"
+msgstr "VTI"
+
+#: ../src/connection-editor/ce-page-ip-tunnel.ui.h:6
+msgid "IP6IP6"
+msgstr "IP6IP6"
+
+#: ../src/connection-editor/ce-page-ip-tunnel.ui.h:7
+msgid "IPIP6"
+msgstr "IPIP6"
+
+#: ../src/connection-editor/ce-page-ip-tunnel.ui.h:8
+msgid "IP6GRE"
+msgstr "IP6GRE"
+
+#: ../src/connection-editor/ce-page-ip-tunnel.ui.h:9
+msgid "VTI6"
+msgstr "VTI6"
+
+#: ../src/connection-editor/ce-page-ip-tunnel.ui.h:10
+msgid "Device name"
+msgstr "Nom del dispositiu"
+
+#: ../src/connection-editor/ce-page-ip-tunnel.ui.h:11
+msgid "Parent device"
+msgstr "Dispositiu pare"
+
+#: ../src/connection-editor/ce-page-ip-tunnel.ui.h:12
+msgid "Mode"
+msgstr "Mode"
+
+#: ../src/connection-editor/ce-page-ip-tunnel.ui.h:13
+msgid "Local IP"
+msgstr "IP local"
+
+#: ../src/connection-editor/ce-page-ip-tunnel.ui.h:14
+msgid "Remote IP"
+msgstr "IP remota"
+
+#: ../src/connection-editor/ce-page-ip-tunnel.ui.h:15
+msgid "Input key"
+msgstr "Clau d'entrada"
+
+#: ../src/connection-editor/ce-page-ip-tunnel.ui.h:16
+msgid "Output key"
+msgstr "Clau de sortida"
+
+#: ../src/connection-editor/ce-page-ip-tunnel.ui.h:17
+msgid "MTU"
+msgstr "MTU"
+
 #: ../src/connection-editor/ce-page-ip4.ui.h:2
 #: ../src/connection-editor/ce-page-ip6.ui.h:2
 msgid "Automatic with manual DNS settings"
 msgstr "Automàtic amb paràmetres manuals per al DNS"
-
-#: ../src/connection-editor/ce-page-ip4.ui.h:3
-#: ../src/connection-editor/ce-page-ip6.ui.h:3
-#: ../src/connection-editor/page-ip4.c:166
-#: ../src/connection-editor/page-ip6.c:184
-msgid "Manual"
-msgstr "Manual"
 
 # http://en.wikipedia.org/wiki/Link-local_address (dpm)
 #: ../src/connection-editor/ce-page-ip4.ui.h:4
@@ -1761,8 +1912,8 @@ msgstr "Connexió local"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:5
 #: ../src/connection-editor/ce-page-ip6.ui.h:5
-#: ../src/connection-editor/page-ip4.c:186
-#: ../src/connection-editor/page-ip6.c:204
+#: ../src/connection-editor/page-ip4.c:188
+#: ../src/connection-editor/page-ip6.c:205
 msgid "Shared to other computers"
 msgstr "Compartit a altres ordinadors"
 
@@ -1771,23 +1922,18 @@ msgstr "Compartit a altres ordinadors"
 msgid "_Method:"
 msgstr "_Mètode:"
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:7
-#: ../src/connection-editor/ce-page-ip6.ui.h:10
-msgid "Addresses"
-msgstr "Adreces"
-
-#: ../src/connection-editor/ce-page-ip4.ui.h:11
+#: ../src/connection-editor/ce-page-ip4.ui.h:9
 msgid ""
 "The DHCP client identifier allows the network administrator to customize "
-"your computer's configuration.  If you wish to use a DHCP client identifier, "
+"your computer’s configuration. If you wish to use a DHCP client identifier, "
 "enter it here."
 msgstr ""
 "L'identificador de client DHCP permet personalitzar la configuració del "
 "vostre ordinador a l'administrador de la xarxa. Si voleu utilitzar un "
 "identificador de client DHCP, introduïu-lo aquí."
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:12
-#: ../src/connection-editor/ce-page-ip6.ui.h:14
+#: ../src/connection-editor/ce-page-ip4.ui.h:10
+#: ../src/connection-editor/ce-page-ip6.ui.h:12
 msgid ""
 "Domains used when resolving host names. Use commas to separate multiple "
 "domains."
@@ -1795,25 +1941,25 @@ msgstr ""
 "Dominis utilitzats en resoldre els noms d'amfitrió. Utilitzeu la coma per "
 "separar múltiples dominis."
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:13
+#: ../src/connection-editor/ce-page-ip4.ui.h:11
 msgid "D_HCP client ID:"
 msgstr "Identificador del client de D_HCP:"
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:14
-#: ../src/connection-editor/ce-page-ip6.ui.h:15
-#: ../src/connection-editor/page-ip4.c:308
-#: ../src/connection-editor/page-ip6.c:306
+#: ../src/connection-editor/ce-page-ip4.ui.h:12
+#: ../src/connection-editor/ce-page-ip6.ui.h:13
+#: ../src/connection-editor/page-ip4.c:372
+#: ../src/connection-editor/page-ip6.c:330
 msgid "S_earch domains:"
 msgstr "_Dominis de cerca:"
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:15
-#: ../src/connection-editor/ce-page-ip6.ui.h:16
-#: ../src/connection-editor/page-ip4.c:299
-#: ../src/connection-editor/page-ip6.c:297
+#: ../src/connection-editor/ce-page-ip4.ui.h:13
+#: ../src/connection-editor/ce-page-ip6.ui.h:14
+#: ../src/connection-editor/page-ip4.c:363
+#: ../src/connection-editor/page-ip6.c:321
 msgid "DNS ser_vers:"
 msgstr "Servidors _DNS:"
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:16
+#: ../src/connection-editor/ce-page-ip4.ui.h:14
 msgid ""
 "IP addresses of domain name servers used to resolve host names. Use commas "
 "to separate multiple domain name server addresses."
@@ -1822,11 +1968,11 @@ msgstr ""
 "d'amfitrió. Utilitzeu la coma per separar múltiples adreces de servidor de "
 "nom de domini."
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:17
+#: ../src/connection-editor/ce-page-ip4.ui.h:15
 msgid "Require IPv_4 addressing for this connection to complete"
 msgstr "Cal l'adreçament IPv_4 per completar la connexió"
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:18
+#: ../src/connection-editor/ce-page-ip4.ui.h:16
 msgid ""
 "When connecting to IPv6-capable networks, allows the connection to complete "
 "if IPv4 configuration fails but IPv6 configuration succeeds."
@@ -1834,13 +1980,13 @@ msgstr ""
 "Quan es connecti a xarxes IPv6, permet completar la connexió per IPv6 en cas "
 "que la configuració IPv4 falli."
 
-#: ../src/connection-editor/ce-page-ip4.ui.h:19
-#: ../src/connection-editor/ce-page-ip6.ui.h:21
+#: ../src/connection-editor/ce-page-ip4.ui.h:17
+#: ../src/connection-editor/ce-page-ip6.ui.h:19
 msgid "_Routes…"
 msgstr "_Rutes..."
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:6
-#: ../src/connection-editor/page-ip4.c:196
+#: ../src/connection-editor/page-ip4.c:198
 msgid "Disabled"
 msgstr "Inhabilitada"
 
@@ -1852,7 +1998,7 @@ msgstr "Habilitat (prefereix una adreça pública)"
 msgid "Enabled (prefer temporary address)"
 msgstr "Habilitat (prefereix una adreça temporal)"
 
-#: ../src/connection-editor/ce-page-ip6.ui.h:17
+#: ../src/connection-editor/ce-page-ip6.ui.h:15
 msgid ""
 "IP addresses of domain name servers used to resolve host names. Use commas "
 "to separate multiple domain name server addresses. Link-local addresses will "
@@ -1863,15 +2009,15 @@ msgstr ""
 "de nom de domini. Les adreces «Link-local» s'inclouran a l'àmbit de la "
 "interfície de connexió."
 
-#: ../src/connection-editor/ce-page-ip6.ui.h:18
+#: ../src/connection-editor/ce-page-ip6.ui.h:16
 msgid "IPv6 _privacy extensions:"
 msgstr "Extensions de _privacitat d'IPv6:"
 
-#: ../src/connection-editor/ce-page-ip6.ui.h:19
+#: ../src/connection-editor/ce-page-ip6.ui.h:17
 msgid "Require IPv_6 addressing for this connection to complete"
 msgstr "Cal l'adreçament IPv_6 per completar la connexió"
 
-#: ../src/connection-editor/ce-page-ip6.ui.h:20
+#: ../src/connection-editor/ce-page-ip6.ui.h:18
 msgid ""
 "When connecting to IPv4-capable networks, allows the connection to complete "
 "if IPv6 configuration fails but IPv4 configuration succeeds."
@@ -1901,8 +2047,8 @@ msgid "N_etwork ID:"
 msgstr "Identificador de xar_xa:"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:8
-msgid "Change..."
-msgstr "Canvia..."
+msgid "Change…"
+msgstr "Canvia…"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:9
 msgid "P_IN:"
@@ -1965,10 +2111,45 @@ msgstr "Eco"
 msgid "Send PPP _echo packets"
 msgstr "Envia paquets d'_eco de PPP"
 
+#: ../src/connection-editor/ce-page-proxy.ui.h:1
+msgid "Method:"
+msgstr "Mètode:"
+
+#: ../src/connection-editor/ce-page-proxy.ui.h:2
+#: ../src/connection-editor/ce-page-team.ui.h:25
+msgid "None"
+msgstr "Cap"
+
+#: ../src/connection-editor/ce-page-proxy.ui.h:4
+msgid "For browser only"
+msgstr "Sols per a navegadors"
+
+#: ../src/connection-editor/ce-page-proxy.ui.h:5
+msgid "Use this proxy configuration for only browser clients/schemes."
+msgstr ""
+"Usa aquesta configuració de servidor intermediari per a clients/esquemes de "
+"sols navegador."
+
+#: ../src/connection-editor/ce-page-proxy.ui.h:6
+msgid "PAC URL:"
+msgstr "URL de PAC:"
+
+#: ../src/connection-editor/ce-page-proxy.ui.h:7
+msgid "URL from where the PAC script is to be obtained."
+msgstr "URL a partir de la qual l'script PAC s'ha d'obtenir."
+
+#: ../src/connection-editor/ce-page-proxy.ui.h:8
+msgid "PAC script:"
+msgstr "Script de PAC:"
+
+#: ../src/connection-editor/ce-page-proxy.ui.h:9
+msgid "Import script from a file…"
+msgstr "Importa un script des d'un fitxer…"
+
 #: ../src/connection-editor/ce-page-team-port.ui.h:1
 #: ../src/connection-editor/ce-page-team.ui.h:19
-msgid "Ad_vanced..."
-msgstr "A_vançat"
+msgid "Ad_vanced…"
+msgstr "A_vançat…"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:2
 msgid "Set by master"
@@ -2230,8 +2411,8 @@ msgstr "Monitor d'enllaços"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:46
 #: ../src/connection-editor/ce-page-team.ui.h:93
-msgid "Im_port team configuration from a file..."
-msgstr "_Importa una configuració en equip des d'un fitxer..."
+msgid "Im_port team configuration from a file…"
+msgstr "Im_porta una configuració en equip des d'un fitxer…"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:47
 #: ../src/connection-editor/ce-page-team.ui.h:94
@@ -2287,20 +2468,16 @@ msgstr "Balanç de la càrrega"
 msgid "LACP"
 msgstr "LACP"
 
-#: ../src/connection-editor/ce-page-team.ui.h:25
-msgid "None"
-msgstr "Cap"
-
 #: ../src/connection-editor/ce-page-team.ui.h:27
-#: ../src/connection-editor/connection-helpers.c:103
-#: ../src/connection-editor/page-ethernet.c:324
+#: ../src/connection-editor/connection-helpers.c:104
+#: ../src/connection-editor/page-ethernet.c:352
 #: ../src/libnm-gtk/nm-ui-utils.c:321
 msgid "Ethernet"
 msgstr "Cable"
 
 #: ../src/connection-editor/ce-page-team.ui.h:28
-#: ../src/connection-editor/connection-helpers.c:118
-#: ../src/connection-editor/page-vlan.c:592 ../src/libnm-gtk/nm-ui-utils.c:339
+#: ../src/connection-editor/connection-helpers.c:119
+#: ../src/connection-editor/page-vlan.c:593 ../src/libnm-gtk/nm-ui-utils.c:339
 #: ../src/libnm-gtk/nm-ui-utils.c:583
 msgid "VLAN"
 msgstr "VLAN"
@@ -2371,7 +2548,7 @@ msgstr "Nom del runner a usar."
 
 #: ../src/connection-editor/ce-page-team.ui.h:52
 msgid ""
-"This  defines the policy of how hardware addresses of team device and port "
+"This defines the policy of how hardware addresses of team device and port "
 "devices should be set during the team lifetime."
 msgstr ""
 "Això defineix la política sobre com les adreces de maquinari dels "
@@ -2385,7 +2562,7 @@ msgstr "Envia marcs LACPDU _periòdicament"
 #: ../src/connection-editor/ce-page-team.ui.h:54
 msgid ""
 "If checked, LACPDU frames are sent along the configured links periodically. "
-"If not, it acts as \"speak when spoken to\"."
+"If not, it acts as “speak when spoken to”."
 msgstr ""
 "Si està marcat, els marcs LACPDU s'envien periòdicament junt amb els "
 "enllaços configurats. Si no està marcat, actua com «parla quan et parlin»."
@@ -2397,7 +2574,7 @@ msgstr "Envia un marc LACPDU cada s_egon"
 #: ../src/connection-editor/ce-page-team.ui.h:56
 msgid ""
 "Option specifies the rate at which our link partner is asked to transmit "
-"LACPDU packets. If checked, packets will be sent once  per second. Otherwise "
+"LACPDU packets. If checked, packets will be sent once per second. Otherwise "
 "they will be sent every 30 seconds."
 msgstr ""
 "L'opció especifica la velocitat a la qual se li demana al nostre soci "
@@ -2618,73 +2795,116 @@ msgstr "Protocol d'autenticació per desafiament mutu de Microsoft, versió 2"
 
 #: ../src/connection-editor/ce-ppp-auth-methods.ui.h:14
 msgid ""
-"In most cases, the provider's PPP servers will support all authentication "
-"methods.  If connections fail, try disabling support for some methods."
+"In most cases, the provider’s PPP servers will support all authentication "
+"methods. If connections fail, try disabling support for some methods."
 msgstr ""
 "En la majoria dels casos, el servidor PPP del proveïdor admetrà tots els "
 "mètodes d'autenticació. En cas que fallin les connexions, intenteu "
 "inhabilitar-ne alguns."
 
-#: ../src/connection-editor/connection-helpers.c:104
+#: ../src/connection-editor/connection-helpers.c:105
 #: ../src/connection-editor/page-wifi.c:441 ../src/libnm-gtk/nm-ui-utils.c:323
 msgid "Wi-Fi"
 msgstr "Sense fil"
 
-#: ../src/connection-editor/connection-helpers.c:112
+#: ../src/connection-editor/connection-helpers.c:113
 #: ../src/connection-editor/page-bluetooth.c:123
 #: ../src/libnm-gtk/nm-ui-utils.c:325
 msgid "Bluetooth"
 msgstr "Bluetooth"
 
-#: ../src/connection-editor/connection-helpers.c:113
+#: ../src/connection-editor/connection-helpers.c:114
 #: ../src/connection-editor/page-dsl.c:127
 msgid "DSL"
 msgstr "DSL"
 
-#: ../src/connection-editor/connection-helpers.c:114
+#: ../src/connection-editor/connection-helpers.c:115
 #: ../src/connection-editor/page-infiniband.c:148
 #: ../src/libnm-gtk/nm-ui-utils.c:331
 msgid "InfiniBand"
 msgstr "InfiniBand"
 
-#: ../src/connection-editor/connection-helpers.c:115
-#: ../src/connection-editor/page-bond.c:443 ../src/libnm-gtk/nm-ui-utils.c:333
+#: ../src/connection-editor/connection-helpers.c:116
+#: ../src/connection-editor/page-bond.c:446 ../src/libnm-gtk/nm-ui-utils.c:333
 #: ../src/libnm-gtk/nm-ui-utils.c:577
 msgid "Bond"
 msgstr "Vinculada"
 
-#: ../src/connection-editor/connection-helpers.c:116
-#: ../src/connection-editor/page-team.c:1028 ../src/libnm-gtk/nm-ui-utils.c:335
+#: ../src/connection-editor/connection-helpers.c:117
+#: ../src/connection-editor/page-team.c:1153 ../src/libnm-gtk/nm-ui-utils.c:335
 #: ../src/libnm-gtk/nm-ui-utils.c:579
 msgid "Team"
 msgstr "Equip"
 
-#: ../src/connection-editor/connection-helpers.c:117
-#: ../src/connection-editor/page-bridge.c:210
+#: ../src/connection-editor/connection-helpers.c:118
+#: ../src/connection-editor/page-bridge.c:212
 #: ../src/libnm-gtk/nm-ui-utils.c:337 ../src/libnm-gtk/nm-ui-utils.c:581
 msgid "Bridge"
 msgstr "Pont"
 
 #: ../src/connection-editor/connection-helpers.c:120
-#: ../src/connection-editor/connection-helpers.c:252
+#: ../src/connection-editor/page-ip-tunnel.c:176
+msgid "IP tunnel"
+msgstr "Tunel IP"
+
+#: ../src/connection-editor/connection-helpers.c:122
+#: ../src/connection-editor/connection-helpers.c:396
 #: ../src/connection-editor/page-vpn.c:96
 msgid "VPN"
 msgstr "VPN"
 
-#: ../src/connection-editor/connection-helpers.c:194
+#: ../src/connection-editor/connection-helpers.c:205
+msgid ""
+"The VPN plugin failed to import the VPN connection correctly\n"
+"\n"
+"Error: no VPN service type."
+msgstr ""
+"El connector VPN no ha pogut importar la connexió VPN correctament\n"
+"\n"
+"Error: no hi ha cap tipus de servei VPN."
+
+#: ../src/connection-editor/connection-helpers.c:217
+msgid "Cannot import VPN connection"
+msgstr "No es pot importar la connexió VPN"
+
+#: ../src/connection-editor/connection-helpers.c:219
+#, c-format
+msgid ""
+"The file “%s” could not be read or does not contain recognized VPN "
+"connection information\n"
+"\n"
+"Error: %s."
+msgstr ""
+"No s'ha pogut llegir el fitxer «%s» o bé no conté cap informació de connexió "
+"VPN que es pugui reconèixer\n"
+"\n"
+"Error: %s."
+
+#: ../src/connection-editor/connection-helpers.c:220
+msgid "unknown error"
+msgstr "error desconegut"
+
+#: ../src/connection-editor/connection-helpers.c:303
+#: ../src/connection-editor/page-proxy.c:120
+#: ../src/connection-editor/page-team.c:341
+#: ../src/connection-editor/page-team-port.c:203
+msgid "Select file to import"
+msgstr "Seleccioneu el fitxer a importar"
+
+#: ../src/connection-editor/connection-helpers.c:338
 msgid "Hardware"
 msgstr "Maquinari"
 
-#: ../src/connection-editor/connection-helpers.c:221
+#: ../src/connection-editor/connection-helpers.c:365
 msgid "Virtual"
 msgstr "Virtual"
 
-#: ../src/connection-editor/connection-helpers.c:370
-#: ../src/connection-editor/connection-helpers.c:372
-msgid "Import a saved VPN configuration..."
-msgstr "Importa una configuració VPN..."
+#: ../src/connection-editor/connection-helpers.c:514
+#: ../src/connection-editor/connection-helpers.c:516
+msgid "Import a saved VPN configuration…"
+msgstr "Importa una configuració VPN…"
 
-#: ../src/connection-editor/connection-helpers.c:401
+#: ../src/connection-editor/connection-helpers.c:546
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
@@ -2692,76 +2912,76 @@ msgstr ""
 "No s'ha pogut inicialitzar el diàleg d'edició de les connexions a causa d'un "
 "error desconegut."
 
-#: ../src/connection-editor/connection-helpers.c:410
+#: ../src/connection-editor/connection-helpers.c:555
 msgid "Could not create new connection"
 msgstr "No s'ha pogut crear la connexió nova"
 
-#: ../src/connection-editor/connection-helpers.c:556
+#: ../src/connection-editor/connection-helpers.c:718
 msgid "Connection delete failed"
 msgstr "No s'ha pogut suprimir la connexió"
 
-#: ../src/connection-editor/connection-helpers.c:604
+#: ../src/connection-editor/connection-helpers.c:766
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Segur que voleu suprimir la connexió %s?"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:804
-#: ../src/connection-editor/ip6-routes-dialog.c:746
-#: ../src/connection-editor/page-ip4.c:1068
-#: ../src/connection-editor/page-ip6.c:1066
+#: ../src/connection-editor/ip4-routes-dialog.c:697
+#: ../src/connection-editor/ip6-routes-dialog.c:718
+#: ../src/connection-editor/page-ip4.c:1136
+#: ../src/connection-editor/page-ip6.c:1090
 msgid "Address"
 msgstr "Adreça"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:823
-#: ../src/connection-editor/page-ip4.c:1087
+#: ../src/connection-editor/ip4-routes-dialog.c:716
+#: ../src/connection-editor/page-ip4.c:1155
 msgid "Netmask"
 msgstr "Màscara de xarxa"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:842
-#: ../src/connection-editor/ip6-routes-dialog.c:784
-#: ../src/connection-editor/page-ip4.c:1106
-#: ../src/connection-editor/page-ip6.c:1104
+#: ../src/connection-editor/ip4-routes-dialog.c:735
+#: ../src/connection-editor/ip6-routes-dialog.c:756
+#: ../src/connection-editor/page-ip4.c:1174
+#: ../src/connection-editor/page-ip6.c:1128
 msgid "Gateway"
 msgstr "Passarel·la"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:861
-#: ../src/connection-editor/ip6-routes-dialog.c:803
+#: ../src/connection-editor/ip4-routes-dialog.c:754
+#: ../src/connection-editor/ip6-routes-dialog.c:775
 msgid "Metric"
 msgstr "Mètrica"
 
-#: ../src/connection-editor/ip6-routes-dialog.c:765
-#: ../src/connection-editor/page-ip6.c:1085
+#: ../src/connection-editor/ip6-routes-dialog.c:737
+#: ../src/connection-editor/page-ip6.c:1109
 msgid "Prefix"
 msgstr "Prefix"
 
-#: ../src/connection-editor/nm-connection-editor.c:100
+#: ../src/connection-editor/nm-connection-editor.c:102
 #, c-format
 msgid "Editing %s"
 msgstr "S'està editant %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:104
+#: ../src/connection-editor/nm-connection-editor.c:106
 msgid "Editing un-named connection"
 msgstr "S'està editant la connexió sense nom"
 
-#: ../src/connection-editor/nm-connection-editor.c:124
+#: ../src/connection-editor/nm-connection-editor.c:126
 msgid "Missing connection name"
 msgstr "Falta el nom de la connexió"
 
-#: ../src/connection-editor/nm-connection-editor.c:187
-msgid "Editor initializing..."
-msgstr "S'està inicialitzant l'editor..."
+#: ../src/connection-editor/nm-connection-editor.c:189
+msgid "Editor initializing…"
+msgstr "S'està inicialitzant l'editor…"
 
-#: ../src/connection-editor/nm-connection-editor.c:194
-#: ../src/connection-editor/nm-connection-list.c:397
+#: ../src/connection-editor/nm-connection-editor.c:196
+#: ../src/connection-editor/nm-connection-list.c:412
 msgid "Connection cannot be modified"
 msgstr "No s'ha pogut modificar la connexió"
 
-#: ../src/connection-editor/nm-connection-editor.c:207
+#: ../src/connection-editor/nm-connection-editor.c:209
 #, c-format
 msgid "Invalid setting %s: %s"
 msgstr "Configuració no vàlida %s: %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:283
+#: ../src/connection-editor/nm-connection-editor.c:285
 msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
@@ -2769,38 +2989,38 @@ msgstr ""
 "L'editor de connexions no ha pogut trobar alguns dels recursos necessaris "
 "(no s'ha trobat el fitxer d'interfície d'usuari)."
 
-#: ../src/connection-editor/nm-connection-editor.c:419
+#: ../src/connection-editor/nm-connection-editor.c:402
 msgid "_Save"
 msgstr "_Desa"
 
-#: ../src/connection-editor/nm-connection-editor.c:420
+#: ../src/connection-editor/nm-connection-editor.c:403
 msgid "Save any changes made to this connection."
 msgstr "Desa els canvis fets a la connexió."
 
-#: ../src/connection-editor/nm-connection-editor.c:421
+#: ../src/connection-editor/nm-connection-editor.c:404
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Autentiqueu-vos per desar la connexió per a tots els usuaris de l'ordinador."
 
-#: ../src/connection-editor/nm-connection-editor.c:437
+#: ../src/connection-editor/nm-connection-editor.c:420
 msgid "Could not create connection"
 msgstr "No s'ha pogut crear la connexió"
 
-#: ../src/connection-editor/nm-connection-editor.c:437
+#: ../src/connection-editor/nm-connection-editor.c:420
 msgid "Could not edit connection"
 msgstr "No s'ha pogut editar la connexió"
 
-#: ../src/connection-editor/nm-connection-editor.c:439
+#: ../src/connection-editor/nm-connection-editor.c:422
 msgid "Unknown error creating connection editor dialog."
 msgstr ""
 "S'ha produït un error desconegut en crear el diàleg de l'editor de "
 "connexions."
 
-#: ../src/connection-editor/nm-connection-editor.c:581
+#: ../src/connection-editor/nm-connection-editor.c:561
 msgid "Error initializing editor"
 msgstr "S'ha produït un error en inicialitzar l'editor"
 
-#: ../src/connection-editor/nm-connection-editor.c:921
+#: ../src/connection-editor/nm-connection-editor.c:911
 msgid "Connection add failed"
 msgstr "No s'ha pogut afegir la connexió"
 
@@ -2813,8 +3033,8 @@ msgid "Connection _name:"
 msgstr "_Nom de la connexió:"
 
 #: ../src/connection-editor/nm-connection-editor.ui.h:5
-msgid "_Export..."
-msgstr "E_xporta..."
+msgid "_Export…"
+msgstr "_Exporta…"
 
 #: ../src/connection-editor/nm-connection-list.c:127
 msgid "never"
@@ -2861,51 +3081,51 @@ msgid_plural "%d years ago"
 msgstr[0] "fa %d any"
 msgstr[1] "fa %d anys"
 
-#: ../src/connection-editor/nm-connection-list.c:623
+#: ../src/connection-editor/nm-connection-list.c:638
 msgid "Name"
 msgstr "Nom"
 
-#: ../src/connection-editor/nm-connection-list.c:636
+#: ../src/connection-editor/nm-connection-list.c:651
 msgid "Last Used"
 msgstr "Utilitzada per última vegada"
 
-#: ../src/connection-editor/nm-connection-list.c:684
+#: ../src/connection-editor/nm-connection-list.c:699
 msgid "Edit the selected connection"
 msgstr "Edita la connexió seleccionada"
 
-#: ../src/connection-editor/nm-connection-list.c:685
+#: ../src/connection-editor/nm-connection-list.c:700
 msgid "Authenticate to edit the selected connection"
 msgstr "Autentiqueu-vos per editar la connexió seleccionada"
 
-#: ../src/connection-editor/nm-connection-list.c:700
+#: ../src/connection-editor/nm-connection-list.c:715
 msgid "Delete the selected connection"
 msgstr "Suprimeix la connexió seleccionada"
 
-#: ../src/connection-editor/nm-connection-list.c:701
+#: ../src/connection-editor/nm-connection-list.c:716
 msgid "Authenticate to delete the selected connection"
 msgstr "Autentiqueu-vos per suprimir la connexió seleccionada"
 
-#: ../src/connection-editor/nm-connection-list.c:914
-#: ../src/connection-editor/nm-connection-list.c:917
+#: ../src/connection-editor/nm-connection-list.c:932
+#: ../src/connection-editor/nm-connection-list.c:935
 msgid "Error creating connection"
 msgstr "S'ha produït un error en crear la connexió"
 
-#: ../src/connection-editor/nm-connection-list.c:915
+#: ../src/connection-editor/nm-connection-list.c:933
 msgid "No VPN plugins are installed."
 msgstr "No hi ha cap connector VPN instal·lat."
 
-#: ../src/connection-editor/nm-connection-list.c:918
+#: ../src/connection-editor/nm-connection-list.c:936
 #, c-format
-msgid "Don't know how to create '%s' connections"
+msgid "Don’t know how to create “%s” connections"
 msgstr "Es desconeix com crear connexions «%s»"
 
-#: ../src/connection-editor/nm-connection-list.c:941
+#: ../src/connection-editor/nm-connection-list.c:960
 msgid "Error editing connection"
 msgstr "S'ha produït un error en editar la connexió"
 
-#: ../src/connection-editor/nm-connection-list.c:942
+#: ../src/connection-editor/nm-connection-list.c:961
 #, c-format
-msgid "Did not find a connection with UUID '%s'"
+msgid "Did not find a connection with UUID “%s”"
 msgstr "No s'ha pogut trobar cap connexió amb UUID «%s»"
 
 #: ../src/connection-editor/page-8021x-security.c:109
@@ -2939,41 +3159,41 @@ msgstr "dispositiu Bluetooth no vàlid (%s)"
 msgid "Bluetooth connection %d"
 msgstr "Connexió Bluetooth %d"
 
-#: ../src/connection-editor/page-bluetooth.c:303
+#: ../src/connection-editor/page-bluetooth.c:308
 msgid "Bluetooth Type"
 msgstr "Tipus de Bluetooth"
 
-#: ../src/connection-editor/page-bluetooth.c:321
+#: ../src/connection-editor/page-bluetooth.c:326
 msgid "Select the type of the Bluetooth connection profile."
 msgstr "Selecciona el tipus del perfil de connexió Bluetooth."
 
-#: ../src/connection-editor/page-bluetooth.c:326
+#: ../src/connection-editor/page-bluetooth.c:331
 msgid "_Personal Area Network"
 msgstr "Xarxa d'àrea _personal"
 
-#: ../src/connection-editor/page-bluetooth.c:331
+#: ../src/connection-editor/page-bluetooth.c:336
 msgid "_Dial-Up Network"
 msgstr "Xarxa _de connexió telefònica"
 
-#: ../src/connection-editor/page-bond.c:446
+#: ../src/connection-editor/page-bond.c:449
 msgid "Could not load bond user interface."
 msgstr ""
 "No s'ha pogut carregar la interfície d'usuari per a la connexió vinculada."
 
-#: ../src/connection-editor/page-bond.c:565
+#: ../src/connection-editor/page-bond.c:568
 msgid "primary"
 msgstr "primària"
 
-#: ../src/connection-editor/page-bond.c:616
+#: ../src/connection-editor/page-bond.c:623
 #, c-format
 msgid "Bond connection %d"
 msgstr "Connexió vinculada %d"
 
-#: ../src/connection-editor/page-bridge.c:213
+#: ../src/connection-editor/page-bridge.c:215
 msgid "Could not load bridge user interface."
 msgstr "No s'ha pogut carregar la interfície d'usuari per la connexió de pont."
 
-#: ../src/connection-editor/page-bridge.c:311
+#: ../src/connection-editor/page-bridge.c:317
 #, c-format
 msgid "Bridge connection %d"
 msgstr "Connexió de pont %d"
@@ -3001,53 +3221,57 @@ msgstr "No s'ha pogut carregar la interfície d'usuari DCB."
 msgid "Could not load DSL user interface."
 msgstr "No s'ha pogut carregar la interfície d'usuari per a la connexió DSL."
 
-#: ../src/connection-editor/page-dsl.c:215
+#: ../src/connection-editor/page-dsl.c:219
 #, c-format
 msgid "DSL connection %d"
 msgstr "Connexió DSL %d"
 
-#: ../src/connection-editor/page-ethernet.c:74
+#: ../src/connection-editor/page-ethernet.c:81
 msgid ""
 "This option locks this connection to the network device specified either by "
-"its interface name or permanent MAC or both. Examples: \"em1\", "
-"\"3C:97:0E:42:1A:19\", \"em1 (3C:97:0E:42:1A:19)\""
+"its interface name or permanent MAC or both. Examples: “em1”, "
+"“3C:97:0E:42:1A:19”, “em1 (3C:97:0E:42:1A:19)”"
 msgstr ""
 "Aquesta opció bloqueja aquesta connexió al dispositiu de xarxa especificat "
 "bé pel seu nom d'interfície o per la MAC permanent o per ambdós. Exemples: "
 "«em1», «3C:97:0E:42:1A:19», «em1 (3C:97:0E:42:1A:19)»"
 
-#: ../src/connection-editor/page-ethernet.c:326
+#: ../src/connection-editor/page-ethernet.c:263
+msgid "ignored"
+msgstr "Ignorada"
+
+#: ../src/connection-editor/page-ethernet.c:354
 msgid "Could not load ethernet user interface."
 msgstr ""
 "No s'ha pogut carregar la interfície d'usuari per a la connexió amb fil."
 
-#: ../src/connection-editor/page-ethernet.c:455
+#: ../src/connection-editor/page-ethernet.c:515
 msgid "Ethernet device"
 msgstr "Dispositiu Ethernet"
 
-#: ../src/connection-editor/page-ethernet.c:459
-#: ../src/connection-editor/page-vlan.c:739
+#: ../src/connection-editor/page-ethernet.c:519
+#: ../src/connection-editor/page-vlan.c:740
 #: ../src/connection-editor/page-wifi.c:574
 msgid "cloned MAC"
 msgstr "MAC clonada"
 
-#: ../src/connection-editor/page-ethernet.c:463
+#: ../src/connection-editor/page-ethernet.c:523
 msgid "Wake-on-LAN password"
 msgstr "Contrasenya d'activació per LAN"
 
-#: ../src/connection-editor/page-ethernet.c:499
+#: ../src/connection-editor/page-ethernet.c:563
 #, c-format
 msgid "Ethernet connection %d"
 msgstr "Connexió de xarxa amb fil %d"
 
 #. TRANSLATORS: Default zone set for firewall, when no zone is selected
-#: ../src/connection-editor/page-general.c:51
+#: ../src/connection-editor/page-general.c:54
 #: ../src/libnma/nma-mobile-providers.c:806
 #: ../src/libnm-gtk/nm-mobile-providers.c:806
 msgid "Default"
 msgstr "Per defecte"
 
-#: ../src/connection-editor/page-general.c:52
+#: ../src/connection-editor/page-general.c:55
 msgid ""
 "The zone defines the trust level of the connection. Default is not a regular "
 "zone, selecting it results in the use of the default zone set in the "
@@ -3057,20 +3281,16 @@ msgstr ""
 "una zona regular; si la seleccioneu, el tallafoc utilitzarà la zona per "
 "defecte. Només és útil si el firewallD està actiu."
 
-#: ../src/connection-editor/page-general.c:53
-msgid "FirewallD is not running."
-msgstr "El FirewallD no s'està executant."
-
-#: ../src/connection-editor/page-general.c:350
+#: ../src/connection-editor/page-general.c:370
 msgid "Could not load General user interface."
 msgstr "No s'ha pogut carregar la interfície d'usuari general."
 
 #: ../src/connection-editor/page-infiniband.c:57
 msgid ""
 "This option locks this connection to the network device specified either by "
-"its interface name or permanent MAC or both. Examples: \"ib0\", "
-"\"80:00:00:48:fe:80:00:00:00:00:00:00:00:02:c9:03:00:00:0f:65\", \"ib0 "
-"(80:00:00:48:fe:80:00:00:00:00:00:00:00:02:c9:03:00:00:0f:65)\""
+"its interface name or permanent MAC or both. Examples: “ib0”, “80:00:00:48:"
+"fe:80:00:00:00:00:00:00:00:02:c9:03:00:00:0f:65”, “ib0 (80:00:00:48:"
+"fe:80:00:00:00:00:00:00:00:02:c9:03:00:00:0f:65)”"
 msgstr ""
 "Aquesta opció bloqueja aquesta connexió al dispositiu de xarxa especificat "
 "bé pel seu nom d'interfície o per la MAC permanent o per ambdós. Exemples: "
@@ -3086,132 +3306,137 @@ msgstr ""
 msgid "infiniband device"
 msgstr "dispositiu infiniband"
 
-#: ../src/connection-editor/page-infiniband.c:250
+#: ../src/connection-editor/page-infiniband.c:254
 #, c-format
 msgid "InfiniBand connection %d"
 msgstr "Connexió InfiniBand %d"
 
-#: ../src/connection-editor/page-ip4.c:125
-#: ../src/connection-editor/page-ip6.c:129
+#: ../src/connection-editor/page-ip-tunnel.c:178
+msgid "Could not load IP tunnel user interface."
+msgstr "No s'ha pogut carregar la interfície d'usuari de túnel IP."
+
+#: ../src/connection-editor/page-ip-tunnel.c:294
+#, c-format
+msgid "IP tunnel connection %d"
+msgstr "Connexió de túnel IP %d"
+
+#: ../src/connection-editor/page-ip4.c:127
+#: ../src/connection-editor/page-ip6.c:130
 msgid "Automatic (VPN)"
 msgstr "Automàtic (VPN)"
 
-#: ../src/connection-editor/page-ip4.c:126
-#: ../src/connection-editor/page-ip6.c:130
+#: ../src/connection-editor/page-ip4.c:128
+#: ../src/connection-editor/page-ip6.c:131
 msgid "Automatic (VPN) addresses only"
 msgstr "Només adreces (VPN) automàtiques"
 
-#: ../src/connection-editor/page-ip4.c:130
-#: ../src/connection-editor/page-ip6.c:136
+#: ../src/connection-editor/page-ip4.c:132
+#: ../src/connection-editor/page-ip6.c:137
 msgid "Automatic, addresses only"
 msgstr "Automàtic, només adreces"
 
-#: ../src/connection-editor/page-ip4.c:132
-#: ../src/connection-editor/page-ip6.c:132
+#: ../src/connection-editor/page-ip4.c:134
+#: ../src/connection-editor/page-ip6.c:133
 msgid "Automatic (PPPoE)"
 msgstr "Automàtic (PPPoE)"
 
-#: ../src/connection-editor/page-ip4.c:133
-#: ../src/connection-editor/page-ip6.c:133
+#: ../src/connection-editor/page-ip4.c:135
+#: ../src/connection-editor/page-ip6.c:134
 msgid "Automatic (PPPoE) addresses only"
 msgstr "Només adreces (PPPoE) automàtiques"
 
-#: ../src/connection-editor/page-ip4.c:135
+#: ../src/connection-editor/page-ip4.c:137
 msgid "Automatic (DHCP)"
 msgstr "Automàtic (DHCP)"
 
-#: ../src/connection-editor/page-ip4.c:136
+#: ../src/connection-editor/page-ip4.c:138
 msgid "Automatic (DHCP) addresses only"
 msgstr "Només adreces (DHCP) automàtiques"
 
 # http://en.wikipedia.org/wiki/Link-local_address (dpm)
-#: ../src/connection-editor/page-ip4.c:179
-#: ../src/connection-editor/page-ip6.c:197
+#: ../src/connection-editor/page-ip4.c:181
+#: ../src/connection-editor/page-ip6.c:198
 msgid "Link-Local Only"
 msgstr "Només adreces de connexió local"
 
-#: ../src/connection-editor/page-ip4.c:297
-#: ../src/connection-editor/page-ip6.c:295
+#: ../src/connection-editor/page-ip4.c:361
+#: ../src/connection-editor/page-ip6.c:319
 msgid "Additional DNS ser_vers:"
 msgstr "Servidors _DNS addicionals:"
 
-#: ../src/connection-editor/page-ip4.c:306
-#: ../src/connection-editor/page-ip6.c:304
+#: ../src/connection-editor/page-ip4.c:370
+#: ../src/connection-editor/page-ip6.c:328
 msgid "Additional s_earch domains:"
 msgstr "Dominis de _cerca addicionals:"
 
-#: ../src/connection-editor/page-ip4.c:965
+#: ../src/connection-editor/page-ip4.c:1033
 #, c-format
 msgid "Editing IPv4 routes for %s"
 msgstr "Edició de les rutes IPv4 per a %s"
 
-#: ../src/connection-editor/page-ip4.c:1158
+#: ../src/connection-editor/page-ip4.c:1226
 msgid "IPv4 Settings"
 msgstr "Paràmetres IPv4"
 
-#: ../src/connection-editor/page-ip4.c:1160
+#: ../src/connection-editor/page-ip4.c:1228
 msgid "Could not load IPv4 user interface."
 msgstr "No s'ha pogut carregar la interfície d'usuari per a la connexió IPv4."
 
-#: ../src/connection-editor/page-ip4.c:1253
+#: ../src/connection-editor/page-ip4.c:1321
 #, c-format
-msgid "IPv4 address \"%s\" invalid"
+msgid "IPv4 address “%s” invalid"
 msgstr "Adreça IPv4 «%s« no vàlida"
 
-#: ../src/connection-editor/page-ip4.c:1261
+#: ../src/connection-editor/page-ip4.c:1329
 #, c-format
-msgid "IPv4 address netmask \"%s\" invalid"
+msgid "IPv4 address netmask “%s” invalid"
 msgstr "Adreça IPv4 no vàlida de la màscara de xarxa «%s«"
 
-#: ../src/connection-editor/page-ip4.c:1270
+#: ../src/connection-editor/page-ip4.c:1338
 #, c-format
-msgid "IPv4 gateway \"%s\" invalid"
+msgid "IPv4 gateway “%s” invalid"
 msgstr "Passarel·la IPv4 «%s» no vàlida"
 
-#: ../src/connection-editor/page-ip4.c:1313
+#: ../src/connection-editor/page-ip4.c:1381
 #, c-format
-msgid "IPv4 DNS server \"%s\" invalid"
+msgid "IPv4 DNS server “%s” invalid"
 msgstr "Servidor DNS IPv4 DNS «%s» no vàlid"
 
-#: ../src/connection-editor/page-ip6.c:148
-msgid "Ignore"
-msgstr "Ignora"
-
-#: ../src/connection-editor/page-ip6.c:172
+#: ../src/connection-editor/page-ip6.c:173
 msgid "Automatic, DHCP only"
 msgstr "Automàtic, només DHCP"
 
-#: ../src/connection-editor/page-ip6.c:964
+#: ../src/connection-editor/page-ip6.c:988
 #, c-format
 msgid "Editing IPv6 routes for %s"
 msgstr "Edició de les rutes IPv6 per a %s"
 
-#: ../src/connection-editor/page-ip6.c:1155
+#: ../src/connection-editor/page-ip6.c:1179
 msgid "IPv6 Settings"
 msgstr "Paràmetres IPv6"
 
-#: ../src/connection-editor/page-ip6.c:1157
+#: ../src/connection-editor/page-ip6.c:1181
 msgid "Could not load IPv6 user interface."
 msgstr "No s'ha pogut carregar la interfície d'usuari per a la connexió IPv6."
 
-#: ../src/connection-editor/page-ip6.c:1248
+#: ../src/connection-editor/page-ip6.c:1272
 #, c-format
-msgid "IPv6 address \"%s\" invalid"
+msgid "IPv6 address “%s” invalid"
 msgstr "Adreça IPv6 «%s» no vàlida"
 
-#: ../src/connection-editor/page-ip6.c:1256
+#: ../src/connection-editor/page-ip6.c:1280
 #, c-format
-msgid "IPv6 prefix \"%s\" invalid"
+msgid "IPv6 prefix “%s” invalid"
 msgstr "Prefix IPv6 «%s» no vàlid"
 
-#: ../src/connection-editor/page-ip6.c:1265
+#: ../src/connection-editor/page-ip6.c:1289
 #, c-format
-msgid "IPv6 gateway \"%s\" invalid"
+msgid "IPv6 gateway “%s” invalid"
 msgstr "Passarel·la IPv6 «%s» no vàlida"
 
-#: ../src/connection-editor/page-ip6.c:1307
+#: ../src/connection-editor/page-ip6.c:1331
 #, c-format
-msgid "IPv6 DNS server \"%s\" invalid"
+msgid "IPv6 DNS server “%s” invalid"
 msgstr "Servidor DNS IPv6 «%s» no vàlid"
 
 #: ../src/connection-editor/page-master.c:248
@@ -3221,19 +3446,19 @@ msgstr "Duplica els esclaus"
 
 #: ../src/connection-editor/page-master.c:249
 #, c-format
-msgid "Slaves '%s' and '%s' both apply to device '%s'"
+msgid "Slaves “%s” and “%s” both apply to device “%s”"
 msgstr "Els esclaus «%s» i «%s» s'apliquen tots dos al dispositiu «%s»"
 
 #: ../src/connection-editor/page-master.c:260
 #, c-format
 msgid ""
-"Slaves '%s' and '%s' apply to different virtual ports ('%s' and '%s') of the "
+"Slaves “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
 "same physical device."
 msgstr ""
 "Els esclaus «%s» i «%s» s'apliquen a diferents ports virtuals («%s» i «%s») "
 "del mateix dispositiu físic."
 
-#: ../src/connection-editor/page-master.c:385
+#: ../src/connection-editor/page-master.c:386
 #, c-format
 msgid "%s slave %d"
 msgstr "%s esclava %d"
@@ -3249,35 +3474,35 @@ msgid "Unsupported mobile broadband connection type."
 msgstr "No s'admet el tipus de connexió de banda ampla mòbil."
 
 #. Fall back to just asking for GSM vs. CDMA
-#: ../src/connection-editor/page-mobile.c:530
+#: ../src/connection-editor/page-mobile.c:540
 msgid "Select Mobile Broadband Provider Type"
 msgstr "Seleccioneu el tipus de proveïdor de banda ampla mòbil"
 
-#: ../src/connection-editor/page-mobile.c:557
+#: ../src/connection-editor/page-mobile.c:567
 msgid ""
-"Select the technology your mobile broadband provider uses.  If you are "
+"Select the technology your mobile broadband provider uses. If you are "
 "unsure, ask your provider."
 msgstr ""
 "Seleccioneu la tecnologia que utilitza el vostre proveïdor de banda ampla "
 "mòbil. Si no n'esteu segur, demaneu-ho al vostre proveïdor."
 
-#: ../src/connection-editor/page-mobile.c:562
+#: ../src/connection-editor/page-mobile.c:572
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr ""
 "El meu proveïdor utilitza tecnologia basada en _GSM (és a dir, GPRS, EDGE, "
 "UMTS, HSDPA)"
 
-#: ../src/connection-editor/page-mobile.c:569
+#: ../src/connection-editor/page-mobile.c:579
 msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr ""
 "El meu proveïdor utilitza tecnologia basada en C_DMA (és a dir, 1xRTT, EVDO)"
 
-#: ../src/connection-editor/page-mobile.c:579 ../src/mb-menu-item.c:50
+#: ../src/connection-editor/page-mobile.c:589 ../src/mb-menu-item.c:50
 #: ../src/mobile-helpers.c:283
 msgid "CDMA"
 msgstr "CDMA"
 
-#: ../src/connection-editor/page-mobile.c:582 ../src/mb-menu-item.c:54
+#: ../src/connection-editor/page-mobile.c:592 ../src/mb-menu-item.c:54
 #: ../src/mobile-helpers.c:281
 msgid "GSM"
 msgstr "GSM"
@@ -3287,24 +3512,24 @@ msgid "EAP"
 msgstr "EAP"
 
 #: ../src/connection-editor/page-ppp.c:130
-#: ../src/wireless-security/eap-method-ttls.c:258
+#: ../src/wireless-security/eap-method-ttls.c:259
 msgid "PAP"
 msgstr "PAP"
 
 #: ../src/connection-editor/page-ppp.c:131
-#: ../src/wireless-security/eap-method-ttls.c:303
+#: ../src/wireless-security/eap-method-ttls.c:321
 msgid "CHAP"
 msgstr "CHAP"
 
 #: ../src/connection-editor/page-ppp.c:132
 #: ../src/wireless-security/eap-method-fast.c:283
 #: ../src/wireless-security/eap-method-peap.c:272
-#: ../src/wireless-security/eap-method-ttls.c:288
+#: ../src/wireless-security/eap-method-ttls.c:289
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
 #: ../src/connection-editor/page-ppp.c:133
-#: ../src/wireless-security/eap-method-ttls.c:273
+#: ../src/wireless-security/eap-method-ttls.c:274
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
@@ -3326,22 +3551,25 @@ msgstr "Paràmetres PPP"
 msgid "Could not load PPP user interface."
 msgstr "No s'ha pogut carregar la interfície d'usuari per a la connexió PPP."
 
-#: ../src/connection-editor/page-team.c:341
-#: ../src/connection-editor/page-team-port.c:203
-#: ../src/connection-editor/vpn-helpers.c:168
-msgid "Select file to import"
-msgstr "Seleccioneu el fitxer a importar"
+#: ../src/connection-editor/page-proxy.c:217
+msgid "Proxy"
+msgstr "Servidor intermediari"
+
+#: ../src/connection-editor/page-proxy.c:219
+msgid "Could not load proxy user interface."
+msgstr ""
+"No s'ha pogut carregar la interfície d'usuari de servidor intermediari."
 
 #: ../src/connection-editor/page-team.c:361
 #: ../src/connection-editor/page-team-port.c:223
-msgid "Error: file doesn't contain a valid JSON configuration"
+msgid "Error: file doesn’t contain a valid JSON configuration"
 msgstr "Error: el fitxer no conté una configuració JSON vàlida"
 
-#: ../src/connection-editor/page-team.c:1031
+#: ../src/connection-editor/page-team.c:1156
 msgid "Could not load team user interface."
 msgstr "No s'ha pogut carregar la interfície d'usuari de l'equip."
 
-#: ../src/connection-editor/page-team.c:1124
+#: ../src/connection-editor/page-team.c:1253
 #, c-format
 msgid "Team connection %d"
 msgstr "Connexió en equip %d"
@@ -3349,36 +3577,36 @@ msgstr "Connexió en equip %d"
 #. Translators: a "Team Port" is a network
 #. * device that is part of a team.
 #.
-#: ../src/connection-editor/page-team-port.c:655
+#: ../src/connection-editor/page-team-port.c:732
 msgid "Team Port"
 msgstr "Port de l'equip"
 
-#: ../src/connection-editor/page-team-port.c:657
+#: ../src/connection-editor/page-team-port.c:734
 msgid "Could not load team port user interface."
 msgstr "No s'ha pogut carregar la interfície d'usuari del port de l'equip."
 
 #. Translators: the first %s is a device name (eg, "em1"), the
 #. * second is a connection name (eg, "Auto Ethernet").
 #.
-#: ../src/connection-editor/page-vlan.c:414
+#: ../src/connection-editor/page-vlan.c:415
 #, c-format
-msgid "%s (via \"%s\")"
+msgid "%s (via “%s”)"
 msgstr "%s (via «%s»)"
 
-#: ../src/connection-editor/page-vlan.c:426
+#: ../src/connection-editor/page-vlan.c:427
 #, c-format
-msgid "New connection..."
-msgstr "Connexió nova..."
+msgid "New connection…"
+msgstr "Connexió nova…"
 
-#: ../src/connection-editor/page-vlan.c:594
+#: ../src/connection-editor/page-vlan.c:595
 msgid "Could not load vlan user interface."
 msgstr "No s'ha pogut carregar la interfície d'usuari per a la connexió VLAN."
 
-#: ../src/connection-editor/page-vlan.c:732
+#: ../src/connection-editor/page-vlan.c:733
 msgid "vlan parent"
 msgstr "vlan arrel"
 
-#: ../src/connection-editor/page-vlan.c:796
+#: ../src/connection-editor/page-vlan.c:801
 #, c-format
 msgid "VLAN connection %d"
 msgstr "Connexió VLAN %d"
@@ -3389,41 +3617,30 @@ msgstr "No s'ha pogut carregar la interfície d'usuari per a la connexió VPN."
 
 #: ../src/connection-editor/page-vpn.c:113
 #, c-format
-msgid "Could not find VPN plugin for '%s'."
+msgid "Could not find VPN plugin for “%s”."
 msgstr "No s'ha pogut trobar el connector VPN per a «%s»."
 
 #: ../src/connection-editor/page-vpn.c:122
 #, c-format
-msgid "Could not load editor VPN plugin for '%s' (%s)."
+msgid "Could not load editor VPN plugin for “%s” (%s)."
 msgstr "No s'ha pogut carregar el connector de VPN d'editor per a «%s» (%s)."
 
 #: ../src/connection-editor/page-vpn.c:123
 msgid "unknown failure"
 msgstr "fallada desconeguda"
 
-#: ../src/connection-editor/page-vpn.c:216
-#: ../src/connection-editor/page-vpn.c:364
+#: ../src/connection-editor/page-vpn.c:205
 #, c-format
 msgid "VPN connection %d"
 msgstr "Connexió VPN %d"
 
-#: ../src/connection-editor/page-vpn.c:240
-msgid ""
-"The VPN plugin failed to import the VPN connection correctly\n"
-"\n"
-"Error: no VPN service type."
-msgstr ""
-"El connector VPN no ha pogut importar la connexió VPN correctament\n"
-"\n"
-"Error: no hi ha cap tipus de servei VPN."
-
-#: ../src/connection-editor/page-vpn.c:266
+#: ../src/connection-editor/page-vpn.c:211
 msgid "Choose a VPN Connection Type"
 msgstr "Seleccioneu un tipus de connexió VPN"
 
-#: ../src/connection-editor/page-vpn.c:267
+#: ../src/connection-editor/page-vpn.c:212
 msgid ""
-"Select the type of VPN you wish to use for the new connection.  If the type "
+"Select the type of VPN you wish to use for the new connection. If the type "
 "of VPN connection you wish to create does not appear in the list, you may "
 "not have the correct VPN plugin installed."
 msgstr ""
@@ -3434,7 +3651,7 @@ msgstr ""
 #: ../src/connection-editor/page-wifi.c:77
 msgid ""
 "This option locks this connection to the Wi-Fi access point (AP) specified "
-"by the BSSID entered here.  Example: 00:11:22:33:44:55"
+"by the BSSID entered here. Example: 00:11:22:33:44:55"
 msgstr ""
 "Aquesta opció bloqueja la connexió al punt d'accés sense fil (AP) "
 "especificat per l'identificador BSSID.  Exemple: 00:11:22:33:44:55"
@@ -3442,8 +3659,8 @@ msgstr ""
 #: ../src/connection-editor/page-wifi.c:88
 msgid ""
 "This option locks this connection to the network device specified either by "
-"its interface name or permanent MAC or both. Examples: \"wlan0\", "
-"\"3C:97:0E:42:1A:19\", \"wlan0 (3C:97:0E:42:1A:19)\""
+"its interface name or permanent MAC or both. Examples: “wlan0”, "
+"“3C:97:0E:42:1A:19”, “wlan0 (3C:97:0E:42:1A:19)”"
 msgstr ""
 "Aquesta opció bloqueja aquesta connexió al dispositiu de xarxa especificat "
 "bé pel seu nom d'interfície o la MAC permanent o ambdós. Exemples: «wlan0», "
@@ -3467,7 +3684,7 @@ msgstr "bssid"
 msgid "Wi-Fi device"
 msgstr "Dispositiu Wi-Fi"
 
-#: ../src/connection-editor/page-wifi.c:613
+#: ../src/connection-editor/page-wifi.c:617
 #, c-format
 msgid "Wi-Fi connection %d"
 msgstr "Connexió de xarxa sense fil %d"
@@ -3522,49 +3739,28 @@ msgstr "falta el SSID"
 msgid "Security not compatible with Ad-Hoc mode"
 msgstr "La seguretat no és compatible amb el mode Ad-Hoc"
 
-#: ../src/connection-editor/vpn-helpers.c:141
-msgid "Cannot import VPN connection"
-msgstr "No es pot importar la connexió VPN"
-
-#: ../src/connection-editor/vpn-helpers.c:143
+#: ../src/connection-editor/vpn-helpers.c:132
 #, c-format
-msgid ""
-"The file '%s' could not be read or does not contain recognized VPN "
-"connection information\n"
-"\n"
-"Error: %s."
-msgstr ""
-"No s'ha pogut llegir el fitxer «%s» o bé no conté cap informació de connexió "
-"VPN que es pugui reconèixer\n"
-"\n"
-"Error: %s."
-
-#: ../src/connection-editor/vpn-helpers.c:144
-msgid "unknown error"
-msgstr "error desconegut"
-
-#: ../src/connection-editor/vpn-helpers.c:218
-#, c-format
-msgid "A file named \"%s\" already exists."
+msgid "A file named “%s” already exists."
 msgstr "Ja existeix un fitxer anomenat «%s»."
 
-#: ../src/connection-editor/vpn-helpers.c:220
+#: ../src/connection-editor/vpn-helpers.c:134
 msgid "_Replace"
 msgstr "_Reemplaça"
 
-#: ../src/connection-editor/vpn-helpers.c:222
+#: ../src/connection-editor/vpn-helpers.c:136
 #, c-format
 msgid "Do you want to replace %s with the VPN connection you are saving?"
 msgstr "Voleu reemplaçar %s per la connexió VPN que esteu desant?"
 
-#: ../src/connection-editor/vpn-helpers.c:258
+#: ../src/connection-editor/vpn-helpers.c:172
 msgid "Cannot export VPN connection"
 msgstr "No es pot exportar la connexió VPN"
 
-#: ../src/connection-editor/vpn-helpers.c:260
+#: ../src/connection-editor/vpn-helpers.c:174
 #, c-format
 msgid ""
-"The VPN connection '%s' could not be exported to %s.\n"
+"The VPN connection “%s” could not be exported to %s.\n"
 "\n"
 "Error: %s."
 msgstr ""
@@ -3572,9 +3768,9 @@ msgstr ""
 "\n"
 "Error: %s."
 
-#: ../src/connection-editor/vpn-helpers.c:295
-msgid "Export VPN connection..."
-msgstr "Exporta una connexió VPN..."
+#: ../src/connection-editor/vpn-helpers.c:209
+msgid "Export VPN connection…"
+msgstr "Exporta una connexió VPN…"
 
 #: ../src/gsm-unlock.ui.h:2
 msgid "_Unlock"
@@ -3622,16 +3818,16 @@ msgstr "El pla:"
 #: ../src/libnm-gtk/nm-mobile-wizard.c:249
 msgid ""
 "A connection will now be made to your mobile broadband provider using the "
-"settings you selected.  If the connection fails or you cannot access network "
-"resources, double-check your settings.  To modify your mobile broadband "
-"connection settings, choose \"Network Connections\" from the System >> "
+"settings you selected. If the connection fails or you cannot access network "
+"resources, double-check your settings. To modify your mobile broadband "
+"connection settings, choose “Network Connections” from the System → "
 "Preferences menu."
 msgstr ""
 "Es durà a terme una connexió al proveïdor de banda ampla mòbil utilitzant "
 "els paràmetres que heu seleccionat. Si no es pot connectar o bé no podeu "
 "accedir als recursos de la xarxa, torneu a comprovar els paràmetres. Si "
 "voleu modificar els paràmetres de la connexió de banda ampla mòbil, trieu "
-"l'entrada «Connexions de xarxa» del menú Sistema >> Preferències."
+"l'entrada «Connexions de xarxa» del menú Sistema → Preferències.."
 
 #: ../src/libnma/nma-mobile-wizard.c:261
 #: ../src/libnm-gtk/nm-mobile-wizard.c:262
@@ -3659,7 +3855,7 @@ msgid ""
 "Warning: Selecting an incorrect plan may result in billing issues for your "
 "broadband account or may prevent connectivity.\n"
 "\n"
-"If you are unsure of your plan please ask your provider for your plan's APN."
+"If you are unsure of your plan please ask your provider for your plan’s APN."
 msgstr ""
 "Avís: si seleccioneu un pla incorrecte, pot ser que tingueu problemes de "
 "facturació del compte de banda ampla o que no us pugueu connectar.\n"
@@ -3674,8 +3870,8 @@ msgstr "Seleccioneu el pla de facturació"
 
 #: ../src/libnma/nma-mobile-wizard.c:557
 #: ../src/libnm-gtk/nm-mobile-wizard.c:558
-msgid "My plan is not listed..."
-msgstr "No és a la llista..."
+msgid "My plan is not listed…"
+msgstr "El meu plan no és a la llista…"
 
 #: ../src/libnma/nma-mobile-wizard.c:710
 #: ../src/libnm-gtk/nm-mobile-wizard.c:711
@@ -3689,7 +3885,7 @@ msgstr "Proveïdor"
 
 #: ../src/libnma/nma-mobile-wizard.c:748
 #: ../src/libnm-gtk/nm-mobile-wizard.c:749
-msgid "I can't find my provider and I wish to enter it _manually:"
+msgid "I can’t find my provider and I wish to enter it _manually:"
 msgstr "No hi ha el proveïdor i vull introduir-lo _manualment:"
 
 #: ../src/libnma/nma-mobile-wizard.c:761
@@ -3729,7 +3925,7 @@ msgstr "El meu país no és a la llista"
 
 #: ../src/libnma/nma-mobile-wizard.c:1126
 #: ../src/libnm-gtk/nm-mobile-wizard.c:1127
-msgid "Choose your Provider's Country or Region"
+msgid "Choose your Provider’s Country or Region"
 msgstr "Trieu el país o regió del vostre proveïdor"
 
 #: ../src/libnma/nma-mobile-wizard.c:1183
@@ -3758,7 +3954,7 @@ msgstr "Us caldrà la informació següent:"
 
 #: ../src/libnma/nma-mobile-wizard.c:1371
 #: ../src/libnm-gtk/nm-mobile-wizard.c:1372
-msgid "Your broadband provider's name"
+msgid "Your broadband provider’s name"
 msgstr "El nom del proveïdor de banda ampla"
 
 #: ../src/libnma/nma-mobile-wizard.c:1377
@@ -3837,8 +4033,8 @@ msgstr ""
 "d'editar primer la connexió amb el nm-connection-editor"
 
 #: ../src/libnma/nma-wifi-dialog.c:465 ../src/libnm-gtk/nm-wifi-dialog.c:465
-msgid "New..."
-msgstr "Nova..."
+msgid "New…"
+msgstr "Nou…"
 
 #: ../src/libnma/nma-wifi-dialog.c:903 ../src/libnm-gtk/nm-wifi-dialog.c:905
 msgctxt "Wifi/wired security"
@@ -3856,7 +4052,7 @@ msgstr "C_rea"
 #: ../src/libnma/nma-wifi-dialog.c:1157 ../src/libnm-gtk/nm-wifi-dialog.c:1161
 #, c-format
 msgid ""
-"Passwords or encryption keys are required to access the Wi-Fi network '%s'."
+"Passwords or encryption keys are required to access the Wi-Fi network “%s”."
 msgstr ""
 "Cal una contrasenya o claus d'encriptació per accedir a la xarxa sense fil "
 "«%s»."
@@ -3897,15 +4093,15 @@ msgstr ""
 "Introduïu el nom i els paràmetres de seguretat de la xarxa sense fil oculta "
 "a la qual us vulgueu connectar."
 
-#: ../src/libnma/wifi.ui.h:2 ../src/libnm-gtk/wifi.ui.h:2
+#: ../src/libnma/wifi.ui.h:1 ../src/libnm-gtk/wifi.ui.h:1
 msgid "Wi-Fi _security:"
 msgstr "Seguretat de la _xarxa sense fil:"
 
-#: ../src/libnma/wifi.ui.h:4 ../src/libnm-gtk/wifi.ui.h:4
+#: ../src/libnma/wifi.ui.h:3 ../src/libnm-gtk/wifi.ui.h:3
 msgid "C_onnection:"
 msgstr "Co_nnexió:"
 
-#: ../src/libnma/wifi.ui.h:5 ../src/libnm-gtk/wifi.ui.h:5
+#: ../src/libnma/wifi.ui.h:4 ../src/libnm-gtk/wifi.ui.h:4
 msgid "Wi-Fi _adapter:"
 msgstr "_Adaptador sense fil:"
 
@@ -4045,7 +4241,7 @@ msgstr "Xarxa itinerant"
 
 #: ../src/mobile-helpers.c:331
 #, c-format
-msgid "PIN code for SIM card '%s' on '%s'"
+msgid "PIN code for SIM card “%s” on “%s”"
 msgstr "Codi PIN per la targeta SIM «%s» a «%s»"
 
 #: ../src/mobile-helpers.c:464
@@ -4058,7 +4254,7 @@ msgstr "Cal que introduïu un codi PIN per al dispositiu de banda ampla mòbil"
 
 #: ../src/mobile-helpers.c:622
 #, c-format
-msgid "Mobile broadband connection '%s' active: (%d%%%s%s)"
+msgid "Mobile broadband connection “%s” active: (%d%%%s%s)"
 msgstr "La connexió de banda ampla mòbil «%s» és activa: (%d%%%s%s)"
 
 #: ../src/mobile-helpers.c:625
@@ -4066,7 +4262,7 @@ msgid "roaming"
 msgstr "itinerància"
 
 #. The %s is a mobile provider name, eg "T-Mobile"
-#: ../src/utils/utils.c:179
+#: ../src/utils/utils.c:184
 #, c-format
 msgid "%s connection"
 msgstr "connexió de %s"
@@ -4085,11 +4281,11 @@ msgstr ""
 "s'ha produït un error no especificat quan s'estava validant el fitxer del "
 "mètode eap"
 
-#: ../src/wireless-security/eap-method.c:468
+#: ../src/wireless-security/eap-method.c:439
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "Claus privades DER, PEM o PKCS#12 (*.der, *.pem, *.p12, *.key)"
 
-#: ../src/wireless-security/eap-method.c:471
+#: ../src/wireless-security/eap-method.c:442
 msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
 msgstr "Certificats DER o PEM (*.der, *.pem, *.crt, *.cer)"
 
@@ -4099,7 +4295,7 @@ msgstr "falta el fitxer EAP-FAST PAC"
 
 #: ../src/wireless-security/eap-method-fast.c:268
 #: ../src/wireless-security/eap-method-peap.c:302
-#: ../src/wireless-security/eap-method-ttls.c:333
+#: ../src/wireless-security/eap-method-ttls.c:351
 msgid "GTC"
 msgstr "GTC"
 
@@ -4115,36 +4311,36 @@ msgstr "Fitxers PAC (*.pac)"
 msgid "All files"
 msgstr "Tots els fitxers"
 
-#: ../src/wireless-security/eap-method-fast.ui.h:2
+#: ../src/wireless-security/eap-method-fast.ui.h:1
 msgid "Anonymous"
 msgstr "Anònim"
 
-#: ../src/wireless-security/eap-method-fast.ui.h:3
+#: ../src/wireless-security/eap-method-fast.ui.h:2
 msgid "Authenticated"
 msgstr "Autenticat"
 
-#: ../src/wireless-security/eap-method-fast.ui.h:4
+#: ../src/wireless-security/eap-method-fast.ui.h:3
 msgid "Both"
 msgstr "Ambdós"
 
-#: ../src/wireless-security/eap-method-fast.ui.h:5
-#: ../src/wireless-security/eap-method-peap.ui.h:5
-#: ../src/wireless-security/eap-method-ttls.ui.h:2
+#: ../src/wireless-security/eap-method-fast.ui.h:4
+#: ../src/wireless-security/eap-method-peap.ui.h:4
+#: ../src/wireless-security/eap-method-ttls.ui.h:1
 msgid "Anony_mous identity:"
 msgstr "Identitat anòni_ma:"
 
-#: ../src/wireless-security/eap-method-fast.ui.h:6
+#: ../src/wireless-security/eap-method-fast.ui.h:5
 msgid "PAC _file:"
 msgstr "Fitxer _PAC:"
 
 # FIXME: (dpm)
-#: ../src/wireless-security/eap-method-fast.ui.h:7
-#: ../src/wireless-security/eap-method-peap.ui.h:8
-#: ../src/wireless-security/eap-method-ttls.ui.h:5
+#: ../src/wireless-security/eap-method-fast.ui.h:6
+#: ../src/wireless-security/eap-method-peap.ui.h:7
+#: ../src/wireless-security/eap-method-ttls.ui.h:4
 msgid "_Inner authentication:"
 msgstr "Autenticació i_nterna:"
 
-#: ../src/wireless-security/eap-method-fast.ui.h:8
+#: ../src/wireless-security/eap-method-fast.ui.h:7
 msgid "Allow automatic PAC pro_visioning"
 msgstr "_Permet la provisió automàtica PAC"
 
@@ -4166,38 +4362,38 @@ msgid "invalid EAP-PEAP CA certificate: no certificate specified"
 msgstr "certificat EAP-PEAP CA no vàlid: no s'ha especificat cap certificat"
 
 #: ../src/wireless-security/eap-method-peap.c:287
-#: ../src/wireless-security/eap-method-ttls.c:318
+#: ../src/wireless-security/eap-method-ttls.c:336
 #: ../src/wireless-security/wireless-security.c:424
 msgid "MD5"
 msgstr "MD5"
 
 #: ../src/wireless-security/eap-method-peap.c:381
 #: ../src/wireless-security/eap-method-tls.c:501
-#: ../src/wireless-security/eap-method-ttls.c:412
+#: ../src/wireless-security/eap-method-ttls.c:430
 msgid "Choose a Certificate Authority certificate"
 msgstr "Trieu un certificat d'autoritat de certificació"
 
-#: ../src/wireless-security/eap-method-peap.ui.h:3
+#: ../src/wireless-security/eap-method-peap.ui.h:2
 msgid "Version 0"
 msgstr "Versió 0"
 
-#: ../src/wireless-security/eap-method-peap.ui.h:4
+#: ../src/wireless-security/eap-method-peap.ui.h:3
 msgid "Version 1"
 msgstr "Versió 1"
 
-#: ../src/wireless-security/eap-method-peap.ui.h:6
+#: ../src/wireless-security/eap-method-peap.ui.h:5
 #: ../src/wireless-security/eap-method-tls.ui.h:3
-#: ../src/wireless-security/eap-method-ttls.ui.h:3
+#: ../src/wireless-security/eap-method-ttls.ui.h:2
 msgid "C_A certificate:"
 msgstr "Certificat de C_A:"
 
-#: ../src/wireless-security/eap-method-peap.ui.h:7
+#: ../src/wireless-security/eap-method-peap.ui.h:6
 #: ../src/wireless-security/eap-method-tls.ui.h:4
-#: ../src/wireless-security/eap-method-ttls.ui.h:4
+#: ../src/wireless-security/eap-method-ttls.ui.h:3
 msgid "No CA certificate is _required"
 msgstr "No es _requereix cap certificat de CA"
 
-#: ../src/wireless-security/eap-method-peap.ui.h:9
+#: ../src/wireless-security/eap-method-peap.ui.h:8
 msgid "PEAP _version:"
 msgstr "Versió del _PEAP:"
 
@@ -4242,17 +4438,18 @@ msgstr "Les claus privades sense encriptar no són segures"
 
 #: ../src/wireless-security/eap-method-tls.c:319
 msgid ""
-"The selected private key does not appear to be protected by a password.  "
-"This could allow your security credentials to be compromised.  Please select "
-"a password-protected private key.\n"
+"The selected private key does not appear to be protected by a password. This "
+"could allow your security credentials to be compromised. Please select a "
+"password-protected private key.\n"
 "\n"
 "(You can password-protect your private key with openssl)"
 msgstr ""
 "La clau privada seleccionada no està protegida per una contrasenya i les "
-"vostres credencials de seguretat podrien veure's compromeses.  Seleccioneu "
+"vostres credencials de seguretat podrien veure's compromeses. Seleccioneu "
 "una clau privada protegida per contrasenya.\n"
 "\n"
-"(Podeu utilitzar l'OpenSSL per protegir la vostra clau privada)"
+"(Podeu utilitzar l'openssl per protegir amb contrasenya la vostra clau "
+"privada)"
 
 #: ../src/wireless-security/eap-method-tls.c:495
 msgid "Choose your personal certificate"
@@ -4287,6 +4484,11 @@ msgstr "certificat EAP-TTLS CA no vàlid: %s"
 msgid "invalid EAP-TTLS CA certificate: no certificate specified"
 msgstr "certificat EAP-TTLS CA no vàlid: no s'ha especificat cap certificat"
 
+#: ../src/wireless-security/eap-method-ttls.c:305
+#, fuzzy
+msgid "MSCHAPv2 (no EAP)"
+msgstr "MSCHAPv2"
+
 #: ../src/wireless-security/wireless-security.c:72
 msgid "Unknown error validating 802.1X security"
 msgstr "error desconegut quan s'estava validant la seguretat 802.1X"
@@ -4311,9 +4513,9 @@ msgstr "TLS per túnel"
 msgid "Protected EAP (PEAP)"
 msgstr "EAP protegit (PEAP)"
 
-#: ../src/wireless-security/ws-dynamic-wep.ui.h:2
-#: ../src/wireless-security/ws-wep-key.ui.h:9
-#: ../src/wireless-security/ws-wpa-eap.ui.h:2
+#: ../src/wireless-security/ws-dynamic-wep.ui.h:1
+#: ../src/wireless-security/ws-wep-key.ui.h:6
+#: ../src/wireless-security/ws-wpa-eap.ui.h:1
 msgid "Au_thentication:"
 msgstr "_Autenticació:"
 
@@ -4367,23 +4569,23 @@ msgstr ""
 msgid "1 (Default)"
 msgstr "1 (predeterminat)"
 
-#: ../src/wireless-security/ws-wep-key.ui.h:5
+#: ../src/wireless-security/ws-wep-key.ui.h:2
 msgid "Open System"
 msgstr "Sistema obert"
 
-#: ../src/wireless-security/ws-wep-key.ui.h:6
+#: ../src/wireless-security/ws-wep-key.ui.h:3
 msgid "Shared Key"
 msgstr "Clau compartida"
 
-#: ../src/wireless-security/ws-wep-key.ui.h:7
+#: ../src/wireless-security/ws-wep-key.ui.h:4
 msgid "_Key:"
 msgstr "_Clau:"
 
-#: ../src/wireless-security/ws-wep-key.ui.h:8
+#: ../src/wireless-security/ws-wep-key.ui.h:5
 msgid "Sho_w key"
 msgstr "Most_ra la clau"
 
-#: ../src/wireless-security/ws-wep-key.ui.h:10
+#: ../src/wireless-security/ws-wep-key.ui.h:7
 msgid "WEP inde_x:"
 msgstr "Índe_x WEP:"
 
@@ -4406,14 +4608,62 @@ msgstr ""
 msgid "_Type:"
 msgstr "_Tipus:"
 
+#~ msgid "New Mobile Broadband connection..."
+#~ msgstr "Connexió de banda ampla mòbil nova..."
+
+#~ msgid "_Connect to Hidden Wi-Fi Network..."
+#~ msgstr "_Connecta a una xarxa sense fil oculta..."
+
+#~ msgid "Create _New Wi-Fi Network..."
+#~ msgstr "Crea una xarxa sense fil _nova..."
+
+#~ msgid " "
+#~ msgstr " "
+
+#~ msgid "0"
+#~ msgstr "0"
+
+#~ msgid "1"
+#~ msgstr "1"
+
+#~ msgid "2"
+#~ msgstr "2"
+
+#~ msgid "3"
+#~ msgstr "3"
+
+#~ msgid "4"
+#~ msgstr "4"
+
+#~ msgid "5"
+#~ msgstr "5"
+
+#~ msgid "6"
+#~ msgstr "6"
+
+#~ msgid "7"
+#~ msgstr "7"
+
+#~ msgid "15"
+#~ msgstr "15"
+
+#~ msgid "Aut_onegotiate"
+#~ msgstr "Negociació aut_omàtica"
+
+#~ msgid "Ad_vanced..."
+#~ msgstr "A_vançat"
+
+#~ msgid "FirewallD is not running."
+#~ msgstr "El FirewallD no s'està executant."
+
+#~ msgid "New..."
+#~ msgstr "Nova..."
+
 #~ msgid "NetworkManager for GNOME"
 #~ msgstr "NetworkManager per al GNOME"
 
 #~ msgid "_Disconnect VPN"
 #~ msgstr "_Desconnecta la VPN"
-
-#~ msgid "_Import team configuration from a file..."
-#~ msgstr "_Importa una configuració en equip des d'un fitxer..."
 
 #~ msgid "_Help"
 #~ msgstr "A_juda"
@@ -4590,9 +4840,6 @@ msgstr "_Tipus:"
 
 #~ msgid "GSM network."
 #~ msgstr "Xarxa GSM."
-
-#~ msgid "_Mode:"
-#~ msgstr "_Mode:"
 
 #~ msgid "Any"
 #~ msgstr "Qualsevol"
