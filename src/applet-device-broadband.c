@@ -1009,6 +1009,9 @@ device_added (NMDevice *device,
 	if (!udi)
 		return;
 
+	if (g_object_get_data (G_OBJECT (modem), BROADBAND_INFO_TAG))
+		return;
+
 	if (!applet->mm1) {
 		g_warning ("Cannot grab information for modem at %s: No ModemManager support",
 		           nm_device_get_udi (device));

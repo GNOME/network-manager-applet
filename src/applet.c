@@ -2372,6 +2372,26 @@ mm1_name_owner_changed_cb (GDBusObjectManagerClient *mm1,
 	name_owner = g_dbus_object_manager_client_get_name_owner (mm1);
 	applet->mm1_running = !!name_owner;
 	g_free (name_owner);
+
+	if (applet->mm1_running) {
+		const GPtrArray *devices;
+		NMADeviceClass *dclass;
+		NMDevice *device;
+		int i;
+
+		devices = nm_client_get_devices (applet->nm_client);
+		for (i = 0; devices && (i < devices->len); i++) {
+			device = NM_DEVICE (g_ptr_array_index (devices, i));
+			if (NM_IS_DEVICE_MODEM (device)) {
+				dclass = get_device_class (device, applet);
+				if (dclass && dclass->device_added)
+					dclass->device_added (device, applet);
+
+				applet_schedule_update_icon (applet);
+				applet_schedule_update_menu (applet);
+			}
+		}
+	}
 }
 
 static void
