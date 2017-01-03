@@ -269,6 +269,9 @@ stuff_changed_cb (WirelessSecurity *sec, gpointer user_data)
 	if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->sec_combo), &iter))
 		gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sel_sec, -1);
 
+	if (sel_sec)
+		wireless_security_unref (sel_sec);
+
 	if (sel_sec != sec)
 		return;
 

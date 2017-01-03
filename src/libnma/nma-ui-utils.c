@@ -339,17 +339,18 @@ nma_utils_menu_to_secret_flags (GtkWidget *passwd_entry)
 	/* Translate password popup menu to secret flags */
 	if (menu) {
 		MenuItem idx = 0;
-		GList *list;
+		gs_free_list GList *list = NULL;
 		int i, length;
 
 		list = gtk_container_get_children (GTK_CONTAINER (menu));
+		iter = list;
 		length = g_list_length (list);
 		for (i = 0; i < length; i++) {
-			if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (list->data))) {
+			if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (iter->data))) {
 				idx =  (MenuItem) i;
 				break;
 			}
-			list = g_list_next (list);
+			iter = g_list_next (iter);
 		}
 
 		flags = menu_item_to_secret_flags (idx);
