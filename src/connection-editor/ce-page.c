@@ -371,11 +371,12 @@ _get_device_list (CEPage *self,
 			g_object_get (G_OBJECT (dev), mac_property, &mac, NULL);
 
 		if (set_ifname && mac_property)
-			item = g_strdup_printf ("%s (%s)", ifname, mac);
+			item = g_strdup_printf ("%s%s%s%s", ifname, NM_PRINT_FMT_QUOTED (mac, " (", mac, ")", ""));
 		else
 			item = g_strdup (set_ifname ? ifname : mac);
 
-		g_ptr_array_add (interfaces, item);
+		if (item)
+			g_ptr_array_add (interfaces, item);
 		if (mac_property)
 			g_free (mac);
 	}
