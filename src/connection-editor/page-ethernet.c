@@ -244,7 +244,7 @@ populate_ui (CEPageEthernet *self)
 	s_mac = nm_setting_wired_get_mac_address (setting);
 	ce_page_setup_device_combo (CE_PAGE (self), GTK_COMBO_BOX (priv->device_combo),
 	                            NM_TYPE_DEVICE_ETHERNET, s_ifname,
-	                            s_mac, NM_DEVICE_ETHERNET_PERMANENT_HW_ADDRESS, TRUE);
+	                            s_mac, NM_DEVICE_ETHERNET_PERMANENT_HW_ADDRESS);
 	g_signal_connect (priv->device_combo, "changed", G_CALLBACK (stuff_changed), self);
 
 	/* Cloned MAC address */

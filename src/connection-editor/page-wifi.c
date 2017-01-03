@@ -382,7 +382,7 @@ populate_ui (CEPageWifi *self)
 	s_mac = nm_setting_wireless_get_mac_address (setting);
 	ce_page_setup_device_combo (CE_PAGE (self), GTK_COMBO_BOX (priv->device_combo),
 	                            NM_TYPE_DEVICE_WIFI, s_ifname,
-	                            s_mac, NM_DEVICE_WIFI_PERMANENT_HW_ADDRESS, TRUE);
+	                            s_mac, NM_DEVICE_WIFI_PERMANENT_HW_ADDRESS);
 	g_signal_connect_swapped (priv->device_combo, "changed", G_CALLBACK (ce_page_changed), self);
 
 	/* Cloned MAC address */

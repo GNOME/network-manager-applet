@@ -78,7 +78,7 @@ populate_ui (CEPageBluetooth *self, NMConnection *connection)
 	bdaddr = nm_setting_bluetooth_get_bdaddr (setting);
 	ce_page_setup_device_combo (CE_PAGE (self), GTK_COMBO_BOX (priv->bdaddr),
 	                            NM_TYPE_DEVICE_BT, NULL,
-	                            bdaddr, NM_DEVICE_BT_HW_ADDRESS, TRUE);
+	                            bdaddr, NM_DEVICE_BT_HW_ADDRESS);
 	g_signal_connect_swapped (priv->bdaddr, "changed", G_CALLBACK (ce_page_changed), self);
 }
 
