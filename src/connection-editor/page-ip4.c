@@ -112,7 +112,7 @@ ip4_private_init (CEPageIP4 *self, NMConnection *connection)
 	NMSettingConnection *s_con;
 	const char *connection_type;
 	char *str_auto = NULL, *str_auto_only = NULL;
-	GList *cells;
+	gs_free_list GList *cells = NULL;
 
 	builder = CE_PAGE (self)->builder;
 
