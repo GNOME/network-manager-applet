@@ -339,8 +339,7 @@ static char **
 _get_device_list (CEPage *self,
                   GType device_type,
                   gboolean set_ifname,
-                  const char *mac_property,
-                  gboolean ifname_first)
+                  const char *mac_property)
 {
 	const GPtrArray *devices;
 	GPtrArray *interfaces;
@@ -371,17 +370,18 @@ _get_device_list (CEPage *self,
 		if (mac_property)
 			g_object_get (G_OBJECT (dev), mac_property, &mac, NULL);
 
-		if (set_ifname && mac_property) {
-			if (ifname_first)
-				item = g_strdup_printf ("%s (%s)", ifname, mac);
-			else
-				item = g_strdup_printf ("%s (%s)", mac, ifname);
-		} else
+		if (mac && !mac[0])
+			nm_clear_g_free (&mac);
+
+		if (set_ifname && mac_property)
+			item = g_strdup_printf ("%s%s%s%s", ifname, NM_PRINT_FMT_QUOTED (mac, " (", mac, ")", ""));
+		else
 			item = g_strdup (set_ifname ? ifname : mac);
 
-		g_ptr_array_add (interfaces, item);
-		if (mac_property)
-			g_free (mac);
+		if (item)
+			g_ptr_array_add (interfaces, item);
+
+		g_free (mac);
 	}
 	g_ptr_array_add (interfaces, NULL);
 
@@ -460,15 +460,14 @@ ce_page_setup_device_combo (CEPage *self,
                             GType device_type,
                             const char *ifname,
                             const char *mac,
-                            const char *mac_property,
-                            gboolean ifname_first)
+                            const char *mac_property)
 {
 	char **iter, *active_item = NULL;
 	int i, active_idx = -1;
 	char **device_list;
 	char *item;
 
-	device_list = _get_device_list (self, device_type, TRUE, mac_property, ifname_first);
+	device_list = _get_device_list (self, device_type, TRUE, mac_property);
 
 	if (ifname && mac)
 		item = g_strdup_printf ("%s (%s)", ifname, mac);

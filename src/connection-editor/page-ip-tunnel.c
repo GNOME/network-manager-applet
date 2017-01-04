@@ -96,7 +96,7 @@ populate_ui (CEPageIPTunnel *self, NMConnection *connection)
 	str = nm_setting_ip_tunnel_get_parent (setting);
 	ce_page_setup_device_combo (CE_PAGE (self), GTK_COMBO_BOX (priv->parent),
 	                            G_TYPE_NONE, str,
-	                            NULL, NULL, TRUE);
+	                            NULL, NULL);
 
 	mode = nm_setting_ip_tunnel_get_mode (setting);
 	if (mode >= NM_IP_TUNNEL_MODE_IPIP && mode <= NM_IP_TUNNEL_MODE_VTI6)
