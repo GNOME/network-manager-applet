@@ -30,6 +30,8 @@
 #include "mobile-helpers.h"
 #include "mb-menu-item.h"
 
+#define BROADBAND_INFO_TAG "devinfo"
+
 typedef struct {
 	NMApplet *applet;
 	NMDevice *device;
@@ -470,7 +472,7 @@ get_secrets (SecretsRequest *req,
 	                                error))
 		return FALSE;
 
-	devinfo = g_object_get_data (G_OBJECT (device), "devinfo");
+	devinfo = g_object_get_data (G_OBJECT (device), BROADBAND_INFO_TAG);
 	if (!devinfo) {
 		g_set_error (error,
 		             NM_SECRET_AGENT_ERROR,
@@ -637,7 +639,7 @@ get_icon (NMDevice *device,
 		return;
 	}
 
-	info = g_object_get_data (G_OBJECT (device), "devinfo");
+	info = g_object_get_data (G_OBJECT (device), BROADBAND_INFO_TAG);
 	if (!info) {
 		g_warning ("ModemManager is not available for modem at %s",
 		           nm_device_get_udi (device));
@@ -720,7 +722,7 @@ add_menu_item (NMDevice *device,
 	GtkWidget *item;
 	int i;
 
-	info = g_object_get_data (G_OBJECT (device), "devinfo");
+	info = g_object_get_data (G_OBJECT (device), BROADBAND_INFO_TAG);
 	if (!info) {
 		g_warning ("ModemManager is not available for modem at %s",
 		           nm_device_get_udi (device));
@@ -1007,7 +1009,10 @@ device_added (NMDevice *device,
 	if (!udi)
 		return;
 
-	if (!applet->mm1) {
+	if (g_object_get_data (G_OBJECT (modem), BROADBAND_INFO_TAG))
+		return;
+
+	if (!applet->mm1_running) {
 		g_warning ("Cannot grab information for modem at %s: No ModemManager support",
 		           nm_device_get_udi (device));
 		return;
@@ -1057,7 +1062,7 @@ device_added (NMDevice *device,
 
 	/* Store device info */
 	g_object_set_data_full (G_OBJECT (modem),
-	                        "devinfo",
+	                        BROADBAND_INFO_TAG,
 	                        info,
 	                        (GDestroyNotify)broadband_device_info_free);
 }
