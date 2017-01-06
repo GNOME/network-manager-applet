@@ -145,6 +145,8 @@ typedef struct {
 
 	/* Tracker objects for secrets requests */
 	GSList *        secrets_reqs;
+
+	guint           wifi_scan_id;
 } NMApplet;
 
 typedef void (*AppletNewAutoConnectionCallback) (NMConnection *connection,

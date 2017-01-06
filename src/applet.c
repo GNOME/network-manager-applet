@@ -66,6 +66,42 @@ G_DEFINE_TYPE (NMApplet, nma, G_TYPE_APPLICATION)
 
 /********************************************************************/
 
+static gboolean
+applet_request_wifi_scan (NMApplet *applet)
+{
+	const GPtrArray *devices;
+	NMDevice *device;
+	int i;
+
+	g_debug ("requesting wifi scan");
+
+	/* Request scan for all wifi devices */
+	devices = nm_client_get_devices (applet->nm_client);
+	for (i = 0; devices && i < devices->len; i++) {
+		device = g_ptr_array_index (devices, i);
+		if (NM_IS_DEVICE_WIFI (device))
+			nm_device_wifi_request_scan ((NMDeviceWifi *) device, NULL, NULL);
+	}
+
+	return G_SOURCE_CONTINUE;
+}
+
+static void
+applet_start_wifi_scan (NMApplet *applet, gpointer unused)
+{
+	nm_clear_g_source (&applet->wifi_scan_id);
+	applet->wifi_scan_id = g_timeout_add_seconds (15,
+	                                              (GSourceFunc) applet_request_wifi_scan,
+	                                              applet);
+	applet_request_wifi_scan (applet);
+}
+
+static void
+applet_stop_wifi_scan (NMApplet *applet, gpointer unused)
+{
+	nm_clear_g_source (&applet->wifi_scan_id);
+}
+
 static inline NMADeviceClass *
 get_device_class (NMDevice *device, NMApplet *applet)
 {
@@ -1641,6 +1677,8 @@ nma_menu_deactivate_cb (GtkWidget *widget, NMApplet *applet)
 	g_idle_add_full (G_PRIORITY_LOW, destroy_old_menu, applet->menu, NULL);
 	applet->menu = NULL;
 
+	applet_stop_wifi_scan (applet, NULL);
+
 	/* Re-set the tooltip */
 	gtk_status_icon_set_tooltip_text (applet->status_icon, applet->tip);
 }
@@ -1991,12 +2029,22 @@ applet_update_indicator_menu (gpointer user_data)
 #ifdef WITH_APPINDICATOR
 	GtkWidget *menu;
 
+	menu = (GtkWidget *) app_indicator_get_menu (applet->app_indicator);
+	if (menu) {
+		g_signal_handlers_disconnect_by_func (menu, applet_start_wifi_scan, applet);
+		g_signal_handlers_disconnect_by_func (menu, applet_stop_wifi_scan, applet);
+	}
+
 	menu = nma_context_menu_create (applet);
 	nma_menu_show_cb (menu, applet);
 	nma_menu_add_separator_item (menu);
 	nma_context_menu_update (applet);
 
 	app_indicator_set_menu (applet->app_indicator, GTK_MENU (menu));
+
+	g_signal_connect_swapped (menu, "show", G_CALLBACK (applet_start_wifi_scan), applet);
+	g_signal_connect_swapped (menu, "hide", G_CALLBACK (applet_stop_wifi_scan), applet);
+
 #endif /* WITH_APPINDICATOR */
 
 	applet->update_menu_id = 0;
@@ -3083,6 +3131,8 @@ status_icon_activate_cb (GtkStatusIcon *icon, NMApplet *applet)
 	 */
 	applet_clear_notify (applet);
 
+	applet_start_wifi_scan (applet, NULL);
+
 	/* Kill any old menu */
 	if (applet->menu)
 		g_object_unref (applet->menu);
@@ -3308,8 +3358,8 @@ static void finalize (GObject *object)
 #endif
 	g_slice_free (NMADeviceClass, applet->bt_class);
 
-	if (applet->update_icon_id)
-		g_source_remove (applet->update_icon_id);
+	nm_clear_g_source (&applet->update_icon_id);
+	nm_clear_g_source (&applet->wifi_scan_id);
 
 #ifdef WITH_APPINDICATOR
 	g_clear_object (&applet->app_indicator);
