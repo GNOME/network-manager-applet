@@ -28,9 +28,15 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <errno.h>
 #include <gdk/gdkx.h>
 
+#ifdef WITH_SELINUX
+#include <selinux/selinux.h>
+#endif
+
 #include "nm-connection-editor.h"
+#include "nma-cert-chooser.h"
 
 #include "ce-page.h"
 #include "page-general.h"
@@ -177,6 +183,163 @@ update_sensitivity (NMConnectionEditor *editor)
 	}
 }
 
+#ifdef WITH_SELINUX
+/* This is what the files in ~/.cert would get. */
+static const char certcon[] = "unconfined_u:object_r:home_cert_t:s0";
+
+static gboolean
+clear_name_if_present (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
+{
+	gchar **filename = data;
+	gchar *existing;
+
+	gtk_tree_model_get (model, iter, 2, &existing, -1);
+	if (g_strcmp0 (existing, *filename) == 0) {
+		*filename = NULL;
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+static void
+update_relabel_list_filename (GtkListStore *store, char *filename)
+{
+	GtkTreeIter iter;
+	gboolean writable;
+	char *tcon;
+	/* Any kind of VPN would do. If OpenVPN can't access the files
+	 * no VPN likely can.  NetworkManager policy currently allows
+	 * accessing home. It may make sense to tighten it some point. */
+	static const char scon[] = "system_u:system_r:openvpn_t:s0";
+
+	gtk_tree_model_foreach (GTK_TREE_MODEL (store), clear_name_if_present, &filename);
+	if (filename == NULL)
+		return;
+
+	if (getfilecon (filename, &tcon) == -1) {
+		/* Don't warn here, just ignore it. Perhaps the file
+		 * is not on a SELinux-capable filesystem or something. */
+		return;
+	}
+
+	if (g_strcmp0 (certcon, tcon) == 0)
+		return;
+
+	writable = (access (filename, W_OK) == 0);
+
+	if (selinux_check_access (scon, tcon, "file", "open", NULL) == -1) {
+		gtk_list_store_append (store, &iter);
+		gtk_list_store_set (store, &iter,
+		                    0, writable,
+		                    1, writable,
+		                    2, filename,
+		                    -1);
+	}
+
+	freecon (tcon);
+}
+
+static void
+update_relabel_list (GtkWidget *widget, GtkListStore *store)
+{
+	gchar *filename = NULL;
+	NMSetting8021xCKScheme scheme;
+
+	if (!gtk_widget_is_sensitive (widget))
+		return;
+
+	if (NMA_IS_CERT_CHOOSER (widget)) {
+		filename = nma_cert_chooser_get_cert (NMA_CERT_CHOOSER (widget), &scheme);
+		if (filename && scheme == NM_SETTING_802_1X_CK_SCHEME_PATH) {
+			update_relabel_list_filename (store, filename);
+			g_free (filename);
+		}
+
+		filename = nma_cert_chooser_get_key (NMA_CERT_CHOOSER (widget), &scheme);
+		if (filename && scheme == NM_SETTING_802_1X_CK_SCHEME_PATH) {
+			update_relabel_list_filename (store, filename);
+			g_free (filename);
+		}
+	} else if (GTK_IS_CONTAINER (widget)) {
+		gtk_container_foreach (GTK_CONTAINER (widget),
+		                       (GtkCallback) update_relabel_list,
+		                       store);
+	}
+}
+
+static void
+recheck_relabel (NMConnectionEditor *editor)
+{
+	gtk_list_store_clear (editor->relabel_list);
+	update_relabel_list (editor->window, editor->relabel_list);
+
+	if (gtk_tree_model_iter_n_children (GTK_TREE_MODEL (editor->relabel_list), NULL))
+		gtk_widget_show (editor->relabel_info);
+	else
+		gtk_widget_hide (editor->relabel_info);
+}
+
+static void
+relabel_toggled (GtkCellRendererToggle *cell_renderer, gchar *path, gpointer user_data)
+{
+	NMConnectionEditor *editor = user_data;
+	GtkTreeIter iter;
+	gboolean relabel;
+
+	if (!gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (editor->relabel_list), &iter, path))
+		g_return_if_reached ();
+
+	gtk_tree_model_get (GTK_TREE_MODEL (editor->relabel_list), &iter, 0, &relabel, -1);
+	gtk_list_store_set (editor->relabel_list, &iter, 0, !relabel, -1);
+}
+
+static gboolean
+maybe_relabel (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
+{
+	gboolean relabel;
+	gchar *filename;
+
+	gtk_tree_model_get (model, iter, 0, &relabel, 2, &filename, -1);
+	if (relabel) {
+		if (setfilecon (filename, certcon) == -1)
+			g_warning ("setfilecon: %s\n", g_strerror (errno));
+	}
+
+	g_free (filename);
+	return FALSE;
+}
+
+static void
+relabel_button_clicked_cb (GtkWidget *widget, gpointer user_data)
+{
+	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
+
+	if (gtk_dialog_run (GTK_DIALOG (editor->relabel_dialog)) == GTK_RESPONSE_APPLY) {
+		gtk_tree_model_foreach (GTK_TREE_MODEL (editor->relabel_list), maybe_relabel, NULL);
+		recheck_relabel (editor);
+	}
+	gtk_widget_hide (editor->relabel_dialog);
+}
+#else /* !WITH_SELINUX */
+static void
+recheck_relabel (NMConnectionEditor *editor)
+{
+}
+
+static void
+relabel_toggled (GtkCellRendererToggle *cell_renderer, gchar *path, gpointer user_data)
+{
+	g_return_if_reached ();
+}
+
+static void
+relabel_button_clicked_cb (GtkWidget *widget, gpointer user_data)
+{
+	g_return_if_reached ();
+}
+#endif /* WITH_SELINUX */
+
 static void
 connection_editor_validate (NMConnectionEditor *editor)
 {
@@ -202,6 +365,8 @@ connection_editor_validate (NMConnectionEditor *editor)
 		g_clear_error (&error);
 		goto done;
 	}
+
+	recheck_relabel (editor);
 
 	for (iter = editor->pages; iter; iter = g_slist_next (iter)) {
 		if (!ce_page_validate (CE_PAGE (iter->data), editor->connection, &error)) {
@@ -267,7 +432,7 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 {
 	GtkWidget *dialog;
 	GError *error = NULL;
-	const char *objects[] = { "nm-connection-editor", NULL };
+	const char *objects[] = { "nm-connection-editor", "relabel_dialog", "relabel_list", NULL };
 
 	editor->builder = gtk_builder_new ();
 
@@ -295,6 +460,13 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 
 	editor->cancel_button = GTK_WIDGET (gtk_builder_get_object (editor->builder, "cancel_button"));
 	editor->export_button = GTK_WIDGET (gtk_builder_get_object (editor->builder, "export_button"));
+	editor->relabel_info = GTK_WIDGET (gtk_builder_get_object (editor->builder, "relabel_info"));
+	editor->relabel_dialog = GTK_WIDGET (gtk_builder_get_object (editor->builder, "relabel_dialog"));
+	editor->relabel_button = GTK_WIDGET (gtk_builder_get_object (editor->builder, "relabel_button"));
+	editor->relabel_list = GTK_LIST_STORE (gtk_builder_get_object (editor->builder, "relabel_list"));
+	gtk_builder_add_callback_symbol (editor->builder, "relabel_toggled", G_CALLBACK (relabel_toggled));
+
+	gtk_builder_connect_signals (editor->builder, editor);
 
 	editor->inter_page_hash = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, (GDestroyNotify) destroy_inter_page_item);
 }
@@ -1109,6 +1281,8 @@ nm_connection_editor_run (NMConnectionEditor *self)
 	                  G_CALLBACK (cancel_button_clicked_cb), self);
 	g_signal_connect (G_OBJECT (self->export_button), "clicked",
 	                  G_CALLBACK (export_button_clicked_cb), self);
+	g_signal_connect (G_OBJECT (self->relabel_button), "clicked",
+	                  G_CALLBACK (relabel_button_clicked_cb), self);
 
 	nm_connection_editor_present (self);
 }
