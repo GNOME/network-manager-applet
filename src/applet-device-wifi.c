@@ -1177,8 +1177,9 @@ access_point_removed_cb (NMDeviceWifi *device,
 	if (old == ap) {
 		_active_ap_set (applet, (NMDevice *) device, NULL);
 		applet_schedule_update_icon (applet);
-		applet_schedule_update_menu (applet);
 	}
+
+	applet_schedule_update_menu (applet);
 }
 
 static void

@@ -1826,23 +1826,23 @@ applet_connection_info_cb (NMApplet *applet)
 }
 
 /*
- * nma_context_menu_create
+ * nma_context_menu_populate
  *
- * Generate the contextual popup menu.
+ * Populate the contextual popup menu.
  *
  */
-static GtkWidget *nma_context_menu_create (NMApplet *applet)
+static void nma_context_menu_populate (NMApplet *applet, GtkMenu *menu)
 {
-	GtkMenuShell *menu;
+	GtkMenuShell *menu_shell;
 	guint id;
 	static gboolean icons_shown = FALSE;
 
-	g_return_val_if_fail (applet != NULL, NULL);
+	g_return_if_fail (applet != NULL);
 
-	menu = GTK_MENU_SHELL (gtk_menu_new ());
+	menu_shell = GTK_MENU_SHELL (menu);
 
 	if (G_UNLIKELY (icons_shown == FALSE)) {
-		GtkSettings *settings = gtk_widget_get_settings (GTK_WIDGET (menu));
+		GtkSettings *settings = gtk_widget_get_settings (GTK_WIDGET (menu_shell));
 
 		/* We always want our icons displayed */
 		if (settings)
@@ -1857,7 +1857,7 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 	                       G_CALLBACK (nma_set_networking_enabled_cb),
 	                       applet);
 	applet->networking_enabled_toggled_id = id;
-	gtk_menu_shell_append (menu, applet->networking_enabled_item);
+	gtk_menu_shell_append (menu_shell, applet->networking_enabled_item);
 
 	/* 'Enable Wi-Fi' item */
 	applet->wifi_enabled_item = gtk_check_menu_item_new_with_mnemonic (_("Enable _Wi-Fi"));
@@ -1866,7 +1866,7 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 	                       G_CALLBACK (nma_set_wifi_enabled_cb),
 	                       applet);
 	applet->wifi_enabled_toggled_id = id;
-	gtk_menu_shell_append (menu, applet->wifi_enabled_item);
+	gtk_menu_shell_append (menu_shell, applet->wifi_enabled_item);
 
 	/* 'Enable Mobile Broadband' item */
 	applet->wwan_enabled_item = gtk_check_menu_item_new_with_mnemonic (_("Enable _Mobile Broadband"));
@@ -1875,9 +1875,9 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 	                       G_CALLBACK (nma_set_wwan_enabled_cb),
 	                       applet);
 	applet->wwan_enabled_toggled_id = id;
-	gtk_menu_shell_append (menu, applet->wwan_enabled_item);
+	gtk_menu_shell_append (menu_shell, applet->wwan_enabled_item);
 
-	nma_menu_add_separator_item (GTK_WIDGET (menu));
+	nma_menu_add_separator_item (GTK_WIDGET (menu_shell));
 
 	if (!INDICATOR_ENABLED (applet)) {
 		/* Toggle notifications item */
@@ -1887,9 +1887,9 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 			                   G_CALLBACK (nma_set_notifications_enabled_cb),
 			                   applet);
 		applet->notifications_enabled_toggled_id = id;
-		gtk_menu_shell_append (menu, applet->notifications_enabled_item);
+		gtk_menu_shell_append (menu_shell, applet->notifications_enabled_item);
 
-		nma_menu_add_separator_item (GTK_WIDGET (menu));
+		nma_menu_add_separator_item (GTK_WIDGET (menu_shell));
 	}
 
 	/* 'Connection Information' item */
@@ -1898,7 +1898,7 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 	                          "activate",
 	                          G_CALLBACK (applet_connection_info_cb),
 	                          applet);
-	gtk_menu_shell_append (menu, applet->info_menu_item);
+	gtk_menu_shell_append (menu_shell, applet->info_menu_item);
 
 	/* 'Edit Connections...' item */
 	applet->connections_menu_item = gtk_menu_item_new_with_mnemonic (_("Edit Connections…"));
@@ -1906,10 +1906,10 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 				   "activate",
 				   G_CALLBACK (nma_edit_connections_cb),
 				   applet);
-	gtk_menu_shell_append (menu, applet->connections_menu_item);
+	gtk_menu_shell_append (menu_shell, applet->connections_menu_item);
 
 	/* Separator */
-	nma_menu_add_separator_item (GTK_WIDGET (menu));
+	nma_menu_add_separator_item (GTK_WIDGET (menu_shell));
 
 	if (!INDICATOR_ENABLED (applet)) {
 		/* About item */
@@ -1917,12 +1917,10 @@ static GtkWidget *nma_context_menu_create (NMApplet *applet)
 
 		menu_item = gtk_menu_item_new_with_mnemonic (_("_About"));
 		g_signal_connect_swapped (menu_item, "activate", G_CALLBACK (applet_about_dialog_show), applet);
-		gtk_menu_shell_append (menu, menu_item);
+		gtk_menu_shell_append (menu_shell, menu_item);
 	}
 
-	gtk_widget_show_all (GTK_WIDGET (menu));
-
-	return GTK_WIDGET (menu);
+	gtk_widget_show_all (GTK_WIDGET (menu_shell));
 }
 
 typedef struct {
@@ -2023,30 +2021,48 @@ applet_add_default_connection_item (NMDevice *device,
 }
 
 static gboolean
-applet_update_indicator_menu (gpointer user_data)
+applet_update_menu (gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
-#ifdef WITH_APPINDICATOR
-	GtkWidget *menu;
+	GList *children, *elt;
+	GtkMenu *menu;
 
-	menu = (GtkWidget *) app_indicator_get_menu (applet->app_indicator);
-	if (menu) {
-		g_signal_handlers_disconnect_by_func (menu, applet_start_wifi_scan, applet);
-		g_signal_handlers_disconnect_by_func (menu, applet_stop_wifi_scan, applet);
+	if (INDICATOR_ENABLED (applet)) {
+#ifdef WITH_APPINDICATOR
+		menu = app_indicator_get_menu (applet->app_indicator);
+		if (!menu) {
+			menu = GTK_MENU (gtk_menu_new ());
+			app_indicator_set_menu (applet->app_indicator, menu);
+			g_signal_connect_swapped (menu, "show", G_CALLBACK (applet_start_wifi_scan), applet);
+			g_signal_connect_swapped (menu, "hide", G_CALLBACK (applet_stop_wifi_scan), applet);
+		}
+#else
+		g_return_val_if_reached (G_SOURCE_REMOVE);
+#endif /* WITH_APPINDICATOR */
+	} else {
+		menu = GTK_MENU (applet->menu);
+		if (!menu) {
+			/* Menu not open */
+			goto out;
+		}
 	}
 
-	menu = nma_context_menu_create (applet);
-	nma_menu_show_cb (menu, applet);
-	nma_menu_add_separator_item (menu);
-	nma_context_menu_update (applet);
+	/* Clear all entries */
+	children = gtk_container_get_children (GTK_CONTAINER (menu));
+	for (elt = children; elt; elt = g_list_next (elt))
+		gtk_container_remove (GTK_CONTAINER (menu), GTK_WIDGET (elt->data));
+	g_list_free (children);
 
-	app_indicator_set_menu (applet->app_indicator, GTK_MENU (menu));
+	/* Update the menu */
+	if (INDICATOR_ENABLED (applet)) {
+		nma_context_menu_populate (applet, menu);
+		nma_menu_show_cb (GTK_WIDGET (menu), applet);
+		nma_menu_add_separator_item (GTK_WIDGET (menu));
+		nma_context_menu_update (applet);
+	} else
+		nma_menu_show_cb (GTK_WIDGET (menu), applet);
 
-	g_signal_connect_swapped (menu, "show", G_CALLBACK (applet_start_wifi_scan), applet);
-	g_signal_connect_swapped (menu, "hide", G_CALLBACK (applet_stop_wifi_scan), applet);
-
-#endif /* WITH_APPINDICATOR */
-
+out:
 	applet->update_menu_id = 0;
 	return G_SOURCE_REMOVE;
 }
@@ -2054,10 +2070,8 @@ applet_update_indicator_menu (gpointer user_data)
 void
 applet_schedule_update_menu (NMApplet *applet)
 {
-	if (INDICATOR_ENABLED (applet)) {
-		if (!applet->update_menu_id)
-			applet->update_menu_id = g_idle_add (applet_update_indicator_menu, applet);
-	}
+	if (!applet->update_menu_id)
+		applet->update_menu_id = g_idle_add (applet_update_menu, applet);
 }
 
 /*****************************************************************************/
@@ -3172,6 +3186,8 @@ status_icon_popup_menu_cb (GtkStatusIcon *icon,
 static gboolean
 setup_widgets (NMApplet *applet)
 {
+	GtkMenu *menu;
+
 #ifdef WITH_APPINDICATOR
 	if (with_appindicator) {
 		applet->app_indicator = app_indicator_new ("nm-applet",
@@ -3200,7 +3216,9 @@ setup_widgets (NMApplet *applet)
 		g_signal_connect (applet->status_icon, "popup-menu",
 				  G_CALLBACK (status_icon_popup_menu_cb), applet);
 
-		applet->context_menu = nma_context_menu_create (applet);
+		menu = GTK_MENU (gtk_menu_new ());
+		nma_context_menu_populate (applet, menu);
+		applet->context_menu = GTK_WIDGET (menu);
 		if (!applet->context_menu)
 			return FALSE;
 	}
