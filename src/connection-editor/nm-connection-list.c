@@ -558,7 +558,7 @@ tree_model_visible_func (GtkTreeModel *model,
                          gpointer user_data)
 {
 	NMConnectionList *self = user_data;
-	NMConnection *connection;
+	gs_unref_object NMConnection *connection = NULL;
 	NMSettingConnection *s_con;
 	const char *master;
 	const char *slave_type;
@@ -573,8 +573,9 @@ tree_model_visible_func (GtkTreeModel *model,
 	 * bond or team or bridge.
 	 */
 	s_con = nm_connection_get_setting_connection (connection);
-	g_object_unref (connection);
-	g_return_val_if_fail (s_con != NULL, FALSE);
+	if (   !s_con
+	    || !nm_remote_connection_get_visible (NM_REMOTE_CONNECTION (connection)))
+		return FALSE;
 
 	master = nm_setting_connection_get_master (s_con);
 	if (!master)
@@ -748,6 +749,11 @@ connection_changed (NMRemoteConnection *connection, gpointer user_data)
 {
 	NMConnectionList *self = NM_CONNECTION_LIST (user_data);
 	GtkTreeIter iter;
+
+	if (   !nm_remote_connection_get_visible (connection)
+	    || !nm_connection_get_setting_connection (NM_CONNECTION (connection))) {
+		return;
+	}
 
 	if (get_iter_for_connection (self, connection, &iter))
 		update_connection_row (self, &iter, connection);
