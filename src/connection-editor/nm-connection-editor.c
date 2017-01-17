@@ -353,6 +353,9 @@ dispose (GObject *object)
 		editor->inter_page_hash = NULL;
 	}
 
+	g_slist_free_full (editor->unsupported_properties, g_free);
+	editor->unsupported_properties = NULL;
+
 	G_OBJECT_CLASS (nm_connection_editor_parent_class)->dispose (object);
 }
 
@@ -521,6 +524,7 @@ static void
 recheck_initialization (NMConnectionEditor *editor)
 {
 	GtkNotebook *notebook;
+	GtkLabel *label;
 
 	if (!editor_is_initialized (editor) || editor->init_run)
 		return;
@@ -542,6 +546,27 @@ recheck_initialization (NMConnectionEditor *editor)
 	if (editor->validate_id)
 		g_source_remove (editor->validate_id);
 	editor->validate_id = g_idle_add (idle_validate, editor);
+
+	if (editor->unsupported_properties) {
+		GString *str;
+		GSList *iter;
+		gs_free char *tooltip = NULL;
+
+		str = g_string_new ("Unsupported properties: ");
+
+		for (iter = editor->unsupported_properties; iter; iter = g_slist_next (iter)) {
+			g_string_append (str, (char *) iter->data);
+			if (iter->next)
+				g_string_append (str, ", ");
+		}
+		tooltip = g_string_free (str, FALSE);
+
+		label = GTK_LABEL (gtk_builder_get_object (editor->builder, "message_label"));
+		gtk_label_set_text (label,
+		                    _("Warning: the connection contains some properties not supported by the editor. "
+		                      "They will be cleared upon save."));
+		gtk_widget_set_tooltip_text (GTK_WIDGET (label), tooltip);
+	}
 }
 
 static void
@@ -707,6 +732,44 @@ add_page (NMConnectionEditor *editor,
 		g_signal_connect (page, "initialized", G_CALLBACK (page_initialized), editor);
 	}
 	return !!page;
+}
+
+void
+nm_connection_editor_add_unsupported_property (NMConnectionEditor *editor, const char *name)
+{
+	editor->unsupported_properties = g_slist_append (editor->unsupported_properties, g_strdup (name));
+}
+
+void
+nm_connection_editor_check_unsupported_properties (NMConnectionEditor *editor,
+                                                   NMSetting *setting,
+                                                   const char * const *known_props)
+{
+	gs_free GParamSpec **property_specs = NULL;
+	GParamSpec *prop_spec;
+	guint n_property_specs;
+	guint i;
+	char tmp[1024];
+
+	if (!setting)
+		return;
+
+	property_specs = g_object_class_list_properties (G_OBJECT_GET_CLASS (setting),
+	                                                 &n_property_specs);
+	for (i = 0; i < n_property_specs; i++) {
+		prop_spec = property_specs[i];
+		if (   !g_strv_contains (known_props, prop_spec->name)
+		    && !nm_streq0 (prop_spec->name, NM_SETTING_NAME)) {
+			nm_auto_unset_gvalue GValue value = G_VALUE_INIT;
+
+			g_value_init (&value, prop_spec->value_type);
+			g_object_get_property (G_OBJECT (setting), prop_spec->name, &value);
+			if (!g_param_value_defaults (prop_spec, &value)) {
+				nm_sprintf_buf (tmp, "%s.%s", nm_setting_get_name (setting), prop_spec->name);
+				nm_connection_editor_add_unsupported_property (editor, tmp);
+			}
+		}
+	}
 }
 
 static gboolean
