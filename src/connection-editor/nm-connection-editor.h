@@ -68,6 +68,7 @@ typedef struct {
 	char *last_validation_error;
 
 	GHashTable *inter_page_hash;
+	GSList *unsupported_properties;
 } NMConnectionEditor;
 
 typedef struct {
@@ -113,4 +114,9 @@ gboolean           nm_connection_editor_inter_page_get_value (NMConnectionEditor
                                                               gpointer *value);
 void               nm_connection_editor_inter_page_clear_data (NMConnectionEditor *editor);
 
+void               nm_connection_editor_add_unsupported_property (NMConnectionEditor *editor,
+                                                                  const char *name);
+void               nm_connection_editor_check_unsupported_properties (NMConnectionEditor *editor,
+                                                                      NMSetting *setting,
+                                                                      const char *const *known_props);
 #endif
