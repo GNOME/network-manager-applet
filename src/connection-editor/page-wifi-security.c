@@ -44,6 +44,52 @@ typedef struct {
 #define S_ADHOC_VALID_COLUMN  2
 #define S_HOTSPOT_VALID_COLUMN  3
 
+static const char *known_wsec_props[] = {
+	NM_SETTING_WIRELESS_SECURITY_KEY_MGMT,
+	NM_SETTING_WIRELESS_SECURITY_WEP_TX_KEYIDX,
+	NM_SETTING_WIRELESS_SECURITY_AUTH_ALG,
+	NM_SETTING_WIRELESS_SECURITY_PROTO,
+	NM_SETTING_WIRELESS_SECURITY_PAIRWISE,
+	NM_SETTING_WIRELESS_SECURITY_GROUP,
+	NM_SETTING_WIRELESS_SECURITY_LEAP_USERNAME,
+	NM_SETTING_WIRELESS_SECURITY_WEP_KEY0,
+	NM_SETTING_WIRELESS_SECURITY_WEP_KEY1,
+	NM_SETTING_WIRELESS_SECURITY_WEP_KEY2,
+	NM_SETTING_WIRELESS_SECURITY_WEP_KEY3,
+	NM_SETTING_WIRELESS_SECURITY_WEP_KEY_FLAGS,
+	NM_SETTING_WIRELESS_SECURITY_WEP_KEY_TYPE,
+	NM_SETTING_WIRELESS_SECURITY_PSK,
+	NM_SETTING_WIRELESS_SECURITY_PSK_FLAGS,
+	NM_SETTING_WIRELESS_SECURITY_LEAP_PASSWORD,
+	NM_SETTING_WIRELESS_SECURITY_LEAP_PASSWORD_FLAGS,
+	NULL
+};
+
+static const char *known_8021x_props[] = {
+	NM_SETTING_802_1X_EAP,
+	NM_SETTING_802_1X_IDENTITY,
+	NM_SETTING_802_1X_ANONYMOUS_IDENTITY,
+	NM_SETTING_802_1X_PAC_FILE,
+	NM_SETTING_802_1X_CA_CERT,
+	NM_SETTING_802_1X_CA_PATH,
+	NM_SETTING_802_1X_CLIENT_CERT,
+	NM_SETTING_802_1X_PHASE1_PEAPVER,
+	NM_SETTING_802_1X_PHASE2_AUTH,
+	NM_SETTING_802_1X_PHASE2_AUTHEAP,
+	NM_SETTING_802_1X_PHASE2_CA_CERT,
+	NM_SETTING_802_1X_PHASE2_CA_PATH,
+	NM_SETTING_802_1X_PHASE2_CLIENT_CERT,
+	NM_SETTING_802_1X_PASSWORD,
+	NM_SETTING_802_1X_PASSWORD_FLAGS,
+	NM_SETTING_802_1X_PRIVATE_KEY,
+	NM_SETTING_802_1X_PRIVATE_KEY_PASSWORD,
+	NM_SETTING_802_1X_PRIVATE_KEY_PASSWORD_FLAGS,
+	NM_SETTING_802_1X_PHASE2_PRIVATE_KEY,
+	NM_SETTING_802_1X_PHASE2_PRIVATE_KEY_PASSWORD,
+	NM_SETTING_802_1X_PHASE2_PRIVATE_KEY_PASSWORD_FLAGS,
+	NULL
+};
+
 static gboolean
 find_proto (NMSettingWirelessSecurity *sec, const char *item)
 {
@@ -406,6 +452,7 @@ ce_page_wifi_security_new (NMConnectionEditor *editor,
 {
 	CEPageWifiSecurity *self;
 	NMSettingWireless *s_wireless;
+	NMSetting8021x *s_8021x;
 	NMSettingWirelessSecurity *s_wsec = NULL;
 	NMUtilsSecurityType default_type = NMU_SEC_NONE;
 
@@ -431,6 +478,7 @@ ce_page_wifi_security_new (NMConnectionEditor *editor,
 	CE_PAGE_WIFI_SECURITY_GET_PRIVATE (self)->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
 	s_wsec = nm_connection_get_setting_wireless_security (connection);
+	s_8021x = nm_connection_get_setting_802_1x (connection);
 
 	if (s_wsec)
 		default_type = get_default_type_for_security (s_wsec);
@@ -448,7 +496,10 @@ ce_page_wifi_security_new (NMConnectionEditor *editor,
 	    || default_type == NMU_SEC_WPA_ENTERPRISE
 	    || default_type == NMU_SEC_WPA2_ENTERPRISE) {
 		*out_secrets_setting_name = NM_SETTING_802_1X_SETTING_NAME;
+		nm_connection_editor_check_unsupported_properties (editor, (NMSetting *) s_8021x, known_8021x_props);
 	}
+
+	nm_connection_editor_check_unsupported_properties (editor, (NMSetting *) s_wsec, known_wsec_props);
 
 	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
 
