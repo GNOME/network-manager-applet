@@ -150,7 +150,7 @@ gboolean ce_page_device_entry_get (GtkEntry *entry, int type,
                                    char **ifname, char **mac,
                                    const char *device_name,
                                    GError **error);
-const char *ce_page_cloned_mac_get (GtkComboBoxText *combo);
+char *ce_page_cloned_mac_get (GtkComboBoxText *combo);
 gboolean ce_page_cloned_mac_combo_valid (GtkComboBoxText *combo, int type, const char *property_name, GError **error);
 
 void ce_page_changed (CEPage *self);
