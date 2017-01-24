@@ -618,7 +618,7 @@ ui_to_setting (CEPageVlan *self)
 	CEPageVlanPrivate *priv = CE_PAGE_VLAN_GET_PRIVATE (self);
 	NMConnection *connection = CE_PAGE (self)->connection;
 	NMSettingConnection *s_con = nm_connection_get_setting_connection (connection);
-	const char *cloned_mac;
+	char *cloned_mac = NULL;
 	VlanParent *parent = NULL;
 	int active_id, parent_id, vid;
 	const char *parent_iface = NULL, *parent_uuid = NULL;
@@ -718,6 +718,7 @@ ui_to_setting (CEPageVlan *self)
 	}
 
 	g_free (tmp_parent_iface);
+	g_free (cloned_mac);
 }
 
 static gboolean
