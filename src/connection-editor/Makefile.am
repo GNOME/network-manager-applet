@@ -99,8 +99,36 @@ nm_connection_editor_LDADD = \
 	$(JANSSON_LIBS) \
 	-lm
 
-ce-resources.h: ce.gresource.xml
+ce-resources.h: $(srcdir)/ce.gresource.xml
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir) --generate-header --internal
 
-ce-resources.c: ce.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir) --generate-dependencies $(builddir)/ce.gresource.xml)
+ce-resources.c: $(srcdir)/ce.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir) --generate-dependencies $(srcdir)/ce.gresource.xml)
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir) --generate-source --internal
+
+EXTRA_DIST = \
+	ce-ip4-routes.ui \
+	ce-ip6-routes.ui \
+	ce-new-connection.ui \
+	ce-page-bluetooth.ui \
+	ce-page-bond.ui \
+	ce-page-bridge-port.ui \
+	ce-page-bridge.ui \
+	ce-page-dcb.ui \
+	ce-page-dsl.ui \
+	ce-page-ethernet.ui \
+	ce-page-general.ui \
+	ce-page-infiniband.ui \
+	ce-page-ip4.ui \
+	ce-page-ip6.ui \
+	ce-page-ip-tunnel.ui \
+	ce-page-mobile.ui \
+	ce-page-ppp.ui \
+	ce-page-proxy.ui \
+	ce-page-team-port.ui \
+	ce-page-team.ui \
+	ce-page-vlan.ui \
+	ce-page-wifi-security.ui \
+	ce-page-wifi.ui \
+	ce-ppp-auth-methods.ui \
+	nm-connection-editor.ui \
+	ce.gresource.xml

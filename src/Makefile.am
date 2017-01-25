@@ -73,8 +73,14 @@ nm_applet_LDADD = \
 	${top_builddir}/src/wireless-security/libwireless-security-libnm.la \
 	${top_builddir}/src/libnma/libnma.la
 
-applet-resources.h: applet.gresource.xml
+applet-resources.h: $(srcdir)/applet.gresource.xml
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir) --generate-header --internal
 
-applet-resources.c: applet.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir) --generate-dependencies $(builddir)/applet.gresource.xml)
+applet-resources.c: $(srcdir)/applet.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir) --generate-dependencies $(srcdir)/applet.gresource.xml)
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir) --generate-source --internal
+
+EXTRA_DIST = \
+	8021x.ui \
+	gsm-unlock.ui \
+	info.ui \
+	applet.gresource.xml

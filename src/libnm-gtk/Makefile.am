@@ -54,10 +54,10 @@ EXTRA_libnm_gtk_la_DEPENDENCIES = $(srcdir)/libnm-gtk.ver
 libnm_gtk_la_LDFLAGS = -Wl,-no-undefined \
 	-Wl,--version-script=$(srcdir)/libnm-gtk.ver
 
-nm-resources.h: nm.gresource.xml
+nm-resources.h: $(srcdir)/nm.gresource.xml
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir) --generate-header --internal
 
-nm-resources.c: nm.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir) --generate-dependencies $(builddir)/nm.gresource.xml)
+nm-resources.c: $(srcdir)/nm.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir) --generate-dependencies $(srcdir)/nm.gresource.xml)
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir) --generate-source --internal
 
 pkgconfigdir = $(libdir)/pkgconfig
@@ -93,4 +93,9 @@ check-local:
 CLEANFILES = $(gir_DATA) $(typelib_DATA)
 endif
 
-EXTRA_DIST = libnm-gtk.pc.in libnm-gtk.ver check-exports.sh
+EXTRA_DIST = \
+	libnm-gtk.pc.in \
+	libnm-gtk.ver \
+	check-exports.sh \
+	wifi.ui \
+	nm.gresource.xml

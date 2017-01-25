@@ -69,8 +69,22 @@ libwireless_security_libnm_la_LIBADD = \
 	$(LIBNM_LIBS) \
 	${top_builddir}/src/utils/libutils-libnm.la
 
-ws-resources.h: ws.gresource.xml
+ws-resources.h: $(srcdir)/ws.gresource.xml
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir) --generate-header --internal
 
-ws-resources.c: ws.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir) --generate-dependencies $(builddir)/ws.gresource.xml)
+ws-resources.c: $(srcdir)/ws.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir) --generate-dependencies $(srcdir)/ws.gresource.xml)
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir) --generate-source --internal
+
+EXTRA_DIST = \
+	eap-method-fast.ui \
+	eap-method-leap.ui \
+	eap-method-peap.ui \
+	eap-method-simple.ui \
+	eap-method-tls.ui \
+	eap-method-ttls.ui \
+	ws-dynamic-wep.ui \
+	ws-leap.ui \
+	ws-wep-key.ui \
+	ws-wpa-eap.ui \
+	ws-wpa-psk.ui \
+	ws.gresource.xml

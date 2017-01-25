@@ -50,10 +50,10 @@ EXTRA_libnma_la_DEPENDENCIES = $(srcdir)/libnma.ver
 libnma_la_LDFLAGS = -Wl,-no-undefined \
 	-Wl,--version-script=$(srcdir)/libnma.ver
 
-nma-resources.h: nma.gresource.xml
+nma-resources.h: $(srcdir)/nma.gresource.xml
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir) --generate-header --internal
 
-nma-resources.c: nma.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir) --generate-dependencies $(builddir)/nma.gresource.xml)
+nma-resources.c: $(srcdir)/nma.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir) --generate-dependencies $(srcdir)/nma.gresource.xml)
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir) --generate-source --internal
 
 pkgconfigdir = $(libdir)/pkgconfig
@@ -82,3 +82,9 @@ typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
 
 CLEANFILES = $(gir_DATA) $(typelib_DATA)
 endif
+
+EXTRA_DIST = \
+	libnma.pc.in \
+	libnma.ver \
+	wifi.ui \
+	nma.gresource.xml
