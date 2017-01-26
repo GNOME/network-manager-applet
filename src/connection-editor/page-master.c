@@ -196,18 +196,15 @@ get_device_for_connection (NMClient *client, NMConnection *conn)
 	if (   !nm_setting_connection_get_interface_name (s_con)
 	       && !nm_connection_get_interface_name (conn)) {
 		NMSetting *s_hw;
-		gchar *mac_address;
+		gs_free char *mac_address = NULL;
 
 		s_hw = nm_connection_get_setting_by_name (conn, nm_setting_connection_get_connection_type (s_con));
 		if (!s_hw || !g_object_class_find_property (G_OBJECT_GET_CLASS (s_hw), "mac-address"))
 			return NULL;
 
 		g_object_get (G_OBJECT (s_hw), "mac-address", &mac_address, NULL);
-		if (!mac_address || !mac_address[0]) {
-			g_free (mac_address);
+		if (!mac_address)
 			return NULL;
-		}
-		g_free (mac_address);
 	}
 
 	/* OK, now find that device */
