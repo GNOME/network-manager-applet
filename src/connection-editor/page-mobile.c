@@ -573,9 +573,9 @@ mobile_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gsm_radio), TRUE);
 	gtk_box_pack_start (GTK_BOX (vbox), gsm_radio, FALSE, FALSE, 6);
 
-	/* Translators: CDMA has 'D' accelerator key; 'C' collides with 'Cancel' button.
-	                You may need to change it according to your language. */
 	cdma_radio = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (gsm_radio),
+                                           /* Translators: CDMA has 'D' accelerator key; 'C' collides with 'Cancel' button.
+                                                           You may need to change it according to your language. */
                                            _("My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"));
 	gtk_box_pack_start (GTK_BOX (vbox), cdma_radio, FALSE, FALSE, 6);
 
