@@ -485,7 +485,7 @@ ui_to_setting (CEPageWifi *self)
 	const char *bssid = NULL;
 	char *ifname = NULL;
 	char *device_mac = NULL;
-	const char *cloned_mac;
+	char *cloned_mac;
 	const char *mode;
 	const char *band;
 	GtkWidget *entry;
@@ -548,6 +548,7 @@ ui_to_setting (CEPageWifi *self)
 	g_bytes_unref (ssid);
 	g_free (ifname);
 	g_free (device_mac);
+	g_free (cloned_mac);
 }
 
 static gboolean

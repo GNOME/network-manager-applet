@@ -190,8 +190,6 @@ ce_page_ip_tunnel_new (NMConnectionEditor *editor,
 
 	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
 
-	*out_secrets_setting_name = NM_SETTING_IP_TUNNEL_SETTING_NAME;
-
 	return CE_PAGE (self);
 }
 

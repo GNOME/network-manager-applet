@@ -385,7 +385,7 @@ ui_to_setting (CEPageEthernet *self)
 	const char *duplex;
 	char *ifname = NULL;
 	char *device_mac = NULL;
-	const char *cloned_mac;
+	char *cloned_mac;
 	GtkWidget *entry;
 	NMSettingWiredWakeOnLan wol = NM_SETTING_WIRED_WAKE_ON_LAN_NONE;
 	const char *wol_passwd = NULL;
@@ -500,6 +500,7 @@ ui_to_setting (CEPageEthernet *self)
 
 	g_free (ifname);
 	g_free (device_mac);
+	g_free (cloned_mac);
 }
 
 static gboolean
