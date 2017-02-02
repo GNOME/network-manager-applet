@@ -146,7 +146,7 @@ general_private_init (CEPageGeneral *self)
 	/* Get zones from FirewallD */
 	priv->cancellable = g_cancellable_new ();
 	g_dbus_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
-	                          G_DBUS_PROXY_FLAGS_NONE,
+	                          G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
 	                          NULL,
 	                          "org.fedoraproject.FirewallD1",
 	                          "/org/fedoraproject/FirewallD1",
