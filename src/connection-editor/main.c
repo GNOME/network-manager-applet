@@ -55,7 +55,7 @@ typedef struct {
 	NMConnectionList *list;
 	GType ctype;
 	char *detail;
-	NMConnection *connection;
+	char *import_filename;
 } CreateConnectionInfo;
 
 static gboolean
@@ -73,12 +73,12 @@ idle_create_connection (gpointer user_data)
 	} else {
 		/* import */
 		nm_connection_list_create (info->list, info->ctype,
-		                           info->detail, info->connection);
+		                           info->detail, info->import_filename);
 	}
 
 	g_object_unref (info->list);
 	g_free (info->detail);
-	nm_g_object_unref (info->connection);
+	g_free (info->import_filename);
 	g_slice_free (CreateConnectionInfo, info);
 	return FALSE;
 }
@@ -136,7 +136,7 @@ handle_arguments (NMConnectionList *list,
 			info->ctype = ctype;
 		else {
 			info->ctype = NM_TYPE_SETTING_VPN;
-			info->connection = vpn_connection_from_file (import);
+			info->import_filename = g_strdup (import);
 		}
 		g_idle_add (idle_create_connection, info);
 		show_list = FALSE;

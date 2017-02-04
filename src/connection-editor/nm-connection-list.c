@@ -919,7 +919,7 @@ void
 nm_connection_list_create (NMConnectionList *self,
                            GType ctype,
                            const char *detail,
-                           NMConnection *connection)
+                           const char *import_filename)
 {
 	ConnectionTypeData *types;
 	int i;
@@ -933,6 +933,7 @@ nm_connection_list_create (NMConnectionList *self,
 		    || types[i].setting_types[2] == ctype)
 			break;
 	}
+
 	if (!types[i].name) {
 		if (ctype == NM_TYPE_SETTING_VPN) {
 			nm_connection_editor_error (NULL, _("Error creating connection"),
@@ -942,6 +943,13 @@ nm_connection_list_create (NMConnectionList *self,
 			                            _("Don’t know how to create “%s” connections"), g_type_name (ctype));
 		}
 	} else {
+		gs_unref_object NMConnection *connection = NULL;
+
+		if (import_filename) {
+			connection = vpn_connection_from_file (import_filename);
+			if (!connection)
+				return;
+		}
 		new_connection_of_type (GTK_WINDOW (self->dialog),
 		                        detail,
 		                        NULL,
