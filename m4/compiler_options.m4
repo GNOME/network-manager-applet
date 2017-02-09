@@ -37,7 +37,7 @@ AC_DEFUN([NM_COMPILER_WARNING], [
 AC_DEFUN([NM_COMPILER_WARNINGS],
 [AC_ARG_ENABLE(more-warnings,
 	AS_HELP_STRING([--enable-more-warnings], [Possible values: no/yes/error]),
-	set_more_warnings="$enableval",set_more_warnings=yes)
+	set_more_warnings="$enableval",set_more_warnings=$1)
 AC_MSG_CHECKING(for more warnings)
 if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 	AC_MSG_RESULT(yes)
@@ -55,22 +55,37 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 	dnl attach it to the CFLAGS.
 	NM_COMPILER_WARNING([unknown-warning-option], [])
 
-	CFLAGS_MORE_WARNINGS="-Wall -std=gnu89"
+	CFLAGS_MORE_WARNINGS="-Wall -std=gnu99"
 
 	if test "x$set_more_warnings" = xerror; then
 		CFLAGS_MORE_WARNINGS="$CFLAGS_MORE_WARNINGS -Werror"
 	fi
 
-	for option in -Wshadow -Wmissing-declarations -Wmissing-prototypes \
-		      -Wdeclaration-after-statement -Wformat-security \
-		      -Wfloat-equal -Wno-unused-parameter -Wno-sign-compare \
-		      -Wno-duplicate-decl-specifier \
+	for option in \
+		      -Wextra \
+		      -Wdeclaration-after-statement \
+		      -Wfloat-equal \
+		      -Wformat-nonliteral \
+		      -Wformat-security \
+		      -Wimplicit-fallthrough \
+		      -Wimplicit-function-declaration \
+		      -Winit-self \
+		      -Wmissing-declarations \
+		      -Wmissing-include-dirs \
+		      -Wmissing-prototypes \
+		      -Wpointer-arith \
+		      -Wshadow \
 		      -Wstrict-prototypes \
-		      -Wno-unused-but-set-variable \
+		      -Wundef \
+		      -Wno-duplicate-decl-specifier \
+		      -Wno-format-truncation \
 		      -Wno-format-y2k \
-		      -Wundef -Wimplicit-function-declaration \
-		      -Wpointer-arith -Winit-self -Wformat-nonliteral \
-		      -Wmissing-include-dirs -Wno-pragmas; do
+		      -Wno-missing-field-initializers \
+		      -Wno-pragmas \
+		      -Wno-sign-compare \
+		      -Wno-unused-but-set-variable \
+		      -Wno-unused-parameter \
+		      ; do
 		dnl GCC 4.4 does not warn when checking for -Wno-* flags (https://gcc.gnu.org/wiki/FAQ#wnowarning)
                 _NM_COMPILER_FLAG([$(printf '%s' "$option" | sed 's/^-Wno-/-W/')], [],
 		                  [CFLAGS_MORE_WARNINGS="$CFLAGS_MORE_WARNINGS $option"], [])

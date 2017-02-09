@@ -2209,7 +2209,7 @@ foo_client_state_changed_cb (NMClient *client, GParamSpec *pspec, gpointer user_
 		                            _("The network connection has been disconnected."),
 		                            "nm-no-connection",
 		                            PREF_DISABLE_DISCONNECTED_NOTIFICATIONS);
-		/* Fall through */
+		break;
 	default:
 		break;
 	}
@@ -2555,7 +2555,6 @@ applet_get_device_icon_for_state (NMApplet *applet,
 			*out_tip = get_tip_for_device_state (device, state, connection);
 		if (icon_name || *out_pixbuf)
 			return;
-		/* Fall through for common icons */
 	}
 
 out:

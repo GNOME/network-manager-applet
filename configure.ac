@@ -71,16 +71,25 @@ else
     AC_DEFINE_UNQUOTED([ISO_CODES_PREFIX],["$prefix"],[ISO codes prefix])
 fi
 
-PKG_CHECK_MODULES(LIBNM_GLIB,
-		[gio-2.0 >= 2.32
-		 NetworkManager >= 1.3
-		 libnm-glib >= 1.3
-		 libnm-util >= 1.3
-		 libnm-glib-vpn >= 1.3
-		 gmodule-export-2.0])
-LIBNM_GLIB_CFLAGS="$LIBNM_GLIB_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_32"
-LIBNM_GLIB_CFLAGS="$LIBNM_GLIB_CFLAGS -DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_4"
-LIBNM_GLIB_CFLAGS="$LIBNM_GLIB_CFLAGS -DNM_VERSION_MAX_ALLOWED=NM_VERSION_1_4"
+AC_ARG_WITH(libnm-gtk, AS_HELP_STRING([--without-libnm-gtk], [dont build legacy library libnm-gtk which depends on libnm-glib/libnm-util/dbus-glib]))
+if test "$with_libnm_gtk" != no; then
+	PKG_CHECK_MODULES(LIBNM_GLIB,
+			[gio-2.0 >= 2.32
+			 NetworkManager >= 1.3
+			 libnm-glib >= 1.3
+			 libnm-util >= 1.3
+			 libnm-glib-vpn >= 1.3
+			 gmodule-export-2.0],
+			 :,
+			 [AC_MSG_FAILURE([$LIBNM_GLIB_PKG_ERRORS
+
+Configure with --without-libnm-gtk if you do not need the legacy library])])
+	with_libnm_gtk=yes
+	LIBNM_GLIB_CFLAGS="$LIBNM_GLIB_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_32"
+	LIBNM_GLIB_CFLAGS="$LIBNM_GLIB_CFLAGS -DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_4"
+	LIBNM_GLIB_CFLAGS="$LIBNM_GLIB_CFLAGS -DNM_VERSION_MAX_ALLOWED=NM_VERSION_1_4"
+fi
+AM_CONDITIONAL(WITH_LIBNM_GTK, test "$with_libnm_gtk" != "no")
 
 PKG_CHECK_MODULES(LIBNM, [libnm >= 1.3 gio-2.0 >= 2.32 gmodule-export-2.0])
 LIBNM_CFLAGS="$LIBNM_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_32"
@@ -145,7 +154,7 @@ AC_PATH_PROG(GLIB_COMPILE_RESOURCES, glib-compile-resources)
 dnl
 dnl Compiler flags
 dnl
-NM_COMPILER_WARNINGS
+NM_COMPILER_WARNINGS([yes])
 
 
 AC_ARG_WITH(more-asserts,
@@ -164,28 +173,15 @@ AC_DEFINE_UNQUOTED(NM_MORE_ASSERTS, $more_asserts, [Define if more asserts are e
 
 AC_CONFIG_FILES([
 Makefile
-src/Makefile
-src/libnm-gtk/Makefile
-src/libnm-gtk/tests/Makefile
-src/libnm-gtk/examples/Makefile
 src/libnm-gtk/libnm-gtk.pc
-src/libnma/Makefile
 src/libnma/libnma.pc
-src/utils/Makefile
-src/utils/tests/Makefile
-src/wireless-security/Makefile
-src/connection-editor/Makefile
-icons/Makefile
-icons/16/Makefile
-icons/22/Makefile
-icons/32/Makefile
-icons/48/Makefile
-icons/scalable/Makefile
 po/Makefile.in
-man/Makefile
 man/nm-applet.1
 man/nm-connection-editor.1
-shared/Makefile
 org.gnome.nm-applet.gschema.xml
 ])
 AC_OUTPUT
+
+echo ""
+echo "  --with-libnm-gtk=${with_libnm_gtk}"
+echo ""
