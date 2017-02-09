@@ -1,5 +1,3 @@
-SUBDIRS = connection-editor
-
 bin_PROGRAMS = nm-applet
 
 nm_applet_CPPFLAGS = \

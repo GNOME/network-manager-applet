@@ -5,6 +5,8 @@ ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 
 BUILT_SOURCES =
 
+bin_PROGRAMS =
+
 lib_LTLIBRARIES =
 
 noinst_LTLIBRARIES =
@@ -506,6 +508,146 @@ EXTRA_DIST += \
 	src/libnma/libnma.ver \
 	src/libnma/wifi.ui \
 	src/libnma/nma.gresource.xml
+
+###############################################################################
+
+BUILT_SOURCES = \
+	src/connection-editor/ce-resources.h \
+	src/connection-editor/ce-resources.c
+
+src/connection-editor/ce-resources.h: src/connection-editor/ce.gresource.xml
+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir)/src/connection-editor --generate-header --internal
+
+src/connection-editor/ce-resources.c: src/connection-editor/ce.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir)/src/connection-editor --generate-dependencies $(srcdir)/src/connection-editor/ce.gresource.xml)
+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir)/src/connection-editor --generate-source --internal
+
+
+bin_PROGRAMS += src/connection-editor/nm-connection-editor
+
+src_connection_editor_nm_connection_editor_SOURCES = \
+	src/connection-editor/ce-resources.h \
+	src/connection-editor/ce-resources.c \
+	\
+	src/connection-editor/nm-connection-editor.c \
+	src/connection-editor/nm-connection-editor.h \
+	src/connection-editor/nm-connection-list.c \
+	src/connection-editor/nm-connection-list.h \
+	src/connection-editor/main.c \
+	src/connection-editor/ce-page.h \
+	src/connection-editor/ce-page.c \
+	src/connection-editor/page-general.h \
+	src/connection-editor/page-general.c \
+	src/connection-editor/page-ethernet.h \
+	src/connection-editor/page-ethernet.c \
+	src/connection-editor/page-8021x-security.h \
+	src/connection-editor/page-8021x-security.c \
+	src/connection-editor/page-wifi.h \
+	src/connection-editor/page-wifi.c \
+	src/connection-editor/page-wifi-security.h \
+	src/connection-editor/page-wifi-security.c \
+	src/connection-editor/page-infiniband.h \
+	src/connection-editor/page-infiniband.c \
+	src/connection-editor/page-ip-tunnel.h \
+	src/connection-editor/page-ip-tunnel.c \
+	src/connection-editor/page-ip4.h \
+	src/connection-editor/page-ip4.c \
+	src/connection-editor/page-ip6.h \
+	src/connection-editor/page-ip6.c \
+	src/connection-editor/page-dsl.h \
+	src/connection-editor/page-dsl.c \
+	src/connection-editor/page-mobile.h \
+	src/connection-editor/page-mobile.c \
+	src/connection-editor/page-bluetooth.h \
+	src/connection-editor/page-bluetooth.c \
+	src/connection-editor/page-ppp.h \
+	src/connection-editor/page-ppp.c \
+	src/connection-editor/page-proxy.h \
+	src/connection-editor/page-proxy.c \
+	src/connection-editor/page-vpn.h \
+	src/connection-editor/page-vpn.c \
+	src/connection-editor/page-master.h \
+	src/connection-editor/page-master.c \
+	src/connection-editor/page-bond.h \
+	src/connection-editor/page-bond.c \
+	src/connection-editor/page-team.h \
+	src/connection-editor/page-team.c \
+	src/connection-editor/page-team-port.h \
+	src/connection-editor/page-team-port.c \
+	src/connection-editor/page-bridge.h \
+	src/connection-editor/page-bridge.c \
+	src/connection-editor/page-bridge-port.h \
+	src/connection-editor/page-bridge-port.c \
+	src/connection-editor/page-vlan.h \
+	src/connection-editor/page-vlan.c \
+	src/connection-editor/page-dcb.c \
+	src/connection-editor/page-dcb.h \
+	src/connection-editor/vpn-helpers.h \
+	src/connection-editor/vpn-helpers.c \
+	src/connection-editor/ip4-routes-dialog.h \
+	src/connection-editor/ip4-routes-dialog.c \
+	src/connection-editor/ip6-routes-dialog.h \
+	src/connection-editor/ip6-routes-dialog.c \
+	src/connection-editor/ppp-auth-methods-dialog.c \
+	src/connection-editor/ppp-auth-methods-dialog.h \
+	src/connection-editor/ce-polkit-button.c \
+	src/connection-editor/ce-polkit-button.h \
+	src/connection-editor/connection-helpers.c \
+	src/connection-editor/connection-helpers.h
+
+src_connection_editor_nm_connection_editor_CPPFLAGS = \
+	-DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_4 \
+	-DNM_VERSION_MAX_ALLOWED=NM_VERSION_1_4 \
+	-DICONDIR=\""$(datadir)/icons"\" \
+	-DBINDIR=\""$(bindir)"\" \
+	-DSYSCONFDIR=\""$(sysconfdir)"\" \
+	-DLIBDIR=\""$(libdir)"\" \
+	-DDATADIR=\""$(datadir)"\" \
+	-DNMALOCALEDIR=\"$(datadir)/locale\" \
+	"-I$(srcdir)/shared" \
+	"-I$(srcdir)/src/utils" \
+	"-I$(srcdir)/src/wireless-security" \
+	"-I$(srcdir)/src/libnma" \
+	$(GTK_CFLAGS) \
+	$(LIBNM_CFLAGS) \
+	$(JANSSON_CFLAGS)
+
+src_connection_editor_nm_connection_editor_LDADD = \
+	src/wireless-security/libwireless-security-libnm.la \
+	src/utils/libutils-libnm.la \
+	src/libnma/libnma.la \
+	$(GTK_LIBS) \
+	$(LIBNM_LIBS) \
+	$(JANSSON_LIBS) \
+	-lm
+
+
+EXTRA_DIST += \
+	src/connection-editor/ce-ip4-routes.ui \
+	src/connection-editor/ce-ip6-routes.ui \
+	src/connection-editor/ce-new-connection.ui \
+	src/connection-editor/ce-page-bluetooth.ui \
+	src/connection-editor/ce-page-bond.ui \
+	src/connection-editor/ce-page-bridge-port.ui \
+	src/connection-editor/ce-page-bridge.ui \
+	src/connection-editor/ce-page-dcb.ui \
+	src/connection-editor/ce-page-dsl.ui \
+	src/connection-editor/ce-page-ethernet.ui \
+	src/connection-editor/ce-page-general.ui \
+	src/connection-editor/ce-page-infiniband.ui \
+	src/connection-editor/ce-page-ip4.ui \
+	src/connection-editor/ce-page-ip6.ui \
+	src/connection-editor/ce-page-ip-tunnel.ui \
+	src/connection-editor/ce-page-mobile.ui \
+	src/connection-editor/ce-page-ppp.ui \
+	src/connection-editor/ce-page-proxy.ui \
+	src/connection-editor/ce-page-team-port.ui \
+	src/connection-editor/ce-page-team.ui \
+	src/connection-editor/ce-page-vlan.ui \
+	src/connection-editor/ce-page-wifi-security.ui \
+	src/connection-editor/ce-page-wifi.ui \
+	src/connection-editor/ce-ppp-auth-methods.ui \
+	src/connection-editor/nm-connection-editor.ui \
+	src/connection-editor/ce.gresource.xml
 
 ###############################################################################
 

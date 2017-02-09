@@ -167,7 +167,6 @@ Makefile
 src/Makefile
 src/libnm-gtk/libnm-gtk.pc
 src/libnma/libnma.pc
-src/connection-editor/Makefile
 po/Makefile.in
 man/Makefile
 man/nm-applet.1
