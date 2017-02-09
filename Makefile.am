@@ -210,21 +210,23 @@ src_utils_tests_test_utils_LDADD = \
 
 ###############################################################################
 
-BUILT_SOURCES += \
-	src/wireless-security/ws-resources.h \
-	src/wireless-security/ws-resources.c
-
 src/wireless-security/ws-resources.h: src/wireless-security/ws.gresource.xml
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir)/src/wireless-security --generate-header --internal
 
 src/wireless-security/ws-resources.c: src/wireless-security/ws.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir)/src/wireless-security --generate-dependencies $(srcdir)/src/wireless-security/ws.gresource.xml)
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir)/src/wireless-security --generate-source --internal
 
+CLEANFILES += \
+	$(wireless_security_h_gen) \
+	$(wireless_security_c_gen)
 
-wireless_security_sources = \
-	src/wireless-security/ws-resources.h \
-	src/wireless-security/ws-resources.c \
-	\
+wireless_security_h_gen = \
+	src/wireless-security/ws-resources.h
+
+wireless_security_c_gen = \
+	src/wireless-security/ws-resources.c
+
+wireless_security_c_real = \
 	src/wireless-security/wireless-security.h \
 	src/wireless-security/wireless-security.c \
 	src/wireless-security/ws-wep-key.h \
@@ -258,7 +260,9 @@ wireless_security_sources = \
 noinst_LTLIBRARIES += src/wireless-security/libwireless-security-libnm.la
 
 src_wireless_security_libwireless_security_libnm_la_SOURCES = \
-	$(wireless_security_sources)
+	$(wireless_security_c_gen) \
+	$(wireless_security_h_gen) \
+	$(wireless_security_c_real)
 
 src_wireless_security_libwireless_security_libnm_la_CPPFLAGS = \
 	"-I$(srcdir)/shared" \
@@ -272,11 +276,15 @@ src_wireless_security_libwireless_security_libnm_la_LIBADD = \
 	$(GTK_LIBS) \
 	$(LIBNM_LIBS)
 
+$(src_wireless_security_libwireless_security_libnm_la_OBJECTS): $(wireless_security_h_gen)
+
 
 noinst_LTLIBRARIES += src/wireless-security/libwireless-security-libnm-glib.la
 
 src_wireless_security_libwireless_security_libnm_glib_la_SOURCES = \
-	$(wireless_security_sources)
+	$(wireless_security_c_gen) \
+	$(wireless_security_h_gen) \
+	$(wireless_security_c_real)
 
 src_wireless_security_libwireless_security_libnm_glib_la_CPPFLAGS = \
 	$(GTK_CFLAGS) \
@@ -290,6 +298,8 @@ src_wireless_security_libwireless_security_libnm_glib_la_LIBADD = \
 	src/utils/libutils-libnm-glib.la \
 	$(GTK_LIBS) \
 	$(LIBNM_GLIB_LIBS)
+
+$(src_wireless_security_libwireless_security_libnm_glib_la_OBJECTS): $(wireless_security_h_gen)
 
 
 EXTRA_DIST += \
