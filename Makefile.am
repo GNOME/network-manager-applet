@@ -318,20 +318,23 @@ EXTRA_DIST += \
 
 ###############################################################################
 
-BUILT_SOURCES += \
-	src/libnm-gtk/nm-resources.h \
-	src/libnm-gtk/nm-resources.c
-
 src/libnm-gtk/nm-resources.h: src/libnm-gtk/nm.gresource.xml
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir)/src/libnm-gtk --generate-header --internal
 
 src/libnm-gtk/nm-resources.c: src/libnm-gtk/nm.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir)/src/libnm-gtk --generate-dependencies $(srcdir)/src/libnm-gtk/nm.gresource.xml)
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir)/src/libnm-gtk --generate-source --internal
 
+CLEANFILES += \
+	$(libnm_gtk_h_priv_gen) \
+	$(libnm_gtk_c_gen)
 
-src_libnm_gtk_libnmgtkdir = $(includedir)/libnm-gtk
+libnm_gtk_h_priv_gen = \
+	src/libnm-gtk/nm-resources.h
 
-src_libnm_gtk_libnmgtk_HEADERS = \
+libnm_gtk_c_gen = \
+	src/libnm-gtk/nm-resources.c
+
+libnm_gtk_h_pub = \
 	src/libnm-gtk/nm-wifi-dialog.h \
 	src/libnm-gtk/nm-wireless-dialog.h \
 	src/libnm-gtk/nm-mobile-wizard.h \
@@ -339,13 +342,7 @@ src_libnm_gtk_libnmgtk_HEADERS = \
 	src/libnm-gtk/nm-mobile-providers.h \
 	src/libnm-gtk/nm-vpn-password-dialog.h
 
-
-lib_LTLIBRARIES += src/libnm-gtk/libnm-gtk.la
-
-src_libnm_gtk_libnm_gtk_la_SOURCES = \
-	src/libnm-gtk/nm-resources.h \
-	src/libnm-gtk/nm-resources.c \
-	\
+libnm_gtk_c_real = \
 	src/libnm-gtk/nm-wifi-dialog.c \
 	src/libnm-gtk/nm-wireless-dialog.c \
 	src/libnm-gtk/nm-mobile-wizard.c \
@@ -353,6 +350,18 @@ src_libnm_gtk_libnm_gtk_la_SOURCES = \
 	src/libnm-gtk/nm-mobile-providers.c \
 	src/libnm-gtk/nm-vpn-password-dialog.c \
 	src/libnm-gtk/init.c
+
+src_libnm_gtk_libnmgtkdir = $(includedir)/libnm-gtk
+
+src_libnm_gtk_libnmgtk_HEADERS = \
+	$(libnm_gtk_h_pub)
+
+lib_LTLIBRARIES += src/libnm-gtk/libnm-gtk.la
+
+src_libnm_gtk_libnm_gtk_la_SOURCES = \
+	$(libnm_gtk_h_priv_gen) \
+	$(libnm_gtk_c_gen) \
+	$(libnm_gtk_c_real)
 
 src_libnm_gtk_libnm_gtk_la_CFLAGS = \
 	-DNETWORKMANAGER_COMPILATION=NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY \
@@ -383,6 +392,8 @@ src_libnm_gtk_libnm_gtk_la_LDFLAGS = \
 	-Wl,-no-undefined \
 	-Wl,--version-script=$(srcdir)/src/libnm-gtk/libnm-gtk.ver
 
+$(src_libnm_gtk_libnm_gtk_la_OBJECTS): $(libnm_gtk_h_priv_gen)
+
 check-local-exports-libnm-gtk:
 	$(srcdir)/src/libnm-gtk/check-exports.sh $(builddir)/src/libnm-gtk/.libs/libnm-gtk.so $(srcdir)/src/libnm-gtk/libnm-gtk.ver
 
@@ -398,9 +409,8 @@ src_libnm_gtk_NMGtk_1_0_gir_EXPORT_PACKAGES = libnm-gtk
 src_libnm_gtk_NMGtk_1_0_gir_CFLAGS = $(src_libnm_gtk_libnm_gtk_la_CFLAGS)
 src_libnm_gtk_NMGtk_1_0_gir_LIBS = src/libnm-gtk/libnm-gtk.la
 src_libnm_gtk_NMGtk_1_0_gir_FILES = \
-	$(filter-out \
-		$(BUILT_SOURCES) src/libnm-gtk/nm-wireless-dialog.%, \
-		$(src_libnm_gtk_libnmgtk_HEADERS) $(src_libnm_gtk_libnm_gtk_la_SOURCES))
+	$(filter-out src/libnm-gtk/nm-wireless-dialog.h, $(libnm_gtk_h_pub)) \
+	$(filter-out src/libnm-gtk/nm-wireless-dialog.c, $(libnm_gtk_c_real))
 src_libnm_gtk_NMGtk_1_0_gir_SCANNERFLAGS = --warn-all --identifier-prefix=NMA --symbol-prefix=nma
 INTROSPECTION_GIRS += src/libnm-gtk/NMGtk-1.0.gir
 endif
