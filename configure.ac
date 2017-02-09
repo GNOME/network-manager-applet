@@ -166,7 +166,6 @@ AC_CONFIG_FILES([
 Makefile
 src/Makefile
 src/libnm-gtk/libnm-gtk.pc
-src/libnma/Makefile
 src/libnma/libnma.pc
 src/connection-editor/Makefile
 po/Makefile.in

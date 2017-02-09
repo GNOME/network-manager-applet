@@ -422,6 +422,93 @@ EXTRA_DIST += \
 
 ###############################################################################
 
+BUILT_SOURCES += \
+	src/libnma/nma-resources.h \
+	src/libnma/nma-resources.c
+
+src/libnma/nma-resources.h: src/libnma/nma.gresource.xml
+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir)/src/libnma --generate-header --internal
+
+src/libnma/nma-resources.c: src/libnma/nma.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir)/src/libnma --generate-dependencies $(srcdir)/src/libnma/nma.gresource.xml)
+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir)/src/libnma --generate-source --internal
+
+
+src_libnma_libnmadir = $(includedir)/libnma
+
+src_libnma_libnma_HEADERS = \
+	src/libnma/nma-wifi-dialog.h \
+	src/libnma/nma-mobile-wizard.h \
+	src/libnma/nma-mobile-providers.h \
+	src/libnma/nma-vpn-password-dialog.h \
+	src/libnma/nma-ui-utils.h
+
+
+lib_LTLIBRARIES += src/libnma/libnma.la
+
+src_libnma_libnma_la_SOURCES = \
+	src/libnma/nma-resources.h \
+	src/libnma/nma-resources.c \
+	\
+	src/libnma/nma-wifi-dialog.c \
+	src/libnma/nma-mobile-wizard.c \
+	src/libnma/nma-mobile-providers.c \
+	src/libnma/nma-vpn-password-dialog.c \
+	src/libnma/nma-ui-utils.c \
+	src/libnma/init.c
+
+src_libnma_libnma_la_CFLAGS = \
+	-DICONDIR=\""$(datadir)/icons"\" \
+	-DBINDIR=\""$(bindir)"\" \
+	-DSYSCONFDIR=\""$(sysconfdir)"\" \
+	-DLIBEXECDIR=\""$(libexecdir)"\" \
+	-DDATADIR=\""$(datadir)"\" \
+	-DAUTOSTARTDIR=\""$(sysconfdir)/xdg/autostart"\" \
+	-DNMALOCALEDIR=\"$(datadir)/locale\" \
+	-DNETWORKMANAGER_COMPILATION=NM_NETWORKMANAGER_COMPILATION_LIB \
+	"-I$(srcdir)/shared" \
+	"-I$(srcdir)/src/utils" \
+	"-I$(srcdir)/src/wireless-security" \
+	"-I$(srcdir)/src/libnma" \
+	$(GTK_CFLAGS) \
+	$(LIBNM_CFLAGS) \
+	$(GUDEV_CFLAGS)
+
+src_libnma_libnma_la_LIBADD = \
+	src/wireless-security/libwireless-security-libnm.la \
+	$(GTK_LIBS) \
+	$(LIBNM_LIBS) \
+	$(GUDEV_LIBS)
+
+EXTRA_src_libnma_libnma_la_DEPENDENCIES = src/libnma/libnma.ver
+
+src_libnma_libnma_la_LDFLAGS = \
+	-Wl,-no-undefined \
+	-Wl,--version-script=$(srcdir)/src/libnma/libnma.ver
+
+
+pkgconfig_DATA += src/libnma/libnma.pc
+
+if HAVE_INTROSPECTION
+src/libnma/NMA-1.0.gir: src/libnma/libnma.la
+src_libnma_NMA_1_0_gir_INCLUDES = NMClient-1.0 NetworkManager-1.0 Gtk-3.0
+src_libnma_NMA_1_0_gir_EXPORT_PACKAGES = libnma
+src_libnma_NMA_1_0_gir_CFLAGS = $(src_libnma_libnma_la_CFLAGS)
+src_libnma_NMA_1_0_gir_LIBS = src/libnma/libnma.la
+src_libnma_NMA_1_0_gir_FILES = \
+	$(src_libnma_libnma_HEADERS) \
+	$(src_libnma_libnma_la_SOURCES)
+src_libnma_NMA_1_0_gir_SCANNERFLAGS = --warn-all --identifier-prefix=NMA --symbol-prefix=nma
+INTROSPECTION_GIRS += src/libnma/NMA-1.0.gir
+endif
+
+EXTRA_DIST += \
+	src/libnma/libnma.pc.in \
+	src/libnma/libnma.ver \
+	src/libnma/wifi.ui \
+	src/libnma/nma.gresource.xml
+
+###############################################################################
+
 check_PROGRAMS += $(check_programs)
 
 check-local: $(check_local)

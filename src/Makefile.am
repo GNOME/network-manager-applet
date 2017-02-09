@@ -1,4 +1,4 @@
-SUBDIRS = libnma connection-editor
+SUBDIRS = connection-editor
 
 bin_PROGRAMS = nm-applet
 
