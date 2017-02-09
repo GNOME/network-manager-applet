@@ -693,23 +693,23 @@ EXTRA_DIST += \
 
 ###############################################################################
 
-BUILT_SOURCES += \
-	src/applet-resources.h \
-	src/applet-resources.c
-
 src/applet-resources.h: src/applet.gresource.xml
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir)/src --generate-header --internal
 
 src/applet-resources.c: src/applet.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir)/src --generate-dependencies $(srcdir)/src/applet.gresource.xml)
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir)/src --generate-source --internal
 
+CLEANFILES += \
+	$(nm_applet_h_gen) \
+	$(nm_applet_c_gen)
 
-bin_PROGRAMS += src/nm-applet
+nm_applet_h_gen = \
+	src/applet-resources.h
 
-src_nm_applet_SOURCES = \
-	src/applet-resources.h \
-	src/applet-resources.c \
-	\
+nm_applet_c_gen = \
+	src/applet-resources.c
+
+nm_applet_hc_real = \
 	src/main.c \
 	src/applet.c \
 	src/applet.h \
@@ -736,10 +736,17 @@ src_nm_applet_SOURCES = \
 	src/fallback-icon.h
 
 if WITH_WWAN
-src_nm_applet_SOURCES += \
+nm_applet_hc_real += \
 	src/applet-device-broadband.h \
 	src/applet-device-broadband.c
 endif
+
+bin_PROGRAMS += src/nm-applet
+
+src_nm_applet_SOURCES = \
+	$(nm_applet_h_gen) \
+	$(nm_applet_c_gen) \
+	$(nm_applet_hc_real)
 
 src_nm_applet_CPPFLAGS = \
 	-DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_4 \
@@ -774,6 +781,7 @@ src_nm_applet_LDADD = \
 	$(APPINDICATOR_LIBS) \
 	-lm
 
+$(src_nm_applet_OBJECTS): $(nm_applet_h_gen)
 
 EXTRA_DIST += \
 	src/8021x.ui \
