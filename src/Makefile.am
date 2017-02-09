@@ -1,4 +1,4 @@
-SUBDIRS = wireless-security libnm-gtk libnma connection-editor
+SUBDIRS = libnm-gtk libnma connection-editor
 
 bin_PROGRAMS = nm-applet
 

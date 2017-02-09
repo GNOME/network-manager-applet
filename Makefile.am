@@ -2,6 +2,8 @@ include $(GLIB_MAKEFILE)
 
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 
+BUILT_SOURCES =
+
 noinst_LTLIBRARIES =
 
 noinst_PROGRAMS =
@@ -183,6 +185,104 @@ src_utils_tests_test_utils_LDADD = \
 	src/utils/libutils-libnm.la \
 	$(GTK_LIBS) \
 	$(LIBNM_LIBS)
+
+###############################################################################
+
+BUILT_SOURCES += \
+	src/wireless-security/ws-resources.h \
+	src/wireless-security/ws-resources.c
+
+src/wireless-security/ws-resources.h: src/wireless-security/ws.gresource.xml
+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir)/src/wireless-security --generate-header --internal
+
+src/wireless-security/ws-resources.c: src/wireless-security/ws.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir)/src/wireless-security --generate-dependencies $(srcdir)/src/wireless-security/ws.gresource.xml)
+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir)/src/wireless-security --generate-source --internal
+
+
+wireless_security_sources = \
+	src/wireless-security/ws-resources.h \
+	src/wireless-security/ws-resources.c \
+	\
+	src/wireless-security/wireless-security.h \
+	src/wireless-security/wireless-security.c \
+	src/wireless-security/ws-wep-key.h \
+	src/wireless-security/ws-wep-key.c \
+	src/wireless-security/ws-wpa-psk.h \
+	src/wireless-security/ws-wpa-psk.c \
+	src/wireless-security/ws-leap.h \
+	src/wireless-security/ws-leap.c \
+	src/wireless-security/ws-wpa-eap.h \
+	src/wireless-security/ws-wpa-eap.c \
+	src/wireless-security/ws-dynamic-wep.h \
+	src/wireless-security/ws-dynamic-wep.c \
+	src/wireless-security/eap-method.h \
+	src/wireless-security/eap-method.c \
+	src/wireless-security/eap-method-tls.h \
+	src/wireless-security/eap-method-tls.c \
+	src/wireless-security/eap-method-leap.h \
+	src/wireless-security/eap-method-leap.c \
+	src/wireless-security/eap-method-fast.h \
+	src/wireless-security/eap-method-fast.c \
+	src/wireless-security/eap-method-ttls.h \
+	src/wireless-security/eap-method-ttls.c \
+	src/wireless-security/eap-method-peap.h \
+	src/wireless-security/eap-method-peap.c \
+	src/wireless-security/eap-method-simple.h \
+	src/wireless-security/eap-method-simple.c \
+	src/wireless-security/helpers.h \
+	src/wireless-security/helpers.c
+
+
+noinst_LTLIBRARIES += src/wireless-security/libwireless-security-libnm.la
+
+src_wireless_security_libwireless_security_libnm_la_SOURCES = \
+	$(wireless_security_sources)
+
+src_wireless_security_libwireless_security_libnm_la_CPPFLAGS = \
+	"-I$(srcdir)/shared" \
+	"-I$(srcdir)/src/utils" \
+	"-I$(srcdir)/src/libnma" \
+	$(GTK_CFLAGS) \
+	$(LIBNM_CFLAGS)
+
+src_wireless_security_libwireless_security_libnm_la_LIBADD = \
+	src/utils/libutils-libnm.la \
+	$(GTK_LIBS) \
+	$(LIBNM_LIBS)
+
+
+noinst_LTLIBRARIES += src/wireless-security/libwireless-security-libnm-glib.la
+
+src_wireless_security_libwireless_security_libnm_glib_la_SOURCES = \
+	$(wireless_security_sources)
+
+src_wireless_security_libwireless_security_libnm_glib_la_CPPFLAGS = \
+	$(GTK_CFLAGS) \
+	-DNETWORKMANAGER_COMPILATION=NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY \
+	"-I$(srcdir)/shared" \
+	"-I$(srcdir)/src/utils" \
+	"-I$(srcdir)/src/libnma" \
+	$(LIBNM_GLIB_CFLAGS)
+
+src_wireless_security_libwireless_security_libnm_glib_la_LIBADD = \
+	src/utils/libutils-libnm-glib.la \
+	$(GTK_LIBS) \
+	$(LIBNM_GLIB_LIBS)
+
+
+EXTRA_DIST += \
+	src/wireless-security/eap-method-fast.ui \
+	src/wireless-security/eap-method-leap.ui \
+	src/wireless-security/eap-method-peap.ui \
+	src/wireless-security/eap-method-simple.ui \
+	src/wireless-security/eap-method-tls.ui \
+	src/wireless-security/eap-method-ttls.ui \
+	src/wireless-security/ws-dynamic-wep.ui \
+	src/wireless-security/ws-leap.ui \
+	src/wireless-security/ws-wep-key.ui \
+	src/wireless-security/ws-wpa-eap.ui \
+	src/wireless-security/ws-wpa-psk.ui \
+	src/wireless-security/ws.gresource.xml
 
 ###############################################################################
 
