@@ -530,8 +530,6 @@ src_libnma_NMA_1_0_gir_CFLAGS = $(src_libnma_libnma_la_CFLAGS)
 src_libnma_NMA_1_0_gir_LIBS = src/libnma/libnma.la
 src_libnma_NMA_1_0_gir_FILES = \
 	$(libnma_h_pub) \
-	$(libnma_h_priv_gen) \
-	$(libnma_c_gen) \
 	$(libnma_c_real)
 src_libnma_NMA_1_0_gir_SCANNERFLAGS = --warn-all --identifier-prefix=NMA --symbol-prefix=nma
 INTROSPECTION_GIRS += src/libnma/NMA-1.0.gir
