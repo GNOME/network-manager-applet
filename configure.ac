@@ -164,14 +164,11 @@ AC_DEFINE_UNQUOTED(NM_MORE_ASSERTS, $more_asserts, [Define if more asserts are e
 
 AC_CONFIG_FILES([
 Makefile
-src/Makefile
 src/libnm-gtk/libnm-gtk.pc
 src/libnma/libnma.pc
 po/Makefile.in
-man/Makefile
 man/nm-applet.1
 man/nm-connection-editor.1
-shared/Makefile
 org.gnome.nm-applet.gschema.xml
 ])
 AC_OUTPUT

@@ -30,6 +30,8 @@ DISTCLEANFILES =
 DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-more-warnings=yes
 
+man_MANS =
+
 pkgconfig_DATA =
 
 pkgconfigdir = $(libdir)/pkgconfig
@@ -46,10 +48,7 @@ INTROSPECTION_GIRS =
 
 SUBDIRS = \
 	. \
-	src \
-	po \
-	man \
-	shared
+	po
 
 ###############################################################################
 
@@ -511,7 +510,7 @@ EXTRA_DIST += \
 
 ###############################################################################
 
-BUILT_SOURCES = \
+BUILT_SOURCES += \
 	src/connection-editor/ce-resources.h \
 	src/connection-editor/ce-resources.c
 
@@ -648,6 +647,116 @@ EXTRA_DIST += \
 	src/connection-editor/ce-ppp-auth-methods.ui \
 	src/connection-editor/nm-connection-editor.ui \
 	src/connection-editor/ce.gresource.xml
+
+###############################################################################
+
+BUILT_SOURCES += \
+	src/applet-resources.h \
+	src/applet-resources.c
+
+src/applet-resources.h: src/applet.gresource.xml
+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir)/src --generate-header --internal
+
+src/applet-resources.c: src/applet.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir)/src --generate-dependencies $(srcdir)/src/applet.gresource.xml)
+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir)/src --generate-source --internal
+
+
+bin_PROGRAMS += src/nm-applet
+
+src_nm_applet_SOURCES = \
+	src/applet-resources.h \
+	src/applet-resources.c \
+	\
+	src/main.c \
+	src/applet.c \
+	src/applet.h \
+	src/applet-agent.c \
+	src/applet-agent.h \
+	src/applet-vpn-request.c \
+	src/applet-vpn-request.h \
+	src/ethernet-dialog.h \
+	src/ethernet-dialog.c \
+	src/applet-dialogs.h \
+	src/applet-dialogs.c \
+	src/applet-device-ethernet.h \
+	src/applet-device-ethernet.c \
+	src/applet-device-wifi.h \
+	src/applet-device-wifi.c \
+	src/ap-menu-item.h \
+	src/ap-menu-item.c \
+	src/mb-menu-item.h \
+	src/mb-menu-item.c \
+	src/mobile-helpers.c \
+	src/mobile-helpers.h \
+	src/applet-device-bt.h \
+	src/applet-device-bt.c \
+	src/fallback-icon.h
+
+if WITH_WWAN
+src_nm_applet_SOURCES += \
+	src/applet-device-broadband.h \
+	src/applet-device-broadband.c
+endif
+
+src_nm_applet_CPPFLAGS = \
+	-DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_4 \
+	-DNM_VERSION_MAX_ALLOWED=NM_VERSION_1_4 \
+	-DICONDIR=\""$(datadir)/icons"\" \
+	-DBINDIR=\""$(bindir)"\" \
+	-DSYSCONFDIR=\""$(sysconfdir)"\" \
+	-DLIBEXECDIR=\""$(libexecdir)"\" \
+	-DAUTOSTARTDIR=\""$(sysconfdir)/xdg/autostart"\" \
+	-DNMALOCALEDIR=\"$(datadir)/locale\" \
+	-DG_LOG_DOMAIN=\""nm-applet"\" \
+	"-I$(srcdir)/shared" \
+	"-I$(srcdir)/src/utils" \
+	"-I$(srcdir)/src/wireless-security" \
+	"-I$(srcdir)/src/libnma" \
+	$(GTK_CFLAGS) \
+	$(LIBNM_CFLAGS) \
+	$(LIBSECRET_CFLAGS) \
+	$(NOTIFY_CFLAGS) \
+	$(MM_GLIB_CFLAGS) \
+	$(APPINDICATOR_CFLAGS)
+
+src_nm_applet_LDADD = \
+	src/utils/libutils-libnm.la \
+	src/wireless-security/libwireless-security-libnm.la \
+	src/libnma/libnma.la \
+	$(GTK_LIBS) \
+	$(LIBNM_LIBS) \
+	$(LIBSECRET_LIBS) \
+	$(NOTIFY_LIBS) \
+	$(MM_GLIB_LIBS) \
+	$(APPINDICATOR_LIBS) \
+	-lm
+
+
+EXTRA_DIST += \
+	src/8021x.ui \
+	src/gsm-unlock.ui \
+	src/info.ui \
+	src/applet.gresource.xml
+
+###############################################################################
+
+EXTRA_DIST += \
+	shared/nm-utils/gsystem-local-alloc.h \
+	shared/nm-utils/nm-glib.h \
+	shared/nm-utils/nm-macros-internal.h \
+	shared/nm-utils/nm-shared-utils.c \
+	shared/nm-utils/nm-shared-utils.h \
+	shared/nm-utils/nm-test-utils.h \
+	shared/nm-utils/nm-vpn-editor-plugin-call.h \
+	shared/nm-default.h \
+	shared/nm-libnm-compat.h \
+	$(NULL)
+
+###############################################################################
+
+man_MANS += \
+	man/nm-applet.1 \
+	man/nm-connection-editor.1
 
 ###############################################################################
 
