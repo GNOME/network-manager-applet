@@ -3,6 +3,8 @@ include $(GLIB_MAKEFILE)
 
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 
+AUTOMAKE_OPTIONS = subdir-objects
+
 BUILT_SOURCES =
 
 bin_PROGRAMS =
