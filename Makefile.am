@@ -2,14 +2,19 @@ include $(GLIB_MAKEFILE)
 
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 
-SUBDIRS = src icons po man shared
+SUBDIRS = \
+	src \
+	icons \
+	po \
+	man \
+	shared
 
-EXTRA_DIST =				\
-	CONTRIBUTING			\
-	intltool-extract.in		\
-	intltool-merge.in		\
-	intltool-update.in		\
-	Makefile.glib			\
+EXTRA_DIST = \
+	CONTRIBUTING \
+	intltool-extract.in \
+	intltool-merge.in \
+	intltool-update.in \
+	Makefile.glib \
 	autogen.sh
 
 autostartdir = $(sysconfdir)/xdg/autostart
@@ -35,18 +40,22 @@ appdata_in_files = nm-connection-editor.appdata.xml.in
 convertdir=$(datadir)/GConf/gsettings
 convert_DATA=nm-applet.convert
 
-DISTCHECK_CONFIGURE_FLAGS = --enable-more-warnings=yes
+DISTCHECK_CONFIGURE_FLAGS = \
+	--enable-more-warnings=yes
 
 EXTRA_DIST += \
 	$(convert_DATA) \
-	$(appdata_in_files) 	\
+	$(appdata_in_files) \
 	$(autostart_in_files) \
 	$(desktop_in_files)
 
 CLEANFILES = \
 	$(autostart_DATA) \
 	$(desktop_DATA) \
-	$(appdata_DATA) 	\
+	$(appdata_DATA) \
 	$(BUILT_SOURCES)
 
-DISTCLEANFILES = intltool-extract intltool-merge intltool-update
+DISTCLEANFILES = \
+	intltool-extract \
+	intltool-merge \
+	intltool-update
