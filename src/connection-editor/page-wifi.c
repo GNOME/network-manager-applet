@@ -216,16 +216,16 @@ band_value_changed_cb (GtkComboBox *box, gpointer user_data)
 
 	priv->last_channel = 0;
 	gtk_spin_button_set_value (priv->channel, 0);
- 
- 	switch (gtk_combo_box_get_active (GTK_COMBO_BOX (box))) {
- 	case 1: /* A */
- 	case 2: /* B/G */
+
+	switch (gtk_combo_box_get_active (GTK_COMBO_BOX (box))) {
+	case 1: /* A */
+	case 2: /* B/G */
 		sensitive = TRUE;
- 		break;
- 	default:
+		break;
+	default:
 		sensitive = FALSE;
- 		break;
- 	}
+		break;
+	}
 
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->channel), sensitive);
 
@@ -244,22 +244,22 @@ mode_combo_changed_cb (GtkComboBox *combo,
 	gboolean show_bssid = TRUE;
 	gboolean hotspot = FALSE;
 
- 	switch (gtk_combo_box_get_active (GTK_COMBO_BOX (combo))) {
+	switch (gtk_combo_box_get_active (GTK_COMBO_BOX (combo))) {
 	case 1: /* hotspot */
 		hotspot = TRUE;
-		/* fallthrough */
- 	case 2: /* adhoc */
+		/* fall through */
+	case 2: /* adhoc */
 		/* BSSID is random and is created by kernel for Ad-Hoc networks
 		 * http://lxr.linux.no/linux+v3.7.6/net/mac80211/ibss.c#L685
 		 * For AP-mode, the BSSID is the MAC address of the device.
 		 */
 		show_bssid = FALSE;
 		show_freq = TRUE;
- 		break;
- 	default: /* infrastructure */
+		break;
+	default: /* infrastructure */
 		show_freq = FALSE;
- 		break;
- 	}
+		break;
+	}
 	nm_connection_editor_inter_page_set_value (parent->editor,
 	                                           INTER_PAGE_CHANGE_WIFI_MODE,
 	                                           GUINT_TO_POINTER (hotspot));
