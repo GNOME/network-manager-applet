@@ -174,6 +174,7 @@ src_utils_libutils_libnm_la_LIBADD = \
 	$(GTK_LIBS) \
 	$(LIBNM_LIBS)
 
+if WITH_LIBNM_GTK
 
 noinst_LTLIBRARIES += src/utils/libutils-libnm-glib.la
 
@@ -192,6 +193,7 @@ src_utils_libutils_libnm_glib_la_LIBADD = \
 	$(GTK_LIBS) \
 	$(LIBNM_GLIB_LIBS)
 
+endif
 
 check_programs += src/utils/tests/test-utils
 
@@ -278,6 +280,7 @@ src_wireless_security_libwireless_security_libnm_la_LIBADD = \
 
 $(src_wireless_security_libwireless_security_libnm_la_OBJECTS): $(wireless_security_h_gen)
 
+if WITH_LIBNM_GTK
 
 noinst_LTLIBRARIES += src/wireless-security/libwireless-security-libnm-glib.la
 
@@ -301,6 +304,7 @@ src_wireless_security_libwireless_security_libnm_glib_la_LIBADD = \
 
 $(src_wireless_security_libwireless_security_libnm_glib_la_OBJECTS): $(wireless_security_h_gen)
 
+endif
 
 EXTRA_DIST += \
 	src/wireless-security/eap-method-fast.ui \
@@ -317,6 +321,8 @@ EXTRA_DIST += \
 	src/wireless-security/ws.gresource.xml
 
 ###############################################################################
+
+if WITH_LIBNM_GTK
 
 src/libnm-gtk/nm-resources.h: src/libnm-gtk/nm.gresource.xml
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir)/src/libnm-gtk --generate-header --internal
@@ -429,6 +435,7 @@ src_libnm_gtk_tests_test_mobile_providers_LDADD = \
 	src/libnm-gtk/libnm-gtk.la \
 	$(LIBNM_GLIB_LIBS)
 
+endif
 
 EXTRA_DIST += \
 	src/libnm-gtk/libnm-gtk.pc.in \
