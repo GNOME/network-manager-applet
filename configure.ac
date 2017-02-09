@@ -171,8 +171,6 @@ src/libnm-gtk/examples/Makefile
 src/libnm-gtk/libnm-gtk.pc
 src/libnma/Makefile
 src/libnma/libnma.pc
-src/utils/Makefile
-src/utils/tests/Makefile
 src/wireless-security/Makefile
 src/connection-editor/Makefile
 po/Makefile.in

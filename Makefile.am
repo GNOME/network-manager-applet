@@ -2,9 +2,27 @@ include $(GLIB_MAKEFILE)
 
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 
+noinst_LTLIBRARIES =
+
+noinst_PROGRAMS =
+
+check_PROGRAMS =
+
+check_programs =
+
+TESTS =
+
 EXTRA_DIST =
 
+CLEANFILES =
+
+DISTCLEANFILES =
+
+DISTCHECK_CONFIGURE_FLAGS = \
+	--enable-more-warnings=yes
+
 SUBDIRS = \
+	. \
 	src \
 	po \
 	man \
@@ -110,6 +128,68 @@ EXTRA_DIST += $(iconscalable_DATA)
 
 ###############################################################################
 
+shared_files = \
+	shared/nm-utils/nm-shared-utils.c \
+	shared/nm-utils/nm-shared-utils.h \
+	$(NULL)
+
+
+noinst_LTLIBRARIES += src/utils/libutils-libnm.la
+
+src_utils_libutils_libnm_la_CPPFLAGS = \
+	"-I$(srcdir)/shared" \
+	$(GTK_CFLAGS) \
+	$(LIBNM_CFLAGS)
+
+src_utils_libutils_libnm_la_SOURCES = \
+	$(shared_files) \
+	src/utils/utils.c \
+	src/utils/utils.h
+
+src_utils_libutils_libnm_la_LIBADD = \
+	$(GTK_LIBS) \
+	$(LIBNM_LIBS)
+
+
+noinst_LTLIBRARIES += src/utils/libutils-libnm-glib.la
+
+src_utils_libutils_libnm_glib_la_CPPFLAGS = \
+	-DNETWORKMANAGER_COMPILATION=NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY \
+	"-I$(srcdir)/shared" \
+	$(GTK_CFLAGS) \
+	$(LIBNM_GLIB_CFLAGS)
+
+src_utils_libutils_libnm_glib_la_SOURCES = \
+	$(shared_files) \
+	src/utils/utils.c \
+	src/utils/utils.h
+
+src_utils_libutils_libnm_glib_la_LIBADD = \
+	$(GTK_LIBS) \
+	$(LIBNM_GLIB_LIBS)
+
+
+check_programs += src/utils/tests/test-utils
+
+src_utils_tests_test_utils_SOURCES = src/utils/tests/test-utils.c
+
+src_utils_tests_test_utils_CPPFLAGS = \
+	"-I$(srcdir)/shared/" \
+	"-I$(srcdir)/src/utils" \
+	$(GTK_CFLAGS) \
+	$(LIBNM_CFLAGS)
+
+src_utils_tests_test_utils_LDADD = \
+	src/utils/libutils-libnm.la \
+	$(GTK_LIBS) \
+	$(LIBNM_LIBS)
+
+###############################################################################
+
+check_PROGRAMS += $(check_programs)
+
+TESTS += $(check_programs)
+
 EXTRA_DIST += \
 	CONTRIBUTING \
 	intltool-extract.in \
@@ -141,22 +221,19 @@ appdata_in_files = nm-connection-editor.appdata.xml.in
 convertdir=$(datadir)/GConf/gsettings
 convert_DATA=nm-applet.convert
 
-DISTCHECK_CONFIGURE_FLAGS = \
-	--enable-more-warnings=yes
-
 EXTRA_DIST += \
 	$(convert_DATA) \
 	$(appdata_in_files) \
 	$(autostart_in_files) \
 	$(desktop_in_files)
 
-CLEANFILES = \
+CLEANFILES += \
 	$(autostart_DATA) \
 	$(desktop_DATA) \
 	$(appdata_DATA) \
 	$(BUILT_SOURCES)
 
-DISTCLEANFILES = \
+DISTCLEANFILES += \
 	intltool-extract \
 	intltool-merge \
 	intltool-update
