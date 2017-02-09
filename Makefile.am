@@ -262,9 +262,10 @@ wireless_security_c_real = \
 noinst_LTLIBRARIES += src/wireless-security/libwireless-security-libnm.la
 
 src_wireless_security_libwireless_security_libnm_la_SOURCES = \
-	$(wireless_security_c_gen) \
-	$(wireless_security_h_gen) \
 	$(wireless_security_c_real)
+
+nodist_src_wireless_security_libwireless_security_libnm_la_SOURCES = \
+	$(wireless_security_c_gen)
 
 src_wireless_security_libwireless_security_libnm_la_CPPFLAGS = \
 	"-I$(srcdir)/shared" \
@@ -285,9 +286,10 @@ if WITH_LIBNM_GTK
 noinst_LTLIBRARIES += src/wireless-security/libwireless-security-libnm-glib.la
 
 src_wireless_security_libwireless_security_libnm_glib_la_SOURCES = \
-	$(wireless_security_c_gen) \
-	$(wireless_security_h_gen) \
 	$(wireless_security_c_real)
+
+nodist_src_wireless_security_libwireless_security_libnm_glib_la_SOURCES = \
+	$(wireless_security_c_gen)
 
 src_wireless_security_libwireless_security_libnm_glib_la_CPPFLAGS = \
 	$(GTK_CFLAGS) \
@@ -365,9 +367,10 @@ src_libnm_gtk_libnmgtk_HEADERS = \
 lib_LTLIBRARIES += src/libnm-gtk/libnm-gtk.la
 
 src_libnm_gtk_libnm_gtk_la_SOURCES = \
-	$(libnm_gtk_h_priv_gen) \
-	$(libnm_gtk_c_gen) \
 	$(libnm_gtk_c_real)
+
+nodist_src_libnm_gtk_libnm_gtk_la_SOURCES = \
+	$(libnm_gtk_c_gen)
 
 src_libnm_gtk_libnm_gtk_la_CFLAGS = \
 	-DNETWORKMANAGER_COMPILATION=NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY \
@@ -491,9 +494,10 @@ src_libnma_libnma_HEADERS = \
 lib_LTLIBRARIES += src/libnma/libnma.la
 
 src_libnma_libnma_la_SOURCES = \
-	$(libnma_h_priv_gen) \
-	$(libnma_c_gen) \
 	$(libnma_c_real)
+
+nodist_src_libnma_libnma_la_SOURCES = \
+	$(libnma_c_gen)
 
 src_libnma_libnma_la_CFLAGS = \
 	-DICONDIR=\""$(datadir)/icons"\" \
@@ -636,9 +640,10 @@ connection_editor_hc_real = \
 bin_PROGRAMS += src/connection-editor/nm-connection-editor
 
 src_connection_editor_nm_connection_editor_SOURCES = \
-	$(connection_editor_h_gen) \
-	$(connection_editor_c_gen) \
 	$(connection_editor_hc_real)
+
+nodist_src_connection_editor_nm_connection_editor_SOURCES = \
+	$(connection_editor_c_gen)
 
 src_connection_editor_nm_connection_editor_CPPFLAGS = \
 	-DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_4 \
@@ -755,9 +760,10 @@ endif
 bin_PROGRAMS += src/nm-applet
 
 src_nm_applet_SOURCES = \
-	$(nm_applet_h_gen) \
-	$(nm_applet_c_gen) \
 	$(nm_applet_hc_real)
+
+nodist_src_nm_applet_SOURCES = \
+	$(nm_applet_c_gen)
 
 src_nm_applet_CPPFLAGS = \
 	-DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_4 \
