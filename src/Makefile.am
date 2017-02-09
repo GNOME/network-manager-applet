@@ -1,4 +1,4 @@
-SUBDIRS = libnm-gtk libnma connection-editor
+SUBDIRS = libnma connection-editor
 
 bin_PROGRAMS = nm-applet
 
