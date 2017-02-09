@@ -445,39 +445,48 @@ EXTRA_DIST += \
 
 ###############################################################################
 
-BUILT_SOURCES += \
-	src/libnma/nma-resources.h \
-	src/libnma/nma-resources.c
-
 src/libnma/nma-resources.h: src/libnma/nma.gresource.xml
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir)/src/libnma --generate-header --internal
 
 src/libnma/nma-resources.c: src/libnma/nma.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir)/src/libnma --generate-dependencies $(srcdir)/src/libnma/nma.gresource.xml)
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir)/src/libnma --generate-source --internal
 
+CLEANFILES += \
+	$(libnma_h_priv_gen) \
+	$(libnma_c_gen)
 
-src_libnma_libnmadir = $(includedir)/libnma
+libnma_h_priv_gen = \
+	src/libnma/nma-resources.h
 
-src_libnma_libnma_HEADERS = \
+libnma_c_gen = \
+	src/libnma/nma-resources.c
+
+libnma_h_pub = \
 	src/libnma/nma-wifi-dialog.h \
 	src/libnma/nma-mobile-wizard.h \
 	src/libnma/nma-mobile-providers.h \
 	src/libnma/nma-vpn-password-dialog.h \
 	src/libnma/nma-ui-utils.h
 
-
-lib_LTLIBRARIES += src/libnma/libnma.la
-
-src_libnma_libnma_la_SOURCES = \
-	src/libnma/nma-resources.h \
-	src/libnma/nma-resources.c \
-	\
+libnma_c_real = \
 	src/libnma/nma-wifi-dialog.c \
 	src/libnma/nma-mobile-wizard.c \
 	src/libnma/nma-mobile-providers.c \
 	src/libnma/nma-vpn-password-dialog.c \
 	src/libnma/nma-ui-utils.c \
 	src/libnma/init.c
+
+src_libnma_libnmadir = $(includedir)/libnma
+
+src_libnma_libnma_HEADERS = \
+	$(libnma_h_pub)
+
+lib_LTLIBRARIES += src/libnma/libnma.la
+
+src_libnma_libnma_la_SOURCES = \
+	$(libnma_h_priv_gen) \
+	$(libnma_c_gen) \
+	$(libnma_c_real)
 
 src_libnma_libnma_la_CFLAGS = \
 	-DICONDIR=\""$(datadir)/icons"\" \
@@ -502,6 +511,8 @@ src_libnma_libnma_la_LIBADD = \
 	$(LIBNM_LIBS) \
 	$(GUDEV_LIBS)
 
+$(src_libnma_libnma_la_OBJECTS): $(libnma_h_priv_gen)
+
 EXTRA_src_libnma_libnma_la_DEPENDENCIES = src/libnma/libnma.ver
 
 src_libnma_libnma_la_LDFLAGS = \
@@ -518,8 +529,10 @@ src_libnma_NMA_1_0_gir_EXPORT_PACKAGES = libnma
 src_libnma_NMA_1_0_gir_CFLAGS = $(src_libnma_libnma_la_CFLAGS)
 src_libnma_NMA_1_0_gir_LIBS = src/libnma/libnma.la
 src_libnma_NMA_1_0_gir_FILES = \
-	$(src_libnma_libnma_HEADERS) \
-	$(src_libnma_libnma_la_SOURCES)
+	$(libnma_h_pub) \
+	$(libnma_h_priv_gen) \
+	$(libnma_c_gen) \
+	$(libnma_c_real)
 src_libnma_NMA_1_0_gir_SCANNERFLAGS = --warn-all --identifier-prefix=NMA --symbol-prefix=nma
 INTROSPECTION_GIRS += src/libnma/NMA-1.0.gir
 endif
