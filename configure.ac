@@ -175,12 +175,6 @@ src/utils/Makefile
 src/utils/tests/Makefile
 src/wireless-security/Makefile
 src/connection-editor/Makefile
-icons/Makefile
-icons/16/Makefile
-icons/22/Makefile
-icons/32/Makefile
-icons/48/Makefile
-icons/scalable/Makefile
 po/Makefile.in
 man/Makefile
 man/nm-applet.1
