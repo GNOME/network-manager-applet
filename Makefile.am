@@ -663,6 +663,12 @@ src_connection_editor_nm_connection_editor_LDADD = \
 
 $(src_connection_editor_nm_connection_editor_OBJECTS): $(connection_editor_h_gen)
 
+EXTRA_src_connection_editor_nm_connection_editor_DEPENDENCIES = linker-script-binary.ver
+
+src_connection_editor_nm_connection_editor_LDFLAGS = \
+	-Wl,--version-script="$(srcdir)/linker-script-binary.ver"
+
+
 EXTRA_DIST += \
 	src/connection-editor/ce-ip4-routes.ui \
 	src/connection-editor/ce-ip6-routes.ui \
@@ -783,6 +789,12 @@ src_nm_applet_LDADD = \
 
 $(src_nm_applet_OBJECTS): $(nm_applet_h_gen)
 
+EXTRA_src_nm_applet_DEPENDENCIES = linker-script-binary.ver
+
+src_nm_applet_LDFLAGS = \
+	-Wl,--version-script="$(srcdir)/linker-script-binary.ver"
+
+
 EXTRA_DIST += \
 	src/8021x.ui \
 	src/gsm-unlock.ui \
@@ -818,6 +830,7 @@ check-local: $(check_local)
 TESTS += $(check_programs)
 
 EXTRA_DIST += \
+	linker-script-binary.ver \
 	CONTRIBUTING \
 	intltool-extract.in \
 	intltool-merge.in \
