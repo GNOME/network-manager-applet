@@ -145,7 +145,7 @@ AC_PATH_PROG(GLIB_COMPILE_RESOURCES, glib-compile-resources)
 dnl
 dnl Compiler flags
 dnl
-NM_COMPILER_WARNINGS
+NM_COMPILER_WARNINGS([yes])
 
 
 AC_ARG_WITH(more-asserts,
