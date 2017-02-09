@@ -545,23 +545,23 @@ EXTRA_DIST += \
 
 ###############################################################################
 
-BUILT_SOURCES += \
-	src/connection-editor/ce-resources.h \
-	src/connection-editor/ce-resources.c
-
 src/connection-editor/ce-resources.h: src/connection-editor/ce.gresource.xml
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir)/src/connection-editor --generate-header --internal
 
 src/connection-editor/ce-resources.c: src/connection-editor/ce.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir)/src/connection-editor --generate-dependencies $(srcdir)/src/connection-editor/ce.gresource.xml)
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir)/src/connection-editor --generate-source --internal
 
+CLEANFILES += \
+	$(connection_editor_h_gen) \
+	$(connection_editor_c_gen)
 
-bin_PROGRAMS += src/connection-editor/nm-connection-editor
+connection_editor_h_gen = \
+	src/connection-editor/ce-resources.h
 
-src_connection_editor_nm_connection_editor_SOURCES = \
-	src/connection-editor/ce-resources.h \
-	src/connection-editor/ce-resources.c \
-	\
+connection_editor_c_gen = \
+	src/connection-editor/ce-resources.c
+
+connection_editor_hc_real = \
 	src/connection-editor/nm-connection-editor.c \
 	src/connection-editor/nm-connection-editor.h \
 	src/connection-editor/nm-connection-list.c \
@@ -628,6 +628,13 @@ src_connection_editor_nm_connection_editor_SOURCES = \
 	src/connection-editor/connection-helpers.c \
 	src/connection-editor/connection-helpers.h
 
+bin_PROGRAMS += src/connection-editor/nm-connection-editor
+
+src_connection_editor_nm_connection_editor_SOURCES = \
+	$(connection_editor_h_gen) \
+	$(connection_editor_c_gen) \
+	$(connection_editor_hc_real)
+
 src_connection_editor_nm_connection_editor_CPPFLAGS = \
 	-DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_4 \
 	-DNM_VERSION_MAX_ALLOWED=NM_VERSION_1_4 \
@@ -654,6 +661,7 @@ src_connection_editor_nm_connection_editor_LDADD = \
 	$(JANSSON_LIBS) \
 	-lm
 
+$(src_connection_editor_nm_connection_editor_OBJECTS): $(connection_editor_h_gen)
 
 EXTRA_DIST += \
 	src/connection-editor/ce-ip4-routes.ui \
