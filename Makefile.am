@@ -664,7 +664,6 @@ src_connection_editor_nm_connection_editor_CPPFLAGS = \
 
 src_connection_editor_nm_connection_editor_LDADD = \
 	src/wireless-security/libwireless-security-libnm.la \
-	src/utils/libutils-libnm.la \
 	src/libnma/libnma.la \
 	$(GTK_LIBS) \
 	$(LIBNM_LIBS) \
@@ -787,7 +786,6 @@ src_nm_applet_CPPFLAGS = \
 	$(APPINDICATOR_CFLAGS)
 
 src_nm_applet_LDADD = \
-	src/utils/libutils-libnm.la \
 	src/wireless-security/libwireless-security-libnm.la \
 	src/libnma/libnma.la \
 	$(GTK_LIBS) \
