@@ -151,10 +151,9 @@ GLIB_CONFIG_NMA
 GLIB_GSETTINGS
 AC_PATH_PROG(GLIB_COMPILE_RESOURCES, glib-compile-resources)
 
-dnl
-dnl Compiler flags
-dnl
 NM_COMPILER_WARNINGS([yes])
+NM_LTO
+NM_LD_GC
 
 
 AC_ARG_WITH(more-asserts,
@@ -183,5 +182,7 @@ org.gnome.nm-applet.gschema.xml
 AC_OUTPUT
 
 echo ""
-echo "  --with-libnm-gtk=${with_libnm_gtk}"
+echo "  Build legacy library libnm-gtk: --with-libnm-gtk=${with_libnm_gtk}"
+echo "  LTO: --enable-lto=$enable_lto"
+echo "  Linker garbage collection: --enable-ld-gc=$enable_ld_gc"
 echo ""
