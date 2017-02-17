@@ -643,8 +643,6 @@ nodist_src_connection_editor_nm_connection_editor_SOURCES = \
 	$(connection_editor_c_gen)
 
 src_connection_editor_nm_connection_editor_CPPFLAGS = \
-	-DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_4 \
-	-DNM_VERSION_MAX_ALLOWED=NM_VERSION_1_4 \
 	-DICONDIR=\""$(datadir)/icons"\" \
 	-DBINDIR=\""$(bindir)"\" \
 	-DSYSCONFDIR=\""$(sysconfdir)"\" \
@@ -762,8 +760,6 @@ nodist_src_nm_applet_SOURCES = \
 	$(nm_applet_c_gen)
 
 src_nm_applet_CPPFLAGS = \
-	-DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_4 \
-	-DNM_VERSION_MAX_ALLOWED=NM_VERSION_1_4 \
 	-DICONDIR=\""$(datadir)/icons"\" \
 	-DBINDIR=\""$(bindir)"\" \
 	-DSYSCONFDIR=\""$(sysconfdir)"\" \
