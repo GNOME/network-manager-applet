@@ -32,7 +32,8 @@ DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-introspection \
 	--enable-more-warnings=error \
 	--with-wwan \
-	--with-team
+	--with-team \
+	--with-gcr
 
 man_MANS =
 
@@ -528,13 +529,15 @@ src_libnma_libnma_la_CFLAGS = \
 	"-I$(srcdir)/src/libnma" \
 	$(GTK_CFLAGS) \
 	$(LIBNM_CFLAGS) \
-	$(GUDEV_CFLAGS)
+	$(GUDEV_CFLAGS) \
+	$(GCR_CFLAGS)
 
 src_libnma_libnma_la_LIBADD = \
 	src/wireless-security/libwireless-security-libnm.la \
 	$(GTK_LIBS) \
 	$(LIBNM_LIBS) \
-	$(GUDEV_LIBS)
+	$(GUDEV_LIBS) \
+	$(GCR_LIBS)
 
 EXTRA_src_libnma_libnma_la_DEPENDENCIES = src/libnma/libnma.ver
 
