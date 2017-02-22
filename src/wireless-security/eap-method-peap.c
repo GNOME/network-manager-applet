@@ -35,6 +35,7 @@
 struct _EAPMethodPEAP {
 	EAPMethod parent;
 
+	const char *password_flags_name;
 	GtkSizeGroup *size_group;
 	WirelessSecurity *sec_parent;
 	gboolean is_editor;
@@ -134,7 +135,7 @@ add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 }
 
 static void
-fill_connection (EAPMethod *parent, NMConnection *connection, NMSettingSecretFlags flags)
+fill_connection (EAPMethod *parent, NMConnection *connection)
 {
 	NMSetting8021x *s_8021x;
 	NMSetting8021xCKFormat format = NM_SETTING_802_1X_CK_FORMAT_UNKNOWN;
@@ -190,7 +191,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection, NMSettingSecretFla
 	gtk_tree_model_get (model, &iter, I_METHOD_COLUMN, &eap, -1);
 	g_assert (eap);
 
-	eap_method_fill_connection (eap, connection, flags);
+	eap_method_fill_connection (eap, connection);
 	eap_method_unref (eap);
 }
 static void
@@ -356,8 +357,8 @@ eap_method_peap_new (WirelessSecurity *ws_parent,
 	if (!parent)
 		return NULL;
 
-	parent->password_flags_name = NM_SETTING_802_1X_PASSWORD;
 	method = (EAPMethodPEAP *) parent;
+	method->password_flags_name = NM_SETTING_802_1X_PASSWORD;
 	method->sec_parent = ws_parent;
 	method->is_editor = is_editor;
 

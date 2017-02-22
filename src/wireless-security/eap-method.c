@@ -70,14 +70,13 @@ eap_method_add_to_size_group (EAPMethod *method, GtkSizeGroup *group)
 
 void
 eap_method_fill_connection (EAPMethod *method,
-                            NMConnection *connection,
-                            NMSettingSecretFlags flags)
+                            NMConnection *connection)
 {
 	g_return_if_fail (method != NULL);
 	g_return_if_fail (connection != NULL);
 
 	g_assert (method->fill_connection);
-	return (*(method->fill_connection)) (method, connection, flags);
+	return (*(method->fill_connection)) (method, connection);
 }
 
 void
