@@ -22,6 +22,7 @@
 
 #include "nm-default.h"
 #include "nma-cert-chooser.h"
+#include "nma-file-cert-chooser.h"
 
 /**
  * SECTION:nma-cert-chooser
@@ -636,7 +637,12 @@ nma_cert_chooser_get_key_password_flags (NMACertChooser *cert_chooser)
 static GObject *
 constructor (GType type, guint n_construct_properties, GObjectConstructParam *construct_properties)
 {
-	g_return_val_if_reached (NULL);
+	if (type == NMA_TYPE_CERT_CHOOSER)
+		type = NMA_TYPE_FILE_CERT_CHOOSER;
+
+	return G_OBJECT_CLASS (nma_cert_chooser_parent_class)->constructor (type,
+	                                                                    n_construct_properties,
+	                                                                    construct_properties);
 }
 
 static void

@@ -361,6 +361,7 @@ libnm_gtk_c_real = \
 	src/libnm-gtk/nm-mobile-providers.c \
 	src/libnm-gtk/nm-vpn-password-dialog.c \
 	src/libnma/nma-cert-chooser.c \
+	src/libnma/nma-file-cert-chooser.c \
 	src/libnm-gtk/init.c
 
 src_libnm_gtk_libnmgtkdir = $(includedir)/libnm-gtk
@@ -491,7 +492,11 @@ libnma_c_real = \
 	src/libnma/nma-vpn-password-dialog.c \
 	src/libnma/nma-ui-utils.c \
 	src/libnma/init.c \
-	src/libnma/nma-cert-chooser.c
+	src/libnma/nma-cert-chooser.c \
+	src/libnma/nma-file-cert-chooser.c
+
+libnma_h_priv_real = \
+	src/libnma/nma-file-cert-chooser.h
 
 src_libnma_libnmadir = $(includedir)/libnma
 
@@ -501,9 +506,11 @@ src_libnma_libnma_HEADERS = \
 lib_LTLIBRARIES += src/libnma/libnma.la
 
 src_libnma_libnma_la_SOURCES = \
+	$(libnma_h_priv_real) \
 	$(libnma_c_real)
 
 nodist_src_libnma_libnma_la_SOURCES = \
+	$(libnma_h_priv_gen) \
 	$(libnma_c_gen)
 
 src_libnma_libnma_la_CFLAGS = \
@@ -528,8 +535,6 @@ src_libnma_libnma_la_LIBADD = \
 	$(GTK_LIBS) \
 	$(LIBNM_LIBS) \
 	$(GUDEV_LIBS)
-
-$(src_libnma_libnma_la_OBJECTS): $(libnma_h_priv_gen)
 
 EXTRA_src_libnma_libnma_la_DEPENDENCIES = src/libnma/libnma.ver
 
@@ -854,10 +859,12 @@ CFILE_GLOB = $(top_srcdir)/src/libnma/*.c
 
 IGNORE_HFILES = \
 	nma-resources.h \
-	nma-version.h
+	nma-version.h \
+	nma-file-cert-chooser.h
 
 mkdb_ignore_c_files = \
-	nma-resources.c
+	nma-resources.c \
+	nma-file-cert-chooser.c
 
 MKDB_OPTIONS = --ignore-files "$(IGNORE_HFILES) $(mkdb_ignore_c_files)"
 
