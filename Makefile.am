@@ -502,11 +502,13 @@ libnma_h_priv_real = \
 if WITH_GCR
 libnma_h_priv_real += \
 	src/libnma/nma-pkcs11-token-login-dialog.h \
-	src/libnma/nma-pkcs11-cert-chooser-dialog.h
+	src/libnma/nma-pkcs11-cert-chooser-dialog.h \
+	src/libnma/nma-cert-chooser-button.h
 
 libnma_c_real += \
 	src/libnma/nma-pkcs11-token-login-dialog.c \
-	src/libnma/nma-pkcs11-cert-chooser-dialog.c
+	src/libnma/nma-pkcs11-cert-chooser-dialog.c \
+	src/libnma/nma-cert-chooser-button.c
 endif
 
 src_libnma_libnmadir = $(includedir)/libnma
@@ -876,13 +878,15 @@ IGNORE_HFILES = \
 	nma-version.h \
 	nma-file-cert-chooser.h \
 	nma-pkcs11-token-login-dialog.h \
-	nma-pkcs11-cert-chooser-dialog.h
+	nma-pkcs11-cert-chooser-dialog.h \
+	nma-cert-chooser-button.h
 
 mkdb_ignore_c_files = \
 	nma-resources.c \
 	nma-file-cert-chooser.c \
 	nma-pkcs11-token-login-dialog.c \
-	nma-pkcs11-cert-chooser-dialog.c
+	nma-pkcs11-cert-chooser-dialog.c \
+	nma-cert-chooser-button.c
 
 MKDB_OPTIONS = --ignore-files "$(IGNORE_HFILES) $(mkdb_ignore_c_files)"
 
