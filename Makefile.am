@@ -499,6 +499,14 @@ libnma_c_real = \
 libnma_h_priv_real = \
 	src/libnma/nma-file-cert-chooser.h
 
+if WITH_GCR
+libnma_h_priv_real += \
+	src/libnma/nma-pkcs11-token-login-dialog.h
+
+libnma_c_real += \
+	src/libnma/nma-pkcs11-token-login-dialog.c
+endif
+
 src_libnma_libnmadir = $(includedir)/libnma
 
 src_libnma_libnma_HEADERS = \
@@ -566,6 +574,7 @@ EXTRA_DIST += \
 	src/libnma/libnma.pc.in \
 	src/libnma/libnma.ver \
 	src/libnma/wifi.ui \
+	src/libnma/nma-pkcs11-token-login-dialog.ui \
 	src/libnma/nma.gresource.xml
 
 ###############################################################################
@@ -863,11 +872,13 @@ CFILE_GLOB = $(top_srcdir)/src/libnma/*.c
 IGNORE_HFILES = \
 	nma-resources.h \
 	nma-version.h \
-	nma-file-cert-chooser.h
+	nma-file-cert-chooser.h \
+	nma-pkcs11-token-login-dialog.h
 
 mkdb_ignore_c_files = \
 	nma-resources.c \
-	nma-file-cert-chooser.c
+	nma-file-cert-chooser.c \
+	nma-pkcs11-token-login-dialog.c
 
 MKDB_OPTIONS = --ignore-files "$(IGNORE_HFILES) $(mkdb_ignore_c_files)"
 
