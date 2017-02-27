@@ -503,12 +503,14 @@ if WITH_GCR
 libnma_h_priv_real += \
 	src/libnma/nma-pkcs11-token-login-dialog.h \
 	src/libnma/nma-pkcs11-cert-chooser-dialog.h \
-	src/libnma/nma-cert-chooser-button.h
+	src/libnma/nma-cert-chooser-button.h \
+	src/libnma/nma-pkcs11-cert-chooser.h
 
 libnma_c_real += \
 	src/libnma/nma-pkcs11-token-login-dialog.c \
 	src/libnma/nma-pkcs11-cert-chooser-dialog.c \
-	src/libnma/nma-cert-chooser-button.c
+	src/libnma/nma-cert-chooser-button.c \
+	src/libnma/nma-pkcs11-cert-chooser.c
 endif
 
 src_libnma_libnmadir = $(includedir)/libnma
@@ -579,6 +581,7 @@ EXTRA_DIST += \
 	src/libnma/libnma.ver \
 	src/libnma/wifi.ui \
 	src/libnma/nma-pkcs11-token-login-dialog.ui \
+	src/libnma/nma-pkcs11-cert-chooser-dialog.ui \
 	src/libnma/nma.gresource.xml
 
 ###############################################################################
@@ -879,14 +882,16 @@ IGNORE_HFILES = \
 	nma-file-cert-chooser.h \
 	nma-pkcs11-token-login-dialog.h \
 	nma-pkcs11-cert-chooser-dialog.h \
-	nma-cert-chooser-button.h
+	nma-cert-chooser-button.h \
+	nma-pkcs11-cert-chooser.h
 
 mkdb_ignore_c_files = \
 	nma-resources.c \
 	nma-file-cert-chooser.c \
 	nma-pkcs11-token-login-dialog.c \
 	nma-pkcs11-cert-chooser-dialog.c \
-	nma-cert-chooser-button.c
+	nma-cert-chooser-button.c \
+	nma-pkcs11-cert-chooser.c
 
 MKDB_OPTIONS = --ignore-files "$(IGNORE_HFILES) $(mkdb_ignore_c_files)"
 
