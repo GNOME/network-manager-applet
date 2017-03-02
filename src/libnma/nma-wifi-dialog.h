@@ -19,11 +19,6 @@
  * Copyright 2007 - 2014 Red Hat, Inc.
  */
 
-
-/* WARNING: this file is private API between nm-applet and various GNOME
- * bits; it may change without notice and is not guaranteed to be stable.
- */
-
 #ifndef NMA_WIFI_DIALOG_H
 #define NMA_WIFI_DIALOG_H
 

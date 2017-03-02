@@ -111,6 +111,7 @@ nma_mobile_access_method_unref (NMAMobileAccessMethod *method)
 
 /**
  * nma_mobile_access_method_get_name:
+ * @method: a #NMAMobileAccessMethod
  *
  * Returns: (transfer none): the name of the method.
  */
@@ -124,6 +125,7 @@ nma_mobile_access_method_get_name (NMAMobileAccessMethod *method)
 
 /**
  * nma_mobile_access_method_get_username:
+ * @method: a #NMAMobileAccessMethod
  *
  * Returns: (transfer none): the username.
  */
@@ -137,6 +139,7 @@ nma_mobile_access_method_get_username (NMAMobileAccessMethod *method)
 
 /**
  * nma_mobile_access_method_get_password:
+ * @method: a #NMAMobileAccessMethod
  *
  * Returns: (transfer none): the password.
  */
@@ -150,6 +153,7 @@ nma_mobile_access_method_get_password (NMAMobileAccessMethod *method)
 
 /**
  * nma_mobile_access_method_get_gateway:
+ * @method: a #NMAMobileAccessMethod
  *
  * Returns: (transfer none): the gateway.
  */
@@ -163,6 +167,7 @@ nma_mobile_access_method_get_gateway (NMAMobileAccessMethod *method)
 
 /**
  * nma_mobile_access_method_get_dns:
+ * @method: a #NMAMobileAccessMethod
  *
  * Returns: (transfer none) (array zero-terminated=1) (element-type utf8): the list of DNS.
  */
@@ -176,6 +181,7 @@ nma_mobile_access_method_get_dns (NMAMobileAccessMethod *method)
 
 /**
  * nma_mobile_access_method_get_3gpp_apn:
+ * @method: a #NMAMobileAccessMethod
  *
  * Returns: (transfer none): the 3GPP APN.
  */
@@ -189,6 +195,7 @@ nma_mobile_access_method_get_3gpp_apn (NMAMobileAccessMethod *method)
 
 /**
  * nma_mobile_access_method_get_family:
+ * @method: a #NMAMobileAccessMethod
  *
  * Returns: a #NMAMobileFamily.
  */
@@ -268,6 +275,7 @@ nma_mobile_provider_unref (NMAMobileProvider *provider)
 
 /**
  * nma_mobile_provider_get_name:
+ * @provider: a #NMAMobileProvider
  *
  * Returns: (transfer none): the name of the provider.
  */
@@ -378,6 +386,7 @@ nma_country_info_unref (NMACountryInfo *country_info)
 
 /**
  * nma_country_info_get_country_code:
+ * @country_info: a #NMACountryInfo
  *
  * Returns: (transfer none): the code of the country.
  */
@@ -391,6 +400,7 @@ nma_country_info_get_country_code (NMACountryInfo *country_info)
 
 /**
  * nma_country_info_get_country_name:
+ * @country_info: a #NMACountryInfo
  *
  * Returns: (transfer none): the name of the country.
  */
@@ -404,6 +414,7 @@ nma_country_info_get_country_name (NMACountryInfo *country_info)
 
 /**
  * nma_country_info_get_providers:
+ * @country_info: a #NMACountryInfo
  *
  * Returns: (element-type NMAMobileProvider) (transfer none): the
  *	 list of #NMAMobileProvider this country exposes.
@@ -1134,7 +1145,7 @@ struct _NMAMobileProvidersDatabasePrivate {
  * @self: a #NMAMobileProvidersDatabase.
  *
  * Returns: (element-type utf8 NMACountryInfo) (transfer none): a
- *	 hash table where keys are country names #gchar and values are #NMACountryInfos.
+ *	 hash table where keys are country names #gchar and values are #NMACountryInfo.
  */
 GHashTable *
 nma_mobile_providers_database_get_countries (NMAMobileProvidersDatabase *self)

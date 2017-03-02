@@ -20,10 +20,6 @@
  * (C) Copyright 2008 - 2011 Red Hat, Inc.
  */
 
-/* WARNING: this file is private API between nm-applet and various GNOME
- * bits; it may change without notice and is not guaranteed to be stable.
- */
-
 #ifndef MOBILE_WIZARD_H
 #define MOBILE_WIZARD_H
 
@@ -33,6 +29,17 @@
 
 typedef struct NMAMobileWizard NMAMobileWizard;
 
+/**
+ * NMAMobileWizardAccessMethod:
+ * @provider_name: The mobile network provider name
+ * @plan_name: The provided network access billing plan
+ * @devtype: Required NetworkManager device capabilities
+ * @username: User login
+ * @password: User secret
+ * @gsm_apn: The GSM Access Point Name
+ *
+ * Network access method details.
+ */
 typedef struct {
 	char *provider_name;
 	char *plan_name;

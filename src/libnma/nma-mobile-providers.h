@@ -22,10 +22,6 @@
  * Copyright (C) 2012 Lanedo GmbH.
  */
 
-/* WARNING: this file is private API between nm-applet and various GNOME
- * bits; it may change without notice and is not guaranteed to be stable.
- */
-
 #ifndef NM_MOBILE_PROVIDERS_H
 #define NM_MOBILE_PROVIDERS_H
 
@@ -36,6 +32,12 @@
 /******************************************************************************/
 /* Access method type */
 
+/**
+ * NMAMobileFamily:
+ * @NMA_MOBILE_FAMILY_UNKNOWN: Unknown or invalid network access method
+ * @NMA_MOBILE_FAMILY_3GPP: 3rd Generation Partnership Project (3GPP) network
+ * @NMA_MOBILE_FAMILY_CDMA: A CDMA network
+ */
 typedef enum {
     NMA_MOBILE_FAMILY_UNKNOWN = 0,
     NMA_MOBILE_FAMILY_3GPP,
