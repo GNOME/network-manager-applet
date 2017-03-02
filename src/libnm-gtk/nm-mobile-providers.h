@@ -22,10 +22,6 @@
  * Copyright (C) 2012 Lanedo GmbH.
  */
 
-/* WARNING: this file is private API between nm-applet and various GNOME
- * bits; it may change without notice and is not guaranteed to be stable.
- */
-
 #ifndef NM_MOBILE_PROVIDERS_H
 #define NM_MOBILE_PROVIDERS_H
 
