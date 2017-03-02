@@ -71,6 +71,11 @@ else
     AC_DEFINE_UNQUOTED([ISO_CODES_PREFIX],["$prefix"],[ISO codes prefix])
 fi
 
+dnl
+dnl API documentation
+dnl
+GTK_DOC_CHECK(1.0)
+
 AC_ARG_WITH(libnm-gtk, AS_HELP_STRING([--without-libnm-gtk], [dont build legacy library libnm-gtk which depends on libnm-glib/libnm-util/dbus-glib]))
 if test "$with_libnm_gtk" != no; then
 	PKG_CHECK_MODULES(LIBNM_GLIB,

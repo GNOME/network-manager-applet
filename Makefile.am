@@ -1,5 +1,6 @@
 include $(GLIB_MAKEFILE)
 -include $(INTROSPECTION_MAKEFILE)
+include $(top_srcdir)/gtk-doc.make
 
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 
@@ -22,10 +23,6 @@ check_programs =
 check_local =
 
 TESTS =
-
-EXTRA_DIST =
-
-CLEANFILES =
 
 DISTCLEANFILES =
 
@@ -829,6 +826,32 @@ EXTRA_DIST += \
 man_MANS += \
 	man/nm-applet.1 \
 	man/nm-connection-editor.1
+
+###############################################################################
+
+DOC_MODULE = libnma
+
+DOC_SOURCE_DIR = $(top_srcdir)/src/libnma
+
+SCAN_OPTIONS=--rebuild-types --rebuild-sections
+
+DOC_MAIN_SGML_FILE = libnma-docs.xml
+
+GTKDOC_LIBS = src/libnma/libnma.la
+
+scan-build.stamp: $(GTKDOC_LIBS)
+
+HFILE_GLOB = $(top_srcdir)/src/libnma/*.h
+
+CFILE_GLOB = $(top_srcdir)/src/libnma/*.c
+
+IGNORE_HFILES = \
+	nma-resources.h
+
+mkdb_ignore_c_files = \
+	nma-resources.c
+
+MKDB_OPTIONS = --ignore-files "$(IGNORE_HFILES) $(mkdb_ignore_c_files)"
 
 ###############################################################################
 
