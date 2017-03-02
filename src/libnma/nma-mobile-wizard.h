@@ -33,6 +33,17 @@
 
 typedef struct NMAMobileWizard NMAMobileWizard;
 
+/**
+ * NMAMobileWizardAccessMethod:
+ * @provider_name: The mobile network provider name
+ * @plan_name: The provided network access billing plan
+ * @devtype: Required NetworkManager device capabilities
+ * @username: User login
+ * @password: User secret
+ * @gsm_apn: The GSM Access Point Name
+ *
+ * Network access method details.
+ */
 typedef struct {
 	char *provider_name;
 	char *plan_name;

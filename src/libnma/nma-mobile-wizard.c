@@ -1565,7 +1565,14 @@ get_country_from_locale (void)
 
 /**
  * nma_mobile_wizard_new: (skip)
+ * @parent:
+ * @window_group:
+ * @modem_caps:
+ * @will_connect_after:
  * @cb: (scope async):
+ * @user_data:
+ *
+ * Returns: the newly created #NMAMobileWizard
  */
 NMAMobileWizard *
 nma_mobile_wizard_new (GtkWindow *parent,
