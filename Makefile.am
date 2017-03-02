@@ -350,7 +350,8 @@ libnm_gtk_h_pub = \
 	src/libnm-gtk/nm-mobile-wizard.h \
 	src/libnm-gtk/nm-ui-utils.h \
 	src/libnm-gtk/nm-mobile-providers.h \
-	src/libnm-gtk/nm-vpn-password-dialog.h
+	src/libnm-gtk/nm-vpn-password-dialog.h \
+	src/libnm-gtk/nm-cert-chooser.h
 
 libnm_gtk_c_real = \
 	src/libnm-gtk/nm-wifi-dialog.c \
@@ -359,6 +360,7 @@ libnm_gtk_c_real = \
 	src/libnm-gtk/nm-ui-utils.c \
 	src/libnm-gtk/nm-mobile-providers.c \
 	src/libnm-gtk/nm-vpn-password-dialog.c \
+	src/libnma/nma-cert-chooser.c \
 	src/libnm-gtk/init.c
 
 src_libnm_gtk_libnmgtkdir = $(includedir)/libnm-gtk
@@ -479,7 +481,8 @@ libnma_h_pub = \
 	src/libnma/nma-mobile-wizard.h \
 	src/libnma/nma-mobile-providers.h \
 	src/libnma/nma-vpn-password-dialog.h \
-	src/libnma/nma-ui-utils.h
+	src/libnma/nma-ui-utils.h \
+	src/libnma/nma-cert-chooser.h
 
 libnma_c_real = \
 	src/libnma/nma-wifi-dialog.c \
@@ -487,7 +490,8 @@ libnma_c_real = \
 	src/libnma/nma-mobile-providers.c \
 	src/libnma/nma-vpn-password-dialog.c \
 	src/libnma/nma-ui-utils.c \
-	src/libnma/init.c
+	src/libnma/init.c \
+	src/libnma/nma-cert-chooser.c
 
 src_libnma_libnmadir = $(includedir)/libnma
 
