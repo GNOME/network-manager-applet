@@ -43,18 +43,18 @@
 #include <libmm-glib.h>
 #endif
 
-#define NM_TYPE_APPLET			(nma_get_type())
-#define NM_APPLET(object)		(G_TYPE_CHECK_INSTANCE_CAST((object), NM_TYPE_APPLET, NMApplet))
-#define NM_APPLET_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST((klass), NM_TYPE_APPLET, NMAppletClass))
-#define NM_IS_APPLET(object)		(G_TYPE_CHECK_INSTANCE_TYPE((object), NM_TYPE_APPLET))
-#define NM_IS_APPLET_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE((klass), NM_TYPE_APPLET))
-#define NM_APPLET_GET_CLASS(object)(G_TYPE_INSTANCE_GET_CLASS((object), NM_TYPE_APPLET, NMAppletClass))
+#define NM_TYPE_APPLET              (nma_get_type())
+#define NM_APPLET(object)           (G_TYPE_CHECK_INSTANCE_CAST((object), NM_TYPE_APPLET, NMApplet))
+#define NM_APPLET_CLASS(klass)      (G_TYPE_CHECK_CLASS_CAST((klass), NM_TYPE_APPLET, NMAppletClass))
+#define NM_IS_APPLET(object)        (G_TYPE_CHECK_INSTANCE_TYPE((object), NM_TYPE_APPLET))
+#define NM_IS_APPLET_CLASS(klass)   (G_TYPE_CHECK_CLASS_TYPE((klass), NM_TYPE_APPLET))
+#define NM_APPLET_GET_CLASS(object) (G_TYPE_INSTANCE_GET_CLASS((object), NM_TYPE_APPLET, NMAppletClass))
 
 typedef struct {
-	GApplicationClass	parent_class;
-} NMAppletClass; 
+	GApplicationClass parent_class;
+} NMAppletClass;
 
-#define APPLET_PREFS_SCHEMA "org.gnome.nm-applet"
+#define APPLET_PREFS_SCHEMA                       "org.gnome.nm-applet"
 #define PREF_DISABLE_CONNECTED_NOTIFICATIONS      "disable-connected-notifications"
 #define PREF_DISABLE_DISCONNECTED_NOTIFICATIONS   "disable-disconnected-notifications"
 #define PREF_DISABLE_VPN_NOTIFICATIONS            "disable-vpn-notifications"
@@ -62,9 +62,9 @@ typedef struct {
 #define PREF_SUPPRESS_WIFI_NETWORKS_AVAILABLE     "suppress-wireless-networks-available"
 #define PREF_SHOW_APPLET                          "show-applet"
 
-#define ICON_LAYER_LINK 0
-#define ICON_LAYER_VPN 1
-#define ICON_LAYER_MAX ICON_LAYER_VPN
+#define ICON_LAYER_LINK                           0
+#define ICON_LAYER_VPN                            1
+#define ICON_LAYER_MAX                            ICON_LAYER_VPN
 
 typedef struct NMADeviceClass NMADeviceClass;
 
@@ -99,22 +99,22 @@ typedef struct {
 	NMADeviceClass *bt_class;
 
 	/* Data model elements */
-	guint			update_icon_id;
-	char *			tip;
+	guint           update_icon_id;
+	char *          tip;
 
 	/* Animation stuff */
-	int				animation_step;
-	guint			animation_id;
+	int             animation_step;
+	guint           animation_id;
 #define NUM_CONNECTING_FRAMES 11
 #define NUM_VPN_CONNECTING_FRAMES 14
 
-	GtkIconTheme *	icon_theme;
-	GHashTable *	icon_cache;
-	GdkPixbuf *		fallback_icon;
+	GtkIconTheme *  icon_theme;
+	GHashTable *    icon_cache;
+	GdkPixbuf *     fallback_icon;
 	int             icon_size;
 
 	/* Active status icon pixbufs */
-	GdkPixbuf *		icon_layers[ICON_LAYER_MAX + 1];
+	GdkPixbuf *     icon_layers[ICON_LAYER_MAX + 1];
 
 	/* Direct UI elements */
 #ifdef WITH_APPINDICATOR
@@ -124,24 +124,24 @@ typedef struct {
 
 	GtkStatusIcon * status_icon;
 
-	GtkWidget *		menu;
-	GtkWidget *		context_menu;
+	GtkWidget *     menu;
+	GtkWidget *     context_menu;
 
-	GtkWidget *		notifications_enabled_item;
-	guint			notifications_enabled_toggled_id;
+	GtkWidget *     notifications_enabled_item;
+	guint           notifications_enabled_toggled_id;
 
-	GtkWidget *		networking_enabled_item;
+	GtkWidget *     networking_enabled_item;
 	guint           networking_enabled_toggled_id;
-	GtkWidget *		wifi_enabled_item;
+	GtkWidget *     wifi_enabled_item;
 	guint           wifi_enabled_toggled_id;
-	GtkWidget *		wwan_enabled_item;
+	GtkWidget *     wwan_enabled_item;
 	guint           wwan_enabled_toggled_id;
 
-	GtkWidget *		info_menu_item;
-	GtkWidget *		connections_menu_item;
+	GtkWidget *     info_menu_item;
+	GtkWidget *     connections_menu_item;
 
-	GtkBuilder *	info_dialog_ui;
-	NotifyNotification*	notification;
+	GtkBuilder *    info_dialog_ui;
+	NotifyNotification* notification;
 
 	/* Tracker objects for secrets requests */
 	GSList *        secrets_reqs;
@@ -292,7 +292,7 @@ gboolean applet_wifi_create_wifi_network (NMApplet *applet);
 gboolean applet_wifi_can_create_wifi_network (NMApplet *applet);
 
 typedef enum {
-	NMA_ADD_ACTIVE = 1,
+	NMA_ADD_ACTIVE   = 1,
 	NMA_ADD_INACTIVE = 2,
 } NMAAddActiveInactiveEnum;
 
