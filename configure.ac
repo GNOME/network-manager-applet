@@ -111,7 +111,7 @@ fi
 PKG_CHECK_MODULES(NOTIFY, [libnotify >= 0.4.3])
 
 PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 3.4)
-GTK_CFLAGS="$GTK_CFLAGS -DGDK_VERSION_MIN_REQUIRED=GDK_VERSION_3_4"
+GTK_CFLAGS="$GTK_CFLAGS -DGDK_VERSION_MIN_REQUIRED=GDK_VERSION_3_4 -DGTK_VERSION_MAX_ALLOWED=GTK_VERSION_3_4"
 
 AC_ARG_WITH([appindicator], AS_HELP_STRING([--with-appindicator|--without-appindicator], [Build with libappindicator support instead of xembed systray support.]))
 if test "$with_appindicator" == "yes"; then
