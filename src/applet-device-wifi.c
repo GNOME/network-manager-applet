@@ -514,6 +514,15 @@ done:
 	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
+static gboolean
+can_get_permission (NMApplet *applet, NMClientPermission perm)
+{
+	if (   applet->permissions[perm] == NM_CLIENT_PERMISSION_RESULT_YES
+	    || applet->permissions[perm] == NM_CLIENT_PERMISSION_RESULT_AUTH)
+		return TRUE;
+	return FALSE;
+}
+
 static void
 _do_new_auto_connection (NMApplet *applet,
                          NMDevice *device,
@@ -590,6 +599,15 @@ _do_new_auto_connection (NMApplet *applet,
 	 * Dialog Of Doom.
 	 */
 	if (s_8021x) {
+		if (!can_get_permission (applet, NM_CLIENT_PERMISSION_SETTINGS_MODIFY_SYSTEM) &&
+		    !can_get_permission (applet, NM_CLIENT_PERMISSION_SETTINGS_MODIFY_OWN)) {
+			const char *text = _("Failed to add new connection");
+			const char *err_text = _("Insufficient privileges.");
+			g_warning ("%s: %s", text, err_text);
+			utils_show_error_dialog (_("Connection failure"), text, err_text, FALSE, NULL);
+			g_clear_object (&connection);
+			return;
+		}
 		more_info = g_malloc0 (sizeof (*more_info));
 		more_info->applet = applet;
 		more_info->callback = callback;
