@@ -474,6 +474,7 @@ libnma_c_gen = \
 	src/libnma/nma-resources.c
 
 libnma_h_pub = \
+	src/libnma/nma-version.h \
 	src/libnma/nma-wifi-dialog.h \
 	src/libnma/nma-mobile-wizard.h \
 	src/libnma/nma-mobile-providers.h \
@@ -549,6 +550,7 @@ INTROSPECTION_GIRS += src/libnma/NMA-1.0.gir
 endif
 
 EXTRA_DIST += \
+	src/libnma/nma-version.h.in \
 	src/libnma/libnma.pc.in \
 	src/libnma/libnma.ver \
 	src/libnma/wifi.ui \
@@ -847,7 +849,8 @@ HFILE_GLOB = $(top_srcdir)/src/libnma/*.h
 CFILE_GLOB = $(top_srcdir)/src/libnma/*.c
 
 IGNORE_HFILES = \
-	nma-resources.h
+	nma-resources.h \
+	nma-version.h
 
 mkdb_ignore_c_files = \
 	nma-resources.c
