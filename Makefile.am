@@ -532,7 +532,7 @@ pkgconfig_DATA += src/libnma/libnma.pc
 
 if HAVE_INTROSPECTION
 src/libnma/NMA-1.0.gir: src/libnma/libnma.la
-src_libnma_NMA_1_0_gir_INCLUDES = NMClient-1.0 NetworkManager-1.0 Gtk-3.0
+src_libnma_NMA_1_0_gir_INCLUDES = NM-1.0 Gtk-3.0
 src_libnma_NMA_1_0_gir_EXPORT_PACKAGES = libnma
 src_libnma_NMA_1_0_gir_CFLAGS = $(src_libnma_libnma_la_CFLAGS)
 src_libnma_NMA_1_0_gir_LIBS = src/libnma/libnma.la
