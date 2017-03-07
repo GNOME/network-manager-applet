@@ -27,7 +27,12 @@ TESTS =
 DISTCLEANFILES =
 
 DISTCHECK_CONFIGURE_FLAGS = \
-	--enable-more-warnings=yes
+	--disable-dependency-tracking \
+	--enable-gtk-doc \
+	--enable-introspection \
+	--enable-more-warnings=error \
+	--with-wwan \
+	--with-team
 
 man_MANS =
 
