@@ -138,7 +138,7 @@ dnl Check for gudev
 PKG_CHECK_MODULES(GUDEV, gudev-1.0 >= 147)
 
 dnl Jansson for team configuration editing
-AC_ARG_WITH(team, AS_HELP_STRING([--with-team], [Enable team configuration editor in libnm (default: yes)]))
+AC_ARG_WITH(team, AS_HELP_STRING([--with-team], [Enable team configuration editor (default: yes)]))
 if (test "${with_team}" == "no"); then
     AC_DEFINE(WITH_JANSSON, 0, [Define if Jansson is available])
 else
