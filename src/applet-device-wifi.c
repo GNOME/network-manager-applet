@@ -605,7 +605,7 @@ _do_new_auto_connection (NMApplet *applet,
 			const char *err_text = _("Insufficient privileges.");
 			g_warning ("%s: %s", text, err_text);
 			utils_show_error_dialog (_("Connection failure"), text, err_text, FALSE, NULL);
-                        g_clear_object (&connection);
+			g_clear_object (&connection);
 			return;
 		}
 		more_info = g_malloc0 (sizeof (*more_info));
