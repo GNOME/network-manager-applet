@@ -40,12 +40,6 @@ static void wifi_dialog_response_cb (GtkDialog *dialog, gint response, gpointer 
 
 static NMAccessPoint *update_active_ap (NMDevice *device, NMDeviceState state, NMApplet *applet);
 
-static void _do_new_auto_connection (NMApplet *applet,
-                                     NMDevice *device,
-                                     NMAccessPoint *ap,
-                                     AppletNewAutoConnectionCallback callback,
-                                     gpointer callback_data);
-
 /*****************************************************************************/
 
 typedef struct {
@@ -455,17 +449,19 @@ can_get_permission (NMApplet *applet, NMClientPermission perm)
 	return FALSE;
 }
 
-static void
-_do_new_auto_connection (NMApplet *applet,
-                         NMDevice *device,
-                         NMAccessPoint *ap,
-                         AppletNewAutoConnectionCallback callback,
-                         gpointer callback_data)
+static gboolean
+wifi_new_auto_connection (NMDevice *device,
+                          gpointer dclass_data,
+                          AppletNewAutoConnectionCallback callback,
+                          gpointer callback_data)
 {
-	NMConnection *connection = NULL;
-	NMSettingConnection *s_con = NULL;
+	WifiMenuItemInfo *info = (WifiMenuItemInfo *) dclass_data;
+	NMApplet *applet;
+	NMAccessPoint *ap;
+	NMConnection *connection;
+	NMSettingConnection *s_con;
 	NMSettingWireless *s_wifi = NULL;
-	NMSettingWirelessSecurity *s_wsec = NULL;
+	NMSettingWirelessSecurity *s_wsec;
 	NMSetting8021x *s_8021x = NULL;
 	GBytes *ssid;
 	NM80211ApSecurityFlags wpa_flags, rsn_flags;
@@ -473,9 +469,13 @@ _do_new_auto_connection (NMApplet *applet,
 	MoreInfo *more_info;
 	char *uuid;
 
-	g_assert (applet);
-	g_assert (device);
-	g_assert (ap);
+	g_return_val_if_fail (dclass_data, FALSE);
+	g_return_val_if_fail (NM_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (NM_IS_ACCESS_POINT (info->ap), FALSE);
+	g_return_val_if_fail (NM_IS_APPLET (info->applet), FALSE);
+
+	applet = info->applet;
+	ap = info->ap;
 
 	connection = nm_simple_connection_new ();
 
@@ -538,7 +538,7 @@ _do_new_auto_connection (NMApplet *applet,
 			g_warning ("%s: %s", text, err_text);
 			utils_show_error_dialog (_("Connection failure"), text, err_text, FALSE, NULL);
 			g_clear_object (&connection);
-			return;
+			return FALSE;
 		}
 		more_info = g_malloc0 (sizeof (*more_info));
 		more_info->applet = applet;
@@ -556,23 +556,9 @@ _do_new_auto_connection (NMApplet *applet,
 		/* Everything else can just get activated right away */
 		callback (connection, TRUE, FALSE, callback_data);
 	}
-}
 
-static gboolean
-wifi_new_auto_connection (NMDevice *device,
-                          gpointer dclass_data,
-                          AppletNewAutoConnectionCallback callback,
-                          gpointer callback_data)
-{
-	WifiMenuItemInfo *info = (WifiMenuItemInfo *) dclass_data;
-
-	g_return_val_if_fail (device != NULL, FALSE);
-	g_return_val_if_fail (info->ap != NULL, FALSE);
-
-	_do_new_auto_connection (info->applet, device, info->ap, callback, callback_data);
 	return TRUE;
 }
-
 
 static void
 wifi_menu_item_activate (GtkMenuItem *item, gpointer user_data)
