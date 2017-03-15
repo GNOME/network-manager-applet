@@ -22,8 +22,8 @@
 
 #include "nm-default.h"
 #include "nma-cert-chooser.h"
-#include "nma-file-cert-chooser.h"
-#include "nma-pkcs11-cert-chooser.h"
+
+#include "nma-cert-chooser-private.h"
 
 /**
  * SECTION:nma-cert-chooser
@@ -59,6 +59,9 @@ enum {
 static guint signals[LAST_SIGNAL] = { 0 };
 
 G_DEFINE_TYPE (NMACertChooser, nma_cert_chooser, GTK_TYPE_GRID)
+
+#define NMA_CERT_CHOOSER_GET_PRIVATE(self) _NM_GET_PRIVATE (self, NMACertChooser, NMA_IS_CERT_CHOOSER)
+#define NMA_CERT_CHOOSER_GET_VTABLE(o) (NMA_CERT_CHOOSER_GET_PRIVATE (o)->vtable)
 
 static gboolean
 accu_validation_error (GSignalInvocationHint *ihint,
@@ -146,13 +149,9 @@ void
 nma_cert_chooser_set_cert_uri (NMACertChooser *cert_chooser,
                                const gchar *uri)
 {
-	NMACertChooserClass *klass = NMA_CERT_CHOOSER_GET_CLASS (cert_chooser);
-
 	g_return_if_fail (NMA_IS_CERT_CHOOSER (cert_chooser));
 
-	if (!klass->set_cert_uri)
-		return;
-	klass->set_cert_uri (cert_chooser, uri);
+	NMA_CERT_CHOOSER_GET_VTABLE (cert_chooser)->set_cert_uri (cert_chooser, uri);
 }
 
 /**
@@ -194,12 +193,9 @@ nma_cert_chooser_set_cert (NMACertChooser *cert_chooser,
 gchar *
 nma_cert_chooser_get_cert_uri (NMACertChooser *cert_chooser)
 {
-	NMACertChooserClass *klass = NMA_CERT_CHOOSER_GET_CLASS (cert_chooser);
-
 	g_return_val_if_fail (NMA_IS_CERT_CHOOSER (cert_chooser), NULL);
-	g_return_val_if_fail (klass->get_cert_uri, NULL);
 
-	return klass->get_cert_uri (cert_chooser);
+	return NMA_CERT_CHOOSER_GET_VTABLE (cert_chooser)->get_cert_uri (cert_chooser);
 }
 
 /**
@@ -236,12 +232,13 @@ nma_cert_chooser_get_cert (NMACertChooser *cert_chooser, NMSetting8021xCKScheme 
 void
 nma_cert_chooser_set_cert_password (NMACertChooser *cert_chooser, const gchar *password)
 {
-	NMACertChooserClass *klass = NMA_CERT_CHOOSER_GET_CLASS (cert_chooser);
+	const NMACertChooserVtable *vtable;
 
 	g_return_if_fail (NMA_IS_CERT_CHOOSER (cert_chooser));
 
-	if (klass->set_cert_password)
-		klass->set_cert_password (cert_chooser, password);
+	vtable = NMA_CERT_CHOOSER_GET_VTABLE (cert_chooser);
+	if (vtable->set_cert_password)
+		vtable->set_cert_password (cert_chooser, password);
 	else
 		g_warning ("Can't set certificate password");
 }
@@ -259,13 +256,14 @@ nma_cert_chooser_set_cert_password (NMACertChooser *cert_chooser, const gchar *p
 const gchar *
 nma_cert_chooser_get_cert_password (NMACertChooser *cert_chooser)
 {
-	NMACertChooserClass *klass = NMA_CERT_CHOOSER_GET_CLASS (cert_chooser);
+	const NMACertChooserVtable *vtable;
 
 	g_return_val_if_fail (NMA_IS_CERT_CHOOSER (cert_chooser), NULL);
 
-	if (!klass->get_cert_password)
+	vtable = NMA_CERT_CHOOSER_GET_VTABLE (cert_chooser);
+	if (!vtable->get_cert_password)
 		return NULL;
-	return klass->get_cert_password (cert_chooser);
+	return vtable->get_cert_password (cert_chooser);
 }
 
 /**
@@ -281,13 +279,9 @@ void
 nma_cert_chooser_set_key_uri (NMACertChooser *cert_chooser,
                               const gchar *uri)
 {
-	NMACertChooserClass *klass = NMA_CERT_CHOOSER_GET_CLASS (cert_chooser);
-
 	g_return_if_fail (NMA_IS_CERT_CHOOSER (cert_chooser));
 
-	if (!klass->set_key_uri)
-		return;
-	klass->set_key_uri (cert_chooser, uri);
+	return NMA_CERT_CHOOSER_GET_VTABLE (cert_chooser)->set_key_uri (cert_chooser, uri);
 }
 
 /**
@@ -351,12 +345,9 @@ nma_cert_chooser_get_key (NMACertChooser *cert_chooser, NMSetting8021xCKScheme *
 gchar *
 nma_cert_chooser_get_key_uri (NMACertChooser *cert_chooser)
 {
-	NMACertChooserClass *klass = NMA_CERT_CHOOSER_GET_CLASS (cert_chooser);
-
 	g_return_val_if_fail (NMA_IS_CERT_CHOOSER (cert_chooser), NULL);
-	g_return_val_if_fail (klass->get_key_uri, NULL);
 
-	return klass->get_key_uri (cert_chooser);
+	return NMA_CERT_CHOOSER_GET_VTABLE (cert_chooser)->get_key_uri (cert_chooser);
 }
 
 /**
@@ -371,12 +362,9 @@ nma_cert_chooser_get_key_uri (NMACertChooser *cert_chooser)
 void
 nma_cert_chooser_set_key_password (NMACertChooser *cert_chooser, const gchar *password)
 {
-	NMACertChooserClass *klass = NMA_CERT_CHOOSER_GET_CLASS (cert_chooser);
-
 	g_return_if_fail (NMA_IS_CERT_CHOOSER (cert_chooser));
-	g_return_if_fail (klass->set_key_password);
 
-	klass->set_key_password (cert_chooser, password);
+	NMA_CERT_CHOOSER_GET_VTABLE (cert_chooser)->set_key_password (cert_chooser, password);
 }
 
 /**
@@ -392,13 +380,9 @@ nma_cert_chooser_set_key_password (NMACertChooser *cert_chooser, const gchar *pa
 const gchar *
 nma_cert_chooser_get_key_password (NMACertChooser *cert_chooser)
 {
-	NMACertChooserClass *klass = NMA_CERT_CHOOSER_GET_CLASS (cert_chooser);
-
 	g_return_val_if_fail (NMA_IS_CERT_CHOOSER (cert_chooser), NULL);
 
-	if (!klass->get_key_password)
-		return NULL;
-	return klass->get_key_password (cert_chooser);
+	return NMA_CERT_CHOOSER_GET_VTABLE (cert_chooser)->get_key_password (cert_chooser);
 }
 
 /**
@@ -417,12 +401,9 @@ nma_cert_chooser_get_key_password (NMACertChooser *cert_chooser)
 void
 nma_cert_chooser_add_to_size_group (NMACertChooser *cert_chooser, GtkSizeGroup *group)
 {
-	NMACertChooserClass *klass = NMA_CERT_CHOOSER_GET_CLASS (cert_chooser);
-
 	g_return_if_fail (NMA_IS_CERT_CHOOSER (cert_chooser));
 
-	if (klass->add_to_size_group)
-		klass->add_to_size_group (cert_chooser, group);
+	NMA_CERT_CHOOSER_GET_VTABLE (cert_chooser)->add_to_size_group (cert_chooser, group);
 }
 
 /**
@@ -441,13 +422,9 @@ nma_cert_chooser_add_to_size_group (NMACertChooser *cert_chooser, GtkSizeGroup *
 gboolean
 nma_cert_chooser_validate (NMACertChooser *cert_chooser, GError **error)
 {
-	NMACertChooserClass *klass = NMA_CERT_CHOOSER_GET_CLASS (cert_chooser);
-
 	g_return_val_if_fail (NMA_IS_CERT_CHOOSER (cert_chooser), TRUE);
 
-	if (!klass->validate)
-		return TRUE;
-	return klass->validate (cert_chooser, error);
+	return NMA_CERT_CHOOSER_GET_VTABLE (cert_chooser)->validate (cert_chooser, error);
 }
 
 /**
@@ -472,17 +449,18 @@ nma_cert_chooser_setup_cert_password_storage (NMACertChooser *cert_chooser,
                                               gboolean with_not_required,
                                               gboolean ask_mode)
 {
-	NMACertChooserClass *klass = NMA_CERT_CHOOSER_GET_CLASS (cert_chooser);
+	const NMACertChooserVtable *vtable;
 
 	g_return_if_fail (NMA_IS_CERT_CHOOSER (cert_chooser));
 
-	if (klass->setup_cert_password_storage) {
-		klass->setup_cert_password_storage (cert_chooser,
-		                                    initial_flags,
-		                                    setting,
-		                                    password_flags_name,
-		                                    with_not_required,
-		                                    ask_mode);
+	vtable = NMA_CERT_CHOOSER_GET_VTABLE (cert_chooser);
+	if (vtable->setup_cert_password_storage) {
+		vtable->setup_cert_password_storage (cert_chooser,
+		                                     initial_flags,
+		                                     setting,
+		                                     password_flags_name,
+		                                     with_not_required,
+		                                     ask_mode);
 	}
 }
 
@@ -504,15 +482,16 @@ nma_cert_chooser_update_cert_password_storage (NMACertChooser *cert_chooser,
                                                NMSetting *setting,
                                                const char *password_flags_name)
 {
-	NMACertChooserClass *klass = NMA_CERT_CHOOSER_GET_CLASS (cert_chooser);
+	const NMACertChooserVtable *vtable;
 
 	g_return_if_fail (NMA_IS_CERT_CHOOSER (cert_chooser));
 
-	if (klass->update_cert_password_storage) {
-		klass->update_cert_password_storage (cert_chooser,
-		                                     secret_flags,
-		                                     setting,
-		                                     password_flags_name);
+	vtable = NMA_CERT_CHOOSER_GET_VTABLE (cert_chooser);
+	if (vtable->update_cert_password_storage) {
+		vtable->update_cert_password_storage (cert_chooser,
+		                                      secret_flags,
+		                                      setting,
+		                                      password_flags_name);
 	}
 }
 
@@ -532,14 +511,15 @@ nma_cert_chooser_update_cert_password_storage (NMACertChooser *cert_chooser,
 NMSettingSecretFlags
 nma_cert_chooser_get_cert_password_flags (NMACertChooser *cert_chooser)
 {
-	NMACertChooserClass *klass = NMA_CERT_CHOOSER_GET_CLASS (cert_chooser);
+	const NMACertChooserVtable *vtable;
 
 	g_return_val_if_fail (NMA_IS_CERT_CHOOSER (cert_chooser),
 	                      NM_SETTING_SECRET_FLAG_NONE);
 
-	if (!klass->get_cert_password_flags)
+	vtable = NMA_CERT_CHOOSER_GET_VTABLE (cert_chooser);
+	if (!vtable->get_cert_password_flags)
 		return NM_SETTING_SECRET_FLAG_NONE;
-	return klass->get_cert_password_flags (cert_chooser);
+	return vtable->get_cert_password_flags (cert_chooser);
 }
 
 
@@ -565,18 +545,14 @@ nma_cert_chooser_setup_key_password_storage (NMACertChooser *cert_chooser,
                                              gboolean with_not_required,
                                              gboolean ask_mode)
 {
-	NMACertChooserClass *klass = NMA_CERT_CHOOSER_GET_CLASS (cert_chooser);
-
 	g_return_if_fail (NMA_IS_CERT_CHOOSER (cert_chooser));
 
-	if (klass->setup_key_password_storage) {
-		klass->setup_key_password_storage (cert_chooser,
-		                                   initial_flags,
-		                                   setting,
-		                                   password_flags_name,
-		                                   with_not_required,
-		                                   ask_mode);
-	}
+	NMA_CERT_CHOOSER_GET_VTABLE (cert_chooser)->setup_key_password_storage (cert_chooser,
+	                                                                        initial_flags,
+	                                                                        setting,
+	                                                                        password_flags_name,
+	                                                                        with_not_required,
+	                                                                        ask_mode);
 }
 
 /**
@@ -597,16 +573,12 @@ nma_cert_chooser_update_key_password_storage (NMACertChooser *cert_chooser,
                                                NMSetting *setting,
                                                const char *password_flags_name)
 {
-	NMACertChooserClass *klass = NMA_CERT_CHOOSER_GET_CLASS (cert_chooser);
-
 	g_return_if_fail (NMA_IS_CERT_CHOOSER (cert_chooser));
 
-	if (klass->update_key_password_storage) {
-		klass->update_key_password_storage (cert_chooser,
-		                                     secret_flags,
-		                                     setting,
-		                                     password_flags_name);
-	}
+	NMA_CERT_CHOOSER_GET_VTABLE (cert_chooser)->update_key_password_storage (cert_chooser,
+	                                                                         secret_flags,
+	                                                                         setting,
+	                                                                         password_flags_name);
 }
 
 /**
@@ -625,54 +597,62 @@ nma_cert_chooser_update_key_password_storage (NMACertChooser *cert_chooser,
 NMSettingSecretFlags
 nma_cert_chooser_get_key_password_flags (NMACertChooser *cert_chooser)
 {
-	NMACertChooserClass *klass = NMA_CERT_CHOOSER_GET_CLASS (cert_chooser);
-
 	g_return_val_if_fail (NMA_IS_CERT_CHOOSER (cert_chooser),
 	                      NM_SETTING_SECRET_FLAG_NONE);
 
-	if (!klass->get_key_password_flags)
-		return NM_SETTING_SECRET_FLAG_NONE;
-	return klass->get_key_password_flags (cert_chooser);
+	return NMA_CERT_CHOOSER_GET_VTABLE (cert_chooser)->get_key_password_flags (cert_chooser);
 }
 
 static GObject *
 constructor (GType type, guint n_construct_properties, GObjectConstructParam *construct_properties)
 {
+	GObject *object;
+	NMACertChooser *cert_chooser;
 	NMACertChooserFlags flags = NMA_CERT_CHOOSER_FLAG_NONE;
+	NMACertChooserPrivate *priv;
 	int i;
+	const gchar *title = NULL;
 
-	if (type == NMA_TYPE_CERT_CHOOSER) {
-		for (i = 0; i < n_construct_properties; i++) {
-			if (strcmp (construct_properties[i].pspec->name, "flags") == 0)
-				flags |= g_value_get_uint (construct_properties[i].value);
-		}
-		type = NMA_TYPE_FILE_CERT_CHOOSER;
-#if LIBNM_BUILD && WITH_GCR
-		if ((flags & NMA_CERT_CHOOSER_FLAG_PEM) == 0)
-			type = NMA_TYPE_PKCS11_CERT_CHOOSER;
-#endif
+	object = G_OBJECT_CLASS (nma_cert_chooser_parent_class)->constructor (type,
+	                                                                      n_construct_properties,
+	                                                                      construct_properties);
+	cert_chooser = NMA_CERT_CHOOSER (object);
+	priv = NMA_CERT_CHOOSER_GET_PRIVATE (cert_chooser);
+
+	for (i = 0; i < n_construct_properties; i++) {
+		if (strcmp (construct_properties[i].pspec->name, "title") == 0)
+			title = g_value_get_string (construct_properties[i].value);
+		if (strcmp (construct_properties[i].pspec->name, "flags") == 0)
+			flags |= g_value_get_uint (construct_properties[i].value);
 	}
+	priv->vtable = &nma_cert_chooser_vtable_file;
+#if LIBNM_BUILD && WITH_GCR
+	if ((flags & NMA_CERT_CHOOSER_FLAG_PEM) == 0)
+		priv->vtable = &nma_cert_chooser_vtable_pkcs11;
+#endif
 
-	return G_OBJECT_CLASS (nma_cert_chooser_parent_class)->constructor (type,
-	                                                                    n_construct_properties,
-	                                                                    construct_properties);
+	/* Initialize the vtable and construct-time properties */
+	priv->vtable->init (cert_chooser);
+	priv->vtable->set_flags (cert_chooser, flags);
+	priv->vtable->set_title (cert_chooser, title);
+
+	return object;
 }
 
 static void
 set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
 {
-	NMACertChooserClass *cert_chooser_class = NMA_CERT_CHOOSER_GET_CLASS (object);
+	NMACertChooser *cert_chooser = NMA_CERT_CHOOSER (object);
+	const NMACertChooserVtable *vtable;
+
+	g_return_if_fail (NMA_IS_CERT_CHOOSER (cert_chooser));
+
+	vtable = NMA_CERT_CHOOSER_GET_VTABLE (cert_chooser);
 
 	switch (property_id) {
 	case PROP_TITLE:
-		g_return_if_fail (cert_chooser_class->set_title);
-		cert_chooser_class->set_title (NMA_CERT_CHOOSER (object),
-		                               g_value_get_string (value));
-		break;
 	case PROP_FLAGS:
-		g_return_if_fail (cert_chooser_class->set_flags);
-		cert_chooser_class->set_flags (NMA_CERT_CHOOSER (object),
-		                               g_value_get_uint (value));
+		/* Just ignore these, should be set at construct time */
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -681,18 +661,13 @@ set_property (GObject *object, guint property_id, const GValue *value, GParamSpe
 }
 
 static void
-get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
-{
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-}
-
-static void
 nma_cert_chooser_class_init (NMACertChooserClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
+	g_type_class_add_private (object_class, sizeof (NMACertChooserPrivate));
+
 	object_class->constructor = constructor;
-	object_class->get_property = get_property;
 	object_class->set_property = set_property;
 
 	/**
@@ -727,7 +702,7 @@ nma_cert_chooser_class_init (NMACertChooserClass *klass)
 	                                            | NMA_CERT_CHOOSER_FLAG_PASSWORDS
 	                                            | NMA_CERT_CHOOSER_FLAG_PEM,
 	                                            NMA_CERT_CHOOSER_FLAG_NONE,
-	                                              G_PARAM_READWRITE
+	                                              G_PARAM_WRITABLE
 	                                            | G_PARAM_CONSTRUCT_ONLY
 	                                            | G_PARAM_STATIC_STRINGS);
 
@@ -746,7 +721,7 @@ nma_cert_chooser_class_init (NMACertChooserClass *klass)
 	signals[CERT_VALIDATE] = g_signal_new ("cert-validate",
 	                                       NMA_TYPE_CERT_CHOOSER,
 	                                       G_SIGNAL_RUN_LAST,
-	                                       G_STRUCT_OFFSET (NMACertChooserClass, cert_validate),
+	                                       0,
 	                                       accu_validation_error, NULL, NULL,
 	                                       G_TYPE_ERROR, 0);
 
@@ -763,7 +738,7 @@ nma_cert_chooser_class_init (NMACertChooserClass *klass)
 	signals[CERT_PASSWORD_VALIDATE] = g_signal_new ("cert-password-validate",
 	                                                NMA_TYPE_CERT_CHOOSER,
 	                                                G_SIGNAL_RUN_LAST,
-	                                                G_STRUCT_OFFSET (NMACertChooserClass, cert_password_validate),
+	                                                0,
 	                                                accu_validation_error, NULL, NULL,
 	                                                G_TYPE_ERROR, 0);
 
@@ -780,7 +755,7 @@ nma_cert_chooser_class_init (NMACertChooserClass *klass)
 	signals[KEY_VALIDATE] = g_signal_new ("key-validate",
 	                                      NMA_TYPE_CERT_CHOOSER,
 	                                      G_SIGNAL_RUN_LAST,
-	                                      G_STRUCT_OFFSET (NMACertChooserClass, key_validate),
+	                                      0,
 	                                      accu_validation_error, NULL, NULL,
 	                                      G_TYPE_ERROR, 0);
 
@@ -797,7 +772,7 @@ nma_cert_chooser_class_init (NMACertChooserClass *klass)
 	signals[KEY_PASSWORD_VALIDATE] = g_signal_new ("key-password-validate",
 	                                               NMA_TYPE_CERT_CHOOSER,
 	                                               G_SIGNAL_RUN_LAST,
-	                                               G_STRUCT_OFFSET (NMACertChooserClass, key_password_validate),
+	                                               0,
 	                                               accu_validation_error, NULL, NULL,
 	                                               G_TYPE_ERROR, 0);
 
@@ -812,7 +787,7 @@ nma_cert_chooser_class_init (NMACertChooserClass *klass)
 	signals[CHANGED] = g_signal_new ("changed",
 	                                 NMA_TYPE_CERT_CHOOSER,
 	                                 G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
-	                                 G_STRUCT_OFFSET (NMACertChooserClass, changed),
+	                                 0,
 	                                 NULL, NULL, NULL,
 	                                 G_TYPE_NONE, 0);
 

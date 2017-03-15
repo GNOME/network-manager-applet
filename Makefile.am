@@ -497,14 +497,13 @@ libnma_c_real = \
 	src/libnma/nma-file-cert-chooser.c
 
 libnma_h_priv_real = \
-	src/libnma/nma-file-cert-chooser.h
+	src/libnma/nma-cert-chooser-private.h
 
 if WITH_GCR
 libnma_h_priv_real += \
 	src/libnma/nma-pkcs11-token-login-dialog.h \
 	src/libnma/nma-pkcs11-cert-chooser-dialog.h \
-	src/libnma/nma-cert-chooser-button.h \
-	src/libnma/nma-pkcs11-cert-chooser.h
+	src/libnma/nma-cert-chooser-button.h
 
 libnma_c_real += \
 	src/libnma/nma-pkcs11-token-login-dialog.c \
@@ -879,11 +878,10 @@ CFILE_GLOB = $(top_srcdir)/src/libnma/*.c
 IGNORE_HFILES = \
 	nma-resources.h \
 	nma-version.h \
-	nma-file-cert-chooser.h \
+	nma-cert-chooser-private.h \
 	nma-pkcs11-token-login-dialog.h \
 	nma-pkcs11-cert-chooser-dialog.h \
-	nma-cert-chooser-button.h \
-	nma-pkcs11-cert-chooser.h
+	nma-cert-chooser-button.h
 
 mkdb_ignore_c_files = \
 	nma-resources.c \
