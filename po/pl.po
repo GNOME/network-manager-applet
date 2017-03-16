@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-05 16:44+0100\n"
-"PO-Revision-Date: 2017-02-05 16:45+0100\n"
+"POT-Creation-Date: 2017-03-16 20:38+0100\n"
+"PO-Revision-Date: 2017-03-16 20:39+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
 
-#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3133
+#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3132
 msgid "Network"
 msgstr "Sieć"
 
@@ -231,12 +231,12 @@ msgid "Failed to add/activate connection"
 msgstr "Dodanie/aktywowanie połączenia się nie powiodło"
 
 #: ../src/applet.c:347 ../src/applet.c:401 ../src/applet.c:436
-#: ../src/applet-device-wifi.c:1445 ../src/applet-device-wifi.c:1468
+#: ../src/applet-device-wifi.c:1381 ../src/applet-device-wifi.c:1404
 msgid "Unknown error"
 msgstr "Nieznany błąd"
 
-#: ../src/applet.c:350 ../src/applet.c:439 ../src/applet-device-wifi.c:1448
-#: ../src/applet-device-wifi.c:1471
+#: ../src/applet.c:350 ../src/applet.c:439 ../src/applet-device-wifi.c:539
+#: ../src/applet-device-wifi.c:1384 ../src/applet-device-wifi.c:1407
 msgid "Connection failure"
 msgstr "Niepowodzenie połączenia"
 
@@ -252,7 +252,7 @@ msgstr "Niepowodzenie rozłączenia"
 msgid "Connection activation failed"
 msgstr "Aktywacja połączenia się nie powiodła"
 
-#: ../src/applet.c:757 ../src/applet-device-wifi.c:1185
+#: ../src/applet.c:757 ../src/applet-device-wifi.c:1121
 msgid "Don’t show this message again"
 msgstr "Bez wyświetlania tego komunikatu ponownie"
 
@@ -465,7 +465,7 @@ msgstr "_Dodaj połączenie VPN…"
 msgid "NetworkManager is not running…"
 msgstr "Usługa NetworkManager nie jest uruchomiona…"
 
-#: ../src/applet.c:1608 ../src/applet.c:2633
+#: ../src/applet.c:1608 ../src/applet.c:2632
 msgid "Networking disabled"
 msgstr "Sieć jest wyłączona"
 
@@ -537,31 +537,31 @@ msgstr "Żądanie adresu sieciowego dla „%s”…"
 msgid "Network connection “%s” active"
 msgstr "Nawiązano połączenie sieciowe „%s”"
 
-#: ../src/applet.c:2578
+#: ../src/applet.c:2577
 #, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "Nawiązywanie połączenia VPN „%s”…"
 
-#: ../src/applet.c:2581
+#: ../src/applet.c:2580
 #, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "Wymagane uwierzytelnienie dla połączenia VPN „%s”…"
 
-#: ../src/applet.c:2584
+#: ../src/applet.c:2583
 #, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "Żądanie adresu VPN dla „%s”…"
 
-#: ../src/applet.c:2587
+#: ../src/applet.c:2586
 #, c-format
 msgid "VPN connection active"
 msgstr "Nawiązano połączenie VPN"
 
-#: ../src/applet.c:2637
+#: ../src/applet.c:2636
 msgid "No network connection"
 msgstr "Brak połączenia sieciowego"
 
-#: ../src/applet.c:3232
+#: ../src/applet.c:3231
 msgid "NetworkManager Applet"
 msgstr "Aplet NetworkManager"
 
@@ -591,7 +591,7 @@ msgid "Mobile Broadband"
 msgstr "Komórkowe"
 
 #: ../src/applet-device-broadband.c:790 ../src/applet-device-bt.c:75
-#: ../src/applet-device-ethernet.c:117 ../src/applet-device-wifi.c:970
+#: ../src/applet-device-ethernet.c:117 ../src/applet-device-wifi.c:906
 msgid "Available"
 msgstr "Dostępne"
 
@@ -601,7 +601,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "Nowe połączenie komórkowe…"
 
 #: ../src/applet-device-broadband.c:817 ../src/applet-device-bt.c:87
-#: ../src/applet-device-ethernet.c:132 ../src/applet-device-wifi.c:1366
+#: ../src/applet-device-ethernet.c:132 ../src/applet-device-wifi.c:1302
 msgid "Connection Established"
 msgstr "Ustanowiono połączenie"
 
@@ -701,97 +701,101 @@ msgstr "Nawiązano ethernetowe połączenie sieciowe „%s”"
 msgid "DSL authentication"
 msgstr "Uwierzytelnianie DSL"
 
-#: ../src/applet-device-wifi.c:231
+#: ../src/applet-device-wifi.c:225
 msgid "_Connect to Hidden Wi-Fi Network…"
 msgstr "_Połącz z ukrytą siecią Wi-Fi…"
 
-#: ../src/applet-device-wifi.c:282
+#: ../src/applet-device-wifi.c:276
 msgid "Create _New Wi-Fi Network…"
 msgstr "Utwórz _nową sieć Wi-Fi…"
 
-#: ../src/applet-device-wifi.c:432
+#: ../src/applet-device-wifi.c:358
 msgid "(none)"
 msgstr "(brak)"
 
-#: ../src/applet-device-wifi.c:902
+#: ../src/applet-device-wifi.c:536 ../src/applet-device-wifi.c:1402
+msgid "Failed to add new connection"
+msgstr "Dodanie nowego połączenia się nie powiodło"
+
+#: ../src/applet-device-wifi.c:537
+msgid "Insufficient privileges."
+msgstr "Niewystarczające uprawnienia."
+
+#: ../src/applet-device-wifi.c:838
 #, c-format
 msgid "Wi-Fi Networks (%s)"
 msgstr "Sieci Wi-Fi (%s)"
 
-#: ../src/applet-device-wifi.c:904
+#: ../src/applet-device-wifi.c:840
 #, c-format
 msgid "Wi-Fi Network (%s)"
 msgstr "Sieć Wi-Fi (%s)"
 
-#: ../src/applet-device-wifi.c:906
+#: ../src/applet-device-wifi.c:842
 msgid "Wi-Fi Network"
 msgid_plural "Wi-Fi Networks"
 msgstr[0] "Sieć Wi-Fi"
 msgstr[1] "Sieci Wi-Fi"
 msgstr[2] "Sieci Wi-Fi"
 
-#: ../src/applet-device-wifi.c:935
+#: ../src/applet-device-wifi.c:871
 msgid "Wi-Fi is disabled"
 msgstr "Wi-Fi jest wyłączone"
 
-#: ../src/applet-device-wifi.c:936
+#: ../src/applet-device-wifi.c:872
 msgid "Wi-Fi is disabled by hardware switch"
 msgstr "Wi-Fi jest wyłączone przez przełącznik sprzętowy"
 
-#: ../src/applet-device-wifi.c:997
+#: ../src/applet-device-wifi.c:933
 msgid "More networks"
 msgstr "Więcej sieci"
 
-#: ../src/applet-device-wifi.c:1181
+#: ../src/applet-device-wifi.c:1117
 msgid "Wi-Fi Networks Available"
 msgstr "Dostępne sieci Wi-Fi"
 
-#: ../src/applet-device-wifi.c:1182
+#: ../src/applet-device-wifi.c:1118
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Należy użyć menu sieci, aby połączyć z siecią Wi-Fi"
 
-#: ../src/applet-device-wifi.c:1365
+#: ../src/applet-device-wifi.c:1301
 #, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "Połączono z siecią Wi-Fi „%s”."
 
-#: ../src/applet-device-wifi.c:1400
+#: ../src/applet-device-wifi.c:1336
 #, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "Przygotowywanie połączenia sieciowego Wi-Fi „%s”…"
 
-#: ../src/applet-device-wifi.c:1403
+#: ../src/applet-device-wifi.c:1339
 #, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "Konfigurowanie połączenia sieciowego Wi-Fi „%s”…"
 
-#: ../src/applet-device-wifi.c:1406
+#: ../src/applet-device-wifi.c:1342
 #, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "Wymagane uwierzytelnienie dla sieci Wi-Fi „%s”…"
 
-#: ../src/applet-device-wifi.c:1409
+#: ../src/applet-device-wifi.c:1345
 #, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "Żądanie adresu sieciowego Wi-Fi dla „%s”…"
 
-#: ../src/applet-device-wifi.c:1420
+#: ../src/applet-device-wifi.c:1356
 #, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "Nawiązano bezprzewodowe połączenie sieciowe Wi-Fi „%s”: %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1424
+#: ../src/applet-device-wifi.c:1360
 #, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "Nawiązano połączenie sieciowe Wi-Fi „%s”"
 
-#: ../src/applet-device-wifi.c:1443
+#: ../src/applet-device-wifi.c:1379
 msgid "Failed to activate connection"
 msgstr "Aktywowanie połączenia się nie powiodło"
-
-#: ../src/applet-device-wifi.c:1466
-msgid "Failed to add new connection"
-msgstr "Dodanie nowego połączenia się nie powiodło"
 
 #: ../src/applet-dialogs.c:41
 msgid "Error displaying connection information:"
@@ -3272,7 +3276,7 @@ msgstr "Połączenie ethernetowe %d"
 
 #. TRANSLATORS: Default zone set for firewall, when no zone is selected
 #: ../src/connection-editor/page-general.c:54
-#: ../src/libnma/nma-mobile-providers.c:806
+#: ../src/libnma/nma-mobile-providers.c:817
 #: ../src/libnm-gtk/nm-mobile-providers.c:806
 msgid "Default"
 msgstr "Domyślne"
@@ -3977,7 +3981,7 @@ msgstr "Dowolne urządzenie"
 msgid "Set up a Mobile Broadband Connection"
 msgstr "Ustawienie połączenia komórkowego"
 
-#: ../src/libnma/nma-mobile-wizard.c:1613
+#: ../src/libnma/nma-mobile-wizard.c:1620
 #: ../src/libnm-gtk/nm-mobile-wizard.c:1614
 msgid "New Mobile Broadband Connection"
 msgstr "Nowe połączenie komórkowe"
