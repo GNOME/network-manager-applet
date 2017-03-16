@@ -40,12 +40,6 @@ static void wifi_dialog_response_cb (GtkDialog *dialog, gint response, gpointer 
 
 static NMAccessPoint *update_active_ap (NMDevice *device, NMDeviceState state, NMApplet *applet);
 
-static void _do_new_auto_connection (NMApplet *applet,
-                                     NMDevice *device,
-                                     NMAccessPoint *ap,
-                                     AppletNewAutoConnectionCallback callback,
-                                     gpointer callback_data);
-
 /*****************************************************************************/
 
 typedef struct {
@@ -292,74 +286,6 @@ nma_menu_add_create_network_item (GtkWidget *menu, NMApplet *applet)
 		gtk_widget_set_sensitive (GTK_WIDGET (menu_item), FALSE);
 }
 
-static void
-dbus_8021x_add_and_activate_cb (GObject *client,
-                                GAsyncResult *result,
-                                gpointer user_data)
-{
-	GError *error = NULL;
-	NMActiveConnection *active;
-
-	active = nm_client_add_and_activate_connection_finish (NM_CLIENT (client), result, &error);
-	if (error)
-		g_warning ("Failed to add/activate connection: (%d) %s", error->code, error->message);
-
-	g_clear_object (&active);
-	g_clear_error (&error);
-}
-
-typedef struct {
-	NMApplet *applet;
-	NMDevice *device;
-	NMAccessPoint *ap;
-} Dbus8021xInfo;
-
-static void
-dbus_connect_8021x_cb (NMConnection *connection,
-                       gboolean auto_created,
-                       gboolean canceled,
-                       gpointer user_data)
-{
-	Dbus8021xInfo *info = user_data;
-
-	if (canceled == FALSE) {
-		g_return_if_fail (connection != NULL);
-
-		/* Ask NM to add the new connection and activate it; NM will fill in the
-		 * missing details based on the specific object and the device.
-		 */
-		nm_client_add_and_activate_connection_async (info->applet->nm_client,
-		                                             connection,
-			                                     info->device,
-			                                     nm_object_get_path (NM_OBJECT (info->ap)),
-		                                             NULL,
-			                                     dbus_8021x_add_and_activate_cb,
-			                                     info->applet);
-	}
-
-	g_object_unref (info->device);
-	g_object_unref (info->ap);
-	memset (info, 0, sizeof (*info));
-	g_free (info);
-}
-
-gboolean
-applet_wifi_connect_to_8021x_network (NMApplet *applet,
-                                      NMDevice *device,
-                                      NMAccessPoint *ap)
-{
-	Dbus8021xInfo *info;
-
-	info = g_malloc0 (sizeof (*info));
-	info->applet = applet;
-	info->device = g_object_ref (device);
-	info->ap = g_object_ref (ap);
-
-	_do_new_auto_connection (applet, device, ap, dbus_connect_8021x_cb, info);
-	return TRUE;
-}
-
-
 typedef struct {
 	NMApplet *applet;
 	NMDeviceWifi *device;
@@ -514,17 +440,28 @@ done:
 	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
-static void
-_do_new_auto_connection (NMApplet *applet,
-                         NMDevice *device,
-                         NMAccessPoint *ap,
-                         AppletNewAutoConnectionCallback callback,
-                         gpointer callback_data)
+static gboolean
+can_get_permission (NMApplet *applet, NMClientPermission perm)
 {
-	NMConnection *connection = NULL;
-	NMSettingConnection *s_con = NULL;
+	if (   applet->permissions[perm] == NM_CLIENT_PERMISSION_RESULT_YES
+	    || applet->permissions[perm] == NM_CLIENT_PERMISSION_RESULT_AUTH)
+		return TRUE;
+	return FALSE;
+}
+
+static gboolean
+wifi_new_auto_connection (NMDevice *device,
+                          gpointer dclass_data,
+                          AppletNewAutoConnectionCallback callback,
+                          gpointer callback_data)
+{
+	WifiMenuItemInfo *info = (WifiMenuItemInfo *) dclass_data;
+	NMApplet *applet;
+	NMAccessPoint *ap;
+	NMConnection *connection;
+	NMSettingConnection *s_con;
 	NMSettingWireless *s_wifi = NULL;
-	NMSettingWirelessSecurity *s_wsec = NULL;
+	NMSettingWirelessSecurity *s_wsec;
 	NMSetting8021x *s_8021x = NULL;
 	GBytes *ssid;
 	NM80211ApSecurityFlags wpa_flags, rsn_flags;
@@ -532,9 +469,13 @@ _do_new_auto_connection (NMApplet *applet,
 	MoreInfo *more_info;
 	char *uuid;
 
-	g_assert (applet);
-	g_assert (device);
-	g_assert (ap);
+	g_return_val_if_fail (dclass_data, FALSE);
+	g_return_val_if_fail (NM_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (NM_IS_ACCESS_POINT (info->ap), FALSE);
+	g_return_val_if_fail (NM_IS_APPLET (info->applet), FALSE);
+
+	applet = info->applet;
+	ap = info->ap;
 
 	connection = nm_simple_connection_new ();
 
@@ -590,6 +531,15 @@ _do_new_auto_connection (NMApplet *applet,
 	 * Dialog Of Doom.
 	 */
 	if (s_8021x) {
+		if (!can_get_permission (applet, NM_CLIENT_PERMISSION_SETTINGS_MODIFY_SYSTEM) &&
+		    !can_get_permission (applet, NM_CLIENT_PERMISSION_SETTINGS_MODIFY_OWN)) {
+			const char *text = _("Failed to add new connection");
+			const char *err_text = _("Insufficient privileges.");
+			g_warning ("%s: %s", text, err_text);
+			utils_show_error_dialog (_("Connection failure"), text, err_text, FALSE, NULL);
+			g_clear_object (&connection);
+			return FALSE;
+		}
 		more_info = g_malloc0 (sizeof (*more_info));
 		more_info->applet = applet;
 		more_info->callback = callback;
@@ -606,23 +556,9 @@ _do_new_auto_connection (NMApplet *applet,
 		/* Everything else can just get activated right away */
 		callback (connection, TRUE, FALSE, callback_data);
 	}
-}
 
-static gboolean
-wifi_new_auto_connection (NMDevice *device,
-                          gpointer dclass_data,
-                          AppletNewAutoConnectionCallback callback,
-                          gpointer callback_data)
-{
-	WifiMenuItemInfo *info = (WifiMenuItemInfo *) dclass_data;
-
-	g_return_val_if_fail (device != NULL, FALSE);
-	g_return_val_if_fail (info->ap != NULL, FALSE);
-
-	_do_new_auto_connection (info->applet, device, info->ap, callback, callback_data);
 	return TRUE;
 }
-
 
 static void
 wifi_menu_item_activate (GtkMenuItem *item, gpointer user_data)
