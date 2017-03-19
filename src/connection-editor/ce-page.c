@@ -382,15 +382,15 @@ gboolean
 ce_page_interface_name_valid (const char *iface, const char *property_name, GError **error)
 {
 	if (iface && *iface) {
-		if (!nm_utils_iface_valid_name (iface)) {
+		if (!nm_utils_is_valid_iface_name (iface, error)) {
 			if (property_name) {
-				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
-				             _("invalid interface-name for %s (%s)"),
-				             property_name, iface);
+				g_prefix_error (error,
+				                _("invalid interface-name for %s (%s): "),
+				                property_name, iface);
 			} else {
-				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
-				             _("invalid interface-name (%s)"),
-				             iface);
+				g_prefix_error (error,
+				                _("invalid interface-name (%s): "),
+				                iface);
 			}
 			return FALSE;
 		}
@@ -556,9 +556,9 @@ gboolean
 ce_page_device_entry_get (GtkEntry *entry, int type, gboolean check_ifname,
                           char **ifname, char **mac, const char *device_name, GError **error)
 {
-	char *first, *second;
+	gs_free char *first = NULL;
+	gs_free char *second = NULL;
 	const char *ifname_tmp = NULL, *mac_tmp = NULL;
-	gboolean valid = TRUE;
 	const char *str;
 
 	g_return_val_if_fail (entry != NULL, FALSE);
@@ -566,29 +566,36 @@ ce_page_device_entry_get (GtkEntry *entry, int type, gboolean check_ifname,
 
 	str = gtk_entry_get_text (entry);
 
-	valid = _device_entry_parse (str, &first, &second);
+	if (!_device_entry_parse (str, &first, &second)) {
+		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC,
+		                     _("can't parse device name"));
+		goto invalid;
+	}
 
 	if (first) {
 		if (nm_utils_hwaddr_valid (first, nm_utils_hwaddr_len (type)))
 			mac_tmp = first;
-		else if (!check_ifname || nm_utils_iface_valid_name (first))
+		else if (!check_ifname || nm_utils_is_valid_iface_name (first, error))
 			ifname_tmp = first;
 		else
-			valid = FALSE;
+			goto invalid;
 	}
 	if (second) {
 		if (nm_utils_hwaddr_valid (second, nm_utils_hwaddr_len (type))) {
-			if (!mac_tmp)
+			if (!mac_tmp) {
 				mac_tmp = second;
-			else
-				valid = FALSE;
-		} else if (!check_ifname || nm_utils_iface_valid_name (second)) {
+			} else {
+				g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC,
+				                     _("invalid hardware address"));
+				goto invalid;
+			}
+		} else if (!check_ifname || nm_utils_is_valid_iface_name (second, error)) {
 			if (!ifname_tmp)
 				ifname_tmp = second;
 			else
-				valid = FALSE;
+				goto invalid;
 		} else
-			valid = FALSE;
+			goto invalid;
 	}
 
 	if (ifname)
@@ -596,17 +603,22 @@ ce_page_device_entry_get (GtkEntry *entry, int type, gboolean check_ifname,
 	if (mac)
 		*mac = g_strdup (mac_tmp);
 
-	g_free (first);
-	g_free (second);
+	return TRUE;
 
-	if (!valid) {
+invalid:
+	if (error) {
+		g_prefix_error (error,
+		                _("invalid %s (%s): "),
+		                device_name ? device_name : _("device"),
+		                str);
+	} else {
 		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
-		             _("invalid %s (%s)"),
-		             device_name ? device_name : _("device"),
-		             str);
+		             _("invalid %s (%s) "),
+		            device_name ? device_name : _("device"),
+		            str);
 	}
 
-	return valid;
+	return FALSE;
 }
 
 char *

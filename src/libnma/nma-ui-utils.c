@@ -240,7 +240,7 @@ icon_release_cb (GtkEntry *entry,
  * @setting: #NMSetting containing the password, or NULL
  * @password_flags_name: name of the secret flags (like psk-flags), or NULL
  * @with_not_required: whether to include "Not required" menu item
- * @ask_mode: %TRUE if the entrie is shown in ASK mode. That means,
+ * @ask_mode: %TRUE if the entry is shown in ASK mode. That means,
  *   while prompting for a password, contrary to being inside the
  *   editor mode.
  *   If %TRUE, the entry should be sensivive on selected "always-ask"

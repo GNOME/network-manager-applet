@@ -70,14 +70,13 @@ eap_method_add_to_size_group (EAPMethod *method, GtkSizeGroup *group)
 
 void
 eap_method_fill_connection (EAPMethod *method,
-                            NMConnection *connection,
-                            NMSettingSecretFlags flags)
+                            NMConnection *connection)
 {
 	g_return_if_fail (method != NULL);
 	g_return_if_fail (connection != NULL);
 
 	g_assert (method->fill_connection);
-	return (*(method->fill_connection)) (method, connection, flags);
+	return (*(method->fill_connection)) (method, connection);
 }
 
 void
@@ -270,31 +269,6 @@ out:
 	return success;
 }
 
-static gboolean
-file_has_extension (const char *filename, const char *extensions[])
-{
-	char *p, *ext;
-	int i = 0;
-	gboolean found = FALSE;
-
-	p = strrchr (filename, '.');
-	if (!p)
-		return FALSE;
-
-	ext = g_ascii_strdown (p, -1);
-	if (ext) {
-		while (extensions[i]) {
-			if (!strcmp (ext, extensions[i++])) {
-				found = TRUE;
-				break;
-			}
-		}
-	}
-	g_free (ext);
-
-	return found;
-}
-
 #if !LIBNM_BUILD
 static const char *
 find_tag (const char *tag, const char *buf, gsize len)
@@ -400,58 +374,19 @@ out:
 }
 #endif
 
-static gboolean
-default_filter_privkey (const GtkFileFilterInfo *filter_info, gpointer user_data)
-{
-	const char *extensions[] = { ".der", ".pem", ".p12", ".key", NULL };
-
-	if (!filter_info->filename)
-		return FALSE;
-
-	if (!file_has_extension (filter_info->filename, extensions))
-		return FALSE;
-
-	return TRUE;
-}
-
-static gboolean
-default_filter_cert (const GtkFileFilterInfo *filter_info, gpointer user_data)
-{
-	const char *extensions[] = { ".der", ".pem", ".crt", ".cer", NULL };
-
-	if (!filter_info->filename)
-		return FALSE;
-
-	if (!file_has_extension (filter_info->filename, extensions))
-		return FALSE;
-
-	return TRUE;
-}
-
 GtkFileFilter *
 eap_method_default_file_chooser_filter_new (gboolean privkey)
 {
-	GtkFileFilter *filter;
-
-	filter = gtk_file_filter_new ();
-	if (privkey) {
-		gtk_file_filter_add_custom (filter, GTK_FILE_FILTER_FILENAME, default_filter_privkey, NULL, NULL);
-		gtk_file_filter_set_name (filter, _("DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"));
-	} else {
-		gtk_file_filter_add_custom (filter, GTK_FILE_FILTER_FILENAME, default_filter_cert, NULL, NULL);
-		gtk_file_filter_set_name (filter, _("DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"));
-	}
-	return filter;
+	if (privkey)
+		return utils_key_filter ();
+	else
+		return utils_cert_filter ();
 }
 
 gboolean
 eap_method_is_encrypted_private_key (const char *path)
 {
-	GtkFileFilterInfo info = { .filename = path };
 	gboolean is_encrypted;
-
-	if (!default_filter_privkey (&info, NULL))
-		return FALSE;
 
 #if LIBNM_BUILD
 	is_encrypted = FALSE;

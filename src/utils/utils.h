@@ -108,5 +108,8 @@ gboolean utils_tree_model_get_ip4_prefix (GtkTreeModel *model,
                                           guint32 *out,
                                           char **out_raw);
 
-#endif /* UTILS_H */
+GtkFileFilter *utils_cert_filter (void);
 
+GtkFileFilter *utils_key_filter (void);
+
+#endif /* UTILS_H */

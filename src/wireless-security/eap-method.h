@@ -26,7 +26,7 @@
 typedef struct _EAPMethod EAPMethod;
 
 typedef void        (*EMAddToSizeGroupFunc) (EAPMethod *method, GtkSizeGroup *group);
-typedef void        (*EMFillConnectionFunc) (EAPMethod *method, NMConnection *connection, NMSettingSecretFlags flags);
+typedef void        (*EMFillConnectionFunc) (EAPMethod *method, NMConnection *connection);
 typedef void        (*EMUpdateSecretsFunc)  (EAPMethod *method, NMConnection *connection);
 typedef void        (*EMDestroyFunc)        (EAPMethod *method);
 typedef gboolean    (*EMValidateFunc)       (EAPMethod *method, GError **error);
@@ -39,7 +39,6 @@ struct _EAPMethod {
 	GtkWidget *ui_widget;
 
 	const char *default_field;
-	const char *password_flags_name;
 
 	gboolean phase2;
 	gboolean secrets_only;
@@ -61,8 +60,7 @@ gboolean eap_method_validate (EAPMethod *method, GError **error);
 void eap_method_add_to_size_group (EAPMethod *method, GtkSizeGroup *group);
 
 void eap_method_fill_connection (EAPMethod *method,
-                                 NMConnection *connection,
-                                 NMSettingSecretFlags flags);
+                                 NMConnection *connection);
 
 void eap_method_update_secrets (EAPMethod *method, NMConnection *connection);
 
