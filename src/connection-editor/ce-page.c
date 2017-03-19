@@ -568,7 +568,7 @@ ce_page_device_entry_get (GtkEntry *entry, int type, gboolean check_ifname,
 
 	if (!_device_entry_parse (str, &first, &second)) {
 		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC,
-		                     _("can't parse device name"));
+		                     _("can’t parse device name"));
 		goto invalid;
 	}
 
