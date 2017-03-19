@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-16 20:38+0100\n"
-"PO-Revision-Date: 2017-03-16 20:39+0100\n"
+"POT-Creation-Date: 2017-03-19 22:53+0100\n"
+"PO-Revision-Date: 2017-03-19 22:54+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -206,7 +206,7 @@ msgstr "Uwierzytelnianie 802.1X"
 #: ../src/connection-editor/ce-page-dcb.ui.h:17
 #: ../src/connection-editor/ce-ppp-auth-methods.ui.h:1
 #: ../src/connection-editor/nm-connection-editor.ui.h:6
-#: ../src/gsm-unlock.ui.h:1
+#: ../src/gsm-unlock.ui.h:1 ../src/libnma/nma-pkcs11-token-login-dialog.ui.h:1
 msgid "_Cancel"
 msgstr "_Anuluj"
 
@@ -1382,26 +1382,44 @@ msgid "invalid %s for %s (%s)"
 msgstr "nieprawidłowe %s dla %s (%s)"
 
 #: ../src/connection-editor/ce-page.c:348
-#: ../src/connection-editor/ce-page.c:604
 #, c-format
 msgid "invalid %s (%s)"
 msgstr "nieprawidłowe %s (%s)"
 
 #: ../src/connection-editor/ce-page.c:388
 #, c-format
-msgid "invalid interface-name for %s (%s)"
-msgstr "nieprawidłowe „interface-name” dla %s (%s)"
+msgid "invalid interface-name for %s (%s): "
+msgstr "nieprawidłowe „interface-name” dla %s (%s): "
 
 #: ../src/connection-editor/ce-page.c:392
 #, c-format
-msgid "invalid interface-name (%s)"
-msgstr "nieprawidłowe „interface-name” (%s)"
+msgid "invalid interface-name (%s): "
+msgstr "nieprawidłowe „interface-name” (%s): "
 
-#: ../src/connection-editor/ce-page.c:605
+#: ../src/connection-editor/ce-page.c:571
+msgid "can’t parse device name"
+msgstr "nie można przetworzyć nazwy urządzenia"
+
+#: ../src/connection-editor/ce-page.c:589
+msgid "invalid hardware address"
+msgstr "nieprawidłowy adres sprzętowy"
+
+#: ../src/connection-editor/ce-page.c:611
+#, c-format
+msgid "invalid %s (%s): "
+msgstr "nieprawidłowe %s (%s): "
+
+#: ../src/connection-editor/ce-page.c:612
+#: ../src/connection-editor/ce-page.c:617
 msgid "device"
 msgstr "urządzenie"
 
-#: ../src/connection-editor/ce-page.c:713
+#: ../src/connection-editor/ce-page.c:616
+#, c-format
+msgid "invalid %s (%s) "
+msgstr "nieprawidłowe %s (%s) "
+
+#: ../src/connection-editor/ce-page.c:725
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr ""
 "Zaktualizowanie ustawień połączenia się nie powiodło z powodu nieznanego "
@@ -1577,7 +1595,6 @@ msgstr "U_sługa:"
 #: ../src/connection-editor/ce-page-dsl.ui.h:3
 #: ../src/wireless-security/eap-method-leap.ui.h:3
 #: ../src/wireless-security/eap-method-simple.ui.h:3
-#: ../src/wireless-security/eap-method-tls.ui.h:7
 #: ../src/wireless-security/ws-leap.ui.h:3
 #: ../src/wireless-security/ws-wpa-psk.ui.h:3
 msgid "Sho_w password"
@@ -3095,6 +3112,7 @@ msgstr[1] "%d lata temu"
 msgstr[2] "%d lat temu"
 
 #: ../src/connection-editor/nm-connection-list.c:639
+#: ../src/libnma/nma-pkcs11-cert-chooser-dialog.ui.h:2
 msgid "Name"
 msgstr "Nazwa"
 
@@ -3518,24 +3536,24 @@ msgid "EAP"
 msgstr "EAP"
 
 #: ../src/connection-editor/page-ppp.c:130
-#: ../src/wireless-security/eap-method-ttls.c:259
+#: ../src/wireless-security/eap-method-ttls.c:260
 msgid "PAP"
 msgstr "PAP"
 
 #: ../src/connection-editor/page-ppp.c:131
-#: ../src/wireless-security/eap-method-ttls.c:321
+#: ../src/wireless-security/eap-method-ttls.c:322
 msgid "CHAP"
 msgstr "CHAP"
 
 #: ../src/connection-editor/page-ppp.c:132
-#: ../src/wireless-security/eap-method-fast.c:283
-#: ../src/wireless-security/eap-method-peap.c:272
-#: ../src/wireless-security/eap-method-ttls.c:289
+#: ../src/wireless-security/eap-method-fast.c:284
+#: ../src/wireless-security/eap-method-peap.c:273
+#: ../src/wireless-security/eap-method-ttls.c:290
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
 #: ../src/connection-editor/page-ppp.c:133
-#: ../src/wireless-security/eap-method-ttls.c:274
+#: ../src/wireless-security/eap-method-ttls.c:275
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
@@ -3789,6 +3807,45 @@ msgstr "Informacje o połączeniu"
 msgid "Active Network Connections"
 msgstr "Aktywne połączenia sieciowe"
 
+#: ../src/libnma/nma-file-cert-chooser.c:108
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:140
+msgid "No certificate set"
+msgstr "Nie ustawiono certyfikatu"
+
+#: ../src/libnma/nma-file-cert-chooser.c:126
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:164
+msgid "No key set"
+msgstr "Nie ustawiono klucza"
+
+#: ../src/libnma/nma-file-cert-chooser.c:246
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:364
+#, c-format
+msgid "Choose a key for %s Certificate"
+msgstr "Wybór klucza dla certyfikatu %s"
+
+#: ../src/libnma/nma-file-cert-chooser.c:250
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:368
+#, c-format
+msgid "%s private _key:"
+msgstr "_Klucz prywatny %s:"
+
+#: ../src/libnma/nma-file-cert-chooser.c:254
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:372
+#, c-format
+msgid "%s key _password:"
+msgstr "_Hasło klucza %s:"
+
+#: ../src/libnma/nma-file-cert-chooser.c:258
+#, c-format
+msgid "Choose %s Certificate"
+msgstr "Wybór certyfikatu %s"
+
+#: ../src/libnma/nma-file-cert-chooser.c:262
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:380
+#, c-format
+msgid "%s _certificate:"
+msgstr "_Certyfikat %s:"
+
 #: ../src/libnma/nma-mobile-wizard.c:198
 #: ../src/libnm-gtk/nm-mobile-wizard.c:199
 msgid ""
@@ -3985,6 +4042,78 @@ msgstr "Ustawienie połączenia komórkowego"
 #: ../src/libnm-gtk/nm-mobile-wizard.c:1614
 msgid "New Mobile Broadband Connection"
 msgstr "Nowe połączenie komórkowe"
+
+#: ../src/libnma/nma-cert-chooser-button.c:162
+msgid "(None)"
+msgstr "(Brak)"
+
+#: ../src/libnma/nma-cert-chooser-button.c:169
+#, c-format
+msgid "Key in %s"
+msgstr "Klucz w %s"
+
+#: ../src/libnma/nma-cert-chooser-button.c:170
+#, c-format
+msgid "Certificate in %s"
+msgstr "Certyfikat w %s"
+
+#: ../src/libnma/nma-cert-chooser-button.c:189
+#: ../src/libnma/nma-pkcs11-cert-chooser-dialog.c:183
+msgid "(Unknown)"
+msgstr "(Nieznane)"
+
+#: ../src/libnma/nma-cert-chooser-button.c:213
+#: ../src/libnma/nma-cert-chooser-button.c:243
+msgid "Select"
+msgstr "Wybierz"
+
+#: ../src/libnma/nma-cert-chooser-button.c:214
+#: ../src/libnma/nma-cert-chooser-button.c:244
+msgid "Cancel"
+msgstr "Anuluj"
+
+#: ../src/libnma/nma-cert-chooser-button.c:470
+msgid "Select from file…"
+msgstr "Wybierz z pliku…"
+
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:376
+#, c-format
+msgid "Choose a %s Certificate"
+msgstr "Wybór certyfikatu %s"
+
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:384
+#, c-format
+msgid "%s certificate _password:"
+msgstr "_Hasło certyfikatu %s:"
+
+#: ../src/libnma/nma-pkcs11-cert-chooser-dialog.c:255
+msgid "Error logging in: "
+msgstr "Błąd podczas logowania: "
+
+#: ../src/libnma/nma-pkcs11-cert-chooser-dialog.c:277
+msgid "Error opening a session: "
+msgstr "Błąd podczas otwierania sesji: "
+
+#: ../src/libnma/nma-pkcs11-cert-chooser-dialog.ui.h:1
+msgid "_Unlock token"
+msgstr "_Odblokuj token"
+
+#: ../src/libnma/nma-pkcs11-cert-chooser-dialog.ui.h:3
+msgid "Issued By"
+msgstr "Wystawiony przez"
+
+#: ../src/libnma/nma-pkcs11-token-login-dialog.c:146
+#, c-format
+msgid "Enter %s PIN"
+msgstr "Kod PIN %s"
+
+#: ../src/libnma/nma-pkcs11-token-login-dialog.ui.h:2
+msgid "_Login"
+msgstr "_Zaloguj"
+
+#: ../src/libnma/nma-pkcs11-token-login-dialog.ui.h:3
+msgid "_Remember PIN"
+msgstr "Zapamiętanie kodu _PIN"
 
 #: ../src/libnma/nma-ui-utils.c:49 ../src/libnm-gtk/nm-ui-utils.c:615
 msgid "Store the password only for this user"
@@ -4262,46 +4391,46 @@ msgstr "roaming"
 msgid "%s connection"
 msgstr "Połączenie %s"
 
-#: ../src/wireless-security/eap-method.c:57
-msgid "undefined error in 802.1X security (wpa-eap)"
-msgstr "nieokreślony błąd w zabezpieczeniach 802.1X (WPA-EAP)"
+#: ../src/utils/utils.c:563
+msgid "PEM certificates (*.pem, *.crt, *.cer)"
+msgstr "Certyfikaty PEM (*.pem, *.crt, *.cer)"
 
-#: ../src/wireless-security/eap-method.c:233
-msgid "no file selected"
-msgstr "nie wybrano żadnego pliku"
-
-#: ../src/wireless-security/eap-method.c:264
-msgid "unspecified error validating eap-method file"
-msgstr "nieokreślony błąd podczas sprawdzania poprawności pliku eap-method"
-
-#: ../src/wireless-security/eap-method.c:439
+#: ../src/utils/utils.c:575
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr ""
 "Certyfikaty DER, PEM lub klucze prywatne PKCS#12 (*.der, *.pem, *.p12, *.key)"
 
-#: ../src/wireless-security/eap-method.c:442
-msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
-msgstr "Certyfikaty DER lub PEM (*.der, *.pem, *.crt, *.cer)"
+#: ../src/wireless-security/eap-method.c:57
+msgid "undefined error in 802.1X security (wpa-eap)"
+msgstr "nieokreślony błąd w zabezpieczeniach 802.1X (WPA-EAP)"
 
-#: ../src/wireless-security/eap-method-fast.c:72
+#: ../src/wireless-security/eap-method.c:232
+msgid "no file selected"
+msgstr "nie wybrano żadnego pliku"
+
+#: ../src/wireless-security/eap-method.c:263
+msgid "unspecified error validating eap-method file"
+msgstr "nieokreślony błąd podczas sprawdzania poprawności pliku eap-method"
+
+#: ../src/wireless-security/eap-method-fast.c:73
 msgid "missing EAP-FAST PAC file"
 msgstr "brak pliku PAC EAP-FAST"
 
-#: ../src/wireless-security/eap-method-fast.c:268
-#: ../src/wireless-security/eap-method-peap.c:302
-#: ../src/wireless-security/eap-method-ttls.c:351
+#: ../src/wireless-security/eap-method-fast.c:269
+#: ../src/wireless-security/eap-method-peap.c:303
+#: ../src/wireless-security/eap-method-ttls.c:352
 msgid "GTC"
 msgstr "GTC"
 
-#: ../src/wireless-security/eap-method-fast.c:406
+#: ../src/wireless-security/eap-method-fast.c:407
 msgid "Choose a PAC file"
 msgstr "Wybór pliku PAC"
 
-#: ../src/wireless-security/eap-method-fast.c:413
+#: ../src/wireless-security/eap-method-fast.c:414
 msgid "PAC files (*.pac)"
 msgstr "Pliki PAC (*.pac)"
 
-#: ../src/wireless-security/eap-method-fast.c:417
+#: ../src/wireless-security/eap-method-fast.c:418
 msgid "All files"
 msgstr "Wszystkie pliki"
 
@@ -4337,32 +4466,31 @@ msgstr "Wewnętrzne uw_ierzytelnianie:"
 msgid "Allow automatic PAC pro_visioning"
 msgstr "Automatyczne za_bezpieczanie PAC"
 
-#: ../src/wireless-security/eap-method-leap.c:65
+#: ../src/wireless-security/eap-method-leap.c:66
 msgid "missing EAP-LEAP username"
 msgstr "brak nazwy użytkownika EAP-LEAP"
 
-#: ../src/wireless-security/eap-method-leap.c:74
+#: ../src/wireless-security/eap-method-leap.c:75
 msgid "missing EAP-LEAP password"
 msgstr "brak hasła EAP-LEAP"
 
-#: ../src/wireless-security/eap-method-peap.c:63
+#: ../src/wireless-security/eap-method-peap.c:64
 #, c-format
 msgid "invalid EAP-PEAP CA certificate: %s"
 msgstr "nieprawidłowy certyfikat CA EAP-PEAP: %s"
 
-#: ../src/wireless-security/eap-method-peap.c:68
+#: ../src/wireless-security/eap-method-peap.c:69
 msgid "invalid EAP-PEAP CA certificate: no certificate specified"
 msgstr "nieprawidłowy certyfikat CA EAP-PEAP: nie podano certyfikatu"
 
-#: ../src/wireless-security/eap-method-peap.c:287
-#: ../src/wireless-security/eap-method-ttls.c:336
+#: ../src/wireless-security/eap-method-peap.c:288
+#: ../src/wireless-security/eap-method-ttls.c:337
 #: ../src/wireless-security/wireless-security.c:424
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/wireless-security/eap-method-peap.c:381
-#: ../src/wireless-security/eap-method-tls.c:501
-#: ../src/wireless-security/eap-method-ttls.c:430
+#: ../src/wireless-security/eap-method-peap.c:382
+#: ../src/wireless-security/eap-method-ttls.c:431
 msgid "Choose a Certificate Authority certificate"
 msgstr "Wybór certyfikatu CA"
 
@@ -4375,13 +4503,12 @@ msgid "Version 1"
 msgstr "Wersja 1"
 
 #: ../src/wireless-security/eap-method-peap.ui.h:5
-#: ../src/wireless-security/eap-method-tls.ui.h:3
 #: ../src/wireless-security/eap-method-ttls.ui.h:2
 msgid "C_A certificate:"
 msgstr "Certyfikat C_A:"
 
 #: ../src/wireless-security/eap-method-peap.ui.h:6
-#: ../src/wireless-security/eap-method-tls.ui.h:4
+#: ../src/wireless-security/eap-method-tls.ui.h:2
 #: ../src/wireless-security/eap-method-ttls.ui.h:3
 msgid "No CA certificate is _required"
 msgstr "Certyfikat CA nie jest _wymagany"
@@ -4390,93 +4517,56 @@ msgstr "Certyfikat CA nie jest _wymagany"
 msgid "PEAP _version:"
 msgstr "_Wersja PEAP:"
 
-#: ../src/wireless-security/eap-method-simple.c:74
+#: ../src/wireless-security/eap-method-simple.c:75
 msgid "missing EAP username"
 msgstr "brak nazwy użytkownika EAP"
 
-#: ../src/wireless-security/eap-method-simple.c:87
+#: ../src/wireless-security/eap-method-simple.c:88
 msgid "missing EAP password"
 msgstr "brak hasła EAP"
 
-#: ../src/wireless-security/eap-method-tls.c:68
+#: ../src/wireless-security/eap-method-tls.c:64
 msgid "missing EAP-TLS identity"
 msgstr "brak tożsamości EAP-TLS"
 
-#: ../src/wireless-security/eap-method-tls.c:77
-#, c-format
-msgid "invalid EAP-TLS CA certificate: %s"
-msgstr "nieprawidłowy certyfikat CA EAP-TLS: %s"
+#: ../src/wireless-security/eap-method-tls.c:238
+msgid "no user certificate selected"
+msgstr "nie wybrano certyfikatu użytkownika"
 
-#: ../src/wireless-security/eap-method-tls.c:84
-msgid "invalid EAP-TLS CA certificate: no certificate specified"
-msgstr "nieprawidłowy certyfikat CA EAP-TLS: nie podano certyfikatu"
+#: ../src/wireless-security/eap-method-tls.c:243
+msgid "selected user certificate file does not exist"
+msgstr "wybrany plik certyfikatu użytkownika nie istnieje"
 
-#: ../src/wireless-security/eap-method-tls.c:95
-msgid "invalid EAP-TLS password: missing"
-msgstr "nieprawidłowe hasło EAP-TLS: brak"
+#: ../src/wireless-security/eap-method-tls.c:263
+msgid "no key selected"
+msgstr "nie wybrano klucza"
 
-#: ../src/wireless-security/eap-method-tls.c:109
-#, c-format
-msgid "invalid EAP-TLS private-key: %s"
-msgstr "nieprawidłowe „private-key” EAP-TLS: %s"
+#: ../src/wireless-security/eap-method-tls.c:268
+msgid "selected key file does not exist"
+msgstr "wybrany plik klucza nie istnieje"
 
-#: ../src/wireless-security/eap-method-tls.c:119
-#, c-format
-msgid "invalid EAP-TLS user-certificate: %s"
-msgstr "nieprawidłowe „user-certificate” EAP-TLS: %s"
-
-#: ../src/wireless-security/eap-method-tls.c:316
-msgid "Unencrypted private keys are insecure"
-msgstr "Niezaszyfrowane klucze prywatne są niezabezpieczone"
+#: ../src/wireless-security/eap-method-tls.c:314
+msgid "no CA certificate selected"
+msgstr "nie wybrano certyfikatu CA"
 
 #: ../src/wireless-security/eap-method-tls.c:319
-msgid ""
-"The selected private key does not appear to be protected by a password. This "
-"could allow your security credentials to be compromised. Please select a "
-"password-protected private key.\n"
-"\n"
-"(You can password-protect your private key with openssl)"
-msgstr ""
-"Wybrany klucz prywatny nie jest chroniony hasłem. Może to umożliwić "
-"ujawnienie danych zabezpieczeń. Proszę wybrać klucz prywatny chroniony "
-"hasłem.\n"
-"\n"
-"(można ochronić klucz prywatny hasłem za pomocą oprogramowania OpenSSL)"
-
-#: ../src/wireless-security/eap-method-tls.c:495
-msgid "Choose your personal certificate"
-msgstr "Wybór prywatnego certyfikatu"
-
-#: ../src/wireless-security/eap-method-tls.c:507
-msgid "Choose your private key"
-msgstr "Wybór klucza prywatnego"
+msgid "selected CA certificate file does not exist"
+msgstr "wybrany plik certyfikatu CA nie istnieje"
 
 #: ../src/wireless-security/eap-method-tls.ui.h:1
 msgid "I_dentity:"
 msgstr "_Tożsamość:"
 
-#: ../src/wireless-security/eap-method-tls.ui.h:2
-msgid "_User certificate:"
-msgstr "Certyfikat _użytkownika:"
-
-#: ../src/wireless-security/eap-method-tls.ui.h:5
-msgid "Private _key:"
-msgstr "_Klucz prywatny:"
-
-#: ../src/wireless-security/eap-method-tls.ui.h:6
-msgid "_Private key password:"
-msgstr "_Hasło klucza prywatnego:"
-
-#: ../src/wireless-security/eap-method-ttls.c:63
+#: ../src/wireless-security/eap-method-ttls.c:64
 #, c-format
 msgid "invalid EAP-TTLS CA certificate: %s"
 msgstr "nieprawidłowy certyfikat CA EAP-TTLS: %s"
 
-#: ../src/wireless-security/eap-method-ttls.c:68
+#: ../src/wireless-security/eap-method-ttls.c:69
 msgid "invalid EAP-TTLS CA certificate: no certificate specified"
 msgstr "nieprawidłowy certyfikat CA EAP-TTLS: nie podano certyfikatu"
 
-#: ../src/wireless-security/eap-method-ttls.c:305
+#: ../src/wireless-security/eap-method-ttls.c:306
 msgid "MSCHAPv2 (no EAP)"
 msgstr "MSCHAPv2 (bez EAP)"
 
