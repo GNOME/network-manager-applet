@@ -1082,9 +1082,14 @@ idle_check_avail_access_point_notification (gpointer datap)
 	aps = nm_device_wifi_get_access_points (device);
 	for (i = 0; i < aps->len; i++) {
 		NMAccessPoint *ap = aps->pdata[i];
-		GPtrArray *ap_connections = nm_access_point_filter_connections (ap, connections);
+		GPtrArray *ap_connections;
 		int a;
 		gboolean is_autoconnect = FALSE;
+
+		if (!nm_access_point_get_ssid (ap))
+			continue;
+
+		ap_connections = nm_access_point_filter_connections (ap, connections);
 
 		for (a = 0; a < ap_connections->len; a++) {
 			NMConnection *connection = NM_CONNECTION (ap_connections->pdata[a]);
