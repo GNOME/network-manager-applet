@@ -391,6 +391,7 @@ src_libnm_gtk_libnm_gtk_la_CFLAGS = \
 	"-I$(srcdir)/src/utils" \
 	"-I$(srcdir)/src/wireless-security" \
 	"-I$(srcdir)/src/libnm-gtk" \
+	-Isrc/libnma \
 	$(GTK_CFLAGS) \
 	$(LIBNM_GLIB_CFLAGS) \
 	$(GUDEV_CFLAGS)
@@ -540,6 +541,7 @@ src_libnma_libnma_la_CFLAGS = \
 	"-I$(srcdir)/src/utils" \
 	"-I$(srcdir)/src/wireless-security" \
 	"-I$(srcdir)/src/libnma" \
+	-Isrc/libnma \
 	$(GTK_CFLAGS) \
 	$(LIBNM_CFLAGS) \
 	$(GUDEV_CFLAGS) \
