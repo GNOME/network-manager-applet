@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: network-manager-applet master\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2017-03-11 07:39+0000\n"
-"PO-Revision-Date: 2017-03-12 21:30+0500\n"
+"POT-Creation-Date: 2017-03-19 20:29+0000\n"
+"PO-Revision-Date: 2017-03-20 08:18+0500\n"
 "Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh <kk_KZ@googlegroups.com>\n"
 "Language: kk\n"
@@ -140,6 +140,8 @@ msgid ""
 "The nm-connection-editor program works with NetworkManager to create and "
 "edit existing connection profiles for NetworkManager."
 msgstr ""
+"nm-connection-editor бағдарламасы NetworkManager-мен бірге NetworkManager "
+"үшін байланыс профильдерін жасауға және түзетуге жұмыс істейді."
 
 #: ../nm-connection-editor.appdata.xml.in.h:5
 msgid "The NetworkManager Developers"
@@ -189,7 +191,7 @@ msgstr "802.1X аутентификациясы"
 #: ../src/connection-editor/ce-page-dcb.ui.h:17
 #: ../src/connection-editor/ce-ppp-auth-methods.ui.h:1
 #: ../src/connection-editor/nm-connection-editor.ui.h:6
-#: ../src/gsm-unlock.ui.h:1
+#: ../src/gsm-unlock.ui.h:1 ../src/libnma/nma-pkcs11-token-login-dialog.ui.h:1
 msgid "_Cancel"
 msgstr "Ба_с тарту"
 
@@ -214,12 +216,12 @@ msgid "Failed to add/activate connection"
 msgstr "Байланысты қосу/белсендіру мүмкін емес"
 
 #: ../src/applet.c:347 ../src/applet.c:401 ../src/applet.c:436
-#: ../src/applet-device-wifi.c:1445 ../src/applet-device-wifi.c:1468
+#: ../src/applet-device-wifi.c:1381 ../src/applet-device-wifi.c:1404
 msgid "Unknown error"
 msgstr "Белгісіз қате"
 
-#: ../src/applet.c:350 ../src/applet.c:439 ../src/applet-device-wifi.c:1448
-#: ../src/applet-device-wifi.c:1471
+#: ../src/applet.c:350 ../src/applet.c:439 ../src/applet-device-wifi.c:539
+#: ../src/applet-device-wifi.c:1384 ../src/applet-device-wifi.c:1407
 msgid "Connection failure"
 msgstr "Байланысты орнату сәтсіз"
 
@@ -235,7 +237,7 @@ msgstr "Ажырату сәтсіз"
 msgid "Connection activation failed"
 msgstr "Байланысты іске қосу сәтсіз"
 
-#: ../src/applet.c:757 ../src/applet-device-wifi.c:1185
+#: ../src/applet.c:757 ../src/applet-device-wifi.c:1121
 msgid "Don’t show this message again"
 msgstr "Бұл хабарламаны келесіде көрсетпеу"
 
@@ -566,7 +568,7 @@ msgid "Mobile Broadband"
 msgstr "Мобильді кеңжолақты"
 
 #: ../src/applet-device-broadband.c:790 ../src/applet-device-bt.c:75
-#: ../src/applet-device-ethernet.c:117 ../src/applet-device-wifi.c:970
+#: ../src/applet-device-ethernet.c:117 ../src/applet-device-wifi.c:906
 msgid "Available"
 msgstr "Қолжетерлік"
 
@@ -576,7 +578,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "Жаңа мобильді кеңжолақты байланысы…"
 
 #: ../src/applet-device-broadband.c:817 ../src/applet-device-bt.c:87
-#: ../src/applet-device-ethernet.c:132 ../src/applet-device-wifi.c:1366
+#: ../src/applet-device-ethernet.c:132 ../src/applet-device-wifi.c:1302
 msgid "Connection Established"
 msgstr "Байланыс орнатылды"
 
@@ -677,95 +679,99 @@ msgstr "\"%s\" ethernet желілік байланысы белсенді"
 msgid "DSL authentication"
 msgstr "DSL аутентификациясы"
 
-#: ../src/applet-device-wifi.c:231
+#: ../src/applet-device-wifi.c:225
 msgid "_Connect to Hidden Wi-Fi Network…"
 msgstr "Жасырын Wi-Fi желісіне байланы_су…"
 
-#: ../src/applet-device-wifi.c:282
+#: ../src/applet-device-wifi.c:276
 msgid "Create _New Wi-Fi Network…"
 msgstr "_Жаңа Wi-Fi желісін жасау…"
 
-#: ../src/applet-device-wifi.c:432
+#: ../src/applet-device-wifi.c:358
 msgid "(none)"
 msgstr "(ешнәрсе)"
 
-#: ../src/applet-device-wifi.c:902
+#: ../src/applet-device-wifi.c:536 ../src/applet-device-wifi.c:1402
+msgid "Failed to add new connection"
+msgstr "Жаңа байланысты қосу мүмкін емес"
+
+#: ../src/applet-device-wifi.c:537
+msgid "Insufficient privileges."
+msgstr ""
+
+#: ../src/applet-device-wifi.c:838
 #, c-format
 msgid "Wi-Fi Networks (%s)"
 msgstr "Wi-Fi желілері (%s)"
 
-#: ../src/applet-device-wifi.c:904
+#: ../src/applet-device-wifi.c:840
 #, c-format
 msgid "Wi-Fi Network (%s)"
 msgstr "Wi-Fi желісі (%s)"
 
-#: ../src/applet-device-wifi.c:906
+#: ../src/applet-device-wifi.c:842
 msgid "Wi-Fi Network"
 msgid_plural "Wi-Fi Networks"
 msgstr[0] "Wi-Fi желі(лер)"
 
-#: ../src/applet-device-wifi.c:935
+#: ../src/applet-device-wifi.c:871
 msgid "Wi-Fi is disabled"
 msgstr "Wi-Fi сөндірілген"
 
-#: ../src/applet-device-wifi.c:936
+#: ../src/applet-device-wifi.c:872
 msgid "Wi-Fi is disabled by hardware switch"
 msgstr "Wi-Fi құрылғы қосқышымен сөндірілген"
 
-#: ../src/applet-device-wifi.c:997
+#: ../src/applet-device-wifi.c:933
 msgid "More networks"
 msgstr "Көбірек желілер"
 
-#: ../src/applet-device-wifi.c:1181
+#: ../src/applet-device-wifi.c:1117
 msgid "Wi-Fi Networks Available"
 msgstr "Wi-Fi желілері қолжетерлік"
 
-#: ../src/applet-device-wifi.c:1182
+#: ../src/applet-device-wifi.c:1118
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Wi-Fi желісіне байланысты орнату үшін желі мәзірін қолданыңыз"
 
-#: ../src/applet-device-wifi.c:1365
+#: ../src/applet-device-wifi.c:1301
 #, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "\"%s\" Wi-Fi желісіне байланыс орнатылды."
 
-#: ../src/applet-device-wifi.c:1400
+#: ../src/applet-device-wifi.c:1336
 #, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "\"%s\" Wi-Fi желілік байланысын дайындау…"
 
-#: ../src/applet-device-wifi.c:1403
+#: ../src/applet-device-wifi.c:1339
 #, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "\"%s\" Wi-Fi желі байланысын баптау…"
 
-#: ../src/applet-device-wifi.c:1406
+#: ../src/applet-device-wifi.c:1342
 #, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "\"%s\" Wi-Fi желісі үшін пайдаланушы аутентификациясы керек…"
 
-#: ../src/applet-device-wifi.c:1409
+#: ../src/applet-device-wifi.c:1345
 #, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "\"%s\" үшін Wi-Fi желілік адресті сұрау…"
 
-#: ../src/applet-device-wifi.c:1420
+#: ../src/applet-device-wifi.c:1356
 #, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "\"%s\" Wi-Fi желілік байланысы белсенді: %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1424
+#: ../src/applet-device-wifi.c:1360
 #, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "\"%s\" Wi-Fi желілік байланысы белсенді"
 
-#: ../src/applet-device-wifi.c:1443
+#: ../src/applet-device-wifi.c:1379
 msgid "Failed to activate connection"
 msgstr "Байланысты белсендіру мүмкін емес"
-
-#: ../src/applet-device-wifi.c:1466
-msgid "Failed to add new connection"
-msgstr "Жаңа байланысты қосу мүмкін емес"
 
 #: ../src/applet-dialogs.c:41
 msgid "Error displaying connection information:"
@@ -1344,26 +1350,45 @@ msgid "invalid %s for %s (%s)"
 msgstr ""
 
 #: ../src/connection-editor/ce-page.c:348
-#: ../src/connection-editor/ce-page.c:604
 #, c-format
 msgid "invalid %s (%s)"
 msgstr "жарамсыз %s (%s)"
 
 #: ../src/connection-editor/ce-page.c:388
 #, c-format
-msgid "invalid interface-name for %s (%s)"
+msgid "invalid interface-name for %s (%s): "
 msgstr ""
 
 #: ../src/connection-editor/ce-page.c:392
 #, c-format
-msgid "invalid interface-name (%s)"
+#| msgid "VLAN inter_face name:"
+msgid "invalid interface-name (%s): "
+msgstr "интерфейс аты қате (%s): "
+
+#: ../src/connection-editor/ce-page.c:571
+msgid "can’t parse device name"
 msgstr ""
 
-#: ../src/connection-editor/ce-page.c:605
+#: ../src/connection-editor/ce-page.c:589
+msgid "invalid hardware address"
+msgstr "құрылғылық адресі қате"
+
+#: ../src/connection-editor/ce-page.c:611
+#, c-format
+msgid "invalid %s (%s): "
+msgstr "жарамсыз %s (%s): "
+
+#: ../src/connection-editor/ce-page.c:612
+#: ../src/connection-editor/ce-page.c:617
 msgid "device"
 msgstr "құрылғы"
 
-#: ../src/connection-editor/ce-page.c:713
+#: ../src/connection-editor/ce-page.c:616
+#, c-format
+msgid "invalid %s (%s) "
+msgstr "жарамсыз %s (%s) "
+
+#: ../src/connection-editor/ce-page.c:725
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr ""
 
@@ -1526,7 +1551,6 @@ msgstr "Қы_змет:"
 #: ../src/connection-editor/ce-page-dsl.ui.h:3
 #: ../src/wireless-security/eap-method-leap.ui.h:3
 #: ../src/wireless-security/eap-method-simple.ui.h:3
-#: ../src/wireless-security/eap-method-tls.ui.h:7
 #: ../src/wireless-security/ws-leap.ui.h:3
 #: ../src/wireless-security/ws-wpa-psk.ui.h:3
 msgid "Sho_w password"
@@ -2953,6 +2977,7 @@ msgid_plural "%d years ago"
 msgstr[0] "%d жыл бұрын"
 
 #: ../src/connection-editor/nm-connection-list.c:639
+#: ../src/libnma/nma-pkcs11-cert-chooser-dialog.ui.h:2
 msgid "Name"
 msgstr "Аты"
 
@@ -3368,24 +3393,24 @@ msgid "EAP"
 msgstr "EAP"
 
 #: ../src/connection-editor/page-ppp.c:130
-#: ../src/wireless-security/eap-method-ttls.c:259
+#: ../src/wireless-security/eap-method-ttls.c:260
 msgid "PAP"
 msgstr "PAP"
 
 #: ../src/connection-editor/page-ppp.c:131
-#: ../src/wireless-security/eap-method-ttls.c:321
+#: ../src/wireless-security/eap-method-ttls.c:322
 msgid "CHAP"
 msgstr "CHAP"
 
 #: ../src/connection-editor/page-ppp.c:132
-#: ../src/wireless-security/eap-method-fast.c:283
-#: ../src/wireless-security/eap-method-peap.c:272
-#: ../src/wireless-security/eap-method-ttls.c:289
+#: ../src/wireless-security/eap-method-fast.c:284
+#: ../src/wireless-security/eap-method-peap.c:273
+#: ../src/wireless-security/eap-method-ttls.c:290
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
 #: ../src/connection-editor/page-ppp.c:133
-#: ../src/wireless-security/eap-method-ttls.c:274
+#: ../src/wireless-security/eap-method-ttls.c:275
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
@@ -3418,7 +3443,7 @@ msgstr "Прокси пайдаланушы интерфейсін жүктеу 
 #: ../src/connection-editor/page-team.c:361
 #: ../src/connection-editor/page-team-port.c:223
 msgid "Error: file doesn’t contain a valid JSON configuration"
-msgstr ""
+msgstr "Қате: файлда жарамды JSON баптаулары жоқ"
 
 #: ../src/connection-editor/page-team.c:1156
 msgid "Could not load team user interface."
@@ -3633,6 +3658,48 @@ msgstr "Байланыс ақпараты"
 msgid "Active Network Connections"
 msgstr "Белсенді желілік байланыстары"
 
+#: ../src/libnma/nma-file-cert-chooser.c:108
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:140
+msgid "No certificate set"
+msgstr "Сертификат көрсетілмеген"
+
+#: ../src/libnma/nma-file-cert-chooser.c:126
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:164
+msgid "No key set"
+msgstr "Кілт көрсетілмеді"
+
+#: ../src/libnma/nma-file-cert-chooser.c:246
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:364
+#, c-format
+msgid "Choose a key for %s Certificate"
+msgstr "%s сертификаты үшін кілтті таңдаңыз"
+
+#: ../src/libnma/nma-file-cert-chooser.c:250
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:368
+#, c-format
+#| msgid "Private _key:"
+msgid "%s private _key:"
+msgstr "%s жеке _кілті:"
+
+#: ../src/libnma/nma-file-cert-chooser.c:254
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:372
+#, c-format
+#| msgid "_Private key password:"
+msgid "%s key _password:"
+msgstr "%s кілт _паролі:"
+
+#: ../src/libnma/nma-file-cert-chooser.c:258
+#, c-format
+msgid "Choose %s Certificate"
+msgstr "%s сертификатын таңдаңыз"
+
+#: ../src/libnma/nma-file-cert-chooser.c:262
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:380
+#, c-format
+#| msgid "_User certificate:"
+msgid "%s _certificate:"
+msgstr "%s _сертификаты:"
+
 #: ../src/libnma/nma-mobile-wizard.c:198
 #: ../src/libnm-gtk/nm-mobile-wizard.c:199
 msgid ""
@@ -3719,7 +3786,7 @@ msgstr "Провайдер"
 #: ../src/libnma/nma-mobile-wizard.c:748
 #: ../src/libnm-gtk/nm-mobile-wizard.c:749
 msgid "I can’t find my provider and I wish to enter it _manually:"
-msgstr ""
+msgstr "Өз провайдерімді таба алмадым, оны қол_мен енгіземін:"
 
 #: ../src/libnma/nma-mobile-wizard.c:761
 #: ../src/libnm-gtk/nm-mobile-wizard.c:762
@@ -3817,6 +3884,79 @@ msgstr "Мобильді кеңжолақты байланысты орнату"
 #: ../src/libnm-gtk/nm-mobile-wizard.c:1614
 msgid "New Mobile Broadband Connection"
 msgstr "Жаңа мобильді кеңжолақты байланысы"
+
+#: ../src/libnma/nma-cert-chooser-button.c:162
+msgid "(None)"
+msgstr "(Ешнәрсе)"
+
+#: ../src/libnma/nma-cert-chooser-button.c:169
+#, c-format
+msgid "Key in %s"
+msgstr "%s ішіндегі кілт"
+
+#: ../src/libnma/nma-cert-chooser-button.c:170
+#, c-format
+msgid "Certificate in %s"
+msgstr "%s ішіндегі сертификаты"
+
+#: ../src/libnma/nma-cert-chooser-button.c:189
+#: ../src/libnma/nma-pkcs11-cert-chooser-dialog.c:183
+msgid "(Unknown)"
+msgstr "(Белгісіз)"
+
+#: ../src/libnma/nma-cert-chooser-button.c:213
+#: ../src/libnma/nma-cert-chooser-button.c:243
+msgid "Select"
+msgstr "Таңдау"
+
+#: ../src/libnma/nma-cert-chooser-button.c:214
+#: ../src/libnma/nma-cert-chooser-button.c:244
+msgid "Cancel"
+msgstr "Бас тарту"
+
+#: ../src/libnma/nma-cert-chooser-button.c:470
+msgid "Select from file…"
+msgstr "Файлдан таңдау…"
+
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:376
+#, c-format
+msgid "Choose a %s Certificate"
+msgstr "%s сертификатын таңдау"
+
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:384
+#, c-format
+#| msgid "_User certificate:"
+msgid "%s certificate _password:"
+msgstr "%s сертификат _паролі:"
+
+#: ../src/libnma/nma-pkcs11-cert-chooser-dialog.c:255
+msgid "Error logging in: "
+msgstr "Кіру қатесі: "
+
+#: ../src/libnma/nma-pkcs11-cert-chooser-dialog.c:277
+msgid "Error opening a session: "
+msgstr "Сессияны ашу қатесі: "
+
+#: ../src/libnma/nma-pkcs11-cert-chooser-dialog.ui.h:1
+msgid "_Unlock token"
+msgstr "Токенді бо_сату"
+
+#: ../src/libnma/nma-pkcs11-cert-chooser-dialog.ui.h:3
+msgid "Issued By"
+msgstr "Шығарған"
+
+#: ../src/libnma/nma-pkcs11-token-login-dialog.c:146
+#, c-format
+msgid "Enter %s PIN"
+msgstr "%s PIN кодын енгізіңіз"
+
+#: ../src/libnma/nma-pkcs11-token-login-dialog.ui.h:2
+msgid "_Login"
+msgstr ""
+
+#: ../src/libnma/nma-pkcs11-token-login-dialog.ui.h:3
+msgid "_Remember PIN"
+msgstr "PIN кодын _есте сақтау"
 
 #: ../src/libnma/nma-ui-utils.c:49 ../src/libnm-gtk/nm-ui-utils.c:615
 msgid "Store the password only for this user"
@@ -4068,7 +4208,7 @@ msgstr "Роуминг желісі"
 #: ../src/mobile-helpers.c:331
 #, c-format
 msgid "PIN code for SIM card “%s” on “%s”"
-msgstr ""
+msgstr "\"%s\" SIM картасы үшін PIN коды, \"%s\" жерінде"
 
 #: ../src/mobile-helpers.c:464
 msgid "PIN code required"
@@ -4093,45 +4233,45 @@ msgstr "роуминг"
 msgid "%s connection"
 msgstr "%s байланысы"
 
-#: ../src/wireless-security/eap-method.c:57
-msgid "undefined error in 802.1X security (wpa-eap)"
-msgstr ""
+#: ../src/utils/utils.c:563
+msgid "PEM certificates (*.pem, *.crt, *.cer)"
+msgstr "PEM сертификаттары (*.pem, *.crt, *.cer)"
 
-#: ../src/wireless-security/eap-method.c:233
-msgid "no file selected"
-msgstr "ешбір файл таңдалмады"
-
-#: ../src/wireless-security/eap-method.c:264
-msgid "unspecified error validating eap-method file"
-msgstr "eap-method файлын растаудағы анықталмаған қате"
-
-#: ../src/wireless-security/eap-method.c:439
+#: ../src/utils/utils.c:575
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "DER, PEM, не PKCS#12 жеке кілттері (*.der, *.pem, *.p12, *.key)"
 
-#: ../src/wireless-security/eap-method.c:442
-msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
-msgstr "DER не PEM сертификаттары (*.der, *.pem, *.crt, *.cer)"
+#: ../src/wireless-security/eap-method.c:57
+msgid "undefined error in 802.1X security (wpa-eap)"
+msgstr "802.1X қауіпсіздігі (wpa-eap) ішіндегі анықталмаған қате"
 
-#: ../src/wireless-security/eap-method-fast.c:72
+#: ../src/wireless-security/eap-method.c:232
+msgid "no file selected"
+msgstr "ешбір файл таңдалмады"
+
+#: ../src/wireless-security/eap-method.c:263
+msgid "unspecified error validating eap-method file"
+msgstr "eap-method файлын растаудағы анықталмаған қате"
+
+#: ../src/wireless-security/eap-method-fast.c:73
 msgid "missing EAP-FAST PAC file"
 msgstr "EAP-FAST PAC файлы жоқ"
 
-#: ../src/wireless-security/eap-method-fast.c:268
-#: ../src/wireless-security/eap-method-peap.c:302
-#: ../src/wireless-security/eap-method-ttls.c:351
+#: ../src/wireless-security/eap-method-fast.c:269
+#: ../src/wireless-security/eap-method-peap.c:303
+#: ../src/wireless-security/eap-method-ttls.c:352
 msgid "GTC"
 msgstr "GTC"
 
-#: ../src/wireless-security/eap-method-fast.c:406
+#: ../src/wireless-security/eap-method-fast.c:407
 msgid "Choose a PAC file"
 msgstr "PAC файлын таңдаңыз"
 
-#: ../src/wireless-security/eap-method-fast.c:413
+#: ../src/wireless-security/eap-method-fast.c:414
 msgid "PAC files (*.pac)"
 msgstr "PAC файлдары (*.pac)"
 
-#: ../src/wireless-security/eap-method-fast.c:417
+#: ../src/wireless-security/eap-method-fast.c:418
 msgid "All files"
 msgstr "Барлық файлдар"
 
@@ -4167,32 +4307,31 @@ msgstr "І_шкі аутентификация:"
 msgid "Allow automatic PAC pro_visioning"
 msgstr "Автоматты PAC ұсы_нуды рұқсат ету"
 
-#: ../src/wireless-security/eap-method-leap.c:65
+#: ../src/wireless-security/eap-method-leap.c:66
 msgid "missing EAP-LEAP username"
 msgstr "EAP-LEAP пайдаланушы аты жоқ"
 
-#: ../src/wireless-security/eap-method-leap.c:74
+#: ../src/wireless-security/eap-method-leap.c:75
 msgid "missing EAP-LEAP password"
 msgstr "EAP-LEAP паролі жоқ"
 
-#: ../src/wireless-security/eap-method-peap.c:63
+#: ../src/wireless-security/eap-method-peap.c:64
 #, c-format
 msgid "invalid EAP-PEAP CA certificate: %s"
 msgstr "жарамсыз EAP-PEAP CA сертификаты: %s"
 
-#: ../src/wireless-security/eap-method-peap.c:68
+#: ../src/wireless-security/eap-method-peap.c:69
 msgid "invalid EAP-PEAP CA certificate: no certificate specified"
 msgstr "жарамсыз EAP-PEAP CA сертификаты: сертификат көрсетілмеген"
 
-#: ../src/wireless-security/eap-method-peap.c:287
-#: ../src/wireless-security/eap-method-ttls.c:336
+#: ../src/wireless-security/eap-method-peap.c:288
+#: ../src/wireless-security/eap-method-ttls.c:337
 #: ../src/wireless-security/wireless-security.c:424
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/wireless-security/eap-method-peap.c:381
-#: ../src/wireless-security/eap-method-tls.c:501
-#: ../src/wireless-security/eap-method-ttls.c:430
+#: ../src/wireless-security/eap-method-peap.c:382
+#: ../src/wireless-security/eap-method-ttls.c:431
 msgid "Choose a Certificate Authority certificate"
 msgstr "Сертификаттау орталығының сертификатын таңдаңыз"
 
@@ -4205,13 +4344,12 @@ msgid "Version 1"
 msgstr "Нұсқасы 1"
 
 #: ../src/wireless-security/eap-method-peap.ui.h:5
-#: ../src/wireless-security/eap-method-tls.ui.h:3
 #: ../src/wireless-security/eap-method-ttls.ui.h:2
 msgid "C_A certificate:"
 msgstr "С_О сертификаты:"
 
 #: ../src/wireless-security/eap-method-peap.ui.h:6
-#: ../src/wireless-security/eap-method-tls.ui.h:4
+#: ../src/wireless-security/eap-method-tls.ui.h:2
 #: ../src/wireless-security/eap-method-ttls.ui.h:3
 msgid "No CA certificate is _required"
 msgstr "CA сертификаты керек е_мес"
@@ -4220,100 +4358,62 @@ msgstr "CA сертификаты керек е_мес"
 msgid "PEAP _version:"
 msgstr "_PEAP нұсқасы:"
 
-#: ../src/wireless-security/eap-method-simple.c:74
+#: ../src/wireless-security/eap-method-simple.c:75
 msgid "missing EAP username"
 msgstr "EAP пайдаланушы аты жоқ"
 
-#: ../src/wireless-security/eap-method-simple.c:87
+#: ../src/wireless-security/eap-method-simple.c:88
 msgid "missing EAP password"
 msgstr "EAP паролі жоқ"
 
-#: ../src/wireless-security/eap-method-tls.c:68
+#: ../src/wireless-security/eap-method-tls.c:64
 msgid "missing EAP-TLS identity"
 msgstr "EAP-TLS identity жоқ"
 
-#: ../src/wireless-security/eap-method-tls.c:77
-#, c-format
-msgid "invalid EAP-TLS CA certificate: %s"
-msgstr "Жарамсыз EAP-TLS СО сертификаты: %s"
+#: ../src/wireless-security/eap-method-tls.c:238
+msgid "no user certificate selected"
+msgstr "пайдаланушы сертификаты таңдалмады"
 
-#: ../src/wireless-security/eap-method-tls.c:84
-msgid "invalid EAP-TLS CA certificate: no certificate specified"
-msgstr "жарамсыз EAP-TLS CA сертификаты: сертификат көрсетілмеген"
+#: ../src/wireless-security/eap-method-tls.c:243
+msgid "selected user certificate file does not exist"
+msgstr "таңдалған пайдаланушы сертификат файлы жоқ болып тұр"
 
-#: ../src/wireless-security/eap-method-tls.c:95
-msgid "invalid EAP-TLS password: missing"
-msgstr "жарамсыз EAP-TLS паролі: жоқ болып тұр"
+#: ../src/wireless-security/eap-method-tls.c:263
+msgid "no key selected"
+msgstr "кілт таңдалмады"
 
-#: ../src/wireless-security/eap-method-tls.c:109
-#, c-format
-msgid "invalid EAP-TLS private-key: %s"
-msgstr "жарамсыз EAP-TLS жеке кілті: %s"
+#: ../src/wireless-security/eap-method-tls.c:268
+msgid "selected key file does not exist"
+msgstr "таңдалған кілттер файлы жоқ болып тұр"
 
-#: ../src/wireless-security/eap-method-tls.c:119
-#, c-format
-msgid "invalid EAP-TLS user-certificate: %s"
-msgstr "жарамсыз EAP-TLS пайдаланушы сертификаты: %s"
-
-#: ../src/wireless-security/eap-method-tls.c:316
-msgid "Unencrypted private keys are insecure"
-msgstr "Шифрленбеген жеке кілттері қауіпсіз емес болады"
+#: ../src/wireless-security/eap-method-tls.c:314
+msgid "no CA certificate selected"
+msgstr "СО сертификаты таңдалмады"
 
 #: ../src/wireless-security/eap-method-tls.c:319
-msgid ""
-"The selected private key does not appear to be protected by a password. This "
-"could allow your security credentials to be compromised. Please select a "
-"password-protected private key.\n"
-"\n"
-"(You can password-protect your private key with openssl)"
-msgstr ""
-"Таңдалған жеке кілт парольмен қорғалмаған сияқты. Бұл сіздің қауіпсіздік "
-"есептік жазба деректерінің әшкерелеуіне әкеп соғуы мүмкін. Парольмен "
-"қорғалған жеке кілтті таңдаңыз.\n"
-"\n"
-"(Сіз жеке кілтіңізді openssl көмегімен парольмен қорғай аласыз)"
-
-#: ../src/wireless-security/eap-method-tls.c:495
-msgid "Choose your personal certificate"
-msgstr "Жеке сертификатыңызды таңдаңыз"
-
-#: ../src/wireless-security/eap-method-tls.c:507
-msgid "Choose your private key"
-msgstr "Жеке кілтіңізді таңдаңыз"
+msgid "selected CA certificate file does not exist"
+msgstr "таңдалған СО сертификат файлы жоқ болып тұр"
 
 #: ../src/wireless-security/eap-method-tls.ui.h:1
 msgid "I_dentity:"
 msgstr ""
 
-#: ../src/wireless-security/eap-method-tls.ui.h:2
-msgid "_User certificate:"
-msgstr "Па_йдаланушы сертификаты:"
-
-#: ../src/wireless-security/eap-method-tls.ui.h:5
-msgid "Private _key:"
-msgstr "Жеке _кілт:"
-
-#: ../src/wireless-security/eap-method-tls.ui.h:6
-msgid "_Private key password:"
-msgstr "Ж_еке кілт паролі:"
-
-#: ../src/wireless-security/eap-method-ttls.c:63
+#: ../src/wireless-security/eap-method-ttls.c:64
 #, c-format
 msgid "invalid EAP-TTLS CA certificate: %s"
 msgstr "жарамсыз EAP-TTLS CA сертификаты: %s"
 
-#: ../src/wireless-security/eap-method-ttls.c:68
+#: ../src/wireless-security/eap-method-ttls.c:69
 msgid "invalid EAP-TTLS CA certificate: no certificate specified"
 msgstr "жарамсыз EAP-TTLS CA сертификаты: сертификат көрсетілмеген"
 
-#: ../src/wireless-security/eap-method-ttls.c:305
-#| msgid "MSCHAPv2"
+#: ../src/wireless-security/eap-method-ttls.c:306
 msgid "MSCHAPv2 (no EAP)"
 msgstr "MSCHAPv2 (EAP жоқ)"
 
 #: ../src/wireless-security/wireless-security.c:72
 msgid "Unknown error validating 802.1X security"
-msgstr ""
+msgstr "802.1X қауіпсіздігін тексерудің белгісіз қатесі"
 
 #: ../src/wireless-security/wireless-security.c:436
 msgid "TLS"
@@ -4405,7 +4505,7 @@ msgstr "Кіл_тті көрсету"
 
 #: ../src/wireless-security/ws-wep-key.ui.h:7
 msgid "WEP inde_x:"
-msgstr ""
+msgstr "WEP и_ндексі:"
 
 #: ../src/wireless-security/ws-wpa-psk.c:70
 #, c-format
@@ -4425,6 +4525,43 @@ msgstr ""
 #: ../src/wireless-security/ws-wpa-psk.ui.h:2
 msgid "_Type:"
 msgstr "_Түрі:"
+
+#~ msgid "invalid EAP-TLS CA certificate: %s"
+#~ msgstr "Жарамсыз EAP-TLS СО сертификаты: %s"
+
+#~ msgid "invalid EAP-TLS CA certificate: no certificate specified"
+#~ msgstr "жарамсыз EAP-TLS CA сертификаты: сертификат көрсетілмеген"
+
+#~ msgid "invalid EAP-TLS password: missing"
+#~ msgstr "жарамсыз EAP-TLS паролі: жоқ болып тұр"
+
+#~ msgid "invalid EAP-TLS private-key: %s"
+#~ msgstr "жарамсыз EAP-TLS жеке кілті: %s"
+
+#~ msgid "invalid EAP-TLS user-certificate: %s"
+#~ msgstr "жарамсыз EAP-TLS пайдаланушы сертификаты: %s"
+
+#~ msgid "Unencrypted private keys are insecure"
+#~ msgstr "Шифрленбеген жеке кілттері қауіпсіз емес болады"
+
+#~ msgid ""
+#~ "The selected private key does not appear to be protected by a password. "
+#~ "This could allow your security credentials to be compromised. Please "
+#~ "select a password-protected private key.\n"
+#~ "\n"
+#~ "(You can password-protect your private key with openssl)"
+#~ msgstr ""
+#~ "Таңдалған жеке кілт парольмен қорғалмаған сияқты. Бұл сіздің қауіпсіздік "
+#~ "есептік жазба деректерінің әшкерелеуіне әкеп соғуы мүмкін. Парольмен "
+#~ "қорғалған жеке кілтті таңдаңыз.\n"
+#~ "\n"
+#~ "(Сіз жеке кілтіңізді openssl көмегімен парольмен қорғай аласыз)"
+
+#~ msgid "Choose your personal certificate"
+#~ msgstr "Жеке сертификатыңызды таңдаңыз"
+
+#~ msgid "Choose your private key"
+#~ msgstr "Жеке кілтіңізді таңдаңыз"
 
 #~ msgid "New Mobile Broadband connection..."
 #~ msgstr "Жаңа мобильді кеңжолақты байланысы..."
@@ -4731,9 +4868,6 @@ msgstr "_Түрі:"
 
 #~ msgid "No Certificate Authority certificate chosen"
 #~ msgstr "Сертификаттау орталығының  (CA) сертификаты таңдалмады"
-
-#~ msgid "Choose CA Certificate"
-#~ msgstr "СО сертификатын таңдаңыз"
 
 #~ msgid "No"
 #~ msgstr "Жоқ"
