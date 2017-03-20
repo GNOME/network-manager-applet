@@ -274,6 +274,7 @@ src_wireless_security_libwireless_security_libnm_la_CPPFLAGS = \
 	"-I$(srcdir)/shared" \
 	"-I$(srcdir)/src/utils" \
 	"-I$(srcdir)/src/libnma" \
+	-Isrc/libnma \
 	$(GTK_CFLAGS) \
 	$(LIBNM_CFLAGS)
 
@@ -300,6 +301,7 @@ src_wireless_security_libwireless_security_libnm_glib_la_CPPFLAGS = \
 	"-I$(srcdir)/shared" \
 	"-I$(srcdir)/src/utils" \
 	"-I$(srcdir)/src/libnma" \
+	-Isrc/libnma \
 	$(LIBNM_GLIB_CFLAGS)
 
 src_wireless_security_libwireless_security_libnm_glib_la_LIBADD = \
@@ -689,6 +691,7 @@ src_connection_editor_nm_connection_editor_CPPFLAGS = \
 	"-I$(srcdir)/src/utils" \
 	"-I$(srcdir)/src/wireless-security" \
 	"-I$(srcdir)/src/libnma" \
+	-Isrc/libnma \
 	$(GTK_CFLAGS) \
 	$(LIBNM_CFLAGS) \
 	$(JANSSON_CFLAGS)
@@ -807,6 +810,7 @@ src_nm_applet_CPPFLAGS = \
 	"-I$(srcdir)/src/utils" \
 	"-I$(srcdir)/src/wireless-security" \
 	"-I$(srcdir)/src/libnma" \
+	-Isrc/libnma \
 	$(GTK_CFLAGS) \
 	$(LIBNM_CFLAGS) \
 	$(LIBSECRET_CFLAGS) \
