@@ -23,8 +23,6 @@
 
 #include "ce-page.h"
 
-#if NM_LIBNM_COMPAT_PROXY_SUPPORTED
-
 #define CE_TYPE_PAGE_PROXY            (ce_page_proxy_get_type ())
 #define CE_PAGE_PROXY(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), CE_TYPE_PAGE_PROXY, CEPageProxy))
 #define CE_PAGE_PROXY_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), CE_TYPE_PAGE_PROXY, CEPageProxyClass))
@@ -48,7 +46,5 @@ CEPage *ce_page_proxy_new (NMConnectionEditor *editor,
                            NMClient *client,
                            const char **out_secrets_setting_name,
                            GError **error);
-
-#endif /* NM_LIBNM_COMPAT_PROXY_SUPPORTED */
 
 #endif  /* __PAGE_PROXY_H__ */

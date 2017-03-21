@@ -20,8 +20,6 @@
 
 #include "nm-default.h"
 
-#if NM_LIBNM_COMPAT_PROXY_SUPPORTED
-
 #include "page-proxy.h"
 
 #include <string.h>
@@ -317,5 +315,3 @@ ce_page_proxy_class_init (CEPageProxyClass *proxy_class)
 	/* virtual methods */
 	parent_class->ce_page_validate_v = ce_page_validate_v;
 }
-
-#endif /* NM_LIBNM_COMPAT_PROXY_SUPPORTED */

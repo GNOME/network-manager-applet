@@ -791,18 +791,12 @@ delete_connection (GtkWindow *parent_window,
 gboolean
 connection_supports_proxy (NMConnection *connection)
 {
-#if NM_LIBNM_COMPAT_PROXY_SUPPORTED
 	NMSettingConnection *s_con;
 
 	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
 
 	s_con = nm_connection_get_setting_connection (connection);
 	return (nm_setting_connection_get_slave_type (s_con) == NULL);
-#else
-	g_return_val_if_fail (NM_IS_CONNECTION (connection), FALSE);
-
-	return FALSE;
-#endif
 }
 
 gboolean
