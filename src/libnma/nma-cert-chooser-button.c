@@ -150,7 +150,7 @@ update_title (NMACertChooserButton *button)
 	GckUriData *data;
 	GtkTreeIter iter;
 	GtkTreeModel *model;
-	gchar *label;
+	gs_free char *label = NULL;
 	GError *error = NULL;
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (button));
@@ -165,6 +165,7 @@ update_title (NMACertChooserButton *button)
 		if (data) {
 			if (!gck_attributes_find_string (data->attributes, CKA_LABEL, &label)) {
 				if (data->token_info) {
+					g_free (label);
 					label = g_strdup_printf (  priv->flags & NMA_CERT_CHOOSER_BUTTON_FLAG_KEY
 					                         ? _("Key in %s")
 					                         : _("Certificate in %s"),
@@ -185,11 +186,9 @@ update_title (NMACertChooserButton *button)
 		label = g_strdup (label);
 	}
 
-	if (!label)
-		label = g_strdup (_("(Unknown)"));
 	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-	                    COLUMN_LABEL, label, -1);
-	g_free (label);
+	                    COLUMN_LABEL, label ?: _("(Unknown)"),
+	                    -1);
 }
 
 static void
