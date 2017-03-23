@@ -232,7 +232,7 @@ eap_method_validate_filepicker (GtkBuilder *builder,
 
 	if (!g_file_test (filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR)) {
 		success = FALSE;
-		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("file \"%s\" does not exist"), filename);
+		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("file “%s” does not exist"), filename);
 		goto out;
 	}
 
