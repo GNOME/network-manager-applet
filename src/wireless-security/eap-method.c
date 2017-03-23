@@ -215,14 +215,9 @@ eap_method_validate_filepicker (GtkBuilder *builder,
                                 GError **error)
 {
 	GtkWidget *widget;
-	char *filename;
+	gs_free char *filename = NULL;
 	NMSetting8021x *setting;
-	gboolean success = TRUE;
-
-	if (item_type == TYPE_PRIVATE_KEY) {
-		if (!password || *password == '\0')
-			success = FALSE;
-	}
+	gboolean success;
 
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, name));
 	g_assert (widget);
@@ -231,7 +226,8 @@ eap_method_validate_filepicker (GtkBuilder *builder,
 		if (item_type != TYPE_CA_CERT) {
 			success = FALSE;
 			g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("no file selected"));
-		}
+		} else
+			success = TRUE;
 		goto out;
 	}
 
@@ -259,8 +255,6 @@ eap_method_validate_filepicker (GtkBuilder *builder,
 	g_object_unref (setting);
 
 out:
-	g_free (filename);
-
 	if (!success && error && !*error)
 		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("unspecified error validating eap-method file"));
 
