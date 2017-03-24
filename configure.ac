@@ -153,6 +153,18 @@ AM_CONDITIONAL(WITH_WWAN, test "${with_wwan}" != "no")
 dnl Check for gudev
 PKG_CHECK_MODULES(GUDEV, gudev-1.0 >= 147)
 
+dnl SELinux
+AC_ARG_WITH(selinux, AS_HELP_STRING([--with-selinux], [Enable support for adjusting SELinux labels in configuration editor (default: yes)]))
+if (test "${with_selinux}" == "no"); then
+    AC_DEFINE(WITH_SELINUX, 0, [Define if libselinux is available])
+else
+    PKG_CHECK_MODULES(SELINUX,
+                      [libselinux],,
+                      AC_MSG_ERROR([libselinux is needed for SELinux label support in configuration editor. Use --without-selinux to build without it.]))
+    AC_DEFINE(WITH_SELINUX, 1, [Define if libselinux is available])
+fi
+AM_CONDITIONAL(WITH_SELINUX, test "${with_selinux}" != "no")
+
 dnl Jansson for team configuration editing
 AC_ARG_WITH(team, AS_HELP_STRING([--with-team], [Enable team configuration editor (default: yes)]))
 if (test "${with_team}" == "no"); then

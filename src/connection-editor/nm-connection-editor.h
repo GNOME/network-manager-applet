@@ -60,6 +60,10 @@ typedef struct {
 	GtkWidget *ok_button;
 	GtkWidget *cancel_button;
 	GtkWidget *export_button;
+	GtkWidget *relabel_info;
+	GtkWidget *relabel_dialog;
+	GtkWidget *relabel_button;
+	GtkListStore *relabel_list;
 
 	gboolean busy;
 	gboolean init_run;

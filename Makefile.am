@@ -694,7 +694,8 @@ src_connection_editor_nm_connection_editor_CPPFLAGS = \
 	-Isrc/libnma \
 	$(GTK_CFLAGS) \
 	$(LIBNM_CFLAGS) \
-	$(JANSSON_CFLAGS)
+	$(JANSSON_CFLAGS) \
+	$(SELINUX_CFLAGS)
 
 src_connection_editor_nm_connection_editor_LDADD = \
 	src/wireless-security/libwireless-security-libnm.la \
@@ -702,6 +703,7 @@ src_connection_editor_nm_connection_editor_LDADD = \
 	$(GTK_LIBS) \
 	$(LIBNM_LIBS) \
 	$(JANSSON_LIBS) \
+	$(SELINUX_LIBS) \
 	-lm
 
 $(src_connection_editor_nm_connection_editor_OBJECTS): $(connection_editor_h_gen)
