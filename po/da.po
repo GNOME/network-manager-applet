@@ -18,10 +18,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2017-02-02 13:04+0000\n"
-"PO-Revision-Date: 2017-02-25 19:22+0100\n"
+"POT-Creation-Date: 2017-03-24 14:31+0000\n"
+"PO-Revision-Date: 2017-03-25 20:16+0100\n"
 "Last-Translator: Alan Mortensen <alanmortensen.am@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.7.1\n"
 
-#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3133
+#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3132
 msgid "Network"
 msgstr "Netværk"
 
@@ -226,8 +226,8 @@ msgstr "802.1X-godkendelse"
 #: ../src/connection-editor/ce-new-connection.ui.h:1
 #: ../src/connection-editor/ce-page-dcb.ui.h:17
 #: ../src/connection-editor/ce-ppp-auth-methods.ui.h:1
-#: ../src/connection-editor/nm-connection-editor.ui.h:6
-#: ../src/gsm-unlock.ui.h:1
+#: ../src/connection-editor/nm-connection-editor.ui.h:8
+#: ../src/gsm-unlock.ui.h:1 ../src/libnma/nma-pkcs11-token-login-dialog.ui.h:1
 msgid "_Cancel"
 msgstr "_Annullér"
 
@@ -252,12 +252,12 @@ msgid "Failed to add/activate connection"
 msgstr "Kunne ikke tilføje/aktivere forbindelse"
 
 #: ../src/applet.c:347 ../src/applet.c:401 ../src/applet.c:436
-#: ../src/applet-device-wifi.c:1445 ../src/applet-device-wifi.c:1468
+#: ../src/applet-device-wifi.c:1386 ../src/applet-device-wifi.c:1409
 msgid "Unknown error"
 msgstr "Ukendt fejl"
 
-#: ../src/applet.c:350 ../src/applet.c:439 ../src/applet-device-wifi.c:1448
-#: ../src/applet-device-wifi.c:1471
+#: ../src/applet.c:350 ../src/applet.c:439 ../src/applet-device-wifi.c:539
+#: ../src/applet-device-wifi.c:1389 ../src/applet-device-wifi.c:1412
 msgid "Connection failure"
 msgstr "Forbindelsesfejl"
 
@@ -273,7 +273,7 @@ msgstr "Frakoblingsfejl"
 msgid "Connection activation failed"
 msgstr "Aktivering af forbindelse mislykkedes"
 
-#: ../src/applet.c:757 ../src/applet-device-wifi.c:1185
+#: ../src/applet.c:757 ../src/applet-device-wifi.c:1126
 msgid "Don’t show this message again"
 msgstr "Vis ikke denne besked igen"
 
@@ -482,7 +482,7 @@ msgstr "_Tilføj en VPN-forbindelse …"
 msgid "NetworkManager is not running…"
 msgstr "Netværkshåndtering kører ikke …"
 
-#: ../src/applet.c:1608 ../src/applet.c:2633
+#: ../src/applet.c:1608 ../src/applet.c:2632
 msgid "Networking disabled"
 msgstr "Netværk deaktiveret"
 
@@ -554,31 +554,31 @@ msgstr "Anmoder om en netværksadresse for \"%s\" …"
 msgid "Network connection “%s” active"
 msgstr "Netværksforbindelsen \"%s\" er aktiv"
 
-#: ../src/applet.c:2578
+#: ../src/applet.c:2577
 #, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "Starter VPN-forbindelsen \"%s\" …"
 
-#: ../src/applet.c:2581
+#: ../src/applet.c:2580
 #, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "Der kræves brugergodkendelse til VPN-forbindelsen \"%s\" …"
 
-#: ../src/applet.c:2584
+#: ../src/applet.c:2583
 #, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "Anmoder om en VPN-adresse for \"%s\" …"
 
-#: ../src/applet.c:2587
+#: ../src/applet.c:2586
 #, c-format
 msgid "VPN connection active"
 msgstr "VPN-forbindelsen er aktiv"
 
-#: ../src/applet.c:2637
+#: ../src/applet.c:2636
 msgid "No network connection"
 msgstr "Ingen netværksforbindelse"
 
-#: ../src/applet.c:3232
+#: ../src/applet.c:3231
 msgid "NetworkManager Applet"
 msgstr "Panelprogram til Netværkshåndtering"
 
@@ -608,7 +608,7 @@ msgid "Mobile Broadband"
 msgstr "Mobilt bredbånd"
 
 #: ../src/applet-device-broadband.c:790 ../src/applet-device-bt.c:75
-#: ../src/applet-device-ethernet.c:117 ../src/applet-device-wifi.c:970
+#: ../src/applet-device-ethernet.c:117 ../src/applet-device-wifi.c:906
 msgid "Available"
 msgstr "Tilgængelig"
 
@@ -618,7 +618,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "Ny mobil bredbåndsforbindelse …"
 
 #: ../src/applet-device-broadband.c:817 ../src/applet-device-bt.c:87
-#: ../src/applet-device-ethernet.c:132 ../src/applet-device-wifi.c:1366
+#: ../src/applet-device-ethernet.c:132 ../src/applet-device-wifi.c:1307
 msgid "Connection Established"
 msgstr "Forbindelse oprettet"
 
@@ -719,96 +719,100 @@ msgstr "Ethernet-netværksforbindelsen \"%s\" er aktiv"
 msgid "DSL authentication"
 msgstr "DSL-godkendelse"
 
-#: ../src/applet-device-wifi.c:231
+#: ../src/applet-device-wifi.c:225
 msgid "_Connect to Hidden Wi-Fi Network…"
 msgstr "_Forbind til skjult wi-fi-netværk …"
 
-#: ../src/applet-device-wifi.c:282
+#: ../src/applet-device-wifi.c:276
 msgid "Create _New Wi-Fi Network…"
 msgstr "Opret _nyt wi-fi-netværk …"
 
-#: ../src/applet-device-wifi.c:432
+#: ../src/applet-device-wifi.c:358
 msgid "(none)"
 msgstr "(ingen)"
 
-#: ../src/applet-device-wifi.c:902
+#: ../src/applet-device-wifi.c:536 ../src/applet-device-wifi.c:1407
+msgid "Failed to add new connection"
+msgstr "Kunne ikke tilføje ny forbindelse"
+
+#: ../src/applet-device-wifi.c:537
+msgid "Insufficient privileges."
+msgstr "Utilstrækkelige rettigheder."
+
+#: ../src/applet-device-wifi.c:838
 #, c-format
 msgid "Wi-Fi Networks (%s)"
 msgstr "Wi-fi-netværk (%s)"
 
-#: ../src/applet-device-wifi.c:904
+#: ../src/applet-device-wifi.c:840
 #, c-format
 msgid "Wi-Fi Network (%s)"
 msgstr "Wi-fi-netværk (%s)"
 
-#: ../src/applet-device-wifi.c:906
+#: ../src/applet-device-wifi.c:842
 msgid "Wi-Fi Network"
 msgid_plural "Wi-Fi Networks"
 msgstr[0] "Wi-fi-netværk"
 msgstr[1] "Wi-fi-netværk"
 
-#: ../src/applet-device-wifi.c:935
+#: ../src/applet-device-wifi.c:871
 msgid "Wi-Fi is disabled"
 msgstr "Wi-fi er slået fra"
 
-#: ../src/applet-device-wifi.c:936
+#: ../src/applet-device-wifi.c:872
 msgid "Wi-Fi is disabled by hardware switch"
 msgstr "Wi-fi er slået fra med hardwareknap"
 
-#: ../src/applet-device-wifi.c:997
+#: ../src/applet-device-wifi.c:933
 msgid "More networks"
 msgstr "Flere netværk"
 
-#: ../src/applet-device-wifi.c:1181
+#: ../src/applet-device-wifi.c:1122
 msgid "Wi-Fi Networks Available"
 msgstr "Der er tilgængelige wi-fi-netværk"
 
-#: ../src/applet-device-wifi.c:1182
+#: ../src/applet-device-wifi.c:1123
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Brug netværksmenuen til at forbinde til et wi-fi-netværk"
 
-#: ../src/applet-device-wifi.c:1365
+#: ../src/applet-device-wifi.c:1306
 #, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "Du er nu tilsluttet wi-fi-netværket \"%s\"."
 
-#: ../src/applet-device-wifi.c:1400
+#: ../src/applet-device-wifi.c:1341
 #, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "Forbereder wi-fi-netværksforbindelsen \"%s\" …"
 
-#: ../src/applet-device-wifi.c:1403
+#: ../src/applet-device-wifi.c:1344
 #, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "Konfigurerer wi-fi-netværksforbindelsen \"%s\" …"
 
-#: ../src/applet-device-wifi.c:1406
+#: ../src/applet-device-wifi.c:1347
 #, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "Der kræves brugergodkendelse til wi-fi-netværket \"%s\" …"
 
-#: ../src/applet-device-wifi.c:1409
+#: ../src/applet-device-wifi.c:1350
 #, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "Anmoder om wi-fi-netværksadresse for \"%s\" …"
 
-#: ../src/applet-device-wifi.c:1420
+#: ../src/applet-device-wifi.c:1361
 #, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "Wi-fi-netværksforbindelsen \"%s\" er aktiv: %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1424
+#: ../src/applet-device-wifi.c:1365
 #, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "Wi-fi-netværksforbindelsen \"%s\" er aktiv"
 
-#: ../src/applet-device-wifi.c:1443
+#: ../src/applet-device-wifi.c:1384
 msgid "Failed to activate connection"
 msgstr "Kunne ikke aktivere forbindelse"
-
-#: ../src/applet-device-wifi.c:1466
-msgid "Failed to add new connection"
-msgstr "Kunne ikke tilføje ny forbindelse"
 
 #: ../src/applet-dialogs.c:41
 msgid "Error displaying connection information:"
@@ -1128,7 +1132,7 @@ msgstr "_Tilføj"
 #: ../src/connection-editor/ce-page-ip4.ui.h:8
 #: ../src/connection-editor/ce-page-ip6.ui.h:11
 #: ../src/connection-editor/ce-page-team.ui.h:15
-#: ../src/connection-editor/nm-connection-list.c:715
+#: ../src/connection-editor/nm-connection-list.c:711
 msgid "_Delete"
 msgstr "_Slet"
 
@@ -1152,8 +1156,8 @@ msgstr ""
 "standardnetværksforbindelse."
 
 #: ../src/connection-editor/ce-new-connection.ui.h:2
-msgid "Create…"
-msgstr "Opret …"
+msgid "C_reate…"
+msgstr "O_pret …"
 
 #: ../src/connection-editor/ce-new-connection.ui.h:3
 msgid "Choose a Connection Type"
@@ -1224,7 +1228,7 @@ msgstr "Til_stand:"
 #: ../src/connection-editor/ce-page-bond.ui.h:13
 #: ../src/connection-editor/ce-page-bridge.ui.h:3
 #: ../src/connection-editor/ce-page-team.ui.h:14
-#: ../src/connection-editor/nm-connection-list.c:699
+#: ../src/connection-editor/nm-connection-list.c:695
 msgid "_Edit"
 msgstr "_Redigér"
 
@@ -1399,32 +1403,50 @@ msgid "invalid %s for %s (%s)"
 msgstr "ugyldig %s for %s (%s)"
 
 #: ../src/connection-editor/ce-page.c:348
-#: ../src/connection-editor/ce-page.c:604
 #, c-format
 msgid "invalid %s (%s)"
 msgstr "ugyldig %s (%s)"
 
 #: ../src/connection-editor/ce-page.c:388
 #, c-format
-msgid "invalid interface-name for %s (%s)"
-msgstr "ugyldigt grænsefladenavn for %s (%s)"
+msgid "invalid interface-name for %s (%s): "
+msgstr "ugyldigt grænsefladenavn for %s (%s): "
 
 #: ../src/connection-editor/ce-page.c:392
 #, c-format
-msgid "invalid interface-name (%s)"
-msgstr "ugyldigt grænsefladenavn (%s)"
+msgid "invalid interface-name (%s): "
+msgstr "ugyldigt grænsefladenavn (%s): "
 
-#: ../src/connection-editor/ce-page.c:605
+#: ../src/connection-editor/ce-page.c:571
+msgid "can’t parse device name"
+msgstr "kan ikke fortolke enhedsnavn"
+
+#: ../src/connection-editor/ce-page.c:589
+msgid "invalid hardware address"
+msgstr "ugyldig hardwareadresse"
+
+#: ../src/connection-editor/ce-page.c:611
+#, c-format
+msgid "invalid %s (%s): "
+msgstr "ugyldig %s (%s): "
+
+#: ../src/connection-editor/ce-page.c:612
+#: ../src/connection-editor/ce-page.c:617
 msgid "device"
 msgstr "enhed"
 
-#: ../src/connection-editor/ce-page.c:713
+#: ../src/connection-editor/ce-page.c:616
+#, c-format
+msgid "invalid %s (%s) "
+msgstr "ugyldig %s (%s) "
+
+#: ../src/connection-editor/ce-page.c:725
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr "Kunne ikke opdatere forbindelseskoder på grund af en ukendt fejl."
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:1
-msgid "Use Data Center Bridging (DCB) for this connection"
-msgstr "Brug Data Center Bridging (DCB) til denne forbindelse"
+msgid "_Use Data Center Bridging (DCB) for this connection"
+msgstr "_Brug Data Center Bridging (DCB) til denne forbindelse"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:2
 msgid "FCoE"
@@ -1588,7 +1610,6 @@ msgstr "_Tjeneste:"
 #: ../src/connection-editor/ce-page-dsl.ui.h:3
 #: ../src/wireless-security/eap-method-leap.ui.h:3
 #: ../src/wireless-security/eap-method-simple.ui.h:3
-#: ../src/wireless-security/eap-method-tls.ui.h:7
 #: ../src/wireless-security/ws-leap.ui.h:3
 #: ../src/wireless-security/ws-wpa-psk.ui.h:3
 msgid "Sho_w password"
@@ -2904,7 +2925,7 @@ msgid "unknown error"
 msgstr "ukendt fejl"
 
 #: ../src/connection-editor/connection-helpers.c:303
-#: ../src/connection-editor/page-proxy.c:120
+#: ../src/connection-editor/page-proxy.c:118
 #: ../src/connection-editor/page-team.c:341
 #: ../src/connection-editor/page-team-port.c:203
 msgid "Select file to import"
@@ -2972,34 +2993,34 @@ msgstr "Metersystem"
 msgid "Prefix"
 msgstr "Præfiks"
 
-#: ../src/connection-editor/nm-connection-editor.c:102
+#: ../src/connection-editor/nm-connection-editor.c:108
 #, c-format
 msgid "Editing %s"
 msgstr "Redigerer %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:106
+#: ../src/connection-editor/nm-connection-editor.c:112
 msgid "Editing un-named connection"
 msgstr "Redigerer unavngiven forbindelse"
 
-#: ../src/connection-editor/nm-connection-editor.c:126
+#: ../src/connection-editor/nm-connection-editor.c:132
 msgid "Missing connection name"
 msgstr "Manglende forbindelsesnavn"
 
-#: ../src/connection-editor/nm-connection-editor.c:189
+#: ../src/connection-editor/nm-connection-editor.c:352
 msgid "Editor initializing…"
 msgstr "Redigeringen initialiserer …"
 
-#: ../src/connection-editor/nm-connection-editor.c:196
-#: ../src/connection-editor/nm-connection-list.c:412
+#: ../src/connection-editor/nm-connection-editor.c:359
+#: ../src/connection-editor/nm-connection-list.c:408
 msgid "Connection cannot be modified"
 msgstr "Forbindelsen kan ikke ændres"
 
-#: ../src/connection-editor/nm-connection-editor.c:209
+#: ../src/connection-editor/nm-connection-editor.c:374
 #, c-format
 msgid "Invalid setting %s: %s"
 msgstr "Ugyldig indstilling %s: %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:285
+#: ../src/connection-editor/nm-connection-editor.c:450
 msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
@@ -3007,32 +3028,32 @@ msgstr ""
 "Forbindelsesredigering kunne ikke finde nogle krævede ressourcer (.ui-filen "
 "blev ikke fundet)."
 
-#: ../src/connection-editor/nm-connection-editor.c:405
+#: ../src/connection-editor/nm-connection-editor.c:577
 msgid "_Save"
 msgstr "_Gem"
 
-#: ../src/connection-editor/nm-connection-editor.c:406
+#: ../src/connection-editor/nm-connection-editor.c:578
 msgid "Save any changes made to this connection."
 msgstr "Gem ændringer til denne forbindelse."
 
-#: ../src/connection-editor/nm-connection-editor.c:407
+#: ../src/connection-editor/nm-connection-editor.c:579
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Godkend for at gemme denne forbindelse for alle brugere af denne maskine."
 
-#: ../src/connection-editor/nm-connection-editor.c:423
+#: ../src/connection-editor/nm-connection-editor.c:595
 msgid "Could not create connection"
 msgstr "Kunne ikke oprette forbindelse"
 
-#: ../src/connection-editor/nm-connection-editor.c:423
+#: ../src/connection-editor/nm-connection-editor.c:595
 msgid "Could not edit connection"
 msgstr "Kunne ikke redigere forbindelse"
 
-#: ../src/connection-editor/nm-connection-editor.c:425
+#: ../src/connection-editor/nm-connection-editor.c:597
 msgid "Unknown error creating connection editor dialog."
 msgstr "Ukendt fejl ved oprettelse af dialogvindue til forbindelsesredigering."
 
-#: ../src/connection-editor/nm-connection-editor.c:566
+#: ../src/connection-editor/nm-connection-editor.c:738
 msgid ""
 "Warning: the connection contains some properties not supported by the "
 "editor. They will be cleared upon save."
@@ -3040,11 +3061,11 @@ msgstr ""
 "Advarsel: Forbindelsen indeholder nogle egenskaber, som ikke understøttes af "
 "redigeringsfunktionen. De vil blive ryddet, når der gemmes."
 
-#: ../src/connection-editor/nm-connection-editor.c:586
+#: ../src/connection-editor/nm-connection-editor.c:758
 msgid "Error initializing editor"
 msgstr "Kunne ikke initialisere redigeringen"
 
-#: ../src/connection-editor/nm-connection-editor.c:974
+#: ../src/connection-editor/nm-connection-editor.c:1142
 msgid "Connection add failed"
 msgstr "Tilføjelse af forbindelse fejlede"
 
@@ -3053,12 +3074,49 @@ msgid "_Close"
 msgstr "_Luk"
 
 #: ../src/connection-editor/nm-connection-editor.ui.h:4
+msgid "Fix"
+msgstr "Ret"
+
+# Skal "true" oversættes? Senere oversættes "false" ikke.
+#: ../src/connection-editor/nm-connection-editor.ui.h:5
+msgid ""
+"Security labels may prevent some files from being used with certificate "
+"authentication."
+msgstr ""
+"Sikkerhedsmærkater kan gøre, at nogle filer ikke kan bruges med "
+"certifikatgodkendelse."
+
+#: ../src/connection-editor/nm-connection-editor.ui.h:6
 msgid "Connection _name:"
 msgstr "For_bindelsesnavn:"
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:5
+#: ../src/connection-editor/nm-connection-editor.ui.h:7
 msgid "_Export…"
 msgstr "_Eksportér …"
+
+#: ../src/connection-editor/nm-connection-editor.ui.h:9
+msgid "File Relabel"
+msgstr "Ommærk fil"
+
+#: ../src/connection-editor/nm-connection-editor.ui.h:10
+msgid "_Relabel"
+msgstr "O_mmærk"
+
+#: ../src/connection-editor/nm-connection-editor.ui.h:11
+msgid ""
+"The following files are not labelled for use with certificate "
+"authentication. Do you wish to adjust the labels?"
+msgstr ""
+"De følgende filer er ikke mærkede til brug med certifikatgodkendelse. Vil du "
+"tilpasse mærkaterne?"
+
+#: ../src/connection-editor/nm-connection-editor.ui.h:12
+msgid "Relabel"
+msgstr "Ommærk"
+
+#: ../src/connection-editor/nm-connection-editor.ui.h:13
+msgid "Filename"
+msgstr "Filnavn"
 
 #: ../src/connection-editor/nm-connection-list.c:127
 msgid "never"
@@ -3105,49 +3163,50 @@ msgid_plural "%d years ago"
 msgstr[0] "%d år siden"
 msgstr[1] "%d år siden"
 
-#: ../src/connection-editor/nm-connection-list.c:639
+#: ../src/connection-editor/nm-connection-list.c:635
+#: ../src/libnma/nma-pkcs11-cert-chooser-dialog.ui.h:2
 msgid "Name"
 msgstr "Navn"
 
-#: ../src/connection-editor/nm-connection-list.c:652
+#: ../src/connection-editor/nm-connection-list.c:648
 msgid "Last Used"
 msgstr "Sidst brugt"
 
-#: ../src/connection-editor/nm-connection-list.c:700
+#: ../src/connection-editor/nm-connection-list.c:696
 msgid "Edit the selected connection"
 msgstr "Redigér den valgte forbindelse"
 
-#: ../src/connection-editor/nm-connection-list.c:701
+#: ../src/connection-editor/nm-connection-list.c:697
 msgid "Authenticate to edit the selected connection"
 msgstr "Bekræft identitet for at redigere den valgte forbindelse"
 
-#: ../src/connection-editor/nm-connection-list.c:716
+#: ../src/connection-editor/nm-connection-list.c:712
 msgid "Delete the selected connection"
 msgstr "Slet den valgte forbindelse"
 
-#: ../src/connection-editor/nm-connection-list.c:717
+#: ../src/connection-editor/nm-connection-list.c:713
 msgid "Authenticate to delete the selected connection"
 msgstr "Bekræft identitet for at slette den valgte forbindelse"
 
+#: ../src/connection-editor/nm-connection-list.c:935
 #: ../src/connection-editor/nm-connection-list.c:938
-#: ../src/connection-editor/nm-connection-list.c:941
 msgid "Error creating connection"
 msgstr "Fejl ved oprettelse af forbindelse"
 
-#: ../src/connection-editor/nm-connection-list.c:939
+#: ../src/connection-editor/nm-connection-list.c:936
 msgid "No VPN plugins are installed."
 msgstr "Der er ikke installeret nogen VPN-udvidelsesmoduler."
 
-#: ../src/connection-editor/nm-connection-list.c:942
+#: ../src/connection-editor/nm-connection-list.c:939
 #, c-format
 msgid "Don’t know how to create “%s” connections"
 msgstr "Ved ikke, hvordan man opretter \"%s\"-forbindelser"
 
-#: ../src/connection-editor/nm-connection-list.c:966
+#: ../src/connection-editor/nm-connection-list.c:970
 msgid "Error editing connection"
 msgstr "Fejl ved redigering af forbindelsen"
 
-#: ../src/connection-editor/nm-connection-list.c:967
+#: ../src/connection-editor/nm-connection-list.c:971
 #, c-format
 msgid "Did not find a connection with UUID “%s”"
 msgstr "Fandt ikke en forbindelse med UUID \"%s\""
@@ -3287,7 +3346,7 @@ msgstr "Ethernetforbindelse %d"
 
 #. TRANSLATORS: Default zone set for firewall, when no zone is selected
 #: ../src/connection-editor/page-general.c:54
-#: ../src/libnma/nma-mobile-providers.c:806
+#: ../src/libnma/nma-mobile-providers.c:817
 #: ../src/libnm-gtk/nm-mobile-providers.c:806
 msgid "Default"
 msgstr "Standard"
@@ -3529,24 +3588,24 @@ msgid "EAP"
 msgstr "EAP"
 
 #: ../src/connection-editor/page-ppp.c:130
-#: ../src/wireless-security/eap-method-ttls.c:259
+#: ../src/wireless-security/eap-method-ttls.c:260
 msgid "PAP"
 msgstr "PAP"
 
 #: ../src/connection-editor/page-ppp.c:131
-#: ../src/wireless-security/eap-method-ttls.c:321
+#: ../src/wireless-security/eap-method-ttls.c:322
 msgid "CHAP"
 msgstr "CHAP"
 
 #: ../src/connection-editor/page-ppp.c:132
-#: ../src/wireless-security/eap-method-fast.c:283
-#: ../src/wireless-security/eap-method-peap.c:272
-#: ../src/wireless-security/eap-method-ttls.c:289
+#: ../src/wireless-security/eap-method-fast.c:284
+#: ../src/wireless-security/eap-method-peap.c:273
+#: ../src/wireless-security/eap-method-ttls.c:290
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
 #: ../src/connection-editor/page-ppp.c:133
-#: ../src/wireless-security/eap-method-ttls.c:274
+#: ../src/wireless-security/eap-method-ttls.c:275
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
@@ -3568,11 +3627,11 @@ msgstr "PPP-indstillinger"
 msgid "Could not load PPP user interface."
 msgstr "Kunne ikke indlæse PPP-brugergrænseflade."
 
-#: ../src/connection-editor/page-proxy.c:217
+#: ../src/connection-editor/page-proxy.c:215
 msgid "Proxy"
 msgstr "Proxy"
 
-#: ../src/connection-editor/page-proxy.c:219
+#: ../src/connection-editor/page-proxy.c:217
 msgid "Could not load proxy user interface."
 msgstr "Kunne ikke indlæse brugergrænseflade til proxy."
 
@@ -3802,6 +3861,45 @@ msgstr "Forbindelsesinformation"
 msgid "Active Network Connections"
 msgstr "Aktive netværksforbindelser"
 
+#: ../src/libnma/nma-file-cert-chooser.c:108
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:140
+msgid "No certificate set"
+msgstr "Intet certifikat angivet"
+
+#: ../src/libnma/nma-file-cert-chooser.c:126
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:164
+msgid "No key set"
+msgstr "Ingen nøgle angivet"
+
+#: ../src/libnma/nma-file-cert-chooser.c:246
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:364
+#, c-format
+msgid "Choose a key for %s Certificate"
+msgstr "Vælg en nøgle til %s-certifikat"
+
+#: ../src/libnma/nma-file-cert-chooser.c:250
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:368
+#, c-format
+msgid "%s private _key:"
+msgstr "%s privat nøg_le:"
+
+#: ../src/libnma/nma-file-cert-chooser.c:254
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:372
+#, c-format
+msgid "%s key _password:"
+msgstr "Adgangskode til %s nøgle:"
+
+#: ../src/libnma/nma-file-cert-chooser.c:258
+#, c-format
+msgid "Choose %s Certificate"
+msgstr "Vælg %s-certifikat"
+
+#: ../src/libnma/nma-file-cert-chooser.c:262
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:380
+#, c-format
+msgid "%s _certificate:"
+msgstr "%s-_certifikat:"
+
 #: ../src/libnma/nma-mobile-wizard.c:198
 #: ../src/libnm-gtk/nm-mobile-wizard.c:199
 msgid ""
@@ -3998,10 +4096,82 @@ msgstr "Enhver enhed"
 msgid "Set up a Mobile Broadband Connection"
 msgstr "Opsæt en mobil bredbåndsforbindelse"
 
-#: ../src/libnma/nma-mobile-wizard.c:1613
+#: ../src/libnma/nma-mobile-wizard.c:1620
 #: ../src/libnm-gtk/nm-mobile-wizard.c:1614
 msgid "New Mobile Broadband Connection"
 msgstr "Ny mobil bredbåndsforbindelse"
+
+#: ../src/libnma/nma-cert-chooser-button.c:162
+msgid "(None)"
+msgstr "(Ingen)"
+
+#: ../src/libnma/nma-cert-chooser-button.c:170
+#, c-format
+msgid "Key in %s"
+msgstr "Nøgle i %s"
+
+#: ../src/libnma/nma-cert-chooser-button.c:171
+#, c-format
+msgid "Certificate in %s"
+msgstr "Certifikat i %s:"
+
+#: ../src/libnma/nma-cert-chooser-button.c:190
+#: ../src/libnma/nma-pkcs11-cert-chooser-dialog.c:183
+msgid "(Unknown)"
+msgstr "(Ukendt)"
+
+#: ../src/libnma/nma-cert-chooser-button.c:212
+#: ../src/libnma/nma-cert-chooser-button.c:242
+msgid "Select"
+msgstr "Vælg"
+
+#: ../src/libnma/nma-cert-chooser-button.c:213
+#: ../src/libnma/nma-cert-chooser-button.c:243
+msgid "Cancel"
+msgstr "Annullér"
+
+#: ../src/libnma/nma-cert-chooser-button.c:469
+msgid "Select from file…"
+msgstr "Vælg fra fil …"
+
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:376
+#, c-format
+msgid "Choose a %s Certificate"
+msgstr "Vælg et %s-certifikat"
+
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:384
+#, c-format
+msgid "%s certificate _password:"
+msgstr "Adgangs_kode for %s-certifikat:"
+
+#: ../src/libnma/nma-pkcs11-cert-chooser-dialog.c:255
+msgid "Error logging in: "
+msgstr "Fejl i forsøget på at logge ind:"
+
+#: ../src/libnma/nma-pkcs11-cert-chooser-dialog.c:277
+msgid "Error opening a session: "
+msgstr "Fejl ved åbning af en session: "
+
+#: ../src/libnma/nma-pkcs11-cert-chooser-dialog.ui.h:1
+msgid "_Unlock token"
+msgstr "_Lås token op"
+
+#: ../src/libnma/nma-pkcs11-cert-chooser-dialog.ui.h:3
+msgid "Issued By"
+msgstr "Udstedt af"
+
+#: ../src/libnma/nma-pkcs11-token-login-dialog.c:146
+#, c-format
+msgid "Enter %s PIN"
+msgstr "Indtast %s-PIN"
+
+#: ../src/libnma/nma-pkcs11-token-login-dialog.ui.h:2
+msgid "_Login"
+msgstr "_Login"
+
+#: ../src/libnma/nma-pkcs11-token-login-dialog.ui.h:3
+msgid "_Remember PIN"
+msgstr "_Husk PIN"
 
 #: ../src/libnma/nma-ui-utils.c:49 ../src/libnm-gtk/nm-ui-utils.c:615
 msgid "Store the password only for this user"
@@ -4281,45 +4451,50 @@ msgstr "roaming"
 msgid "%s connection"
 msgstr "Forbindelse til %s"
 
+#: ../src/utils/utils.c:563
+msgid "PEM certificates (*.pem, *.crt, *.cer)"
+msgstr "PEM-certifikater (*.pem, *.crt, *.cer)"
+
+#: ../src/utils/utils.c:575
+msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
+msgstr "DER-, PEM- eller PKCS#12-private nøgler (*.der, *.pem, *.p12, *.key)"
+
 #: ../src/wireless-security/eap-method.c:57
 msgid "undefined error in 802.1X security (wpa-eap)"
 msgstr "udefineret fejl i 802.1X-sikkerhed (wpa-eap)"
 
-#: ../src/wireless-security/eap-method.c:233
+#: ../src/wireless-security/eap-method.c:227
 msgid "no file selected"
 msgstr "ingen fil valgt"
 
-#: ../src/wireless-security/eap-method.c:264
+#: ../src/wireless-security/eap-method.c:235
+#, c-format
+msgid "file “%s” does not exist"
+msgstr "filen “%s” findes ikke"
+
+#: ../src/wireless-security/eap-method.c:258
 msgid "unspecified error validating eap-method file"
 msgstr "uspecificeret fejl under validering af eap-metodefilen"
 
-#: ../src/wireless-security/eap-method.c:439
-msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
-msgstr "DER-, PEM- eller PKCS#12-private nøgler (*.der, *.pem, *.p12, *.key)"
-
-#: ../src/wireless-security/eap-method.c:442
-msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
-msgstr "DER- eller PEM-certifikater (*.der, *.pem, *.crt, *.cer)"
-
-#: ../src/wireless-security/eap-method-fast.c:72
+#: ../src/wireless-security/eap-method-fast.c:73
 msgid "missing EAP-FAST PAC file"
 msgstr "manglende EAP-FAST-PAC-fil"
 
-#: ../src/wireless-security/eap-method-fast.c:268
-#: ../src/wireless-security/eap-method-peap.c:302
-#: ../src/wireless-security/eap-method-ttls.c:351
+#: ../src/wireless-security/eap-method-fast.c:269
+#: ../src/wireless-security/eap-method-peap.c:303
+#: ../src/wireless-security/eap-method-ttls.c:352
 msgid "GTC"
 msgstr "GTC"
 
-#: ../src/wireless-security/eap-method-fast.c:406
+#: ../src/wireless-security/eap-method-fast.c:407
 msgid "Choose a PAC file"
 msgstr "Vælg en PAC-fil"
 
-#: ../src/wireless-security/eap-method-fast.c:413
+#: ../src/wireless-security/eap-method-fast.c:414
 msgid "PAC files (*.pac)"
 msgstr "PAC-filer (*.pac)"
 
-#: ../src/wireless-security/eap-method-fast.c:417
+#: ../src/wireless-security/eap-method-fast.c:418
 msgid "All files"
 msgstr "Alle filer"
 
@@ -4355,32 +4530,31 @@ msgstr "_Indre godkendelse:"
 msgid "Allow automatic PAC pro_visioning"
 msgstr "Tillad automatisk PAC-pro_vision"
 
-#: ../src/wireless-security/eap-method-leap.c:65
+#: ../src/wireless-security/eap-method-leap.c:66
 msgid "missing EAP-LEAP username"
 msgstr "manglende EAP-LEAP-brugernavn"
 
-#: ../src/wireless-security/eap-method-leap.c:74
+#: ../src/wireless-security/eap-method-leap.c:75
 msgid "missing EAP-LEAP password"
 msgstr "manglende EAP-LEAP-adgangskode"
 
-#: ../src/wireless-security/eap-method-peap.c:63
+#: ../src/wireless-security/eap-method-peap.c:64
 #, c-format
 msgid "invalid EAP-PEAP CA certificate: %s"
 msgstr "ugyldigt EAP-PEAP-CA-certifikat: %s"
 
-#: ../src/wireless-security/eap-method-peap.c:68
+#: ../src/wireless-security/eap-method-peap.c:69
 msgid "invalid EAP-PEAP CA certificate: no certificate specified"
 msgstr "ugyldigt EAP-PEAP-CA-certifikat: intet certifikat angivet"
 
-#: ../src/wireless-security/eap-method-peap.c:287
-#: ../src/wireless-security/eap-method-ttls.c:336
+#: ../src/wireless-security/eap-method-peap.c:288
+#: ../src/wireless-security/eap-method-ttls.c:337
 #: ../src/wireless-security/wireless-security.c:424
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/wireless-security/eap-method-peap.c:381
-#: ../src/wireless-security/eap-method-tls.c:501
-#: ../src/wireless-security/eap-method-ttls.c:430
+#: ../src/wireless-security/eap-method-peap.c:382
+#: ../src/wireless-security/eap-method-ttls.c:431
 msgid "Choose a Certificate Authority certificate"
 msgstr "Vælg et certifikat fra certifikatautoritet"
 
@@ -4393,13 +4567,12 @@ msgid "Version 1"
 msgstr "Version 1"
 
 #: ../src/wireless-security/eap-method-peap.ui.h:5
-#: ../src/wireless-security/eap-method-tls.ui.h:3
 #: ../src/wireless-security/eap-method-ttls.ui.h:2
 msgid "C_A certificate:"
 msgstr "_CA-certifikat:"
 
 #: ../src/wireless-security/eap-method-peap.ui.h:6
-#: ../src/wireless-security/eap-method-tls.ui.h:4
+#: ../src/wireless-security/eap-method-tls.ui.h:2
 #: ../src/wireless-security/eap-method-ttls.ui.h:3
 msgid "No CA certificate is _required"
 msgstr "CA-certifikat ikke _påkrævet"
@@ -4408,93 +4581,56 @@ msgstr "CA-certifikat ikke _påkrævet"
 msgid "PEAP _version:"
 msgstr "PEAP-_version:"
 
-#: ../src/wireless-security/eap-method-simple.c:74
+#: ../src/wireless-security/eap-method-simple.c:75
 msgid "missing EAP username"
 msgstr "manglende EAP-brugernavn"
 
-#: ../src/wireless-security/eap-method-simple.c:87
+#: ../src/wireless-security/eap-method-simple.c:88
 msgid "missing EAP password"
 msgstr "manglende EAP-adgangskode"
 
-#: ../src/wireless-security/eap-method-tls.c:68
+#: ../src/wireless-security/eap-method-tls.c:64
 msgid "missing EAP-TLS identity"
 msgstr "manglende EAP-TLS-identitet"
 
-#: ../src/wireless-security/eap-method-tls.c:77
-#, c-format
-msgid "invalid EAP-TLS CA certificate: %s"
-msgstr "ugyldigt EAP-TLS-CA-certifikat: %s"
+#: ../src/wireless-security/eap-method-tls.c:238
+msgid "no user certificate selected"
+msgstr "intet brugercertifikat valgt"
 
-#: ../src/wireless-security/eap-method-tls.c:84
-msgid "invalid EAP-TLS CA certificate: no certificate specified"
-msgstr "ugyldigt EAP-TLS-CA-certifikat: intet certifikat angivet"
+#: ../src/wireless-security/eap-method-tls.c:243
+msgid "selected user certificate file does not exist"
+msgstr "valgte brugercertifikatfil findes ikke"
 
-#: ../src/wireless-security/eap-method-tls.c:95
-msgid "invalid EAP-TLS password: missing"
-msgstr "ugyldig EAP-TLS-adgangskode: mangler"
+#: ../src/wireless-security/eap-method-tls.c:263
+msgid "no key selected"
+msgstr "ingen nøgle valgt"
 
-#: ../src/wireless-security/eap-method-tls.c:109
-#, c-format
-msgid "invalid EAP-TLS private-key: %s"
-msgstr "ugyldig privat EAP-TLS nøgle: %s"
+#: ../src/wireless-security/eap-method-tls.c:268
+msgid "selected key file does not exist"
+msgstr "valgte nøglefil findes ikke"
 
-#: ../src/wireless-security/eap-method-tls.c:119
-#, c-format
-msgid "invalid EAP-TLS user-certificate: %s"
-msgstr "ugyldigt EAP-TLS-brugercertifikat: %s"
-
-#: ../src/wireless-security/eap-method-tls.c:316
-msgid "Unencrypted private keys are insecure"
-msgstr "Ukrypterede privatnøgler er usikre"
+#: ../src/wireless-security/eap-method-tls.c:314
+msgid "no CA certificate selected"
+msgstr "intet CA-certifikat valgt"
 
 #: ../src/wireless-security/eap-method-tls.c:319
-msgid ""
-"The selected private key does not appear to be protected by a password. This "
-"could allow your security credentials to be compromised. Please select a "
-"password-protected private key.\n"
-"\n"
-"(You can password-protect your private key with openssl)"
-msgstr ""
-"Den valgte private nøgle lader ikke til at være beskyttet af en adgangskode. "
-"Dette kan medføre, at dine sikkerhedsakkreditiver kan kompromitteres.  Vælg "
-"venligst en adgangskodebeskyttet privat nøgle.\n"
-"\n"
-"(du kan adgangskodebeskytte din private nøgle med openssl)"
-
-#: ../src/wireless-security/eap-method-tls.c:495
-msgid "Choose your personal certificate"
-msgstr "Vælg dit personlige certifikat"
-
-#: ../src/wireless-security/eap-method-tls.c:507
-msgid "Choose your private key"
-msgstr "Vælg din private nøgle"
+msgid "selected CA certificate file does not exist"
+msgstr "valgte CA-certifikatfil findes ikke"
 
 #: ../src/wireless-security/eap-method-tls.ui.h:1
 msgid "I_dentity:"
 msgstr "I_dentitet:"
 
-#: ../src/wireless-security/eap-method-tls.ui.h:2
-msgid "_User certificate:"
-msgstr "Br_ugercertifikat:"
-
-#: ../src/wireless-security/eap-method-tls.ui.h:5
-msgid "Private _key:"
-msgstr "Privat nøg_le:"
-
-#: ../src/wireless-security/eap-method-tls.ui.h:6
-msgid "_Private key password:"
-msgstr "Adgangskode til _privat nøgle:"
-
-#: ../src/wireless-security/eap-method-ttls.c:63
+#: ../src/wireless-security/eap-method-ttls.c:64
 #, c-format
 msgid "invalid EAP-TTLS CA certificate: %s"
 msgstr "ugyldigt EAP-TTLS-CA-certifikat: %s"
 
-#: ../src/wireless-security/eap-method-ttls.c:68
+#: ../src/wireless-security/eap-method-ttls.c:69
 msgid "invalid EAP-TTLS CA certificate: no certificate specified"
 msgstr "ugyldigt EAP-TTLS-CA-certifikat: intet certifikat angivet"
 
-#: ../src/wireless-security/eap-method-ttls.c:305
+#: ../src/wireless-security/eap-method-ttls.c:306
 msgid "MSCHAPv2 (no EAP)"
 msgstr "MSCHAPv2 (ingen EAP)"
 
@@ -4610,6 +4746,43 @@ msgstr "ugyldig wpa-psk: kan ikke fortolke nøgle med 64 byte som hexadecimal"
 #: ../src/wireless-security/ws-wpa-psk.ui.h:2
 msgid "_Type:"
 msgstr "_Type:"
+
+#~ msgid "invalid EAP-TLS CA certificate: %s"
+#~ msgstr "ugyldigt EAP-TLS-CA-certifikat: %s"
+
+#~ msgid "invalid EAP-TLS CA certificate: no certificate specified"
+#~ msgstr "ugyldigt EAP-TLS-CA-certifikat: intet certifikat angivet"
+
+#~ msgid "invalid EAP-TLS password: missing"
+#~ msgstr "ugyldig EAP-TLS-adgangskode: mangler"
+
+#~ msgid "invalid EAP-TLS private-key: %s"
+#~ msgstr "ugyldig privat EAP-TLS nøgle: %s"
+
+#~ msgid "invalid EAP-TLS user-certificate: %s"
+#~ msgstr "ugyldigt EAP-TLS-brugercertifikat: %s"
+
+#~ msgid "Unencrypted private keys are insecure"
+#~ msgstr "Ukrypterede privatnøgler er usikre"
+
+#~ msgid ""
+#~ "The selected private key does not appear to be protected by a password. "
+#~ "This could allow your security credentials to be compromised. Please "
+#~ "select a password-protected private key.\n"
+#~ "\n"
+#~ "(You can password-protect your private key with openssl)"
+#~ msgstr ""
+#~ "Den valgte private nøgle lader ikke til at være beskyttet af en "
+#~ "adgangskode. Dette kan medføre, at dine sikkerhedsakkreditiver kan "
+#~ "kompromitteres.  Vælg venligst en adgangskodebeskyttet privat nøgle.\n"
+#~ "\n"
+#~ "(du kan adgangskodebeskytte din private nøgle med openssl)"
+
+#~ msgid "Choose your personal certificate"
+#~ msgstr "Vælg dit personlige certifikat"
+
+#~ msgid "Choose your private key"
+#~ msgstr "Vælg din private nøgle"
 
 #, fuzzy
 #~ msgid "NetworkManager for GNOME"
@@ -4964,9 +5137,6 @@ msgstr "_Type:"
 #~ "Hvis man ikke bruger et certifikat fra en certifikatautoritet (CA), kan "
 #~ "det resultere i forbindelser til usikre, ondsindede trådløse netværk. "
 #~ "Ønsker du at vælge et certifikat fra en certifikatautoritet?"
-
-#~ msgid "Choose CA Certificate"
-#~ msgstr "Vælg CA-certifikat"
 
 #~ msgid "Don't _warn me again"
 #~ msgstr "Advar mi_g ikke igen"
