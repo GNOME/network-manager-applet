@@ -31,7 +31,7 @@
 #include <errno.h>
 #include <gdk/gdkx.h>
 
-#ifdef WITH_SELINUX
+#if WITH_SELINUX
 #include <selinux/selinux.h>
 #endif
 
@@ -183,7 +183,7 @@ update_sensitivity (NMConnectionEditor *editor)
 	}
 }
 
-#ifdef WITH_SELINUX
+#if WITH_SELINUX
 /* This is what the files in ~/.cert would get. */
 static const char certcon[] = "unconfined_u:object_r:home_cert_t:s0";
 
