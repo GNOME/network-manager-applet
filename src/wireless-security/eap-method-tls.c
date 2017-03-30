@@ -36,7 +36,7 @@
 struct _EAPMethodTLS {
 	EAPMethod parent;
 
-#ifdef NM_SETTING_802_1X_PHASE2_CLIENT_CERT_PASSWORD
+#if LIBNM_BUILD
 /* libnm-glib doesn't support these. */
 	const char *ca_cert_password_flags_name;
 	const char *client_cert_password_flags_name;
@@ -146,7 +146,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 		}
 	}
 
-#ifdef NM_SETTING_802_1X_PHASE2_CLIENT_CERT_PASSWORD
+#if LIBNM_BUILD
 /* libnm-glib doesn't support these. */
 	/* Save CA certificate PIN password flags to the connection */
 	secret_flags = nma_cert_chooser_get_cert_password_flags (NMA_CERT_CHOOSER (method->ca_cert_chooser));
@@ -375,7 +375,7 @@ setup_cert_chooser (NMACertChooser *cert_chooser,
 		case NM_SETTING_802_1X_CK_SCHEME_PATH:
 			value = cert_path_func (s_8021x);
 			break;
-#ifdef NM_SETTING_802_1X_CERT_SCHEME_PREFIX_PKCS11
+#if LIBNM_BUILD
 /* Not available in libnm-glib */
 		case NM_SETTING_802_1X_CK_SCHEME_PKCS11:
 			value = cert_uri_func (s_8021x);
@@ -399,7 +399,7 @@ setup_cert_chooser (NMACertChooser *cert_chooser,
 		case NM_SETTING_802_1X_CK_SCHEME_PATH:
 			value = key_path_func (s_8021x);
 			break;
-#ifdef NM_SETTING_802_1X_CERT_SCHEME_PREFIX_PKCS11
+#if LIBNM_BUILD
 /* Not available in libnm-glib */
 		case NM_SETTING_802_1X_CK_SCHEME_PKCS11:
 			value = key_uri_func (s_8021x);
@@ -419,7 +419,7 @@ setup_cert_chooser (NMACertChooser *cert_chooser,
 		nma_cert_chooser_set_key_password (cert_chooser, key_password_func (s_8021x));
 }
 
-#ifndef NM_SETTING_802_1X_CERT_SCHEME_PREFIX_PKCS11
+#if !LIBNM_BUILD
 /* Not available in libnm-glib */
 #define nm_setting_802_1x_get_ca_cert_password             NULL
 #define nm_setting_802_1x_get_ca_cert_uri                  NULL
@@ -476,7 +476,7 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 		return NULL;
 
 	method = (EAPMethodTLS *) parent;
-#ifdef NM_SETTING_802_1X_PHASE2_CLIENT_CERT_PASSWORD
+#if LIBNM_BUILD
 /* libnm-glib doesn't support these. */
 	method->ca_cert_password_flags_name = phase2
 	                                      ? NM_SETTING_802_1X_PHASE2_CLIENT_CERT_PASSWORD
@@ -587,7 +587,7 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), ca_not_required);
 
 	/* Create password-storage popup menus for password entries under their secondary icon */
-#ifdef NM_SETTING_802_1X_PHASE2_CLIENT_CERT_PASSWORD
+#if LIBNM_BUILD
 /* libnm-glib doesn't support these. */
 	nma_cert_chooser_setup_cert_password_storage (NMA_CERT_CHOOSER (method->ca_cert_chooser),
 	                                              0, (NMSetting *) s_8021x, method->ca_cert_password_flags_name,
