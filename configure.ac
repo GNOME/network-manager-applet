@@ -112,7 +112,7 @@ Configure with --without-libnm-gtk if you do not need the legacy library])])
 fi
 AM_CONDITIONAL(WITH_LIBNM_GTK, test "$with_libnm_gtk" != "no")
 
-PKG_CHECK_MODULES(LIBNM, [libnm >= 1.3 gio-2.0 >= 2.32 gmodule-export-2.0])
+PKG_CHECK_MODULES(LIBNM, [libnm >= 1.7 gio-2.0 >= 2.32 gmodule-export-2.0])
 LIBNM_CFLAGS="$LIBNM_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_32"
 LIBNM_CFLAGS="$LIBNM_CFLAGS -DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_8"
 LIBNM_CFLAGS="$LIBNM_CFLAGS -DNM_VERSION_MAX_ALLOWED=NM_VERSION_1_8"
