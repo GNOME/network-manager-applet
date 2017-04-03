@@ -7,15 +7,15 @@
 # Yulia <ypoyarko@redhat.com>, 2010.
 # Andrey Cherepanov <skull@kde.ru>, 2009, 2010.
 # Yuri Myasoedov <omerta13@yandex.ru>, 2012, 2013.
-# Stas Solovey <whats_up@tut.by>, 2011, 2014.
+# Stas Solovey <whats_up@tut.by>, 2011, 2014, 2017.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager-applet\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2017-03-30 13:44+0000\n"
-"PO-Revision-Date: 2017-03-30 16:54+0300\n"
+"POT-Creation-Date: 2017-03-30 13:55+0000\n"
+"PO-Revision-Date: 2017-04-03 22:50+0300\n"
 "Last-Translator: Stas Solovey <whats_up@tut.by>\n"
 "Language-Team: Русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
@@ -715,7 +715,7 @@ msgstr "Не удалось добавить новое соединение"
 
 #: ../src/applet-device-wifi.c:537
 msgid "Insufficient privileges."
-msgstr ""
+msgstr "Недостаточно прав."
 
 #: ../src/applet-device-wifi.c:838
 #, c-format
@@ -1340,21 +1340,19 @@ msgstr "неизвестная ошибка"
 
 #: ../src/connection-editor/ce-page.c:294
 msgid "Preserve"
-msgstr ""
+msgstr "Сохранённый"
 
 #: ../src/connection-editor/ce-page.c:295
 msgid "Permanent"
-msgstr ""
+msgstr "Постоянный"
 
 #: ../src/connection-editor/ce-page.c:296
 msgid "Random"
-msgstr ""
+msgstr "Случайный"
 
 #: ../src/connection-editor/ce-page.c:297
-#, fuzzy
-#| msgid "Enable"
 msgid "Stable"
-msgstr "Включить"
+msgstr "Стабильный"
 
 #: ../src/connection-editor/ce-page.c:301
 msgid ""
@@ -1396,7 +1394,7 @@ msgstr "недопустимое имя интерфейса (%s):"
 
 #: ../src/connection-editor/ce-page.c:571
 msgid "can’t parse device name"
-msgstr ""
+msgstr "не удалось разобрать имя устройства"
 
 #: ../src/connection-editor/ce-page.c:589
 msgid "invalid hardware address"
@@ -1455,7 +1453,7 @@ msgstr "Извещение"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:9
 msgid "Willing"
-msgstr ""
+msgstr "Готовый"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:10
 msgid "Priority"
@@ -1471,7 +1469,7 @@ msgstr "Группы приоритетов"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:14
 msgid "Fabric"
-msgstr ""
+msgstr "Структура"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:15
 msgid "VN2VN"
@@ -1484,6 +1482,8 @@ msgstr "Управление приоритетом потока"
 #: ../src/connection-editor/ce-page-dcb.ui.h:19
 msgid "Enable or disable priority pause transmission for each User Priority."
 msgstr ""
+"Включить или выключить приоритет приостановки передачи для каждого "
+"пользовательского приоритета."
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:20
 msgid "Priority:"
@@ -1527,7 +1527,7 @@ msgstr "Класс трафика:"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:30
 msgid "Strict Bandwidth:"
-msgstr ""
+msgstr "Строгая полоса пропускания:"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:31
 msgid "Priority Bandwidth:"
@@ -1676,9 +1676,8 @@ msgid "C_loned MAC address:"
 msgstr "_Клонированный MAC-адрес:"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:19
-#, fuzzy
 msgid "Wake on LAN:"
-msgstr "_Пароль к секретному ключу:"
+msgstr "Пробуждение по локальной сети:"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:20
 msgid "De_fault"
@@ -1690,32 +1689,31 @@ msgstr "_Игнорировать"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:22
 msgid "_Phy"
-msgstr ""
+msgstr "_Phy"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:23
 msgid "_Unicast"
-msgstr ""
+msgstr "_Unicast"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:24
 msgid "Mul_ticast"
-msgstr ""
+msgstr "Mul_ticast"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:25
 msgid "_Broadcast"
-msgstr "Broadcast"
+msgstr "_Broadcast"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:26
 msgid "_Arp"
-msgstr ""
+msgstr "_Arp"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:27
 msgid "Ma_gic"
-msgstr ""
+msgstr "Ma_gic"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:28
-#, fuzzy
 msgid "_Wake on LAN password:"
-msgstr "_Пароль к секретному ключу:"
+msgstr "_Пароль пробуждения по локальной сети:"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:29
 msgid ""
@@ -1840,48 +1838,47 @@ msgstr "Подключено"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:1
 msgid "IPIP"
-msgstr ""
+msgstr "IPIP"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:2
 msgid "GRE"
-msgstr ""
+msgstr "GRE"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:3
 msgid "SIT"
-msgstr ""
+msgstr "SIT"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:4
 msgid "ISATAP"
-msgstr ""
+msgstr "ISATAP"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:5
 msgid "VTI"
-msgstr ""
+msgstr "VTI"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:6
 msgid "IP6IP6"
-msgstr ""
+msgstr "IP6IP6"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:7
 msgid "IPIP6"
-msgstr ""
+msgstr "IPIP6"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:8
 msgid "IP6GRE"
-msgstr ""
+msgstr "IP6GRE"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:9
 msgid "VTI6"
-msgstr ""
+msgstr "VTI6"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:10
 msgid "Device name"
 msgstr "Имя устройства"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:11
-#, fuzzy
 msgid "Parent device"
-msgstr "Ethernet"
+msgstr "Родительское устройство"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:12
 msgid "Mode"
@@ -1889,19 +1886,19 @@ msgstr "Режим"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:13
 msgid "Local IP"
-msgstr ""
+msgstr "Локальный IP"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:14
 msgid "Remote IP"
-msgstr ""
+msgstr "Удалённый IP"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:15
 msgid "Input key"
-msgstr ""
+msgstr "Ключ ввода"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:16
 msgid "Output key"
-msgstr ""
+msgstr "Ключ вывода"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:17
 msgid "MTU"
@@ -2016,7 +2013,7 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:16
 msgid "IPv6 _privacy extensions:"
-msgstr ""
+msgstr "Расширения _конфиденциальности IPv6:"
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:17
 msgid "Require IPv_6 addressing for this connection to complete"
@@ -2126,7 +2123,7 @@ msgstr "Нет"
 
 #: ../src/connection-editor/ce-page-proxy.ui.h:4
 msgid "For browser only"
-msgstr ""
+msgstr "Только для браузера"
 
 #: ../src/connection-editor/ce-page-proxy.ui.h:5
 msgid "Use this proxy configuration for only browser clients/schemes."
@@ -2165,17 +2162,17 @@ msgstr "Состояние порта Ethernet"
 #: ../src/connection-editor/ce-page-team-port.ui.h:4
 #: ../src/connection-editor/ce-page-team.ui.h:10
 msgid "ARP (IPv4)"
-msgstr ""
+msgstr "ARP (IPv4)"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:5
 #: ../src/connection-editor/ce-page-team.ui.h:11
 msgid "NDP (IPv6)"
-msgstr ""
+msgstr "NDP (IPv6)"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:6
 #: ../src/connection-editor/ce-page-team.ui.h:37
 msgid "Team Advanced Options"
-msgstr ""
+msgstr "Дополнительные параметры агрегации (team)"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:7
 msgid "_Queue ID:"
@@ -2296,17 +2293,13 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:30
 #: ../src/connection-editor/ce-page-team.ui.h:76
-#, fuzzy
-#| msgid "ARP _targets:"
 msgid "_Source host:"
-msgstr "_Получатели ARP:"
+msgstr "_Исходный узел:"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:31
 #: ../src/connection-editor/ce-page-team.ui.h:77
-#, fuzzy
-#| msgid "ARP _targets:"
 msgid "_Target host:"
-msgstr "_Получатели ARP:"
+msgstr "_Целевой узел:"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:32
 #: ../src/connection-editor/ce-page-team.ui.h:78
@@ -2407,18 +2400,16 @@ msgid "Raw Configuration"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team.ui.h:1
-#, fuzzy
-#| msgid "Priority"
 msgid "Highest priority"
-msgstr "Приоритет"
+msgstr "Наивысший приоритет"
 
 #: ../src/connection-editor/ce-page-team.ui.h:2
 msgid "Highest priority (stable)"
-msgstr ""
+msgstr "Наивысший приоритет (стабильный)"
 
 #: ../src/connection-editor/ce-page-team.ui.h:3
 msgid "Bandwidth"
-msgstr "Bandwidth"
+msgstr "Полоса пропускания"
 
 #: ../src/connection-editor/ce-page-team.ui.h:4
 msgid "Highest number of ports"
@@ -2449,11 +2440,11 @@ msgstr "_Агрегированные соединения (team):"
 
 #: ../src/connection-editor/ce-page-team.ui.h:23
 msgid "Load balance"
-msgstr ""
+msgstr "Балансировка нагрузки"
 
 #: ../src/connection-editor/ce-page-team.ui.h:24
 msgid "LACP"
-msgstr ""
+msgstr "LACP"
 
 #: ../src/connection-editor/ce-page-team.ui.h:27
 #: ../src/connection-editor/connection-helpers.c:104
@@ -2475,7 +2466,7 @@ msgstr "IP"
 
 #: ../src/connection-editor/ce-page-team.ui.h:32
 msgid "Any L3 protocol"
-msgstr ""
+msgstr "Любой протокол L3"
 
 #: ../src/connection-editor/ce-page-team.ui.h:33
 msgid "TCP"
@@ -2487,11 +2478,11 @@ msgstr "UDP"
 
 #: ../src/connection-editor/ce-page-team.ui.h:35
 msgid "SCTP"
-msgstr ""
+msgstr "SCTP"
 
 #: ../src/connection-editor/ce-page-team.ui.h:36
 msgid "Any L4 protocol"
-msgstr ""
+msgstr "Любой протокол L4"
 
 #: ../src/connection-editor/ce-page-team.ui.h:38
 msgid "_Peer notification count:"
@@ -2644,7 +2635,7 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:9
 msgid "_GVRP"
-msgstr ""
+msgstr "_GVRP"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:10
 msgid "_Loose binding"
@@ -2652,7 +2643,7 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:11
 msgid "M_VRP"
-msgstr ""
+msgstr "M_VRP"
 
 #. In context, this means "concatenate the device name and the VLAN ID number together"
 #: ../src/connection-editor/ce-page-vlan.ui.h:13
@@ -2820,7 +2811,7 @@ msgstr "Мост"
 #: ../src/connection-editor/connection-helpers.c:120
 #: ../src/connection-editor/page-ip-tunnel.c:176
 msgid "IP tunnel"
-msgstr ""
+msgstr "IP-туннель"
 
 #: ../src/connection-editor/connection-helpers.c:122
 #: ../src/connection-editor/connection-helpers.c:396
@@ -3637,7 +3628,7 @@ msgstr "Не удалось загрузить пользовательский 
 
 #: ../src/connection-editor/page-vlan.c:735
 msgid "vlan parent"
-msgstr ""
+msgstr "родительский vlan"
 
 #: ../src/connection-editor/page-vlan.c:803
 #, c-format
