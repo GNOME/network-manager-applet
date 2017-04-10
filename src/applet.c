@@ -1034,6 +1034,7 @@ activate_vpn_cb (GObject *client,
 		                            PREF_DISABLE_VPN_NOTIFICATIONS);
 		g_warning ("VPN Connection activation failed: (%s) %s", name, error->message);
 		g_free (msg);
+		g_free (name);
 		g_error_free (error);
 	}
 
