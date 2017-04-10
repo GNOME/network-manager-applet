@@ -1022,7 +1022,7 @@ activate_vpn_cb (GObject *client,
 		title = _("VPN Connection Failed");
 
 		name = g_dbus_error_get_remote_error (error);
-		if (strstr (name, "ServiceStartFailed")) {
+		if (name && strstr (name, "ServiceStartFailed")) {
 			msg = g_strdup_printf (_("\nThe VPN connection “%s” failed because the VPN service failed to start.\n\n%s"),
 			                       info->vpn_name, error->message);
 		} else {
