@@ -2176,13 +2176,14 @@ foo_device_state_changed_cb (NMDevice *device,
 	NMADeviceClass *dclass;
 
 	dclass = get_device_class (device, applet);
-	g_assert (dclass);
 
-	if (dclass->device_state_changed)
+	if (dclass && dclass->device_state_changed)
 		dclass->device_state_changed (device, new_state, old_state, reason, applet);
+
 	applet_common_device_state_changed (device, new_state, old_state, reason, applet);
 
-	if (   new_state == NM_DEVICE_STATE_ACTIVATED
+	if (   dclass
+	    && new_state == NM_DEVICE_STATE_ACTIVATED
 	    && !g_settings_get_boolean (applet->gsettings, PREF_DISABLE_CONNECTED_NOTIFICATIONS)) {
 		NMConnection *connection;
 		char *str = NULL;
@@ -2208,15 +2209,12 @@ foo_device_added_cb (NMClient *client, NMDevice *device, gpointer user_data)
 	NMADeviceClass *dclass;
 
 	dclass = get_device_class (device, applet);
-	if (!dclass)
-		return;
-
-	if (dclass->device_added)
+	if (dclass && dclass->device_added)
 		dclass->device_added (device, applet);
 
 	g_signal_connect (device, "state-changed",
-				   G_CALLBACK (foo_device_state_changed_cb),
-				   user_data);
+	                  G_CALLBACK (foo_device_state_changed_cb),
+	                  user_data);
 
 	foo_device_state_changed_cb	(device,
 	                             nm_device_get_state (device),
