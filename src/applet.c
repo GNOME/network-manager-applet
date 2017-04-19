@@ -868,11 +868,12 @@ make_active_failure_message (NMActiveConnection *active,
 	NMConnection *connection;
 	const GPtrArray *devices;
 	NMDevice *device;
-	const char *verb;
+	const char *verb, *id;
 
 	g_return_val_if_fail (active != NULL, NULL);
 
 	connection = (NMConnection *) nm_active_connection_get_connection (active);
+	id = nm_connection_get_id (connection);
 
 	switch (reason) {
 	case NM_ACTIVE_CONNECTION_STATE_REASON_DEVICE_DISCONNECTED:
@@ -883,35 +884,26 @@ make_active_failure_message (NMActiveConnection *active,
 		else
 			verb = "failed";
 
-		return g_strdup_printf (_("\nThe VPN connection “%s” %s because the network connection was interrupted."),
-								verb, nm_connection_get_id (connection));
+		return g_strdup_printf (_("\nThe VPN connection “%s” %s because the network connection was interrupted."), verb, id);
 	case NM_ACTIVE_CONNECTION_STATE_REASON_SERVICE_STOPPED:
-		return g_strdup_printf (_("\nThe VPN connection “%s” failed because the VPN service stopped unexpectedly."),
-								nm_connection_get_id (connection));
+		return g_strdup_printf (_("\nThe VPN connection “%s” failed because the VPN service stopped unexpectedly."), id);
 	case NM_ACTIVE_CONNECTION_STATE_REASON_IP_CONFIG_INVALID:
-		return g_strdup_printf (_("\nThe VPN connection “%s” failed because the VPN service returned invalid configuration."),
-								nm_connection_get_id (connection));
+		return g_strdup_printf (_("\nThe VPN connection “%s” failed because the VPN service returned invalid configuration."), id);
 	case NM_ACTIVE_CONNECTION_STATE_REASON_CONNECT_TIMEOUT:
-		return g_strdup_printf (_("\nThe VPN connection “%s” failed because the connection attempt timed out."),
-								nm_connection_get_id (connection));
+		return g_strdup_printf (_("\nThe VPN connection “%s” failed because the connection attempt timed out."), id);
 	case NM_ACTIVE_CONNECTION_STATE_REASON_SERVICE_START_TIMEOUT:
-		return g_strdup_printf (_("\nThe VPN connection “%s” failed because the VPN service did not start in time."),
-								nm_connection_get_id (connection));
+		return g_strdup_printf (_("\nThe VPN connection “%s” failed because the VPN service did not start in time."), id);
 	case NM_ACTIVE_CONNECTION_STATE_REASON_SERVICE_START_FAILED:
-		return g_strdup_printf (_("\nThe VPN connection “%s” failed because the VPN service failed to start."),
-								nm_connection_get_id (connection));
+		return g_strdup_printf (_("\nThe VPN connection “%s” failed because the VPN service failed to start."), id);
 	case NM_ACTIVE_CONNECTION_STATE_REASON_NO_SECRETS:
-		return g_strdup_printf (_("\nThe VPN connection “%s” failed because there were no valid VPN secrets."),
-								nm_connection_get_id (connection));
+		return g_strdup_printf (_("\nThe VPN connection “%s” failed because there were no valid VPN secrets."), id);
 	case NM_ACTIVE_CONNECTION_STATE_REASON_LOGIN_FAILED:
-		return g_strdup_printf (_("\nThe VPN connection “%s” failed because of invalid VPN secrets."),
-								nm_connection_get_id (connection));
-
+		return g_strdup_printf (_("\nThe VPN connection “%s” failed because of invalid VPN secrets."), id);
 	default:
 		break;
 	}
 
-	return g_strdup_printf (_("\nThe VPN connection “%s” failed."), nm_connection_get_id (connection));
+	return g_strdup_printf (_("\nThe VPN connection “%s” failed."), id);
 }
 
 static void
