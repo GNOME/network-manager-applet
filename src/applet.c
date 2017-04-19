@@ -907,10 +907,10 @@ make_active_failure_message (NMActiveConnection *active,
 }
 
 static void
-vpn_connection_state_changed (NMVpnConnection *vpn,
-                              NMActiveConnectionState state,
-                              NMActiveConnectionStateReason reason,
-                              gpointer user_data)
+vpn_active_connection_state_changed (NMVpnConnection *vpn,
+                                     NMActiveConnectionState state,
+                                     NMActiveConnectionStateReason reason,
+                                     gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
 	const char *banner;
@@ -2268,6 +2268,17 @@ foo_manager_running_cb (NMClient *client,
 	applet_schedule_update_menu (applet);
 }
 
+static void
+vpn_state_changed (NMActiveConnection *connection,
+                   GParamSpec *pspec,
+                   gpointer user_data)
+{
+	NMApplet *applet = NM_APPLET (user_data);
+
+	applet_schedule_update_icon (applet);
+	applet_schedule_update_menu (applet);
+}
+
 #define VPN_STATE_ID_TAG "vpn-state-id"
 
 static void
@@ -2289,8 +2300,13 @@ foo_active_connections_changed_cb (NMClient *client,
 		    || g_object_get_data (G_OBJECT (candidate), VPN_STATE_ID_TAG))
 			continue;
 
+		/* Start/stop animation when the AC state changes ... */
 		id = g_signal_connect (G_OBJECT (candidate), "state-changed",
-		                       G_CALLBACK (vpn_connection_state_changed), applet);
+		                       G_CALLBACK (vpn_active_connection_state_changed), applet);
+		/* ... and also update icon/tooltip when the VPN state changes */
+		g_signal_connect (G_OBJECT (candidate), "notify::vpn-state",
+		                  G_CALLBACK (vpn_state_changed), applet);
+
 		g_object_set_data (G_OBJECT (candidate), VPN_STATE_ID_TAG, GUINT_TO_POINTER (id));
 	}
 
