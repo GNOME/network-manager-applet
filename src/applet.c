@@ -908,9 +908,9 @@ make_active_failure_message (NMActiveConnection *active,
 
 static void
 vpn_active_connection_state_changed (NMVpnConnection *vpn,
-                              NMActiveConnectionState state,
-                              NMActiveConnectionStateReason reason,
-                              gpointer user_data)
+                                     NMActiveConnectionState state,
+                                     NMActiveConnectionStateReason reason,
+                                     gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
 	const char *banner;
