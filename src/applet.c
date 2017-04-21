@@ -868,7 +868,7 @@ make_active_failure_message (NMActiveConnection *active,
 	NMConnection *connection;
 	const GPtrArray *devices;
 	NMDevice *device;
-	const char *verb, *id;
+	const char *id;
 
 	g_return_val_if_fail (active != NULL, NULL);
 
@@ -880,11 +880,9 @@ make_active_failure_message (NMActiveConnection *active,
 		devices = nm_active_connection_get_devices (active);
 		device = devices && devices->len > 0 ? devices->pdata[0] : NULL;
 		if (device && nm_device_get_state (device) == NM_DEVICE_STATE_DISCONNECTED)
-			verb = "disconnected";
+			return g_strdup_printf (_("\nThe VPN connection “%s” disconnected because the network connection was interrupted."), id);
 		else
-			verb = "failed";
-
-		return g_strdup_printf (_("\nThe VPN connection “%s” %s because the network connection was interrupted."), verb, id);
+			return g_strdup_printf (_("\nThe VPN connection “%s” failed because the network connection was interrupted."), id);
 	case NM_ACTIVE_CONNECTION_STATE_REASON_SERVICE_STOPPED:
 		return g_strdup_printf (_("\nThe VPN connection “%s” failed because the VPN service stopped unexpectedly."), id);
 	case NM_ACTIVE_CONNECTION_STATE_REASON_IP_CONFIG_INVALID:
