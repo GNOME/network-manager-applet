@@ -12,9 +12,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager-applet\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
-"product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2017-03-30 13:55+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-05-10 12:44+0200\n"
 "PO-Revision-Date: 2017-04-03 22:50+0300\n"
 "Last-Translator: Stas Solovey <whats_up@tut.by>\n"
 "Language-Team: Русский <gnome-cyr@gnome.org>\n"
@@ -26,7 +25,7 @@ msgstr ""
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Poedit 1.8.11\n"
 
-#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3132
+#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3175
 msgid "Network"
 msgstr "Сеть"
 
@@ -225,37 +224,47 @@ msgstr "ad-hoc"
 msgid "secure."
 msgstr "безопасный."
 
-#: ../src/applet.c:345
+#: ../src/applet.c:381
 msgid "Failed to add/activate connection"
 msgstr "Не удалось создать/включить соединение"
 
-#: ../src/applet.c:347 ../src/applet.c:401 ../src/applet.c:436
-#: ../src/applet-device-wifi.c:1386 ../src/applet-device-wifi.c:1409
+#: ../src/applet.c:383 ../src/applet.c:437 ../src/applet.c:472
+#: ../src/applet-device-wifi.c:1387 ../src/applet-device-wifi.c:1410
 msgid "Unknown error"
 msgstr "Неизвестная ошибка"
 
-#: ../src/applet.c:350 ../src/applet.c:439 ../src/applet-device-wifi.c:539
-#: ../src/applet-device-wifi.c:1389 ../src/applet-device-wifi.c:1412
+#: ../src/applet.c:386 ../src/applet.c:475 ../src/applet-device-wifi.c:539
+#: ../src/applet-device-wifi.c:1390 ../src/applet-device-wifi.c:1413
 msgid "Connection failure"
 msgstr "Сбой подключения"
 
-#: ../src/applet.c:399
+#: ../src/applet.c:435
 msgid "Device disconnect failed"
 msgstr "Сбой устройства при отключении"
 
-#: ../src/applet.c:404
+#: ../src/applet.c:440
 msgid "Disconnect failure"
 msgstr "Сбой при отключении"
 
-#: ../src/applet.c:434
+#: ../src/applet.c:470
 msgid "Connection activation failed"
 msgstr "Сбой при включении соединения"
 
-#: ../src/applet.c:757 ../src/applet-device-wifi.c:1126
+#: ../src/applet.c:793 ../src/applet-device-wifi.c:1126
 msgid "Don’t show this message again"
 msgstr "Больше не показывать это сообщение"
 
-#: ../src/applet.c:844
+#: ../src/applet.c:883
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” disconnected because the network connection was "
+"interrupted."
+msgstr ""
+"\n"
+"VPN-соединение «%s» разорвано, поскольку подключение к сети было прервано."
+
+#: ../src/applet.c:885
 #, c-format
 msgid ""
 "\n"
@@ -266,7 +275,7 @@ msgstr ""
 "Произошёл сбой VPN-соединения «%s», поскольку подключение к сети было "
 "прервано."
 
-#: ../src/applet.c:847
+#: ../src/applet.c:887
 #, c-format
 msgid ""
 "\n"
@@ -276,7 +285,7 @@ msgstr ""
 "Произошёл сбой VPN-соединения «%s», поскольку служба VPN неожиданно "
 "завершилась."
 
-#: ../src/applet.c:850
+#: ../src/applet.c:889
 #, c-format
 msgid ""
 "\n"
@@ -287,7 +296,7 @@ msgstr ""
 "Произошёл сбой VPN-соединения «%s», поскольку служба VPN вернула неверную "
 "конфигурацию."
 
-#: ../src/applet.c:853
+#: ../src/applet.c:891
 #, c-format
 msgid ""
 "\n"
@@ -296,7 +305,7 @@ msgstr ""
 "\n"
 "Произошёл сбой VPN-соединения «%s», поскольку превышено время ожидания."
 
-#: ../src/applet.c:856
+#: ../src/applet.c:893
 #, c-format
 msgid ""
 "\n"
@@ -306,7 +315,7 @@ msgstr ""
 "Произошёл сбой VPN-соединения «%s», поскольку служба VPN не запустилась "
 "вовремя."
 
-#: ../src/applet.c:859
+#: ../src/applet.c:895
 #, c-format
 msgid ""
 "\n"
@@ -316,7 +325,7 @@ msgstr ""
 "Произошёл сбой VPN-соединения «%s», поскольку не удалось запустить службу "
 "VPN."
 
-#: ../src/applet.c:862
+#: ../src/applet.c:897
 #, c-format
 msgid ""
 "\n"
@@ -326,7 +335,7 @@ msgstr ""
 "Произошёл сбой соединения VPN «%s», поскольку не удалось найти подходящий "
 "ключ VPN."
 
-#: ../src/applet.c:865
+#: ../src/applet.c:899
 #, c-format
 msgid ""
 "\n"
@@ -335,7 +344,7 @@ msgstr ""
 "\n"
 "Не удалось установить VPN-соединение «%s», неверный ключ доступа VPN."
 
-#: ../src/applet.c:872
+#: ../src/applet.c:904
 #, c-format
 msgid ""
 "\n"
@@ -344,35 +353,7 @@ msgstr ""
 "\n"
 "Сбой VPN-соединения «%s»."
 
-#: ../src/applet.c:888
-#, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” disconnected because the network connection was "
-"interrupted."
-msgstr ""
-"\n"
-"VPN-соединение «%s» разорвано, поскольку подключение к сети было прервано."
-
-#: ../src/applet.c:891
-#, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” disconnected because the VPN service stopped."
-msgstr ""
-"\n"
-"VPN-соединение «%s» разорвано, поскольку служба VPN была остановлена."
-
-#: ../src/applet.c:897
-#, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” disconnected."
-msgstr ""
-"\n"
-"VPN-соединение «%s» разорвано."
-
-#: ../src/applet.c:927
+#: ../src/applet.c:931
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -383,19 +364,19 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: ../src/applet.c:929
+#: ../src/applet.c:933
 msgid "VPN connection has been successfully established.\n"
 msgstr "Соединение VPN успешно установлено.\n"
 
-#: ../src/applet.c:931
+#: ../src/applet.c:935
 msgid "VPN Login Message"
 msgstr "Сообщение авторизации VPN"
 
-#: ../src/applet.c:937 ../src/applet.c:945 ../src/applet.c:986
+#: ../src/applet.c:943 ../src/applet.c:983
 msgid "VPN Connection Failed"
 msgstr "Сбой соединения VPN"
 
-#: ../src/applet.c:990
+#: ../src/applet.c:987
 #, c-format
 msgid ""
 "\n"
@@ -408,7 +389,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:993
+#: ../src/applet.c:990
 #, c-format
 msgid ""
 "\n"
@@ -421,48 +402,48 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1281
+#: ../src/applet.c:1279
 msgid "device not ready (firmware missing)"
 msgstr "устройство не готово (нет прошивки)"
 
-#: ../src/applet.c:1283
+#: ../src/applet.c:1281
 msgid "device not ready"
 msgstr "устройство не готово"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet.c:1293 ../src/applet-device-ethernet.c:109
+#: ../src/applet.c:1291 ../src/applet-device-ethernet.c:109
 msgid "disconnected"
 msgstr "соединение разорвано"
 
-#: ../src/applet.c:1309
+#: ../src/applet.c:1307
 msgid "Disconnect"
 msgstr "Отключиться"
 
-#: ../src/applet.c:1323
+#: ../src/applet.c:1321
 msgid "device not managed"
 msgstr "устройство не управляется"
 
-#: ../src/applet.c:1396
+#: ../src/applet.c:1394
 msgid "No network devices available"
 msgstr "Нет доступных сетевых устройств"
 
-#: ../src/applet.c:1450
+#: ../src/applet.c:1448
 msgid "_VPN Connections"
 msgstr "Соединения _VPN"
 
-#: ../src/applet.c:1494
+#: ../src/applet.c:1492
 msgid "_Configure VPN…"
 msgstr "_Настроить VPN…"
 
-#: ../src/applet.c:1497
+#: ../src/applet.c:1495
 msgid "_Add a VPN connection…"
 msgstr "_Добавить VPN-соединение…"
 
-#: ../src/applet.c:1603
+#: ../src/applet.c:1601
 msgid "NetworkManager is not running…"
 msgstr "Служба NetworkManager не запущена…"
 
-#: ../src/applet.c:1608 ../src/applet.c:2632
+#: ../src/applet.c:1606 ../src/applet.c:2671
 msgid "Networking disabled"
 msgstr "Поддержка сети отключена"
 
@@ -500,65 +481,65 @@ msgstr "Изменить соединения…"
 msgid "_About"
 msgstr "_О программе"
 
-#: ../src/applet.c:2165
+#: ../src/applet.c:2191
 #, c-format
 msgid "You are now connected to “%s”."
 msgstr "Вы подключены к сети «%s»."
 
-#: ../src/applet.c:2208
+#: ../src/applet.c:2231
 msgid "Disconnected"
 msgstr "Соединение разорвано"
 
-#: ../src/applet.c:2209
+#: ../src/applet.c:2232
 msgid "The network connection has been disconnected."
 msgstr "Сетевое соединение было разорвано."
 
-#: ../src/applet.c:2495
+#: ../src/applet.c:2534
 #, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "Подготовка сетевого соединения «%s»…"
 
-#: ../src/applet.c:2498
+#: ../src/applet.c:2537
 #, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "Для сетевого соединения «%s» требуется аутентификация…"
 
-#: ../src/applet.c:2501 ../src/applet-device-bt.c:125
+#: ../src/applet.c:2540 ../src/applet-device-bt.c:125
 #: ../src/mobile-helpers.c:608
 #, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "Получение сетевого адреса для «%s»…"
 
-#: ../src/applet.c:2504
+#: ../src/applet.c:2543
 #, c-format
 msgid "Network connection “%s” active"
 msgstr "Сетевое соединение «%s» активно"
 
-#: ../src/applet.c:2577
+#: ../src/applet.c:2616
 #, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "Устанавливается VPN-соединение «%s»…"
 
-#: ../src/applet.c:2580
+#: ../src/applet.c:2619
 #, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "Для VPN-соединения «%s» требуется аутентификация…"
 
-#: ../src/applet.c:2583
+#: ../src/applet.c:2622
 #, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "Запрос адреса VPN для «%s»…"
 
-#: ../src/applet.c:2586
+#: ../src/applet.c:2625
 #, c-format
 msgid "VPN connection active"
 msgstr "VPN-соединение активно"
 
-#: ../src/applet.c:2636
+#: ../src/applet.c:2675
 msgid "No network connection"
 msgstr "Нет подключения к сети"
 
-#: ../src/applet.c:3231
+#: ../src/applet.c:3276
 msgid "NetworkManager Applet"
 msgstr "Апплет NetworkManager"
 
@@ -598,7 +579,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "Создать подключение мобильной связи…"
 
 #: ../src/applet-device-broadband.c:817 ../src/applet-device-bt.c:87
-#: ../src/applet-device-ethernet.c:132 ../src/applet-device-wifi.c:1307
+#: ../src/applet-device-ethernet.c:132 ../src/applet-device-wifi.c:1308
 msgid "Connection Established"
 msgstr "Соединение установлено"
 
@@ -709,7 +690,7 @@ msgstr "Создать _новую сеть Wi-Fi…"
 msgid "(none)"
 msgstr "(нет)"
 
-#: ../src/applet-device-wifi.c:536 ../src/applet-device-wifi.c:1407
+#: ../src/applet-device-wifi.c:536 ../src/applet-device-wifi.c:1408
 msgid "Failed to add new connection"
 msgstr "Не удалось добавить новое соединение"
 
@@ -754,42 +735,42 @@ msgstr "Доступны сети Wi-Fi"
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Используйте меню сети для подключения к сети Wi-Fi"
 
-#: ../src/applet-device-wifi.c:1306
+#: ../src/applet-device-wifi.c:1307
 #, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "Вы подключены к сети Wi-Fi «%s»."
 
-#: ../src/applet-device-wifi.c:1341
+#: ../src/applet-device-wifi.c:1342
 #, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "Подготовка сетевого соединения Wi-Fi «%s»…"
 
-#: ../src/applet-device-wifi.c:1344
+#: ../src/applet-device-wifi.c:1345
 #, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "Настройка сетевого соединения Wi-Fi «%s»…"
 
-#: ../src/applet-device-wifi.c:1347
+#: ../src/applet-device-wifi.c:1348
 #, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "Для соединения Wi-Fi «%s» требуется аутентификация…"
 
-#: ../src/applet-device-wifi.c:1350
+#: ../src/applet-device-wifi.c:1351
 #, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "Запрос адреса сети Wi-Fi для «%s»…"
 
-#: ../src/applet-device-wifi.c:1361
+#: ../src/applet-device-wifi.c:1362
 #, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "Сетевое соединение Wi-Fi «%s» активно: %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1365
+#: ../src/applet-device-wifi.c:1366
 #, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "Сетевое соединение Wi-Fi «%s» активно"
 
-#: ../src/applet-device-wifi.c:1384
+#: ../src/applet-device-wifi.c:1385
 msgid "Failed to activate connection"
 msgstr "Не удалось включить соединение"
 
@@ -1767,7 +1748,6 @@ msgstr "_Автоматически подключаться к этой сет�
 
 #: ../src/connection-editor/ce-page-general.ui.h:4
 #, fuzzy
-#| msgid "Connection _Information"
 msgid "Connection _priority for auto-activation:"
 msgstr "C_ведения о соединении"
 
@@ -1784,9 +1764,6 @@ msgstr "_Зона межсетевого экрана:"
 
 #: ../src/connection-editor/ce-page.h:111
 #, fuzzy
-#| msgid ""
-#| "IP addresses identify your computer on the network.  Click the \"Add\" "
-#| "button to add an IP address."
 msgid ""
 "IP addresses identify your computer on the network. Click the “Add” button "
 "to add static IP address to be configured in addition to the automatic ones."
@@ -1796,9 +1773,6 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page.h:116
 #, fuzzy
-#| msgid ""
-#| "IP addresses identify your computer on the network.  Click the \"Add\" "
-#| "button to add an IP address."
 msgid ""
 "The IP address identify your computer on the network and determines the "
 "address range distributed to other computers. Click the “Add” button to add "
@@ -1810,7 +1784,6 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page.h:121
 #, fuzzy
-#| msgid "Automatic, addresses only"
 msgid "Additional static addresses"
 msgstr "Автоматически, только адреса"
 
@@ -2221,13 +2194,11 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:16
 #, fuzzy
-#| msgid "_Priority:"
 msgid "_LACP port priority:"
 msgstr "_Приоритет:"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:17
 #, fuzzy
-#| msgid "Private _key:"
 msgid "LACP port _key:"
 msgstr "Секретный _ключ:"
 
@@ -2595,13 +2566,11 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page-team.ui.h:67
 #, fuzzy
-#| msgid "Transmission po_wer:"
 msgid "Transmission _balancing interval:"
 msgstr "Мо_щность передачи:"
 
 #: ../src/connection-editor/ce-page-team.ui.h:68
 #, fuzzy
-#| msgid "Transmission po_wer:"
 msgid "_Transmission balancer:"
 msgstr "Мо_щность передачи:"
 
@@ -3004,9 +2973,6 @@ msgstr "Исправить"
 
 #: ../src/connection-editor/nm-connection-editor.ui.h:5
 #, fuzzy
-#| msgid ""
-#| "Set this to true to disable warnings about CA certificates in EAP "
-#| "authentication."
 msgid ""
 "Security labels may prevent some files from being used with certificate "
 "authentication."
@@ -3024,13 +2990,11 @@ msgstr "_Экспортировать…"
 
 #: ../src/connection-editor/nm-connection-editor.ui.h:9
 #, fuzzy
-#| msgid "Filename"
 msgid "File Relabel"
 msgstr "Имя файла"
 
 #: ../src/connection-editor/nm-connection-editor.ui.h:10
 #, fuzzy
-#| msgid "Filename"
 msgid "_Relabel"
 msgstr "Имя файла"
 
@@ -3042,7 +3006,6 @@ msgstr ""
 
 #: ../src/connection-editor/nm-connection-editor.ui.h:12
 #, fuzzy
-#| msgid "Filename"
 msgid "Relabel"
 msgstr "Имя файла"
 
@@ -3334,13 +3297,11 @@ msgstr "Соединение InfiniBand %d"
 
 #: ../src/connection-editor/page-ip-tunnel.c:178
 #, fuzzy
-#| msgid "Could not load IPv4 user interface."
 msgid "Could not load IP tunnel user interface."
 msgstr "Не удалось загрузить диалог настройки IPv4."
 
 #: ../src/connection-editor/page-ip-tunnel.c:292
 #, fuzzy, c-format
-#| msgid "Ethernet connection %d"
 msgid "IP tunnel connection %d"
 msgstr "Проводное соединение %d"
 
@@ -3812,48 +3773,41 @@ msgstr "Активные сетевые соединения"
 #: ../src/libnma/nma-file-cert-chooser.c:108
 #: ../src/libnma/nma-pkcs11-cert-chooser.c:140
 #, fuzzy
-#| msgid "No CA certificate is _required"
 msgid "No certificate set"
 msgstr "Сертификат УЦ не _требуется"
 
 #: ../src/libnma/nma-file-cert-chooser.c:126
 #: ../src/libnma/nma-pkcs11-cert-chooser.c:164
 #, fuzzy
-#| msgid "no file selected"
 msgid "No key set"
 msgstr "файлы не выбраны"
 
 #: ../src/libnma/nma-file-cert-chooser.c:246
 #: ../src/libnma/nma-pkcs11-cert-chooser.c:364
 #, fuzzy, c-format
-#| msgid "Choose CA Certificate"
 msgid "Choose a key for %s Certificate"
 msgstr "Выбрать сертификат УЦ"
 
 #: ../src/libnma/nma-file-cert-chooser.c:250
 #: ../src/libnma/nma-pkcs11-cert-chooser.c:368
 #, fuzzy, c-format
-#| msgid "Private _key:"
 msgid "%s private _key:"
 msgstr "Приватный _ключ:"
 
 #: ../src/libnma/nma-file-cert-chooser.c:254
 #: ../src/libnma/nma-pkcs11-cert-chooser.c:372
 #, fuzzy, c-format
-#| msgid "_Private key password:"
 msgid "%s key _password:"
 msgstr "_Пароль приватного ключа:"
 
 #: ../src/libnma/nma-file-cert-chooser.c:258
 #, fuzzy, c-format
-#| msgid "Choose CA Certificate"
 msgid "Choose %s Certificate"
 msgstr "Выбрать сертификат УЦ"
 
 #: ../src/libnma/nma-file-cert-chooser.c:262
 #: ../src/libnma/nma-pkcs11-cert-chooser.c:380
 #, fuzzy, c-format
-#| msgid "_User certificate:"
 msgid "%s _certificate:"
 msgstr "Сертификат _пользователя:"
 
@@ -4099,19 +4053,16 @@ msgstr "Пароль сертификата %s:"
 
 #: ../src/libnma/nma-pkcs11-cert-chooser-dialog.c:255
 #, fuzzy
-#| msgid "Error editing connection"
 msgid "Error logging in: "
 msgstr "Ошибка изменения соединения"
 
 #: ../src/libnma/nma-pkcs11-cert-chooser-dialog.c:277
 #, fuzzy
-#| msgid "Error editing connection"
 msgid "Error opening a session: "
 msgstr "Ошибка изменения соединения"
 
 #: ../src/libnma/nma-pkcs11-cert-chooser-dialog.ui.h:1
 #, fuzzy
-#| msgid "_Unlock"
 msgid "_Unlock token"
 msgstr "_Разблокировать"
 
@@ -4552,37 +4503,31 @@ msgstr "отсутствует идентичность EAP-TLS"
 
 #: ../src/wireless-security/eap-method-tls.c:238
 #, fuzzy
-#| msgid "No CA certificate is _required"
 msgid "no user certificate selected"
 msgstr "Сертификат УЦ не _требуется"
 
 #: ../src/wireless-security/eap-method-tls.c:243
 #, fuzzy
-#| msgid "No CA certificate is _required"
 msgid "selected user certificate file does not exist"
 msgstr "Сертификат УЦ не _требуется"
 
 #: ../src/wireless-security/eap-method-tls.c:263
 #, fuzzy
-#| msgid "no file selected"
 msgid "no key selected"
 msgstr "файлы не выбраны"
 
 #: ../src/wireless-security/eap-method-tls.c:268
 #, fuzzy
-#| msgid "file “%s” does not exist"
 msgid "selected key file does not exist"
 msgstr "файл «%s» не существует"
 
 #: ../src/wireless-security/eap-method-tls.c:314
 #, fuzzy
-#| msgid "No CA certificate is _required"
 msgid "no CA certificate selected"
 msgstr "Сертификат УЦ не _требуется"
 
 #: ../src/wireless-security/eap-method-tls.c:319
 #, fuzzy
-#| msgid "No CA certificate is _required"
 msgid "selected CA certificate file does not exist"
 msgstr "Сертификат УЦ не _требуется"
 
@@ -4721,6 +4666,20 @@ msgstr ""
 #: ../src/wireless-security/ws-wpa-psk.ui.h:2
 msgid "_Type:"
 msgstr "_Тип:"
+
+#~ msgid ""
+#~ "\n"
+#~ "The VPN connection “%s” disconnected because the VPN service stopped."
+#~ msgstr ""
+#~ "\n"
+#~ "VPN-соединение «%s» разорвано, поскольку служба VPN была остановлена."
+
+#~ msgid ""
+#~ "\n"
+#~ "The VPN connection “%s” disconnected."
+#~ msgstr ""
+#~ "\n"
+#~ "VPN-соединение «%s» разорвано."
 
 #, fuzzy
 #~ msgid "invalid EAP-TLS CA certificate: %s"

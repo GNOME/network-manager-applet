@@ -6,9 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
-"product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2017-04-09 22:48+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-05-10 12:44+0200\n"
 "PO-Revision-Date: 2017-04-10 15:12+0200\n"
 "Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -21,7 +20,7 @@ msgstr ""
 "X-Launchpad-Export-Date: 2017-04-09 22:32+0000\n"
 "X-Generator: Poedit 1.8.7.1\n"
 
-#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3198
+#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3175
 msgid "Network"
 msgstr "Mreža"
 
@@ -251,7 +250,17 @@ msgstr "Neuspjelo uključivanje povezivanja"
 msgid "Don’t show this message again"
 msgstr "Ne prikazuj više ovu poruku"
 
-#: ../src/applet.c:880
+#: ../src/applet.c:883
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” disconnected because the network connection was "
+"interrupted."
+msgstr ""
+"\n"
+"VPN povezivanje “%s” se odspojilo zbog prekida mrežnog povezivanja."
+
+#: ../src/applet.c:885
 #, c-format
 msgid ""
 "\n"
@@ -261,7 +270,7 @@ msgstr ""
 "\n"
 "VPN povezivanje “%s” nije uspjelo jer je mrežno povezivanje prekinuto."
 
-#: ../src/applet.c:883
+#: ../src/applet.c:887
 #, c-format
 msgid ""
 "\n"
@@ -270,7 +279,7 @@ msgstr ""
 "\n"
 "VPN povezivanje “%s” nije uspjelo jer se VPN usluga neočekivano zaustavila."
 
-#: ../src/applet.c:886
+#: ../src/applet.c:889
 #, c-format
 msgid ""
 "\n"
@@ -281,7 +290,7 @@ msgstr ""
 "VPN povezivanje “%s” nije uspjelo jer je VPN usluga vratila neispravno "
 "podešavanje."
 
-#: ../src/applet.c:889
+#: ../src/applet.c:891
 #, c-format
 msgid ""
 "\n"
@@ -290,7 +299,7 @@ msgstr ""
 "\n"
 "VPN povezivanje “%s” nije uspjelo jer je isteklo vrijeme povezivanja."
 
-#: ../src/applet.c:892
+#: ../src/applet.c:893
 #, c-format
 msgid ""
 "\n"
@@ -309,7 +318,7 @@ msgstr ""
 "\n"
 "VPN povezivanje “%s” nije uspjelo jer se VPN usluga nije pokrenula."
 
-#: ../src/applet.c:898
+#: ../src/applet.c:897
 #, c-format
 msgid ""
 "\n"
@@ -318,7 +327,7 @@ msgstr ""
 "\n"
 "VPN povezivanje “%s” nije uspjelo jer nema valjanih VPN tajni."
 
-#: ../src/applet.c:901
+#: ../src/applet.c:899
 #, c-format
 msgid ""
 "\n"
@@ -327,7 +336,7 @@ msgstr ""
 "\n"
 "VPN povezivanje “%s” nije uspjelo zbog nevaljanih VPN tajni."
 
-#: ../src/applet.c:908
+#: ../src/applet.c:904
 #, c-format
 msgid ""
 "\n"
@@ -336,35 +345,7 @@ msgstr ""
 "\n"
 "VPN povezivanje “%s” nije uspjelo."
 
-#: ../src/applet.c:924
-#, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” disconnected because the network connection was "
-"interrupted."
-msgstr ""
-"\n"
-"VPN povezivanje “%s” se odspojilo zbog prekida mrežnog povezivanja."
-
-#: ../src/applet.c:927
-#, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” disconnected because the VPN service stopped."
-msgstr ""
-"\n"
-"VPN povezivanje “%s” je prekinuto jer je VPN usluga zaustavljena."
-
-#: ../src/applet.c:933
-#, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” disconnected."
-msgstr ""
-"\n"
-"VPN povezivanje “%s” je prekinuto."
-
-#: ../src/applet.c:963
+#: ../src/applet.c:931
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -375,19 +356,19 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: ../src/applet.c:965
+#: ../src/applet.c:933
 msgid "VPN connection has been successfully established.\n"
 msgstr "VPN povezivanje je uspješno uspostavljeno.\n"
 
-#: ../src/applet.c:967
+#: ../src/applet.c:935
 msgid "VPN Login Message"
 msgstr "Poruka o VPN prijavi"
 
-#: ../src/applet.c:973 ../src/applet.c:981 ../src/applet.c:1022
+#: ../src/applet.c:943 ../src/applet.c:983
 msgid "VPN Connection Failed"
 msgstr "VPN povezivanje nije uspjelo"
 
-#: ../src/applet.c:1026
+#: ../src/applet.c:987
 #, c-format
 msgid ""
 "\n"
@@ -400,7 +381,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1029
+#: ../src/applet.c:990
 #, c-format
 msgid ""
 "\n"
@@ -413,144 +394,144 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1317
+#: ../src/applet.c:1279
 msgid "device not ready (firmware missing)"
 msgstr "uređaj nije spreman (nedostaje firmver)"
 
-#: ../src/applet.c:1319
+#: ../src/applet.c:1281
 msgid "device not ready"
 msgstr "uređaj nije spreman"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet.c:1329 ../src/applet-device-ethernet.c:109
+#: ../src/applet.c:1291 ../src/applet-device-ethernet.c:109
 msgid "disconnected"
 msgstr "nije povezana"
 
-#: ../src/applet.c:1345
+#: ../src/applet.c:1307
 msgid "Disconnect"
 msgstr "Prekini povezivanje"
 
-#: ../src/applet.c:1359
+#: ../src/applet.c:1321
 msgid "device not managed"
 msgstr "uređaj nije upravljiv"
 
-#: ../src/applet.c:1432
+#: ../src/applet.c:1394
 msgid "No network devices available"
 msgstr "Nema dostupnih mrežnih uređaja"
 
-#: ../src/applet.c:1486
+#: ../src/applet.c:1448
 msgid "_VPN Connections"
 msgstr "_VPN povezivanja"
 
-#: ../src/applet.c:1530
+#: ../src/applet.c:1492
 msgid "_Configure VPN…"
 msgstr "_Podesi VPN..."
 
-#: ../src/applet.c:1533
+#: ../src/applet.c:1495
 msgid "_Add a VPN connection…"
 msgstr "_Dodaj VPN povezivanje..."
 
-#: ../src/applet.c:1639
+#: ../src/applet.c:1601
 msgid "NetworkManager is not running…"
 msgstr "Mrežni upravitelj nije pokrenut..."
 
-#: ../src/applet.c:1644 ../src/applet.c:2694
+#: ../src/applet.c:1606 ../src/applet.c:2671
 msgid "Networking disabled"
 msgstr "Umrežavanje onemogućeno"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1854
+#: ../src/applet.c:1816
 msgid "Enable _Networking"
 msgstr "Omogući _umrežavanje"
 
 #. 'Enable Wi-Fi' item
-#: ../src/applet.c:1863
+#: ../src/applet.c:1825
 msgid "Enable _Wi-Fi"
 msgstr "Omogući _bežičnu mrežu"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:1872
+#: ../src/applet.c:1834
 msgid "Enable _Mobile Broadband"
 msgstr "Omogući _mobilno širokopojasno povezivanje"
 
 #. Toggle notifications item
-#: ../src/applet.c:1884
+#: ../src/applet.c:1846
 msgid "Enable N_otifications"
 msgstr "Omogući _obavjesti"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1896
+#: ../src/applet.c:1858
 msgid "Connection _Information"
 msgstr "_Informacije povezivanja"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1904
+#: ../src/applet.c:1866
 msgid "Edit Connections…"
 msgstr "Uređivanje povezivanja..."
 
-#: ../src/applet.c:1918
+#: ../src/applet.c:1880
 msgid "_About"
 msgstr "_O programu"
 
-#: ../src/applet.c:2227
+#: ../src/applet.c:2191
 #, c-format
 msgid "You are now connected to “%s”."
 msgstr "Sada ste povezani s “%s”."
 
-#: ../src/applet.c:2270
+#: ../src/applet.c:2231
 msgid "Disconnected"
 msgstr "Povezivanje prekinuto"
 
-#: ../src/applet.c:2271
+#: ../src/applet.c:2232
 msgid "The network connection has been disconnected."
 msgstr "Mrežno povezivanje je prekinuto."
 
-#: ../src/applet.c:2557
+#: ../src/applet.c:2534
 #, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "Priprema mrežnog povezivanja “%s”..."
 
-#: ../src/applet.c:2560
+#: ../src/applet.c:2537
 #, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "Za mrežno povezivanje “%s” je potrebna ovjera korisnika..."
 
-#: ../src/applet.c:2563 ../src/applet-device-bt.c:125
+#: ../src/applet.c:2540 ../src/applet-device-bt.c:125
 #: ../src/mobile-helpers.c:608
 #, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "Zahtijevanje mrežne adrese za “%s”..."
 
-#: ../src/applet.c:2566
+#: ../src/applet.c:2543
 #, c-format
 msgid "Network connection “%s” active"
 msgstr "Mrežno povezivanje “%s” je aktivno"
 
-#: ../src/applet.c:2639
+#: ../src/applet.c:2616
 #, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "Pokretanje VPN povezivanja “%s”..."
 
-#: ../src/applet.c:2642
+#: ../src/applet.c:2619
 #, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "Za VPN povezivanje “%s” je potrebna ovjera korisnika..."
 
-#: ../src/applet.c:2645
+#: ../src/applet.c:2622
 #, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "Zahtijevanje VPN adrese za “%s”..."
 
-#: ../src/applet.c:2648
+#: ../src/applet.c:2625
 #, c-format
 msgid "VPN connection active"
 msgstr "VPN povezivanje je aktivno"
 
-#: ../src/applet.c:2698
+#: ../src/applet.c:2675
 msgid "No network connection"
 msgstr "Nema mrežnog povezivanja"
 
-#: ../src/applet.c:3299
+#: ../src/applet.c:3276
 msgid "NetworkManager Applet"
 msgstr "Aplet mrežnog upravitelja"
 
@@ -4717,6 +4698,20 @@ msgstr ""
 #: ../src/wireless-security/ws-wpa-psk.ui.h:2
 msgid "_Type:"
 msgstr "_Vrsta:"
+
+#~ msgid ""
+#~ "\n"
+#~ "The VPN connection “%s” disconnected because the VPN service stopped."
+#~ msgstr ""
+#~ "\n"
+#~ "VPN povezivanje “%s” je prekinuto jer je VPN usluga zaustavljena."
+
+#~ msgid ""
+#~ "\n"
+#~ "The VPN connection “%s” disconnected."
+#~ msgstr ""
+#~ "\n"
+#~ "VPN povezivanje “%s” je prekinuto."
 
 #~ msgid "Disconnected - you are now offline"
 #~ msgstr "Povezivanje prekinuto - sada ste u izvanmrežnom načinu rada"

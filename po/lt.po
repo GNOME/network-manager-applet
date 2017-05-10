@@ -10,9 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager HEAD\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
-"product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2017-03-24 14:31+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-05-10 12:44+0200\n"
 "PO-Revision-Date: 2017-03-25 14:00+0200\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
@@ -25,7 +24,7 @@ msgstr ""
 "X-Generator: Gtranslator 2.91.7\n"
 "X-Project-Style: gnome\n"
 
-#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3132
+#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3175
 msgid "Network"
 msgstr "Tinklas"
 
@@ -232,120 +231,37 @@ msgstr "ad-hoc"
 msgid "secure."
 msgstr "saugus."
 
-#: ../src/applet.c:345
+#: ../src/applet.c:381
 msgid "Failed to add/activate connection"
 msgstr "Nepavyko pridėti / suaktyvinti ryšio"
 
-#: ../src/applet.c:347 ../src/applet.c:401 ../src/applet.c:436
-#: ../src/applet-device-wifi.c:1386 ../src/applet-device-wifi.c:1409
+#: ../src/applet.c:383 ../src/applet.c:437 ../src/applet.c:472
+#: ../src/applet-device-wifi.c:1387 ../src/applet-device-wifi.c:1410
 msgid "Unknown error"
 msgstr "Nežinoma klaida"
 
-#: ../src/applet.c:350 ../src/applet.c:439 ../src/applet-device-wifi.c:539
-#: ../src/applet-device-wifi.c:1389 ../src/applet-device-wifi.c:1412
+#: ../src/applet.c:386 ../src/applet.c:475 ../src/applet-device-wifi.c:539
+#: ../src/applet-device-wifi.c:1390 ../src/applet-device-wifi.c:1413
 msgid "Connection failure"
 msgstr "Ryšio problema"
 
-#: ../src/applet.c:399
+#: ../src/applet.c:435
 msgid "Device disconnect failed"
 msgstr "Nepavyko atjungti įrenginio"
 
-#: ../src/applet.c:404
+#: ../src/applet.c:440
 msgid "Disconnect failure"
 msgstr "Nepavyko atsijungti"
 
-#: ../src/applet.c:434
+#: ../src/applet.c:470
 msgid "Connection activation failed"
 msgstr "Nepavyko suaktyvinti ryšio"
 
-#: ../src/applet.c:757 ../src/applet-device-wifi.c:1126
+#: ../src/applet.c:793 ../src/applet-device-wifi.c:1126
 msgid "Don’t show this message again"
 msgstr "Daugiau neberodyti šio pranešimo"
 
-#: ../src/applet.c:844
-#, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because the network connection was "
-"interrupted."
-msgstr ""
-"\n"
-"VPN ryšys „%s“ nepavyko, kadangi buvo nutrauktas tinklo ryšys."
-
-#: ../src/applet.c:847
-#, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because the VPN service stopped unexpectedly."
-msgstr ""
-"\n"
-"VPN ryšys „%s“ nepavyko, kadangi VPN tarnyba netikėtai sustojo."
-
-#: ../src/applet.c:850
-#, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because the VPN service returned invalid "
-"configuration."
-msgstr ""
-"\n"
-"VPN ryšys „%s“ nepavyko, kadangi VPN tarnyba grąžino netinkamą konfigūraciją."
-
-#: ../src/applet.c:853
-#, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because the connection attempt timed out."
-msgstr ""
-"\n"
-"VPN ryšys „%s“ nepavyko, kadangi baigėsi bandymo prisijungti laiko limitas."
-
-#: ../src/applet.c:856
-#, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because the VPN service did not start in time."
-msgstr ""
-"\n"
-"VPN ryšys „%s“ nepavyko, kadangi VPN tarnyba nebuvo paleista laiku."
-
-#: ../src/applet.c:859
-#, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because the VPN service failed to start."
-msgstr ""
-"\n"
-"VPN ryšys „%s“ nepavyko, kadangi VPN tarnybai nepavyko pasileisti."
-
-#: ../src/applet.c:862
-#, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because there were no valid VPN secrets."
-msgstr ""
-"\n"
-"VPN ryšys „%s“ nepavyko, kadangi nebuvo tinkamų VPN paslapčių."
-
-#: ../src/applet.c:865
-#, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because of invalid VPN secrets."
-msgstr ""
-"\n"
-"VPN ryšys „%s“ nepavyko, kadangi buvo netinkamų VPN paslapčių."
-
-#: ../src/applet.c:872
-#, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed."
-msgstr ""
-"\n"
-"VPN ryšys „%s“ nepavyko."
-
-#: ../src/applet.c:888
+#: ../src/applet.c:883
 #, c-format
 msgid ""
 "\n"
@@ -355,25 +271,90 @@ msgstr ""
 "\n"
 "VPN ryšys „%s“ atsijungė, kadangi buvo nutrauktas tinklo ryšys."
 
+#: ../src/applet.c:885
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed because the network connection was "
+"interrupted."
+msgstr ""
+"\n"
+"VPN ryšys „%s“ nepavyko, kadangi buvo nutrauktas tinklo ryšys."
+
+#: ../src/applet.c:887
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed because the VPN service stopped unexpectedly."
+msgstr ""
+"\n"
+"VPN ryšys „%s“ nepavyko, kadangi VPN tarnyba netikėtai sustojo."
+
+#: ../src/applet.c:889
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed because the VPN service returned invalid "
+"configuration."
+msgstr ""
+"\n"
+"VPN ryšys „%s“ nepavyko, kadangi VPN tarnyba grąžino netinkamą konfigūraciją."
+
 #: ../src/applet.c:891
 #, c-format
 msgid ""
 "\n"
-"The VPN connection “%s” disconnected because the VPN service stopped."
+"The VPN connection “%s” failed because the connection attempt timed out."
 msgstr ""
 "\n"
-"VPN ryšys „%s“ atsijungė, kadangi VPN tarnyba sustojo."
+"VPN ryšys „%s“ nepavyko, kadangi baigėsi bandymo prisijungti laiko limitas."
+
+#: ../src/applet.c:893
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed because the VPN service did not start in time."
+msgstr ""
+"\n"
+"VPN ryšys „%s“ nepavyko, kadangi VPN tarnyba nebuvo paleista laiku."
+
+#: ../src/applet.c:895
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed because the VPN service failed to start."
+msgstr ""
+"\n"
+"VPN ryšys „%s“ nepavyko, kadangi VPN tarnybai nepavyko pasileisti."
 
 #: ../src/applet.c:897
 #, c-format
 msgid ""
 "\n"
-"The VPN connection “%s” disconnected."
+"The VPN connection “%s” failed because there were no valid VPN secrets."
 msgstr ""
 "\n"
-"VPN ryšys „%s“ atsijungė."
+"VPN ryšys „%s“ nepavyko, kadangi nebuvo tinkamų VPN paslapčių."
 
-#: ../src/applet.c:927
+#: ../src/applet.c:899
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed because of invalid VPN secrets."
+msgstr ""
+"\n"
+"VPN ryšys „%s“ nepavyko, kadangi buvo netinkamų VPN paslapčių."
+
+#: ../src/applet.c:904
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed."
+msgstr ""
+"\n"
+"VPN ryšys „%s“ nepavyko."
+
+#: ../src/applet.c:931
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -384,19 +365,19 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: ../src/applet.c:929
+#: ../src/applet.c:933
 msgid "VPN connection has been successfully established.\n"
 msgstr "VPN ryšys sėkmingai užmegztas.\n"
 
-#: ../src/applet.c:931
+#: ../src/applet.c:935
 msgid "VPN Login Message"
 msgstr "VPN ryšio pranešimas"
 
-#: ../src/applet.c:937 ../src/applet.c:945 ../src/applet.c:986
+#: ../src/applet.c:943 ../src/applet.c:983
 msgid "VPN Connection Failed"
 msgstr "VPN ryšio klaida"
 
-#: ../src/applet.c:990
+#: ../src/applet.c:987
 #, c-format
 msgid ""
 "\n"
@@ -409,7 +390,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:993
+#: ../src/applet.c:990
 #, c-format
 msgid ""
 "\n"
@@ -422,48 +403,48 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1281
+#: ../src/applet.c:1279
 msgid "device not ready (firmware missing)"
 msgstr "įrenginys nepasiruošęs (trūksta aparatinės programinės įrangos)"
 
-#: ../src/applet.c:1283
+#: ../src/applet.c:1281
 msgid "device not ready"
 msgstr "įrenginys nepasiruošęs"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet.c:1293 ../src/applet-device-ethernet.c:109
+#: ../src/applet.c:1291 ../src/applet-device-ethernet.c:109
 msgid "disconnected"
 msgstr "atjungta"
 
-#: ../src/applet.c:1309
+#: ../src/applet.c:1307
 msgid "Disconnect"
 msgstr "Atsijungti"
 
-#: ../src/applet.c:1323
+#: ../src/applet.c:1321
 msgid "device not managed"
 msgstr "įrenginys nevaldomas"
 
-#: ../src/applet.c:1396
+#: ../src/applet.c:1394
 msgid "No network devices available"
 msgstr "Tinklo įrenginių nerasta"
 
-#: ../src/applet.c:1450
+#: ../src/applet.c:1448
 msgid "_VPN Connections"
 msgstr "_VPN ryšiai"
 
-#: ../src/applet.c:1494
+#: ../src/applet.c:1492
 msgid "_Configure VPN…"
 msgstr "_Konfigūruoti VPN…"
 
-#: ../src/applet.c:1497
+#: ../src/applet.c:1495
 msgid "_Add a VPN connection…"
 msgstr "_Pridėti VPN ryšį…"
 
-#: ../src/applet.c:1603
+#: ../src/applet.c:1601
 msgid "NetworkManager is not running…"
 msgstr "NetworkManager programa nepaleista…"
 
-#: ../src/applet.c:1608 ../src/applet.c:2632
+#: ../src/applet.c:1606 ../src/applet.c:2671
 msgid "Networking disabled"
 msgstr "Tinklo sąsajos atjungtos"
 
@@ -501,65 +482,65 @@ msgstr "Taisyti ryšius…"
 msgid "_About"
 msgstr "_Apie"
 
-#: ../src/applet.c:2165
+#: ../src/applet.c:2191
 #, c-format
 msgid "You are now connected to “%s”."
 msgstr "Esate prisijungę prie „%s“."
 
-#: ../src/applet.c:2208
+#: ../src/applet.c:2231
 msgid "Disconnected"
 msgstr "Atjungta"
 
-#: ../src/applet.c:2209
+#: ../src/applet.c:2232
 msgid "The network connection has been disconnected."
 msgstr "Atsijungta nuo tinklo."
 
-#: ../src/applet.c:2495
+#: ../src/applet.c:2534
 #, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "Ruošiamas tinklo ryšys „%s“…"
 
-#: ../src/applet.c:2498
+#: ../src/applet.c:2537
 #, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "Tinklo ryšys „%s“ reikalauja nustatyti jūsų tapatybę…"
 
-#: ../src/applet.c:2501 ../src/applet-device-bt.c:125
+#: ../src/applet.c:2540 ../src/applet-device-bt.c:125
 #: ../src/mobile-helpers.c:608
 #, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "Užklausiamas tinklo adresas, skirtas „%s“…"
 
-#: ../src/applet.c:2504
+#: ../src/applet.c:2543
 #, c-format
 msgid "Network connection “%s” active"
 msgstr "Tinklo ryšys „%s“ aktyvus"
 
-#: ../src/applet.c:2577
+#: ../src/applet.c:2616
 #, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "Pradedamas VPN ryšys „%s“…"
 
-#: ../src/applet.c:2580
+#: ../src/applet.c:2619
 #, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "VPN ryšys „%s“ reikalauja nustatyti jūsų tapatybę…"
 
-#: ../src/applet.c:2583
+#: ../src/applet.c:2622
 #, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "Užklausiamas VPN adresas, skirtas „%s“…"
 
-#: ../src/applet.c:2586
+#: ../src/applet.c:2625
 #, c-format
 msgid "VPN connection active"
 msgstr "VPN ryšys aktyvus"
 
-#: ../src/applet.c:2636
+#: ../src/applet.c:2675
 msgid "No network connection"
 msgstr "Nėra tinklo ryšio"
 
-#: ../src/applet.c:3231
+#: ../src/applet.c:3276
 msgid "NetworkManager Applet"
 msgstr "NetworkManager įtaisas"
 
@@ -599,7 +580,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "Naujas mobilusis plačiajuostis ryšys…"
 
 #: ../src/applet-device-broadband.c:817 ../src/applet-device-bt.c:87
-#: ../src/applet-device-ethernet.c:132 ../src/applet-device-wifi.c:1307
+#: ../src/applet-device-ethernet.c:132 ../src/applet-device-wifi.c:1308
 msgid "Connection Established"
 msgstr "Prisijungta"
 
@@ -710,7 +691,7 @@ msgstr "Sukurti _naują belaidį tinklą…"
 msgid "(none)"
 msgstr "(nėra)"
 
-#: ../src/applet-device-wifi.c:536 ../src/applet-device-wifi.c:1407
+#: ../src/applet-device-wifi.c:536 ../src/applet-device-wifi.c:1408
 msgid "Failed to add new connection"
 msgstr "Nepavyko pridėti naujo ryšio"
 
@@ -756,42 +737,42 @@ msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr ""
 "Norėdami prisijungti prie belaidžio tinklo, naudokite belaidžio tinklo meniu"
 
-#: ../src/applet-device-wifi.c:1306
+#: ../src/applet-device-wifi.c:1307
 #, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "Esate prisijungę prie belaidžio tinklo „%s“."
 
-#: ../src/applet-device-wifi.c:1341
+#: ../src/applet-device-wifi.c:1342
 #, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "Ruošiamas belaidis tinklo ryšys „%s“…"
 
-#: ../src/applet-device-wifi.c:1344
+#: ../src/applet-device-wifi.c:1345
 #, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "Konfigūruojamas belaidis tinklo ryšys „%s“…"
 
-#: ../src/applet-device-wifi.c:1347
+#: ../src/applet-device-wifi.c:1348
 #, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "Belaidis tinklas „%s“ reikalauja nustatyti jūsų tapatybę…"
 
-#: ../src/applet-device-wifi.c:1350
+#: ../src/applet-device-wifi.c:1351
 #, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "Užklausiamas belaidžio tinklo adresas, skirtas „%s“…"
 
-#: ../src/applet-device-wifi.c:1361
+#: ../src/applet-device-wifi.c:1362
 #, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "Belaidžio tinklo ryšys „%s“ aktyvus: %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1365
+#: ../src/applet-device-wifi.c:1366
 #, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "Belaidis tinklo ryšys „%s“ aktyvus"
 
-#: ../src/applet-device-wifi.c:1384
+#: ../src/applet-device-wifi.c:1385
 msgid "Failed to activate connection"
 msgstr "Nepavyko suaktyvinti ryšio"
 
@@ -1136,7 +1117,6 @@ msgstr ""
 "ryšys."
 
 #: ../src/connection-editor/ce-new-connection.ui.h:2
-#| msgid "Create…"
 msgid "C_reate…"
 msgstr "Suku_rti…"
 
@@ -1424,7 +1404,6 @@ msgid "Failed to update connection secrets due to an unknown error."
 msgstr "Nepavyko atnaujinti ryšio paslapčių dėl nežinomos klaidos."
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:1
-#| msgid "Use Data Center Bridging (DCB) for this connection"
 msgid "_Use Data Center Bridging (DCB) for this connection"
 msgstr "_Naudoti duomenų centro tinklų tilto sujungimą (DCB) šiam ryšiui"
 
@@ -2629,7 +2608,6 @@ msgstr ""
 "maišos skaičiavimui."
 
 #: ../src/connection-editor/ce-page-team.ui.h:64
-#| msgid "_Fields for tramsmission hash"
 msgid "_Fields for transmission hash"
 msgstr "_Laukai perdavimo maišai"
 
@@ -3050,9 +3028,6 @@ msgid "Fix"
 msgstr "Ištaisyti"
 
 #: ../src/connection-editor/nm-connection-editor.ui.h:5
-#| msgid ""
-#| "Set this to true to disable warnings about CA certificates in EAP "
-#| "authentication."
 msgid ""
 "Security labels may prevent some files from being used with certificate "
 "authentication."
@@ -3089,7 +3064,6 @@ msgid "Relabel"
 msgstr "Peržymėti"
 
 #: ../src/connection-editor/nm-connection-editor.ui.h:13
-#| msgid "Device name"
 msgid "Filename"
 msgstr "Failo pavadinimas"
 
@@ -4444,7 +4418,6 @@ msgstr "nepasirinktas failas"
 
 #: ../src/wireless-security/eap-method.c:235
 #, c-format
-#| msgid "A file named “%s” already exists."
 msgid "file “%s” does not exist"
 msgstr "failo „%s“ nėra"
 
@@ -4724,6 +4697,20 @@ msgstr ""
 #: ../src/wireless-security/ws-wpa-psk.ui.h:2
 msgid "_Type:"
 msgstr "_Tipas:"
+
+#~ msgid ""
+#~ "\n"
+#~ "The VPN connection “%s” disconnected because the VPN service stopped."
+#~ msgstr ""
+#~ "\n"
+#~ "VPN ryšys „%s“ atsijungė, kadangi VPN tarnyba sustojo."
+
+#~ msgid ""
+#~ "\n"
+#~ "The VPN connection “%s” disconnected."
+#~ msgstr ""
+#~ "\n"
+#~ "VPN ryšys „%s“ atsijungė."
 
 #~ msgid "invalid EAP-TLS CA certificate: %s"
 #~ msgstr "netinkamas EAP-TLS LĮ liudijimas: %s"

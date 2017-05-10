@@ -15,9 +15,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2017-02-16 05:48+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-05-10 12:44+0200\n"
 "PO-Revision-Date: 2017-02-17 09:52+0100\n"
 "Last-Translator: Milo Casagrande <milo@milo.name>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -29,7 +28,7 @@ msgstr ""
 "X-Launchpad-Export-Date: 2012-03-09 08:20+0000\n"
 "X-Generator: Poedit 2.0beta3\n"
 
-#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3132
+#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3175
 msgid "Network"
 msgstr "Rete"
 
@@ -217,8 +216,8 @@ msgstr "Autenticazione 802.1X"
 #: ../src/connection-editor/ce-new-connection.ui.h:1
 #: ../src/connection-editor/ce-page-dcb.ui.h:17
 #: ../src/connection-editor/ce-ppp-auth-methods.ui.h:1
-#: ../src/connection-editor/nm-connection-editor.ui.h:6
-#: ../src/gsm-unlock.ui.h:1
+#: ../src/connection-editor/nm-connection-editor.ui.h:8
+#: ../src/gsm-unlock.ui.h:1 ../src/libnma/nma-pkcs11-token-login-dialog.ui.h:1
 msgid "_Cancel"
 msgstr "A_nnulla"
 
@@ -239,127 +238,37 @@ msgstr "ad-hoc"
 msgid "secure."
 msgstr "sicura"
 
-#: ../src/applet.c:345
+#: ../src/applet.c:381
 msgid "Failed to add/activate connection"
 msgstr "Aggiunta/Attivazione della connessione non riuscita"
 
-#: ../src/applet.c:347 ../src/applet.c:401 ../src/applet.c:436
-#: ../src/applet-device-wifi.c:1445 ../src/applet-device-wifi.c:1468
+#: ../src/applet.c:383 ../src/applet.c:437 ../src/applet.c:472
+#: ../src/applet-device-wifi.c:1387 ../src/applet-device-wifi.c:1410
 msgid "Unknown error"
 msgstr "Errore sconosciuto"
 
-#: ../src/applet.c:350 ../src/applet.c:439 ../src/applet-device-wifi.c:1448
-#: ../src/applet-device-wifi.c:1471
+#: ../src/applet.c:386 ../src/applet.c:475 ../src/applet-device-wifi.c:539
+#: ../src/applet-device-wifi.c:1390 ../src/applet-device-wifi.c:1413
 msgid "Connection failure"
 msgstr "Connessione non riuscita"
 
-#: ../src/applet.c:399
+#: ../src/applet.c:435
 msgid "Device disconnect failed"
 msgstr "Disconnessione dispositivo non riuscita"
 
-#: ../src/applet.c:404
+#: ../src/applet.c:440
 msgid "Disconnect failure"
 msgstr "Disconnessione non riuscita"
 
-#: ../src/applet.c:434
+#: ../src/applet.c:470
 msgid "Connection activation failed"
 msgstr "Attivazione della connessione non riuscita"
 
-#: ../src/applet.c:757 ../src/applet-device-wifi.c:1185
+#: ../src/applet.c:793 ../src/applet-device-wifi.c:1126
 msgid "Don’t show this message again"
 msgstr "Non mostrare più questo messaggio"
 
-#: ../src/applet.c:844
-#, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because the network connection was "
-"interrupted."
-msgstr ""
-"\n"
-"La connessione VPN «%s» non è riuscita perché la connessione di rete è stata "
-"interrotta."
-
-#: ../src/applet.c:847
-#, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because the VPN service stopped unexpectedly."
-msgstr ""
-"\n"
-"La connessione VPN «%s» non è riuscita perché il servizio VPN è stato "
-"fermato improvvisamente."
-
-#: ../src/applet.c:850
-#, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because the VPN service returned invalid "
-"configuration."
-msgstr ""
-"\n"
-"La connessione VPN «%s» non è riuscita perché il servizio VPN ha fornito una "
-"configurazione non valida."
-
-#: ../src/applet.c:853
-#, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because the connection attempt timed out."
-msgstr ""
-"\n"
-"La connessione VPN «%s» non è riuscita perché il tentativo di connessione ha "
-"esaurito il tempo a disposizione."
-
-#: ../src/applet.c:856
-#, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because the VPN service did not start in time."
-msgstr ""
-"\n"
-"La connessione VPN «%s» non è riuscita perché il servizio VPN non è partito "
-"in tempo."
-
-#: ../src/applet.c:859
-#, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because the VPN service failed to start."
-msgstr ""
-"\n"
-"La connessione VPN «%s» non è riuscita perché il servizio VPN non è partito."
-
-#: ../src/applet.c:862
-#, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because there were no valid VPN secrets."
-msgstr ""
-"\n"
-"La connessione VPN «%s» non è riuscita perché non ci sono informazioni "
-"segrete VPN valide."
-
-#: ../src/applet.c:865
-#, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because of invalid VPN secrets."
-msgstr ""
-"\n"
-"La connessione VPN «%s» non è riuscita perché le informazioni segrete VPN "
-"non sono valide."
-
-#: ../src/applet.c:872
-#, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed."
-msgstr ""
-"\n"
-"La connessione VPN «%s» non è riuscita."
-
-#: ../src/applet.c:888
+#: ../src/applet.c:883
 #, c-format
 msgid ""
 "\n"
@@ -370,26 +279,97 @@ msgstr ""
 "La connessione VPN «%s» si è chiusa perché il collegamento di rete è stato "
 "interrotto."
 
+#: ../src/applet.c:885
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed because the network connection was "
+"interrupted."
+msgstr ""
+"\n"
+"La connessione VPN «%s» non è riuscita perché la connessione di rete è stata "
+"interrotta."
+
+#: ../src/applet.c:887
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed because the VPN service stopped unexpectedly."
+msgstr ""
+"\n"
+"La connessione VPN «%s» non è riuscita perché il servizio VPN è stato "
+"fermato improvvisamente."
+
+#: ../src/applet.c:889
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed because the VPN service returned invalid "
+"configuration."
+msgstr ""
+"\n"
+"La connessione VPN «%s» non è riuscita perché il servizio VPN ha fornito una "
+"configurazione non valida."
+
 #: ../src/applet.c:891
 #, c-format
 msgid ""
 "\n"
-"The VPN connection “%s” disconnected because the VPN service stopped."
+"The VPN connection “%s” failed because the connection attempt timed out."
 msgstr ""
 "\n"
-"La connessione VPN «%s» si è chiusa perché il servizio VPN è stato fermato."
+"La connessione VPN «%s» non è riuscita perché il tentativo di connessione ha "
+"esaurito il tempo a disposizione."
 
-# [NdT] certo che l'originare era proprio brutto
+#: ../src/applet.c:893
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed because the VPN service did not start in time."
+msgstr ""
+"\n"
+"La connessione VPN «%s» non è riuscita perché il servizio VPN non è partito "
+"in tempo."
+
+#: ../src/applet.c:895
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed because the VPN service failed to start."
+msgstr ""
+"\n"
+"La connessione VPN «%s» non è riuscita perché il servizio VPN non è partito."
+
 #: ../src/applet.c:897
 #, c-format
 msgid ""
 "\n"
-"The VPN connection “%s” disconnected."
+"The VPN connection “%s” failed because there were no valid VPN secrets."
 msgstr ""
 "\n"
-"La connessione VPN «%s» si è chiusa."
+"La connessione VPN «%s» non è riuscita perché non ci sono informazioni "
+"segrete VPN valide."
 
-#: ../src/applet.c:927
+#: ../src/applet.c:899
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed because of invalid VPN secrets."
+msgstr ""
+"\n"
+"La connessione VPN «%s» non è riuscita perché le informazioni segrete VPN "
+"non sono valide."
+
+#: ../src/applet.c:904
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed."
+msgstr ""
+"\n"
+"La connessione VPN «%s» non è riuscita."
+
+#: ../src/applet.c:931
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -400,19 +380,19 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: ../src/applet.c:929
+#: ../src/applet.c:933
 msgid "VPN connection has been successfully established.\n"
 msgstr "Connessione VPN stabilita con successo.\n"
 
-#: ../src/applet.c:931
+#: ../src/applet.c:935
 msgid "VPN Login Message"
 msgstr "Messaggio di accesso VPN"
 
-#: ../src/applet.c:937 ../src/applet.c:945 ../src/applet.c:986
+#: ../src/applet.c:943 ../src/applet.c:983
 msgid "VPN Connection Failed"
 msgstr "Connessione VPN non riuscita"
 
-#: ../src/applet.c:990
+#: ../src/applet.c:987
 #, c-format
 msgid ""
 "\n"
@@ -426,7 +406,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:993
+#: ../src/applet.c:990
 #, c-format
 msgid ""
 "\n"
@@ -439,49 +419,49 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1281
+#: ../src/applet.c:1279
 msgid "device not ready (firmware missing)"
 msgstr "dispositivo non pronto (manca il firmware)"
 
-#: ../src/applet.c:1283
+#: ../src/applet.c:1281
 msgid "device not ready"
 msgstr "dispositivo non pronto"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet.c:1293 ../src/applet-device-ethernet.c:109
+#: ../src/applet.c:1291 ../src/applet-device-ethernet.c:109
 msgid "disconnected"
 msgstr "disconnessi"
 
-#: ../src/applet.c:1309
+#: ../src/applet.c:1307
 msgid "Disconnect"
 msgstr "Disconnetti"
 
-#: ../src/applet.c:1323
+#: ../src/applet.c:1321
 msgid "device not managed"
 msgstr "dispositivo non gestito"
 
 # [NdT] qui ho tradotto appositamente device con dispositivo
-#: ../src/applet.c:1396
+#: ../src/applet.c:1394
 msgid "No network devices available"
 msgstr "Nessun dispositivo di rete disponibile"
 
-#: ../src/applet.c:1450
+#: ../src/applet.c:1448
 msgid "_VPN Connections"
 msgstr "Connessioni _VPN"
 
-#: ../src/applet.c:1494
+#: ../src/applet.c:1492
 msgid "_Configure VPN…"
 msgstr "_Configura VPN…"
 
-#: ../src/applet.c:1497
+#: ../src/applet.c:1495
 msgid "_Add a VPN connection…"
 msgstr "A_ggiungi connessione VPN…"
 
-#: ../src/applet.c:1603
+#: ../src/applet.c:1601
 msgid "NetworkManager is not running…"
 msgstr "NetworkManager non è in esecuzione…"
 
-#: ../src/applet.c:1608 ../src/applet.c:2632
+#: ../src/applet.c:1606 ../src/applet.c:2671
 msgid "Networking disabled"
 msgstr "Funzionalità di rete disabilitate"
 
@@ -519,66 +499,66 @@ msgstr "Modifica connessioni…"
 msgid "_About"
 msgstr "I_nformazioni"
 
-#: ../src/applet.c:2165
+#: ../src/applet.c:2191
 #, c-format
 msgid "You are now connected to “%s”."
 msgstr "Attualmente connessi a «%s»."
 
-#: ../src/applet.c:2208
+#: ../src/applet.c:2231
 msgid "Disconnected"
 msgstr "Disconnessi"
 
 #
-#: ../src/applet.c:2209
+#: ../src/applet.c:2232
 msgid "The network connection has been disconnected."
 msgstr "La connessione di rete è stata terminata."
 
-#: ../src/applet.c:2495
+#: ../src/applet.c:2534
 #, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "Preparazione della connessione di rete «%s»…"
 
-#: ../src/applet.c:2498
+#: ../src/applet.c:2537
 #, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "Richiesta autenticazione utente per la connessione di rete «%s»…"
 
-#: ../src/applet.c:2501 ../src/applet-device-bt.c:125
+#: ../src/applet.c:2540 ../src/applet-device-bt.c:125
 #: ../src/mobile-helpers.c:608
 #, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "Richiesta di un indirizzo di rete per «%s»…"
 
-#: ../src/applet.c:2504
+#: ../src/applet.c:2543
 #, c-format
 msgid "Network connection “%s” active"
 msgstr "Connessione di rete «%s» attiva"
 
-#: ../src/applet.c:2577
+#: ../src/applet.c:2616
 #, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "Avvio della connessione VPN «%s»…"
 
-#: ../src/applet.c:2580
+#: ../src/applet.c:2619
 #, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "Richiesta autenticazione utente per la connessione VPN «%s»…"
 
-#: ../src/applet.c:2583
+#: ../src/applet.c:2622
 #, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "Richiesta di un indirizzo VPN per «%s»…"
 
-#: ../src/applet.c:2586
+#: ../src/applet.c:2625
 #, c-format
 msgid "VPN connection active"
 msgstr "Connessione VPN attiva"
 
-#: ../src/applet.c:2636
+#: ../src/applet.c:2675
 msgid "No network connection"
 msgstr "Nessuna connessione di rete"
 
-#: ../src/applet.c:3231
+#: ../src/applet.c:3276
 msgid "NetworkManager Applet"
 msgstr "Applet NetworkManager"
 
@@ -608,7 +588,7 @@ msgid "Mobile Broadband"
 msgstr "Banda larga mobile"
 
 #: ../src/applet-device-broadband.c:790 ../src/applet-device-bt.c:75
-#: ../src/applet-device-ethernet.c:117 ../src/applet-device-wifi.c:970
+#: ../src/applet-device-ethernet.c:117 ../src/applet-device-wifi.c:906
 msgid "Available"
 msgstr "Disponibile"
 
@@ -618,7 +598,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "Nuova connessione a banda larga mobile…"
 
 #: ../src/applet-device-broadband.c:817 ../src/applet-device-bt.c:87
-#: ../src/applet-device-ethernet.c:132 ../src/applet-device-wifi.c:1366
+#: ../src/applet-device-ethernet.c:132 ../src/applet-device-wifi.c:1308
 msgid "Connection Established"
 msgstr "Connessione stabilita"
 
@@ -718,97 +698,101 @@ msgstr "Connessione Ethernet «%s» attiva"
 msgid "DSL authentication"
 msgstr "Autenticazione DSL"
 
-#: ../src/applet-device-wifi.c:231
+#: ../src/applet-device-wifi.c:225
 msgid "_Connect to Hidden Wi-Fi Network…"
 msgstr "C_onnetti a rete Wi-Fi nascosta…"
 
-#: ../src/applet-device-wifi.c:282
+#: ../src/applet-device-wifi.c:276
 msgid "Create _New Wi-Fi Network…"
 msgstr "Crea _nuova rete Wi-Fi…"
 
-#: ../src/applet-device-wifi.c:432
+#: ../src/applet-device-wifi.c:358
 msgid "(none)"
 msgstr "(nessuna)"
 
-#: ../src/applet-device-wifi.c:902
+#: ../src/applet-device-wifi.c:536 ../src/applet-device-wifi.c:1408
+msgid "Failed to add new connection"
+msgstr "Aggiunta della nuova connessione non riuscita"
+
+#: ../src/applet-device-wifi.c:537
+msgid "Insufficient privileges."
+msgstr ""
+
+#: ../src/applet-device-wifi.c:838
 #, c-format
 msgid "Wi-Fi Networks (%s)"
 msgstr "Reti Wi-Fi (%s)"
 
-#: ../src/applet-device-wifi.c:904
+#: ../src/applet-device-wifi.c:840
 #, c-format
 msgid "Wi-Fi Network (%s)"
 msgstr "Rete Wi-Fi (%s)"
 
-#: ../src/applet-device-wifi.c:906
+#: ../src/applet-device-wifi.c:842
 msgid "Wi-Fi Network"
 msgid_plural "Wi-Fi Networks"
 msgstr[0] "Rete Wi-Fi"
 msgstr[1] "Reti Wi-Fi"
 
-#: ../src/applet-device-wifi.c:935
+#: ../src/applet-device-wifi.c:871
 msgid "Wi-Fi is disabled"
 msgstr "Wi-Fi disabilitata"
 
-#: ../src/applet-device-wifi.c:936
+#: ../src/applet-device-wifi.c:872
 msgid "Wi-Fi is disabled by hardware switch"
 msgstr "Wi-Fi disabilitata da interruttore hardware"
 
-#: ../src/applet-device-wifi.c:997
+#: ../src/applet-device-wifi.c:933
 msgid "More networks"
 msgstr "Altre reti"
 
-#: ../src/applet-device-wifi.c:1181
+#: ../src/applet-device-wifi.c:1122
 msgid "Wi-Fi Networks Available"
 msgstr "Disponibili reti Wi-Fi"
 
-#: ../src/applet-device-wifi.c:1182
+#: ../src/applet-device-wifi.c:1123
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Usare il menù rete per connettersi a una rete Wi-Fi"
 
-#: ../src/applet-device-wifi.c:1365
+#: ../src/applet-device-wifi.c:1307
 #, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "Attualmente connessi alla rete Wi-Fi «%s»."
 
-#: ../src/applet-device-wifi.c:1400
+#: ../src/applet-device-wifi.c:1342
 #, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "Preparazione della connessione Wi-Fi «%s»…"
 
-#: ../src/applet-device-wifi.c:1403
+#: ../src/applet-device-wifi.c:1345
 #, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "Configurazione della connessione Wi-Fi «%s»…"
 
 # (ndt) un po' libera, ma resa simile a quella di ethernet
-#: ../src/applet-device-wifi.c:1406
+#: ../src/applet-device-wifi.c:1348
 #, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "Richiesta autenticazione utente per la connessione Wi-Fi «%s»…"
 
-#: ../src/applet-device-wifi.c:1409
+#: ../src/applet-device-wifi.c:1351
 #, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "Richiesta di un indirizzo Wi-Fi per «%s»…"
 
-#: ../src/applet-device-wifi.c:1420
+#: ../src/applet-device-wifi.c:1362
 #, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "Connessione Wi-Fi «%s» attiva: %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1424
+#: ../src/applet-device-wifi.c:1366
 #, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "Connessione Wi-Fi «%s» attiva"
 
-#: ../src/applet-device-wifi.c:1443
+#: ../src/applet-device-wifi.c:1385
 msgid "Failed to activate connection"
 msgstr "Attivazione della connessione non riuscita"
-
-#: ../src/applet-device-wifi.c:1466
-msgid "Failed to add new connection"
-msgstr "Aggiunta della nuova connessione non riuscita"
 
 #: ../src/applet-dialogs.c:41
 msgid "Error displaying connection information:"
@@ -1131,7 +1115,7 @@ msgstr "A_ggiungi"
 #: ../src/connection-editor/ce-page-ip4.ui.h:8
 #: ../src/connection-editor/ce-page-ip6.ui.h:11
 #: ../src/connection-editor/ce-page-team.ui.h:15
-#: ../src/connection-editor/nm-connection-list.c:715
+#: ../src/connection-editor/nm-connection-list.c:711
 msgid "_Delete"
 msgstr "_Elimina"
 
@@ -1155,7 +1139,8 @@ msgstr ""
 "rete predefinita."
 
 #: ../src/connection-editor/ce-new-connection.ui.h:2
-msgid "Create…"
+#, fuzzy
+msgid "C_reate…"
 msgstr "Crea..."
 
 #: ../src/connection-editor/ce-new-connection.ui.h:3
@@ -1228,7 +1213,7 @@ msgstr "M_odo:"
 #: ../src/connection-editor/ce-page-bond.ui.h:13
 #: ../src/connection-editor/ce-page-bridge.ui.h:3
 #: ../src/connection-editor/ce-page-team.ui.h:14
-#: ../src/connection-editor/nm-connection-list.c:699
+#: ../src/connection-editor/nm-connection-list.c:695
 msgid "_Edit"
 msgstr "_Modifica"
 
@@ -1404,33 +1389,53 @@ msgid "invalid %s for %s (%s)"
 msgstr "%s non valido per %s (%s)"
 
 #: ../src/connection-editor/ce-page.c:348
-#: ../src/connection-editor/ce-page.c:604
 #, c-format
 msgid "invalid %s (%s)"
 msgstr "%s non valido (%s)"
 
 #: ../src/connection-editor/ce-page.c:388
-#, c-format
-msgid "invalid interface-name for %s (%s)"
+#, fuzzy, c-format
+msgid "invalid interface-name for %s (%s): "
 msgstr "interface-name non valido per %s (%s)"
 
 #: ../src/connection-editor/ce-page.c:392
-#, c-format
-msgid "invalid interface-name (%s)"
+#, fuzzy, c-format
+msgid "invalid interface-name (%s): "
 msgstr "inetrface-name non valido (%s)"
 
-#: ../src/connection-editor/ce-page.c:605
+#: ../src/connection-editor/ce-page.c:571
+msgid "can’t parse device name"
+msgstr ""
+
+#: ../src/connection-editor/ce-page.c:589
+#, fuzzy
+msgid "invalid hardware address"
+msgstr "Indirizzo hardware:"
+
+#: ../src/connection-editor/ce-page.c:611
+#, fuzzy, c-format
+msgid "invalid %s (%s): "
+msgstr "%s non valido (%s)"
+
+#: ../src/connection-editor/ce-page.c:612
+#: ../src/connection-editor/ce-page.c:617
 msgid "device"
 msgstr "dispositivo"
 
-#: ../src/connection-editor/ce-page.c:713
+#: ../src/connection-editor/ce-page.c:616
+#, fuzzy, c-format
+msgid "invalid %s (%s) "
+msgstr "%s non valido (%s)"
+
+#: ../src/connection-editor/ce-page.c:725
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr ""
 "Aggiornamento delle informazioni segrete della connessione non riuscito a "
 "causa di un errore sconosciuto."
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:1
-msgid "Use Data Center Bridging (DCB) for this connection"
+#, fuzzy
+msgid "_Use Data Center Bridging (DCB) for this connection"
 msgstr "Usare DCB (Data Center Bridging) per questa connessione"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:2
@@ -1594,7 +1599,6 @@ msgstr "_Servizio:"
 #: ../src/connection-editor/ce-page-dsl.ui.h:3
 #: ../src/wireless-security/eap-method-leap.ui.h:3
 #: ../src/wireless-security/eap-method-simple.ui.h:3
-#: ../src/wireless-security/eap-method-tls.ui.h:7
 #: ../src/wireless-security/ws-leap.ui.h:3
 #: ../src/wireless-security/ws-wpa-psk.ui.h:3
 msgid "Sho_w password"
@@ -1765,7 +1769,6 @@ msgstr ""
 "assicurarsi che il dispositivo lo supporti."
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:34
-#| msgid "Full duple_x"
 msgid "Duple_x:"
 msgstr "Duple_x:"
 
@@ -1921,7 +1924,6 @@ msgid "Output key"
 msgstr "Chiave in uscita"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:17
-#| msgid "_MTU:"
 msgid "MTU"
 msgstr "MTU"
 
@@ -2916,7 +2918,7 @@ msgid "unknown error"
 msgstr "errore sconosciuto"
 
 #: ../src/connection-editor/connection-helpers.c:303
-#: ../src/connection-editor/page-proxy.c:120
+#: ../src/connection-editor/page-proxy.c:118
 #: ../src/connection-editor/page-team.c:341
 #: ../src/connection-editor/page-team-port.c:203
 msgid "Select file to import"
@@ -2986,34 +2988,34 @@ msgstr "Metrica"
 msgid "Prefix"
 msgstr "Prefisso"
 
-#: ../src/connection-editor/nm-connection-editor.c:102
+#: ../src/connection-editor/nm-connection-editor.c:108
 #, c-format
 msgid "Editing %s"
 msgstr "Modifica di %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:106
+#: ../src/connection-editor/nm-connection-editor.c:112
 msgid "Editing un-named connection"
 msgstr "Modifica di una connessione senza nome"
 
-#: ../src/connection-editor/nm-connection-editor.c:126
+#: ../src/connection-editor/nm-connection-editor.c:132
 msgid "Missing connection name"
 msgstr "Nome della connessione mancante"
 
-#: ../src/connection-editor/nm-connection-editor.c:189
+#: ../src/connection-editor/nm-connection-editor.c:352
 msgid "Editor initializing…"
 msgstr "Inizializzazione editor…"
 
-#: ../src/connection-editor/nm-connection-editor.c:196
-#: ../src/connection-editor/nm-connection-list.c:412
+#: ../src/connection-editor/nm-connection-editor.c:359
+#: ../src/connection-editor/nm-connection-list.c:408
 msgid "Connection cannot be modified"
 msgstr "La connessione non può essere modificata"
 
-#: ../src/connection-editor/nm-connection-editor.c:209
+#: ../src/connection-editor/nm-connection-editor.c:374
 #, c-format
 msgid "Invalid setting %s: %s"
 msgstr "Impostazione %s non valida: %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:285
+#: ../src/connection-editor/nm-connection-editor.c:450
 msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
@@ -3021,34 +3023,34 @@ msgstr ""
 "L'editor di connessione non riesce a trovare alcune risorse richieste (il "
 "file .ui non è stato trovato)."
 
-#: ../src/connection-editor/nm-connection-editor.c:405
+#: ../src/connection-editor/nm-connection-editor.c:577
 msgid "_Save"
 msgstr "_Salva"
 
-#: ../src/connection-editor/nm-connection-editor.c:406
+#: ../src/connection-editor/nm-connection-editor.c:578
 msgid "Save any changes made to this connection."
 msgstr "Salva qualsiasi modifica fatta a questa connessione."
 
-#: ../src/connection-editor/nm-connection-editor.c:407
+#: ../src/connection-editor/nm-connection-editor.c:579
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Autenticarsi per salvare questa connessione per tutti gli utenti di questa "
 "macchina."
 
-#: ../src/connection-editor/nm-connection-editor.c:423
+#: ../src/connection-editor/nm-connection-editor.c:595
 msgid "Could not create connection"
 msgstr "Impossibile creare una connessione"
 
-#: ../src/connection-editor/nm-connection-editor.c:423
+#: ../src/connection-editor/nm-connection-editor.c:595
 msgid "Could not edit connection"
 msgstr "Impossibile modificare la connessione"
 
-#: ../src/connection-editor/nm-connection-editor.c:425
+#: ../src/connection-editor/nm-connection-editor.c:597
 msgid "Unknown error creating connection editor dialog."
 msgstr ""
 "Errore sconosciuto nel creare la finestra di modifica della connessione."
 
-#: ../src/connection-editor/nm-connection-editor.c:566
+#: ../src/connection-editor/nm-connection-editor.c:738
 msgid ""
 "Warning: the connection contains some properties not supported by the "
 "editor. They will be cleared upon save."
@@ -3056,11 +3058,11 @@ msgstr ""
 "Attenzione: la connessione contiene proprietà non supportate dall'editor. "
 "Verranno eliminate al salvataggio."
 
-#: ../src/connection-editor/nm-connection-editor.c:586
+#: ../src/connection-editor/nm-connection-editor.c:758
 msgid "Error initializing editor"
 msgstr "Errore nell'inizializzare l'editor"
 
-#: ../src/connection-editor/nm-connection-editor.c:974
+#: ../src/connection-editor/nm-connection-editor.c:1142
 msgid "Connection add failed"
 msgstr "Aggiunta connessione non riuscita"
 
@@ -3069,12 +3071,48 @@ msgid "_Close"
 msgstr "_Chiudi"
 
 #: ../src/connection-editor/nm-connection-editor.ui.h:4
+msgid "Fix"
+msgstr ""
+
+#: ../src/connection-editor/nm-connection-editor.ui.h:5
+#, fuzzy
+msgid ""
+"Security labels may prevent some files from being used with certificate "
+"authentication."
+msgstr ""
+"Impostare a VERO per disabilitare gli avvisi riguardo ai certificati CA "
+"nell'autenticazione EAP."
+
+#: ../src/connection-editor/nm-connection-editor.ui.h:6
 msgid "Connection _name:"
 msgstr "_Nome della connessione:"
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:5
+#: ../src/connection-editor/nm-connection-editor.ui.h:7
 msgid "_Export…"
 msgstr "E_sporta…"
+
+#: ../src/connection-editor/nm-connection-editor.ui.h:9
+msgid "File Relabel"
+msgstr ""
+
+#: ../src/connection-editor/nm-connection-editor.ui.h:10
+msgid "_Relabel"
+msgstr ""
+
+#: ../src/connection-editor/nm-connection-editor.ui.h:11
+msgid ""
+"The following files are not labelled for use with certificate "
+"authentication. Do you wish to adjust the labels?"
+msgstr ""
+
+#: ../src/connection-editor/nm-connection-editor.ui.h:12
+msgid "Relabel"
+msgstr ""
+
+#: ../src/connection-editor/nm-connection-editor.ui.h:13
+#, fuzzy
+msgid "Filename"
+msgstr "Nome dispositivo"
 
 #: ../src/connection-editor/nm-connection-list.c:127
 msgid "never"
@@ -3121,49 +3159,50 @@ msgid_plural "%d years ago"
 msgstr[0] "%d anno fa"
 msgstr[1] "%d anni fa"
 
-#: ../src/connection-editor/nm-connection-list.c:639
+#: ../src/connection-editor/nm-connection-list.c:635
+#: ../src/libnma/nma-pkcs11-cert-chooser-dialog.ui.h:2
 msgid "Name"
 msgstr "Nome"
 
-#: ../src/connection-editor/nm-connection-list.c:652
+#: ../src/connection-editor/nm-connection-list.c:648
 msgid "Last Used"
 msgstr "Ultimo uso"
 
-#: ../src/connection-editor/nm-connection-list.c:700
+#: ../src/connection-editor/nm-connection-list.c:696
 msgid "Edit the selected connection"
 msgstr "Modifica la connessione selezionata"
 
-#: ../src/connection-editor/nm-connection-list.c:701
+#: ../src/connection-editor/nm-connection-list.c:697
 msgid "Authenticate to edit the selected connection"
 msgstr "Autenticarsi per modificare la connessione selezionata"
 
-#: ../src/connection-editor/nm-connection-list.c:716
+#: ../src/connection-editor/nm-connection-list.c:712
 msgid "Delete the selected connection"
 msgstr "Elimina la connessione selezionata"
 
-#: ../src/connection-editor/nm-connection-list.c:717
+#: ../src/connection-editor/nm-connection-list.c:713
 msgid "Authenticate to delete the selected connection"
 msgstr "Autenticarsi per eliminare la connessione selezionata"
 
-#: ../src/connection-editor/nm-connection-list.c:939
-#: ../src/connection-editor/nm-connection-list.c:942
+#: ../src/connection-editor/nm-connection-list.c:935
+#: ../src/connection-editor/nm-connection-list.c:938
 msgid "Error creating connection"
 msgstr "Errore nel creare la connessione"
 
-#: ../src/connection-editor/nm-connection-list.c:940
+#: ../src/connection-editor/nm-connection-list.c:936
 msgid "No VPN plugins are installed."
 msgstr "Non risulta installato alcun plugin VPN."
 
-#: ../src/connection-editor/nm-connection-list.c:943
+#: ../src/connection-editor/nm-connection-list.c:939
 #, c-format
 msgid "Don’t know how to create “%s” connections"
 msgstr "Impossibile creare connessioni «%s»"
 
-#: ../src/connection-editor/nm-connection-list.c:974
+#: ../src/connection-editor/nm-connection-list.c:970
 msgid "Error editing connection"
 msgstr "Errore nel modificare la connessione"
 
-#: ../src/connection-editor/nm-connection-list.c:975
+#: ../src/connection-editor/nm-connection-list.c:971
 #, c-format
 msgid "Did not find a connection with UUID “%s”"
 msgstr "Impossibile trovare una connessione con UUID «%s»"
@@ -3305,7 +3344,7 @@ msgstr "Connessione Ethernet %d"
 
 #. TRANSLATORS: Default zone set for firewall, when no zone is selected
 #: ../src/connection-editor/page-general.c:54
-#: ../src/libnma/nma-mobile-providers.c:806
+#: ../src/libnma/nma-mobile-providers.c:817
 #: ../src/libnm-gtk/nm-mobile-providers.c:806
 msgid "Default"
 msgstr "Predefinita"
@@ -3550,24 +3589,24 @@ msgid "EAP"
 msgstr "EAP"
 
 #: ../src/connection-editor/page-ppp.c:130
-#: ../src/wireless-security/eap-method-ttls.c:259
+#: ../src/wireless-security/eap-method-ttls.c:260
 msgid "PAP"
 msgstr "PAP"
 
 #: ../src/connection-editor/page-ppp.c:131
-#: ../src/wireless-security/eap-method-ttls.c:321
+#: ../src/wireless-security/eap-method-ttls.c:322
 msgid "CHAP"
 msgstr "CHAP"
 
 #: ../src/connection-editor/page-ppp.c:132
-#: ../src/wireless-security/eap-method-fast.c:283
-#: ../src/wireless-security/eap-method-peap.c:272
-#: ../src/wireless-security/eap-method-ttls.c:289
+#: ../src/wireless-security/eap-method-fast.c:284
+#: ../src/wireless-security/eap-method-peap.c:273
+#: ../src/wireless-security/eap-method-ttls.c:290
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
 #: ../src/connection-editor/page-ppp.c:133
-#: ../src/wireless-security/eap-method-ttls.c:274
+#: ../src/wireless-security/eap-method-ttls.c:275
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
@@ -3589,11 +3628,11 @@ msgstr "Impostazioni PPP"
 msgid "Could not load PPP user interface."
 msgstr "Impossibile caricare l'interfaccia utente per PPP."
 
-#: ../src/connection-editor/page-proxy.c:217
+#: ../src/connection-editor/page-proxy.c:215
 msgid "Proxy"
 msgstr "Proxy"
 
-#: ../src/connection-editor/page-proxy.c:219
+#: ../src/connection-editor/page-proxy.c:217
 msgid "Could not load proxy user interface."
 msgstr "Impossibile caricare l'interfaccia utente per il proxy."
 
@@ -3831,6 +3870,48 @@ msgstr "Informazioni connessione"
 msgid "Active Network Connections"
 msgstr "Connessioni di rete attive"
 
+#: ../src/libnma/nma-file-cert-chooser.c:108
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:140
+#, fuzzy
+msgid "No certificate set"
+msgstr "Nessun certificato CA _richiesto"
+
+#: ../src/libnma/nma-file-cert-chooser.c:126
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:164
+msgid "No key set"
+msgstr ""
+
+# (ndt) titolo finestra
+#: ../src/libnma/nma-file-cert-chooser.c:246
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:364
+#, fuzzy, c-format
+msgid "Choose a key for %s Certificate"
+msgstr "Scelta certificato personale"
+
+#: ../src/libnma/nma-file-cert-chooser.c:250
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:368
+#, fuzzy, c-format
+msgid "%s private _key:"
+msgstr "_Chiave privata:"
+
+#: ../src/libnma/nma-file-cert-chooser.c:254
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:372
+#, fuzzy, c-format
+msgid "%s key _password:"
+msgstr "Password della chiave _privata:"
+
+# (ndt) titolo finestra
+#: ../src/libnma/nma-file-cert-chooser.c:258
+#, fuzzy, c-format
+msgid "Choose %s Certificate"
+msgstr "Scelta certificato personale"
+
+#: ../src/libnma/nma-file-cert-chooser.c:262
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:380
+#, fuzzy, c-format
+msgid "%s _certificate:"
+msgstr "Certificato _utente:"
+
 #: ../src/libnma/nma-mobile-wizard.c:198
 #: ../src/libnm-gtk/nm-mobile-wizard.c:199
 msgid ""
@@ -4028,10 +4109,89 @@ msgstr "Qualsiasi dispositivo"
 msgid "Set up a Mobile Broadband Connection"
 msgstr "Imposta una connessione a banda larga mobile"
 
-#: ../src/libnma/nma-mobile-wizard.c:1613
+#: ../src/libnma/nma-mobile-wizard.c:1620
 #: ../src/libnm-gtk/nm-mobile-wizard.c:1614
 msgid "New Mobile Broadband Connection"
 msgstr "Nuova connessione a banda larga mobile"
+
+#: ../src/libnma/nma-cert-chooser-button.c:162
+#, fuzzy
+msgid "(None)"
+msgstr "(nessuna)"
+
+#: ../src/libnma/nma-cert-chooser-button.c:170
+#, c-format
+msgid "Key in %s"
+msgstr ""
+
+#: ../src/libnma/nma-cert-chooser-button.c:171
+#, fuzzy, c-format
+msgid "Certificate in %s"
+msgstr "Certificato della C_A:"
+
+#: ../src/libnma/nma-cert-chooser-button.c:190
+#: ../src/libnma/nma-pkcs11-cert-chooser-dialog.c:183
+#, fuzzy
+msgid "(Unknown)"
+msgstr "Sconosciuta"
+
+#: ../src/libnma/nma-cert-chooser-button.c:212
+#: ../src/libnma/nma-cert-chooser-button.c:242
+msgid "Select"
+msgstr ""
+
+#: ../src/libnma/nma-cert-chooser-button.c:213
+#: ../src/libnma/nma-cert-chooser-button.c:243
+#, fuzzy
+msgid "Cancel"
+msgstr "A_nnulla"
+
+#: ../src/libnma/nma-cert-chooser-button.c:469
+#, fuzzy
+msgid "Select from file…"
+msgstr "Importa script da file…"
+
+# (ndt) titolo finestra
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:376
+#, fuzzy, c-format
+msgid "Choose a %s Certificate"
+msgstr "Scelta certificato personale"
+
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:384
+#, fuzzy, c-format
+msgid "%s certificate _password:"
+msgstr "Certificato _utente:"
+
+#: ../src/libnma/nma-pkcs11-cert-chooser-dialog.c:255
+msgid "Error logging in: "
+msgstr ""
+
+#: ../src/libnma/nma-pkcs11-cert-chooser-dialog.c:277
+#, fuzzy
+msgid "Error opening a session: "
+msgstr "Errore nel modificare la connessione"
+
+#: ../src/libnma/nma-pkcs11-cert-chooser-dialog.ui.h:1
+#, fuzzy
+msgid "_Unlock token"
+msgstr "_Sblocca"
+
+#: ../src/libnma/nma-pkcs11-cert-chooser-dialog.ui.h:3
+msgid "Issued By"
+msgstr ""
+
+#: ../src/libnma/nma-pkcs11-token-login-dialog.c:146
+#, c-format
+msgid "Enter %s PIN"
+msgstr ""
+
+#: ../src/libnma/nma-pkcs11-token-login-dialog.ui.h:2
+msgid "_Login"
+msgstr ""
+
+#: ../src/libnma/nma-pkcs11-token-login-dialog.ui.h:3
+msgid "_Remember PIN"
+msgstr ""
 
 #: ../src/libnma/nma-ui-utils.c:49 ../src/libnm-gtk/nm-ui-utils.c:615
 msgid "Store the password only for this user"
@@ -4319,46 +4479,52 @@ msgstr "roaming"
 msgid "%s connection"
 msgstr "Connessione %s"
 
+#: ../src/utils/utils.c:563
+#, fuzzy
+msgid "PEM certificates (*.pem, *.crt, *.cer)"
+msgstr "Certificati DER o PEM (*.der, *.pem, *.crt, *.cer)"
+
+#: ../src/utils/utils.c:575
+msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
+msgstr "Chiavi private DER, PEM o PKCS#12 (*.der, *.pem, *.p12, *.key)"
+
 #: ../src/wireless-security/eap-method.c:57
 msgid "undefined error in 802.1X security (wpa-eap)"
 msgstr "errore non definito nella sicurezza 802.1X (wpa-eap)"
 
-#: ../src/wireless-security/eap-method.c:233
+#: ../src/wireless-security/eap-method.c:227
 msgid "no file selected"
 msgstr "nessun file selezionato"
 
-#: ../src/wireless-security/eap-method.c:264
+#: ../src/wireless-security/eap-method.c:235
+#, fuzzy, c-format
+msgid "file “%s” does not exist"
+msgstr "Esiste già un file con nome «%s»."
+
+#: ../src/wireless-security/eap-method.c:258
 msgid "unspecified error validating eap-method file"
 msgstr "errore non specificato nel validare il file eap-method"
 
-#: ../src/wireless-security/eap-method.c:439
-msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
-msgstr "Chiavi private DER, PEM o PKCS#12 (*.der, *.pem, *.p12, *.key)"
-
-#: ../src/wireless-security/eap-method.c:442
-msgid "DER or PEM certificates (*.der, *.pem, *.crt, *.cer)"
-msgstr "Certificati DER o PEM (*.der, *.pem, *.crt, *.cer)"
-
-#: ../src/wireless-security/eap-method-fast.c:72
+#: ../src/wireless-security/eap-method-fast.c:73
 msgid "missing EAP-FAST PAC file"
 msgstr "manca il file PAC EAP-FAST"
 
-#: ../src/wireless-security/eap-method-fast.c:268
-#: ../src/wireless-security/eap-method-peap.c:302
-#: ../src/wireless-security/eap-method-ttls.c:351
+#: ../src/wireless-security/eap-method-fast.c:269
+#: ../src/wireless-security/eap-method-peap.c:303
+#: ../src/wireless-security/eap-method-ttls.c:352
 msgid "GTC"
 msgstr "GTC"
 
 # (ndt) titolo finestra
-#: ../src/wireless-security/eap-method-fast.c:406
+#: ../src/wireless-security/eap-method-fast.c:407
 msgid "Choose a PAC file"
 msgstr "Scelta file PAC"
 
-#: ../src/wireless-security/eap-method-fast.c:413
+#: ../src/wireless-security/eap-method-fast.c:414
 msgid "PAC files (*.pac)"
 msgstr "File PAC (*.pac)"
 
-#: ../src/wireless-security/eap-method-fast.c:417
+#: ../src/wireless-security/eap-method-fast.c:418
 msgid "All files"
 msgstr "Tutti i file"
 
@@ -4394,33 +4560,32 @@ msgstr "Autenticazione i_nterna:"
 msgid "Allow automatic PAC pro_visioning"
 msgstr "Fornire a_utomaticamente PAC"
 
-#: ../src/wireless-security/eap-method-leap.c:65
+#: ../src/wireless-security/eap-method-leap.c:66
 msgid "missing EAP-LEAP username"
 msgstr "manca il nome utente EAP-LEAP"
 
-#: ../src/wireless-security/eap-method-leap.c:74
+#: ../src/wireless-security/eap-method-leap.c:75
 msgid "missing EAP-LEAP password"
 msgstr "manca la password EAP-LEAP"
 
-#: ../src/wireless-security/eap-method-peap.c:63
+#: ../src/wireless-security/eap-method-peap.c:64
 #, c-format
 msgid "invalid EAP-PEAP CA certificate: %s"
 msgstr "certificato CA EAP-PEAP non valido: %s"
 
-#: ../src/wireless-security/eap-method-peap.c:68
+#: ../src/wireless-security/eap-method-peap.c:69
 msgid "invalid EAP-PEAP CA certificate: no certificate specified"
 msgstr "certificato CA EAP-PEAP non valido: nessun certificato specificato"
 
-#: ../src/wireless-security/eap-method-peap.c:287
-#: ../src/wireless-security/eap-method-ttls.c:336
+#: ../src/wireless-security/eap-method-peap.c:288
+#: ../src/wireless-security/eap-method-ttls.c:337
 #: ../src/wireless-security/wireless-security.c:424
 msgid "MD5"
 msgstr "MD5"
 
 # (ndt) titolo finestra
-#: ../src/wireless-security/eap-method-peap.c:381
-#: ../src/wireless-security/eap-method-tls.c:501
-#: ../src/wireless-security/eap-method-ttls.c:430
+#: ../src/wireless-security/eap-method-peap.c:382
+#: ../src/wireless-security/eap-method-ttls.c:431
 msgid "Choose a Certificate Authority certificate"
 msgstr "Scelta certificato di Autorità di Certificazione"
 
@@ -4433,13 +4598,12 @@ msgid "Version 1"
 msgstr "Versione 1"
 
 #: ../src/wireless-security/eap-method-peap.ui.h:5
-#: ../src/wireless-security/eap-method-tls.ui.h:3
 #: ../src/wireless-security/eap-method-ttls.ui.h:2
 msgid "C_A certificate:"
 msgstr "Certificato della C_A:"
 
 #: ../src/wireless-security/eap-method-peap.ui.h:6
-#: ../src/wireless-security/eap-method-tls.ui.h:4
+#: ../src/wireless-security/eap-method-tls.ui.h:2
 #: ../src/wireless-security/eap-method-ttls.ui.h:3
 msgid "No CA certificate is _required"
 msgstr "Nessun certificato CA _richiesto"
@@ -4448,97 +4612,59 @@ msgstr "Nessun certificato CA _richiesto"
 msgid "PEAP _version:"
 msgstr "Versione _PEAP:"
 
-#: ../src/wireless-security/eap-method-simple.c:74
+#: ../src/wireless-security/eap-method-simple.c:75
 msgid "missing EAP username"
 msgstr "manca il nome utente EAP"
 
-#: ../src/wireless-security/eap-method-simple.c:87
+#: ../src/wireless-security/eap-method-simple.c:88
 msgid "missing EAP password"
 msgstr "manca la password EAP"
 
-#: ../src/wireless-security/eap-method-tls.c:68
+#: ../src/wireless-security/eap-method-tls.c:64
 msgid "missing EAP-TLS identity"
 msgstr "manca l'identità EAP-TLS"
 
-#: ../src/wireless-security/eap-method-tls.c:77
-#, c-format
-msgid "invalid EAP-TLS CA certificate: %s"
-msgstr "certificato CA EAP-TLS non valido: %s"
+#: ../src/wireless-security/eap-method-tls.c:238
+#, fuzzy
+msgid "no user certificate selected"
+msgstr "nessun file selezionato"
 
-#: ../src/wireless-security/eap-method-tls.c:84
-msgid "invalid EAP-TLS CA certificate: no certificate specified"
-msgstr "certificato CA EAP-TLS non valido: nessun certificato specificato"
+#: ../src/wireless-security/eap-method-tls.c:243
+msgid "selected user certificate file does not exist"
+msgstr ""
 
-#: ../src/wireless-security/eap-method-tls.c:95
-msgid "invalid EAP-TLS password: missing"
-msgstr "password EAP-TLS non valida: manca la password"
+#: ../src/wireless-security/eap-method-tls.c:263
+#, fuzzy
+msgid "no key selected"
+msgstr "nessun file selezionato"
 
-#: ../src/wireless-security/eap-method-tls.c:109
-#, c-format
-msgid "invalid EAP-TLS private-key: %s"
-msgstr "chiave privata EAP-TLS non valida: %s"
+#: ../src/wireless-security/eap-method-tls.c:268
+msgid "selected key file does not exist"
+msgstr ""
 
-#: ../src/wireless-security/eap-method-tls.c:119
-#, c-format
-msgid "invalid EAP-TLS user-certificate: %s"
-msgstr "certificato utente EAP-TLS non valido: %s"
-
-#: ../src/wireless-security/eap-method-tls.c:316
-msgid "Unencrypted private keys are insecure"
-msgstr "Le chiavi private non cifrate sono insicure"
+#: ../src/wireless-security/eap-method-tls.c:314
+#, fuzzy
+msgid "no CA certificate selected"
+msgstr "Nessun certificato CA _richiesto"
 
 #: ../src/wireless-security/eap-method-tls.c:319
-msgid ""
-"The selected private key does not appear to be protected by a password. This "
-"could allow your security credentials to be compromised. Please select a "
-"password-protected private key.\n"
-"\n"
-"(You can password-protect your private key with openssl)"
+msgid "selected CA certificate file does not exist"
 msgstr ""
-"La chiave privata selezionata non sembra essere protetta da una password. "
-"Ciò potrebbe compromettere le proprie credenziali di sicurezza. Selezionare "
-"una chiave privata protetta con password.\n"
-"\n"
-"(È possibile proteggere con password la propria chiave privata usando "
-"openssl)"
-
-# (ndt) titolo finestra
-#: ../src/wireless-security/eap-method-tls.c:495
-msgid "Choose your personal certificate"
-msgstr "Scelta certificato personale"
-
-# (ndt) titolo finestra
-#: ../src/wireless-security/eap-method-tls.c:507
-msgid "Choose your private key"
-msgstr "Scelta chiave privata"
 
 #: ../src/wireless-security/eap-method-tls.ui.h:1
 msgid "I_dentity:"
 msgstr "I_dentità:"
 
-#: ../src/wireless-security/eap-method-tls.ui.h:2
-msgid "_User certificate:"
-msgstr "Certificato _utente:"
-
-#: ../src/wireless-security/eap-method-tls.ui.h:5
-msgid "Private _key:"
-msgstr "_Chiave privata:"
-
-#: ../src/wireless-security/eap-method-tls.ui.h:6
-msgid "_Private key password:"
-msgstr "Password della chiave _privata:"
-
-#: ../src/wireless-security/eap-method-ttls.c:63
+#: ../src/wireless-security/eap-method-ttls.c:64
 #, c-format
 msgid "invalid EAP-TTLS CA certificate: %s"
 msgstr "certificato CA EAP-TTLS non valido: %s"
 
-#: ../src/wireless-security/eap-method-ttls.c:68
+#: ../src/wireless-security/eap-method-ttls.c:69
 msgid "invalid EAP-TTLS CA certificate: no certificate specified"
 msgstr "certificato CA EAP-TTLS non valido: nessun certificato specificato"
 
-#: ../src/wireless-security/eap-method-ttls.c:305
-#| msgid "MSCHAPv2"
+#: ../src/wireless-security/eap-method-ttls.c:306
 msgid "MSCHAPv2 (no EAP)"
 msgstr "MSCHAPv2 (no EAP)"
 
@@ -4659,6 +4785,58 @@ msgstr ""
 #: ../src/wireless-security/ws-wpa-psk.ui.h:2
 msgid "_Type:"
 msgstr "_Tipo:"
+
+#~ msgid ""
+#~ "\n"
+#~ "The VPN connection “%s” disconnected because the VPN service stopped."
+#~ msgstr ""
+#~ "\n"
+#~ "La connessione VPN «%s» si è chiusa perché il servizio VPN è stato "
+#~ "fermato."
+
+# [NdT] certo che l'originare era proprio brutto
+#~ msgid ""
+#~ "\n"
+#~ "The VPN connection “%s” disconnected."
+#~ msgstr ""
+#~ "\n"
+#~ "La connessione VPN «%s» si è chiusa."
+
+#~ msgid "invalid EAP-TLS CA certificate: %s"
+#~ msgstr "certificato CA EAP-TLS non valido: %s"
+
+#~ msgid "invalid EAP-TLS CA certificate: no certificate specified"
+#~ msgstr "certificato CA EAP-TLS non valido: nessun certificato specificato"
+
+#~ msgid "invalid EAP-TLS password: missing"
+#~ msgstr "password EAP-TLS non valida: manca la password"
+
+#~ msgid "invalid EAP-TLS private-key: %s"
+#~ msgstr "chiave privata EAP-TLS non valida: %s"
+
+#~ msgid "invalid EAP-TLS user-certificate: %s"
+#~ msgstr "certificato utente EAP-TLS non valido: %s"
+
+#~ msgid "Unencrypted private keys are insecure"
+#~ msgstr "Le chiavi private non cifrate sono insicure"
+
+#~ msgid ""
+#~ "The selected private key does not appear to be protected by a password. "
+#~ "This could allow your security credentials to be compromised. Please "
+#~ "select a password-protected private key.\n"
+#~ "\n"
+#~ "(You can password-protect your private key with openssl)"
+#~ msgstr ""
+#~ "La chiave privata selezionata non sembra essere protetta da una password. "
+#~ "Ciò potrebbe compromettere le proprie credenziali di sicurezza. "
+#~ "Selezionare una chiave privata protetta con password.\n"
+#~ "\n"
+#~ "(È possibile proteggere con password la propria chiave privata usando "
+#~ "openssl)"
+
+# (ndt) titolo finestra
+#~ msgid "Choose your private key"
+#~ msgstr "Scelta chiave privata"
 
 #~ msgid "New Mobile Broadband connection..."
 #~ msgstr "Nuova connessione a banda larga mobile..."
