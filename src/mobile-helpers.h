@@ -24,7 +24,6 @@
 #define APPLET_MOBILE_HELPERS_H
 
 #include <gtk/gtk.h>
-#define SECRET_API_SUBJECT_TO_CHANGE
 #include <libsecret/secret.h>
 
 #include "applet.h"
