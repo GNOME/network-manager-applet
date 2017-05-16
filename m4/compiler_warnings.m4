@@ -47,8 +47,9 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 		CFLAGS_MORE_WARNINGS="$CFLAGS_MORE_WARNINGS -Werror"
 	fi
 
+	dnl remove -Wdeclaration-after-statement check because it causes build error with gtk_widget_get_toplevel()
 	for option in -Wshadow -Wmissing-declarations -Wmissing-prototypes \
-		      -Wdeclaration-after-statement -Wformat-security \
+		       -Wformat-security \
 		      -Wfloat-equal -Wno-unused-parameter -Wno-sign-compare \
 		      -Wstrict-prototypes \
 		      -fno-strict-aliasing -Wno-unused-but-set-variable \
