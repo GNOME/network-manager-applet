@@ -248,8 +248,12 @@ applet_get_default_active_connection (NMApplet *applet, NMDevice **device)
 			continue;
 
 		candidate_dev = g_ptr_array_index (devices, 0);
-		if (!get_device_class (candidate_dev, applet))
-			continue;
+
+		/* We have to return default connection/device even if they are of an
+		 * unknown class - otherwise we may end up returning non
+		 * default interface which has nothing to do with our default
+		 * route, e.g. we may return slave ethernet when we have
+		 * defult route going through bond */
 
 		if (nm_active_connection_get_default (candidate)) {
 			if (!default_ac) {
