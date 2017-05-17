@@ -286,12 +286,13 @@ applet_get_all_connections (NMApplet *applet)
 	all_connections = nm_client_get_connections (applet->nm_client);
 	connections = g_ptr_array_new_full (all_connections->len, g_object_unref);
 
-	/* Ignore slave connections */
+	/* Ignore slave connections unless they are wifi connections */
 	for (i = 0; i < all_connections->len; i++) {
 		connection = all_connections->pdata[i];
 
 		s_con = nm_connection_get_setting_connection (connection);
-		if (s_con && !nm_setting_connection_get_master (s_con))
+		if (s_con && (!nm_setting_connection_get_master (s_con)
+					|| nm_connection_get_setting_wireless (connection)))
 			g_ptr_array_add (connections, g_object_ref (connection));
 	}
 
