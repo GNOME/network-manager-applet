@@ -291,8 +291,9 @@ applet_get_all_connections (NMApplet *applet)
 		connection = all_connections->pdata[i];
 
 		s_con = nm_connection_get_setting_connection (connection);
-		if (s_con && (!nm_setting_connection_get_master (s_con)
-					|| nm_connection_get_setting_wireless (connection)))
+		if (   s_con
+		    && (   !nm_setting_connection_get_master (s_con)
+		        || nm_connection_get_setting_wireless (connection)))
 			g_ptr_array_add (connections, g_object_ref (connection));
 	}
 
@@ -789,7 +790,7 @@ void applet_do_notify_with_pref (NMApplet *applet,
 {
 	if (g_settings_get_boolean (applet->gsettings, pref))
 		return;
-	
+
 	applet_do_notify (applet, NOTIFY_URGENCY_LOW, summary, message, icon, pref,
 	                  _("Don’t show this message again"),
 	                  notify_dont_show_cb,
@@ -1478,7 +1479,7 @@ nma_menu_add_vpn_submenu (GtkWidget *menu, NMApplet *applet)
 
 		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), !!active);
 
-		g_object_set_data_full (G_OBJECT (item), "connection", 
+		g_object_set_data_full (G_OBJECT (item), "connection",
 		                        g_object_ref (connection),
 		                        (GDestroyNotify) g_object_unref);
 
@@ -3119,7 +3120,7 @@ static void
 status_icon_activate_cb (GtkStatusIcon *icon, NMApplet *applet)
 {
 	/* Have clicking on the applet act also as acknowledgement
-	 * of the notification. 
+	 * of the notification.
 	 */
 	applet_clear_notify (applet);
 
@@ -3151,7 +3152,7 @@ status_icon_popup_menu_cb (GtkStatusIcon *icon,
                            NMApplet *applet)
 {
 	/* Have clicking on the applet act also as acknowledgement
-	 * of the notification. 
+	 * of the notification.
 	 */
 	applet_clear_notify (applet);
 
