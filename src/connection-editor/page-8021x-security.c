@@ -191,6 +191,23 @@ ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 	return valid;
 }
 
+static gboolean
+inter_page_change (CEPage *page)
+{
+	CEPage8021xSecurityPrivate *priv = CE_PAGE_8021X_SECURITY_GET_PRIVATE (page);
+	gpointer macsec_mode;
+
+	if (nm_connection_editor_inter_page_get_value (page->editor,
+	                                               INTER_PAGE_CHANGE_MACSEC_MODE,
+	                                               &macsec_mode)) {
+		gtk_toggle_button_set_active (priv->enabled,
+		                              GPOINTER_TO_UINT (macsec_mode) == NM_SETTING_MACSEC_MODE_EAP);
+		enable_toggled (priv->enabled, page);
+	}
+
+	return TRUE;
+}
+
 static void
 ce_page_8021x_security_init (CEPage8021xSecurity *self)
 {
@@ -227,4 +244,5 @@ ce_page_8021x_security_class_init (CEPage8021xSecurityClass *security_class)
 	object_class->dispose = dispose;
 
 	parent_class->ce_page_validate_v = ce_page_validate_v;
+	parent_class->inter_page_change = inter_page_change;
 }
