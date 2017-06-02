@@ -199,7 +199,13 @@ ce_page_8021x_security_init (CEPage8021xSecurity *self)
 static void
 dispose (GObject *object)
 {
+	CEPage *parent = CE_PAGE (object);
 	CEPage8021xSecurityPrivate *priv = CE_PAGE_8021X_SECURITY_GET_PRIVATE (object);
+
+	if (priv->security_widget) {
+		gtk_container_remove (GTK_CONTAINER (parent->page), priv->security_widget);
+		priv->security_widget = NULL;
+	}
 
 	if (priv->security) {
 		wireless_security_unref (priv->security);
