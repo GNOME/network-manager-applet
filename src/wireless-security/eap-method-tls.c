@@ -479,8 +479,8 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 #if LIBNM_BUILD
 /* libnm-glib doesn't support these. */
 	method->ca_cert_password_flags_name = phase2
-	                                      ? NM_SETTING_802_1X_PHASE2_CLIENT_CERT_PASSWORD
-	                                      : NM_SETTING_802_1X_CLIENT_CERT_PASSWORD;
+	                                      ? NM_SETTING_802_1X_PHASE2_CA_CERT_PASSWORD
+	                                      : NM_SETTING_802_1X_CA_CERT_PASSWORD;
 	method->client_cert_password_flags_name = phase2
 	                                          ? NM_SETTING_802_1X_PHASE2_CLIENT_CERT_PASSWORD
 	                                          : NM_SETTING_802_1X_CLIENT_CERT_PASSWORD;
