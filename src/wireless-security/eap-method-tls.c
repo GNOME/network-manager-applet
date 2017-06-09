@@ -112,7 +112,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	NMSetting8021x *s_8021x;
 	NMSettingSecretFlags secret_flags;
 	GtkWidget *widget;
-	char *value;
+	char *value = NULL;
 	const char *password = NULL;
 	GError *error = NULL;
 	gboolean ca_cert_error = FALSE;
@@ -202,7 +202,8 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	}
 
 	/* TLS CA certificate */
-	value = nma_cert_chooser_get_cert (NMA_CERT_CHOOSER (method->ca_cert_chooser), &scheme);
+	if (gtk_widget_get_sensitive (method->ca_cert_chooser))
+		value = nma_cert_chooser_get_cert (NMA_CERT_CHOOSER (method->ca_cert_chooser), &scheme);
 	format = NM_SETTING_802_1X_CK_FORMAT_UNKNOWN;
 	if (parent->phase2) {
 		if (!nm_setting_802_1x_set_phase2_ca_cert (s_8021x, value, scheme, &format, &error)) {
