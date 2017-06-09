@@ -604,3 +604,97 @@ eap_method_ca_cert_ignore_load (NMConnection *connection)
 	g_object_unref (settings);
 }
 
+GError *
+eap_method_ca_cert_validate_cb (NMACertChooser *cert_chooser, gpointer user_data)
+{
+	NMSetting8021xCKScheme scheme;
+        NMSetting8021xCKFormat format = NM_SETTING_802_1X_CK_FORMAT_UNKNOWN;
+	gs_unref_object NMSetting8021x *setting = NULL;
+	gs_free char *value = NULL;
+	GError *local = NULL;
+
+	setting = (NMSetting8021x *) nm_setting_802_1x_new ();
+
+	value = nma_cert_chooser_get_cert (cert_chooser, &scheme);
+	if (!value) {
+		return g_error_new_literal (NMA_ERROR, NMA_ERROR_GENERIC,
+		                            _("no CA certificate selected"));
+	}
+	if (scheme == NM_SETTING_802_1X_CK_SCHEME_PATH) {
+		if (!g_file_test (value, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR)) {
+			return g_error_new_literal (NMA_ERROR, NMA_ERROR_GENERIC,
+			                            _("selected CA certificate file does not exist"));
+		}
+	}
+
+	if (!nm_setting_802_1x_set_ca_cert (setting, value, scheme, &format, &local))
+		return local;
+
+	return NULL;
+}
+
+void
+eap_method_setup_cert_chooser (NMACertChooser *cert_chooser,
+                               NMSetting8021x *s_8021x,
+                               NMSetting8021xCKScheme (*cert_scheme_func) (NMSetting8021x *setting),
+                               const char *(*cert_path_func) (NMSetting8021x *setting),
+                               const char *(*cert_uri_func) (NMSetting8021x *setting),
+                               const char *(*cert_password_func) (NMSetting8021x *setting),
+                               NMSetting8021xCKScheme (*key_scheme_func) (NMSetting8021x *setting),
+                               const char *(*key_path_func) (NMSetting8021x *setting),
+                               const char *(*key_uri_func) (NMSetting8021x *setting),
+                               const char *(*key_password_func) (NMSetting8021x *setting))
+{
+	NMSetting8021xCKScheme scheme = NM_SETTING_802_1X_CK_SCHEME_UNKNOWN;
+	const char *value = NULL;
+
+
+	if (s_8021x && cert_path_func && cert_uri_func && cert_scheme_func) {
+		scheme = cert_scheme_func (s_8021x);
+		switch (scheme) {
+		case NM_SETTING_802_1X_CK_SCHEME_PATH:
+			value = cert_path_func (s_8021x);
+			break;
+#if LIBNM_BUILD
+/* Not available in libnm-glib */
+		case NM_SETTING_802_1X_CK_SCHEME_PKCS11:
+			value = cert_uri_func (s_8021x);
+			if (cert_password_func)
+				nma_cert_chooser_set_cert_password (cert_chooser, cert_password_func (s_8021x));
+			break;
+#endif
+		case NM_SETTING_802_1X_CK_SCHEME_UNKNOWN:
+			/* No CA set. */
+			break;
+		default:
+			g_warning ("unhandled certificate scheme %d", scheme);
+		}
+
+	}
+	nma_cert_chooser_set_cert (cert_chooser, value, scheme);
+
+	if (s_8021x && key_path_func && key_uri_func && key_scheme_func) {
+		scheme = key_scheme_func (s_8021x);
+		switch (scheme) {
+		case NM_SETTING_802_1X_CK_SCHEME_PATH:
+			value = key_path_func (s_8021x);
+			break;
+#if LIBNM_BUILD
+/* Not available in libnm-glib */
+		case NM_SETTING_802_1X_CK_SCHEME_PKCS11:
+			value = key_uri_func (s_8021x);
+			break;
+#endif
+		case NM_SETTING_802_1X_CK_SCHEME_UNKNOWN:
+			/* No certificate set. */
+			break;
+		default:
+			g_warning ("unhandled key scheme %d", scheme);
+		}
+
+		nma_cert_chooser_set_key (cert_chooser, value, scheme);
+	}
+
+	if (s_8021x && key_password_func)
+		nma_cert_chooser_set_key_password (cert_chooser, key_password_func (s_8021x));
+}
