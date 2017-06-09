@@ -27,6 +27,7 @@
 
 #include "eap-method.h"
 #include "wireless-security.h"
+#include "nma-cert-chooser.h"
 #include "utils.h"
 
 #define I_NAME_COLUMN   0
@@ -107,6 +108,10 @@ add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 	g_assert (widget);
 	gtk_size_group_add_widget (group, widget);
 
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_domain_label"));
+	g_assert (widget);
+	gtk_size_group_add_widget (group, widget);
+
 	nma_cert_chooser_add_to_size_group (NMA_CERT_CHOOSER (method->ca_cert_chooser), group);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_version_label"));
@@ -158,6 +163,14 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	text = gtk_entry_get_text (GTK_ENTRY (widget));
 	if (text && strlen (text))
 		g_object_set (s_8021x, NM_SETTING_802_1X_ANONYMOUS_IDENTITY, text, NULL);
+
+#if LIBNM_BUILD
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_domain_entry"));
+	g_assert (widget);
+	text = gtk_entry_get_text (GTK_ENTRY (widget));
+	if (text && strlen (text))
+		g_object_set (s_8021x, NM_SETTING_802_1X_DOMAIN_SUFFIX_MATCH, text, NULL);
+#endif
 
 #if LIBNM_BUILD
 /* libnm-glib doesn't support this. */
@@ -384,7 +397,7 @@ eap_method_peap_new (WirelessSecurity *ws_parent,
 	method->ca_cert_chooser = nma_cert_chooser_new ("CA",
 	                                                  NMA_CERT_CHOOSER_FLAG_CERT
 	                                                | (secrets_only ? NMA_CERT_CHOOSER_FLAG_PASSWORDS : 0));
-	gtk_grid_attach (GTK_GRID (widget), method->ca_cert_chooser, 0, 1, 2, 1);
+	gtk_grid_attach (GTK_GRID (widget), method->ca_cert_chooser, 0, 2, 2, 1);
 	gtk_widget_show (method->ca_cert_chooser);
 
 	g_signal_connect (method->ca_cert_chooser,
@@ -456,10 +469,27 @@ eap_method_peap_new (WirelessSecurity *ws_parent,
 	                  (GCallback) wireless_security_changed_cb,
 	                  ws_parent);
 
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_domain_entry"));
+#if LIBNM_BUILD
+	if (s_8021x && nm_setting_802_1x_get_domain_suffix_match (s_8021x))
+		gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_domain_suffix_match (s_8021x));
+	g_signal_connect (G_OBJECT (widget), "changed",
+	                  (GCallback) wireless_security_changed_cb,
+	                  ws_parent);
+#else
+	gtk_widget_hide (widget);
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_domain_label"));
+	gtk_widget_hide (widget);
+#endif
+
 	if (secrets_only) {
 		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_anon_identity_label"));
 		gtk_widget_hide (widget);
 		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_anon_identity_entry"));
+		gtk_widget_hide (widget);
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_domain_label"));
+		gtk_widget_hide (widget);
+		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_domain_entry"));
 		gtk_widget_hide (widget);
 		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_ca_cert_not_required_checkbox"));
 		gtk_widget_hide (widget);
