@@ -100,6 +100,10 @@ add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 	g_assert (widget);
 	gtk_size_group_add_widget (group, widget);
 
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_domain_label"));
+	g_assert (widget);
+	gtk_size_group_add_widget (group, widget);
+
 	nma_cert_chooser_add_to_size_group (NMA_CERT_CHOOSER (method->client_cert_chooser), group);
 	nma_cert_chooser_add_to_size_group (NMA_CERT_CHOOSER (method->ca_cert_chooser), group);
 }
@@ -129,6 +133,14 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_identity_entry"));
 	g_assert (widget);
 	g_object_set (s_8021x, NM_SETTING_802_1X_IDENTITY, gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
+
+#if LIBNM_BUILD
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_domain_entry"));
+	g_assert (widget);
+	g_object_set (s_8021x,
+	              parent->phase2 ? NM_SETTING_802_1X_PHASE2_DOMAIN_SUFFIX_MATCH : NM_SETTING_802_1X_DOMAIN_SUFFIX_MATCH,
+	              gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
+#endif
 
 	/* TLS private key */
 	password = g_strdup (nma_cert_chooser_get_key_password (NMA_CERT_CHOOSER (method->client_cert_chooser)));
@@ -397,43 +409,27 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 	if (s_8021x && nm_setting_802_1x_get_identity (s_8021x))
 		gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_identity (s_8021x));
 
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_domain_entry"));
+	g_assert (widget);
+#if LIBNM_BUILD
+	g_signal_connect (G_OBJECT (widget), "changed",
+	                  (GCallback) wireless_security_changed_cb,
+	                  ws_parent);
+	if (phase2) {
+		if (s_8021x && nm_setting_802_1x_get_phase2_domain_suffix_match (s_8021x))
+			gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_phase2_domain_suffix_match (s_8021x));
+	} else {
+		if (s_8021x && nm_setting_802_1x_get_domain_suffix_match (s_8021x))
+			gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_domain_suffix_match (s_8021x));
+	}
+#else
+	gtk_widget_hide (widget);
+	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_domain_label"));
+	gtk_widget_hide (widget);
+#endif
+
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_grid"));
 	g_assert (widget);
-
-	method->client_cert_chooser = nma_cert_chooser_new ("User",
-	                                                    secrets_only ? NMA_CERT_CHOOSER_FLAG_PASSWORDS : 0);
-	gtk_grid_attach (GTK_GRID (widget), method->client_cert_chooser, 0, 1, 2, 1);
-	gtk_widget_show (method->client_cert_chooser);
-
-	g_signal_connect (method->client_cert_chooser, "cert-validate",
-	                  G_CALLBACK (client_cert_validate_cb),
-	                  NULL);
-	g_signal_connect (method->client_cert_chooser,
-	                  "key-validate",
-	                  G_CALLBACK (client_key_validate_cb),
-	                  NULL);
-	g_signal_connect (method->client_cert_chooser,
-	                  "key-password-validate",
-	                  G_CALLBACK (client_key_password_validate_cb),
-	                  NULL);
-	g_signal_connect (method->client_cert_chooser,
-	                  "changed",
-	                  G_CALLBACK (client_cert_fixup_pkcs12),
-	                  ws_parent);
-	g_signal_connect (method->client_cert_chooser,
-	                  "changed",
-	                  G_CALLBACK (wireless_security_changed_cb),
-	                  ws_parent);
-
-	eap_method_setup_cert_chooser (NMA_CERT_CHOOSER (method->client_cert_chooser), s_8021x,
-	                               phase2 ? nm_setting_802_1x_get_phase2_client_cert_scheme : nm_setting_802_1x_get_client_cert_scheme,
-	                               phase2 ? nm_setting_802_1x_get_phase2_client_cert_path : nm_setting_802_1x_get_client_cert_path,
-	                               phase2 ? nm_setting_802_1x_get_phase2_client_cert_uri : nm_setting_802_1x_get_client_cert_uri,
-	                               phase2 ? nm_setting_802_1x_get_phase2_client_cert_password : nm_setting_802_1x_get_client_cert_password,
-	                               phase2 ? nm_setting_802_1x_get_phase2_private_key_scheme : nm_setting_802_1x_get_private_key_scheme,
-	                               phase2 ? nm_setting_802_1x_get_phase2_private_key_path : nm_setting_802_1x_get_private_key_path,
-	                               phase2 ? nm_setting_802_1x_get_phase2_private_key_uri : nm_setting_802_1x_get_private_key_uri,
-	                               phase2 ? nm_setting_802_1x_get_phase2_private_key_password : nm_setting_802_1x_get_private_key_password);
 
 	method->ca_cert_chooser = nma_cert_chooser_new ("CA",
 	                                                  NMA_CERT_CHOOSER_FLAG_CERT
@@ -470,6 +466,42 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 		else
 			ca_not_required = TRUE;
 	}
+
+	method->client_cert_chooser = nma_cert_chooser_new ("User",
+	                                                    secrets_only ? NMA_CERT_CHOOSER_FLAG_PASSWORDS : 0);
+	gtk_grid_attach (GTK_GRID (widget), method->client_cert_chooser, 0, 4, 2, 1);
+	gtk_widget_show (method->client_cert_chooser);
+
+	g_signal_connect (method->client_cert_chooser, "cert-validate",
+	                  G_CALLBACK (client_cert_validate_cb),
+	                  NULL);
+	g_signal_connect (method->client_cert_chooser,
+	                  "key-validate",
+	                  G_CALLBACK (client_key_validate_cb),
+	                  NULL);
+	g_signal_connect (method->client_cert_chooser,
+	                  "key-password-validate",
+	                  G_CALLBACK (client_key_password_validate_cb),
+	                  NULL);
+	g_signal_connect (method->client_cert_chooser,
+	                  "changed",
+	                  G_CALLBACK (client_cert_fixup_pkcs12),
+	                  ws_parent);
+	g_signal_connect (method->client_cert_chooser,
+	                  "changed",
+	                  G_CALLBACK (wireless_security_changed_cb),
+	                  ws_parent);
+
+	eap_method_setup_cert_chooser (NMA_CERT_CHOOSER (method->client_cert_chooser), s_8021x,
+	                               phase2 ? nm_setting_802_1x_get_phase2_client_cert_scheme : nm_setting_802_1x_get_client_cert_scheme,
+	                               phase2 ? nm_setting_802_1x_get_phase2_client_cert_path : nm_setting_802_1x_get_client_cert_path,
+	                               phase2 ? nm_setting_802_1x_get_phase2_client_cert_uri : nm_setting_802_1x_get_client_cert_uri,
+	                               phase2 ? nm_setting_802_1x_get_phase2_client_cert_password : nm_setting_802_1x_get_client_cert_password,
+	                               phase2 ? nm_setting_802_1x_get_phase2_private_key_scheme : nm_setting_802_1x_get_private_key_scheme,
+	                               phase2 ? nm_setting_802_1x_get_phase2_private_key_path : nm_setting_802_1x_get_private_key_path,
+	                               phase2 ? nm_setting_802_1x_get_phase2_private_key_uri : nm_setting_802_1x_get_private_key_uri,
+	                               phase2 ? nm_setting_802_1x_get_phase2_private_key_password : nm_setting_802_1x_get_private_key_password);
+
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_ca_cert_not_required_checkbox"));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), ca_not_required);
 
