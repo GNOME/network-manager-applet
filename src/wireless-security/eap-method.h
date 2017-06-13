@@ -72,6 +72,7 @@ GType eap_method_get_type (void);
 
 /* Below for internal use only */
 
+#include "nma-cert-chooser.h"
 #include "eap-method-tls.h"
 #include "eap-method-leap.h"
 #include "eap-method-fast.h"
@@ -90,32 +91,10 @@ EAPMethod *eap_method_init (gsize obj_size,
                             const char *default_field,
                             gboolean phase2);
 
-GtkFileFilter * eap_method_default_file_chooser_filter_new (gboolean privkey);
-
-gboolean eap_method_is_encrypted_private_key (const char *path);
-
-#define TYPE_CLIENT_CERT 0
-#define TYPE_CA_CERT     1
-#define TYPE_PRIVATE_KEY 2
-
-gboolean eap_method_validate_filepicker (GtkBuilder *builder,
-                                         const char *name,
-                                         guint32 item_type,
-                                         const char *password,
-                                         NMSetting8021xCKFormat *out_format,
-                                         GError **error);
-
 void eap_method_phase2_update_secrets_helper (EAPMethod *method,
                                               NMConnection *connection,
                                               const char *combo_name,
                                               guint32 column);
-
-gboolean eap_method_ca_cert_required (GtkBuilder *builder,
-                                      const char *id_ca_cert_is_not_required_checkbox,
-                                      const char *id_ca_cert_chooser);
-void eap_method_ca_cert_not_required_toggled (GtkBuilder *builder,
-                                              const char *id_ca_cert_is_not_required_checkbox,
-                                              const char *id_ca_cert_chooser);
 
 void eap_method_ca_cert_ignore_set (EAPMethod *method,
                                     NMConnection *connection,
@@ -125,5 +104,32 @@ gboolean eap_method_ca_cert_ignore_get (EAPMethod *method, NMConnection *connect
 
 void eap_method_ca_cert_ignore_save (NMConnection *connection);
 void eap_method_ca_cert_ignore_load (NMConnection *connection);
+
+GError *eap_method_ca_cert_validate_cb (NMACertChooser *cert_chooser, gpointer user_data);
+
+#if !LIBNM_BUILD
+/* For mere convenience. These are not available in libnm-glib. */
+#define nm_setting_802_1x_get_ca_cert_password             NULL
+#define nm_setting_802_1x_get_ca_cert_uri                  NULL
+#define nm_setting_802_1x_get_client_cert_password         NULL
+#define nm_setting_802_1x_get_client_cert_uri              NULL
+#define nm_setting_802_1x_get_private_key_uri              NULL
+#define nm_setting_802_1x_get_phase2_ca_cert_password      NULL
+#define nm_setting_802_1x_get_phase2_ca_cert_uri           NULL
+#define nm_setting_802_1x_get_phase2_client_cert_password  NULL
+#define nm_setting_802_1x_get_phase2_client_cert_uri       NULL
+#define nm_setting_802_1x_get_phase2_private_key_uri       NULL
+#endif
+
+void eap_method_setup_cert_chooser (NMACertChooser *cert_chooser,
+                                    NMSetting8021x *s_8021x,
+                                    NMSetting8021xCKScheme (*cert_scheme_func) (NMSetting8021x *setting),
+                                    const char *(*cert_path_func) (NMSetting8021x *setting),
+                                    const char *(*cert_uri_func) (NMSetting8021x *setting),
+                                    const char *(*cert_password_func) (NMSetting8021x *setting),
+                                    NMSetting8021xCKScheme (*key_scheme_func) (NMSetting8021x *setting),
+                                    const char *(*key_path_func) (NMSetting8021x *setting),
+                                    const char *(*key_uri_func) (NMSetting8021x *setting),
+                                    const char *(*key_password_func) (NMSetting8021x *setting));
 
 #endif /* EAP_METHOD_H */
