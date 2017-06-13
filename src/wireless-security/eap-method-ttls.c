@@ -146,7 +146,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	GError *error = NULL;
-	NMSetting8021xCKScheme scheme;
+	NMSetting8021xCKScheme scheme = NM_SETTING_802_1X_CK_SCHEME_UNKNOWN;
 	gboolean ca_cert_error = FALSE;
 
 	s_8021x = nm_connection_get_setting_802_1x (connection);

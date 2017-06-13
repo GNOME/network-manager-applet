@@ -148,7 +148,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	int peapver_active = 0;
 	GError *error = NULL;
 	gboolean ca_cert_error = FALSE;
-	NMSetting8021xCKScheme scheme;
+	NMSetting8021xCKScheme scheme = NM_SETTING_802_1X_CK_SCHEME_UNKNOWN;
 #if LIBNM_BUILD
 	NMSettingSecretFlags secret_flags;
 #endif
