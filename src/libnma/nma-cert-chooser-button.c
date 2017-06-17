@@ -61,19 +61,22 @@ static gboolean
 is_this_a_slot_nobody_loves (GckSlot *slot)
 {
 	GckSlotInfo *slot_info;
+        gboolean ret_value = FALSE;
 
 	slot_info = gck_slot_get_info (slot);
 
 	/* The p11-kit CA trusts do use their filesystem paths for description. */
 	if (g_str_has_prefix (slot_info->slot_description, "/"))
-		return TRUE;
+		ret_value = TRUE;
 
 	if (   strcmp (slot_info->slot_description, "SSH Keys") == 0
 	    || strcmp (slot_info->slot_description, "Secret Store") == 0
 	    || strcmp (slot_info->slot_description, "User Key Storage") == 0)
-		return TRUE;
+		ret_value = TRUE;
 
-	return FALSE;
+	gck_slot_info_free (slot_info);
+
+	return ret_value;
 }
 
 static void
