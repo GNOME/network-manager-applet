@@ -143,7 +143,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 #endif
 
 	/* TLS private key */
-	password = g_strdup (nma_cert_chooser_get_key_password (NMA_CERT_CHOOSER (method->client_cert_chooser)));
+	password = nma_cert_chooser_get_key_password (NMA_CERT_CHOOSER (method->client_cert_chooser));
 	value = nma_cert_chooser_get_key (NMA_CERT_CHOOSER (method->client_cert_chooser), &scheme);
 
 	if (parent->phase2) {
@@ -157,6 +157,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 			g_clear_error (&error);
 		}
 	}
+	g_free (value);
 
 #if LIBNM_BUILD
 /* libnm-glib doesn't support these. */
@@ -222,6 +223,8 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	/* TLS CA certificate */
 	if (gtk_widget_get_sensitive (method->ca_cert_chooser))
 		value = nma_cert_chooser_get_cert (NMA_CERT_CHOOSER (method->ca_cert_chooser), &scheme);
+	else
+		value = NULL;
 	format = NM_SETTING_802_1X_CK_FORMAT_UNKNOWN;
 	if (parent->phase2) {
 		if (!nm_setting_802_1x_set_phase2_ca_cert (s_8021x, value, scheme, &format, &error)) {
