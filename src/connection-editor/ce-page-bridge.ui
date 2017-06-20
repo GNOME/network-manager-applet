@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.20.0 -->
 <interface>
   <requires lib="gtk+" version="3.4"/>
   <object class="GtkAdjustment" id="bridge_ageing_time_adjustment">
@@ -39,28 +40,25 @@
       <column type="gchararray"/>
     </columns>
   </object>
-  <object class="GtkTable" id="BridgePage">
+  <object class="GtkGrid" id="BridgePage">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="border_width">12</property>
-    <property name="n_rows">9</property>
-    <property name="n_columns">2</property>
-    <property name="column_spacing">12</property>
     <property name="row_spacing">6</property>
+    <property name="column_spacing">12</property>
     <child>
       <object class="GtkLabel" id="master_connections_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
+        <property name="hexpand">True</property>
         <property name="label" translatable="yes">Bridged _connections:</property>
         <property name="use_underline">True</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
-        <property name="right_attach">2</property>
+        <property name="left_attach">0</property>
         <property name="top_attach">1</property>
-        <property name="bottom_attach">2</property>
-        <property name="x_options">GTK_FILL</property>
-        <property name="y_options"/>
+        <property name="width">2</property>
       </packing>
     </child>
     <child>
@@ -159,79 +157,77 @@
         </child>
       </object>
       <packing>
-        <property name="right_attach">2</property>
+        <property name="left_attach">0</property>
         <property name="top_attach">2</property>
-        <property name="bottom_attach">3</property>
+        <property name="width">2</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="bridge_prio">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">_Priority:</property>
         <property name="use_underline">True</property>
         <property name="mnemonic_widget">bridge_priority</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
+        <property name="left_attach">0</property>
         <property name="top_attach">6</property>
-        <property name="bottom_attach">7</property>
-        <property name="y_options">GTK_FILL</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="master_interface_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">_Interface name:</property>
         <property name="use_underline">True</property>
         <property name="mnemonic_widget">master_interface</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
-        <property name="y_options">GTK_FILL</property>
+        <property name="left_attach">0</property>
+        <property name="top_attach">0</property>
       </packing>
     </child>
     <child>
       <object class="GtkEntry" id="master_interface">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
+        <property name="hexpand">True</property>
         <property name="invisible_char">●</property>
       </object>
       <packing>
         <property name="left_attach">1</property>
-        <property name="right_attach">2</property>
-        <property name="y_options">GTK_FILL</property>
+        <property name="top_attach">0</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="bridge_forward_delay_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">_Forward delay:</property>
         <property name="use_underline">True</property>
         <property name="mnemonic_widget">bridge_forward_delay</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
+        <property name="left_attach">0</property>
         <property name="top_attach">7</property>
-        <property name="bottom_attach">8</property>
-        <property name="y_options">GTK_FILL</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="bridge_hello_time_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">_Hello time:</property>
         <property name="use_underline">True</property>
         <property name="mnemonic_widget">bridge_hello_time</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
+        <property name="left_attach">0</property>
         <property name="top_attach">8</property>
-        <property name="bottom_attach">9</property>
-        <property name="y_options">GTK_FILL</property>
       </packing>
     </child>
     <child>
@@ -243,8 +239,8 @@
           <object class="GtkSpinButton" id="bridge_forward_delay">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="hexpand">True</property>
             <property name="invisible_char">●</property>
-            <property name="invisible_char_set">True</property>
             <property name="adjustment">bridge_forward_delay_adjustment</property>
             <property name="snap_to_ticks">True</property>
             <property name="numeric">True</property>
@@ -259,8 +255,8 @@
           <object class="GtkLabel" id="label2">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="xalign">0</property>
             <property name="label" translatable="yes">s</property>
+            <property name="xalign">0</property>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -271,10 +267,7 @@
       </object>
       <packing>
         <property name="left_attach">1</property>
-        <property name="right_attach">2</property>
         <property name="top_attach">7</property>
-        <property name="bottom_attach">8</property>
-        <property name="y_options">GTK_FILL</property>
       </packing>
     </child>
     <child>
@@ -286,8 +279,8 @@
           <object class="GtkSpinButton" id="bridge_hello_time">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="hexpand">True</property>
             <property name="invisible_char">●</property>
-            <property name="invisible_char_set">True</property>
             <property name="adjustment">bridge_hello_time_adjustment</property>
             <property name="snap_to_ticks">True</property>
             <property name="numeric">True</property>
@@ -302,8 +295,8 @@
           <object class="GtkLabel" id="label3">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="xalign">0</property>
             <property name="label" translatable="yes">s</property>
+            <property name="xalign">0</property>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -314,10 +307,7 @@
       </object>
       <packing>
         <property name="left_attach">1</property>
-        <property name="right_attach">2</property>
         <property name="top_attach">8</property>
-        <property name="bottom_attach">9</property>
-        <property name="y_options">GTK_FILL</property>
       </packing>
     </child>
     <child>
@@ -330,9 +320,9 @@
         <property name="draw_indicator">True</property>
       </object>
       <packing>
-        <property name="right_attach">2</property>
+        <property name="left_attach">0</property>
         <property name="top_attach">4</property>
-        <property name="bottom_attach">5</property>
+        <property name="width">2</property>
       </packing>
     </child>
     <child>
@@ -346,40 +336,37 @@
         <property name="draw_indicator">True</property>
       </object>
       <packing>
-        <property name="right_attach">2</property>
+        <property name="left_attach">0</property>
         <property name="top_attach">5</property>
-        <property name="bottom_attach">6</property>
+        <property name="width">2</property>
       </packing>
     </child>
     <child>
       <object class="GtkSpinButton" id="bridge_priority">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
+        <property name="hexpand">True</property>
         <property name="invisible_char">●</property>
-        <property name="invisible_char_set">True</property>
         <property name="adjustment">bridge_priority_adjustment</property>
         <property name="numeric">True</property>
       </object>
       <packing>
         <property name="left_attach">1</property>
-        <property name="right_attach">2</property>
         <property name="top_attach">6</property>
-        <property name="bottom_attach">7</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="bridge_max_age_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">_Max age:</property>
         <property name="use_underline">True</property>
         <property name="mnemonic_widget">bridge_max_age</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
+        <property name="left_attach">0</property>
         <property name="top_attach">9</property>
-        <property name="bottom_attach">10</property>
-        <property name="y_options">GTK_FILL</property>
       </packing>
     </child>
     <child>
@@ -391,8 +378,8 @@
           <object class="GtkSpinButton" id="bridge_max_age">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="hexpand">True</property>
             <property name="invisible_char">●</property>
-            <property name="invisible_char_set">True</property>
             <property name="adjustment">bridge_max_age_adjustment</property>
             <property name="snap_to_ticks">True</property>
             <property name="numeric">True</property>
@@ -407,8 +394,8 @@
           <object class="GtkLabel" id="label1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="xalign">0</property>
             <property name="label" translatable="yes">s</property>
+            <property name="xalign">0</property>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -419,25 +406,21 @@
       </object>
       <packing>
         <property name="left_attach">1</property>
-        <property name="right_attach">2</property>
         <property name="top_attach">9</property>
-        <property name="bottom_attach">10</property>
-        <property name="y_options">GTK_FILL</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="bridge_ageing_time_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">_Aging time:</property>
         <property name="use_underline">True</property>
         <property name="mnemonic_widget">bridge_ageing_time</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
+        <property name="left_attach">0</property>
         <property name="top_attach">3</property>
-        <property name="bottom_attach">4</property>
-        <property name="y_options">GTK_FILL</property>
       </packing>
     </child>
     <child>
@@ -449,8 +432,8 @@
           <object class="GtkSpinButton" id="bridge_ageing_time">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="hexpand">True</property>
             <property name="invisible_char">●</property>
-            <property name="invisible_char_set">True</property>
             <property name="adjustment">bridge_ageing_time_adjustment</property>
             <property name="snap_to_ticks">True</property>
             <property name="numeric">True</property>
@@ -465,8 +448,8 @@
           <object class="GtkLabel" id="label4">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="xalign">0</property>
             <property name="label" translatable="yes">s</property>
+            <property name="xalign">0</property>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -477,10 +460,7 @@
       </object>
       <packing>
         <property name="left_attach">1</property>
-        <property name="right_attach">2</property>
         <property name="top_attach">3</property>
-        <property name="bottom_attach">4</property>
-        <property name="y_options">GTK_FILL</property>
       </packing>
     </child>
   </object>
