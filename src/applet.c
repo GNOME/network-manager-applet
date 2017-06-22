@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2004 - 2015 Red Hat, Inc.
+ * Copyright (C) 2004 - 2017 Red Hat, Inc.
  * Copyright (C) 2005 - 2008 Novell, Inc.
  *
  * This applet used the GNOME Wireless Applet as a skeleton to build from.
@@ -3280,7 +3280,7 @@ applet_startup (GApplication *app, gpointer user_data)
 	gs_free_error GError *error = NULL;
 
 	g_set_application_name (_("NetworkManager Applet"));
-	gtk_window_set_default_icon_name (GTK_STOCK_NETWORK);
+	gtk_window_set_default_icon_name ("network-workgroup");
 
 	applet->info_dialog_ui = gtk_builder_new ();
 
