@@ -1,7 +1,5 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
-/* vim: set ft=c ts=4 sts=4 sw=4 noexpandtab smartindent: */
-
-/* EAP-FAST authentication method (RFC4851)
+/*
+ * EAP-FAST authentication method (RFC4851)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2012 - 2014 Red Hat, Inc.
+ * Copyright 2012 - 2017 Red Hat, Inc.
  */
 
 #include "nm-default.h"

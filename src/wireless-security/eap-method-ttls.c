@@ -101,10 +101,6 @@ add_to_size_group (EAPMethod *parent, GtkSizeGroup *group)
 		g_object_unref (method->size_group);
 	method->size_group = g_object_ref (group);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_ttls_ca_cert_not_required_checkbox"));
-	g_assert (widget);
-	gtk_size_group_add_widget (group, widget);
-
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_ttls_anon_identity_label"));
 	g_assert (widget);
 	gtk_size_group_add_widget (group, widget);
