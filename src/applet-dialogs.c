@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2008 - 2014 Red Hat, Inc.
+ * Copyright 2008 - 2017 Red Hat, Inc.
  */
 
 #include "nm-default.h"
@@ -982,15 +982,38 @@ applet_info_dialog_show (NMApplet *applet)
 void
 applet_about_dialog_show (NMApplet *applet)
 {
+	const char *authors[] = {
+		"Michael Biebl <biebl@debian.org>",
+		"Matthias Clasen <mclasen@redhat.com>",
+		"Piotr Drąg <piotrdrag@gmail.com>",
+		"Pavel Šimerda <psimerda@redhat.com>",
+		"Alexander Sack <asac@ubuntu.com>",
+		"Aleksander Morgado <aleksander@lanedo.com>",
+		"Christian Persch <chpe@gnome.org>",
+		"Tambet Ingo <tambet@gmail.com>",
+		"Beniamino Galvani <bgalvani@redhat.com>",
+		"Lubomir Rintel <lkundrak@v3.sk>",
+		"Dan Winship <danw@gnome.org>",
+		"Dan Williams <dcbw@src.gnome.org>",
+		"Thomas Haller <thaller@redhat.com>",
+		"Jiří Klimeš <jklimes@redhat.com>",
+		"Dan Williams <dcbw@redhat.com>",
+		NULL
+	};
+
+
 	gtk_show_about_dialog (NULL,
 	                       "version", VERSION,
-	                       "copyright", _("Copyright \xc2\xa9 2004-2014 Red Hat, Inc.\n"
+	                       "copyright", _("Copyright \xc2\xa9 2004-2017 Red Hat, Inc.\n"
 	                                      "Copyright \xc2\xa9 2005-2008 Novell, Inc.\n"
 	                                      "and many other community contributors and translators"),
 	                       "comments", _("Notification area applet for managing your network devices and connections."),
 	                       "website", "http://www.gnome.org/projects/NetworkManager/",
 	                       "website-label", _("NetworkManager Website"),
-	                       "logo-icon-name", GTK_STOCK_NETWORK,
+	                       "logo-icon-name", "network-workgroup",
+	                       "license-type", GTK_LICENSE_GPL_2_0,
+	                       "authors", authors,
+	                       "translator-credits", _("translator-credits"),
 	                       NULL);
 }
 
@@ -1004,7 +1027,7 @@ applet_missing_ui_warning_dialog_show (void)
 
 	/* Bash focus-stealing prevention in the face */
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
-	gtk_window_set_default_icon_name (GTK_STOCK_DIALOG_ERROR);
+	gtk_window_set_icon_name (GTK_WINDOW (dialog), GTK_STOCK_DIALOG_ERROR);
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Missing resources"));
 	gtk_widget_realize (dialog);
 	gtk_widget_show (dialog);
