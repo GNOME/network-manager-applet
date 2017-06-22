@@ -174,7 +174,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 
 #if LIBNM_BUILD
 /* libnm-glib doesn't support this. */
-	/* Save CA certificate PIN password flags to the connection */
+	/* Save CA certificate PIN and its flags to the connection */
 	secret_flags = nma_cert_chooser_get_cert_password_flags (NMA_CERT_CHOOSER (method->ca_cert_chooser));
 	nm_setting_set_secret_flags (NM_SETTING (s_8021x), NM_SETTING_802_1X_CA_CERT_PASSWORD,
 	                             secret_flags, NULL);
@@ -183,6 +183,9 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 		nma_cert_chooser_update_cert_password_storage (NMA_CERT_CHOOSER (method->ca_cert_chooser),
 		                                               secret_flags, NM_SETTING (s_8021x),
 		                                               NM_SETTING_802_1X_CA_CERT_PASSWORD);
+		g_object_set (s_8021x, NM_SETTING_802_1X_CA_CERT_PASSWORD,
+		              nma_cert_chooser_get_cert_password (NMA_CERT_CHOOSER (method->ca_cert_chooser)),
+		              NULL);
 	}
 #endif
 
