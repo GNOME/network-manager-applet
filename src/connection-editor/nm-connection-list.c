@@ -3,6 +3,7 @@
  *
  * Rodrigo Moya <rodrigo@gnome-db.org>
  * Dan Williams <dcbw@redhat.com>
+ * Lubomir Rintel <lkundrak@v3.sk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +32,7 @@
 #include "ce-page.h"
 #include "nm-connection-editor.h"
 #include "nm-connection-list.h"
-#include "ce-polkit-button.h"
+#include "ce-polkit.h"
 #include "connection-helpers.h"
 
 extern gboolean nm_ce_keep_above;
@@ -45,7 +46,9 @@ enum {
 static guint list_signals[LIST_LAST_SIGNAL] = { 0 };
 
 struct _NMConnectionListPrivate {
-	GtkWidget *connection_button_box;
+	GtkWidget *connection_add;
+	GtkWidget *connection_del;
+	GtkWidget *connection_edit;
 	GtkTreeView *connection_list;
 	GtkTreeModel *model;
 	GtkTreeModelFilter *filter;
@@ -61,7 +64,7 @@ struct _NMConnectionListPrivate {
                                            NM_TYPE_CONNECTION_LIST, \
                                            NMConnectionListPrivate))
 
-G_DEFINE_TYPE_WITH_CODE (NMConnectionList, nm_connection_list, GTK_TYPE_DIALOG,
+G_DEFINE_TYPE_WITH_CODE (NMConnectionList, nm_connection_list, GTK_TYPE_WINDOW,
                          G_ADD_PRIVATE (NMConnectionList))
 
 #define COL_ID         0
@@ -384,7 +387,8 @@ do_edit (NMConnectionList *list)
 {
 	NMConnectionListPrivate *priv = NM_CONNECTION_LIST_GET_PRIVATE (list);
 
-	edit_connection (list, NM_CONNECTION (get_active_connection (priv->connection_list)));
+	if (gtk_widget_get_sensitive (priv->connection_edit))
+		edit_connection (list, NM_CONNECTION (get_active_connection (priv->connection_list)));
 }
 
 static void
@@ -414,52 +418,44 @@ delete_clicked (GtkButton *button, gpointer user_data)
 }
 
 static void
-pk_button_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
+selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
 {
-	CEPolkitButton *button = user_data;
-	NMConnectionList *list = g_object_get_data (G_OBJECT (button), "NMConnectionList");
+	NMConnectionList *list = user_data;
 	NMConnectionListPrivate *priv = NM_CONNECTION_LIST_GET_PRIVATE (list);
 	GtkTreeIter iter;
 	GtkTreeModel *model;
-	NMRemoteConnection *connection;
+	NMRemoteConnection *connection = NULL;
 	NMSettingConnection *s_con;
 	gboolean sensitive = FALSE;
 
-	if (gtk_tree_selection_get_selected (selection, &model, &iter)) {
+	if (gtk_tree_selection_get_selected (selection, &model, &iter))
 		connection = get_active_connection (priv->connection_list);
-		if (connection) {
-			s_con = nm_connection_get_setting_connection (NM_CONNECTION (connection));
-			g_assert (s_con);
 
-			sensitive = !nm_setting_connection_get_read_only (s_con);
-		}
+	if (connection) {
+		s_con = nm_connection_get_setting_connection (NM_CONNECTION (connection));
+		g_assert (s_con);
+
+		sensitive = !nm_setting_connection_get_read_only (s_con);
+
+		ce_polkit_set_widget_validation_error (priv->connection_edit,
+		                                       sensitive ? NULL : _("Connection cannot be modified"));
+		ce_polkit_set_widget_validation_error (priv->connection_del,
+		                                       sensitive ? NULL : _("Connection cannot be deleted"));
+	} else {
+		ce_polkit_set_widget_validation_error (priv->connection_edit,
+		                                       _("Select a connection to edit"));
+		ce_polkit_set_widget_validation_error (priv->connection_del,
+		                                       _("Select a connection to delete"));
 	}
-
-	ce_polkit_button_set_validation_error (button, sensitive ? NULL : _("Connection cannot be modified"));
-}
-
-static void
-connection_double_clicked_cb (GtkTreeView *tree_view,
-                              GtkTreePath *path,
-                              GtkTreeViewColumn *column,
-                              gpointer user_data)
-{
-	GtkButton *button = user_data;
-
-	if (ce_polkit_button_get_actionable (CE_POLKIT_BUTTON (button)))
-		gtk_button_clicked (button);
-}
-
-static void
-list_response_cb (GtkDialog *dialog, gint response, gpointer user_data)
-{
-	g_signal_emit (NM_CONNECTION_LIST (user_data), list_signals[LIST_DONE], 0, response);
 }
 
 static void
 list_close_cb (GtkDialog *dialog, gpointer user_data)
 {
-	gtk_dialog_response (dialog, GTK_RESPONSE_CLOSE);
+	g_signal_emit (NM_CONNECTION_LIST (user_data),
+	               list_signals[LIST_DONE],
+	               0,
+	               GTK_RESPONSE_CLOSE);
 }
 
 static void
@@ -510,11 +506,15 @@ nm_connection_list_class_init (NMConnectionListClass *klass)
 	                                             "/org/freedesktop/network-manager-applet/nm-connection-list.ui");
 
         gtk_widget_class_bind_template_child_private (widget_class, NMConnectionList, connection_list);
-        gtk_widget_class_bind_template_child_private (widget_class, NMConnectionList, connection_button_box);
+        gtk_widget_class_bind_template_child_private (widget_class, NMConnectionList, connection_add);
+        gtk_widget_class_bind_template_child_private (widget_class, NMConnectionList, connection_del);
+        gtk_widget_class_bind_template_child_private (widget_class, NMConnectionList, connection_edit);
 
         gtk_widget_class_bind_template_callback (widget_class, add_clicked);
-        gtk_widget_class_bind_template_callback (widget_class, list_response_cb);
+        gtk_widget_class_bind_template_callback (widget_class, do_edit);
+        gtk_widget_class_bind_template_callback (widget_class, delete_clicked);
         gtk_widget_class_bind_template_callback (widget_class, list_close_cb);
+        gtk_widget_class_bind_template_callback (widget_class, selection_changed_cb);
 }
 
 static void
@@ -727,43 +727,18 @@ static void
 add_connection_buttons (NMConnectionList *self)
 {
 	NMConnectionListPrivate *priv = NM_CONNECTION_LIST_GET_PRIVATE (self);
-	GtkWidget *button;
-	GtkTreeSelection *selection;
 
-	selection = gtk_tree_view_get_selection (priv->connection_list);
+	ce_polkit_connect_widget (priv->connection_edit,
+	                          _("Edit the selected connection"),
+	                          _("Authenticate to edit the selected connection"),
+	                          priv->client,
+	                          NM_CLIENT_PERMISSION_SETTINGS_MODIFY_SYSTEM);
 
-	/* Edit */
-	button = ce_polkit_button_new (_("_Edit"),
-	                               _("Edit the selected connection"),
-	                               _("Authenticate to edit the selected connection"),
-	                               "emblem-system-symbolic",
-	                               priv->client,
-	                               NM_CLIENT_PERMISSION_SETTINGS_MODIFY_SYSTEM);
-	g_object_set_data (G_OBJECT (button), "NMConnectionList", self);
-	gtk_button_set_use_underline (GTK_BUTTON (button), TRUE);
-	gtk_box_pack_end (GTK_BOX (priv->connection_button_box), button, TRUE, TRUE, 0);
-
-	g_signal_connect_swapped (button, "clicked", G_CALLBACK (do_edit), self);
-	g_signal_connect (priv->connection_list, "row-activated", G_CALLBACK (connection_double_clicked_cb), button);
-	g_signal_connect (selection, "changed", G_CALLBACK (pk_button_selection_changed_cb), button);
-	pk_button_selection_changed_cb (selection, button);
-
-	/* Delete */
-	button = ce_polkit_button_new (_("_Delete"),
-	                               _("Delete the selected connection"),
-	                               _("Authenticate to delete the selected connection"),
-	                               "edit-delete-symbolic",
-	                               priv->client,
-	                               NM_CLIENT_PERMISSION_SETTINGS_MODIFY_SYSTEM);
-	g_object_set_data (G_OBJECT (button), "NMConnectionList", self);
-	gtk_button_set_use_underline (GTK_BUTTON (button), TRUE);
-	gtk_box_pack_end (GTK_BOX (priv->connection_button_box), button, TRUE, TRUE, 0);
-
-	g_signal_connect (button, "clicked", G_CALLBACK (delete_clicked), self);
-	g_signal_connect (selection, "changed", G_CALLBACK (pk_button_selection_changed_cb), button);
-	pk_button_selection_changed_cb (selection, button);
-
-	gtk_widget_show_all (priv->connection_button_box);
+	ce_polkit_connect_widget (priv->connection_del,
+	                          _("Delete the selected connection"),
+	                          _("Authenticate to delete the selected connection"),
+	                          priv->client,
+	                          NM_CLIENT_PERMISSION_SETTINGS_MODIFY_SYSTEM);
 }
 
 static void
@@ -919,8 +894,8 @@ nm_connection_list_new (void)
 	                  G_CALLBACK (connection_added),
 	                  list);
 
-	initialize_treeview (list);
 	add_connection_buttons (list);
+	initialize_treeview (list);
 
 	if (nm_ce_keep_above)
 		gtk_window_set_keep_above (GTK_WINDOW (list), TRUE);
@@ -1036,15 +1011,8 @@ nm_connection_list_present (NMConnectionList *list)
 			gtk_tree_path_free (path);
 		}
 
-#if 0
-		g_signal_connect (G_OBJECT (priv->dialog), "response",
-			              G_CALLBACK (list_response_cb), list);
-		g_signal_connect (G_OBJECT (priv->dialog), "close",
-			              G_CALLBACK (list_close_cb), list);
-#endif
 		priv->populated = TRUE;
 	}
 
 	gtk_window_present (GTK_WINDOW (list));
 }
-
