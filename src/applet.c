@@ -535,7 +535,7 @@ applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
                                                NMApplet *applet,
                                                const gchar *label)
 {
-	GtkWidget *menu_item, *box, *xlabel;
+	GtkWidget *menu_item, *box, *xlabel, *separator;
 
 	if (INDICATOR_ENABLED (applet)) {
 		/* Indicator doesn't draw complex separators */
@@ -549,11 +549,16 @@ applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
 		xlabel = gtk_label_new (NULL);
 		gtk_label_set_markup (GTK_LABEL (xlabel), label);
 
-		gtk_box_pack_start (GTK_BOX (box), gtk_separator_new (GTK_ORIENTATION_HORIZONTAL), TRUE, TRUE, 0);
+		separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
+		g_object_set (G_OBJECT (separator), "valign", GTK_ALIGN_CENTER, NULL);
+		gtk_box_pack_start (GTK_BOX (box), separator, TRUE, TRUE, 0);
+
 		gtk_box_pack_start (GTK_BOX (box), xlabel, FALSE, FALSE, 2);
 	}
 
-	gtk_box_pack_start (GTK_BOX (box), gtk_separator_new (GTK_ORIENTATION_HORIZONTAL), TRUE, TRUE, 0);
+	separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
+	g_object_set (G_OBJECT (separator), "valign", GTK_ALIGN_CENTER, NULL);
+	gtk_box_pack_start (GTK_BOX (box), separator, TRUE, TRUE, 0);
 
 	g_object_set (G_OBJECT (menu_item),
 		          "child", box,
