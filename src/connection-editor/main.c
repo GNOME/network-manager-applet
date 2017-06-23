@@ -396,7 +396,8 @@ out:
 	g_clear_error (&error);
 	if (opt_ctx)
 		g_option_context_free (opt_ctx);
-	g_clear_object (&list);
+	if (list)
+		gtk_widget_destroy (GTK_WIDGET (list));
 	g_clear_object (&bus);
 	return ret;
 }

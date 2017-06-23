@@ -33,26 +33,14 @@
 #define NM_IS_CONNECTION_LIST(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NM_TYPE_CONNECTION_LIST))
 #define NM_CONNECTION_LIST(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), NM_TYPE_CONNECTION_LIST, NMConnectionList))
 
+typedef struct _NMConnectionListPrivate NMConnectionListPrivate;
+
 typedef struct {
-	GObject parent;
-
-	/* private data */
-	GtkTreeView *connection_list;
-	GtkTreeModel *model;
-	GtkTreeModelFilter *filter;
-	GtkTreeSortable *sortable;
-	GType displayed_type;
-
-	NMClient *client;
-
-	GtkBuilder *gui;
-	GtkWidget *dialog;
-
-	gboolean populated;
+	GtkDialog parent;
 } NMConnectionList;
 
 typedef struct {
-	GObjectClass parent_class;
+	GtkDialogClass parent_class;
 
 	/* Signals */
 	void (*done)  (NMConnectionList *list, gint result);
