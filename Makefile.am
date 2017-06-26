@@ -672,6 +672,8 @@ connection_editor_hc_real = \
 	src/connection-editor/ppp-auth-methods-dialog.h \
 	src/connection-editor/ce-polkit-button.c \
 	src/connection-editor/ce-polkit-button.h \
+	src/connection-editor/ce-polkit.c \
+	src/connection-editor/ce-polkit.h \
 	src/connection-editor/connection-helpers.c \
 	src/connection-editor/connection-helpers.h
 
