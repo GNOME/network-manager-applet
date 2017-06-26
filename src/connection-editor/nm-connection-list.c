@@ -18,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2007 - 2014 Red Hat, Inc.
+ * Copyright 2007 - 2017 Red Hat, Inc.
  */
 
 #include "nm-default.h"
@@ -695,7 +695,7 @@ add_connection_buttons (NMConnectionList *self)
 	button = ce_polkit_button_new (_("_Edit"),
 	                               _("Edit the selected connection"),
 	                               _("Authenticate to edit the selected connection"),
-	                               GTK_STOCK_EDIT,
+	                               "emblem-system-symbolic",
 	                               self->client,
 	                               NM_CLIENT_PERMISSION_SETTINGS_MODIFY_SYSTEM);
 	g_object_set_data (G_OBJECT (button), "NMConnectionList", self);
@@ -711,7 +711,7 @@ add_connection_buttons (NMConnectionList *self)
 	button = ce_polkit_button_new (_("_Delete"),
 	                               _("Delete the selected connection"),
 	                               _("Authenticate to delete the selected connection"),
-	                               GTK_STOCK_DELETE,
+	                               "edit-delete-symbolic",
 	                               self->client,
 	                               NM_CLIENT_PERMISSION_SETTINGS_MODIFY_SYSTEM);
 	g_object_set_data (G_OBJECT (button), "NMConnectionList", self);

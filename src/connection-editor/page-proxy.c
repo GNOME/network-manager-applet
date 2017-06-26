@@ -118,8 +118,8 @@ import_button_clicked_cb (GtkWidget *widget, CEPageProxy *self)
 	dialog = gtk_file_chooser_dialog_new (_("Select file to import"),
 	                                      GTK_WINDOW (toplevel),
 	                                      GTK_FILE_CHOOSER_ACTION_OPEN,
-	                                      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-	                                      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+	                                      _("_Cancel"), GTK_RESPONSE_CANCEL,
+	                                      _("_Open"), GTK_RESPONSE_ACCEPT,
 	                                      NULL);
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 

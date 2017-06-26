@@ -1027,7 +1027,7 @@ applet_missing_ui_warning_dialog_show (void)
 
 	/* Bash focus-stealing prevention in the face */
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
-	gtk_window_set_icon_name (GTK_WINDOW (dialog), GTK_STOCK_DIALOG_ERROR);
+	gtk_window_set_icon_name (GTK_WINDOW (dialog), "dialog-error");
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Missing resources"));
 	gtk_widget_realize (dialog);
 	gtk_widget_show (dialog);
@@ -1056,8 +1056,8 @@ applet_mobile_password_dialog_new (NMConnection *connection,
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Mobile broadband network password"));
 
-	gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT);
-	w = gtk_dialog_add_button (dialog, GTK_STOCK_OK, GTK_RESPONSE_OK);
+	gtk_dialog_add_button (dialog, _("_Cancel"), GTK_RESPONSE_REJECT);
+	w = gtk_dialog_add_button (dialog, _("_OK"), GTK_RESPONSE_OK);
 	gtk_window_set_default (GTK_WINDOW (dialog), w);
 
 	s_con = nm_connection_get_setting_connection (connection);

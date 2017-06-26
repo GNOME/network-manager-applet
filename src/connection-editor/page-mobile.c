@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2008 - 2014 Red Hat, Inc.
+ * Copyright 2008 - 2017 Red Hat, Inc.
  */
 
 #include "nm-default.h"
@@ -540,9 +540,9 @@ mobile_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
 	dialog = gtk_dialog_new_with_buttons (_("Select Mobile Broadband Provider Type"),
 	                                      parent,
 	                                      GTK_DIALOG_MODAL,
-	                                      GTK_STOCK_CANCEL,
+	                                      _("_Cancel"),
 	                                      GTK_RESPONSE_CANCEL,
-	                                      GTK_STOCK_OK,
+	                                      _("_OK"),
 	                                      GTK_RESPONSE_OK,
 	                                      NULL);
 	g_signal_connect (dialog, "delete-event", G_CALLBACK (cancel_dialog), NULL);

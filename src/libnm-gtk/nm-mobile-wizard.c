@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2012 Red Hat, Inc.
+ * (C) Copyright 2008 - 2017 Red Hat, Inc.
  */
 
 #include "nm-default.h"
@@ -494,7 +494,7 @@ plan_setup (NMAMobileWizard *self)
 	gtk_box_pack_start (GTK_BOX (vbox), alignment, FALSE, FALSE, 0);
 
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-	image = gtk_image_new_from_stock (GTK_STOCK_DIALOG_WARNING, GTK_ICON_SIZE_DIALOG);
+	image = gtk_image_new_from_icon_name ("dialog-warning", GTK_ICON_SIZE_DIALOG);
 	gtk_misc_set_alignment (GTK_MISC (image), 0.5, 0.0);
 	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
 

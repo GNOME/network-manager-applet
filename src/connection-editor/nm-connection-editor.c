@@ -19,7 +19,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2007 - 2014 Red Hat, Inc.
+ * Copyright 2007 - 2017 Red Hat, Inc.
  * Copyright 2007 - 2008 Novell, Inc.
  */
 
@@ -578,7 +578,7 @@ nm_connection_editor_new (GtkWindow *parent_window,
 	editor->ok_button = ce_polkit_button_new (_("_Save"),
 	                                          _("Save any changes made to this connection."),
 	                                          _("Authenticate to save this connection for all users of this machine."),
-	                                          GTK_STOCK_APPLY,
+	                                          "emblem-ok-symbolic",
 	                                          client,
 	                                          NM_CLIENT_PERMISSION_SETTINGS_MODIFY_SYSTEM);
 	gtk_button_set_use_underline (GTK_BUTTON (editor->ok_button), TRUE);

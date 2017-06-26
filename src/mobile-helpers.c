@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2010 - 2014 Red Hat, Inc.
+ * Copyright 2010 - 2017 Red Hat, Inc.
  */
 
 #include "nm-default.h"
@@ -462,8 +462,8 @@ ask_for_pin (GtkEntry **out_secret_entry)
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 	gtk_window_set_title (GTK_WINDOW (dialog), _("PIN code required"));
 
-	gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT);
-	ok_button = gtk_dialog_add_button (dialog, GTK_STOCK_OK, GTK_RESPONSE_OK);
+	gtk_dialog_add_button (dialog, _("_Cancel"), GTK_RESPONSE_REJECT);
+	ok_button = gtk_dialog_add_button (dialog, _("_OK"), GTK_RESPONSE_OK);
 	gtk_window_set_default (GTK_WINDOW (dialog), ok_button);
 
 	vbox = GTK_BOX (gtk_dialog_get_content_area (dialog));

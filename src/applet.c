@@ -742,7 +742,7 @@ applet_do_notify (NMApplet *applet,
 	escaped = utils_escape_notify_message (message);
 	notify = notify_notification_new (summary,
 	                                  escaped,
-	                                  icon ? icon : GTK_STOCK_NETWORK
+	                                  icon ? icon : "network-workgroup"
 #if HAVE_LIBNOTIFY_07
 	                                  );
 #else

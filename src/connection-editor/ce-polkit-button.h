@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2009 - 2014444 Red Hat, Inc.
+ * Copyright 2009 - 2017 Red Hat, Inc.
  */
 
 #ifndef __CE_POLKIT_BUTTON_H__
@@ -52,7 +52,7 @@ GType ce_polkit_button_get_type (void);
 GtkWidget *ce_polkit_button_new (const char *label,
                                  const char *tooltip,
                                  const char *auth_tooltip,
-                                 const char *stock_icon,
+                                 const char *icon_name,
                                  NMClient *client,
                                  NMClientPermission permission);
 

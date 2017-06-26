@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2008 - 2014 Red Hat, Inc.
+ * Copyright 2008 - 2017 Red Hat, Inc.
  */
 
 #include "nm-default.h"
@@ -209,8 +209,8 @@ vpn_export (NMConnection *connection)
 	dialog = gtk_file_chooser_dialog_new (_("Export VPN connection…"),
 	                                      NULL,
 	                                      GTK_FILE_CHOOSER_ACTION_SAVE,
-	                                      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-	                                      GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+	                                      _("_Cancel"), GTK_RESPONSE_CANCEL,
+	                                      _("_Save"), GTK_RESPONSE_ACCEPT,
 	                                      NULL);
 	home_folder = g_get_home_dir ();
 	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), home_folder);
