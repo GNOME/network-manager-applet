@@ -37,6 +37,7 @@ typedef struct {
 	GtkToggleButton *enabled;
 	GtkWidget *security_widget;
 	WirelessSecurity *security;
+	GtkSizeGroup *group;
 
 	gboolean initial_have_8021x;
 } CEPage8021xSecurityPrivate;
@@ -75,6 +76,8 @@ finish_setup (CEPage8021xSecurity *self, gpointer unused, GError *error, gpointe
 		g_warning ("Could not load 802.1X user interface.");
 		return;
 	}
+
+	wireless_security_add_to_size_group (priv->security, priv->group);
 
 	wireless_security_set_changed_notify (priv->security, stuff_changed, self);
 	priv->security_widget = wireless_security_get_widget (priv->security);
@@ -127,6 +130,8 @@ ce_page_8021x_security_new (NMConnectionEditor *editor,
 		priv->initial_have_8021x = TRUE;
 
 	priv->enabled = GTK_TOGGLE_BUTTON (gtk_check_button_new_with_mnemonic (_("Use 802.1_X security for this connection")));
+
+	priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
 	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
 
@@ -222,6 +227,8 @@ dispose (GObject *object)
 {
 	CEPage *parent = CE_PAGE (object);
 	CEPage8021xSecurityPrivate *priv = CE_PAGE_8021X_SECURITY_GET_PRIVATE (object);
+
+	g_clear_object (&priv->group);
 
 	if (priv->security_widget) {
 		gtk_container_remove (GTK_CONTAINER (parent->page), priv->security_widget);
