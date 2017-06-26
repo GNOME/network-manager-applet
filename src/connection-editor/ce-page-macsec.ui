@@ -42,20 +42,17 @@
   <object class="GtkGrid" id="MacsecPage">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="margin_left">48</property>
-    <property name="margin_right">48</property>
-    <property name="margin_top">12</property>
-    <property name="margin_bottom">12</property>
     <property name="hexpand">True</property>
-    <property name="border_width">0</property>
+    <property name="border_width">12</property>
     <property name="orientation">vertical</property>
-    <property name="row_spacing">8</property>
-    <property name="column_spacing">36</property>
+    <property name="row_spacing">6</property>
+    <property name="column_spacing">12</property>
     <child>
       <object class="GtkLabel" id="name_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="label" translatable="yes">Device name</property>
+        <property name="halign">start</property>
+        <property name="label" translatable="yes">Device name:</property>
       </object>
       <packing>
         <property name="left_attach">0</property>
@@ -80,7 +77,7 @@
         <property name="can_focus">False</property>
         <property name="halign">start</property>
         <property name="hexpand">False</property>
-        <property name="label" translatable="yes">Parent device</property>
+        <property name="label" translatable="yes">Parent device:</property>
       </object>
       <packing>
         <property name="left_attach">0</property>
@@ -151,7 +148,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">start</property>
-        <property name="label" translatable="yes">CKN</property>
+        <property name="label" translatable="yes">CKN:</property>
       </object>
       <packing>
         <property name="left_attach">0</property>
@@ -164,7 +161,7 @@
         <property name="can_focus">False</property>
         <property name="halign">start</property>
         <property name="hexpand">False</property>
-        <property name="label" translatable="yes">CAK</property>
+        <property name="label" translatable="yes">CAK:</property>
       </object>
       <packing>
         <property name="left_attach">0</property>
@@ -177,7 +174,7 @@
         <property name="can_focus">False</property>
         <property name="halign">start</property>
         <property name="hexpand">False</property>
-        <property name="label" translatable="yes">Mode</property>
+        <property name="label" translatable="yes">Mode:</property>
       </object>
       <packing>
         <property name="left_attach">0</property>
@@ -188,7 +185,7 @@
       <object class="GtkLabel">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="label" translatable="yes">Keys</property>
+        <property name="label" translatable="yes">Keys:</property>
         <property name="xalign">2.2351741291171123e-10</property>
         <attributes>
           <attribute name="weight" value="bold"/>
@@ -204,7 +201,7 @@
       <object class="GtkLabel">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="label" translatable="yes">Parameters</property>
+        <property name="label" translatable="yes">Parameters:</property>
         <property name="xalign">0</property>
         <attributes>
           <attribute name="weight" value="bold"/>
@@ -221,7 +218,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">start</property>
-        <property name="label" translatable="yes">Encrypt</property>
+        <property name="label" translatable="yes">Validation:</property>
       </object>
       <packing>
         <property name="left_attach">0</property>
@@ -233,23 +230,11 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">start</property>
-        <property name="label" translatable="yes">Validation</property>
+        <property name="label" translatable="yes">SCI port:</property>
       </object>
       <packing>
         <property name="left_attach">0</property>
         <property name="top_attach">8</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkLabel">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="halign">start</property>
-        <property name="label" translatable="yes">SCI port</property>
-      </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">9</property>
       </packing>
     </child>
     <child>
@@ -267,23 +252,21 @@
       </object>
       <packing>
         <property name="left_attach">1</property>
-        <property name="top_attach">8</property>
+        <property name="top_attach">7</property>
       </packing>
     </child>
     <child>
       <object class="GtkCheckButton" id="macsec_encryption">
+        <property name="label" translatable="yes">Encrypt</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
         <property name="tooltip_text" translatable="yes">Whether the transmitted traffic must be encrypted</property>
         <property name="draw_indicator">True</property>
-        <child>
-          <placeholder/>
-        </child>
       </object>
       <packing>
         <property name="left_attach">1</property>
-        <property name="top_attach">7</property>
+        <property name="top_attach">9</property>
       </packing>
     </child>
     <child>
@@ -297,8 +280,11 @@
       </object>
       <packing>
         <property name="left_attach">1</property>
-        <property name="top_attach">9</property>
+        <property name="top_attach">8</property>
       </packing>
+    </child>
+    <child>
+      <placeholder/>
     </child>
   </object>
 </interface>
