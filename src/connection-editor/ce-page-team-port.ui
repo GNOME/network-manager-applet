@@ -216,7 +216,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="hexpand">True</property>
                     <property name="label" translatable="yes">_Queue ID:</property>
                     <property name="use_underline">True</property>
                     <property name="mnemonic_widget">queue_id</property>
@@ -243,74 +242,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkFrame">
+                  <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label_xalign">0</property>
-                    <property name="shadow_type">etched-out</property>
-                    <child>
-                      <object class="GtkGrid">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="border_width">6</property>
-                        <property name="row_spacing">6</property>
-                        <property name="column_spacing">12</property>
-                        <child>
-                          <object class="GtkLabel" id="port_prio_label">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">start</property>
-                            <property name="hexpand">True</property>
-                            <property name="label" translatable="yes">_Port priority:</property>
-                            <property name="use_underline">True</property>
-                            <property name="xalign">0</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkCheckButton" id="port_sticky">
-                            <property name="label" translatable="yes">Port _sticky</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">False</property>
-                            <property name="tooltip_text" translatable="yes">Validate received ARP packets on active ports. If this is not checked, all incoming ARP packets will be considered as a good reply.</property>
-                            <property name="halign">start</property>
-                            <property name="use_underline">True</property>
-                            <property name="draw_indicator">True</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">1</property>
-                            <property name="width">2</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkSpinButton" id="port_prio">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="tooltip_text" translatable="yes">Value is positive number in milliseconds. Specifies an interval between bursts of notify-peer packets.</property>
-                            <property name="hexpand">True</property>
-                            <property name="secondary_icon_tooltip_text" translatable="yes">Port priority. The higher number means higher priority.</property>
-                            <property name="adjustment">port_prio_adjustment</property>
-                            <property name="value">-1</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                      </object>
-                    </child>
-                    <child type="label">
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Active-Backup runner options</property>
-                      </object>
-                    </child>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">&lt;b&gt;Active-Backup runner options&lt;/b&gt;</property>
+                    <property name="use_markup">True</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -319,93 +256,124 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkFrame">
+                  <object class="GtkLabel" id="port_prio_label">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label_xalign">0</property>
-                    <property name="shadow_type">etched-out</property>
-                    <child>
-                      <object class="GtkGrid">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="border_width">6</property>
-                        <property name="row_spacing">6</property>
-                        <property name="column_spacing">12</property>
-                        <child>
-                          <object class="GtkLabel" id="lacp_port_prio_label">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">start</property>
-                            <property name="hexpand">True</property>
-                            <property name="label" translatable="yes">_LACP port priority:</property>
-                            <property name="use_underline">True</property>
-                            <property name="xalign">0</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="lacp_port_key_label">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">start</property>
-                            <property name="hexpand">True</property>
-                            <property name="label" translatable="yes">LACP port _key:</property>
-                            <property name="use_underline">True</property>
-                            <property name="xalign">0</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">1</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkSpinButton" id="lacp_port_prio">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="tooltip_text" translatable="yes">Number of bursts of multicast group rejoin requests sent after port is enabled or disabled.</property>
-                            <property name="hexpand">True</property>
-                            <property name="secondary_icon_tooltip_text" translatable="yes">Port priority according to LACP standard. The lower number means higher priority.</property>
-                            <property name="adjustment">lacp_port_prio_adjustment</property>
-                            <property name="value">-1</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkSpinButton" id="lacp_port_key">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="tooltip_text" translatable="yes">Value is positive number in milliseconds. Specifies an interval between bursts of multicast group rejoin requests.</property>
-                            <property name="hexpand">True</property>
-                            <property name="secondary_icon_tooltip_text" translatable="yes">Port key according to LACP standard. It is only possible to aggregate ports with the same key.</property>
-                            <property name="adjustment">lacp_port_key_adjustment</property>
-                            <property name="value">-1</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">1</property>
-                          </packing>
-                        </child>
-                      </object>
-                    </child>
-                    <child type="label">
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">LACP runner options</property>
-                      </object>
-                    </child>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">_Port priority:</property>
+                    <property name="use_underline">True</property>
+                    <property name="xalign">0</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
                     <property name="top_attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSpinButton" id="port_prio">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Value is positive number in milliseconds. Specifies an interval between bursts of notify-peer packets.</property>
+                    <property name="hexpand">True</property>
+                    <property name="secondary_icon_tooltip_text" translatable="yes">Port priority. The higher number means higher priority.</property>
+                    <property name="adjustment">port_prio_adjustment</property>
+                    <property name="value">-1</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="port_sticky">
+                    <property name="label" translatable="yes">Port _sticky</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="tooltip_text" translatable="yes">Validate received ARP packets on active ports. If this is not checked, all incoming ARP packets will be considered as a good reply.</property>
+                    <property name="halign">start</property>
+                    <property name="use_underline">True</property>
+                    <property name="draw_indicator">True</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">&lt;b&gt;LACP runner options&lt;/b&gt;</property>
+                    <property name="use_markup">True</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">4</property>
                     <property name="width">2</property>
                   </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="lacp_port_prio_label">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">_LACP port priority:</property>
+                    <property name="use_underline">True</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="lacp_port_key_label">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">LACP port _key:</property>
+                    <property name="use_underline">True</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSpinButton" id="lacp_port_prio">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Number of bursts of multicast group rejoin requests sent after port is enabled or disabled.</property>
+                    <property name="hexpand">True</property>
+                    <property name="secondary_icon_tooltip_text" translatable="yes">Port priority according to LACP standard. The lower number means higher priority.</property>
+                    <property name="adjustment">lacp_port_prio_adjustment</property>
+                    <property name="value">-1</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSpinButton" id="lacp_port_key">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Value is positive number in milliseconds. Specifies an interval between bursts of multicast group rejoin requests.</property>
+                    <property name="hexpand">True</property>
+                    <property name="secondary_icon_tooltip_text" translatable="yes">Port key according to LACP standard. It is only possible to aggregate ports with the same key.</property>
+                    <property name="adjustment">lacp_port_key_adjustment</property>
+                    <property name="value">-1</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
               </object>
             </child>
@@ -432,7 +400,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="hexpand">True</property>
                     <property name="label" translatable="yes">_Link watcher:</property>
                     <property name="use_underline">True</property>
                     <property name="mnemonic_widget">link_watcher_name</property>
@@ -448,7 +415,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="hexpand">True</property>
                     <property name="label" translatable="yes">_Up delay:</property>
                     <property name="use_underline">True</property>
                     <property name="mnemonic_widget">delay_up</property>
@@ -464,7 +430,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="hexpand">True</property>
                     <property name="label" translatable="yes">_Down delay:</property>
                     <property name="use_underline">True</property>
                     <property name="mnemonic_widget">delay_down</property>
@@ -480,7 +445,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="hexpand">True</property>
                     <property name="label" translatable="yes">Send _interval:</property>
                     <property name="use_underline">True</property>
                     <property name="mnemonic_widget">send_interval</property>
@@ -496,7 +460,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="hexpand">True</property>
                     <property name="label" translatable="yes">Delay _before first send:</property>
                     <property name="use_underline">True</property>
                     <property name="mnemonic_widget">init_wait</property>
@@ -512,7 +475,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="hexpand">True</property>
                     <property name="label" translatable="yes">_Maximum missed replies:</property>
                     <property name="use_underline">True</property>
                     <property name="mnemonic_widget">missed_max</property>
@@ -528,7 +490,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="hexpand">True</property>
                     <property name="label" translatable="yes">_Source host:</property>
                     <property name="use_underline">True</property>
                     <property name="mnemonic_widget">source_host</property>
@@ -544,7 +505,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="hexpand">False</property>
                     <property name="label" translatable="yes">_Target host:</property>
                     <property name="use_underline">True</property>
                     <property name="mnemonic_widget">target_host</property>
