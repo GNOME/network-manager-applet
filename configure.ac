@@ -171,7 +171,7 @@ if (test "${with_team}" == "no"); then
     AC_DEFINE(WITH_JANSSON, 0, [Define if Jansson is available])
 else
     PKG_CHECK_MODULES(JANSSON,
-                      [jansson >= 2.3],,
+                      [jansson >= 2.7],,
                       AC_MSG_ERROR([jansson is needed for team configuration editor. Use --without-team to build without it.]))
     AC_DEFINE(WITH_JANSSON, 1, [Define if Jansson is available])
 fi
