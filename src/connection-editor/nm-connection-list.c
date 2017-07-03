@@ -642,6 +642,33 @@ timestamp_sort_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpoint
 }
 
 static gboolean
+has_visible_children (NMConnectionList *self, GtkTreeModel *model, GtkTreeIter *parent)
+{
+	NMConnectionListPrivate *priv = NM_CONNECTION_LIST_GET_PRIVATE (self);
+	GtkTreeIter iter;
+	const char *search;
+	char *id = NULL;
+
+	if (!gtk_search_bar_get_search_mode (priv->search_bar))
+		return gtk_tree_model_iter_has_child  (model, parent);
+
+	if (!gtk_tree_model_iter_children (model, &iter, parent))
+		return FALSE;
+
+	search = gtk_entry_get_text (GTK_ENTRY (priv->search_entry));
+	do {
+		gtk_tree_model_get (model, &iter, COL_ID, &id, -1);
+		if (strcasestr (id, search) != NULL) {
+			g_free (id);
+			return TRUE;
+		}
+		g_free (id);
+	} while (gtk_tree_model_iter_next (model, &iter));
+
+	return FALSE;
+}
+
+static gboolean
 tree_model_visible_func (GtkTreeModel *model,
                          GtkTreeIter *iter,
                          gpointer user_data)
@@ -659,8 +686,8 @@ tree_model_visible_func (GtkTreeModel *model,
 	                    COL_CONNECTION, &connection,
 	                    -1);
 	if (!connection) {
-		/* Top-level type nodes are visible iff they have children */
-		return gtk_tree_model_iter_has_child  (model, iter);
+		/* Top-level type nodes are visible iff they have visible children */
+		return has_visible_children (self, model, iter);
 	}
 
 	if (   gtk_search_bar_get_search_mode (priv->search_bar)
