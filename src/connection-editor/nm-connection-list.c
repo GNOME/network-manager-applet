@@ -649,6 +649,24 @@ tree_model_visible_func (GtkTreeModel *model,
 	return TRUE;
 }
 
+static gboolean
+connection_list_equal (GtkTreeModel *model, gint column, const gchar *key,
+                       GtkTreeIter *iter, gpointer user_data)
+{
+	gs_free char *id = NULL;
+	gs_unref_object NMConnection *connection = NULL;
+
+	gtk_tree_model_get (model, iter,
+	                    COL_ID, &id,
+	                    COL_CONNECTION, &connection,
+	                    -1);
+
+	if (!connection)
+		return TRUE;
+
+	return strcasestr (id, key) == NULL;
+}
+
 static void
 initialize_treeview (NMConnectionList *self)
 {
@@ -687,6 +705,7 @@ initialize_treeview (NMConnectionList *self)
 	gtk_tree_sortable_set_sort_column_id (priv->sortable, COL_TIMESTAMP, GTK_SORT_ASCENDING);
 
 	gtk_tree_view_set_model (priv->connection_list, GTK_TREE_MODEL (priv->sortable));
+	gtk_tree_view_set_search_equal_func (priv->connection_list, connection_list_equal, NULL, NULL);
 
 	/* Name column */
 	renderer = gtk_cell_renderer_text_new ();
