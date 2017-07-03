@@ -50,6 +50,8 @@ struct _NMConnectionListPrivate {
 	GtkWidget *connection_del;
 	GtkWidget *connection_edit;
 	GtkTreeView *connection_list;
+	GtkSearchBar *search_bar;
+	GtkEntry *search_entry;
 	GtkTreeModel *model;
 	GtkTreeModelFilter *filter;
 	GtkTreeSortable *sortable;
@@ -459,14 +461,45 @@ list_close_cb (GtkDialog *dialog, gpointer user_data)
 }
 
 static gboolean
-key_press_cb (GtkWidget *widget, GdkEventKey *event, gpointer user_data)
+key_press_cb (GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
-	if (event->keyval == GDK_KEY_Escape) {
-		gtk_window_close (GTK_WINDOW (user_data));
-		return TRUE;
+	NMConnectionList *list = user_data;
+	NMConnectionListPrivate *priv = NM_CONNECTION_LIST_GET_PRIVATE (list);
+	GdkEventKey *key_event = (GdkEventKey *) event;
+
+	if (gtk_search_bar_handle_event (priv->search_bar, event) == GDK_EVENT_STOP)
+		return GDK_EVENT_STOP;
+
+	if (key_event->keyval == GDK_KEY_Escape) {
+		if (gtk_search_bar_get_search_mode (priv->search_bar))
+			gtk_search_bar_set_search_mode (priv->search_bar, FALSE);
+		else
+			gtk_window_close (GTK_WINDOW (user_data));
+		return GDK_EVENT_STOP;
 	}
 
-	return FALSE;
+	return GDK_EVENT_PROPAGATE;
+}
+
+static gboolean
+start_search (GtkTreeView *treeview, gpointer user_data)
+{
+	NMConnectionList *list = user_data;
+	NMConnectionListPrivate *priv = NM_CONNECTION_LIST_GET_PRIVATE (list);
+
+	gtk_search_bar_set_search_mode (priv->search_bar, TRUE);
+
+	return TRUE;
+}
+
+static void
+search_changed (GtkSearchEntry *entry, gpointer user_data)
+{
+	NMConnectionList *list = user_data;
+	NMConnectionListPrivate *priv = NM_CONNECTION_LIST_GET_PRIVATE (list);
+
+	gtk_tree_model_filter_refilter (priv->filter);
+	gtk_tree_view_expand_all (priv->connection_list);
 }
 
 static void
@@ -520,6 +553,8 @@ nm_connection_list_class_init (NMConnectionListClass *klass)
         gtk_widget_class_bind_template_child_private (widget_class, NMConnectionList, connection_add);
         gtk_widget_class_bind_template_child_private (widget_class, NMConnectionList, connection_del);
         gtk_widget_class_bind_template_child_private (widget_class, NMConnectionList, connection_edit);
+        gtk_widget_class_bind_template_child_private (widget_class, NMConnectionList, search_bar);
+        gtk_widget_class_bind_template_child_private (widget_class, NMConnectionList, search_entry);
 
         gtk_widget_class_bind_template_callback (widget_class, add_clicked);
         gtk_widget_class_bind_template_callback (widget_class, do_edit);
@@ -527,6 +562,8 @@ nm_connection_list_class_init (NMConnectionListClass *klass)
         gtk_widget_class_bind_template_callback (widget_class, list_close_cb);
         gtk_widget_class_bind_template_callback (widget_class, selection_changed_cb);
         gtk_widget_class_bind_template_callback (widget_class, key_press_cb);
+        gtk_widget_class_bind_template_callback (widget_class, start_search);
+        gtk_widget_class_bind_template_callback (widget_class, search_changed);
 }
 
 static void
@@ -615,12 +652,20 @@ tree_model_visible_func (GtkTreeModel *model,
 	NMSettingConnection *s_con;
 	const char *master;
 	const char *slave_type;
+	gs_free char *id = NULL;
 
-	gtk_tree_model_get (model, iter, COL_CONNECTION, &connection, -1);
+	gtk_tree_model_get (model, iter,
+	                    COL_ID, &id,
+	                    COL_CONNECTION, &connection,
+	                    -1);
 	if (!connection) {
 		/* Top-level type nodes are visible iff they have children */
 		return gtk_tree_model_iter_has_child  (model, iter);
 	}
+
+	if (   gtk_search_bar_get_search_mode (priv->search_bar)
+	    && strcasestr (id, gtk_entry_get_text (GTK_ENTRY (priv->search_entry))) == NULL)
+		return FALSE;
 
 	/* A connection node is visible unless it is a slave to a known
 	 * bond or team or bridge.
@@ -706,6 +751,7 @@ initialize_treeview (NMConnectionList *self)
 
 	gtk_tree_view_set_model (priv->connection_list, GTK_TREE_MODEL (priv->sortable));
 	gtk_tree_view_set_search_equal_func (priv->connection_list, connection_list_equal, NULL, NULL);
+	gtk_tree_view_set_search_entry (priv->connection_list, priv->search_entry);
 
 	/* Name column */
 	renderer = gtk_cell_renderer_text_new ();
