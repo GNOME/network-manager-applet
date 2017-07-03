@@ -1132,6 +1132,17 @@ editor_closed_cb (GtkWidget *widget, GdkEvent *event, gpointer user_data)
 	cancel_button_clicked_cb (widget, user_data);
 }
 
+static gboolean
+key_press_cb (GtkWidget *widget, GdkEventKey *event, gpointer user_data)
+{
+	if (event->keyval == GDK_KEY_Escape) {
+		gtk_window_close (GTK_WINDOW (widget));
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
 static void
 added_connection_cb (GObject *client,
                      GAsyncResult *result,
@@ -1280,6 +1291,8 @@ nm_connection_editor_run (NMConnectionEditor *self)
 
 	g_signal_connect (G_OBJECT (self->window), "delete-event",
 	                  G_CALLBACK (editor_closed_cb), self);
+	g_signal_connect (G_OBJECT (self->window), "key-press-event",
+	                  G_CALLBACK (key_press_cb), self);
 
 	g_signal_connect (G_OBJECT (self->ok_button), "clicked",
 	                  G_CALLBACK (ok_button_clicked_cb), self);
