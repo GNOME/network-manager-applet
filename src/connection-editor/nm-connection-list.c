@@ -458,6 +458,17 @@ list_close_cb (GtkDialog *dialog, gpointer user_data)
 	               GTK_RESPONSE_CLOSE);
 }
 
+static gboolean
+key_press_cb (GtkWidget *widget, GdkEventKey *event, gpointer user_data)
+{
+	if (event->keyval == GDK_KEY_Escape) {
+		gtk_window_close (GTK_WINDOW (user_data));
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
 static void
 nm_connection_list_init (NMConnectionList *list)
 {
@@ -515,6 +526,7 @@ nm_connection_list_class_init (NMConnectionListClass *klass)
         gtk_widget_class_bind_template_callback (widget_class, delete_clicked);
         gtk_widget_class_bind_template_callback (widget_class, list_close_cb);
         gtk_widget_class_bind_template_callback (widget_class, selection_changed_cb);
+        gtk_widget_class_bind_template_callback (widget_class, key_press_cb);
 }
 
 static void
