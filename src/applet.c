@@ -1512,34 +1512,10 @@ nma_menu_add_vpn_submenu (GtkWidget *menu, NMApplet *applet)
 }
 
 
-static gboolean
-has_usable_wifi (NMApplet *applet)
-{
-	const GPtrArray *devices;
-	int i;
-
-	if (!nm_client_wireless_get_enabled (applet->nm_client))
-		return FALSE;
-
-	devices = nm_client_get_devices (applet->nm_client);
-	if (!devices)
-		return FALSE;
-
-	for (i = 0; i < devices->len; i++) {
-		NMDevice *device = devices->pdata[i];
-
-		if (   NM_IS_DEVICE_WIFI (device)
-		    && (nm_device_get_state (device) >= NM_DEVICE_STATE_DISCONNECTED))
-			return TRUE;
-	}
-
-	return FALSE;
-}
-
 /*
  * nma_menu_show_cb
  *
- * Pop up the wifi networks menu
+ * Pop up the network menu
  *
  */
 static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
@@ -1550,52 +1526,26 @@ static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 	if (applet->status_icon)
 		gtk_status_icon_set_tooltip_text (applet->status_icon, NULL);
 
-	if (!nm_client_get_nm_running (applet->nm_client)) {
-		nma_menu_add_text_item (menu, _("NetworkManager is not running…"));
-		return;
-	}
+	/* Have clicking on the applet act also as acknowledgement
+	 * of the notification.
+	 */
+	applet_clear_notify (applet);
 
-	if (nm_client_get_state (applet->nm_client) == NM_STATE_ASLEEP) {
-		nma_menu_add_text_item (menu, _("Networking disabled"));
-		return;
-	}
-
-	nma_menu_add_devices (menu, applet);
-	nma_menu_add_vpn_submenu (menu, applet);
-
-	if (has_usable_wifi (applet)) {
-		/* Add the "Hidden Wi-Fi network..." entry */
-		nma_menu_add_separator_item (menu);
-		nma_menu_add_hidden_network_item (menu, applet);
-		nma_menu_add_create_network_item (menu, applet);
-	}
+	applet_start_wifi_scan (applet, NULL);
 
 	if (!INDICATOR_ENABLED (applet))
 		gtk_widget_show_all (menu);
 }
 
-static gboolean
-destroy_old_menu (gpointer user_data)
-{
-	g_object_unref (user_data);
-	return FALSE;
-}
-
 static void
 nma_menu_deactivate_cb (GtkWidget *widget, NMApplet *applet)
 {
-	/* Must punt the destroy to a low-priority idle to ensure that
-	 * the menu items don't get destroyed before any 'activate' signal
-	 * fires for an item.
-	 */
-	g_signal_handlers_disconnect_by_func (applet->menu, G_CALLBACK (nma_menu_deactivate_cb), applet);
-	g_idle_add_full (G_PRIORITY_LOW, destroy_old_menu, applet->menu, NULL);
-	applet->menu = NULL;
+	GtkMenu *menu = GTK_MENU (widget);
 
+	g_signal_handlers_disconnect_by_func (menu, G_CALLBACK (nma_menu_deactivate_cb), applet);
 	applet_stop_wifi_scan (applet, NULL);
-
-	/* Re-set the tooltip */
-	gtk_status_icon_set_tooltip_text (applet->status_icon, applet->tip);
+	if (applet->status_icon)
+		gtk_status_icon_set_tooltip_text (applet->status_icon, applet->tip);
 }
 
 typedef struct {
@@ -1695,41 +1645,32 @@ applet_add_default_connection_item (NMDevice *device,
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 }
 
+static GtkMenu *
+applet_get_menu (NMApplet *applet)
+{
+	if (INDICATOR_ENABLED (applet)) {
+#ifdef WITH_APPINDICATOR
+		return app_indicator_get_menu (applet->app_indicator);
+#else
+		g_return_val_if_reached (NULL);
+#endif /* WITH_APPINDICATOR */
+	}
+
+	return GTK_MENU (applet->menu);
+}
+
 static gboolean
 applet_update_menu (gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (user_data);
-	GList *children, *elt;
 	GtkMenu *menu;
 
-	if (INDICATOR_ENABLED (applet)) {
-#ifdef WITH_APPINDICATOR
-		menu = app_indicator_get_menu (applet->app_indicator);
-		if (!menu) {
-			menu = GTK_MENU (gtk_menu_new ());
-			app_indicator_set_menu (applet->app_indicator, menu);
-			g_signal_connect_swapped (menu, "show", G_CALLBACK (applet_start_wifi_scan), applet);
-			g_signal_connect_swapped (menu, "hide", G_CALLBACK (applet_stop_wifi_scan), applet);
-		}
-#else
-		g_return_val_if_reached (G_SOURCE_REMOVE);
-#endif /* WITH_APPINDICATOR */
-	} else {
-		menu = GTK_MENU (applet->menu);
-		if (!menu) {
-			/* Menu not open */
-			goto out;
-		}
-	}
+	menu = applet_get_menu (applet);
 
-	/* Clear all entries */
-	children = gtk_container_get_children (GTK_CONTAINER (menu));
-	for (elt = children; elt; elt = g_list_next (elt))
-		gtk_container_remove (GTK_CONTAINER (menu), GTK_WIDGET (elt->data));
-	g_list_free (children);
-
-	/* Update the menu */
 	if (INDICATOR_ENABLED (applet)) {
+		/* Show the network menu; indicator only gets one menu so
+		 * the context menu items are added to the bottom.
+		 */
 		nma_menu_show_cb (GTK_WIDGET (menu), applet);
 		nma_menu_add_separator_item (GTK_WIDGET (menu));
 		nma_context_menu_populate (applet, menu);
@@ -1737,7 +1678,6 @@ applet_update_menu (gpointer user_data)
 	} else
 		nma_menu_show_cb (GTK_WIDGET (menu), applet);
 
-out:
 	applet->update_menu_id = 0;
 	return G_SOURCE_REMOVE;
 }
@@ -2828,45 +2768,22 @@ status_icon_size_changed_cb (GtkStatusIcon *icon,
 }
 
 static void
-status_icon_activate_cb (GtkStatusIcon *icon, NMApplet *applet)
+status_icon_show_network_menu_cb (GtkStatusIcon *icon, NMApplet *applet)
 {
-	/* Have clicking on the applet act also as acknowledgement
-	 * of the notification.
-	 */
 	applet_clear_notify (applet);
-
 	applet_start_wifi_scan (applet, NULL);
-
-	/* Kill any old menu */
-	if (applet->menu)
-		g_object_unref (applet->menu);
-
-	/* And make a fresh new one */
-	applet->menu = gtk_menu_new ();
-	/* Sink the ref so we can explicitly destroy the menu later */
-	g_object_ref_sink (G_OBJECT (applet->menu));
-
-	gtk_container_set_border_width (GTK_CONTAINER (applet->menu), 0);
-	g_signal_connect (applet->menu, "show", G_CALLBACK (nma_menu_show_cb), applet);
-	g_signal_connect (applet->menu, "deactivate", G_CALLBACK (nma_menu_deactivate_cb), applet);
-
-	/* Display the new menu */
-	gtk_menu_popup (GTK_MENU (applet->menu), NULL, NULL,
+	gtk_menu_popup (applet_get_menu (applet), NULL, NULL,
 	                gtk_status_icon_position_menu, icon,
 	                1, gtk_get_current_event_time ());
 }
 
 static void
-status_icon_popup_menu_cb (GtkStatusIcon *icon,
-                           guint button,
-                           guint32 activate_time,
-                           NMApplet *applet)
+status_icon_show_context_menu_cb (GtkStatusIcon *icon,
+                                  guint button,
+                                  guint32 activate_time,
+                                  NMApplet *applet)
 {
-	/* Have clicking on the applet act also as acknowledgement
-	 * of the notification.
-	 */
 	applet_clear_notify (applet);
-
 	nma_context_menu_update (applet);
 	gtk_menu_popup (GTK_MENU (applet->context_menu), NULL, NULL,
 			gtk_status_icon_position_menu, icon,
@@ -2874,17 +2791,83 @@ status_icon_popup_menu_cb (GtkStatusIcon *icon,
 }
 
 static gboolean
+has_usable_wifi (NMApplet *applet)
+{
+	const GPtrArray *devices;
+	int i;
+
+	if (!nm_client_wireless_get_enabled (applet->nm_client))
+		return FALSE;
+
+	devices = nm_client_get_devices (applet->nm_client);
+	if (!devices)
+		return FALSE;
+
+	for (i = 0; i < devices->len; i++) {
+		NMDevice *device = devices->pdata[i];
+
+		if (   NM_IS_DEVICE_WIFI (device)
+		    && (nm_device_get_state (device) >= NM_DEVICE_STATE_DISCONNECTED))
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
+/* Create the initial network menu; it will be updated asynchronously
+ * based on libnm events.
+ */
+static GtkWidget *
+applet_network_menu_new (NMApplet *applet)
+{
+	GtkWidget *menu;
+
+	menu = gtk_menu_new ();
+	gtk_container_set_border_width (GTK_CONTAINER (menu), 0);
+
+	if (!nm_client_get_nm_running (applet->nm_client)) {
+		nma_menu_add_text_item (menu, _("NetworkManager is not running…"));
+		return menu;
+	}
+
+	if (nm_client_get_state (applet->nm_client) == NM_STATE_ASLEEP) {
+		nma_menu_add_text_item (menu, _("Networking disabled"));
+		return menu;
+	}
+
+	nma_menu_add_devices (menu, applet);
+	nma_menu_add_vpn_submenu (menu, applet);
+
+	if (has_usable_wifi (applet)) {
+		/* Add the "Hidden Wi-Fi network..." entry */
+		nma_menu_add_separator_item (menu);
+		nma_menu_add_hidden_network_item (menu, applet);
+		nma_menu_add_create_network_item (menu, applet);
+	}
+
+	/* Start/stop wifi scans when the menu is dropped down and cleared */
+	g_signal_connect_swapped (menu, "show", G_CALLBACK (applet_start_wifi_scan), applet);
+	g_signal_connect_swapped (menu, "hide", G_CALLBACK (applet_stop_wifi_scan), applet);
+
+	return menu;
+}
+
+static gboolean
 setup_widgets (NMApplet *applet)
 {
 #ifdef WITH_APPINDICATOR
 	if (with_appindicator) {
+		GtkMenu *network_menu;
+
 		applet->app_indicator = app_indicator_new ("nm-applet",
 		                                           "nm-no-connection",
 		                                           APP_INDICATOR_CATEGORY_SYSTEM_SERVICES);
 		if (!applet->app_indicator)
 			return FALSE;
 		app_indicator_set_title(applet->app_indicator, _("Network"));
-		applet_schedule_update_menu (applet);
+
+		network_menu = GTK_MENU (applet_network_menu_new (applet));
+		app_indicator_set_menu (applet->app_indicator, network_menu);
 	}
 #endif  /* WITH_APPINDICATOR */
 
@@ -2892,6 +2875,9 @@ setup_widgets (NMApplet *applet)
 	if (!INDICATOR_ENABLED (applet)) {
 		applet->status_icon = gtk_status_icon_new ();
 
+		/* Set an unrecognized status icon name so that GNOME Shell doesn't
+		 * hide the applet.  Only for debugging.
+		 */
 		if (shell_debug)
 			gtk_status_icon_set_name (applet->status_icon, "adsfasdfasdfadfasdf");
 
@@ -2900,10 +2886,16 @@ setup_widgets (NMApplet *applet)
 		g_signal_connect (applet->status_icon, "size-changed",
 				  G_CALLBACK (status_icon_size_changed_cb), applet);
 		g_signal_connect (applet->status_icon, "activate",
-				  G_CALLBACK (status_icon_activate_cb), applet);
+				  G_CALLBACK (status_icon_show_network_menu_cb), applet);
 		g_signal_connect (applet->status_icon, "popup-menu",
-				  G_CALLBACK (status_icon_popup_menu_cb), applet);
+				  G_CALLBACK (status_icon_show_context_menu_cb), applet);
 
+		/* Create the network menu */
+		applet->menu = applet_network_menu_new (applet);
+		g_signal_connect (applet->menu, "show", G_CALLBACK (nma_menu_show_cb), applet);
+		g_signal_connect (applet->menu, "deactivate", G_CALLBACK (nma_menu_deactivate_cb), applet);
+
+		/* Create the context menu */
 		applet->context_menu = gtk_menu_new ();
 		nma_context_menu_populate (applet, GTK_MENU (applet->context_menu));
 	}
@@ -2999,14 +2991,6 @@ applet_startup (GApplication *app, gpointer user_data)
 
 	foo_client_setup (applet);
 
-	/* Load pixmaps and create applet widgets */
-	if (!setup_widgets (applet)) {
-		g_warning ("Could not initialize applet widgets.");
-		g_application_quit (app);
-		return;
-	}
-	g_assert (INDICATOR_ENABLED (applet) || applet->status_icon);
-
 	applet->icon_cache = g_hash_table_new_full (g_str_hash,
 	                                            g_str_equal,
 	                                            g_free,
@@ -3034,6 +3018,14 @@ applet_startup (GApplication *app, gpointer user_data)
 #if WITH_WWAN
 	mm1_client_setup (applet);
 #endif
+
+	/* Load pixmaps and create applet widgets */
+	if (!setup_widgets (applet)) {
+		g_warning ("Could not initialize applet widgets.");
+		g_application_quit (app);
+		return;
+	}
+	g_assert (INDICATOR_ENABLED (applet) || applet->status_icon);
 
 	if (applet->status_icon) {
 		/* Track embedding to help debug issues where user has removed the
