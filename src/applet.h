@@ -33,6 +33,9 @@
 
 #ifdef WITH_APPINDICATOR
 #include <libappindicator/app-indicator.h>
+#define INDICATOR_ENABLED(a) ((a)->app_indicator)
+#else
+#define INDICATOR_ENABLED(a) (FALSE)
 #endif
 
 #include <NetworkManager.h>

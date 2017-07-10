@@ -783,6 +783,8 @@ nm_applet_hc_real = \
 	src/applet-agent.h \
 	src/applet-vpn-request.c \
 	src/applet-vpn-request.h \
+	src/context-menu.c \
+	src/context-menu.h \
 	src/ethernet-dialog.h \
 	src/ethernet-dialog.c \
 	src/applet-dialogs.h \
