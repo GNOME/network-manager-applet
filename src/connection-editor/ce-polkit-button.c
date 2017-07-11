@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2009 - 2014 Red Hat, Inc.
+ * Copyright 2009 - 2017 Red Hat, Inc.
  */
 
 #include "nm-default.h"
@@ -35,7 +35,7 @@ typedef struct {
 	char *auth_tooltip;
 	char *validation_error;
 
-	GtkWidget *stock;
+	GtkWidget *icon;
 	GtkWidget *auth;
 
 	NMClient *client;
@@ -74,7 +74,7 @@ update_button (CEPolkitButton *self)
 		gtk_widget_set_tooltip_text (GTK_WIDGET (self), _("No polkit authorization to perform the action"));
 
 	if (priv->permission_result == NM_CLIENT_PERMISSION_RESULT_YES)
-		gtk_button_set_image (GTK_BUTTON (self), priv->stock);
+		gtk_button_set_image (GTK_BUTTON (self), priv->icon);
 	else
 		gtk_button_set_image (GTK_BUTTON (self), priv->auth);
 }
@@ -162,7 +162,7 @@ GtkWidget *
 ce_polkit_button_new (const char *label,
                       const char *tooltip,
                       const char *auth_tooltip,
-                      const char *stock_icon,
+                      const char *icon_name,
                       NMClient *client,
                       NMClientPermission permission)
 {
@@ -185,9 +185,9 @@ ce_polkit_button_new (const char *label,
 	                                  G_CALLBACK (permission_changed_cb),
 	                                  object);
 
-	priv->stock = gtk_image_new_from_stock (stock_icon, GTK_ICON_SIZE_BUTTON);
-	g_object_ref_sink (priv->stock);
-	priv->auth = gtk_image_new_from_stock (GTK_STOCK_DIALOG_AUTHENTICATION, GTK_ICON_SIZE_BUTTON);
+	priv->icon = gtk_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_BUTTON);
+	g_object_ref_sink (priv->icon);
+	priv->auth = gtk_image_new_from_icon_name ("dialog-password", GTK_ICON_SIZE_BUTTON);
 	g_object_ref_sink (priv->auth);
 
 	gtk_button_set_label (GTK_BUTTON (object), label);
@@ -213,7 +213,7 @@ dispose (GObject *object)
 
 	g_clear_object (&priv->client);
 	g_clear_object (&priv->auth);
-	g_clear_object (&priv->stock);
+	g_clear_object (&priv->icon);
 
 	G_OBJECT_CLASS (ce_polkit_button_parent_class)->dispose (object);
 }

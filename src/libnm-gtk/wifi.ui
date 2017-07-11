@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.1 -->
+<!-- Generated with glade 3.20.0 -->
 <interface>
-  <requires lib="gtk+" version="3.4"/>
+  <requires lib="gtk+" version="3.10"/>
   <object class="GtkListStore" id="model1">
     <columns>
       <!-- column-name gchararray -->
@@ -33,7 +33,7 @@
       <object class="GtkImage" id="image1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="valign">GTK_ALIGN_START</property>
+        <property name="valign">start</property>
         <property name="icon_name">network-wireless</property>
         <property name="icon_size">6</property>
       </object>
@@ -52,10 +52,10 @@
           <object class="GtkLabel" id="caption_label">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="xalign">0</property>
             <property name="use_markup">True</property>
             <property name="wrap">True</property>
             <property name="max_width_chars">50</property>
+            <property name="xalign">0</property>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -64,48 +64,45 @@
           </packing>
         </child>
         <child>
-          <object class="GtkTable" id="table1">
+          <object class="GtkGrid" id="table1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="n_rows">5</property>
-            <property name="n_columns">2</property>
-            <property name="column_spacing">12</property>
             <property name="row_spacing">6</property>
+            <property name="column_spacing">12</property>
             <child>
               <object class="GtkVBox" id="security_vbox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
                 <child>
                   <placeholder/>
                 </child>
               </object>
               <packing>
-                <property name="right_attach">2</property>
+                <property name="left_attach">0</property>
                 <property name="top_attach">4</property>
-                <property name="bottom_attach">5</property>
-                <property name="x_options">GTK_FILL</property>
+                <property name="width">2</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="security_combo_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="xalign">0</property>
                 <property name="label" translatable="yes">Wi-Fi _security:</property>
                 <property name="use_underline">True</property>
                 <property name="mnemonic_widget">security_combo</property>
+                <property name="xalign">0</property>
               </object>
               <packing>
+                <property name="left_attach">0</property>
                 <property name="top_attach">3</property>
-                <property name="bottom_attach">4</property>
-                <property name="x_options">GTK_FILL</property>
-                <property name="y_options"/>
               </packing>
             </child>
             <child>
               <object class="GtkComboBox" id="security_combo">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
                 <property name="model">model1</property>
                 <child>
                   <object class="GtkCellRendererText" id="renderer1"/>
@@ -116,27 +113,21 @@
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
                 <property name="top_attach">3</property>
-                <property name="bottom_attach">4</property>
-                <property name="x_options">GTK_FILL</property>
-                <property name="y_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="network_name_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="xalign">0</property>
                 <property name="label" translatable="yes">_Network name:</property>
                 <property name="use_underline">True</property>
                 <property name="mnemonic_widget">network_name_entry</property>
+                <property name="xalign">0</property>
               </object>
               <packing>
+                <property name="left_attach">0</property>
                 <property name="top_attach">2</property>
-                <property name="bottom_attach">3</property>
-                <property name="x_options">GTK_FILL</property>
-                <property name="y_options"/>
               </packing>
             </child>
             <child>
@@ -147,60 +138,53 @@
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
                 <property name="top_attach">2</property>
-                <property name="bottom_attach">3</property>
-                <property name="y_options"/>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="connection_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="xalign">0</property>
                 <property name="label" translatable="yes">C_onnection:</property>
                 <property name="use_underline">True</property>
                 <property name="mnemonic_widget">connection_combo</property>
+                <property name="xalign">0</property>
               </object>
               <packing>
+                <property name="left_attach">0</property>
                 <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-                <property name="x_options">GTK_FILL</property>
-                <property name="y_options"/>
               </packing>
             </child>
             <child>
               <object class="GtkComboBox" id="connection_combo">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
                 <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-                <property name="x_options">GTK_FILL</property>
-                <property name="y_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="device_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="xalign">0</property>
                 <property name="label" translatable="yes">Wi-Fi _adapter:</property>
                 <property name="use_underline">True</property>
                 <property name="mnemonic_widget">device_combo</property>
+                <property name="xalign">0</property>
               </object>
               <packing>
-                <property name="x_options">GTK_FILL</property>
-                <property name="y_options"/>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkComboBox" id="device_combo">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
                 <property name="model">model2</property>
                 <child>
                   <object class="GtkCellRendererText" id="renderer2"/>
@@ -211,9 +195,7 @@
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="x_options">GTK_FILL</property>
-                <property name="y_options">GTK_FILL</property>
+                <property name="top_attach">0</property>
               </packing>
             </child>
           </object>

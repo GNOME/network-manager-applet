@@ -396,7 +396,6 @@ out:
 	g_clear_error (&error);
 	if (opt_ctx)
 		g_option_context_free (opt_ctx);
-	g_clear_object (&list);
 	g_clear_object (&bus);
 	return ret;
 }

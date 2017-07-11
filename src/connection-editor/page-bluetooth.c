@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2014 - 2015 Red Hat, Inc.
+ * Copyright 2014 - 2017 Red Hat, Inc.
  */
 
 #include "nm-default.h"
@@ -308,9 +308,9 @@ bluetooth_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
 	dialog = gtk_dialog_new_with_buttons (_("Bluetooth Type"),
 	                                      parent,
 	                                      GTK_DIALOG_MODAL,
-	                                      GTK_STOCK_CANCEL,
+	                                      _("_Cancel"),
 	                                      GTK_RESPONSE_CANCEL,
-	                                      GTK_STOCK_OK,
+	                                      _("_OK"),
 	                                      GTK_RESPONSE_OK,
 	                                      NULL);
 

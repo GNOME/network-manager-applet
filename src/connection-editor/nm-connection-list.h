@@ -2,6 +2,7 @@
 /* NetworkManager Connection editor -- Connection editor for NetworkManager
  *
  * Rodrigo Moya <rodrigo@gnome-db.org>
+ * Lubomir Rintel <lkundrak@v3.sk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2004 - 2014 Red Hat, Inc.
+ * Copyright 2004 - 2017 Red Hat, Inc.
  */
 
 #ifndef NM_CONNECTION_LIST_H
@@ -33,26 +34,14 @@
 #define NM_IS_CONNECTION_LIST(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NM_TYPE_CONNECTION_LIST))
 #define NM_CONNECTION_LIST(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), NM_TYPE_CONNECTION_LIST, NMConnectionList))
 
+typedef struct _NMConnectionListPrivate NMConnectionListPrivate;
+
 typedef struct {
-	GObject parent;
-
-	/* private data */
-	GtkTreeView *connection_list;
-	GtkTreeModel *model;
-	GtkTreeModelFilter *filter;
-	GtkTreeSortable *sortable;
-	GType displayed_type;
-
-	NMClient *client;
-
-	GtkBuilder *gui;
-	GtkWidget *dialog;
-
-	gboolean populated;
+	GtkWindow parent;
 } NMConnectionList;
 
 typedef struct {
-	GObjectClass parent_class;
+	GtkWindowClass parent_class;
 
 	/* Signals */
 	void (*done)  (NMConnectionList *list, gint result);

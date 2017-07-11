@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2004 - 2015 Red Hat, Inc.
+ * Copyright (C) 2004 - 2017 Red Hat, Inc.
  * Copyright (C) 2005 - 2008 Novell, Inc.
  *
  * This applet used the GNOME Wireless Applet as a skeleton to build from.
@@ -535,7 +535,7 @@ applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
                                                NMApplet *applet,
                                                const gchar *label)
 {
-	GtkWidget *menu_item, *box, *xlabel;
+	GtkWidget *menu_item, *box, *xlabel, *separator;
 
 	if (INDICATOR_ENABLED (applet)) {
 		/* Indicator doesn't draw complex separators */
@@ -549,11 +549,16 @@ applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
 		xlabel = gtk_label_new (NULL);
 		gtk_label_set_markup (GTK_LABEL (xlabel), label);
 
-		gtk_box_pack_start (GTK_BOX (box), gtk_separator_new (GTK_ORIENTATION_HORIZONTAL), TRUE, TRUE, 0);
+		separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
+		g_object_set (G_OBJECT (separator), "valign", GTK_ALIGN_CENTER, NULL);
+		gtk_box_pack_start (GTK_BOX (box), separator, TRUE, TRUE, 0);
+
 		gtk_box_pack_start (GTK_BOX (box), xlabel, FALSE, FALSE, 2);
 	}
 
-	gtk_box_pack_start (GTK_BOX (box), gtk_separator_new (GTK_ORIENTATION_HORIZONTAL), TRUE, TRUE, 0);
+	separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
+	g_object_set (G_OBJECT (separator), "valign", GTK_ALIGN_CENTER, NULL);
+	gtk_box_pack_start (GTK_BOX (box), separator, TRUE, TRUE, 0);
 
 	g_object_set (G_OBJECT (menu_item),
 		          "child", box,
@@ -737,7 +742,7 @@ applet_do_notify (NMApplet *applet,
 	escaped = utils_escape_notify_message (message);
 	notify = notify_notification_new (summary,
 	                                  escaped,
-	                                  icon ? icon : GTK_STOCK_NETWORK
+	                                  icon ? icon : "network-workgroup"
 #if HAVE_LIBNOTIFY_07
 	                                  );
 #else
@@ -3280,7 +3285,7 @@ applet_startup (GApplication *app, gpointer user_data)
 	gs_free_error GError *error = NULL;
 
 	g_set_application_name (_("NetworkManager Applet"));
-	gtk_window_set_default_icon_name (GTK_STOCK_NETWORK);
+	gtk_window_set_default_icon_name ("network-workgroup");
 
 	applet->info_dialog_ui = gtk_builder_new ();
 

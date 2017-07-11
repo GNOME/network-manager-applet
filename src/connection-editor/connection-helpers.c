@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2012 Red Hat, Inc.
+ * Copyright 2017 Red Hat, Inc.
  */
 
 #include "nm-default.h"
@@ -305,8 +305,8 @@ vpn_connection_import (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
 	dialog = gtk_file_chooser_dialog_new (_("Select file to import"),
 	                                      NULL,
 	                                      GTK_FILE_CHOOSER_ACTION_OPEN,
-	                                      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-	                                      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+	                                      _("_Cancel"), GTK_RESPONSE_CANCEL,
+	                                      _("_Open"), GTK_RESPONSE_ACCEPT,
 	                                      NULL);
 	home_folder = g_get_home_dir ();
 	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), home_folder);
@@ -768,8 +768,8 @@ delete_connection (GtkWindow *parent_window,
 	                                 _("Are you sure you wish to delete the connection %s?"),
 	                                 id);
 	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-	                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-	                        GTK_STOCK_DELETE, GTK_RESPONSE_YES,
+	                        _("_Cancel"), GTK_RESPONSE_CANCEL,
+	                        _("_Delete"), GTK_RESPONSE_YES,
 	                        NULL);
 
 	result = gtk_dialog_run (GTK_DIALOG (dialog));

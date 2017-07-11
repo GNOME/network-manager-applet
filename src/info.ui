@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.20.0 -->
 <interface>
-  <requires lib="gtk+" version="3.4"/>
+  <requires lib="gtk+" version="3.10"/>
   <object class="GtkDialog" id="info_dialog">
+    <property name="width_request">600</property>
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
-    <property name="window_position">center</property>
     <property name="title" translatable="yes">Connection Information</property>
     <property name="resizable">False</property>
+    <property name="window_position">center</property>
     <property name="icon_name">gtk-info</property>
     <property name="type_hint">dialog</property>
     <child internal-child="vbox">
@@ -59,9 +61,9 @@
                   <object class="GtkImage" id="image6">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="valign">GTK_ALIGN_START</property>
+                    <property name="valign">start</property>
                     <property name="icon_name">dialog-information</property>
-                    <property name="icon-size">6</property>
+                    <property name="icon_size">6</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -78,8 +80,8 @@
                       <object class="GtkLabel" id="label68">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">Active Network Connections</property>
+                        <property name="xalign">0</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
                           <attribute name="scale" value="1.2"/>
@@ -95,6 +97,7 @@
                       <object class="GtkNotebook" id="info_notebook">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="scrollable">True</property>
                         <child>
                           <object class="GtkLabel" id="label69">
                             <property name="visible">True</property>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.20.0 -->
 <interface>
-  <requires lib="gtk+" version="3.4"/>
+  <requires lib="gtk+" version="3.10"/>
   <object class="GtkAdjustment" id="adjustment1">
     <property name="upper">10000</property>
     <property name="step_increment">1</property>
@@ -55,18 +56,17 @@
       </row>
     </data>
   </object>
-  <object class="GtkTable" id="WifiPage">
+  <object class="GtkGrid" id="WifiPage">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="border_width">12</property>
-    <property name="n_rows">9</property>
-    <property name="n_columns">2</property>
-    <property name="column_spacing">12</property>
     <property name="row_spacing">6</property>
+    <property name="column_spacing">12</property>
     <child>
       <object class="GtkHBox" id="wifi_mtu_hbox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkSpinButton" id="wifi_mtu">
@@ -85,8 +85,8 @@
           <object class="GtkLabel" id="mtu_units">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="xalign">0</property>
             <property name="label" translatable="yes">bytes</property>
+            <property name="xalign">0</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -97,27 +97,21 @@
       </object>
       <packing>
         <property name="left_attach">1</property>
-        <property name="right_attach">2</property>
         <property name="top_attach">9</property>
-        <property name="bottom_attach">10</property>
-        <property name="x_options">GTK_FILL</property>
-        <property name="y_options">GTK_FILL</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="wifi_mtu_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">_MTU:</property>
         <property name="use_underline">True</property>
         <property name="mnemonic_widget">wifi_mtu</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
+        <property name="left_attach">0</property>
         <property name="top_attach">9</property>
-        <property name="bottom_attach">10</property>
-        <property name="x_options">GTK_FILL</property>
-        <property name="y_options"/>
       </packing>
     </child>
     <child>
@@ -130,25 +124,20 @@
       </object>
       <packing>
         <property name="left_attach">1</property>
-        <property name="right_attach">2</property>
         <property name="top_attach">7</property>
-        <property name="bottom_attach">8</property>
-        <property name="y_options"/>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="wifi_device_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">_Device:</property>
         <property name="use_underline">True</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
+        <property name="left_attach">0</property>
         <property name="top_attach">7</property>
-        <property name="bottom_attach">8</property>
-        <property name="x_options">GTK_FILL</property>
-        <property name="y_options"/>
       </packing>
     </child>
     <child>
@@ -165,32 +154,28 @@
       </object>
       <packing>
         <property name="left_attach">1</property>
-        <property name="right_attach">2</property>
         <property name="top_attach">8</property>
-        <property name="bottom_attach">9</property>
-        <property name="y_options"/>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="wifi_cloned_mac_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">C_loned MAC address:</property>
         <property name="use_underline">True</property>
         <property name="mnemonic_widget">wifi_cloned_mac</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
+        <property name="left_attach">0</property>
         <property name="top_attach">8</property>
-        <property name="bottom_attach">9</property>
-        <property name="x_options">GTK_FILL</property>
-        <property name="y_options"/>
       </packing>
     </child>
     <child>
       <object class="GtkHBox" id="wifi_tx_power_hbox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkSpinButton" id="wifi_tx_power">
@@ -209,8 +194,8 @@
           <object class="GtkLabel" id="tx_power_units">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="xalign">0</property>
             <property name="label" translatable="yes">mW</property>
+            <property name="xalign">0</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -221,33 +206,28 @@
       </object>
       <packing>
         <property name="left_attach">1</property>
-        <property name="right_attach">2</property>
         <property name="top_attach">6</property>
-        <property name="bottom_attach">7</property>
-        <property name="x_options">GTK_FILL</property>
-        <property name="y_options">GTK_FILL</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="wifi_tx_power_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">Transmission po_wer:</property>
         <property name="use_underline">True</property>
         <property name="mnemonic_widget">wifi_tx_power</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
+        <property name="left_attach">0</property>
         <property name="top_attach">6</property>
-        <property name="bottom_attach">7</property>
-        <property name="x_options">GTK_FILL</property>
-        <property name="y_options"/>
       </packing>
     </child>
     <child>
       <object class="GtkHBox" id="wifi_rate_hbox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkSpinButton" id="wifi_rate">
@@ -266,8 +246,8 @@
           <object class="GtkLabel" id="rate_units">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="xalign">0</property>
             <property name="label" translatable="yes">Mb/s</property>
+            <property name="xalign">0</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -278,27 +258,21 @@
       </object>
       <packing>
         <property name="left_attach">1</property>
-        <property name="right_attach">2</property>
         <property name="top_attach">5</property>
-        <property name="bottom_attach">6</property>
-        <property name="x_options">GTK_FILL</property>
-        <property name="y_options">GTK_FILL</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="wifi_rate_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">_Rate:</property>
         <property name="use_underline">True</property>
         <property name="mnemonic_widget">wifi_rate</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
+        <property name="left_attach">0</property>
         <property name="top_attach">5</property>
-        <property name="bottom_attach">6</property>
-        <property name="x_options">GTK_FILL</property>
-        <property name="y_options"/>
       </packing>
     </child>
     <child>
@@ -308,36 +282,31 @@
       </object>
       <packing>
         <property name="left_attach">1</property>
-        <property name="right_attach">2</property>
         <property name="top_attach">4</property>
-        <property name="bottom_attach">5</property>
-        <property name="y_options"/>
       </packing>
     </child>
     <child>
       <object class="GtkEntry" id="wifi_ssid">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
+        <property name="hexpand">True</property>
       </object>
       <packing>
         <property name="left_attach">1</property>
-        <property name="right_attach">2</property>
-        <property name="y_options"/>
+        <property name="top_attach">0</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="wifi_bssid_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">_BSSID:</property>
         <property name="use_underline">True</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
+        <property name="left_attach">0</property>
         <property name="top_attach">4</property>
-        <property name="bottom_attach">5</property>
-        <property name="x_options">GTK_FILL</property>
-        <property name="y_options"/>
       </packing>
     </child>
     <child>
@@ -349,32 +318,28 @@
       </object>
       <packing>
         <property name="left_attach">1</property>
-        <property name="right_attach">2</property>
         <property name="top_attach">3</property>
-        <property name="bottom_attach">4</property>
-        <property name="y_options"/>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="wifi_channel_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">C_hannel:</property>
         <property name="use_underline">True</property>
         <property name="mnemonic_widget">wifi_channel</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
+        <property name="left_attach">0</property>
         <property name="top_attach">3</property>
-        <property name="bottom_attach">4</property>
-        <property name="x_options">GTK_FILL</property>
-        <property name="y_options"/>
       </packing>
     </child>
     <child>
       <object class="GtkComboBox" id="wifi_band">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
         <property name="model">model1</property>
         <child>
           <object class="GtkCellRendererText" id="renderer1"/>
@@ -385,33 +350,28 @@
       </object>
       <packing>
         <property name="left_attach">1</property>
-        <property name="right_attach">2</property>
         <property name="top_attach">2</property>
-        <property name="bottom_attach">3</property>
-        <property name="x_options">GTK_FILL</property>
-        <property name="y_options">GTK_FILL</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="wifi_band_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">Ban_d:</property>
         <property name="use_underline">True</property>
         <property name="mnemonic_widget">wifi_band</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
+        <property name="left_attach">0</property>
         <property name="top_attach">2</property>
-        <property name="bottom_attach">3</property>
-        <property name="x_options">GTK_FILL</property>
-        <property name="y_options"/>
       </packing>
     </child>
     <child>
       <object class="GtkComboBox" id="wifi_mode">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
         <property name="model">model2</property>
         <child>
           <object class="GtkCellRendererText" id="renderer2"/>
@@ -422,41 +382,35 @@
       </object>
       <packing>
         <property name="left_attach">1</property>
-        <property name="right_attach">2</property>
         <property name="top_attach">1</property>
-        <property name="bottom_attach">2</property>
-        <property name="x_options">GTK_FILL</property>
-        <property name="y_options">GTK_FILL</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="wifi_mode_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">M_ode:</property>
         <property name="use_underline">True</property>
         <property name="mnemonic_widget">wifi_mode</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
+        <property name="left_attach">0</property>
         <property name="top_attach">1</property>
-        <property name="bottom_attach">2</property>
-        <property name="x_options">GTK_FILL</property>
-        <property name="y_options"/>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="wifi_ssid_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">SS_ID:</property>
         <property name="use_underline">True</property>
         <property name="mnemonic_widget">wifi_ssid</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
-        <property name="x_options">GTK_FILL</property>
-        <property name="y_options"/>
+        <property name="left_attach">0</property>
+        <property name="top_attach">0</property>
       </packing>
     </child>
   </object>

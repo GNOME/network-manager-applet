@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2007 - 2014 Red Hat, Inc.
+ * Copyright 2007 - 2017 Red Hat, Inc.
  */
 
 #include "nm-default.h"
@@ -1063,27 +1063,16 @@ internal_init (NMAWifiDialog *self,
 
 	gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (self))), 2);
 
-	widget = gtk_dialog_add_button (GTK_DIALOG (self), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
-	gtk_box_set_child_packing (GTK_BOX (gtk_dialog_get_action_area (GTK_DIALOG (self))), widget,
-	                           FALSE, TRUE, 0, GTK_PACK_END);
+	widget = gtk_dialog_add_button (GTK_DIALOG (self), _("_Cancel"), GTK_RESPONSE_CANCEL);
 
 	/* Connect/Create button */
 	if (priv->operation == OP_CREATE_ADHOC) {
-		GtkWidget *image;
-
-		widget = gtk_button_new_with_mnemonic (_("C_reate"));
-		image = gtk_image_new_from_stock (GTK_STOCK_CONNECT, GTK_ICON_SIZE_BUTTON);
-		gtk_button_set_image (GTK_BUTTON (widget), image);
-
-		gtk_widget_show (widget);
-		gtk_dialog_add_action_widget (GTK_DIALOG (self), widget, GTK_RESPONSE_OK);
+		widget = gtk_dialog_add_button (GTK_DIALOG (self), _("C_reate"), GTK_RESPONSE_OK);
 	} else {
-		widget = gtk_dialog_add_button (GTK_DIALOG (self), GTK_STOCK_CONNECT, GTK_RESPONSE_OK);
+		widget = gtk_dialog_add_button (GTK_DIALOG (self), _("C_onnect"), GTK_RESPONSE_OK);
 		priv->ok_response_button = widget;
 	}
 
-	gtk_box_set_child_packing (GTK_BOX (gtk_dialog_get_action_area (GTK_DIALOG (self))), widget,
-	                           FALSE, TRUE, 0, GTK_PACK_END);
 	g_object_set (G_OBJECT (widget), "can-default", TRUE, NULL);
 	gtk_widget_grab_default (widget);
 

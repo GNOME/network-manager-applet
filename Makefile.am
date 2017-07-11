@@ -672,6 +672,8 @@ connection_editor_hc_real = \
 	src/connection-editor/ppp-auth-methods-dialog.h \
 	src/connection-editor/ce-polkit-button.c \
 	src/connection-editor/ce-polkit-button.h \
+	src/connection-editor/ce-polkit.c \
+	src/connection-editor/ce-polkit.h \
 	src/connection-editor/connection-helpers.c \
 	src/connection-editor/connection-helpers.h
 
@@ -744,6 +746,7 @@ EXTRA_DIST += \
 	src/connection-editor/ce-page-wifi.ui \
 	src/connection-editor/ce-ppp-auth-methods.ui \
 	src/connection-editor/nm-connection-editor.ui \
+	src/connection-editor/nm-connection-list.ui \
 	src/connection-editor/ce.gresource.xml
 
 ###############################################################################

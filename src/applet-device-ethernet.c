@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2008 - 2014 Red Hat, Inc.
+ * Copyright 2008 - 2017 Red Hat, Inc.
  * Copyright 2008 Novell, Inc.
  */
 
@@ -346,8 +346,8 @@ pppoe_get_secrets (SecretsRequest *req, GError **error)
 	gtk_window_set_title (GTK_WINDOW (info->dialog), _("DSL authentication"));
 	gtk_window_set_modal (GTK_WINDOW (info->dialog), TRUE);
 
-	gtk_dialog_add_button (GTK_DIALOG (info->dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT);
-	w = gtk_dialog_add_button (GTK_DIALOG (info->dialog), GTK_STOCK_OK, GTK_RESPONSE_OK);
+	gtk_dialog_add_button (GTK_DIALOG (info->dialog), _("_Cancel"), GTK_RESPONSE_REJECT);
+	w = gtk_dialog_add_button (GTK_DIALOG (info->dialog), _("_OK"), GTK_RESPONSE_OK);
 	info->ok_button = w;
 
 	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (info->dialog))),

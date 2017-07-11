@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.15.4 on Wed Sep 25 12:38:16 2013 -->
+<!-- Generated with glade 3.20.0 -->
 <interface>
-  <requires lib="gtk+" version="3.4"/>
-  <object class="GtkAdjustment" id="bond_mtu_adjustment">
-    <property name="upper">10000</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
+  <requires lib="gtk+" version="3.10"/>
   <object class="GtkAdjustment" id="bond_downdelay_adjustment">
     <property name="upper">10000</property>
     <property name="step_increment">100</property>
@@ -62,6 +57,11 @@
       </row>
     </data>
   </object>
+  <object class="GtkAdjustment" id="bond_mtu_adjustment">
+    <property name="upper">10000</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkAdjustment" id="bond_updelay_adjustment">
     <property name="upper">10000</property>
     <property name="step_increment">100</property>
@@ -85,31 +85,28 @@
       <object class="GtkLabel" id="master_connections_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">Bonded _connections:</property>
         <property name="use_underline">True</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
         <property name="left_attach">0</property>
         <property name="top_attach">1</property>
         <property name="width">2</property>
-        <property name="height">1</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="bond_mode_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">M_ode:</property>
         <property name="use_underline">True</property>
         <property name="mnemonic_widget">bond_mode</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
         <property name="left_attach">0</property>
         <property name="top_attach">3</property>
-        <property name="width">1</property>
-        <property name="height">1</property>
       </packing>
     </child>
     <child>
@@ -127,8 +124,6 @@
       <packing>
         <property name="left_attach">1</property>
         <property name="top_attach">3</property>
-        <property name="width">1</property>
-        <property name="height">1</property>
       </packing>
     </child>
     <child>
@@ -230,23 +225,20 @@
         <property name="left_attach">0</property>
         <property name="top_attach">2</property>
         <property name="width">2</property>
-        <property name="height">1</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="bond_frequency_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">Monitoring _frequency:</property>
         <property name="use_underline">True</property>
         <property name="mnemonic_widget">bond_frequency</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
         <property name="left_attach">0</property>
         <property name="top_attach">6</property>
-        <property name="width">1</property>
-        <property name="height">1</property>
       </packing>
     </child>
     <child>
@@ -272,8 +264,8 @@
           <object class="GtkLabel" id="label1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="xalign">0</property>
             <property name="label" translatable="yes">ms</property>
+            <property name="xalign">0</property>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -285,24 +277,20 @@
       <packing>
         <property name="left_attach">1</property>
         <property name="top_attach">6</property>
-        <property name="width">1</property>
-        <property name="height">1</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="master_interface_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">_Interface name:</property>
         <property name="use_underline">True</property>
         <property name="mnemonic_widget">master_interface</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
         <property name="left_attach">0</property>
         <property name="top_attach">0</property>
-        <property name="width">1</property>
-        <property name="height">1</property>
       </packing>
     </child>
     <child>
@@ -314,24 +302,20 @@
       <packing>
         <property name="left_attach">1</property>
         <property name="top_attach">0</property>
-        <property name="width">1</property>
-        <property name="height">1</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="bond_monitoring_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">_Link Monitoring:</property>
         <property name="use_underline">True</property>
         <property name="mnemonic_widget">bond_monitoring</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
         <property name="left_attach">0</property>
         <property name="top_attach">5</property>
-        <property name="width">1</property>
-        <property name="height">1</property>
       </packing>
     </child>
     <child>
@@ -349,24 +333,20 @@
       <packing>
         <property name="left_attach">1</property>
         <property name="top_attach">5</property>
-        <property name="width">1</property>
-        <property name="height">1</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="bond_arp_targets_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">ARP _targets:</property>
         <property name="use_underline">True</property>
         <property name="mnemonic_widget">bond_arp_targets</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
         <property name="left_attach">0</property>
         <property name="top_attach">9</property>
-        <property name="width">1</property>
-        <property name="height">1</property>
       </packing>
     </child>
     <child>
@@ -379,40 +359,34 @@
       <packing>
         <property name="left_attach">1</property>
         <property name="top_attach">9</property>
-        <property name="width">1</property>
-        <property name="height">1</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="bond_updelay_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">Link _up delay:</property>
         <property name="use_underline">True</property>
         <property name="mnemonic_widget">bond_updelay</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
         <property name="left_attach">0</property>
         <property name="top_attach">7</property>
-        <property name="width">1</property>
-        <property name="height">1</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="bond_downdelay_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">Link _down delay:</property>
         <property name="use_underline">True</property>
         <property name="mnemonic_widget">bond_downdelay</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
         <property name="left_attach">0</property>
         <property name="top_attach">8</property>
-        <property name="width">1</property>
-        <property name="height">1</property>
       </packing>
     </child>
     <child>
@@ -439,8 +413,8 @@
           <object class="GtkLabel" id="label2">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="xalign">0</property>
             <property name="label" translatable="yes">ms</property>
+            <property name="xalign">0</property>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -452,8 +426,6 @@
       <packing>
         <property name="left_attach">1</property>
         <property name="top_attach">7</property>
-        <property name="width">1</property>
-        <property name="height">1</property>
       </packing>
     </child>
     <child>
@@ -480,8 +452,8 @@
           <object class="GtkLabel" id="label3">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="xalign">0</property>
             <property name="label" translatable="yes">ms</property>
+            <property name="xalign">0</property>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -493,24 +465,20 @@
       <packing>
         <property name="left_attach">1</property>
         <property name="top_attach">8</property>
-        <property name="width">1</property>
-        <property name="height">1</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="bond_primary_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">_Primary:</property>
         <property name="use_underline">True</property>
         <property name="mnemonic_widget">bond_primary</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
         <property name="left_attach">0</property>
         <property name="top_attach">4</property>
-        <property name="width">1</property>
-        <property name="height">1</property>
       </packing>
     </child>
     <child>
@@ -523,24 +491,20 @@
       <packing>
         <property name="left_attach">1</property>
         <property name="top_attach">4</property>
-        <property name="width">1</property>
-        <property name="height">1</property>
       </packing>
     </child>
     <child>
       <object class="GtkLabel" id="bond_mtu_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">_MTU:</property>
         <property name="use_underline">True</property>
         <property name="mnemonic_widget">bond_mtu</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
         <property name="left_attach">0</property>
         <property name="top_attach">10</property>
-        <property name="width">1</property>
-        <property name="height">1</property>
       </packing>
     </child>
     <child>
@@ -565,8 +529,8 @@
           <object class="GtkLabel" id="label29">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="xalign">0</property>
             <property name="label" translatable="yes">bytes</property>
+            <property name="xalign">0</property>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -578,8 +542,6 @@
       <packing>
         <property name="left_attach">1</property>
         <property name="top_attach">10</property>
-        <property name="width">1</property>
-        <property name="height">1</property>
       </packing>
     </child>
   </object>

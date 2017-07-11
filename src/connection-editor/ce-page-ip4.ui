@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.20.0 -->
 <interface>
-  <requires lib="gtk+" version="3.4"/>
+  <requires lib="gtk+" version="3.10"/>
   <object class="GtkListStore" id="model1">
     <columns>
       <!-- column-name gchararray -->
@@ -41,6 +42,7 @@
             <property name="label" translatable="yes">_Method:</property>
             <property name="use_underline">True</property>
             <property name="mnemonic_widget">ip4_method</property>
+            <property name="xalign">0</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -52,6 +54,7 @@
           <object class="GtkComboBox" id="ip4_method">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="hexpand">True</property>
             <property name="model">model1</property>
             <child>
               <object class="GtkCellRendererText" id="renderer1"/>
@@ -96,9 +99,9 @@
         </child>
         <child>
           <object class="GtkVBox" id="vbox1">
-            <property name="margin_start">12</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_start">12</property>
             <property name="spacing">6</property>
             <child>
               <object class="GtkHBox" id="hbox2">
@@ -179,26 +182,22 @@
               </packing>
             </child>
             <child>
-              <object class="GtkTable" id="table8">
+              <object class="GtkGrid" id="table8">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="n_rows">3</property>
-                <property name="n_columns">2</property>
-                <property name="column_spacing">12</property>
                 <property name="row_spacing">6</property>
+                <property name="column_spacing">12</property>
                 <child>
                   <object class="GtkEntry" id="ip4_dhcp_client_id_entry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">The DHCP client identifier allows the network administrator to customize your computer’s configuration. If you wish to use a DHCP client identifier, enter it here.</property>
+                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
                     <property name="top_attach">2</property>
-                    <property name="bottom_attach">3</property>
-                    <property name="y_options"/>
                   </packing>
                 </child>
                 <child>
@@ -206,60 +205,54 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">Domains used when resolving host names. Use commas to separate multiple domains.</property>
+                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
                     <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                    <property name="y_options"/>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="ip4_dhcp_client_id_label">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="xalign">0</property>
                     <property name="label" translatable="yes">D_HCP client ID:</property>
                     <property name="use_underline">True</property>
                     <property name="mnemonic_widget">ip4_dhcp_client_id_entry</property>
+                    <property name="xalign">0</property>
                   </object>
                   <packing>
+                    <property name="left_attach">0</property>
                     <property name="top_attach">2</property>
-                    <property name="bottom_attach">3</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="ip4_dns_searches_label">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="xalign">0</property>
                     <property name="label" translatable="yes">S_earch domains:</property>
                     <property name="use_underline">True</property>
                     <property name="mnemonic_widget">ip4_dns_searches_entry</property>
+                    <property name="xalign">0</property>
                   </object>
                   <packing>
+                    <property name="left_attach">0</property>
                     <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="ip4_dns_servers_label">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="xalign">0</property>
                     <property name="label" translatable="yes">DNS ser_vers:</property>
                     <property name="use_underline">True</property>
                     <property name="mnemonic_widget">ip4_dns_servers_entry</property>
+                    <property name="xalign">0</property>
                   </object>
                   <packing>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"/>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">0</property>
                   </packing>
                 </child>
                 <child>
@@ -267,12 +260,12 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_text" translatable="yes">IP addresses of domain name servers used to resolve host names. Use commas to separate multiple domain name server addresses.</property>
+                    <property name="hexpand">True</property>
                     <property name="invisible_char">●</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="y_options"/>
+                    <property name="top_attach">0</property>
                   </packing>
                 </child>
               </object>

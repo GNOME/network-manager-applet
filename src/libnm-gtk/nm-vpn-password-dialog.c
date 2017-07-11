@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  * Copyright (C) 1999, 2000 Eazel, Inc.
- * Copyright (C) 2011, 2013 Red Hat, Inc.
+ * Copyright (C) 2011, 2017 Red Hat, Inc.
  *
  * Authors: Ramiro Estrugo <ramiro@eazel.com>
  *          Dan Williams <dcbw@redhat.com>
@@ -195,7 +195,7 @@ nma_vpn_password_dialog_new (const char *title,
 	GtkWidget *vbox;
 	GtkWidget *main_vbox;
 	GtkWidget *dialog_icon;
-	GtkBox *content, *action_area;
+	GtkBox *content;
 
 	dialog = gtk_widget_new (NMA_VPN_TYPE_PASSWORD_DIALOG, NULL);
 	if (!dialog)
@@ -206,19 +206,10 @@ nma_vpn_password_dialog_new (const char *title,
 	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
 
 	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-	                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-	                        GTK_STOCK_OK, GTK_RESPONSE_OK,
+	                        _("_Cancel"), GTK_RESPONSE_CANCEL,
+	                        _("_OK"), GTK_RESPONSE_OK,
 	                        NULL);
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
-
-	content = GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog)));
-	action_area = GTK_BOX (gtk_dialog_get_action_area (GTK_DIALOG (dialog)));
-
-	/* Set up the dialog */
-	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
-	gtk_box_set_spacing (content, 2); /* 2 * 5 + 2 = 12 */
-	gtk_container_set_border_width (GTK_CONTAINER (action_area), 5);
-	gtk_box_set_spacing (action_area, 6);
 
  	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
@@ -275,7 +266,7 @@ nma_vpn_password_dialog_new (const char *title,
 	/* Adds some eye-candy to the dialog */
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
  	gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
-	dialog_icon = gtk_image_new_from_stock (GTK_STOCK_DIALOG_AUTHENTICATION, GTK_ICON_SIZE_DIALOG);
+	dialog_icon = gtk_image_new_from_icon_name ("dialog-password", GTK_ICON_SIZE_DIALOG);
 	gtk_misc_set_alignment (GTK_MISC (dialog_icon), 0.5, 0.0);
 	gtk_box_pack_start (GTK_BOX (hbox), dialog_icon, FALSE, FALSE, 0);
 
@@ -296,6 +287,8 @@ nma_vpn_password_dialog_new (const char *title,
 	gtk_box_pack_start (GTK_BOX (main_vbox), vbox, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (vbox), priv->grid_alignment, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), main_vbox, FALSE, FALSE, 0);
+
+	content = GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog)));
 	gtk_box_pack_start (content, hbox, FALSE, FALSE, 0);
 	gtk_widget_show_all (GTK_WIDGET (content));
 

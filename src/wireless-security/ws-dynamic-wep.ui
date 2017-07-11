@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.20.0 -->
 <interface>
-  <requires lib="gtk+" version="3.4"/>
+  <requires lib="gtk+" version="3.10"/>
   <object class="GtkListStore" id="model7">
     <columns>
       <!-- column-name gchararray -->
@@ -18,37 +19,30 @@
     <property name="show_tabs">False</property>
     <property name="show_border">False</property>
     <child>
-      <object class="GtkTable" id="table12">
+      <object class="GtkGrid" id="table12">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="n_rows">3</property>
-        <property name="n_columns">2</property>
-        <property name="column_spacing">12</property>
         <property name="row_spacing">6</property>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
+        <property name="column_spacing">12</property>
         <child>
           <object class="GtkLabel" id="dynamic_wep_auth_label">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="xalign">0</property>
             <property name="label" translatable="yes">Au_thentication:</property>
             <property name="use_underline">True</property>
             <property name="mnemonic_widget">dynamic_wep_auth_combo</property>
+            <property name="xalign">0</property>
           </object>
           <packing>
-            <property name="x_options">GTK_FILL</property>
-            <property name="y_options"/>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
           </packing>
         </child>
         <child>
           <object class="GtkComboBox" id="dynamic_wep_auth_combo">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="hexpand">True</property>
             <property name="model">model7</property>
             <child>
               <object class="GtkCellRendererText" id="renderer7"/>
@@ -59,8 +53,7 @@
           </object>
           <packing>
             <property name="left_attach">1</property>
-            <property name="right_attach">2</property>
-            <property name="y_options">GTK_FILL</property>
+            <property name="top_attach">0</property>
           </packing>
         </child>
         <child>
@@ -73,10 +66,9 @@
             </child>
           </object>
           <packing>
-            <property name="right_attach">2</property>
+            <property name="left_attach">0</property>
             <property name="top_attach">1</property>
-            <property name="bottom_attach">2</property>
-            <property name="x_options">GTK_FILL</property>
+            <property name="width">2</property>
           </packing>
         </child>
       </object>
