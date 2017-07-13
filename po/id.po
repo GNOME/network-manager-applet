@@ -8,10 +8,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet master\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-10 12:44+0200\n"
-"PO-Revision-Date: 2017-04-12 10:59+0700\n"
-"Last-Translator: Andika Triwidada <andika@gmail.com>\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
+"product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
+"POT-Creation-Date: 2017-07-11 16:17+0000\n"
+"PO-Revision-Date: 2017-07-13 17:09+0700\n"
+"Last-Translator: Kukuh Syafaat <syafaatkukuh@gmail.com>\n"
 "Language-Team: Indonesian <gnome@i15n.org>\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
@@ -19,9 +20,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 2.0.2\n"
 
-#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3175
+#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3186
 msgid "Network"
 msgstr "Jaringan"
 
@@ -30,7 +31,7 @@ msgid "Manage your network connections"
 msgstr "Mengelola koneksi jaringan Anda"
 
 #: ../nm-connection-editor.desktop.in.h:1
-#: ../src/connection-editor/nm-connection-editor.ui.h:1
+#: ../src/connection-editor/nm-connection-list.ui.h:1
 msgid "Network Connections"
 msgstr "Sambungan Jaringan"
 
@@ -198,17 +199,31 @@ msgstr ""
 msgid "802.1X authentication"
 msgstr "Otentikasi 802.1X"
 
-#: ../src/8021x.ui.h:2 ../src/connection-editor/ce-ip4-routes.ui.h:1
+#: ../src/8021x.ui.h:2 ../src/applet-device-ethernet.c:349
+#: ../src/applet-dialogs.c:1059 ../src/connection-editor/ce-ip4-routes.ui.h:1
 #: ../src/connection-editor/ce-ip6-routes.ui.h:1
 #: ../src/connection-editor/ce-new-connection.ui.h:1
 #: ../src/connection-editor/ce-page-dcb.ui.h:17
 #: ../src/connection-editor/ce-ppp-auth-methods.ui.h:1
-#: ../src/connection-editor/nm-connection-editor.ui.h:8
-#: ../src/gsm-unlock.ui.h:1 ../src/libnma/nma-pkcs11-token-login-dialog.ui.h:1
+#: ../src/connection-editor/connection-helpers.c:308
+#: ../src/connection-editor/connection-helpers.c:771
+#: ../src/connection-editor/nm-connection-editor.ui.h:5
+#: ../src/connection-editor/page-bluetooth.c:311
+#: ../src/connection-editor/page-mobile.c:543
+#: ../src/connection-editor/page-proxy.c:121
+#: ../src/connection-editor/page-team.c:344
+#: ../src/connection-editor/page-team-port.c:206
+#: ../src/connection-editor/vpn-helpers.c:212 ../src/gsm-unlock.ui.h:1
+#: ../src/libnma/nma-pkcs11-token-login-dialog.ui.h:1
+#: ../src/libnma/nma-vpn-password-dialog.c:209
+#: ../src/libnma/nma-wifi-dialog.c:1066
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:209
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1067 ../src/mobile-helpers.c:465
 msgid "_Cancel"
 msgstr "_Batal"
 
-#: ../src/8021x.ui.h:3
+#: ../src/8021x.ui.h:3 ../src/libnma/nma-wifi-dialog.c:1072
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1073
 msgid "C_onnect"
 msgstr "_Sambung"
 
@@ -224,37 +239,37 @@ msgstr "ad-hoc"
 msgid "secure."
 msgstr "aman."
 
-#: ../src/applet.c:381
+#: ../src/applet.c:387
 msgid "Failed to add/activate connection"
 msgstr "Gagal menambah/mengaktifkan koneksi"
 
-#: ../src/applet.c:383 ../src/applet.c:437 ../src/applet.c:472
+#: ../src/applet.c:389 ../src/applet.c:443 ../src/applet.c:478
 #: ../src/applet-device-wifi.c:1387 ../src/applet-device-wifi.c:1410
 msgid "Unknown error"
 msgstr "Galat tak dikenal"
 
-#: ../src/applet.c:386 ../src/applet.c:475 ../src/applet-device-wifi.c:539
+#: ../src/applet.c:392 ../src/applet.c:481 ../src/applet-device-wifi.c:539
 #: ../src/applet-device-wifi.c:1390 ../src/applet-device-wifi.c:1413
 msgid "Connection failure"
 msgstr "Kegagalan koneksi"
 
-#: ../src/applet.c:435
+#: ../src/applet.c:441
 msgid "Device disconnect failed"
 msgstr "Pemutusan perangkat gagal"
 
-#: ../src/applet.c:440
+#: ../src/applet.c:446
 msgid "Disconnect failure"
 msgstr "Pemutusan gagal"
 
-#: ../src/applet.c:470
+#: ../src/applet.c:476
 msgid "Connection activation failed"
 msgstr "Aktivasi koneksi gagal"
 
-#: ../src/applet.c:793 ../src/applet-device-wifi.c:1126
+#: ../src/applet.c:804 ../src/applet-device-wifi.c:1126
 msgid "Don’t show this message again"
 msgstr "Jangan tunjukkan pesan ini lagi"
 
-#: ../src/applet.c:883
+#: ../src/applet.c:894
 #, c-format
 msgid ""
 "\n"
@@ -264,7 +279,7 @@ msgstr ""
 "\n"
 "Sambungan VPN \"%s\" terputus karena sambungan jaringan terinterupsi."
 
-#: ../src/applet.c:885
+#: ../src/applet.c:896
 #, c-format
 msgid ""
 "\n"
@@ -274,7 +289,7 @@ msgstr ""
 "\n"
 "Sambungan VPN \"%s\" gagal karena sambungan jaringan terinterupsi."
 
-#: ../src/applet.c:887
+#: ../src/applet.c:898
 #, c-format
 msgid ""
 "\n"
@@ -283,7 +298,7 @@ msgstr ""
 "\n"
 "Sambungan VPN \"%s\" gagal karena layanan VPN berhenti tak disangka-sangka."
 
-#: ../src/applet.c:889
+#: ../src/applet.c:900
 #, c-format
 msgid ""
 "\n"
@@ -294,7 +309,7 @@ msgstr ""
 "Sambungan VPN \"%s\" gagal karena layanan VPN mengembalikan konfigurasi yang "
 "tidak benar."
 
-#: ../src/applet.c:891
+#: ../src/applet.c:902
 #, c-format
 msgid ""
 "\n"
@@ -303,7 +318,7 @@ msgstr ""
 "\n"
 "Sambungan VPN \"%s\" gagal karena batas waktu percobaan sambungan habis."
 
-#: ../src/applet.c:893
+#: ../src/applet.c:904
 #, c-format
 msgid ""
 "\n"
@@ -312,7 +327,7 @@ msgstr ""
 "\n"
 "Sambungan VPN \"%s\" gagal karena layanan VPN tidak mulai pada waktunya."
 
-#: ../src/applet.c:895
+#: ../src/applet.c:906
 #, c-format
 msgid ""
 "\n"
@@ -321,7 +336,7 @@ msgstr ""
 "\n"
 "Sambungan VPN \"%s\" gagal karena layanan VPN gagal dijalankan."
 
-#: ../src/applet.c:897
+#: ../src/applet.c:908
 #, c-format
 msgid ""
 "\n"
@@ -330,7 +345,7 @@ msgstr ""
 "\n"
 "Sambungan VPN \"%s\" gagal karena tidak ada kode rahasia VPN yang valid."
 
-#: ../src/applet.c:899
+#: ../src/applet.c:910
 #, c-format
 msgid ""
 "\n"
@@ -339,7 +354,7 @@ msgstr ""
 "\n"
 "Sambungan VPN \"%s\" gagal karena kode rahasia VPN yang tidak valid."
 
-#: ../src/applet.c:904
+#: ../src/applet.c:915
 #, c-format
 msgid ""
 "\n"
@@ -348,7 +363,7 @@ msgstr ""
 "\n"
 "Sambungan VPN \"%s\" gagal."
 
-#: ../src/applet.c:931
+#: ../src/applet.c:942
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -359,19 +374,19 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: ../src/applet.c:933
+#: ../src/applet.c:944
 msgid "VPN connection has been successfully established.\n"
 msgstr "Koneksi VPN telah sukses dijalin.\n"
 
-#: ../src/applet.c:935
+#: ../src/applet.c:946
 msgid "VPN Login Message"
 msgstr "Pesan Login VPN"
 
-#: ../src/applet.c:943 ../src/applet.c:983
+#: ../src/applet.c:954 ../src/applet.c:994
 msgid "VPN Connection Failed"
 msgstr "Sambungan VPN Gagal"
 
-#: ../src/applet.c:987
+#: ../src/applet.c:998
 #, c-format
 msgid ""
 "\n"
@@ -384,7 +399,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:990
+#: ../src/applet.c:1001
 #, c-format
 msgid ""
 "\n"
@@ -397,144 +412,144 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1279
+#: ../src/applet.c:1290
 msgid "device not ready (firmware missing)"
 msgstr "perangkat tak siap (tak ada firmware)"
 
-#: ../src/applet.c:1281
+#: ../src/applet.c:1292
 msgid "device not ready"
 msgstr "perangkat tak siap"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet.c:1291 ../src/applet-device-ethernet.c:109
+#: ../src/applet.c:1302 ../src/applet-device-ethernet.c:109
 msgid "disconnected"
 msgstr "terputus"
 
-#: ../src/applet.c:1307
+#: ../src/applet.c:1318
 msgid "Disconnect"
 msgstr "Putuskan"
 
-#: ../src/applet.c:1321
+#: ../src/applet.c:1332
 msgid "device not managed"
 msgstr "perangkat tidak dikelola"
 
-#: ../src/applet.c:1394
+#: ../src/applet.c:1405
 msgid "No network devices available"
 msgstr "Tak ada perangkat jaringan yang tersedia"
 
-#: ../src/applet.c:1448
+#: ../src/applet.c:1459
 msgid "_VPN Connections"
 msgstr "Sambungan _VPN"
 
-#: ../src/applet.c:1492
+#: ../src/applet.c:1503
 msgid "_Configure VPN…"
 msgstr "Mena_ta VPN…"
 
-#: ../src/applet.c:1495
+#: ../src/applet.c:1506
 msgid "_Add a VPN connection…"
 msgstr "Men_ambah suatu koneksi VPN…"
 
-#: ../src/applet.c:1601
+#: ../src/applet.c:1612
 msgid "NetworkManager is not running…"
 msgstr "NetworkManager tidak sedang berjalan…"
 
-#: ../src/applet.c:1606 ../src/applet.c:2671
+#: ../src/applet.c:1617 ../src/applet.c:2682
 msgid "Networking disabled"
 msgstr "Fungsi jaringan dimatikan"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1816
+#: ../src/applet.c:1827
 msgid "Enable _Networking"
 msgstr "Fungsika_n Jaringan"
 
 #. 'Enable Wi-Fi' item
-#: ../src/applet.c:1825
+#: ../src/applet.c:1836
 msgid "Enable _Wi-Fi"
 msgstr "Fungsikan Ni_rkabel"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:1834
+#: ../src/applet.c:1845
 msgid "Enable _Mobile Broadband"
 msgstr "Fungsikan _Data Seluler"
 
 #. Toggle notifications item
-#: ../src/applet.c:1846
+#: ../src/applet.c:1857
 msgid "Enable N_otifications"
 msgstr "Fungsikan N_otifikasi"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1858
+#: ../src/applet.c:1869
 msgid "Connection _Information"
 msgstr "_Informasi Sambungan"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1866
+#: ../src/applet.c:1877
 msgid "Edit Connections…"
 msgstr "Sunting Sambungan…"
 
-#: ../src/applet.c:1880
+#: ../src/applet.c:1891
 msgid "_About"
 msgstr "Tent_ang"
 
-#: ../src/applet.c:2191
+#: ../src/applet.c:2202
 #, c-format
 msgid "You are now connected to “%s”."
 msgstr "Anda sekarang tersambung ke \"%s\"."
 
-#: ../src/applet.c:2231
+#: ../src/applet.c:2242
 msgid "Disconnected"
 msgstr "Terputus"
 
-#: ../src/applet.c:2232
+#: ../src/applet.c:2243
 msgid "The network connection has been disconnected."
 msgstr "Sambungan jaringan terputus."
 
-#: ../src/applet.c:2534
+#: ../src/applet.c:2545
 #, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "Menyiapkan sambungan jaringan \"%s\"…"
 
-#: ../src/applet.c:2537
+#: ../src/applet.c:2548
 #, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "Otentikasi pengguna diperlukan untuk sambungan jaringan \"%s\"…"
 
-#: ../src/applet.c:2540 ../src/applet-device-bt.c:125
-#: ../src/mobile-helpers.c:608
+#: ../src/applet.c:2551 ../src/applet-device-bt.c:125
+#: ../src/mobile-helpers.c:607
 #, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "Meminta alamat jaringan untuk \"%s\"…"
 
-#: ../src/applet.c:2543
+#: ../src/applet.c:2554
 #, c-format
 msgid "Network connection “%s” active"
 msgstr "Sambungan jaringan \"%s\" aktif"
 
-#: ../src/applet.c:2616
+#: ../src/applet.c:2627
 #, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "Memulai sambungan VPN \"%s\"…"
 
-#: ../src/applet.c:2619
+#: ../src/applet.c:2630
 #, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "Otentikasi pengguna diperlukan untuk sambungan VPN \"%s\"…"
 
-#: ../src/applet.c:2622
+#: ../src/applet.c:2633
 #, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "Meminta alamat VPN untuk \"%s\"…"
 
-#: ../src/applet.c:2625
+#: ../src/applet.c:2636
 #, c-format
 msgid "VPN connection active"
 msgstr "Sambungan VPN aktif"
 
-#: ../src/applet.c:2675
+#: ../src/applet.c:2686
 msgid "No network connection"
 msgstr "Tak ada sambungan jaringan"
 
-#: ../src/applet.c:3276
+#: ../src/applet.c:3287
 msgid "NetworkManager Applet"
 msgstr "Aplet NetworkManager"
 
@@ -551,13 +566,13 @@ msgstr "PIN salah; silakan kontak operator Anda."
 msgid "Sending unlock code…"
 msgstr "Mengirim kode pembuka…"
 
-#: ../src/applet-device-broadband.c:736 ../src/applet-dialogs.c:506
+#: ../src/applet-device-broadband.c:736 ../src/applet-dialogs.c:507
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "Data Seluler (%s)"
 
 #: ../src/applet-device-broadband.c:738
-#: ../src/connection-editor/connection-helpers.c:107
+#: ../src/connection-editor/connection-helpers.c:108
 #: ../src/connection-editor/page-mobile.c:308
 #: ../src/libnm-gtk/nm-ui-utils.c:329
 msgid "Mobile Broadband"
@@ -598,22 +613,22 @@ msgstr "Anda kini terdaftar ke jaringan roaming."
 msgid "You are now connected to the mobile broadband network."
 msgstr "Anda kini tersambung ke jaringan data seluler."
 
-#: ../src/applet-device-bt.c:116 ../src/mobile-helpers.c:599
+#: ../src/applet-device-bt.c:116 ../src/mobile-helpers.c:598
 #, c-format
 msgid "Preparing mobile broadband connection “%s”…"
 msgstr "Menyiapkan sambungan data seluler \"%s\"…"
 
-#: ../src/applet-device-bt.c:119 ../src/mobile-helpers.c:602
+#: ../src/applet-device-bt.c:119 ../src/mobile-helpers.c:601
 #, c-format
 msgid "Configuring mobile broadband connection “%s”…"
 msgstr "Mengatur sambungan data seluler \"%s\"…"
 
-#: ../src/applet-device-bt.c:122 ../src/mobile-helpers.c:605
+#: ../src/applet-device-bt.c:122 ../src/mobile-helpers.c:604
 #, c-format
 msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr "Otentikasi pengguna dibutuhkan untuk sambungan data seluler \"%s\"…"
 
-#: ../src/applet-device-bt.c:129 ../src/mobile-helpers.c:627
+#: ../src/applet-device-bt.c:129 ../src/mobile-helpers.c:626
 #, c-format
 msgid "Mobile broadband connection “%s” active"
 msgstr "Sambungan data seluler \"%s\" aktif"
@@ -673,6 +688,18 @@ msgstr "Sambungan jaringan ethernet \"%s\" aktif"
 #: ../src/applet-device-ethernet.c:346
 msgid "DSL authentication"
 msgstr "Otentikasi DSL"
+
+#: ../src/applet-device-ethernet.c:350 ../src/applet-dialogs.c:1060
+#: ../src/connection-editor/ce-ip4-routes.ui.h:2
+#: ../src/connection-editor/ce-ip6-routes.ui.h:2
+#: ../src/connection-editor/ce-page-dcb.ui.h:18
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:2
+#: ../src/connection-editor/page-bluetooth.c:313
+#: ../src/connection-editor/page-mobile.c:545
+#: ../src/libnma/nma-vpn-password-dialog.c:210
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:210 ../src/mobile-helpers.c:466
+msgid "_OK"
+msgstr "_OK"
 
 #: ../src/applet-device-wifi.c:225
 msgid "_Connect to Hidden Wi-Fi Network…"
@@ -772,195 +799,199 @@ msgstr "Gagal mengaktifkan koneksi"
 msgid "Error displaying connection information:"
 msgstr "Galat menampilkan informasi sambungan:"
 
-#: ../src/applet-dialogs.c:72 ../src/connection-editor/page-wifi-security.c:379
+#: ../src/applet-dialogs.c:73 ../src/connection-editor/page-wifi-security.c:381
 #: ../src/libnma/nma-wifi-dialog.c:949 ../src/libnm-gtk/nm-wifi-dialog.c:948
 #: ../src/wireless-security/wireless-security.c:448
 msgid "LEAP"
 msgstr "LEAP"
 
-#: ../src/applet-dialogs.c:74
+#: ../src/applet-dialogs.c:75
 msgid "Dynamic WEP"
 msgstr "WEP Dinamis"
 
-#: ../src/applet-dialogs.c:76 ../src/applet-dialogs.c:228
-#: ../src/applet-dialogs.c:230
+#: ../src/applet-dialogs.c:77 ../src/applet-dialogs.c:229
+#: ../src/applet-dialogs.c:231
 msgid "WPA/WPA2"
 msgstr "WPA/WPA2"
 
 #. Create the expander
-#: ../src/applet-dialogs.c:151
+#: ../src/applet-dialogs.c:152
 msgid "More addresses"
 msgstr "Lebih banyak alamat"
 
-#: ../src/applet-dialogs.c:226
+#: ../src/applet-dialogs.c:227
 msgid "WEP"
 msgstr "WEP"
 
-#: ../src/applet-dialogs.c:234 ../src/applet-dialogs.c:243
-#: ../src/connection-editor/page-wifi-security.c:330
+#: ../src/applet-dialogs.c:235 ../src/applet-dialogs.c:244
+#: ../src/connection-editor/page-wifi-security.c:332
 msgctxt "Wi-Fi/Ethernet security"
 msgid "None"
 msgstr "Nihil"
 
-#: ../src/applet-dialogs.c:260
+#: ../src/applet-dialogs.c:261
 #, c-format
 msgid "%s (default)"
 msgstr "%s (bawaan)"
 
-#: ../src/applet-dialogs.c:329 ../src/applet-dialogs.c:580
+#: ../src/applet-dialogs.c:330 ../src/applet-dialogs.c:581
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
-#: ../src/applet-dialogs.c:331 ../src/applet-dialogs.c:582
+#: ../src/applet-dialogs.c:332 ../src/applet-dialogs.c:583
 msgctxt "Speed"
 msgid "Unknown"
 msgstr "Tak dikenal"
 
 #. Address
-#: ../src/applet-dialogs.c:346 ../src/applet-dialogs.c:368
+#: ../src/applet-dialogs.c:347 ../src/applet-dialogs.c:369
 msgctxt "Address"
 msgid "Unknown"
 msgstr "Tak dikenal"
 
-#: ../src/applet-dialogs.c:347 ../src/applet-dialogs.c:420
+#: ../src/applet-dialogs.c:348 ../src/applet-dialogs.c:421
 msgid "IP Address:"
 msgstr "Alamat IP:"
 
-#: ../src/applet-dialogs.c:369
+#: ../src/applet-dialogs.c:370
 msgid "Broadcast Address:"
 msgstr "Alamat Broadcast:"
 
 #. Prefix
-#: ../src/applet-dialogs.c:381
+#: ../src/applet-dialogs.c:382
 msgctxt "Subnet Mask"
 msgid "Unknown"
 msgstr "Tak dikenal"
 
-#: ../src/applet-dialogs.c:382
+#: ../src/applet-dialogs.c:383
 msgid "Subnet Mask:"
 msgstr "Mask Subnet:"
 
-#: ../src/applet-dialogs.c:492
+#: ../src/applet-dialogs.c:493
 #, c-format
 msgid "Ethernet (%s)"
 msgstr "Ethernet (%s)"
 
-#: ../src/applet-dialogs.c:495
+#: ../src/applet-dialogs.c:496
 #, c-format
 msgid "802.11 WiFi (%s)"
 msgstr "WiFi 802.11 (%s)"
 
-#: ../src/applet-dialogs.c:502
+#: ../src/applet-dialogs.c:503
 #, c-format
 msgid "GSM (%s)"
 msgstr "GSM (%s)"
 
-#: ../src/applet-dialogs.c:504
+#: ../src/applet-dialogs.c:505
 #, c-format
 msgid "CDMA (%s)"
 msgstr "CDMA (%s)"
 
 #. --- General ---
-#: ../src/applet-dialogs.c:512 ../src/applet-dialogs.c:810
+#: ../src/applet-dialogs.c:513 ../src/applet-dialogs.c:811
 #: ../src/connection-editor/ce-page-team-port.ui.h:23
 #: ../src/connection-editor/ce-page-team.ui.h:48
 #: ../src/connection-editor/page-general.c:367
 msgid "General"
 msgstr "Umum"
 
-#: ../src/applet-dialogs.c:516
+#: ../src/applet-dialogs.c:517
 msgid "Interface:"
 msgstr "Antarmuka:"
 
-#: ../src/applet-dialogs.c:536
+#: ../src/applet-dialogs.c:537
 msgid "Hardware Address:"
 msgstr "Alamat Perangkat Keras:"
 
 #. Driver
-#: ../src/applet-dialogs.c:550
+#: ../src/applet-dialogs.c:551
 msgid "Driver:"
 msgstr "Driver:"
 
-#: ../src/applet-dialogs.c:585
+#: ../src/applet-dialogs.c:586
 msgid "Speed:"
 msgstr "Kecepatan:"
 
-#: ../src/applet-dialogs.c:600
+#: ../src/applet-dialogs.c:601
 msgid "Security:"
 msgstr "Keamanan:"
 
 #. --- IPv4 ---
-#: ../src/applet-dialogs.c:618 ../src/applet-dialogs.c:851
+#: ../src/applet-dialogs.c:619 ../src/applet-dialogs.c:852
 #: ../src/connection-editor/ce-page-team.ui.h:29
 msgid "IPv4"
 msgstr "IPv4"
 
-#: ../src/applet-dialogs.c:638 ../src/applet-dialogs.c:689
+#: ../src/applet-dialogs.c:639 ../src/applet-dialogs.c:690
 msgid "Default Route:"
 msgstr "Rute Utama:"
 
 #. --- IPv6 ---
-#: ../src/applet-dialogs.c:658 ../src/applet-dialogs.c:873
+#: ../src/applet-dialogs.c:659 ../src/applet-dialogs.c:874
 #: ../src/connection-editor/ce-page-team.ui.h:30
 msgid "IPv6"
 msgstr "IPv6"
 
-#: ../src/applet-dialogs.c:667 ../src/applet-dialogs.c:882
+#: ../src/applet-dialogs.c:668 ../src/applet-dialogs.c:883
 msgid "Ignored"
 msgstr "Diabaikan"
 
-#: ../src/applet-dialogs.c:815
+#: ../src/applet-dialogs.c:816
 msgid "VPN Type:"
 msgstr "Tipe VPN:"
 
-#: ../src/applet-dialogs.c:822
+#: ../src/applet-dialogs.c:823
 msgid "VPN Gateway:"
 msgstr "Gateway VPN:"
 
-#: ../src/applet-dialogs.c:828
+#: ../src/applet-dialogs.c:829
 msgid "VPN Username:"
 msgstr "Nama Pengguna VPN:"
 
-#: ../src/applet-dialogs.c:834
+#: ../src/applet-dialogs.c:835
 msgid "VPN Banner:"
 msgstr "Banner VPN:"
 
-#: ../src/applet-dialogs.c:840
+#: ../src/applet-dialogs.c:841
 msgid "Base Connection:"
 msgstr "Sambungan Dasar:"
 
-#: ../src/applet-dialogs.c:842 ../src/libnm-gtk/nm-ui-utils.c:343
+#: ../src/applet-dialogs.c:843 ../src/libnm-gtk/nm-ui-utils.c:343
 msgid "Unknown"
 msgstr "Tak dikenal"
 
 #. Shouldn't really happen but ...
-#: ../src/applet-dialogs.c:957
+#: ../src/applet-dialogs.c:958
 msgid "No valid active connections found!"
 msgstr "Tak ditemukan sambungan aktif yang valid!"
 
-#: ../src/applet-dialogs.c:985
+#: ../src/applet-dialogs.c:1007
 msgid ""
-"Copyright © 2004-2014 Red Hat, Inc.\n"
+"Copyright © 2004-2017 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc.\n"
 "and many other community contributors and translators"
 msgstr ""
-"Hak cipta © 2004-2014 Red Hat, Inc.\n"
+"Hak cipta © 2004-2017 Red Hat, Inc.\n"
 "Hak cipta © 2005-2008 Novell, Inc.\n"
 "dan banyak penerjemah dan para kontributor komunitas"
 
-#: ../src/applet-dialogs.c:988
+#: ../src/applet-dialogs.c:1010
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr ""
 "Aplet wilayah pemberitahuan untuk mengelola perangkat dan sambungan jaringan "
 "Anda."
 
-#: ../src/applet-dialogs.c:990
+#: ../src/applet-dialogs.c:1012
 msgid "NetworkManager Website"
 msgstr "Situs Web NetworkManager"
 
-#: ../src/applet-dialogs.c:1001
+#: ../src/applet-dialogs.c:1016
+msgid "translator-credits"
+msgstr "Kukuh Syafaat <syafaatkukuh@gmail.com>, 2017."
+
+#: ../src/applet-dialogs.c:1026
 msgid ""
 "The NetworkManager Applet could not find some required resources (the .ui "
 "file was not found)."
@@ -968,33 +999,33 @@ msgstr ""
 "Aplet NetworkManager tidak dapat menemukan beberapa sumberdaya yang "
 "diperlukan (berkas .ui tidak ditemukan)."
 
-#: ../src/applet-dialogs.c:1006
+#: ../src/applet-dialogs.c:1031
 msgid "Missing resources"
 msgstr "Sumber daya hilang"
 
-#: ../src/applet-dialogs.c:1031
+#: ../src/applet-dialogs.c:1057
 msgid "Mobile broadband network password"
 msgstr "Sandi jaringan data seluler"
 
-#: ../src/applet-dialogs.c:1040
+#: ../src/applet-dialogs.c:1066
 #, c-format
 msgid "A password is required to connect to “%s”."
 msgstr "Diperlukan sandi untuk tersambung pada \"%s\"."
 
-#: ../src/applet-dialogs.c:1055
+#: ../src/applet-dialogs.c:1081
 msgid "Password:"
 msgstr "Sandi:"
 
-#: ../src/applet-dialogs.c:1337
+#: ../src/applet-dialogs.c:1363
 msgid "SIM PIN unlock required"
 msgstr "Perlu PIN SIM"
 
-#: ../src/applet-dialogs.c:1338
+#: ../src/applet-dialogs.c:1364
 msgid "SIM PIN Unlock Required"
 msgstr "Perlu PIN SIM"
 
 #. FIXME: some warning about # of times you can enter incorrect PIN
-#: ../src/applet-dialogs.c:1340
+#: ../src/applet-dialogs.c:1366
 #, c-format
 msgid ""
 "The mobile broadband device “%s” requires a SIM PIN code before it can be "
@@ -1003,25 +1034,25 @@ msgstr ""
 "Perangkat data seluler \"%s\" memerlukan kode PIN sebelum dapat dipakai."
 
 #. Translators: PIN code entry label
-#: ../src/applet-dialogs.c:1342
+#: ../src/applet-dialogs.c:1368
 msgid "PIN code:"
 msgstr "Kode PIN:"
 
 #. Translators: Show/obscure PIN checkbox label
-#: ../src/applet-dialogs.c:1346
+#: ../src/applet-dialogs.c:1372
 msgid "Show PIN code"
 msgstr "Tampilkan kode PIN"
 
-#: ../src/applet-dialogs.c:1348
+#: ../src/applet-dialogs.c:1374
 msgid "SIM PUK unlock required"
 msgstr "Perlu PUK SIM"
 
-#: ../src/applet-dialogs.c:1349
+#: ../src/applet-dialogs.c:1375
 msgid "SIM PUK Unlock Required"
 msgstr "Perlu PUK SIM"
 
 #. FIXME: some warning about # of times you can enter incorrect PUK
-#: ../src/applet-dialogs.c:1351
+#: ../src/applet-dialogs.c:1377
 #, c-format
 msgid ""
 "The mobile broadband device “%s” requires a SIM PUK code before it can be "
@@ -1030,31 +1061,24 @@ msgstr ""
 "Perangkat data seluler \"%s\" memerlukan kode PUK sebelum dapat dipakai."
 
 #. Translators: PUK code entry label
-#: ../src/applet-dialogs.c:1353
+#: ../src/applet-dialogs.c:1379
 msgid "PUK code:"
 msgstr "Kode PUK:"
 
 #. Translators: New PIN entry label
-#: ../src/applet-dialogs.c:1356
+#: ../src/applet-dialogs.c:1382
 msgid "New PIN code:"
 msgstr "Kode PIN baru:"
 
 #. Translators: New PIN verification entry label
-#: ../src/applet-dialogs.c:1358
+#: ../src/applet-dialogs.c:1384
 msgid "Re-enter new PIN code:"
 msgstr "Masukkan lagi kode PIN baru:"
 
 #. Translators: Show/obscure PIN/PUK checkbox label
-#: ../src/applet-dialogs.c:1363
+#: ../src/applet-dialogs.c:1389
 msgid "Show PIN/PUK codes"
 msgstr "Tampilkan kode PIN/PUK"
-
-#: ../src/connection-editor/ce-ip4-routes.ui.h:2
-#: ../src/connection-editor/ce-ip6-routes.ui.h:2
-#: ../src/connection-editor/ce-page-dcb.ui.h:18
-#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:2
-msgid "_OK"
-msgstr "_OK"
 
 #: ../src/connection-editor/ce-ip4-routes.ui.h:3
 #: ../src/connection-editor/ce-ip6-routes.ui.h:3
@@ -1073,11 +1097,10 @@ msgstr ""
 #: ../src/connection-editor/ce-page-ip4.ui.h:7
 #: ../src/connection-editor/ce-page-ip6.ui.h:10
 #: ../src/connection-editor/ce-page-team.ui.h:13
-#: ../src/connection-editor/nm-connection-editor.ui.h:3
+#: ../src/connection-editor/nm-connection-list.ui.h:3
 msgid "_Add"
 msgstr "T_ambah"
 
-#. Delete
 #: ../src/connection-editor/ce-ip4-routes.ui.h:5
 #: ../src/connection-editor/ce-ip6-routes.ui.h:5
 #: ../src/connection-editor/ce-page-bond.ui.h:14
@@ -1085,7 +1108,8 @@ msgstr "T_ambah"
 #: ../src/connection-editor/ce-page-ip4.ui.h:8
 #: ../src/connection-editor/ce-page-ip6.ui.h:11
 #: ../src/connection-editor/ce-page-team.ui.h:15
-#: ../src/connection-editor/nm-connection-list.c:711
+#: ../src/connection-editor/connection-helpers.c:772
+#: ../src/connection-editor/nm-connection-list.ui.h:4
 msgid "_Delete"
 msgstr "_Hapus"
 
@@ -1176,11 +1200,10 @@ msgstr "_Sambungan bond:"
 msgid "M_ode:"
 msgstr "M_ode:"
 
-#. Edit
 #: ../src/connection-editor/ce-page-bond.ui.h:13
 #: ../src/connection-editor/ce-page-bridge.ui.h:3
 #: ../src/connection-editor/ce-page-team.ui.h:14
-#: ../src/connection-editor/nm-connection-list.c:695
+#: ../src/connection-editor/nm-connection-list.ui.h:5
 msgid "_Edit"
 msgstr "_Sunting"
 
@@ -1236,7 +1259,7 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page-bond.ui.h:25
 #: ../src/connection-editor/ce-page-ethernet.ui.h:17
-#: ../src/connection-editor/ce-page-infiniband.ui.h:4
+#: ../src/connection-editor/ce-page-infiniband.ui.h:8
 #: ../src/connection-editor/ce-page-team.ui.h:17
 #: ../src/connection-editor/ce-page-vlan.ui.h:4
 #: ../src/connection-editor/ce-page-wifi.ui.h:8
@@ -1245,7 +1268,7 @@ msgstr "_MTU:"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:26
 #: ../src/connection-editor/ce-page-ethernet.ui.h:18
-#: ../src/connection-editor/ce-page-infiniband.ui.h:3
+#: ../src/connection-editor/ce-page-infiniband.ui.h:7
 #: ../src/connection-editor/ce-page-team.ui.h:18
 #: ../src/connection-editor/ce-page-vlan.ui.h:5
 #: ../src/connection-editor/ce-page-wifi.ui.h:7
@@ -1580,7 +1603,7 @@ msgstr "_Sandi:"
 #: ../src/connection-editor/ce-page-ethernet.ui.h:1
 #: ../src/connection-editor/ce-page-ip4.ui.h:1
 #: ../src/connection-editor/ce-page-ip6.ui.h:1
-#: ../src/connection-editor/ce-page-proxy.ui.h:3
+#: ../src/connection-editor/ce-page-proxy.ui.h:2
 #: ../src/connection-editor/ce-page-wifi.ui.h:1
 #: ../src/connection-editor/page-ip4.c:131
 #: ../src/connection-editor/page-ip6.c:136
@@ -1646,7 +1669,7 @@ msgid "_Port:"
 msgstr "_Port:"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:15
-#: ../src/connection-editor/ce-page-infiniband.ui.h:2
+#: ../src/connection-editor/ce-page-infiniband.ui.h:6
 #: ../src/connection-editor/ce-page-wifi.ui.h:9
 msgid "_Device:"
 msgstr "_Perangkat:"
@@ -1807,19 +1830,19 @@ msgstr "Alamat"
 msgid "Address (optional)"
 msgstr "Alamat (opsional)"
 
-#: ../src/connection-editor/ce-page-infiniband.ui.h:1
-msgid "_Transport mode:"
-msgstr "Mode _transport:"
-
 #. IP-over-InfiniBand "datagram mode"
-#: ../src/connection-editor/ce-page-infiniband.ui.h:6
+#: ../src/connection-editor/ce-page-infiniband.ui.h:2
 msgid "Datagram"
 msgstr "Datagram"
 
 #. IP-over-InfiniBand "connected mode"
-#: ../src/connection-editor/ce-page-infiniband.ui.h:8
+#: ../src/connection-editor/ce-page-infiniband.ui.h:4
 msgid "Connected"
 msgstr "Terhubung"
+
+#: ../src/connection-editor/ce-page-infiniband.ui.h:5
+msgid "_Transport mode:"
+msgstr "Mode _transport:"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:1
 msgid "IPIP"
@@ -1858,36 +1881,39 @@ msgid "VTI6"
 msgstr "VTI6"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:10
-msgid "Device name"
-msgstr "Nama perangkat"
+#: ../src/connection-editor/ce-page-macsec.ui.h:6
+msgid "Device name:"
+msgstr "Nama perangkat:"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:11
-msgid "Parent device"
-msgstr "Perangkat induk"
+#: ../src/connection-editor/ce-page-macsec.ui.h:8
+msgid "Parent device:"
+msgstr "Perangkat induk:"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:12
-msgid "Mode"
-msgstr "Mode"
+#: ../src/connection-editor/ce-page-macsec.ui.h:16
+msgid "Mode:"
+msgstr "Mode:"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:13
-msgid "Local IP"
-msgstr "IP lokal"
+msgid "Local IP:"
+msgstr "IP lokal:"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:14
-msgid "Remote IP"
-msgstr "IP remote"
+msgid "Remote IP:"
+msgstr "IP remote:"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:15
-msgid "Input key"
-msgstr "Kunci masukan"
+msgid "Input key:"
+msgstr "Kunci masukan:"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:16
-msgid "Output key"
-msgstr "Kunci keluaran"
+msgid "Output key:"
+msgstr "Kunci keluaran:"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:17
-msgid "MTU"
-msgstr "MTU"
+msgid "MTU:"
+msgstr "MTU:"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:2
 #: ../src/connection-editor/ce-page-ip6.ui.h:2
@@ -1974,6 +2000,7 @@ msgid "_Routes…"
 msgstr "_Route…"
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:6
+#: ../src/connection-editor/ce-page-macsec.ui.h:3
 #: ../src/connection-editor/page-ip4.c:198
 msgid "Disabled"
 msgstr "Dimatikan"
@@ -2011,6 +2038,101 @@ msgid ""
 msgstr ""
 "Ketika menyambung ke jaringan yang mampu-IPv4, memungkinkan sambungan "
 "komplit bila konfigurasi IPv6 gagal tetapi konfigurasi IPv4 sukses."
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:1
+msgid "PSK"
+msgstr "PSK"
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:2
+#: ../src/connection-editor/page-ppp.c:129
+msgid "EAP"
+msgstr "EAP"
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:4
+msgid "Check"
+msgstr "Periksa"
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:5
+msgid "Strict"
+msgstr "Ketat"
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:7
+msgid "The name of the MACsec device."
+msgstr "Nama perangkat MACsec."
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:9
+msgid ""
+"The parent interface name or parent connection UUID from which this MACSEC "
+"interface should be created."
+msgstr ""
+"Nama antarmuka induk atau koneksi induk UUID dari mana antarmuka MACsec ini "
+"harus dibuat."
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:10
+msgid ""
+"The parent interface name or parent connection UUID from which this MACsec "
+"interface should be created"
+msgstr ""
+"Nama antarmuka induk atau koneksi induk UUID dari mana antarmuka MACsec ini "
+"harus dibuat"
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:11
+msgid " The pre-shared Connectivity-association Key Name"
+msgstr " Nama Kunci Konektivitas-asosiasi pre-shared"
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:12
+msgid "The pre-shared Connectivity Association Key"
+msgstr "Kunci Konektivitas Asosiasi pre-shared"
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:13
+msgid ""
+"Specifies how the CAK (Connectivity Association Key) for MKA (MACsec Key "
+"Agreement) is obtained. For the EAP mode, fill the parameters in the 802.1X "
+"security page"
+msgstr ""
+"Menentukan bagaimana CAK (Connectivity Association Key) untuk MKA (MACsec "
+"Key Agreement) diperoleh. Untuk mode EAP, isilah parameter di halaman "
+"keamanan 802.1X"
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:14
+msgid "CKN:"
+msgstr "CKN:"
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:15
+msgid "CAK:"
+msgstr "CAK:"
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:17
+msgid "Keys:"
+msgstr "Kunci:"
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:18
+msgid "Parameters:"
+msgstr "Parameter:"
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:19
+msgid "Validation:"
+msgstr "Validasi:"
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:20
+msgid "SCI port:"
+msgstr "Port SCI:"
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:21
+msgid "Specifies the validation mode for incoming frames"
+msgstr "Menentukan mode validasi untuk frame masuk"
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:22
+msgid "Encrypt"
+msgstr "Enkripsi"
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:23
+msgid "Whether the transmitted traffic must be encrypted"
+msgstr "Apakah lalu lintas yang ditransmisikan harus dienkripsi"
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:24
+msgid "The port component of the SCI (Secure Channel Identifier)"
+msgstr "Komponen port dari SCI (Secure Channel Identifier)"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:1
 #: ../src/connection-editor/ce-page-team.ui.h:26
@@ -2098,37 +2220,37 @@ msgid "Send PPP _echo packets"
 msgstr "Kirim paket _echo PPP"
 
 #: ../src/connection-editor/ce-page-proxy.ui.h:1
-msgid "Method:"
-msgstr "Metode:"
-
-#: ../src/connection-editor/ce-page-proxy.ui.h:2
 #: ../src/connection-editor/ce-page-team.ui.h:25
 msgid "None"
 msgstr "Nihil"
 
-#: ../src/connection-editor/ce-page-proxy.ui.h:4
+#: ../src/connection-editor/ce-page-proxy.ui.h:3
 msgid "For browser only"
 msgstr "Hanya untuk peramban"
 
-#: ../src/connection-editor/ce-page-proxy.ui.h:5
+#: ../src/connection-editor/ce-page-proxy.ui.h:4
 msgid "Use this proxy configuration for only browser clients/schemes."
 msgstr "Gunakan konfigurasi proksi ini hanya untuk skema/klien peramban."
 
-#: ../src/connection-editor/ce-page-proxy.ui.h:6
+#: ../src/connection-editor/ce-page-proxy.ui.h:5
 msgid "PAC URL:"
 msgstr "URL PAC:"
+
+#: ../src/connection-editor/ce-page-proxy.ui.h:6
+msgid "PAC script:"
+msgstr "Skrip PAC:"
 
 #: ../src/connection-editor/ce-page-proxy.ui.h:7
 msgid "URL from where the PAC script is to be obtained."
 msgstr "URL darimana skrip PAC akan diperoleh."
 
 #: ../src/connection-editor/ce-page-proxy.ui.h:8
-msgid "PAC script:"
-msgstr "Skrip PAC:"
-
-#: ../src/connection-editor/ce-page-proxy.ui.h:9
 msgid "Import script from a file…"
 msgstr "Impor skrip dari suatu berkas…"
+
+#: ../src/connection-editor/ce-page-proxy.ui.h:9
+msgid "Method:"
+msgstr "Metode:"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:1
 #: ../src/connection-editor/ce-page-team.ui.h:19
@@ -2177,14 +2299,32 @@ msgid "ID of queue which this port should be mapped to."
 msgstr "ID antrian yang mestinya port ini dipetakan padanya."
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:10
+msgid "Active-Backup runner options"
+msgstr "Opsi pelari Aktif-Backup"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:11
 msgid "_Port priority:"
 msgstr "_Prioritas port:"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:11
+#: ../src/connection-editor/ce-page-team-port.ui.h:12
+#: ../src/connection-editor/ce-page-team.ui.h:44
+msgid ""
+"Value is positive number in milliseconds. Specifies an interval between "
+"bursts of notify-peer packets."
+msgstr ""
+"Nilai adalah bilangan positif dalam milidetik. Menyatakan selang waktu "
+"antara rentetan dari paket notify-peer."
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:13
+msgid "Port priority. The higher number means higher priority."
+msgstr ""
+"Prioritas port. Angka yang lebih tinggi berarti prioritas lebih tinggi."
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:14
 msgid "Port _sticky"
 msgstr "Port _lengket"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:12
+#: ../src/connection-editor/ce-page-team-port.ui.h:15
 #: ../src/connection-editor/ce-page-team.ui.h:82
 msgid ""
 "Validate received ARP packets on active ports. If this is not checked, all "
@@ -2194,33 +2334,19 @@ msgstr ""
 "dicentang, semua paket ARP yang datang akan dianggap sebagai jawaban yang "
 "bagus."
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:13
-#: ../src/connection-editor/ce-page-team.ui.h:44
-msgid ""
-"Value is positive number in milliseconds. Specifies an interval between "
-"bursts of notify-peer packets."
-msgstr ""
-"Nilai adalah bilangan positif dalam milidetik. Menyatakan selang waktu "
-"antara rentetan dari paket notify-peer."
-
-#: ../src/connection-editor/ce-page-team-port.ui.h:14
-msgid "Port priority. The higher number means higher priority."
-msgstr ""
-"Prioritas port. Angka yang lebih tinggi berarti prioritas lebih tinggi."
-
-#: ../src/connection-editor/ce-page-team-port.ui.h:15
-msgid "Active-Backup runner options"
-msgstr "Opsi pelari Aktif-Backup"
-
 #: ../src/connection-editor/ce-page-team-port.ui.h:16
+msgid "LACP runner options"
+msgstr "Opsi pelari LACP"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:17
 msgid "_LACP port priority:"
 msgstr "Prioritas port _LACP:"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:17
+#: ../src/connection-editor/ce-page-team-port.ui.h:18
 msgid "LACP port _key:"
 msgstr "_Kunci port LACP:"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:18
+#: ../src/connection-editor/ce-page-team-port.ui.h:19
 #: ../src/connection-editor/ce-page-team.ui.h:43
 msgid ""
 "Number of bursts of multicast group rejoin requests sent after port is "
@@ -2229,7 +2355,7 @@ msgstr ""
 "Cacah rentetan permintaan gabung ulang grup multicast yang dikirim setelah "
 "port difungsikan atau dinonaktifkan."
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:19
+#: ../src/connection-editor/ce-page-team-port.ui.h:20
 msgid ""
 "Port priority according to LACP standard. The lower number means higher "
 "priority."
@@ -2237,7 +2363,7 @@ msgstr ""
 "Prioritas port menurut standar LACP. Angka yang lebih rendah berarti "
 "prioritas lebih tinggi."
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:20
+#: ../src/connection-editor/ce-page-team-port.ui.h:21
 #: ../src/connection-editor/ce-page-team.ui.h:45
 msgid ""
 "Value is positive number in milliseconds. Specifies an interval between "
@@ -2246,17 +2372,13 @@ msgstr ""
 "Nilai adalah bilangan positif dalam milidetik. Menyatakan selang waktu antar "
 "rentetan dari permintaan gabung ulang grup multicast."
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:21
+#: ../src/connection-editor/ce-page-team-port.ui.h:22
 msgid ""
 "Port key according to LACP standard. It is only possible to aggregate ports "
 "with the same key."
 msgstr ""
 "Kunci port menurut standar LACP. Ini hanya mungkin mengagregasi port dengan "
 "kunci yang sama."
-
-#: ../src/connection-editor/ce-page-team-port.ui.h:22
-msgid "LACP runner options"
-msgstr "Opsi pelari LACP"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:24
 #: ../src/connection-editor/ce-page-team.ui.h:70
@@ -2286,7 +2408,7 @@ msgstr "Tundaan se_belum kiriman pertama:"
 #: ../src/connection-editor/ce-page-team-port.ui.h:29
 #: ../src/connection-editor/ce-page-team.ui.h:75
 msgid "_Maximum missed replies:"
-msgstr "_Maksimum jawaban yang meleset: "
+msgstr "_Maksimum jawaban yang meleset:"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:30
 #: ../src/connection-editor/ce-page-team.ui.h:76
@@ -2333,7 +2455,7 @@ msgstr "Abaikan paket yang tidak valid dari port _aktif"
 #: ../src/connection-editor/ce-page-team-port.ui.h:36
 #: ../src/connection-editor/ce-page-team.ui.h:83
 msgid "Ignore invalid packets from i_nactive ports"
-msgstr "Abaikan paket yang tidak valid dari port ya_ng tidak aktif."
+msgstr "Abaikan paket yang tidak valid dari port ya_ng tidak aktif"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:37
 #: ../src/connection-editor/ce-page-team.ui.h:84
@@ -2348,7 +2470,7 @@ msgstr ""
 #: ../src/connection-editor/ce-page-team-port.ui.h:38
 #: ../src/connection-editor/ce-page-team.ui.h:85
 msgid "S_end on inactive ports"
-msgstr "K_irim pada port yang tidak aktif."
+msgstr "K_irim pada port yang tidak aktif"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:39
 #: ../src/connection-editor/ce-page-team.ui.h:86
@@ -2454,14 +2576,14 @@ msgid "LACP"
 msgstr "LACP"
 
 #: ../src/connection-editor/ce-page-team.ui.h:27
-#: ../src/connection-editor/connection-helpers.c:104
+#: ../src/connection-editor/connection-helpers.c:105
 #: ../src/connection-editor/page-ethernet.c:351
 #: ../src/libnm-gtk/nm-ui-utils.c:321
 msgid "Ethernet"
 msgstr "Ethernet"
 
 #: ../src/connection-editor/ce-page-team.ui.h:28
-#: ../src/connection-editor/connection-helpers.c:119
+#: ../src/connection-editor/connection-helpers.c:120
 #: ../src/connection-editor/page-vlan.c:594 ../src/libnm-gtk/nm-ui-utils.c:339
 #: ../src/libnm-gtk/nm-ui-utils.c:583
 msgid "VLAN"
@@ -2730,6 +2852,7 @@ msgstr "Ban_d:"
 msgid "SS_ID:"
 msgstr "SS_ID:"
 
+#: ../src/connection-editor/ce-polkit.c:63
 #: ../src/connection-editor/ce-polkit-button.c:74
 msgid "No polkit authorization to perform the action"
 msgstr "Tidak ada otorisasi polkit untuk melaksanakan aksi"
@@ -2787,58 +2910,63 @@ msgstr ""
 "otentikasi. Bila sambungan gagal, cobalah mematikan dukungan untuk beberapa "
 "metoda."
 
-#: ../src/connection-editor/connection-helpers.c:105
+#: ../src/connection-editor/connection-helpers.c:106
 #: ../src/connection-editor/page-wifi.c:440 ../src/libnm-gtk/nm-ui-utils.c:323
 msgid "Wi-Fi"
 msgstr "Wi-Fi"
 
-#: ../src/connection-editor/connection-helpers.c:113
+#: ../src/connection-editor/connection-helpers.c:114
 #: ../src/connection-editor/page-bluetooth.c:123
 #: ../src/libnm-gtk/nm-ui-utils.c:325
 msgid "Bluetooth"
 msgstr "Bluetooth"
 
-#: ../src/connection-editor/connection-helpers.c:114
+#: ../src/connection-editor/connection-helpers.c:115
 #: ../src/connection-editor/page-dsl.c:127
 msgid "DSL"
 msgstr "DSL"
 
-#: ../src/connection-editor/connection-helpers.c:115
+#: ../src/connection-editor/connection-helpers.c:116
 #: ../src/connection-editor/page-infiniband.c:148
 #: ../src/libnm-gtk/nm-ui-utils.c:331
 msgid "InfiniBand"
 msgstr "InfiniBand"
 
-#: ../src/connection-editor/connection-helpers.c:116
+#: ../src/connection-editor/connection-helpers.c:117
 #: ../src/connection-editor/page-bond.c:446 ../src/libnm-gtk/nm-ui-utils.c:333
 #: ../src/libnm-gtk/nm-ui-utils.c:577
 msgid "Bond"
 msgstr "Bond"
 
-#: ../src/connection-editor/connection-helpers.c:117
-#: ../src/connection-editor/page-team.c:1153 ../src/libnm-gtk/nm-ui-utils.c:335
+#: ../src/connection-editor/connection-helpers.c:118
+#: ../src/connection-editor/page-team.c:1031 ../src/libnm-gtk/nm-ui-utils.c:335
 #: ../src/libnm-gtk/nm-ui-utils.c:579
 msgid "Team"
 msgstr "Tim"
 
-#: ../src/connection-editor/connection-helpers.c:118
+#: ../src/connection-editor/connection-helpers.c:119
 #: ../src/connection-editor/page-bridge.c:212
 #: ../src/libnm-gtk/nm-ui-utils.c:337 ../src/libnm-gtk/nm-ui-utils.c:581
 msgid "Bridge"
 msgstr "Bridge"
 
-#: ../src/connection-editor/connection-helpers.c:120
+#: ../src/connection-editor/connection-helpers.c:121
 #: ../src/connection-editor/page-ip-tunnel.c:176
 msgid "IP tunnel"
 msgstr "Tunnel IP"
 
 #: ../src/connection-editor/connection-helpers.c:122
-#: ../src/connection-editor/connection-helpers.c:396
+#: ../src/connection-editor/page-macsec.c:190
+msgid "MACsec"
+msgstr "MACsec"
+
+#: ../src/connection-editor/connection-helpers.c:124
+#: ../src/connection-editor/connection-helpers.c:398
 #: ../src/connection-editor/page-vpn.c:96
 msgid "VPN"
 msgstr "VPN"
 
-#: ../src/connection-editor/connection-helpers.c:205
+#: ../src/connection-editor/connection-helpers.c:207
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
@@ -2848,11 +2976,11 @@ msgstr ""
 "\n"
 "Galat: tak ada tipe layanan VPN."
 
-#: ../src/connection-editor/connection-helpers.c:217
+#: ../src/connection-editor/connection-helpers.c:219
 msgid "Cannot import VPN connection"
 msgstr "Tak dapat mengimpor sambungan VPN"
 
-#: ../src/connection-editor/connection-helpers.c:219
+#: ../src/connection-editor/connection-helpers.c:221
 #, c-format
 msgid ""
 "The file “%s” could not be read or does not contain recognized VPN "
@@ -2865,31 +2993,38 @@ msgstr ""
 "\n"
 "Galat: %s."
 
-#: ../src/connection-editor/connection-helpers.c:220
+#: ../src/connection-editor/connection-helpers.c:222
 msgid "unknown error"
 msgstr "galat tak dikenal"
 
-#: ../src/connection-editor/connection-helpers.c:303
+#: ../src/connection-editor/connection-helpers.c:305
 #: ../src/connection-editor/page-proxy.c:118
 #: ../src/connection-editor/page-team.c:341
 #: ../src/connection-editor/page-team-port.c:203
 msgid "Select file to import"
 msgstr "Pilih berkas untuk diimpor"
 
-#: ../src/connection-editor/connection-helpers.c:338
+#: ../src/connection-editor/connection-helpers.c:309
+#: ../src/connection-editor/page-proxy.c:122
+#: ../src/connection-editor/page-team.c:345
+#: ../src/connection-editor/page-team-port.c:207
+msgid "_Open"
+msgstr "_Buka"
+
+#: ../src/connection-editor/connection-helpers.c:340
 msgid "Hardware"
 msgstr "Perangkat Keras"
 
-#: ../src/connection-editor/connection-helpers.c:365
+#: ../src/connection-editor/connection-helpers.c:367
 msgid "Virtual"
 msgstr "Virtual"
 
-#: ../src/connection-editor/connection-helpers.c:514
 #: ../src/connection-editor/connection-helpers.c:516
+#: ../src/connection-editor/connection-helpers.c:518
 msgid "Import a saved VPN configuration…"
 msgstr "Impor suatu konfigurasi VPN yang tersimpan…"
 
-#: ../src/connection-editor/connection-helpers.c:546
+#: ../src/connection-editor/connection-helpers.c:548
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
@@ -2897,15 +3032,15 @@ msgstr ""
 "Dialog penyunting sambungan tidak dapat diinisialisasi karena galat yang tak "
 "dikenal."
 
-#: ../src/connection-editor/connection-helpers.c:555
+#: ../src/connection-editor/connection-helpers.c:557
 msgid "Could not create new connection"
 msgstr "Tak bisa membuat sambungan baru"
 
-#: ../src/connection-editor/connection-helpers.c:718
+#: ../src/connection-editor/connection-helpers.c:720
 msgid "Connection delete failed"
 msgstr "Penghapusan sambungan gagal"
 
-#: ../src/connection-editor/connection-helpers.c:766
+#: ../src/connection-editor/connection-helpers.c:768
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Anda yakin ingin menghapus sambungan %s?"
@@ -2939,34 +3074,34 @@ msgstr "Metrik"
 msgid "Prefix"
 msgstr "Awalan"
 
-#: ../src/connection-editor/nm-connection-editor.c:108
+#: ../src/connection-editor/nm-connection-editor.c:109
 #, c-format
 msgid "Editing %s"
 msgstr "Menyunting %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:112
+#: ../src/connection-editor/nm-connection-editor.c:113
 msgid "Editing un-named connection"
 msgstr "Sunting sambungan tak bernama"
 
-#: ../src/connection-editor/nm-connection-editor.c:132
+#: ../src/connection-editor/nm-connection-editor.c:133
 msgid "Missing connection name"
 msgstr "Kurang nama koneksi"
 
-#: ../src/connection-editor/nm-connection-editor.c:352
+#: ../src/connection-editor/nm-connection-editor.c:353
 msgid "Editor initializing…"
 msgstr "Menginisialisasi penyunting..."
 
-#: ../src/connection-editor/nm-connection-editor.c:359
-#: ../src/connection-editor/nm-connection-list.c:408
+#: ../src/connection-editor/nm-connection-editor.c:360
+#: ../src/connection-editor/nm-connection-list.c:443
 msgid "Connection cannot be modified"
 msgstr "Koneksi tak bisa diubah"
 
-#: ../src/connection-editor/nm-connection-editor.c:374
+#: ../src/connection-editor/nm-connection-editor.c:375
 #, c-format
 msgid "Invalid setting %s: %s"
 msgstr "Pengaturan tak valid %s: %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:450
+#: ../src/connection-editor/nm-connection-editor.c:451
 msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
@@ -2974,33 +3109,34 @@ msgstr ""
 "Penyunting sambungan tak dapat menemukan beberapa sumber daya yang "
 "diperlukan (berkas .ui tak ditemukan)."
 
-#: ../src/connection-editor/nm-connection-editor.c:577
+#: ../src/connection-editor/nm-connection-editor.c:578
+#: ../src/connection-editor/vpn-helpers.c:213
 msgid "_Save"
 msgstr "_Simpan"
 
-#: ../src/connection-editor/nm-connection-editor.c:578
+#: ../src/connection-editor/nm-connection-editor.c:579
 msgid "Save any changes made to this connection."
 msgstr "Simpan perubahan yang dibuat atas sambungan ini."
 
-#: ../src/connection-editor/nm-connection-editor.c:579
+#: ../src/connection-editor/nm-connection-editor.c:580
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Lalukan otentikasi untuk menyimpan sambungan ini bagi semua pengguna dari "
 "mesin ini."
 
-#: ../src/connection-editor/nm-connection-editor.c:595
+#: ../src/connection-editor/nm-connection-editor.c:596
 msgid "Could not create connection"
 msgstr "Tak bisa membuat sambungan"
 
-#: ../src/connection-editor/nm-connection-editor.c:595
+#: ../src/connection-editor/nm-connection-editor.c:596
 msgid "Could not edit connection"
 msgstr "Tak bisa menyunting sambungan"
 
-#: ../src/connection-editor/nm-connection-editor.c:597
+#: ../src/connection-editor/nm-connection-editor.c:598
 msgid "Unknown error creating connection editor dialog."
 msgstr "Galat tak dikenal saat membuat dialog penyunting sambungan."
 
-#: ../src/connection-editor/nm-connection-editor.c:738
+#: ../src/connection-editor/nm-connection-editor.c:739
 msgid ""
 "Warning: the connection contains some properties not supported by the "
 "editor. They will be cleared upon save."
@@ -3008,23 +3144,19 @@ msgstr ""
 "Peringatan: koneksi memuat beberapa properti yang tidak didukung oleh "
 "penyunting. Mereka akan dibersikan ketika disimpan."
 
-#: ../src/connection-editor/nm-connection-editor.c:758
+#: ../src/connection-editor/nm-connection-editor.c:759
 msgid "Error initializing editor"
 msgstr "Galat menginisialisasi penyunting"
 
-#: ../src/connection-editor/nm-connection-editor.c:1142
+#: ../src/connection-editor/nm-connection-editor.c:1159
 msgid "Connection add failed"
 msgstr "Penambahan koneksi gagal"
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:2 ../src/info.ui.h:2
-msgid "_Close"
-msgstr "_Tutup"
-
-#: ../src/connection-editor/nm-connection-editor.ui.h:4
+#: ../src/connection-editor/nm-connection-editor.ui.h:1
 msgid "Fix"
 msgstr "Perbaiki"
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:5
+#: ../src/connection-editor/nm-connection-editor.ui.h:2
 msgid ""
 "Security labels may prevent some files from being used with certificate "
 "authentication."
@@ -3032,23 +3164,23 @@ msgstr ""
 "Label keamanan bisa mencegah beberapa berkas dipakai dengan otentikasi "
 "sertifikat."
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:6
+#: ../src/connection-editor/nm-connection-editor.ui.h:3
 msgid "Connection _name:"
 msgstr "_Nama sambungan:"
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:7
+#: ../src/connection-editor/nm-connection-editor.ui.h:4
 msgid "_Export…"
 msgstr "_Ekspor…"
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:9
+#: ../src/connection-editor/nm-connection-editor.ui.h:6
 msgid "File Relabel"
 msgstr "Label Ulang Berkas"
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:10
+#: ../src/connection-editor/nm-connection-editor.ui.h:7
 msgid "_Relabel"
 msgstr "_Label ulang"
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:11
+#: ../src/connection-editor/nm-connection-editor.ui.h:8
 msgid ""
 "The following files are not labelled for use with certificate "
 "authentication. Do you wish to adjust the labels?"
@@ -3056,111 +3188,127 @@ msgstr ""
 "Berkas-berkas berikut tidak dilabeli untuk dipakai dengan otentikasi "
 "sertifikat. Apakah Anda hendak menyetel label?"
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:12
+#: ../src/connection-editor/nm-connection-editor.ui.h:9
 msgid "Relabel"
 msgstr "Label ulang"
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:13
+#: ../src/connection-editor/nm-connection-editor.ui.h:10
 msgid "Filename"
 msgstr "Nama berkas"
 
-#: ../src/connection-editor/nm-connection-list.c:127
+#: ../src/connection-editor/nm-connection-list.c:151
 msgid "never"
 msgstr "tak pernah"
 
-#: ../src/connection-editor/nm-connection-list.c:138
-#: ../src/connection-editor/nm-connection-list.c:149
+#: ../src/connection-editor/nm-connection-list.c:162
+#: ../src/connection-editor/nm-connection-list.c:173
 msgid "now"
 msgstr "kini"
 
 #. less than an hour ago
-#: ../src/connection-editor/nm-connection-list.c:156
+#: ../src/connection-editor/nm-connection-list.c:180
 #, c-format
 msgid "%d minute ago"
 msgid_plural "%d minutes ago"
 msgstr[0] "%d menit lalu"
 
-#: ../src/connection-editor/nm-connection-list.c:160
+#: ../src/connection-editor/nm-connection-list.c:184
 #, c-format
 msgid "%d hour ago"
 msgid_plural "%d hours ago"
 msgstr[0] "%d jam lalu"
 
-#: ../src/connection-editor/nm-connection-list.c:172
+#: ../src/connection-editor/nm-connection-list.c:196
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "%d hari lalu"
 
-#: ../src/connection-editor/nm-connection-list.c:178
+#: ../src/connection-editor/nm-connection-list.c:202
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
 msgstr[0] "%d bulan lalu"
 
-#: ../src/connection-editor/nm-connection-list.c:182
+#: ../src/connection-editor/nm-connection-list.c:206
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
 msgstr[0] "%d tahun lalu"
 
-#: ../src/connection-editor/nm-connection-list.c:635
+#: ../src/connection-editor/nm-connection-list.c:445
+msgid "Connection cannot be deleted"
+msgstr "Koneksi tak bisa dihapus"
+
+#: ../src/connection-editor/nm-connection-list.c:448
+msgid "Select a connection to edit"
+msgstr "Pilih koneksi untuk disunting"
+
+#: ../src/connection-editor/nm-connection-list.c:450
+msgid "Select a connection to delete"
+msgstr "Pilih koneksi untuk dihapus"
+
+#: ../src/connection-editor/nm-connection-list.c:785
 #: ../src/libnma/nma-pkcs11-cert-chooser-dialog.ui.h:2
 msgid "Name"
 msgstr "Nama"
 
-#: ../src/connection-editor/nm-connection-list.c:648
+#: ../src/connection-editor/nm-connection-list.c:798
 msgid "Last Used"
 msgstr "Terakhir Dipakai"
 
-#: ../src/connection-editor/nm-connection-list.c:696
+#: ../src/connection-editor/nm-connection-list.c:836
 msgid "Edit the selected connection"
 msgstr "Sunting sambungan terpilih"
 
-#: ../src/connection-editor/nm-connection-list.c:697
+#: ../src/connection-editor/nm-connection-list.c:837
 msgid "Authenticate to edit the selected connection"
 msgstr "Lakukan otentikasi untuk menyunting sambungan yang dipilih"
 
-#: ../src/connection-editor/nm-connection-list.c:712
+#: ../src/connection-editor/nm-connection-list.c:842
 msgid "Delete the selected connection"
 msgstr "Hapus sambungan yang dipilih"
 
-#: ../src/connection-editor/nm-connection-list.c:713
+#: ../src/connection-editor/nm-connection-list.c:843
 msgid "Authenticate to delete the selected connection"
 msgstr "Lakukan otentikasi untuk menghapus sambungan yang dipilih"
 
-#: ../src/connection-editor/nm-connection-list.c:935
-#: ../src/connection-editor/nm-connection-list.c:938
+#: ../src/connection-editor/nm-connection-list.c:1048
+#: ../src/connection-editor/nm-connection-list.c:1051
 msgid "Error creating connection"
 msgstr "Galat saat membuat sambungan"
 
-#: ../src/connection-editor/nm-connection-list.c:936
+#: ../src/connection-editor/nm-connection-list.c:1049
 msgid "No VPN plugins are installed."
 msgstr "Tak ada plugin VPN yang terpasang."
 
-#: ../src/connection-editor/nm-connection-list.c:939
+#: ../src/connection-editor/nm-connection-list.c:1052
 #, c-format
 msgid "Don’t know how to create “%s” connections"
 msgstr "Tidak tahu bagaimana membuat sambungan \"%s\""
 
-#: ../src/connection-editor/nm-connection-list.c:970
+#: ../src/connection-editor/nm-connection-list.c:1085
 msgid "Error editing connection"
 msgstr "Galat saat menyunting sambungan"
 
-#: ../src/connection-editor/nm-connection-list.c:971
+#: ../src/connection-editor/nm-connection-list.c:1086
 #, c-format
 msgid "Did not find a connection with UUID “%s”"
 msgstr "Tidak menemukan koneksi dengan UUID \"%s\""
 
-#: ../src/connection-editor/page-8021x-security.c:109
+#: ../src/connection-editor/nm-connection-list.ui.h:2
+msgid "Add a new connection"
+msgstr "Tambah koneksi baru"
+
+#: ../src/connection-editor/page-8021x-security.c:116
 msgid "802.1X Security"
 msgstr "Keamanan 802.1X"
 
-#: ../src/connection-editor/page-8021x-security.c:111
+#: ../src/connection-editor/page-8021x-security.c:118
 msgid "Could not load 802.1X Security user interface."
 msgstr "Tak bisa memuat antar muka pengguna Keamanan 802.1X."
 
-#: ../src/connection-editor/page-8021x-security.c:125
+#: ../src/connection-editor/page-8021x-security.c:132
 msgid "Use 802.1_X security for this connection"
 msgstr "Gunakan keamanan 802.1_X untuk sambungan ini"
 
@@ -3458,6 +3606,15 @@ msgstr "Gateway IPv6 \"%s\" tak valid"
 msgid "IPv6 DNS server “%s” invalid"
 msgstr "Server DNS IPv6 \"%s\" tak valid"
 
+#: ../src/connection-editor/page-macsec.c:192
+msgid "Could not load MACsec user interface."
+msgstr "Tidak dapat memuat antarmuka pengguna MACsec."
+
+#: ../src/connection-editor/page-macsec.c:331
+#, c-format
+msgid "MACSEC connection %d"
+msgstr "Koneksi MACSEC %d"
+
 #: ../src/connection-editor/page-master.c:247
 #: ../src/connection-editor/page-master.c:258
 msgid "Duplicate slaves"
@@ -3515,38 +3672,34 @@ msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr "Operator saya memakai teknologi berbasis C_DMA (mis. 1xRTT, EVDO)"
 
 #: ../src/connection-editor/page-mobile.c:589 ../src/mb-menu-item.c:50
-#: ../src/mobile-helpers.c:283
+#: ../src/mobile-helpers.c:282
 msgid "CDMA"
 msgstr "CDMA"
 
 #: ../src/connection-editor/page-mobile.c:592 ../src/mb-menu-item.c:54
-#: ../src/mobile-helpers.c:281
+#: ../src/mobile-helpers.c:280
 msgid "GSM"
 msgstr "GSM"
 
-#: ../src/connection-editor/page-ppp.c:129
-msgid "EAP"
-msgstr "EAP"
-
 #: ../src/connection-editor/page-ppp.c:130
-#: ../src/wireless-security/eap-method-ttls.c:260
+#: ../src/wireless-security/eap-method-ttls.c:287
 msgid "PAP"
 msgstr "PAP"
 
 #: ../src/connection-editor/page-ppp.c:131
-#: ../src/wireless-security/eap-method-ttls.c:322
+#: ../src/wireless-security/eap-method-ttls.c:349
 msgid "CHAP"
 msgstr "CHAP"
 
 #: ../src/connection-editor/page-ppp.c:132
-#: ../src/wireless-security/eap-method-fast.c:284
-#: ../src/wireless-security/eap-method-peap.c:273
-#: ../src/wireless-security/eap-method-ttls.c:290
+#: ../src/wireless-security/eap-method-fast.c:282
+#: ../src/wireless-security/eap-method-peap.c:299
+#: ../src/wireless-security/eap-method-ttls.c:317
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
 #: ../src/connection-editor/page-ppp.c:133
-#: ../src/wireless-security/eap-method-ttls.c:275
+#: ../src/wireless-security/eap-method-ttls.c:302
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
@@ -3581,11 +3734,11 @@ msgstr "Tak bisa memuat antar muka pengguna proksi."
 msgid "Error: file doesn’t contain a valid JSON configuration"
 msgstr "Galat: berkas tak memuat konfigurasi JSON yang valid"
 
-#: ../src/connection-editor/page-team.c:1156
+#: ../src/connection-editor/page-team.c:1034
 msgid "Could not load team user interface."
 msgstr "Tak dapat memuat antar muka pengguna tim."
 
-#: ../src/connection-editor/page-team.c:1253
+#: ../src/connection-editor/page-team.c:1131
 #, c-format
 msgid "Team connection %d"
 msgstr "Koneksi tim %d"
@@ -3593,11 +3746,11 @@ msgstr "Koneksi tim %d"
 #. Translators: a "Team Port" is a network
 #. * device that is part of a team.
 #.
-#: ../src/connection-editor/page-team-port.c:732
+#: ../src/connection-editor/page-team-port.c:655
 msgid "Team Port"
 msgstr "Port Tim"
 
-#: ../src/connection-editor/page-team-port.c:734
+#: ../src/connection-editor/page-team-port.c:657
 msgid "Could not load team port user interface."
 msgstr "Tidak dapat memuat antarmuka pengguna port tim."
 
@@ -3704,49 +3857,49 @@ msgstr "Perangkat Wi-Fi"
 msgid "Wi-Fi connection %d"
 msgstr "Koneksi Wi-Fi %d"
 
-#: ../src/connection-editor/page-wifi-security.c:356
+#: ../src/connection-editor/page-wifi-security.c:358
 #: ../src/libnma/nma-wifi-dialog.c:923 ../src/libnm-gtk/nm-wifi-dialog.c:922
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "Kunci WEP 40/128-bit (Heksa atau ASCII)"
 
-#: ../src/connection-editor/page-wifi-security.c:366
+#: ../src/connection-editor/page-wifi-security.c:368
 #: ../src/libnma/nma-wifi-dialog.c:932 ../src/libnm-gtk/nm-wifi-dialog.c:931
 msgid "WEP 128-bit Passphrase"
 msgstr "Frasa-kunci WEP 128-bit"
 
-#: ../src/connection-editor/page-wifi-security.c:392
+#: ../src/connection-editor/page-wifi-security.c:394
 msgid "Dynamic WEP (802.1X)"
 msgstr "WEP Dinamik (802.1X)"
 
-#: ../src/connection-editor/page-wifi-security.c:405
+#: ../src/connection-editor/page-wifi-security.c:407
 #: ../src/libnma/nma-wifi-dialog.c:976 ../src/libnm-gtk/nm-wifi-dialog.c:975
 msgid "WPA & WPA2 Personal"
 msgstr "WPA & WPA2 Personal"
 
-#: ../src/connection-editor/page-wifi-security.c:418
+#: ../src/connection-editor/page-wifi-security.c:420
 #: ../src/libnma/nma-wifi-dialog.c:990 ../src/libnm-gtk/nm-wifi-dialog.c:989
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA & WPA2 Enterprise"
 
-#: ../src/connection-editor/page-wifi-security.c:461
+#: ../src/connection-editor/page-wifi-security.c:463
 msgid "Could not load Wi-Fi security user interface; missing Wi-Fi setting."
 msgstr ""
 "Tak bisa memuat antar muka pengguna keamanan Wi-Fi; kurang pengaturan Wi-Fi."
 
-#: ../src/connection-editor/page-wifi-security.c:472
+#: ../src/connection-editor/page-wifi-security.c:474
 msgid "Wi-Fi Security"
 msgstr "Kemananan Wi-Fi"
 
-#: ../src/connection-editor/page-wifi-security.c:474
+#: ../src/connection-editor/page-wifi-security.c:476
 msgid "Could not load Wi-Fi security user interface."
 msgstr "Tak bisa memuat antar muka pengguna keamanan Wi-Fi."
 
-#: ../src/connection-editor/page-wifi-security.c:558
+#: ../src/connection-editor/page-wifi-security.c:560
 #, c-format
 msgid "missing SSID"
 msgstr "kurang SSID"
 
-#: ../src/connection-editor/page-wifi-security.c:564
+#: ../src/connection-editor/page-wifi-security.c:566
 #, c-format
 msgid "Security not compatible with Ad-Hoc mode"
 msgstr "Keamanan tidak kompatibel dengan mode Ad-Hoc"
@@ -3797,6 +3950,10 @@ msgstr "Otomatis membuka kunci perangkat ini"
 #: ../src/info.ui.h:1
 msgid "Connection Information"
 msgstr "Informasi Sambungan"
+
+#: ../src/info.ui.h:2
+msgid "_Close"
+msgstr "_Tutup"
 
 #: ../src/info.ui.h:3
 msgid "Active Network Connections"
@@ -4040,36 +4197,36 @@ msgstr "Siapkan Sambungan Data Seluler"
 msgid "New Mobile Broadband Connection"
 msgstr "Sambungan Data Seluler Baru"
 
-#: ../src/libnma/nma-cert-chooser-button.c:162
+#: ../src/libnma/nma-cert-chooser-button.c:165
 msgid "(None)"
 msgstr "(Nihil)"
 
-#: ../src/libnma/nma-cert-chooser-button.c:170
+#: ../src/libnma/nma-cert-chooser-button.c:173
 #, c-format
 msgid "Key in %s"
 msgstr "Kunci dalam %s"
 
-#: ../src/libnma/nma-cert-chooser-button.c:171
+#: ../src/libnma/nma-cert-chooser-button.c:174
 #, c-format
 msgid "Certificate in %s"
 msgstr "Sertifikat dalam %s"
 
-#: ../src/libnma/nma-cert-chooser-button.c:190
+#: ../src/libnma/nma-cert-chooser-button.c:193
 #: ../src/libnma/nma-pkcs11-cert-chooser-dialog.c:183
 msgid "(Unknown)"
 msgstr "(Tidak dikenal)"
 
-#: ../src/libnma/nma-cert-chooser-button.c:212
-#: ../src/libnma/nma-cert-chooser-button.c:242
+#: ../src/libnma/nma-cert-chooser-button.c:215
+#: ../src/libnma/nma-cert-chooser-button.c:245
 msgid "Select"
 msgstr "Pilih"
 
-#: ../src/libnma/nma-cert-chooser-button.c:213
-#: ../src/libnma/nma-cert-chooser-button.c:243
+#: ../src/libnma/nma-cert-chooser-button.c:216
+#: ../src/libnma/nma-cert-chooser-button.c:246
 msgid "Cancel"
 msgstr "Batal"
 
-#: ../src/libnma/nma-cert-chooser-button.c:469
+#: ../src/libnma/nma-cert-chooser-button.c:472
 msgid "Select from file…"
 msgstr "Pilih dari berkas…"
 
@@ -4085,11 +4242,11 @@ msgstr "Kata _sandi sertifikat %s:"
 
 #: ../src/libnma/nma-pkcs11-cert-chooser-dialog.c:255
 msgid "Error logging in: "
-msgstr "Galat saat log masuk:"
+msgstr "Galat saat log masuk: "
 
 #: ../src/libnma/nma-pkcs11-cert-chooser-dialog.c:277
 msgid "Error opening a session: "
-msgstr "Galat saat membuka suatu sesi:"
+msgstr "Galat saat membuka suatu sesi: "
 
 #: ../src/libnma/nma-pkcs11-cert-chooser-dialog.ui.h:1
 msgid "_Unlock token"
@@ -4136,10 +4293,10 @@ msgstr "Sandi _Sekunder:"
 #: ../src/libnma/nma-vpn-password-dialog.c:102
 #: ../src/libnm-gtk/nm-vpn-password-dialog.c:102
 msgid "_Tertiary Password:"
-msgstr "Sandi _Tersier: "
+msgstr "Sandi _Tersier:"
 
-#: ../src/libnma/nma-vpn-password-dialog.c:247
-#: ../src/libnm-gtk/nm-vpn-password-dialog.c:247
+#: ../src/libnma/nma-vpn-password-dialog.c:238
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:238
 msgid "Sh_ow passwords"
 msgstr "_Tampilkan sandi"
 
@@ -4168,46 +4325,46 @@ msgstr "Tak ada"
 msgid "Dynamic WEP (802.1x)"
 msgstr "WEP Dinamik (802.1x)"
 
-#: ../src/libnma/nma-wifi-dialog.c:1074 ../src/libnm-gtk/nm-wifi-dialog.c:1075
+#: ../src/libnma/nma-wifi-dialog.c:1070 ../src/libnm-gtk/nm-wifi-dialog.c:1071
 msgid "C_reate"
 msgstr "_Buat"
 
-#: ../src/libnma/nma-wifi-dialog.c:1160 ../src/libnm-gtk/nm-wifi-dialog.c:1161
+#: ../src/libnma/nma-wifi-dialog.c:1149 ../src/libnm-gtk/nm-wifi-dialog.c:1150
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the Wi-Fi network “%s”."
 msgstr ""
 "Sandi atau kunci enkripsi diperlukan untuk mengakses jaringan Wi-Fi \"%s\"."
 
-#: ../src/libnma/nma-wifi-dialog.c:1162 ../src/libnm-gtk/nm-wifi-dialog.c:1163
+#: ../src/libnma/nma-wifi-dialog.c:1151 ../src/libnm-gtk/nm-wifi-dialog.c:1152
 msgid "Wi-Fi Network Authentication Required"
 msgstr "Otentikasi Jaringan Wi-Fi Diperlukan"
 
-#: ../src/libnma/nma-wifi-dialog.c:1164 ../src/libnm-gtk/nm-wifi-dialog.c:1165
+#: ../src/libnma/nma-wifi-dialog.c:1153 ../src/libnm-gtk/nm-wifi-dialog.c:1154
 msgid "Authentication required by Wi-Fi network"
 msgstr "Otentikasi dibutuhkan oleh jaringan Wi-Fi"
 
-#: ../src/libnma/nma-wifi-dialog.c:1169 ../src/libnm-gtk/nm-wifi-dialog.c:1170
+#: ../src/libnma/nma-wifi-dialog.c:1158 ../src/libnm-gtk/nm-wifi-dialog.c:1159
 msgid "Create New Wi-Fi Network"
 msgstr "Buat Jaringan Wi-Fi Baru"
 
-#: ../src/libnma/nma-wifi-dialog.c:1171 ../src/libnm-gtk/nm-wifi-dialog.c:1172
+#: ../src/libnma/nma-wifi-dialog.c:1160 ../src/libnm-gtk/nm-wifi-dialog.c:1161
 msgid "New Wi-Fi network"
 msgstr "Jaringan Wi-Fi baru"
 
-#: ../src/libnma/nma-wifi-dialog.c:1172 ../src/libnm-gtk/nm-wifi-dialog.c:1173
+#: ../src/libnma/nma-wifi-dialog.c:1161 ../src/libnm-gtk/nm-wifi-dialog.c:1162
 msgid "Enter a name for the Wi-Fi network you wish to create."
 msgstr "Masukkan sebuah nama untuk jaringan Wi-Fi yang ingin Anda buat."
 
-#: ../src/libnma/nma-wifi-dialog.c:1174 ../src/libnm-gtk/nm-wifi-dialog.c:1175
+#: ../src/libnma/nma-wifi-dialog.c:1163 ../src/libnm-gtk/nm-wifi-dialog.c:1164
 msgid "Connect to Hidden Wi-Fi Network"
 msgstr "Sambungkan ke Jaringan Wi-Fi Tersembunyi"
 
-#: ../src/libnma/nma-wifi-dialog.c:1176 ../src/libnm-gtk/nm-wifi-dialog.c:1177
+#: ../src/libnma/nma-wifi-dialog.c:1165 ../src/libnm-gtk/nm-wifi-dialog.c:1166
 msgid "Hidden Wi-Fi network"
 msgstr "Jaringan Wi-Fi tersembunyi"
 
-#: ../src/libnma/nma-wifi-dialog.c:1177 ../src/libnm-gtk/nm-wifi-dialog.c:1178
+#: ../src/libnma/nma-wifi-dialog.c:1166 ../src/libnm-gtk/nm-wifi-dialog.c:1167
 msgid ""
 "Enter the name and security details of the hidden Wi-Fi network you wish to "
 "connect to."
@@ -4361,25 +4518,25 @@ msgstr "Jaringan roaming (%s)"
 msgid "Roaming network"
 msgstr "Jaringan roaming"
 
-#: ../src/mobile-helpers.c:331
+#: ../src/mobile-helpers.c:330
 #, c-format
 msgid "PIN code for SIM card “%s” on “%s”"
 msgstr "Kode PIN bagi kartu SIM \"%s\" pada \"%s\""
 
-#: ../src/mobile-helpers.c:464
+#: ../src/mobile-helpers.c:463
 msgid "PIN code required"
 msgstr "Perlu kode PIN"
 
-#: ../src/mobile-helpers.c:472
+#: ../src/mobile-helpers.c:471
 msgid "PIN code is needed for the mobile broadband device"
 msgstr "Kode PIN dibutuhkan untuk perangkat data seluler"
 
-#: ../src/mobile-helpers.c:622
+#: ../src/mobile-helpers.c:621
 #, c-format
 msgid "Mobile broadband connection “%s” active: (%d%%%s%s)"
 msgstr "Sambungan data seluler \"%s\" aktif: (%d%%%s%s)"
 
-#: ../src/mobile-helpers.c:625
+#: ../src/mobile-helpers.c:624
 msgid "roaming"
 msgstr "roaming"
 
@@ -4389,11 +4546,11 @@ msgstr "roaming"
 msgid "%s connection"
 msgstr "Koneksi %s"
 
-#: ../src/utils/utils.c:563
+#: ../src/utils/utils.c:565
 msgid "PEM certificates (*.pem, *.crt, *.cer)"
 msgstr "Sertifikat PEM  (*.pem, *.crt, *.cer)"
 
-#: ../src/utils/utils.c:575
+#: ../src/utils/utils.c:577
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "Kunci privat DER, PEM, atau PKCS#12 (*.der, *.pem, *.p12, *.key)"
 
@@ -4401,38 +4558,33 @@ msgstr "Kunci privat DER, PEM, atau PKCS#12 (*.der, *.pem, *.p12, *.key)"
 msgid "undefined error in 802.1X security (wpa-eap)"
 msgstr "galat tak terdefinisi dalam keamanan 802.1X (wpa-eap)"
 
-#: ../src/wireless-security/eap-method.c:227
-msgid "no file selected"
-msgstr "tidak ada berkas yang dipilih"
+#: ../src/wireless-security/eap-method.c:365
+msgid "no CA certificate selected"
+msgstr "tidak ada sertifikat CA yang dipilih"
 
-#: ../src/wireless-security/eap-method.c:235
-#, c-format
-msgid "file “%s” does not exist"
-msgstr "berkas \"%s\" tidak ada"
+#: ../src/wireless-security/eap-method.c:370
+msgid "selected CA certificate file does not exist"
+msgstr "berkas sertifikat CA yang dipilih tidak ada"
 
-#: ../src/wireless-security/eap-method.c:258
-msgid "unspecified error validating eap-method file"
-msgstr "galat tak dinyatakan saat memvalidasi berkas eap-method"
-
-#: ../src/wireless-security/eap-method-fast.c:73
+#: ../src/wireless-security/eap-method-fast.c:71
 msgid "missing EAP-FAST PAC file"
 msgstr "kurang berkas PAC EAP-FAST"
 
-#: ../src/wireless-security/eap-method-fast.c:269
-#: ../src/wireless-security/eap-method-peap.c:303
-#: ../src/wireless-security/eap-method-ttls.c:352
+#: ../src/wireless-security/eap-method-fast.c:267
+#: ../src/wireless-security/eap-method-peap.c:329
+#: ../src/wireless-security/eap-method-ttls.c:379
 msgid "GTC"
 msgstr "GTC"
 
-#: ../src/wireless-security/eap-method-fast.c:407
+#: ../src/wireless-security/eap-method-fast.c:405
 msgid "Choose a PAC file"
 msgstr "Pilih suatu berkas PAC"
 
-#: ../src/wireless-security/eap-method-fast.c:414
+#: ../src/wireless-security/eap-method-fast.c:412
 msgid "PAC files (*.pac)"
 msgstr "Berkas PAC (*.pac)"
 
-#: ../src/wireless-security/eap-method-fast.c:418
+#: ../src/wireless-security/eap-method-fast.c:416
 msgid "All files"
 msgstr "Semua berkas"
 
@@ -4450,7 +4602,7 @@ msgstr "Keduanya"
 
 #: ../src/wireless-security/eap-method-fast.ui.h:4
 #: ../src/wireless-security/eap-method-peap.ui.h:4
-#: ../src/wireless-security/eap-method-ttls.ui.h:1
+#: ../src/wireless-security/eap-method-ttls.ui.h:3
 msgid "Anony_mous identity:"
 msgstr "Identitas anoni_m:"
 
@@ -4460,7 +4612,7 @@ msgstr "_Berkas PAC:"
 
 #: ../src/wireless-security/eap-method-fast.ui.h:6
 #: ../src/wireless-security/eap-method-peap.ui.h:7
-#: ../src/wireless-security/eap-method-ttls.ui.h:4
+#: ../src/wireless-security/eap-method-ttls.ui.h:1
 msgid "_Inner authentication:"
 msgstr "Otent_ikasi dalam:"
 
@@ -4476,25 +4628,11 @@ msgstr "kurang nama pengguna EAP-LEAP"
 msgid "missing EAP-LEAP password"
 msgstr "kurang sandi EAP-LEAP"
 
-#: ../src/wireless-security/eap-method-peap.c:64
-#, c-format
-msgid "invalid EAP-PEAP CA certificate: %s"
-msgstr "sertifikat CA EAP-PEAP tak valid: %s"
-
-#: ../src/wireless-security/eap-method-peap.c:69
-msgid "invalid EAP-PEAP CA certificate: no certificate specified"
-msgstr "sertifikat CA EAP-PEAP tak valid: tak ada sertifikat yang dinyatakan"
-
-#: ../src/wireless-security/eap-method-peap.c:288
-#: ../src/wireless-security/eap-method-ttls.c:337
+#: ../src/wireless-security/eap-method-peap.c:314
+#: ../src/wireless-security/eap-method-ttls.c:364
 #: ../src/wireless-security/wireless-security.c:424
 msgid "MD5"
 msgstr "MD5"
-
-#: ../src/wireless-security/eap-method-peap.c:382
-#: ../src/wireless-security/eap-method-ttls.c:431
-msgid "Choose a Certificate Authority certificate"
-msgstr "Pilih sebuah sertifikat Certificate Authority"
 
 #: ../src/wireless-security/eap-method-peap.ui.h:2
 msgid "Version 0"
@@ -4505,19 +4643,26 @@ msgid "Version 1"
 msgstr "Versi 1"
 
 #: ../src/wireless-security/eap-method-peap.ui.h:5
-#: ../src/wireless-security/eap-method-ttls.ui.h:2
-msgid "C_A certificate:"
-msgstr "Sertifikat C_A:"
-
-#: ../src/wireless-security/eap-method-peap.ui.h:6
 #: ../src/wireless-security/eap-method-tls.ui.h:2
-#: ../src/wireless-security/eap-method-ttls.ui.h:3
+#: ../src/wireless-security/eap-method-ttls.ui.h:2
 msgid "No CA certificate is _required"
 msgstr "Tak pe_rlu ada sertifikat CA"
 
-#: ../src/wireless-security/eap-method-peap.ui.h:8
+#: ../src/wireless-security/eap-method-peap.ui.h:6
 msgid "PEAP _version:"
 msgstr "Versi _PEAP:"
+
+#: ../src/wireless-security/eap-method-peap.ui.h:8
+#: ../src/wireless-security/eap-method-tls.ui.h:3
+#: ../src/wireless-security/eap-method-ttls.ui.h:4
+msgid "Suffix of the server certificate name."
+msgstr "Akhiran nama sertifikat server."
+
+#: ../src/wireless-security/eap-method-peap.ui.h:9
+#: ../src/wireless-security/eap-method-tls.ui.h:4
+#: ../src/wireless-security/eap-method-ttls.ui.h:5
+msgid "_Domain:"
+msgstr "_Domain:"
 
 #: ../src/wireless-security/eap-method-simple.c:75
 msgid "missing EAP username"
@@ -4531,44 +4676,27 @@ msgstr "kurang sandi EAP"
 msgid "missing EAP-TLS identity"
 msgstr "kurang identitas EAP-TLS"
 
-#: ../src/wireless-security/eap-method-tls.c:238
+#: ../src/wireless-security/eap-method-tls.c:256
 msgid "no user certificate selected"
 msgstr "tidak ada sertifikat pengguna yang dipilih"
 
-#: ../src/wireless-security/eap-method-tls.c:243
+#: ../src/wireless-security/eap-method-tls.c:261
 msgid "selected user certificate file does not exist"
 msgstr "berkas sertifikat pengguna yang dipilih tidak ada"
 
-#: ../src/wireless-security/eap-method-tls.c:263
+#: ../src/wireless-security/eap-method-tls.c:281
 msgid "no key selected"
 msgstr "tidak ada kunci yang dipilih"
 
-#: ../src/wireless-security/eap-method-tls.c:268
+#: ../src/wireless-security/eap-method-tls.c:286
 msgid "selected key file does not exist"
 msgstr "berkas kunci yang dipilih tidak ada"
-
-#: ../src/wireless-security/eap-method-tls.c:314
-msgid "no CA certificate selected"
-msgstr "tidak ada sertifikat CA yang dipilih"
-
-#: ../src/wireless-security/eap-method-tls.c:319
-msgid "selected CA certificate file does not exist"
-msgstr "berkas sertifikat CA yang dipilih tidak ada"
 
 #: ../src/wireless-security/eap-method-tls.ui.h:1
 msgid "I_dentity:"
 msgstr "I_dentitas:"
 
-#: ../src/wireless-security/eap-method-ttls.c:64
-#, c-format
-msgid "invalid EAP-TTLS CA certificate: %s"
-msgstr "sertifikat CA EAP-TTLS tak valid: %s"
-
-#: ../src/wireless-security/eap-method-ttls.c:69
-msgid "invalid EAP-TTLS CA certificate: no certificate specified"
-msgstr "sertifikat CA EAP-TTLS tak valid: tak ada sertifikat yang dinyatakan"
-
-#: ../src/wireless-security/eap-method-ttls.c:306
+#: ../src/wireless-security/eap-method-ttls.c:333
 msgid "MSCHAPv2 (no EAP)"
 msgstr "MSCHAPv2 (tanpa EAP)"
 
@@ -4647,16 +4775,16 @@ msgstr ""
 "kunci wep tak valid: frasa sandi mesti lebih pendek daripada 64 karakter"
 
 #: ../src/wireless-security/ws-wep-key.ui.h:1
-msgid "1 (Default)"
-msgstr "1 (Bawaan)"
-
-#: ../src/wireless-security/ws-wep-key.ui.h:2
 msgid "Open System"
 msgstr "Sistem Terbuka"
 
-#: ../src/wireless-security/ws-wep-key.ui.h:3
+#: ../src/wireless-security/ws-wep-key.ui.h:2
 msgid "Shared Key"
 msgstr "Kunci Bersama"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:3
+msgid "1 (Default)"
+msgstr "1 (Bawaan)"
 
 #: ../src/wireless-security/ws-wep-key.ui.h:4
 msgid "_Key:"
@@ -4688,6 +4816,47 @@ msgstr ""
 #: ../src/wireless-security/ws-wpa-psk.ui.h:2
 msgid "_Type:"
 msgstr "_Tipe:"
+
+#~ msgid "Mode"
+#~ msgstr "Mode"
+
+#~ msgid "MTU"
+#~ msgstr "MTU"
+
+#~ msgid "CKN"
+#~ msgstr "CKN"
+
+#~ msgid "CAK"
+#~ msgstr "CAK"
+
+#~ msgid "no file selected"
+#~ msgstr "tidak ada berkas yang dipilih"
+
+#~ msgid "file “%s” does not exist"
+#~ msgstr "berkas \"%s\" tidak ada"
+
+#~ msgid "unspecified error validating eap-method file"
+#~ msgstr "galat tak dinyatakan saat memvalidasi berkas eap-method"
+
+#~ msgid "invalid EAP-PEAP CA certificate: %s"
+#~ msgstr "sertifikat CA EAP-PEAP tak valid: %s"
+
+#~ msgid "invalid EAP-PEAP CA certificate: no certificate specified"
+#~ msgstr ""
+#~ "sertifikat CA EAP-PEAP tak valid: tak ada sertifikat yang dinyatakan"
+
+#~ msgid "Choose a Certificate Authority certificate"
+#~ msgstr "Pilih sebuah sertifikat Certificate Authority"
+
+#~ msgid "C_A certificate:"
+#~ msgstr "Sertifikat C_A:"
+
+#~ msgid "invalid EAP-TTLS CA certificate: %s"
+#~ msgstr "sertifikat CA EAP-TTLS tak valid: %s"
+
+#~ msgid "invalid EAP-TTLS CA certificate: no certificate specified"
+#~ msgstr ""
+#~ "sertifikat CA EAP-TTLS tak valid: tak ada sertifikat yang dinyatakan"
 
 #~ msgid ""
 #~ "\n"
