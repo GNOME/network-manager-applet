@@ -48,9 +48,12 @@ static const gchar *
 get_key_password (NMACertChooser *cert_chooser)
 {
 	NMAPkcs11CertChooserPrivate *priv = NMA_PKCS11_CERT_CHOOSER_GET_PRIVATE (cert_chooser);
+	const gchar *text;
 
 	g_return_val_if_fail (priv->key_password != NULL, NULL);
-	return gtk_entry_get_text (GTK_ENTRY (priv->key_password));
+	text = gtk_entry_get_text (GTK_ENTRY (priv->key_password));
+
+	return text && text[0] ? text : NULL;
 }
 
 static void
@@ -87,9 +90,12 @@ static const gchar *
 get_cert_password (NMACertChooser *cert_chooser)
 {
 	NMAPkcs11CertChooserPrivate *priv = NMA_PKCS11_CERT_CHOOSER_GET_PRIVATE (cert_chooser);
+	const gchar *text;
 
 	g_return_val_if_fail (priv->cert_password != NULL, NULL);
-	return gtk_entry_get_text (GTK_ENTRY (priv->cert_password));
+	text = gtk_entry_get_text (GTK_ENTRY (priv->cert_password));
+
+	return text && text[0] ? text : NULL;
 }
 
 static void
