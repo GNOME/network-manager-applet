@@ -26,6 +26,7 @@
 #include "applet.h"
 #include "applet-device-ethernet.h"
 #include "ethernet-dialog.h"
+#include "menu-utils.h"
 
 #define DEFAULT_ETHERNET_NAME _("Auto Ethernet")
 
@@ -114,7 +115,7 @@ ethernet_add_menu_item (NMDevice *device,
 
 	if (!nma_menu_device_check_unusable (device)) {
 		if ((!active && connections->len) || (active && connections->len > 1))
-			applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"));
+			nma_menu_item_add_complex_separator_helper (menu, !!INDICATOR_ENABLED (applet), _("Available"));
 
 		if (connections->len)
 			applet_add_connection_items (device, connections, carrier, active, NMA_ADD_INACTIVE, menu, applet);

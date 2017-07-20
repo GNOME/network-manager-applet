@@ -44,6 +44,7 @@
 #include "context-menu.h"
 #include "nma-wifi-dialog.h"
 #include "applet-vpn-request.h"
+#include "menu-utils.h"
 #include "utils.h"
 
 #if WITH_WWAN
@@ -527,44 +528,6 @@ applet_menu_item_activate_helper (NMDevice *device,
 	                                  applet_menu_item_activate_helper_new_connection,
 	                                  info))
 		applet_item_activate_info_destroy (info);
-}
-
-void
-applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
-                                               NMApplet *applet,
-                                               const gchar *label)
-{
-	GtkWidget *menu_item, *box, *xlabel, *separator;
-
-	if (INDICATOR_ENABLED (applet)) {
-		/* Indicator doesn't draw complex separators */
-		return;
-	}
-
-	menu_item = gtk_menu_item_new ();
-	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-
-	if (label) {
-		xlabel = gtk_label_new (NULL);
-		gtk_label_set_markup (GTK_LABEL (xlabel), label);
-
-		separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
-		g_object_set (G_OBJECT (separator), "valign", GTK_ALIGN_CENTER, NULL);
-		gtk_box_pack_start (GTK_BOX (box), separator, TRUE, TRUE, 0);
-
-		gtk_box_pack_start (GTK_BOX (box), xlabel, FALSE, FALSE, 2);
-	}
-
-	separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
-	g_object_set (G_OBJECT (separator), "valign", GTK_ALIGN_CENTER, NULL);
-	gtk_box_pack_start (GTK_BOX (box), separator, TRUE, TRUE, 0);
-
-	g_object_set (G_OBJECT (menu_item),
-		          "child", box,
-		          "sensitive", FALSE,
-		          NULL);
-
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 }
 
 GtkWidget *
@@ -1132,41 +1095,6 @@ applet_get_active_vpn_connection (NMApplet *applet,
 		*out_state = state;
 
 	return ret;
-}
-
-/*
- * nma_menu_add_separator_item
- *
- */
-static void
-nma_menu_add_separator_item (GtkWidget *menu)
-{
-	GtkWidget *menu_item;
-
-	menu_item = gtk_separator_menu_item_new ();
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
-	gtk_widget_show (menu_item);
-}
-
-
-/*
- * nma_menu_add_text_item
- *
- * Add a non-clickable text item to a menu
- *
- */
-static void nma_menu_add_text_item (GtkWidget *menu, char *text)
-{
-	GtkWidget		*menu_item;
-
-	g_return_if_fail (text != NULL);
-	g_return_if_fail (menu != NULL);
-
-	menu_item = gtk_menu_item_new_with_label (text);
-	gtk_widget_set_sensitive (menu_item, FALSE);
-
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
-	gtk_widget_show (menu_item);
 }
 
 static gint

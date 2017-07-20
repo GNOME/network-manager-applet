@@ -29,6 +29,7 @@
 #include "applet-dialogs.h"
 #include "mobile-helpers.h"
 #include "mb-menu-item.h"
+#include "menu-utils.h"
 
 #define BROADBAND_INFO_TAG "devinfo"
 
@@ -789,7 +790,7 @@ add_menu_item (NMDevice *device,
 	/* Add the default / inactive connection items */
 	if (!nma_menu_device_check_unusable (device)) {
 		if ((!active && connections->len) || (active && connections->len > 1))
-			applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"));
+			nma_menu_item_add_complex_separator_helper (menu, !!INDICATOR_ENABLED (applet), _("Available"));
 
 		if (connections->len) {
 			for (i = 0; i < connections->len; i++) {

@@ -33,6 +33,7 @@
 #include "utils.h"
 #include "nma-wifi-dialog.h"
 #include "mobile-helpers.h"
+#include "menu-utils.h"
 
 #define ACTIVE_AP_TAG "active-ap"
 
@@ -904,7 +905,7 @@ wifi_add_menu_item (NMDevice *device,
 		GSList *topmenu_items = NULL;
 		guint32 num_for_toplevel = 5;
 
-		applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"));
+		nma_menu_item_add_complex_separator_helper (menu, !!INDICATOR_ENABLED (applet), _("Available"));
 
 		if (g_slist_length (menu_items) == (num_for_toplevel + 1))
 			num_for_toplevel++;

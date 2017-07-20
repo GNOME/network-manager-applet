@@ -26,6 +26,7 @@
 #include "applet.h"
 #include "applet-device-bt.h"
 #include "applet-dialogs.h"
+#include "menu-utils.h"
 
 static gboolean
 bt_new_auto_connection (NMDevice *device,
@@ -72,7 +73,7 @@ bt_add_menu_item (NMDevice *device,
 	if (!nma_menu_device_check_unusable (device)) {
 		/* Add menu items for existing bluetooth connections for this device */
 		if (connections->len) {
-			applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"));
+			nma_menu_item_add_complex_separator_helper (menu, !!INDICATOR_ENABLED (applet), _("Available"));
 			applet_add_connection_items (device, connections, TRUE, active, NMA_ADD_INACTIVE, menu, applet);
 		}
 	}

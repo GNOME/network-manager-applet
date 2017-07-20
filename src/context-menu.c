@@ -32,17 +32,8 @@
 #include "applet.h"
 #include "context-menu.h"
 #include "applet-dialogs.h"
+#include "menu-utils.h"
 #include "utils.h"
-
-static void
-nma_menu_add_separator_item (GtkWidget *menu)
-{
-	GtkWidget *menu_item;
-
-	menu_item = gtk_separator_menu_item_new ();
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
-	gtk_widget_show (menu_item);
-}
 
 static void
 nma_set_wifi_enabled_cb (GtkWidget *widget, NMApplet *applet)
