@@ -797,7 +797,7 @@ add_menu_item (NMDevice *device,
 				NMConnection *connection = NM_CONNECTION (connections->pdata[i]);
 
 				if (connection != active) {
-					item = applet_new_menu_item_helper (connection, NULL, FALSE);
+					item = nma_new_menu_item_helper (connection, NULL, FALSE);
 					add_connection_item (device, connection, item, menu, applet);
 				}
 			}

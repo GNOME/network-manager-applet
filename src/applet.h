@@ -253,10 +253,6 @@ void applet_menu_item_activate_helper (NMDevice *device,
 void applet_menu_item_disconnect_helper (NMDevice *device,
                                          NMApplet *applet);
 
-void applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
-                                                    NMApplet *applet,
-                                                    const gchar* label);
-
 GtkWidget*
 applet_menu_item_create_device_item_helper (NMDevice *device,
                                             NMApplet *applet,
@@ -281,10 +277,6 @@ void applet_do_notify_with_pref (NMApplet *applet,
                                  const char *message,
                                  const char *icon,
                                  const char *pref);
-
-GtkWidget * applet_new_menu_item_helper (NMConnection *connection,
-                                         NMConnection *active,
-                                         gboolean add_active);
 
 GdkPixbuf * nma_icon_check_and_load (const char *name,
                                      NMApplet *applet);

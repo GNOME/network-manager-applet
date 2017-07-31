@@ -46,9 +46,9 @@ nma_menu_add_text_item (GtkWidget *menu, char *text)
 }
 
 void
-applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
-                                               gboolean indicator_enabled,
-                                               const gchar *label)
+nma_menu_item_add_complex_separator_helper (GtkWidget *menu,
+                                            gboolean indicator_enabled,
+                                            const gchar *label)
 {
 	GtkWidget *menu_item, *box, *xlabel, *separator;
 
@@ -81,4 +81,27 @@ applet_menu_item_add_complex_separator_helper (GtkWidget *menu,
 		          NULL);
 
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+}
+
+GtkWidget *
+nma_new_menu_item_helper (NMConnection *connection,
+                          NMConnection *active,
+                          gboolean add_active)
+{
+	GtkWidget *item = gtk_menu_item_new_with_label ("");
+
+	if (add_active && (active == connection)) {
+		char *markup;
+		GtkWidget *label;
+
+		/* Pure evil */
+		label = gtk_bin_get_child (GTK_BIN (item));
+		gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+		markup = g_markup_printf_escaped ("<b>%s</b>", nm_connection_get_id (connection));
+		gtk_label_set_markup (GTK_LABEL (label), markup);
+		g_free (markup);
+	} else
+		gtk_menu_item_set_label (GTK_MENU_ITEM (item), nm_connection_get_id (connection));
+
+	return item;
 }
