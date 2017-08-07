@@ -998,8 +998,6 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 	} else if (!strcmp (connection_type, NM_SETTING_PPPOE_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_dsl_new, editor->connection, error))
 			goto out;
-		if (!add_page (editor, ce_page_ethernet_new, editor->connection, error))
-			goto out;
 		if (!add_page (editor, ce_page_ppp_new, editor->connection, error))
 			goto out;
 	} else if (!strcmp (connection_type, NM_SETTING_GSM_SETTING_NAME) || 
