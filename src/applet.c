@@ -225,7 +225,8 @@ applet_get_best_activating_connection (NMApplet *applet, NMDevice **device)
 }
 
 static NMActiveConnection *
-applet_get_default_active_connection (NMApplet *applet, NMDevice **device)
+applet_get_default_active_connection (NMApplet *applet, NMDevice **device,
+                                      gboolean only_known_devices)
 {
 	NMActiveConnection *default_ac = NULL;
 	NMDevice *non_default_device = NULL;
@@ -248,6 +249,10 @@ applet_get_default_active_connection (NMApplet *applet, NMDevice **device)
 			continue;
 
 		candidate_dev = g_ptr_array_index (devices, 0);
+
+		if (   only_known_devices
+		    && !get_device_class (candidate_dev, applet))
+			continue;
 
 		/* We have to return default connection/device even if they are of an
 		 * unknown class - otherwise we may end up returning non
@@ -1038,7 +1043,7 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 		return;
 	}
 
-	active = applet_get_default_active_connection (applet, &device);
+	active = applet_get_default_active_connection (applet, &device, FALSE);
 	if (!active || !device) {
 		g_warning ("%s: no active connection or device.", __func__);
 		return;
@@ -2582,7 +2587,7 @@ applet_get_device_icon_for_state (NMApplet *applet,
 		/* If there aren't any activating devices, then show the state of
 		 * the default active connection instead.
 		 */
-		active = applet_get_default_active_connection (applet, &device);
+		active = applet_get_default_active_connection (applet, &device, TRUE);
 		if (!active || !device)
 			goto out;
 	}
