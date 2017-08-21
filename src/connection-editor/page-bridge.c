@@ -42,7 +42,6 @@ typedef struct {
 	GtkSpinButton *forward_delay;
 	GtkSpinButton *hello_time;
 	GtkSpinButton *max_age;
-	GtkSpinButton *group_fwd_mask;
 
 } CEPageBridgePrivate;
 
@@ -61,7 +60,6 @@ bridge_private_init (CEPageBridge *self)
 	priv->forward_delay = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "bridge_forward_delay"));
 	priv->hello_time = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "bridge_hello_time"));
 	priv->max_age = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "bridge_max_age"));
-	priv->group_fwd_mask = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "bridge_group_fwd_mask"));
 
 	priv->toplevel = GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (priv->stp),
 	                                                      GTK_TYPE_WINDOW));
@@ -100,7 +98,7 @@ populate_ui (CEPageBridge *self)
 	NMSettingBridge *s_bridge = priv->setting;
 	gboolean stp, mcast_snoop;
 	int priority, forward_delay, hello_time, max_age;
-	int ageing_time, group_fwd_mask;
+	int ageing_time;
 
 	/* Ageing time */
 	ageing_time = nm_setting_bridge_get_ageing_time (s_bridge);
@@ -147,13 +145,6 @@ populate_ui (CEPageBridge *self)
 	max_age = nm_setting_bridge_get_max_age (s_bridge);
 	gtk_spin_button_set_value (priv->max_age, (gdouble) max_age);
 	g_signal_connect (priv->max_age, "value-changed",
-	                  G_CALLBACK (stuff_changed),
-	                  self);
-
-	/* Group forward mask */
-	group_fwd_mask = nm_setting_bridge_get_group_forward_mask (s_bridge);
-	gtk_spin_button_set_value (priv->group_fwd_mask, (gdouble) group_fwd_mask);
-	g_signal_connect (priv->group_fwd_mask, "value-changed",
 	                  G_CALLBACK (stuff_changed),
 	                  self);
 }
@@ -244,16 +235,14 @@ ui_to_setting (CEPageBridge *self)
 {
 	CEPageBridgePrivate *priv = CE_PAGE_BRIDGE_GET_PRIVATE (self);
 	int ageing_time, priority, forward_delay, hello_time, max_age;
-	gboolean stp, mcast_snoop, group_fwd_mask;
+	gboolean stp, mcast_snoop;
 
 	ageing_time = gtk_spin_button_get_value_as_int (priv->ageing_time);
-	group_fwd_mask = gtk_spin_button_get_value_as_int (priv->group_fwd_mask);
 	mcast_snoop = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->mcast_snoop));
 	stp = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->stp));
 	g_object_set (G_OBJECT (priv->setting),
 	              NM_SETTING_BRIDGE_AGEING_TIME, ageing_time,
 	              NM_SETTING_BRIDGE_MULTICAST_SNOOPING, mcast_snoop,
-	              NM_SETTING_BRIDGE_GROUP_FORWARD_MASK, group_fwd_mask,
 	              NM_SETTING_BRIDGE_STP, stp,
 	              NULL);
 
