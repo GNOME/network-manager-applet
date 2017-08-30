@@ -124,7 +124,7 @@ ce_page_dsl_new (NMConnectionEditor *editor,
 	                                 client,
 	                                 "/org/freedesktop/network-manager-applet/ce-page-dsl.ui",
 	                                 "DslPage",
-	                                 _("DSL")));
+	                                 _("DSL/PPPoE")));
 	if (!self) {
 		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("Could not load DSL user interface."));
 		return NULL;
