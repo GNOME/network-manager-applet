@@ -707,6 +707,7 @@ add_connection_item (NMDevice *device,
 	                       (GClosureNotify) menu_item_info_destroy, 0);
 
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+	gtk_widget_show (item);
 }
 
 static void
@@ -782,6 +783,7 @@ add_menu_item (NMDevice *device,
 		                            applet);
 		gtk_widget_set_sensitive (GTK_WIDGET (item), FALSE);
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+		gtk_widget_show (item);
 	}
 
 	/* Add the default / inactive connection items */

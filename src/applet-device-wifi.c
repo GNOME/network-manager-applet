@@ -655,6 +655,7 @@ create_new_ap_item (NMDeviceWifi *device,
 			                       (GClosureNotify) wifi_menu_item_info_destroy, 0);
 
 			gtk_menu_shell_append (GTK_MENU_SHELL (submenu), GTK_WIDGET (subitem));
+			gtk_widget_show (subitem);
 		}
 
 		gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), submenu);
