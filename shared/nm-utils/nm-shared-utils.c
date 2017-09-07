@@ -24,6 +24,221 @@
 #include "nm-shared-utils.h"
 
 #include <errno.h>
+#include <arpa/inet.h>
+
+/*****************************************************************************/
+
+const void *const _NM_PTRARRAY_EMPTY[1] = { NULL };
+
+/*****************************************************************************/
+
+void
+nm_utils_strbuf_append_c (char **buf, gsize *len, char c)
+{
+	switch (*len) {
+	case 0:
+		return;
+	case 1:
+		(*buf)[0] = '\0';
+		*len = 0;
+		(*buf)++;
+		return;
+	default:
+		(*buf)[0] = c;
+		(*buf)[1] = '\0';
+		(*len)--;
+		(*buf)++;
+		return;
+	}
+}
+
+void
+nm_utils_strbuf_append_str (char **buf, gsize *len, const char *str)
+{
+	gsize src_len;
+
+	switch (*len) {
+	case 0:
+		return;
+	case 1:
+		if (!str || !*str) {
+			(*buf)[0] = '\0';
+			return;
+		}
+		(*buf)[0] = '\0';
+		*len = 0;
+		(*buf)++;
+		return;
+	default:
+		if (!str || !*str) {
+			(*buf)[0] = '\0';
+			return;
+		}
+		src_len = g_strlcpy (*buf, str, *len);
+		if (src_len >= *len) {
+			*buf = &(*buf)[*len];
+			*len = 0;
+		} else {
+			*buf = &(*buf)[src_len];
+			*len -= src_len;
+		}
+		return;
+	}
+}
+
+void
+nm_utils_strbuf_append (char **buf, gsize *len, const char *format, ...)
+{
+	char *p = *buf;
+	va_list args;
+	gint retval;
+
+	if (*len == 0)
+		return;
+
+	va_start (args, format);
+	retval = g_vsnprintf (p, *len, format, args);
+	va_end (args);
+
+	if (retval >= *len) {
+		*buf = &p[*len];
+		*len = 0;
+	} else {
+		*buf = &p[retval];
+		*len -= retval;
+	}
+}
+
+/*****************************************************************************/
+
+/**
+ * _nm_utils_ip4_prefix_to_netmask:
+ * @prefix: a CIDR prefix
+ *
+ * Returns: the netmask represented by the prefix, in network byte order
+ **/
+guint32
+_nm_utils_ip4_prefix_to_netmask (guint32 prefix)
+{
+	return prefix < 32 ? ~htonl(0xFFFFFFFF >> prefix) : 0xFFFFFFFF;
+}
+
+/**
+ * _nm_utils_ip4_get_default_prefix:
+ * @ip: an IPv4 address (in network byte order)
+ *
+ * When the Internet was originally set up, various ranges of IP addresses were
+ * segmented into three network classes: A, B, and C.  This function will return
+ * a prefix that is associated with the IP address specified defining where it
+ * falls in the predefined classes.
+ *
+ * Returns: the default class prefix for the given IP
+ **/
+/* The function is originally from ipcalc.c of Red Hat's initscripts. */
+guint32
+_nm_utils_ip4_get_default_prefix (guint32 ip)
+{
+	if (((ntohl (ip) & 0xFF000000) >> 24) <= 127)
+		return 8;  /* Class A - 255.0.0.0 */
+	else if (((ntohl (ip) & 0xFF000000) >> 24) <= 191)
+		return 16;  /* Class B - 255.255.0.0 */
+
+	return 24;  /* Class C - 255.255.255.0 */
+}
+
+gboolean
+nm_utils_ip_is_site_local (int addr_family,
+                           const void *address)
+{
+	in_addr_t addr4;
+
+	switch (addr_family) {
+	case AF_INET:
+		/* RFC1918 private addresses
+		 * 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16 */
+		addr4 = ntohl (*((const in_addr_t *) address));
+		return    (addr4 & 0xff000000) == 0x0a000000
+		       || (addr4 & 0xfff00000) == 0xac100000
+		       || (addr4 & 0xffff0000) == 0xc0a80000;
+	case AF_INET6:
+		return IN6_IS_ADDR_SITELOCAL (address);
+	default:
+		g_return_val_if_reached (FALSE);
+	}
+}
+
+/*****************************************************************************/
+
+gboolean
+nm_utils_parse_inaddr (const char *text,
+                       int family,
+                       char **out_addr)
+{
+	union {
+		in_addr_t v4;
+		struct in6_addr v6;
+	} addrbin;
+	char addrstr_buf[MAX (INET_ADDRSTRLEN, INET6_ADDRSTRLEN)];
+
+	g_return_val_if_fail (text, FALSE);
+
+	if (family == AF_UNSPEC)
+		family = strchr (text, ':') ? AF_INET6 : AF_INET;
+	else
+		g_return_val_if_fail (NM_IN_SET (family, AF_INET, AF_INET6), FALSE);
+
+	if (inet_pton (family, text, &addrbin) != 1)
+		return FALSE;
+
+	NM_SET_OUT (out_addr, g_strdup (inet_ntop (family, &addrbin, addrstr_buf, sizeof (addrstr_buf))));
+	return TRUE;
+}
+
+gboolean
+nm_utils_parse_inaddr_prefix (const char *text,
+                              int family,
+                              char **out_addr,
+                              int *out_prefix)
+{
+	gs_free char *addrstr_free = NULL;
+	int prefix = -1;
+	const char *slash;
+	const char *addrstr;
+	union {
+		in_addr_t v4;
+		struct in6_addr v6;
+	} addrbin;
+	char addrstr_buf[MAX (INET_ADDRSTRLEN, INET6_ADDRSTRLEN)];
+
+	g_return_val_if_fail (text, FALSE);
+
+	if (family == AF_UNSPEC)
+		family = strchr (text, ':') ? AF_INET6 : AF_INET;
+	else
+		g_return_val_if_fail (NM_IN_SET (family, AF_INET, AF_INET6), FALSE);
+
+	slash = strchr (text, '/');
+	if (slash)
+		addrstr = addrstr_free = g_strndup (text, slash - text);
+	else
+		addrstr = text;
+
+	if (inet_pton (family, addrstr, &addrbin) != 1)
+		return FALSE;
+
+	if (slash) {
+		prefix = _nm_utils_ascii_str_to_int64 (slash + 1, 10,
+		                                       0,
+		                                       family == AF_INET ? 32 : 128,
+		                                       -1);
+		if (prefix == -1)
+			return FALSE;
+	}
+
+	NM_SET_OUT (out_addr, g_strdup (inet_ntop (family, &addrbin, addrstr_buf, sizeof (addrstr_buf))));
+	NM_SET_OUT (out_prefix, prefix);
+	return TRUE;
+}
 
 /*****************************************************************************/
 
@@ -45,7 +260,7 @@ gint64
 _nm_utils_ascii_str_to_int64 (const char *str, guint base, gint64 min, gint64 max, gint64 fallback)
 {
 	gint64 v;
-	char *s = NULL;
+	const char *s = NULL;
 
 	if (str) {
 		while (g_ascii_isspace (str[0]))
@@ -57,7 +272,7 @@ _nm_utils_ascii_str_to_int64 (const char *str, guint base, gint64 min, gint64 ma
 	}
 
 	errno = 0;
-	v = g_ascii_strtoll (str, &s, base);
+	v = g_ascii_strtoll (str, (char **) &s, base);
 
 	if (errno != 0)
 		return fallback;
@@ -75,6 +290,83 @@ _nm_utils_ascii_str_to_int64 (const char *str, guint base, gint64 min, gint64 ma
 	}
 
 	return v;
+}
+
+/*****************************************************************************/
+
+/**
+ * nm_utils_strv_find_first:
+ * @list: the strv list to search
+ * @len: the length of the list, or a negative value if @list is %NULL terminated.
+ * @needle: the value to search for. The search is done using strcmp().
+ *
+ * Searches @list for @needle and returns the index of the first match (based
+ * on strcmp()).
+ *
+ * For convenience, @list has type 'char**' instead of 'const char **'.
+ *
+ * Returns: index of first occurrence or -1 if @needle is not found in @list.
+ */
+gssize
+nm_utils_strv_find_first (char **list, gssize len, const char *needle)
+{
+	gssize i;
+
+	if (len > 0) {
+		g_return_val_if_fail (list, -1);
+
+		if (!needle) {
+			/* if we search a list with known length, %NULL is a valid @needle. */
+			for (i = 0; i < len; i++) {
+				if (!list[i])
+					return i;
+			}
+		} else {
+			for (i = 0; i < len; i++) {
+				if (list[i] && !strcmp (needle, list[i]))
+					return i;
+			}
+		}
+	} else if (len < 0) {
+		g_return_val_if_fail (needle, -1);
+
+		if (list) {
+			for (i = 0; list[i]; i++) {
+				if (strcmp (needle, list[i]) == 0)
+					return i;
+			}
+		}
+	}
+	return -1;
+}
+
+char **
+_nm_utils_strv_cleanup (char **strv,
+                        gboolean strip_whitespace,
+                        gboolean skip_empty,
+                        gboolean skip_repeated)
+{
+	guint i, j;
+
+	if (!strv || !*strv)
+		return strv;
+
+	if (strip_whitespace) {
+		for (i = 0; strv[i]; i++)
+			g_strstrip (strv[i]);
+	}
+	if (!skip_empty && !skip_repeated)
+		return strv;
+	j = 0;
+	for (i = 0; strv[i]; i++) {
+		if (   (skip_empty && !*strv[i])
+		    || (skip_repeated && nm_utils_strv_find_first (strv, j, strv[i]) >= 0))
+			g_free (strv[i]);
+		else
+			strv[j++] = strv[i];
+	}
+	strv[j] = NULL;
+	return strv;
 }
 
 /*****************************************************************************/
@@ -113,7 +405,7 @@ _nm_utils_ascii_str_to_bool (const char *str,
 
 /*****************************************************************************/
 
-G_DEFINE_QUARK (nm-utils-error-quark, nm_utils_error)
+NM_CACHED_QUARK_FCN ("nm-utils-error-quark", nm_utils_error_quark)
 
 void
 nm_utils_error_set_cancelled (GError **error,
@@ -236,4 +528,152 @@ nm_g_object_set_property (GObject *object,
 	return TRUE;
 }
 
+GParamSpec *
+nm_g_object_class_find_property_from_gtype (GType gtype,
+                                            const char *property_name)
+{
+	nm_auto_unref_gtypeclass GObjectClass *gclass = NULL;
+
+	gclass = g_type_class_ref (gtype);
+	return g_object_class_find_property (gclass, property_name);
+}
+
 /*****************************************************************************/
+
+static void
+_str_append_escape (GString *s, char ch)
+{
+	g_string_append_c (s, '\\');
+	g_string_append_c (s, '0' + ((((guchar) ch) >> 6) & 07));
+	g_string_append_c (s, '0' + ((((guchar) ch) >> 3) & 07));
+	g_string_append_c (s, '0' + ( ((guchar) ch)       & 07));
+}
+
+/**
+ * nm_utils_str_utf8safe_escape:
+ * @str: NUL terminated input string, possibly in utf-8 encoding
+ * @flags: #NMUtilsStrUtf8SafeFlags flags
+ * @to_free: (out): return the pointer location of the string
+ *   if a copying was necessary.
+ *
+ * Returns the possible non-UTF-8 NUL terminated string @str
+ * and uses backslash escaping (C escaping, like g_strescape())
+ * to sanitize non UTF-8 characters. The result is valid
+ * UTF-8.
+ *
+ * The operation can be reverted with g_strcompress() or
+ * nm_utils_str_utf8safe_unescape().
+ *
+ * Depending on @flags, valid UTF-8 characters are not escaped at all
+ * (except the escape character '\\'). This is the difference to g_strescape(),
+ * which escapes all non-ASCII characters. This allows to pass on
+ * valid UTF-8 characters as-is and can be directly shown to the user
+ * as UTF-8 -- with exception of the backslash escape character,
+ * invalid UTF-8 sequences, and other (depending on @flags).
+ *
+ * Returns: the escaped input string, as valid UTF-8. If no escaping
+ *   is necessary, it returns the input @str. Otherwise, an allocated
+ *   string @to_free is returned which must be freed by the caller
+ *   with g_free. The escaping can be reverted by g_strcompress().
+ **/
+const char *
+nm_utils_str_utf8safe_escape (const char *str, NMUtilsStrUtf8SafeFlags flags, char **to_free)
+{
+	const char *p = NULL;
+	GString *s;
+
+	g_return_val_if_fail (to_free, NULL);
+
+	*to_free = NULL;
+	if (!str || !str[0])
+		return str;
+
+	if (   g_utf8_validate (str, -1, &p)
+	    && !NM_STRCHAR_ANY (str, ch,
+	                        (   ch == '\\' \
+	                         || (   NM_FLAGS_HAS (flags, NM_UTILS_STR_UTF8_SAFE_FLAG_ESCAPE_CTRL) \
+	                             && ch < ' ') \
+	                         || (   NM_FLAGS_HAS (flags, NM_UTILS_STR_UTF8_SAFE_FLAG_ESCAPE_NON_ASCII) \
+	                             && ((guchar) ch) >= 127))))
+		return str;
+
+	s = g_string_sized_new ((p - str) + strlen (p) + 5);
+
+	do {
+		for (; str < p; str++) {
+			char ch = str[0];
+
+			if (ch == '\\')
+				g_string_append (s, "\\\\");
+			else if (   (   NM_FLAGS_HAS (flags, NM_UTILS_STR_UTF8_SAFE_FLAG_ESCAPE_CTRL) \
+			             && ch < ' ') \
+			         || (   NM_FLAGS_HAS (flags, NM_UTILS_STR_UTF8_SAFE_FLAG_ESCAPE_NON_ASCII) \
+			             && ((guchar) ch) >= 127))
+				_str_append_escape (s, ch);
+			else
+				g_string_append_c (s, ch);
+		}
+
+		if (p[0] == '\0')
+			break;
+		_str_append_escape (s, p[0]);
+
+		str = &p[1];
+		g_utf8_validate (str, -1, &p);
+	} while (TRUE);
+
+	*to_free = g_string_free (s, FALSE);
+	return *to_free;
+}
+
+const char *
+nm_utils_str_utf8safe_unescape (const char *str, char **to_free)
+{
+	g_return_val_if_fail (to_free, NULL);
+
+	if (!str || !strchr (str, '\\')) {
+		*to_free = NULL;
+		return str;
+	}
+	return (*to_free = g_strcompress (str));
+}
+
+/**
+ * nm_utils_str_utf8safe_escape_cp:
+ * @str: NUL terminated input string, possibly in utf-8 encoding
+ * @flags: #NMUtilsStrUtf8SafeFlags flags
+ *
+ * Like nm_utils_str_utf8safe_escape(), except the returned value
+ * is always a copy of the input and must be freed by the caller.
+ *
+ * Returns: the escaped input string in UTF-8 encoding. The returned
+ *   value should be freed with g_free().
+ *   The escaping can be reverted by g_strcompress().
+ **/
+char *
+nm_utils_str_utf8safe_escape_cp (const char *str, NMUtilsStrUtf8SafeFlags flags)
+{
+	char *s;
+
+	nm_utils_str_utf8safe_escape (str, flags, &s);
+	return s ?: g_strdup (str);
+}
+
+char *
+nm_utils_str_utf8safe_unescape_cp (const char *str)
+{
+	return str ? g_strcompress (str) : NULL;
+}
+
+char *
+nm_utils_str_utf8safe_escape_take (char *str, NMUtilsStrUtf8SafeFlags flags)
+{
+	char *str_to_free;
+
+	nm_utils_str_utf8safe_escape (str, flags, &str_to_free);
+	if (str_to_free) {
+		g_free (str);
+		return str_to_free;
+	}
+	return str;
+}
