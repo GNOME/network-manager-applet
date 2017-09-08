@@ -8,15 +8,15 @@
 # Adrian Guniš <andygun696@gmail.com>, 2008, 2009.
 # Petr Kovar <pknbe@volny.cz>, 2008, 2009, 2012.
 # Marek Černocký <marek@manet.cz>, 2010.
-# Zdeněk Hataš <zdenek.hatas@gmail.com>, 2009 - 2016.
+# Zdeněk Hataš <zdenek.hatas@gmail.com>, 2009 - 2017.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2017-08-30 14:06+0000\n"
-"PO-Revision-Date: 2016-12-25 21:00+0100\n"
+"POT-Creation-Date: 2017-09-06 10:35+0000\n"
+"PO-Revision-Date: 2017-09-06 12:53+0200\n"
 "Last-Translator: Zdeněk Hataš <zdenek.hatas@gmail.com>\n"
 "Language-Team: čeština <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Gtranslator 2.91.7\n"
+"X-Generator: Poedit 1.8.7.1\n"
 "X-Project-Style: gnome\n"
 
 #: ../nm-applet.desktop.in.h:1 ../src/applet.c:3191
@@ -1297,7 +1297,7 @@ msgstr "_Hello time:"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:9
 msgid "STP forwarding delay, in seconds"
-msgstr ""
+msgstr "Zpoždění předávání STP, v sekundách"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:10
 msgid "s"
@@ -1305,7 +1305,7 @@ msgstr "s"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:11
 msgid "STP hello time, in seconds"
-msgstr ""
+msgstr "Čas uvítání STP hello, v sekundách"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:12
 msgid "Enable I_GMP snooping"
@@ -1317,6 +1317,9 @@ msgid ""
 "snooping was automatically disabled due to hash collisions, the system may "
 "refuse to enable the feature until the collisions are resolved."
 msgstr ""
+"Řídí, zda je pro tento most povoleno sledování IGMP. Pokud bylo sledování "
+"automaticky zakázáno kvůli kolizím haší, systém tuto vlastnost odmítne "
+"povolit, až do vyřešení kolizí."
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:14
 msgid "Enable _STP (Spanning Tree Protocol)"
@@ -1325,13 +1328,15 @@ msgstr "Povolit _STP (protokol Spanning Tree)"
 #: ../src/connection-editor/ce-page-bridge.ui.h:15
 msgid ""
 "Controls whether Spanning Tree Protocol (STP) is enabled for this bridge"
-msgstr ""
+msgstr "Řídí, zda je povolen Spanning Tree Protokol (STP) pro tento most"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:16
 msgid ""
 "STP priority for this bridge. Lower values are “better”; the lowest priority "
 "bridge will be elected the root bridge."
 msgstr ""
+"Priorita STP tohoto mostu. Nižší hodnoty znamenají „lepší“. Most s nejnižší "
+"prioritou bude zvolen kořenovým."
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:17
 msgid "_Max age:"
@@ -1339,19 +1344,19 @@ msgstr "_Max age:"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:18
 msgid "STP maximum message age, in seconds"
-msgstr ""
+msgstr "Maximální životnost zprávy STP, v sekundách"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:19
 msgid "_Aging time:"
-msgstr "_Aging time:"
+msgstr "Dob_a životnosti:"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:20
 msgid "The Ethernet MAC address aging time, in seconds"
-msgstr ""
+msgstr "Stárnutí ethernetové MAC adresy, v sekundách"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:21
 msgid "Group _forward mask:"
-msgstr ""
+msgstr "Skupinová _přeposílací maska:"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:22
 msgid ""
@@ -1360,6 +1365,10 @@ msgid ""
 "can’t have bits 0, 1 or 2 set because they are used for STP, MAC pause "
 "frames and LACP."
 msgstr ""
+"16 bitů masky, kdy každý odpovídá adrese skupiny v rozsahu od "
+"01:80:C2:00:00:00 do 01:80:C2:00:00:0F, který musí být přeposílán. Maska "
+"nesmí mít nastaveny bity 0, 1 nebo 2, protože jsou používány pro STP, pauzu "
+"rámce MAC a LACP."
 
 #: ../src/connection-editor/ce-page.c:78 ../src/connection-editor/ce-page.c:112
 msgid "automatic"
@@ -2113,11 +2122,11 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:11
 msgid " The pre-shared Connectivity-association Key Name"
-msgstr ""
+msgstr "Název sdíleného klíče Connectivity-association"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:12
 msgid "The pre-shared Connectivity Association Key"
-msgstr ""
+msgstr "Sdílený klíč Connectivity-association"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:13
 msgid ""
@@ -2125,6 +2134,9 @@ msgid ""
 "Agreement) is obtained. For the EAP mode, fill the parameters in the 802.1X "
 "security page"
 msgstr ""
+"Určuje, jak je získáván CAK (Connectivity Association Key – klíč přidružený k "
+"připojení) pro MKA (MACsec Key Agreement – odsouhlasení klíče pro MACsec). "
+"Pro režim EAP vyplňte parametry na stránce zabezpeční 802.1X"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:14
 msgid "CKN:"
@@ -2165,6 +2177,8 @@ msgstr "Jestli mají být vysílané přenosy šifrované"
 #: ../src/connection-editor/ce-page-macsec.ui.h:24
 msgid "The port component of the SCI (Secure Channel Identifier)"
 msgstr ""
+"Komponenta portu pro SCI (Secure Channel Identifier – identifikátor "
+"bezpečného kanálu)"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:1
 #: ../src/connection-editor/ce-page-team.ui.h:26
@@ -3335,7 +3349,6 @@ msgid "Did not find a connection with UUID “%s”"
 msgstr "Připojení s UUID „%s“ nebylo nalezeno"
 
 #: ../src/connection-editor/nm-connection-list.ui.h:2
-#| msgid "_Add a VPN connection…"
 msgid "Add a new connection"
 msgstr "Přidat nové připojení"
 
@@ -3646,13 +3659,11 @@ msgid "IPv6 DNS server “%s” invalid"
 msgstr "DNS server IPv6 „%s“ je neplatný"
 
 #: ../src/connection-editor/page-macsec.c:192
-#| msgid "Could not load DCB user interface."
 msgid "Could not load MACsec user interface."
 msgstr "Nezdařilo se načíst uživatelské rozhraní pro MACsec."
 
 #: ../src/connection-editor/page-macsec.c:331
 #, c-format
-#| msgid "DSL connection %d"
 msgid "MACSEC connection %d"
 msgstr "Připojení MACsec %d"
 
