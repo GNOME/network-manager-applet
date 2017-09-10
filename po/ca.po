@@ -6,7 +6,7 @@
 # Josep Puigdemont i Casamajó <josep.puigdemont@gmail.com>, 2005, 2006, 2007.
 # David Planella Molas <david.planella@gmail.com>, 2008, 2009, 2011.
 # Jordi Estrada <jordi.estrada@gmail.com>, 2010.
-# Jordi Serratosa <jordis@softcatala.cat>, 2012.
+# Jordi Serratosa <jordis@softcatala.cat>, 2012, 2017.
 # Gil Forcada <gilforcada@guifi.net>, 2011, 2012, 2013, 2014.
 # Walter Garcia-Fontes <walter.garcia@upf.edu>, 2016.
 # Carles Ferrando Garcia <carles.ferrando@gmail.com>, 2017.
@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: NetworkManager\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2017-08-10 19:13+0000\n"
+"POT-Creation-Date: 2017-09-08 08:39+0000\n"
 "PO-Revision-Date: 2017-08-11 09:58+0100\n"
 "Last-Translator: Carles Ferrando Garcia <carles.ferrando@gmail.com>\n"
 "Language-Team: Catalan <info@softcatala.org>\n"
@@ -165,17 +165,17 @@ msgstr ""
 msgid "The NetworkManager Developers"
 msgstr "Els desenvolupadors del NetworkManager"
 
-#: ../shared/nm-utils/nm-shared-utils.c:185
+#: ../shared/nm-utils/nm-shared-utils.c:477
 #, c-format
 msgid "object class '%s' has no property named '%s'"
 msgstr "la classe d'objecte «%s» no té cap propietat anomenada «%s»"
 
-#: ../shared/nm-utils/nm-shared-utils.c:192
+#: ../shared/nm-utils/nm-shared-utils.c:484
 #, c-format
 msgid "property '%s' of object class '%s' is not writable"
 msgstr "la propietat «%s» de la classe d'objecte «%s» no es pot escriure"
 
-#: ../shared/nm-utils/nm-shared-utils.c:199
+#: ../shared/nm-utils/nm-shared-utils.c:491
 #, c-format
 msgid ""
 "construct property \"%s\" for object '%s' can't be set after construction"
@@ -183,20 +183,20 @@ msgstr ""
 "la propietat «%s» de construcció per a l'objecte «%s» no es pot establir "
 "després de la construcció"
 
-#: ../shared/nm-utils/nm-shared-utils.c:207
+#: ../shared/nm-utils/nm-shared-utils.c:499
 #, c-format
 msgid "'%s::%s' is not a valid property name; '%s' is not a GObject subtype"
 msgstr ""
 "«%s::%s» no és un nom vàlid de propietat: «%s» no és un subtipus de GObject"
 
-#: ../shared/nm-utils/nm-shared-utils.c:216
+#: ../shared/nm-utils/nm-shared-utils.c:508
 #, c-format
 msgid "unable to set property '%s' of type '%s' from value of type '%s'"
 msgstr ""
 "no es pot establir la propietat «%s» de tipus «%s» a partir d'un valor de "
 "tipus «%s»"
 
-#: ../shared/nm-utils/nm-shared-utils.c:227
+#: ../shared/nm-utils/nm-shared-utils.c:519
 #, c-format
 msgid ""
 "value \"%s\" of type '%s' is invalid or out of range for property '%s' of "
@@ -205,7 +205,6 @@ msgstr ""
 "el valor «%s» de tipus «%s» no és vàlid o està fora de rang per a la "
 "propietat «%s» de tipus «%s»"
 
-#. ***************************************************************************
 #: ../src/8021x.ui.h:1 ../src/ethernet-dialog.c:99
 msgid "802.1X authentication"
 msgstr "Autenticació 802.1X"
@@ -1324,28 +1323,70 @@ msgid "_Hello time:"
 msgstr "Temps de «_Hello»:"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:9
+msgid "STP forwarding delay, in seconds"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:10
 msgid "s"
 msgstr "s"
 
-#: ../src/connection-editor/ce-page-bridge.ui.h:10
+#: ../src/connection-editor/ce-page-bridge.ui.h:11
+msgid "STP hello time, in seconds"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:12
 msgid "Enable I_GMP snooping"
 msgstr "Habilitat el tafaneig I_GMP"
 
-#: ../src/connection-editor/ce-page-bridge.ui.h:11
+#: ../src/connection-editor/ce-page-bridge.ui.h:13
+msgid ""
+"Controls whether IGMP snooping is enabled for this bridge. Note that if "
+"snooping was automatically disabled due to hash collisions, the system may "
+"refuse to enable the feature until the collisions are resolved."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:14
 msgid "Enable _STP (Spanning Tree Protocol)"
 msgstr "_Habilita l'STP (protocol d'arbre d'abast)"
 
-#: ../src/connection-editor/ce-page-bridge.ui.h:12
+#: ../src/connection-editor/ce-page-bridge.ui.h:15
+msgid ""
+"Controls whether Spanning Tree Protocol (STP) is enabled for this bridge"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:16
+msgid ""
+"STP priority for this bridge. Lower values are “better”; the lowest priority "
+"bridge will be elected the root bridge."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:17
 msgid "_Max age:"
 msgstr "Edat _màxima:"
 
-#: ../src/connection-editor/ce-page-bridge.ui.h:13
+#: ../src/connection-editor/ce-page-bridge.ui.h:18
+msgid "STP maximum message age, in seconds"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:19
 msgid "_Aging time:"
 msgstr "Temps d'_envelliment:"
 
-#: ../src/connection-editor/ce-page-bridge.ui.h:14
+#: ../src/connection-editor/ce-page-bridge.ui.h:20
+msgid "The Ethernet MAC address aging time, in seconds"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:21
 msgid "Group _forward mask:"
 msgstr "Mascara de grup _endavant:"
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:22
+msgid ""
+"A mask of 16 bits, each corresponding to a group address in the range from "
+"01:80:C2:00:00:00 to 01:80:C2:00:00:0F that must be forwarded. The mask "
+"can’t have bits 0, 1 or 2 set because they are used for STP, MAC pause "
+"frames and LACP."
+msgstr ""
 
 #: ../src/connection-editor/ce-page.c:78 ../src/connection-editor/ce-page.c:112
 msgid "automatic"
@@ -1609,10 +1650,20 @@ msgid "_Username:"
 msgstr "Nom d'_usuari:"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:2
+msgid "Username used to authenticate with the PPPoE service."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:3
+msgid ""
+"Only initiate sessions with access concentrators that provide the specified "
+"service. For most providers this should be left blank."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:4
 msgid "_Service:"
 msgstr "_Servei:"
 
-#: ../src/connection-editor/ce-page-dsl.ui.h:3
+#: ../src/connection-editor/ce-page-dsl.ui.h:5
 #: ../src/wireless-security/eap-method-leap.ui.h:3
 #: ../src/wireless-security/eap-method-simple.ui.h:3
 #: ../src/wireless-security/ws-leap.ui.h:3
@@ -1620,7 +1671,11 @@ msgstr "_Servei:"
 msgid "Sho_w password"
 msgstr "Most_ra la contrasenya"
 
-#: ../src/connection-editor/ce-page-dsl.ui.h:4
+#: ../src/connection-editor/ce-page-dsl.ui.h:6
+msgid "Password used to authenticate with the PPPoE service."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:7
 #: ../src/connection-editor/ce-page-mobile.ui.h:4
 #: ../src/libnma/nma-vpn-password-dialog.c:97
 #: ../src/libnm-gtk/nm-vpn-password-dialog.c:97
@@ -1630,6 +1685,26 @@ msgstr "Most_ra la contrasenya"
 #: ../src/wireless-security/ws-wpa-psk.ui.h:1
 msgid "_Password:"
 msgstr "_Contrasenya:"
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:8
+#, fuzzy
+#| msgid "_Parent interface:"
+msgid "PPP _interface:"
+msgstr "Interfície _pare:"
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:9
+#, fuzzy
+#| msgid "_Parent interface:"
+msgid "P_arent interface:"
+msgstr "Interfície _pare:"
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:10
+msgid "An arbitrary name to assign to the newly created PPP interface."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:11
+msgid "The interface on which the PPP connection will be established."
+msgstr ""
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:1
 #: ../src/connection-editor/ce-page-ip4.ui.h:1
@@ -2960,9 +3035,9 @@ msgid "Bluetooth"
 msgstr "Bluetooth"
 
 #: ../src/connection-editor/connection-helpers.c:115
-#: ../src/connection-editor/page-dsl.c:127
-msgid "DSL"
-msgstr "DSL"
+#: ../src/connection-editor/page-dsl.c:201
+msgid "DSL/PPPoE"
+msgstr ""
 
 #: ../src/connection-editor/connection-helpers.c:116
 #: ../src/connection-editor/page-infiniband.c:148
@@ -2983,7 +3058,7 @@ msgid "Team"
 msgstr "Equip"
 
 #: ../src/connection-editor/connection-helpers.c:119
-#: ../src/connection-editor/page-bridge.c:221
+#: ../src/connection-editor/page-bridge.c:233
 #: ../src/libnm-gtk/nm-ui-utils.c:337 ../src/libnm-gtk/nm-ui-utils.c:581
 msgid "Bridge"
 msgstr "Pont"
@@ -2991,7 +3066,7 @@ msgstr "Pont"
 #: ../src/connection-editor/connection-helpers.c:121
 #: ../src/connection-editor/page-ip-tunnel.c:176
 msgid "IP tunnel"
-msgstr "Tunel IP"
+msgstr "Túnel IP"
 
 #: ../src/connection-editor/connection-helpers.c:122
 #: ../src/connection-editor/page-macsec.c:190
@@ -3187,7 +3262,7 @@ msgstr ""
 msgid "Error initializing editor"
 msgstr "S'ha produït un error en inicialitzar l'editor"
 
-#: ../src/connection-editor/nm-connection-editor.c:1159
+#: ../src/connection-editor/nm-connection-editor.c:1157
 msgid "Connection add failed"
 msgstr "No s'ha pogut afegir la connexió"
 
@@ -3359,7 +3434,7 @@ msgstr "Utilitza la seguretat 802.1_X per a aquesta connexió"
 
 #: ../src/connection-editor/page-bluetooth.c:58
 msgid "MAC address of the Bluetooth device. Example: 00:11:22:33:44:55"
-msgstr "Adreça MAC del dispositiu Bluetooh. Per exemple: 00:11:22:33:44:55"
+msgstr "Adreça MAC del dispositiu Bluetooth. Per exemple: 00:11:22:33:44:55"
 
 #: ../src/connection-editor/page-bluetooth.c:125
 msgid "Could not load Bluetooth user interface."
@@ -3405,11 +3480,11 @@ msgstr "primària"
 msgid "Bond connection %d"
 msgstr "Connexió vinculada %d"
 
-#: ../src/connection-editor/page-bridge.c:224
+#: ../src/connection-editor/page-bridge.c:236
 msgid "Could not load bridge user interface."
 msgstr "No s'ha pogut carregar la interfície d'usuari per la connexió de pont."
 
-#: ../src/connection-editor/page-bridge.c:328
+#: ../src/connection-editor/page-bridge.c:352
 #, c-format
 msgid "Bridge connection %d"
 msgstr "Connexió de pont %d"
@@ -3433,11 +3508,17 @@ msgstr "DCB"
 msgid "Could not load DCB user interface."
 msgstr "No s'ha pogut carregar la interfície d'usuari DCB."
 
-#: ../src/connection-editor/page-dsl.c:129
+#: ../src/connection-editor/page-dsl.c:203
 msgid "Could not load DSL user interface."
 msgstr "No s'ha pogut carregar la interfície d'usuari per a la connexió DSL."
 
-#: ../src/connection-editor/page-dsl.c:219
+#: ../src/connection-editor/page-dsl.c:298
+#, fuzzy
+#| msgid "_Parent interface:"
+msgid "missing parent interface"
+msgstr "Interfície _pare:"
+
+#: ../src/connection-editor/page-dsl.c:343
 #, c-format
 msgid "DSL connection %d"
 msgstr "Connexió DSL %d"
@@ -4016,29 +4097,29 @@ msgid "Active Network Connections"
 msgstr "Connexions de xarxa actives"
 
 #: ../src/libnma/nma-file-cert-chooser.c:108
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:140
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:146
 msgid "No certificate set"
 msgstr "Cap certificat configurat"
 
 #: ../src/libnma/nma-file-cert-chooser.c:126
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:164
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:170
 msgid "No key set"
 msgstr "Cap clau configurada"
 
 #: ../src/libnma/nma-file-cert-chooser.c:246
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:364
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:370
 #, c-format
 msgid "Choose a key for %s Certificate"
 msgstr "Trieu una clau per al vostre certificat %s"
 
 #: ../src/libnma/nma-file-cert-chooser.c:250
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:368
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:374
 #, c-format
 msgid "%s private _key:"
 msgstr "Clau _privada %s:"
 
 #: ../src/libnma/nma-file-cert-chooser.c:254
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:372
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:378
 #, c-format
 msgid "%s key _password:"
 msgstr "Contrasenya de la clau _privada %s:"
@@ -4049,7 +4130,7 @@ msgid "Choose %s Certificate"
 msgstr "Trieu el vostre certificat %s"
 
 #: ../src/libnma/nma-file-cert-chooser.c:262
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:380
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:386
 #, c-format
 msgid "%s _certificate:"
 msgstr "_Certificat %s:"
@@ -4288,12 +4369,12 @@ msgstr "Cancel·la"
 msgid "Select from file…"
 msgstr "Selecciona des d'un fitxer…"
 
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:376
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:382
 #, c-format
 msgid "Choose a %s Certificate"
 msgstr "Trieu el certificat %s"
 
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:384
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:390
 #, c-format
 msgid "%s certificate _password:"
 msgstr "_Contrasenya del certificat %s:"
@@ -4878,6 +4959,9 @@ msgstr ""
 #: ../src/wireless-security/ws-wpa-psk.ui.h:2
 msgid "_Type:"
 msgstr "_Tipus:"
+
+#~ msgid "DSL"
+#~ msgstr "DSL"
 
 #~ msgid "Mode"
 #~ msgstr "Mode"
