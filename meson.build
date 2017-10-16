@@ -464,7 +464,7 @@ custom_target(
   output: info,
   command: intltool_xml_cmd,
   install: true,
-  install_dir: join_paths(nma_datadir, 'metainfo')
+  install_dir: join_paths(nma_datadir, 'appdata')
 )
 
 schema_conf = configuration_data()
