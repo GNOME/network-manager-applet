@@ -25,6 +25,7 @@
 
 #include <gtk/gtk.h>
 #include <NetworkManager.h>
+#include <nm-connection.h>
 
 G_BEGIN_DECLS
 
