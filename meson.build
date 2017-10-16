@@ -456,7 +456,7 @@ custom_target(
   install_dir: nma_appdir
 )
 
-info = 'nm-connection-editor.metainfo.xml'
+info = 'nm-connection-editor.appdata.xml'
 
 custom_target(
   info,
