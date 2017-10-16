@@ -1,6 +1,6 @@
 project(
   'nm-applet', 'c',
-  version: '1.8.3',
+  version: '1.8.5',
   license: 'GPL2+',
   default_options: [
     'b_lundef=true',
