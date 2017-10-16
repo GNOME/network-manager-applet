@@ -1,5 +1,5 @@
 project(
-  'nm-applet', 'c',
+  'network-manager-applet', 'c',
   version: '1.8.5',
   license: 'GPL2+',
   default_options: [
@@ -55,14 +55,14 @@ set_defines = [
   # package
   ['PACKAGE', nma_long_name],
   ['PACKAGE_BUGREPORT', 'http://bugzilla.gnome.org/enter_bug.cgi?product=NetworkManager'],
-  ['PACKAGE_NAME', meson.project_name()],
-  ['PACKAGE_STRING', '@0@ @1@'.format(meson.project_name(), nma_version)],
+  ['PACKAGE_NAME', 'nm-applet'],
+  ['PACKAGE_STRING', 'nm-applet @1@'.format(nma_version)],
   ['PACKAGE_TARNAME', nma_long_name],
   ['PACKAGE_URL', ''],
   ['PACKAGE_VERSION', nma_version],
   ['VERSION', nma_version],
   # i18n
-  ['GETTEXT_PACKAGE', meson.project_name()]
+  ['GETTEXT_PACKAGE', 'nm-applet']
 ]
 
 foreach define: set_defines
@@ -468,9 +468,9 @@ custom_target(
 )
 
 schema_conf = configuration_data()
-schema_conf.set('GETTEXT_PACKAGE', meson.project_name())
+schema_conf.set('GETTEXT_PACKAGE', 'nm-applet')
 
-schema = 'org.gnome.@0@.gschema.xml'.format(meson.project_name())
+schema = 'org.gnome.nm-applet.gschema.xml'
 
 configure_file(
   input: schema + '.in',
@@ -481,7 +481,7 @@ configure_file(
 )
 
 install_data(
-  meson.project_name() + '.convert',
+  'nm-applet.convert',
   install_dir: join_paths(nma_datadir, 'GConf', 'gsettings')
 )
 
