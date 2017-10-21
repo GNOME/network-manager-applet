@@ -112,10 +112,11 @@ update_icon (NMNetworkMenuItem *item, NMApplet *applet)
 
 			if (encrypted) {
 				icon = icon_free = gdk_pixbuf_copy (icon);
-
+	                                /* Reduce width/height to avoid failed assert          */
+	                                /* dest_y >= 0 && dest_y + dest_height <= dest->height */
 				gdk_pixbuf_composite (encrypted, icon, 0, 0,
-				                      gdk_pixbuf_get_width (encrypted),
-				                      gdk_pixbuf_get_height (encrypted),
+				                      (gdk_pixbuf_get_width (encrypted) -2),
+				                      (gdk_pixbuf_get_height (encrypted) - 2),
 				                      0, 0, 1.0, 1.0,
 				                      GDK_INTERP_NEAREST, 255);
 			}
