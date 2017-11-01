@@ -75,6 +75,9 @@ typedef struct {
 	GtkWidget *ip6_privacy_label;
 	GtkComboBox *ip6_privacy_combo;
 
+	GtkWidget *ip6_addr_gen_mode_label;
+	GtkComboBox *ip6_addr_gen_mode_combo;
+
 	/* IPv6 required */
 	GtkCheckButton *ip6_required;
 
@@ -105,6 +108,9 @@ typedef struct {
 #define IP6_PRIVACY_DISABLED       0
 #define IP6_PRIVACY_PREFER_PUBLIC  1
 #define IP6_PRIVACY_PREFER_TEMP    2
+
+#define IP6_ADDR_GEN_MODE_EUI64    0
+#define IP6_ADDR_GEN_MODE_STABLE   1
 
 static void
 ip6_private_init (CEPageIP6 *self, NMConnection *connection)
@@ -224,6 +230,9 @@ ip6_private_init (CEPageIP6 *self, NMConnection *connection)
 	priv->ip6_privacy_label = GTK_WIDGET (gtk_builder_get_object (builder, "ip6_privacy_label"));
 	priv->ip6_privacy_combo = GTK_COMBO_BOX (gtk_builder_get_object (builder, "ip6_privacy_combo"));
 
+	priv->ip6_addr_gen_mode_label = GTK_WIDGET (gtk_builder_get_object (builder, "ip6_addr_gen_mode_label"));
+	priv->ip6_addr_gen_mode_combo = GTK_COMBO_BOX (gtk_builder_get_object (builder, "ip6_addr_gen_mode_combo"));
+
 	priv->ip6_required = GTK_CHECK_BUTTON (gtk_builder_get_object (builder, "ip6_required_checkbutton"));
 	/* Hide IP6-require button if it'll never be used for a particular method */
 	if (   priv->connection_type == NM_TYPE_SETTING_VPN
@@ -244,6 +253,7 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 	gboolean dns_enabled = FALSE;
 	gboolean routes_enabled = FALSE;
 	gboolean ip6_privacy_enabled = FALSE;
+	gboolean ip6_addr_gen_mode_enabled = TRUE;
 	gboolean ip6_required_enabled = TRUE;
 	gboolean method_auto = FALSE;
 	GtkTreeIter iter;
@@ -290,6 +300,7 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 		break;
 	case IP6_METHOD_IGNORE:
 		ip6_required_enabled = FALSE;
+		ip6_addr_gen_mode_enabled = FALSE;
 		break;
 	default:
 		break;
@@ -340,6 +351,9 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 	gtk_widget_set_sensitive (priv->ip6_privacy_label, ip6_privacy_enabled);
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->ip6_privacy_combo), ip6_privacy_enabled);
 
+	gtk_widget_set_sensitive (priv->ip6_addr_gen_mode_label, ip6_addr_gen_mode_enabled);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->ip6_addr_gen_mode_combo), ip6_addr_gen_mode_enabled);
+
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->ip6_required), ip6_required_enabled);
 
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->routes_button), routes_enabled);
@@ -376,6 +390,8 @@ populate_ui (CEPageIP6 *self)
 	int method = IP6_METHOD_AUTO;
 	NMSettingIP6ConfigPrivacy ip6_privacy;
 	int ip6_privacy_idx = IP6_PRIVACY_DISABLED;
+	NMSettingIP6ConfigAddrGenMode ip6_addr_gen_mode;
+	int ip6_addr_gen_mode_idx;
 	GString *string = NULL;
 	SetMethodInfo info;
 	const char *str_method;
@@ -476,6 +492,13 @@ populate_ui (CEPageIP6 *self)
 		break;
 	}
 	gtk_combo_box_set_active (priv->ip6_privacy_combo, ip6_privacy_idx);
+
+	ip6_addr_gen_mode = nm_setting_ip6_config_get_addr_gen_mode (NM_SETTING_IP6_CONFIG (setting));
+	if (ip6_addr_gen_mode == NM_SETTING_IP6_CONFIG_ADDR_GEN_MODE_EUI64)
+		ip6_addr_gen_mode_idx = IP6_ADDR_GEN_MODE_EUI64;
+	else
+		ip6_addr_gen_mode_idx = IP6_ADDR_GEN_MODE_STABLE;
+	gtk_combo_box_set_active (priv->ip6_addr_gen_mode_combo, ip6_addr_gen_mode_idx);
 
 	/* IPv6 required */
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->ip6_required),
@@ -1153,6 +1176,7 @@ finish_setup (CEPageIP6 *self, gpointer unused, GError *error, gpointer user_dat
 	g_signal_connect (priv->dns_servers, "insert-text", G_CALLBACK (dns_servers_filter_cb), self);
 	g_signal_connect_swapped (priv->dns_searches, "changed", G_CALLBACK (ce_page_changed), self);
 	g_signal_connect_swapped (priv->ip6_privacy_combo, "changed", G_CALLBACK (ce_page_changed), self);
+	g_signal_connect_swapped (priv->ip6_addr_gen_mode_combo, "changed", G_CALLBACK (ce_page_changed), self);
 
 	method_changed (priv->method, self);
 	g_signal_connect (priv->method, "changed", G_CALLBACK (method_changed), self);
@@ -1219,6 +1243,7 @@ ui_to_setting (CEPageIP6 *self, GError **error)
 	char **items = NULL, **iter;
 	gboolean may_fail;
 	NMSettingIP6ConfigPrivacy ip6_privacy;
+	NMSettingIP6ConfigAddrGenMode ip6_addr_gen_mode;
 
 	/* Method */
 	if (gtk_combo_box_get_active_iter (priv->method, &tree_iter)) {
@@ -1371,10 +1396,16 @@ ui_to_setting (CEPageIP6 *self, GError **error)
 		break;
 	}
 
+	if (gtk_combo_box_get_active (priv->ip6_addr_gen_mode_combo) == IP6_ADDR_GEN_MODE_EUI64)
+		ip6_addr_gen_mode = NM_SETTING_IP6_CONFIG_ADDR_GEN_MODE_EUI64;
+	else
+		ip6_addr_gen_mode = NM_SETTING_IP6_CONFIG_ADDR_GEN_MODE_STABLE_PRIVACY;
+
 	may_fail = !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->ip6_required));
 	g_object_set (G_OBJECT (priv->setting),
 	              NM_SETTING_IP_CONFIG_MAY_FAIL, may_fail,
 	              NM_SETTING_IP6_CONFIG_IP6_PRIVACY, ip6_privacy,
+	              NM_SETTING_IP6_CONFIG_ADDR_GEN_MODE, (int) ip6_addr_gen_mode,
 	              NULL);
 
 	valid = TRUE;
