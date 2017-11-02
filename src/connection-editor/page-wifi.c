@@ -240,7 +240,7 @@ mode_combo_changed_cb (GtkComboBox *combo,
 	CEPageWifiPrivate *priv = CE_PAGE_WIFI_GET_PRIVATE (self);
 	CEPage *parent = CE_PAGE (self);
 	GtkWidget *widget_band_label, *widget_chan_label, *widget_bssid_label;
-	gboolean show_freq = FALSE;
+	gboolean show_freq = TRUE;
 	gboolean show_bssid = TRUE;
 	gboolean hotspot = FALSE;
 
@@ -254,10 +254,8 @@ mode_combo_changed_cb (GtkComboBox *combo,
 		 * For AP-mode, the BSSID is the MAC address of the device.
 		 */
 		show_bssid = FALSE;
-		show_freq = TRUE;
 		break;
 	default: /* infrastructure */
-		show_freq = FALSE;
 		break;
 	}
 	nm_connection_editor_inter_page_set_value (parent->editor,
