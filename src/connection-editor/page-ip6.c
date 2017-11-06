@@ -1408,7 +1408,7 @@ ui_to_setting (CEPageIP6 *self, GError **error)
 	g_object_set (G_OBJECT (priv->setting),
 	              NM_SETTING_IP_CONFIG_MAY_FAIL, may_fail,
 	              NM_SETTING_IP6_CONFIG_IP6_PRIVACY, ip6_privacy,
-	              NM_SETTING_IP6_CONFIG_ADDR_GEN_MODE, ip6_addr_gen_mode,
+	              NM_SETTING_IP6_CONFIG_ADDR_GEN_MODE, (int) ip6_addr_gen_mode,
 	              NULL);
 
 	valid = TRUE;
