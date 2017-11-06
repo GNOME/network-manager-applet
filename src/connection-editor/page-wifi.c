@@ -334,12 +334,14 @@ populate_ui (CEPageWifi *self)
 	mode_combo_changed_cb (priv->mode, self);
 	g_signal_connect (priv->mode, "changed", G_CALLBACK (mode_combo_changed_cb), self);
 
-	g_signal_connect (priv->channel, "output",
-	                  G_CALLBACK (channel_spin_output_cb),
-	                  self);
-	g_signal_connect (priv->channel, "input",
-	                  G_CALLBACK (channel_spin_input_cb),
-	                  self);
+	g_signal_connect_object (priv->channel, "output",
+	                         G_CALLBACK (channel_spin_output_cb),
+	                         self,
+	                         0);
+	g_signal_connect_object (priv->channel, "input",
+	                         G_CALLBACK (channel_spin_input_cb),
+	                         self,
+	                         0);
 
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->channel), FALSE);
 	if (band) {
