@@ -392,7 +392,7 @@ populate_ui (CEPageIP6 *self)
 	NMSettingIP6ConfigPrivacy ip6_privacy;
 	int ip6_privacy_idx = IP6_PRIVACY_DISABLED;
 	NMSettingIP6ConfigAddrGenMode ip6_addr_gen_mode;
-	int ip6_addr_gen_mode_idx = IP6_ADDR_GEN_MODE_EUI64;
+	int ip6_addr_gen_mode_idx;
 	GString *string = NULL;
 	SetMethodInfo info;
 	const char *str_method;
