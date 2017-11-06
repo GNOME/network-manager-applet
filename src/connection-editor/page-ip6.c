@@ -75,7 +75,6 @@ typedef struct {
 	GtkWidget *ip6_privacy_label;
 	GtkComboBox *ip6_privacy_combo;
 
-	/* IPv6 SLAAC address generation mode combo */
 	GtkWidget *ip6_addr_gen_mode_label;
 	GtkComboBox *ip6_addr_gen_mode_combo;
 
@@ -494,7 +493,6 @@ populate_ui (CEPageIP6 *self)
 	}
 	gtk_combo_box_set_active (priv->ip6_privacy_combo, ip6_privacy_idx);
 
-	/* IPv6 address generation mode */
 	ip6_addr_gen_mode = nm_setting_ip6_config_get_addr_gen_mode (NM_SETTING_IP6_CONFIG (setting));
 	if (ip6_addr_gen_mode == NM_SETTING_IP6_CONFIG_ADDR_GEN_MODE_EUI64)
 		ip6_addr_gen_mode_idx = IP6_ADDR_GEN_MODE_EUI64;
@@ -1398,7 +1396,6 @@ ui_to_setting (CEPageIP6 *self, GError **error)
 		break;
 	}
 
-	/* IPv6 address generation mode */
 	if (gtk_combo_box_get_active (priv->ip6_addr_gen_mode_combo) == IP6_ADDR_GEN_MODE_EUI64)
 		ip6_addr_gen_mode = NM_SETTING_IP6_CONFIG_ADDR_GEN_MODE_EUI64;
 	else
