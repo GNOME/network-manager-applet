@@ -69,9 +69,6 @@ foreach define: set_defines
   config_h.set_quoted(define[0], define[1])
 endforeach
 
-res = run_command(find_program('git'), 'rev-parse', '--verify', '-q', 'HEAD')
-config_h.set_quoted('NMA_GIT_SHA', res.stdout().strip())
-
 # headers
 check_headers = [
   ['HAVE_DLFCN_H', 'dlfcn.h'],
