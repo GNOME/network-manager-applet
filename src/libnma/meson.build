@@ -47,7 +47,8 @@ incs = [
   top_inc,
   shared_inc,
   src_inc,
-  libnma_inc
+  libnma_inc,
+  wireless_security_inc
 ]
 
 deps = [
@@ -55,7 +56,6 @@ deps = [
   gudev_dep,
   libnm_dep,
   libutils_libnm_dep,
-  libwireless_security_libnm_dep
 ]
 
 cflags = [
@@ -102,6 +102,7 @@ libnma = shared_library(
   c_args: cflags,
   link_args: ldflags,
   link_depends: symbol_map,
+  link_whole: libwireless_security_libnm,
   install: true,
   install_dir: nma_libdir
 )

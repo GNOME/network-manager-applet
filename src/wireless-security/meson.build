@@ -57,11 +57,6 @@ libwireless_security_libnm = static_library(
   dependencies: deps
 )
 
-libwireless_security_libnm_dep = declare_dependency(
-  link_with: libwireless_security_libnm,
-  include_directories: wireless_security_inc
-)
-
 if enable_libnm_gtk
   deps = [
     gtk_dep,
@@ -77,10 +72,5 @@ if enable_libnm_gtk
     include_directories: incs,
     dependencies: deps,
     c_args: cflags
-  )
-
-  libwireless_security_libnm_glib_dep = declare_dependency(
-    link_with: libwireless_security_libnm_glib,
-    include_directories: wireless_security_inc
   )
 endif

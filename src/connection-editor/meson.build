@@ -76,14 +76,14 @@ incs = [
   top_inc,
   utils_inc,
   src_inc,
-  shared_inc
+  shared_inc,
+  wireless_security_inc
 ]
 
 deps = [
   gtk_dep,
   libnm_dep,
   libnma_dep,
-  libwireless_security_libnm_dep,
   m_dep
 ]
 
@@ -117,6 +117,7 @@ executable(
   c_args: cflags,
   link_args: ldflags,
   link_depends: linker_script_ver,
+  link_whole: libwireless_security_libnm,
   install: true,
   install_dir: nma_bindir
 )
