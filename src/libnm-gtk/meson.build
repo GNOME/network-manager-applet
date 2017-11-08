@@ -92,7 +92,7 @@ pkg.generate(
   requires: [
     'NetworkManager ' + nm_req_version,
     'libnm-util ' + nm_req_version,
-    'linm-glib ' + nm_req_version,
+    'libnm-glib ' + nm_req_version,
     'gtk+-3.0 ' + gtk_req_version
   ],
   variables: 'exec_prefix=' + nma_prefix,
