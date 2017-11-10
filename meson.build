@@ -6,7 +6,7 @@ project(
     'buildtype=debugoptimized',
     'c_std=gnu99'
   ],
-  meson_version: '>= 0.42.0'
+  meson_version: '>= 0.43.0'
 )
 
 nma_long_name = 'network-manager-applet'
@@ -172,11 +172,7 @@ if nma_debug
     '-Wundef'
   ]
 
-  foreach cflag: test_cflags
-    if cc.has_argument(cflag)
-      common_flags += [cflag]
-    endif
-  endforeach
+  common_flags += cc.get_supported_arguments(test_cflags)
 endif
 
 add_project_arguments(common_flags, language: 'c')
