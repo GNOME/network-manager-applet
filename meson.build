@@ -3,10 +3,8 @@ project(
   version: '1.8.7',
   license: 'GPL2+',
   default_options: [
-    'b_lundef=true',
     'buildtype=debugoptimized',
-    'c_std=gnu99',
-    'warning_level=1'
+    'c_std=gnu99'
   ],
   meson_version: '>= 0.42.0'
 )
