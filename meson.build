@@ -56,7 +56,7 @@ set_defines = [
   ['PACKAGE', nma_long_name],
   ['PACKAGE_BUGREPORT', 'http://bugzilla.gnome.org/enter_bug.cgi?product=NetworkManager'],
   ['PACKAGE_NAME', 'nm-applet'],
-  ['PACKAGE_STRING', 'nm-applet @1@'.format(nma_version)],
+  ['PACKAGE_STRING', 'nm-applet ' + nma_version],
   ['PACKAGE_TARNAME', nma_long_name],
   ['PACKAGE_URL', ''],
   ['PACKAGE_VERSION', nma_version],
