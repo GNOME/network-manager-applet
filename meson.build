@@ -9,7 +9,7 @@ project(
   meson_version: '>= 0.43.0'
 )
 
-nma_long_name = 'network-manager-applet'
+nma_name = 'nm-applet'
 
 nma_version = meson.project_version()
 version_array = nma_version.split('.')
@@ -51,16 +51,16 @@ config_h = configuration_data()
 # defines
 set_defines = [
   # package
-  ['PACKAGE', nma_long_name],
+  ['PACKAGE', meson.project_name()],
   ['PACKAGE_BUGREPORT', 'http://bugzilla.gnome.org/enter_bug.cgi?product=NetworkManager'],
-  ['PACKAGE_NAME', 'nm-applet'],
-  ['PACKAGE_STRING', 'nm-applet ' + nma_version],
-  ['PACKAGE_TARNAME', nma_long_name],
+  ['PACKAGE_NAME', nma_name],
+  ['PACKAGE_STRING', '@0@ @1@'.format(nma_name, nma_version)],
+  ['PACKAGE_TARNAME', meson.project_name()],
   ['PACKAGE_URL', ''],
   ['PACKAGE_VERSION', nma_version],
   ['VERSION', nma_version],
   # i18n
-  ['GETTEXT_PACKAGE', 'nm-applet']
+  ['GETTEXT_PACKAGE', nma_name]
 ]
 
 foreach define: set_defines
@@ -391,14 +391,6 @@ else
 endif
 config_h.set('NM_MORE_ASSERTS', more_asserts)
 
-config = 'config.h'
-
-configure_file(
-  input: config + '.meson',
-  output: config,
-  configuration: config_h
-)
-
 gnome = import('gnome')
 i18n = import('i18n')
 pkg = import('pkgconfig')
@@ -459,7 +451,7 @@ custom_target(
 )
 
 schema_conf = configuration_data()
-schema_conf.set('GETTEXT_PACKAGE', 'nm-applet')
+schema_conf.set('GETTEXT_PACKAGE', nma_name)
 
 schema = 'org.gnome.nm-applet.gschema.xml'
 
@@ -525,6 +517,14 @@ if enable_gtk_doc
     install_dir: doc_path
   )
 endif
+
+config = 'config.h'
+
+configure_file(
+  input: config + '.meson',
+  output: config,
+  configuration: config_h
+)
 
 meson.add_install_script(
   'meson_post_install.py',

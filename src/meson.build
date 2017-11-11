@@ -31,8 +31,6 @@ endif
 
 subdir('connection-editor')
 
-program_name = 'nm-applet'
-
 sources = files(
   'ap-menu-item.c',
   'applet-agent.c',
@@ -87,7 +85,7 @@ cflags = [
   '-DSYSCONFDIR="@0@"'.format(nma_sysconfdir),
   '-DAUTOSTARTDIR="@0@"'.format(nma_autostartdir),
   '-DICONDIR="@0@"'.format(nma_icondir),
-  '-DG_LOG_DOMAIN="@0@"'.format(program_name)
+  '-DG_LOG_DOMAIN="@0@"'.format(nma_name)
 ]
 
 ldflags = []
@@ -109,7 +107,7 @@ if enable_wwan
 endif
 
 executable(
-  program_name,
+  nma_name,
   sources,
   include_directories: incs,
   dependencies: deps,
