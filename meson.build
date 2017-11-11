@@ -49,87 +49,16 @@ cc = meson.get_compiler('c')
 config_h = configuration_data()
 
 # defines
-set_defines = [
-  # package
-  ['PACKAGE', meson.project_name()],
-  ['PACKAGE_BUGREPORT', 'http://bugzilla.gnome.org/enter_bug.cgi?product=NetworkManager'],
-  ['PACKAGE_NAME', nma_name],
-  ['PACKAGE_STRING', '@0@ @1@'.format(nma_name, nma_version)],
-  ['PACKAGE_TARNAME', meson.project_name()],
-  ['PACKAGE_URL', ''],
-  ['PACKAGE_VERSION', nma_version],
-  ['VERSION', nma_version],
-  # i18n
-  ['GETTEXT_PACKAGE', nma_name]
-]
-
-foreach define: set_defines
-  config_h.set_quoted(define[0], define[1])
-endforeach
-
-# headers
-check_headers = [
-  ['HAVE_DLFCN_H', 'dlfcn.h'],
-  ['HAVE_INTTYPES_H', 'inttypes.h'],
-  ['HAVE_LOCALE_H', 'locale.h'],
-  ['HAVE_MEMORY_H', 'memory.h'],
-  ['HAVE_STDINT_H', 'stdint.h'],
-  ['HAVE_STDLIB_H', 'stdlib.h'],
-  ['HAVE_STRINGS_H', 'strings.h'],
-  ['HAVE_STRING_H', 'string.h'],
-  ['HAVE_SYS_STAT_H', 'sys/stat.h'],
-  ['HAVE_SYS_TYPES_H', 'sys/types.h'],
-  ['HAVE_UNISTD_H', 'unistd.h']
-]
-
-foreach header: check_headers
-  config_h.set(header[0], cc.has_header(header[1]))
-endforeach
-
-# functions
-check_functions = [
-  # i18n
-  ['HAVE_DCGETTEXT', 'dcgettext'],
-  ['HAVE_GETTEXT', 'gettext'],
-  ['HAVE_ICONV', 'iconv']
-]
-
-if host_machine.system().contains('darwin')
-  check_functions += [
-    ['HAVE_CFLOCALECOPYCURRENT', 'CFLocaleCopyCurrent'],
-    ['HAVE_CFPREFERENCESCOPYAPPVALUE', 'CFPreferencesCopyAppValue']
-  ]
-endif
-
-foreach func: check_functions
-  config_h.set(func[0], cc.has_function(func[1]))
-endforeach
-
-# symbols
-check_symbols = [
-  # i18n
-  ['HAVE_LC_MESSAGES', 'locale.h', 'LC_MESSAGES'],
-  ['HAVE_BIND_TEXTDOMAIN_CODESET', 'libintl.h', 'bind_textdomain_codeset']
-]
-
-foreach symbol: check_symbols
-  config_h.set(symbol[0], cc.has_header_symbol(symbol[1], symbol[2]))
-endforeach
+config_h.set_quoted('GETTEXT_PACKAGE', nma_name)
+config_h.set_quoted('VERSION', nma_version)
 
 # types
-check_types = [
-  # type, header, fallback type
-  ['pid_t', 'sys/types.h', 'int']
-]
-
-foreach type: check_types
-  if not cc.has_type(type[0], prefix: '#include<@0@>'.format(type[1]))
-    config_h.set(type[0], type[2])
-  endif
-endforeach
+if not cc.has_type('pid_t', prefix: '#include<sys/types.h>')
+  config_h.set('pid_t', 'int')
+endif
 
 # compiler flags
-common_flags = ['-DHAVE_CONFIG_H']
+common_flags = []
 common_ldflags = []
 
 enable_ld_gc = get_option('ld_gc')
@@ -491,12 +420,21 @@ if enable_gtk_doc
     'nma-resources.c'
   ]
 
+  ent_conf = configuration_data()
+  ent_conf.set_quoted('PACKAGE', meson.project_name())
+  ent_conf.set_quoted('PACKAGE_BUGREPORT', 'http://bugzilla.gnome.org/enter_bug.cgi?product=NetworkManager')
+  ent_conf.set_quoted('PACKAGE_NAME', nma_name)
+  ent_conf.set_quoted('PACKAGE_STRING', '@0@ @1@'.format(nma_name, nma_version))
+  ent_conf.set_quoted('PACKAGE_TARNAME', meson.project_name())
+  ent_conf.set_quoted('PACKAGE_URL', '')
+  ent_conf.set_quoted('PACKAGE_VERSION', nma_version)
+
   ent = 'gtkdocentities.ent'
 
   configure_file(
     input: ent + '.in',
     output: ent,
-    configuration: config_h
+    configuration: ent_conf
   )
 
   doc_path = join_paths(nma_datadir, 'gtk-doc', 'html', mod_name)
