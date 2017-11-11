@@ -368,15 +368,15 @@ custom_target(
   install_dir: nma_appdir
 )
 
-info = 'nm-connection-editor.appdata.xml'
+appdata = 'nm-connection-editor.appdata.xml'
 
 custom_target(
-  info,
-  input: 'nm-connection-editor.appdata.xml.in',
-  output: info,
+  appdata,
+  input: appdata + '.in',
+  output: appdata,
   command: intltool_xml_cmd,
   install: true,
-  install_dir: join_paths(nma_datadir, 'appdata')
+  install_dir: join_paths(nma_datadir, 'metainfo')
 )
 
 schema_conf = configuration_data()
