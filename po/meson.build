@@ -1,1 +1,1 @@
-i18n.gettext('nm-applet', preset: 'glib')
+i18n.gettext(nma_name, preset: 'glib')

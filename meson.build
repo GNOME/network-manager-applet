@@ -3,15 +3,13 @@ project(
   version: '1.8.7',
   license: 'GPL2+',
   default_options: [
-    'b_lundef=true',
     'buildtype=debugoptimized',
-    'c_std=gnu99',
-    'warning_level=1'
+    'c_std=gnu99'
   ],
-  meson_version: '>= 0.42.0'
+  meson_version: '>= 0.43.0'
 )
 
-nma_long_name = 'network-manager-applet'
+nma_name = 'nm-applet'
 
 nma_version = meson.project_version()
 version_array = nma_version.split('.')
@@ -51,90 +49,19 @@ cc = meson.get_compiler('c')
 config_h = configuration_data()
 
 # defines
-set_defines = [
-  # package
-  ['PACKAGE', nma_long_name],
-  ['PACKAGE_BUGREPORT', 'http://bugzilla.gnome.org/enter_bug.cgi?product=NetworkManager'],
-  ['PACKAGE_NAME', 'nm-applet'],
-  ['PACKAGE_STRING', 'nm-applet @1@'.format(nma_version)],
-  ['PACKAGE_TARNAME', nma_long_name],
-  ['PACKAGE_URL', ''],
-  ['PACKAGE_VERSION', nma_version],
-  ['VERSION', nma_version],
-  # i18n
-  ['GETTEXT_PACKAGE', 'nm-applet']
-]
-
-foreach define: set_defines
-  config_h.set_quoted(define[0], define[1])
-endforeach
-
-# headers
-check_headers = [
-  ['HAVE_DLFCN_H', 'dlfcn.h'],
-  ['HAVE_INTTYPES_H', 'inttypes.h'],
-  ['HAVE_LOCALE_H', 'locale.h'],
-  ['HAVE_MEMORY_H', 'memory.h'],
-  ['HAVE_STDINT_H', 'stdint.h'],
-  ['HAVE_STDLIB_H', 'stdlib.h'],
-  ['HAVE_STRINGS_H', 'strings.h'],
-  ['HAVE_STRING_H', 'string.h'],
-  ['HAVE_SYS_STAT_H', 'sys/stat.h'],
-  ['HAVE_SYS_TYPES_H', 'sys/types.h'],
-  ['HAVE_UNISTD_H', 'unistd.h']
-]
-
-foreach header: check_headers
-  config_h.set(header[0], cc.has_header(header[1]))
-endforeach
-
-# functions
-check_functions = [
-  # i18n
-  ['HAVE_DCGETTEXT', 'dcgettext'],
-  ['HAVE_GETTEXT', 'gettext'],
-  ['HAVE_ICONV', 'iconv']
-]
-
-if host_machine.system().contains('darwin')
-  check_functions += [
-    ['HAVE_CFLOCALECOPYCURRENT', 'CFLocaleCopyCurrent'],
-    ['HAVE_CFPREFERENCESCOPYAPPVALUE', 'CFPreferencesCopyAppValue']
-  ]
-endif
-
-foreach func: check_functions
-  config_h.set(func[0], cc.has_function(func[1]))
-endforeach
-
-# symbols
-check_symbols = [
-  # i18n
-  ['HAVE_LC_MESSAGES', 'locale.h', 'LC_MESSAGES'],
-  ['HAVE_BIND_TEXTDOMAIN_CODESET', 'libintl.h', 'bind_textdomain_codeset']
-]
-
-foreach symbol: check_symbols
-  config_h.set(symbol[0], cc.has_header_symbol(symbol[1], symbol[2]))
-endforeach
+config_h.set_quoted('GETTEXT_PACKAGE', nma_name)
+config_h.set_quoted('VERSION', nma_version)
 
 # types
-check_types = [
-  # type, header, fallback type
-  ['pid_t', 'sys/types.h', 'int']
-]
-
-foreach type: check_types
-  if not cc.has_type(type[0], prefix: '#include<@0@>'.format(type[1]))
-    config_h.set(type[0], type[2])
-  endif
-endforeach
+if not cc.has_type('pid_t', prefix: '#include<sys/types.h>')
+  config_h.set('pid_t', 'int')
+endif
 
 # compiler flags
-common_flags = ['-DHAVE_CONFIG_H']
+common_flags = []
 common_ldflags = []
 
-enable_ld_gc = get_option('enable-ld-gc')
+enable_ld_gc = get_option('ld_gc')
 if enable_ld_gc
   test_cflags = [
     '-fdata-sections',
@@ -144,7 +71,7 @@ if enable_ld_gc
   test_ldflags = ['-Wl,--gc-sections']
 
   foreach cflag: test_cflags + test_ldflags
-    assert(cc.has_argument(cflag), 'Unused symbol eviction requested but not supported. Use -Denable-ld-gc=false to build without it.')
+    assert(cc.has_argument(cflag), 'Unused symbol eviction requested but not supported. Use -Dld_gc=false to build without it.')
   endforeach
 
   common_flags += test_cflags
@@ -174,11 +101,7 @@ if nma_debug
     '-Wundef'
   ]
 
-  foreach cflag: test_cflags
-    if cc.has_argument(cflag)
-      common_flags += [cflag]
-    endif
-  endforeach
+  common_flags += cc.get_supported_arguments(test_cflags)
 endif
 
 add_project_arguments(common_flags, language: 'c')
@@ -190,13 +113,13 @@ have_version_script = host_machine.system().contains('linux') and cc.has_argumen
 linker_script_ver = join_paths(meson.source_root(), 'linker-script-binary.ver')
 
 # Check for iso-codes for country names translation
-enable_iso_codes = get_option('enable-iso-codes')
+enable_iso_codes = get_option('iso_codes')
 message('whether to disable iso-codes at build-time: ' + enable_iso_codes.to_string())
 if enable_iso_codes
   iso_codes_dep = dependency('iso-codes')
 
   str = 'Consider installing the package or adjusting the PKG_CONFIG_PATH environment variable.\n'
-  str += 'You can also disable build-time check for \'iso-codes\' via -Denable-iso-codes=false'
+  str += 'You can also disable build-time check for \'iso-codes\' via -Diso_codes=false'
   assert(iso_codes_dep.found(), str)
 
   iso_3166 = iso_codes_dep.get_pkgconfig_variable('domains').contains('iso_3166')
@@ -253,7 +176,7 @@ libnm_dep = declare_dependency(
   compile_args: cflags
 )
 
-enable_libnm_gtk = get_option('enable-libnm-gtk')
+enable_libnm_gtk = get_option('libnm_gtk')
 if enable_libnm_gtk
   deps = [
     gio_dep,
@@ -277,7 +200,7 @@ if enable_libnm_gtk
   )
 endif
 
-enable_appindicator = get_option('enable-appindicator')
+enable_appindicator = get_option('appindicator')
 if enable_appindicator
   appindicator_dep = dependency('appindicator3-0.1')
   dbusmenu_dep = dependency('dbusmenu-gtk3-0.4', version: '>= 16.04.0')
@@ -285,31 +208,31 @@ endif
 config_h.set('WITH_APPINDICATOR', enable_appindicator)
 
 # ModemManager1 with libmm-glib for WWAN support
-enable_wwan = get_option('enable-wwan')
+enable_wwan = get_option('wwan')
 if enable_wwan
   mm_glib_dep = dependency('mm-glib', required: false)
-  assert(mm_glib_dep.found(), 'libmm-glib is needed for WWAN support. Use -Denable-wwan=false to build without it.')
+  assert(mm_glib_dep.found(), 'libmm-glib is needed for WWAN support. Use -Dwwan=false to build without it.')
 endif
 config_h.set10('WITH_WWAN', enable_wwan)
 
 # SELinux
-enable_selinux = get_option('enable-selinux')
+enable_selinux = get_option('selinux')
 if enable_selinux
   libselinux_dep = dependency('libselinux', required: false)
-  assert(libselinux_dep.found(), 'libselinux is needed for SELinux label support in configuration editor. Use -Denable-selinux=false to build without it.')
+  assert(libselinux_dep.found(), 'libselinux is needed for SELinux label support in configuration editor. Use -Dselinux=false to build without it.')
 endif
 config_h.set10('WITH_SELINUX', enable_selinux)
 
 # Jansson for team configuration editing
-enable_team = get_option('enable-team')
+enable_team = get_option('team')
 if enable_team
   jansson_dep = dependency('jansson', version: '>= 2.7', required: false)
-  assert(jansson_dep.found(), 'jansson is needed for team configuration editor. Use -Denable-team=false to build without it.')
+  assert(jansson_dep.found(), 'jansson is needed for team configuration editor. Use -Dteam=false to build without it.')
 endif
 config_h.set10('WITH_JANSSON', enable_team)
 
 # GCR for PKCS#11 enabled certificate chooser
-enable_gcr = get_option('enable-gcr')
+enable_gcr = get_option('gcr')
 if enable_gcr
   deps = [
     dependency('gcr-3', version: '>= 3.14'),
@@ -371,7 +294,7 @@ if enable_gcr
     GcrCertificate *gcr_simple_certificate_new (const guchar *data, gsize n_data);
   '''
 
-  assert(cc.compiles(gcr_src, dependencies: deps), 'gcr support was requested, but the gcr library is not available. Use -Denable-gcr=false to build without it.')
+  assert(cc.compiles(gcr_src, dependencies: deps), 'gcr support was requested, but the gcr library is not available. Use -Dgcr=false to build without it.')
 
   gcr_dep = declare_dependency(
     dependencies: deps,
@@ -381,13 +304,13 @@ endif
 config_h.set10('WITH_GCR', enable_gcr)
 
 # introspection support
-enable_introspection = get_option('enable-introspection')
+enable_introspection = get_option('introspection')
 if enable_introspection
   gir_dep = dependency('gobject-introspection-1.0', version: '>= 0.9.6', required: false)
-  assert(gir_dep.found(), 'introspection support was requested, but the gobject-introspection library is not available. Use -Denable-introspection=false to build without it.')
+  assert(gir_dep.found(), 'introspection support was requested, but the gobject-introspection library is not available. Use -Dintrospection=false to build without it.')
 endif
 
-more_asserts = get_option('with-more-asserts')
+more_asserts = get_option('more_asserts')
 if more_asserts == 'no'
   more_asserts = 0
 elif more_asserts == 'yes'
@@ -396,14 +319,6 @@ else
   more_asserts = more_asserts.to_int()
 endif
 config_h.set('NM_MORE_ASSERTS', more_asserts)
-
-config = 'config.h'
-
-configure_file(
-  input: config + '.meson',
-  output: config,
-  configuration: config_h
-)
 
 gnome = import('gnome')
 i18n = import('i18n')
@@ -453,19 +368,19 @@ custom_target(
   install_dir: nma_appdir
 )
 
-info = 'nm-connection-editor.appdata.xml'
+appdata = 'nm-connection-editor.appdata.xml'
 
 custom_target(
-  info,
-  input: 'nm-connection-editor.appdata.xml.in',
-  output: info,
+  appdata,
+  input: appdata + '.in',
+  output: appdata,
   command: intltool_xml_cmd,
   install: true,
-  install_dir: join_paths(nma_datadir, 'appdata')
+  install_dir: join_paths(nma_datadir, 'metainfo')
 )
 
 schema_conf = configuration_data()
-schema_conf.set('GETTEXT_PACKAGE', 'nm-applet')
+schema_conf.set('GETTEXT_PACKAGE', nma_name)
 
 schema = 'org.gnome.nm-applet.gschema.xml'
 
@@ -483,7 +398,7 @@ install_data(
 )
 
 # documentation
-enable_gtk_doc = get_option('enable-gtk-doc')
+enable_gtk_doc = get_option('gtk_doc')
 if enable_gtk_doc
   mod_name = 'libnma'
 
@@ -505,12 +420,21 @@ if enable_gtk_doc
     'nma-resources.c'
   ]
 
+  ent_conf = configuration_data()
+  ent_conf.set_quoted('PACKAGE', meson.project_name())
+  ent_conf.set_quoted('PACKAGE_BUGREPORT', 'http://bugzilla.gnome.org/enter_bug.cgi?product=NetworkManager')
+  ent_conf.set_quoted('PACKAGE_NAME', nma_name)
+  ent_conf.set_quoted('PACKAGE_STRING', '@0@ @1@'.format(nma_name, nma_version))
+  ent_conf.set_quoted('PACKAGE_TARNAME', meson.project_name())
+  ent_conf.set_quoted('PACKAGE_URL', '')
+  ent_conf.set_quoted('PACKAGE_VERSION', nma_version)
+
   ent = 'gtkdocentities.ent'
 
   configure_file(
     input: ent + '.in',
     output: ent,
-    configuration: config_h
+    configuration: ent_conf
   )
 
   doc_path = join_paths(nma_datadir, 'gtk-doc', 'html', mod_name)
@@ -531,6 +455,14 @@ if enable_gtk_doc
     install_dir: doc_path
   )
 endif
+
+config = 'config.h'
+
+configure_file(
+  input: config + '.meson',
+  output: config,
+  configuration: config_h
+)
 
 meson.add_install_script(
   'meson_post_install.py',
