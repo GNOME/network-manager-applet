@@ -234,11 +234,73 @@ write_connection_to_child (int fd, NMConnection *connection, GError **error)
 }
 
 static void
-vpn_child_setup (gpointer user_data G_GNUC_UNUSED)
+vpn_child_setup (gpointer user_data)
 {
 	/* We are in the child process at this point */
 	pid_t pid = getpid ();
 	setpgid (pid, pid);
+}
+
+static gboolean
+auth_dialog_spawn (const char *con_id,
+                   const char *con_uuid,
+                   const char *const*hints,
+                   const char *auth_dialog,
+                   const char *service_type,
+                   gboolean supports_hints,
+                   guint32 flags,
+                   GPid *out_pid,
+                   int *out_stdin,
+                   int *out_stdout,
+                   GError **error)
+{
+	gsize hints_len;
+	gsize i, j;
+	gs_free const char **argv = NULL;
+
+	g_return_val_if_fail (con_id, FALSE);
+	g_return_val_if_fail (con_uuid, FALSE);
+	g_return_val_if_fail (auth_dialog, FALSE);
+	g_return_val_if_fail (service_type, FALSE);
+	g_return_val_if_fail (out_pid, FALSE);
+	g_return_val_if_fail (out_stdin, FALSE);
+	g_return_val_if_fail (out_stdout, FALSE);
+
+	hints_len = NM_PTRARRAY_LEN (hints);
+	argv = g_new (const char *, 10 + (2 * hints_len));
+	i = 0;
+	argv[i++] = auth_dialog;
+	argv[i++] = "-u";
+	argv[i++] = con_uuid;
+	argv[i++] = "-n";
+	argv[i++] = con_id;
+	argv[i++] = "-s";
+	argv[i++] = service_type;
+	if (flags & NM_SECRET_AGENT_GET_SECRETS_FLAG_ALLOW_INTERACTION)
+		argv[i++] = "-i";
+	if (flags & NM_SECRET_AGENT_GET_SECRETS_FLAG_REQUEST_NEW)
+		argv[i++] = "-r";
+	for (j = 0; supports_hints && (j < hints_len); j++) {
+		argv[i++] = "-t";
+		argv[i++] = hints[j];
+	}
+	nm_assert (i <= 10 + (2 * hints_len));
+	argv[i++] = NULL;
+
+	if (!g_spawn_async_with_pipes (NULL,
+	                               (char **) argv,
+	                               NULL,
+	                               G_SPAWN_DO_NOT_REAP_CHILD,
+	                               vpn_child_setup,
+	                               NULL,
+	                               out_pid,
+	                               out_stdin,
+	                               out_stdout,
+	                               NULL,
+	                               error))
+		return FALSE;
+
+	return TRUE;
 }
 
 gboolean
@@ -250,24 +312,16 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 	NMSettingVpn *s_vpn;
 	const char *connection_type;
 	const char *service_type;
-	gs_free const char **argv = NULL;
-	guint i = 0, u;
-	gsize hints_len;
-	gboolean supports_hints = FALSE;
 	const char *auth_dialog;
 	gs_unref_object NMVpnPluginInfo *plugin = NULL;
 
 	applet_secrets_request_set_free_func (req, free_vpn_secrets_info);
 
 	s_con = nm_connection_get_setting_connection (req->connection);
-	g_return_val_if_fail (s_con, FALSE);
+	s_vpn = nm_connection_get_setting_vpn (req->connection);
 
 	connection_type = nm_setting_connection_get_connection_type (s_con);
-	g_return_val_if_fail (connection_type, FALSE);
-	g_return_val_if_fail (strcmp (connection_type, NM_SETTING_VPN_SETTING_NAME) == 0, FALSE);
-
-	s_vpn = nm_connection_get_setting_vpn (req->connection);
-	g_return_val_if_fail (s_vpn, FALSE);
+	g_return_val_if_fail (nm_streq0 (connection_type, NM_SETTING_VPN_SETTING_NAME), FALSE);
 
 	service_type = nm_setting_vpn_get_service_type (s_vpn);
 	g_return_val_if_fail (service_type, FALSE);
@@ -283,8 +337,6 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 		return FALSE;
 	}
 
-	supports_hints = nm_vpn_plugin_info_supports_hints (plugin);
-
 	info->req_data = g_slice_new0 (RequestData);
 	if (!info->req_data) {
 		g_set_error_literal (error,
@@ -295,37 +347,17 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 	}
 	req_data = info->req_data;
 
-	hints_len = NM_PTRARRAY_LEN (req->hints);
-	argv = g_new (const char *, 10 + (2 * hints_len));
-	argv[i++] = auth_dialog;
-	argv[i++] = "-u";
-	argv[i++] = nm_setting_connection_get_uuid (s_con);
-	argv[i++] = "-n";
-	argv[i++] = nm_setting_connection_get_id (s_con);
-	argv[i++] = "-s";
-	argv[i++] = service_type;
-	if (req->flags & NM_SECRET_AGENT_GET_SECRETS_FLAG_ALLOW_INTERACTION)
-		argv[i++] = "-i";
-	if (req->flags & NM_SECRET_AGENT_GET_SECRETS_FLAG_REQUEST_NEW)
-		argv[i++] = "-r";
-	for (u = 0; supports_hints && (u < hints_len); u++) {
-		argv[i++] = "-t";
-		argv[i++] = req->hints[u];
-	}
-	nm_assert (i <= 10 + (2 * hints_len));
-	argv[i++] = NULL;
-
-	if (!g_spawn_async_with_pipes (NULL,                       /* working_directory */
-	                               (char **) argv,             /* argv */
-	                               NULL,                       /* envp */
-	                               G_SPAWN_DO_NOT_REAP_CHILD,  /* flags */
-	                               vpn_child_setup,            /* child_setup */
-	                               NULL,                       /* user_data */
-	                               &req_data->pid,             /* child_pid */
-	                               &req_data->child_stdin,     /* standard_input */
-	                               &req_data->child_stdout,    /* standard_output */
-	                               NULL,                       /* standard_error */
-	                               error))                     /* error */
+	if (!auth_dialog_spawn (nm_setting_connection_get_id (s_con),
+	                        nm_setting_connection_get_uuid (s_con),
+	                        (const char *const*) req->hints,
+	                        auth_dialog,
+	                        service_type,
+	                        nm_vpn_plugin_info_supports_hints (plugin),
+	                        req->flags,
+	                        &req_data->pid,
+	                        &req_data->child_stdin,
+	                        &req_data->child_stdout,
+	                        error))
 		return FALSE;
 
 	/* catch when child is reaped */
