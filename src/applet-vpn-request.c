@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2004 - 2014 Red Hat, Inc.
+ * Copyright 2004 - 2017 Red Hat, Inc.
  */
 
 #include "nm-default.h"
@@ -31,6 +31,8 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <errno.h>
+
+/*****************************************************************************/
 
 typedef struct {
 	char *uuid;
@@ -48,16 +50,24 @@ typedef struct {
 	guint channel_eventid;
 } RequestData;
 
+typedef struct {
+	SecretsRequest req;
+	RequestData *req_data;
+} VpnSecretsInfo;
+
 /*****************************************************************************/
 
 static void request_data_free (RequestData *req_data);
 
 /*****************************************************************************/
 
-typedef struct {
-	SecretsRequest req;
-	RequestData *req_data;
-} VpnSecretsInfo;
+size_t
+applet_vpn_request_get_secrets_size (void)
+{
+	return sizeof (VpnSecretsInfo);
+}
+
+/*****************************************************************************/
 
 static void
 child_finished_cb (GPid pid, gint status, gpointer user_data)
@@ -105,6 +115,8 @@ child_finished_cb (GPid pid, gint status, gpointer user_data)
 	applet_secrets_request_free (req);
 }
 
+/*****************************************************************************/
+
 static gboolean
 child_stdout_data_cb (GIOChannel *source, GIOCondition condition, gpointer user_data)
 {
@@ -136,17 +148,7 @@ child_stdout_data_cb (GIOChannel *source, GIOCondition condition, gpointer user_
 	return TRUE;
 }
 
-static void
-free_vpn_secrets_info (SecretsRequest *req)
-{
-	request_data_free (((VpnSecretsInfo *) req)->req_data);
-}
-
-size_t
-applet_vpn_request_get_secrets_size (void)
-{
-	return sizeof (VpnSecretsInfo);
-}
+/*****************************************************************************/
 
 typedef struct {
 	int fd;
@@ -232,6 +234,8 @@ write_connection_to_child (int fd, NMConnection *connection, GError **error)
 
 	return TRUE;
 }
+
+/*****************************************************************************/
 
 static void
 vpn_child_setup (gpointer user_data)
@@ -320,6 +324,14 @@ auth_dialog_spawn (const char *con_id,
 	return TRUE;
 }
 
+/*****************************************************************************/
+
+static void
+free_vpn_secrets_info (SecretsRequest *req)
+{
+	request_data_free (((VpnSecretsInfo *) req)->req_data);
+}
+
 gboolean
 applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 {
@@ -388,6 +400,8 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 	/* Dump parts of the connection to the child */
 	return write_connection_to_child (req_data->child_stdin, req->connection, error);
 }
+
+/*****************************************************************************/
 
 static gboolean
 ensure_killed (gpointer data)
