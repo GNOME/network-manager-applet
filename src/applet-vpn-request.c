@@ -136,30 +136,6 @@ child_stdout_data_cb (GIOChannel *source, GIOCondition condition, gpointer user_
 	return TRUE;
 }
 
-static char *
-find_auth_dialog_binary (const char *service,
-                         gboolean *out_hints_supported,
-                         GError **error)
-{
-	const char *auth_dialog;
-	gs_unref_object NMVpnPluginInfo *plugin = NULL;
-
-	plugin = nm_vpn_plugin_info_new_search_file (NULL, service);
-
-	auth_dialog = plugin ? nm_vpn_plugin_info_get_auth_dialog (plugin) : NULL;
-	if (!auth_dialog) {
-		g_set_error (error,
-		             NM_SECRET_AGENT_ERROR,
-		             NM_SECRET_AGENT_ERROR_FAILED,
-		             "Could not find the authentication dialog for VPN connection type '%s'",
-		             service);
-		return NULL;
-	}
-
-	*out_hints_supported = nm_vpn_plugin_info_supports_hints (plugin);
-	return g_strdup (auth_dialog);
-}
-
 static void
 free_vpn_secrets_info (SecretsRequest *req)
 {
@@ -274,11 +250,12 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 	NMSettingVpn *s_vpn;
 	const char *connection_type;
 	const char *service_type;
-	gs_free char *bin_path = NULL;
 	gs_free const char **argv = NULL;
 	guint i = 0, u;
 	gsize hints_len;
 	gboolean supports_hints = FALSE;
+	const char *auth_dialog;
+	gs_unref_object NMVpnPluginInfo *plugin = NULL;
 
 	applet_secrets_request_set_free_func (req, free_vpn_secrets_info);
 
@@ -295,9 +272,18 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 	service_type = nm_setting_vpn_get_service_type (s_vpn);
 	g_return_val_if_fail (service_type, FALSE);
 
-	bin_path = find_auth_dialog_binary (service_type, &supports_hints, error);
-	if (!bin_path)
+	plugin = nm_vpn_plugin_info_new_search_file (NULL, service_type);
+	auth_dialog = plugin ? nm_vpn_plugin_info_get_auth_dialog (plugin) : NULL;
+	if (!auth_dialog) {
+		g_set_error (error,
+		             NM_SECRET_AGENT_ERROR,
+		             NM_SECRET_AGENT_ERROR_FAILED,
+		             "Could not find the authentication dialog for VPN connection type '%s'",
+		             service_type);
 		return FALSE;
+	}
+
+	supports_hints = nm_vpn_plugin_info_supports_hints (plugin);
 
 	info->req_data = g_slice_new0 (RequestData);
 	if (!info->req_data) {
@@ -311,7 +297,7 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 
 	hints_len = NM_PTRARRAY_LEN (req->hints);
 	argv = g_new (const char *, 10 + (2 * hints_len));
-	argv[i++] = bin_path;
+	argv[i++] = auth_dialog;
 	argv[i++] = "-u";
 	argv[i++] = nm_setting_connection_get_uuid (s_con);
 	argv[i++] = "-n";
