@@ -70,11 +70,13 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 		      -Wimplicit-fallthrough \
 		      -Wimplicit-function-declaration \
 		      -Winit-self \
+		      -Wlogical-op \
 		      -Wmissing-declarations \
 		      -Wmissing-include-dirs \
 		      -Wmissing-prototypes \
 		      -Wpointer-arith \
 		      -Wshadow \
+		      -Wshift-negative-value \
 		      -Wstrict-prototypes \
 		      -Wundef \
 		      -Wno-duplicate-decl-specifier \
@@ -117,6 +119,12 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 	NM_COMPILER_WARNING([unused-value],
 		[#define yolo ({ (666 + 666); })]
 		[int f () { int i = yolo; yolo; return i; }]
+	)
+
+	dnl clang 3.9 would like to see "{ { 0 } }" here, but that does not
+	dnl look too wise.
+	NM_COMPILER_WARNING([missing-braces],
+		[union { int a[1]; int b[2]; } c = { 0 }]
 	)
 
 	CFLAGS="$CFLAGS_MORE_WARNINGS $CFLAGS"
