@@ -257,6 +257,8 @@ auth_dialog_spawn (const char *con_id,
 	gsize hints_len;
 	gsize i, j;
 	gs_free const char **argv = NULL;
+	gs_free const char **envp = NULL;
+	gsize environ_len;
 
 	g_return_val_if_fail (con_id, FALSE);
 	g_return_val_if_fail (con_uuid, FALSE);
@@ -287,9 +289,24 @@ auth_dialog_spawn (const char *con_id,
 	nm_assert (i <= 10 + (2 * hints_len));
 	argv[i++] = NULL;
 
+	environ_len = NM_PTRARRAY_LEN (environ);
+	envp = g_new (const char *, environ_len + 1);
+	memcpy (envp, environ, sizeof (const char *) * environ_len);
+	for (i = 0, j = 0; i < environ_len; i++) {
+		const char *e = environ[i];
+
+		if (g_str_has_prefix (e, "G_MESSAGES_DEBUG=")) {
+			/* skip this environment variable. We interact with the auth-dialog via stdout.
+			 * G_MESSAGES_DEBUG may enable additional debugging messages from GTK. */
+			continue;
+		}
+		envp[j++] = e;
+	}
+	envp[j] = NULL;
+
 	if (!g_spawn_async_with_pipes (NULL,
 	                               (char **) argv,
-	                               NULL,
+	                               (char **) envp,
 	                               G_SPAWN_DO_NOT_REAP_CHILD,
 	                               vpn_child_setup,
 	                               NULL,
