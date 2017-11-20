@@ -775,6 +775,7 @@ nm_applet_c_gen = \
 	src/applet-resources.c
 
 nm_applet_hc_real = \
+	shared/nm-utils/nm-compat.c \
 	src/main.c \
 	src/applet.c \
 	src/applet.h \

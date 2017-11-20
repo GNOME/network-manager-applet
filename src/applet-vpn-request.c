@@ -32,6 +32,8 @@
 #include <unistd.h>
 #include <errno.h>
 
+#include "nm-utils/nm-compat.h"
+
 /*****************************************************************************/
 
 typedef struct {
@@ -150,87 +152,113 @@ child_stdout_data_cb (GIOChannel *source, GIOCondition condition, gpointer user_
 
 /*****************************************************************************/
 
-typedef struct {
-	int fd;
-	gboolean secret;
-	GError **error;
-} WriteItemInfo;
-
-static const char *data_key_tag = "DATA_KEY=";
-static const char *data_val_tag = "DATA_VAL=";
-static const char *secret_key_tag = "SECRET_KEY=";
-static const char *secret_val_tag = "SECRET_VAL=";
-
-static gboolean
-write_item (int fd, const char *item, GError **error)
-{
-	size_t item_len = strlen (item);
-
-	errno = 0;
-	if (write (fd, item, item_len) != item_len) {
-		g_set_error (error,
-			         NM_SECRET_AGENT_ERROR,
-			         NM_SECRET_AGENT_ERROR_FAILED,
-			         "Failed to write connection to VPN UI: errno %d", errno);
-		return FALSE;
-	}
-	return TRUE;
-}
-
 static void
-write_one_key_val (const char *key, const char *value, gpointer user_data)
+_str_append (GString *str,
+             const char *tag,
+             const char *val)
 {
-	WriteItemInfo *info = user_data;
-	const char *tag;
+	const char *s;
+	gsize i;
 
-	if (info->error && *(info->error))
-		return;
+	nm_assert (str);
+	nm_assert (tag && tag[0]);
+	nm_assert (val);
 
-	/* Write the key name */
-	tag = info->secret ? secret_key_tag : data_key_tag;
-	if (!write_item (info->fd, tag, info->error))
-		return;
-	if (!write_item (info->fd, key, info->error))
-		return;
-	if (!write_item (info->fd, "\n", info->error))
-		return;
+	g_string_append (str, tag);
+	g_string_append_c (str, '=');
 
-	/* Write the key value */
-	tag = info->secret ? secret_val_tag : data_val_tag;
-	if (!write_item (info->fd, tag, info->error))
-		return;
-	if (!write_item (info->fd, value ? value : "", info->error))
-		return;
-	if (!write_item (info->fd, "\n\n", info->error))
-		return;
+	s = strchr (val, '\n');
+	if (s) {
+		gs_free char *val2 = g_strdup (val);
+
+		for (i = 0; val2[i]; i++) {
+			if (val2[i] == '\n')
+				val2[i] = ' ';
+		}
+		g_string_append (str, val2);
+	} else
+		g_string_append (str, val);
+	g_string_append_c (str, '\n');
 }
 
-static gboolean
-write_connection_to_child (int fd, NMConnection *connection, GError **error)
+static char *
+connection_to_data (NMConnection *connection,
+                    gsize *out_length,
+                    GError **error)
 {
 	NMSettingVpn *s_vpn;
-	WriteItemInfo info = { .fd = fd, .secret = FALSE, .error = error };
+	GString *buf;
+	const char **keys;
+	guint i, len;
+
+	g_return_val_if_fail (NM_IS_CONNECTION (connection), NULL);
 
 	s_vpn = nm_connection_get_setting_vpn (connection);
 	if (!s_vpn) {
 		g_set_error_literal (error,
 		                     NM_SECRET_AGENT_ERROR,
 		                     NM_SECRET_AGENT_ERROR_FAILED,
-		                     "Connection had no VPN setting");
+		                     _("Connection had no VPN setting"));
+		return NULL;
+	}
+
+	buf = g_string_new_len (NULL, 100);
+
+	keys = nm_setting_vpn_get_data_keys (s_vpn, &len);
+	for (i = 0; i < len; i++) {
+		_str_append (buf, "DATA_KEY", keys[i]);
+		_str_append (buf, "DATA_VAL", nm_setting_vpn_get_data_item (s_vpn, keys[i]));
+	}
+	nm_clear_g_free (&keys);
+
+	keys = nm_setting_vpn_get_secret_keys (s_vpn, &len);
+	for (i = 0; i < len; i++) {
+		_str_append (buf, "SECRET_KEY", keys[i]);
+		_str_append (buf, "SECRET_VAL", nm_setting_vpn_get_secret (s_vpn, keys[i]));
+	}
+	nm_clear_g_free (&keys);
+
+	g_string_append (buf, "DONE\n\n");
+	NM_SET_OUT (out_length, buf->len);
+	return g_string_free (buf, FALSE);
+}
+
+/*****************************************************************************/
+
+static gboolean
+connection_to_fd (NMConnection *connection,
+                  int fd,
+                  GError **error)
+{
+	gs_free char *data = NULL;
+	gsize data_len;
+	gssize w;
+	int errsv;
+
+	data = connection_to_data (connection, &data_len, error);
+	if (!data)
+		return FALSE;
+
+again:
+	w = write (fd, data, data_len);
+	if (w < 0) {
+		errsv = errno;
+		if (errsv == EINTR)
+			goto again;
+		g_set_error (error,
+		             NM_SECRET_AGENT_ERROR,
+		             NM_SECRET_AGENT_ERROR_FAILED,
+		             _("Failed to write connection to VPN UI: %s (%d)"), g_strerror (errsv), errsv);
 		return FALSE;
 	}
 
-	nm_setting_vpn_foreach_data_item (s_vpn, write_one_key_val, &info);
-	if (error && *error)
+	if ((gsize) w != data_len) {
+		g_set_error_literal (error,
+		                     NM_SECRET_AGENT_ERROR,
+		                     NM_SECRET_AGENT_ERROR_FAILED,
+		                     _("Failed to write connection to VPN UI: incomplete write"));
 		return FALSE;
-
-	info.secret = TRUE;
-	nm_setting_vpn_foreach_secret (s_vpn, write_one_key_val, &info);
-	if (error && *error)
-		return FALSE;
-
-	if (!write_item (fd, "DONE\n\n", error))
-		return FALSE;
+	}
 
 	return TRUE;
 }
@@ -398,7 +426,7 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 	g_io_channel_set_encoding (req_data->channel, NULL, NULL);
 
 	/* Dump parts of the connection to the child */
-	return write_connection_to_child (req_data->child_stdin, req->connection, error);
+	return connection_to_fd (req->connection, req_data->child_stdin, error);
 }
 
 /*****************************************************************************/
