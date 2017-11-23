@@ -25,10 +25,16 @@
 
 #include <errno.h>
 #include <arpa/inet.h>
+#include <poll.h>
+#include <fcntl.h>
 
 /*****************************************************************************/
 
 const void *const _NM_PTRARRAY_EMPTY[1] = { NULL };
+
+/*****************************************************************************/
+
+const NMIPAddr nm_ip_addr_zero = { 0 };
 
 /*****************************************************************************/
 
@@ -112,6 +118,162 @@ nm_utils_strbuf_append (char **buf, gsize *len, const char *format, ...)
 /*****************************************************************************/
 
 /**
+ * nm_strquote:
+ * @buf: the output buffer of where to write the quoted @str argument.
+ * @buf_len: the size of @buf.
+ * @str: (allow-none): the string to quote.
+ *
+ * Writes @str to @buf with quoting. The resulting buffer
+ * is always NUL terminated, unless @buf_len is zero.
+ * If @str is %NULL, it writes "(null)".
+ *
+ * If @str needs to be truncated, the closing quote is '^' instead
+ * of '"'.
+ *
+ * This is similar to nm_strquote_a(), which however uses alloca()
+ * to allocate a new buffer. Also, here @buf_len is the size of @buf,
+ * while nm_strquote_a() has the number of characters to print. The latter
+ * doesn't include the quoting.
+ *
+ * Returns: the input buffer with the quoted string.
+ */
+const char *
+nm_strquote (char *buf, gsize buf_len, const char *str)
+{
+	const char *const buf0 = buf;
+
+	if (!str) {
+		nm_utils_strbuf_append_str (&buf, &buf_len, "(null)");
+		goto out;
+	}
+
+	if (G_UNLIKELY (buf_len <= 2)) {
+		switch (buf_len) {
+		case 2:
+			*(buf++) = '^';
+			/* fall-through */
+		case 1:
+			*(buf++) = '\0';
+			break;
+		}
+		goto out;
+	}
+
+	*(buf++) = '"';
+	buf_len--;
+
+	nm_utils_strbuf_append_str (&buf, &buf_len, str);
+
+	/* if the string was too long we indicate truncation with a
+	 * '^' instead of a closing quote. */
+	if (G_UNLIKELY (buf_len <= 1)) {
+		switch (buf_len) {
+		case 1:
+			buf[-1] = '^';
+			break;
+		case 0:
+			buf[-2] = '^';
+			break;
+		default:
+			nm_assert_not_reached ();
+			break;
+		}
+	} else {
+		nm_assert (buf_len >= 2);
+		*(buf++) = '"';
+		*(buf++) = '\0';
+	}
+
+out:
+	return buf0;
+}
+
+/*****************************************************************************/
+
+char _nm_utils_to_string_buffer[];
+
+void
+nm_utils_to_string_buffer_init (char **buf, gsize *len)
+{
+	if (!*buf) {
+		*buf = _nm_utils_to_string_buffer;
+		*len = sizeof (_nm_utils_to_string_buffer);
+	}
+}
+
+gboolean
+nm_utils_to_string_buffer_init_null (gconstpointer obj, char **buf, gsize *len)
+{
+	nm_utils_to_string_buffer_init (buf, len);
+	if (!obj) {
+		g_strlcpy (*buf, "(null)", *len);
+		return FALSE;
+	}
+	return TRUE;
+}
+
+/*****************************************************************************/
+
+const char *
+nm_utils_flags2str (const NMUtilsFlags2StrDesc *descs,
+                    gsize n_descs,
+                    unsigned flags,
+                    char *buf,
+                    gsize len)
+{
+	gsize i;
+	char *p;
+
+#if NM_MORE_ASSERTS > 10
+	nm_assert (descs);
+	nm_assert (n_descs > 0);
+	for (i = 0; i < n_descs; i++) {
+		gsize j;
+
+		nm_assert (descs[i].name && descs[i].name[0]);
+		for (j = 0; j < i; j++)
+			nm_assert (descs[j].flag != descs[i].flag);
+	}
+#endif
+
+	nm_utils_to_string_buffer_init (&buf, &len);
+
+	if (!len)
+		return buf;
+
+	buf[0] = '\0';
+	p = buf;
+	if (!flags) {
+		for (i = 0; i < n_descs; i++) {
+			if (!descs[i].flag) {
+				nm_utils_strbuf_append_str (&p, &len, descs[i].name);
+				break;
+			}
+		}
+		return buf;
+	}
+
+	for (i = 0; flags && i < n_descs; i++) {
+		if (   descs[i].flag
+		    && NM_FLAGS_ALL (flags, descs[i].flag)) {
+			flags &= ~descs[i].flag;
+
+			if (buf[0] != '\0')
+				nm_utils_strbuf_append_c (&p, &len, ',');
+			nm_utils_strbuf_append_str (&p, &len, descs[i].name);
+		}
+	}
+	if (flags) {
+		if (buf[0] != '\0')
+			nm_utils_strbuf_append_c (&p, &len, ',');
+		nm_utils_strbuf_append (&p, &len, "0x%x", flags);
+	}
+	return buf;
+};
+
+/*****************************************************************************/
+
+/**
  * _nm_utils_ip4_prefix_to_netmask:
  * @prefix: a CIDR prefix
  *
@@ -170,52 +332,79 @@ nm_utils_ip_is_site_local (int addr_family,
 /*****************************************************************************/
 
 gboolean
-nm_utils_parse_inaddr (const char *text,
-                       int family,
-                       char **out_addr)
+nm_utils_parse_inaddr_bin (int addr_family,
+                           const char *text,
+                           gpointer out_addr)
 {
-	union {
-		in_addr_t v4;
-		struct in6_addr v6;
-	} addrbin;
-	char addrstr_buf[MAX (INET_ADDRSTRLEN, INET6_ADDRSTRLEN)];
+	NMIPAddr addrbin;
 
 	g_return_val_if_fail (text, FALSE);
 
-	if (family == AF_UNSPEC)
-		family = strchr (text, ':') ? AF_INET6 : AF_INET;
+	if (addr_family == AF_UNSPEC)
+		addr_family = strchr (text, ':') ? AF_INET6 : AF_INET;
 	else
-		g_return_val_if_fail (NM_IN_SET (family, AF_INET, AF_INET6), FALSE);
+		g_return_val_if_fail (NM_IN_SET (addr_family, AF_INET, AF_INET6), FALSE);
 
-	if (inet_pton (family, text, &addrbin) != 1)
+	/* use a temporary variable @addrbin, to guarantee that @out_addr
+	 * is only modified on success. */
+	if (inet_pton (addr_family, text, &addrbin) != 1)
 		return FALSE;
 
-	NM_SET_OUT (out_addr, g_strdup (inet_ntop (family, &addrbin, addrstr_buf, sizeof (addrstr_buf))));
+	if (out_addr) {
+		switch (addr_family) {
+		case AF_INET:
+			*((in_addr_t *) out_addr) = addrbin.addr4;
+			break;
+		case AF_INET6:
+			*((struct in6_addr *) out_addr) = addrbin.addr6;
+			break;
+		default:
+			nm_assert_not_reached ();
+		}
+	}
 	return TRUE;
 }
 
 gboolean
-nm_utils_parse_inaddr_prefix (const char *text,
-                              int family,
-                              char **out_addr,
-                              int *out_prefix)
+nm_utils_parse_inaddr (int addr_family,
+                       const char *text,
+                       char **out_addr)
+{
+	NMIPAddr addrbin;
+	char addrstr_buf[MAX (INET_ADDRSTRLEN, INET6_ADDRSTRLEN)];
+
+	nm_assert (!out_addr || !*out_addr);
+
+	if (!nm_utils_parse_inaddr_bin (addr_family, text, &addrbin))
+		return FALSE;
+	NM_SET_OUT (out_addr, g_strdup (inet_ntop (addr_family, &addrbin, addrstr_buf, sizeof (addrstr_buf))));
+	return TRUE;
+}
+
+gboolean
+nm_utils_parse_inaddr_prefix_bin (int addr_family,
+                                  const char *text,
+                                  gpointer out_addr,
+                                  int *out_prefix)
 {
 	gs_free char *addrstr_free = NULL;
 	int prefix = -1;
 	const char *slash;
 	const char *addrstr;
-	union {
-		in_addr_t v4;
-		struct in6_addr v6;
-	} addrbin;
-	char addrstr_buf[MAX (INET_ADDRSTRLEN, INET6_ADDRSTRLEN)];
+	NMIPAddr addrbin;
+	int addr_len;
 
 	g_return_val_if_fail (text, FALSE);
 
-	if (family == AF_UNSPEC)
-		family = strchr (text, ':') ? AF_INET6 : AF_INET;
+	if (addr_family == AF_UNSPEC)
+		addr_family = strchr (text, ':') ? AF_INET6 : AF_INET;
+
+	if (addr_family == AF_INET)
+		addr_len = sizeof (in_addr_t);
+	else if (addr_family == AF_INET6)
+		addr_len = sizeof (struct in6_addr);
 	else
-		g_return_val_if_fail (NM_IN_SET (family, AF_INET, AF_INET6), FALSE);
+		g_return_val_if_reached (FALSE);
 
 	slash = strchr (text, '/');
 	if (slash)
@@ -223,20 +412,36 @@ nm_utils_parse_inaddr_prefix (const char *text,
 	else
 		addrstr = text;
 
-	if (inet_pton (family, addrstr, &addrbin) != 1)
+	if (inet_pton (addr_family, addrstr, &addrbin) != 1)
 		return FALSE;
 
 	if (slash) {
 		prefix = _nm_utils_ascii_str_to_int64 (slash + 1, 10,
 		                                       0,
-		                                       family == AF_INET ? 32 : 128,
+		                                       addr_family == AF_INET ? 32 : 128,
 		                                       -1);
 		if (prefix == -1)
 			return FALSE;
 	}
 
-	NM_SET_OUT (out_addr, g_strdup (inet_ntop (family, &addrbin, addrstr_buf, sizeof (addrstr_buf))));
+	if (out_addr)
+		memcpy (out_addr, &addrbin, addr_len);
 	NM_SET_OUT (out_prefix, prefix);
+	return TRUE;
+}
+
+gboolean
+nm_utils_parse_inaddr_prefix (int addr_family,
+                              const char *text,
+                              char **out_addr,
+                              int *out_prefix)
+{
+	NMIPAddr addrbin;
+	char addrstr_buf[MAX (INET_ADDRSTRLEN, INET6_ADDRSTRLEN)];
+
+	if (!nm_utils_parse_inaddr_prefix_bin (addr_family, text, &addrbin, out_prefix))
+		return FALSE;
+	NM_SET_OUT (out_addr, g_strdup (inet_ntop (addr_family, &addrbin, addrstr_buf, sizeof (addrstr_buf))));
 	return TRUE;
 }
 
@@ -293,6 +498,118 @@ _nm_utils_ascii_str_to_int64 (const char *str, guint base, gint64 min, gint64 ma
 }
 
 /*****************************************************************************/
+
+/**
+ * nm_utils_strsplit_set:
+ * @str: the string to split.
+ * @delimiters: the set of delimiters. If %NULL, defaults to " \t\n",
+ *   like bash's $IFS.
+ *
+ * This is a replacement for g_strsplit_set() which avoids copying
+ * each word once (the entire strv array), but instead copies it once
+ * and all words point into that internal copy.
+ *
+ * Another difference from g_strsplit_set() is that this never returns
+ * empty words. Multiple delimiters are combined and treated as one.
+ *
+ * Returns: %NULL if @str is %NULL or contains only delimiters.
+ *   Otherwise, a %NULL terminated strv array containing non-empty
+ *   words, split at the delimiter characters (delimiter characters
+ *   are removed).
+ *   The strings to which the result strv array points to are allocated
+ *   after the returned result itself. Don't free the strings themself,
+ *   but free everything with g_free().
+ */
+const char **
+nm_utils_strsplit_set (const char *str, const char *delimiters)
+{
+	const char **ptr, **ptr0;
+	gsize alloc_size, plen, i;
+	gsize str_len;
+	char *s0;
+	char *s;
+	guint8 delimiters_table[256];
+
+	if (!str)
+		return NULL;
+
+	/* initialize lookup table for delimiter */
+	if (!delimiters)
+		delimiters = " \t\n";
+	memset (delimiters_table, 0, sizeof (delimiters_table));
+	for (i = 0; delimiters[i]; i++)
+		delimiters_table[(guint8) delimiters[i]] = 1;
+
+#define _is_delimiter(ch, delimiters_table) \
+	((delimiters_table)[(guint8) (ch)] != 0)
+
+	/* skip initial delimiters, and return of the remaining string is
+	 * empty. */
+	while (_is_delimiter (str[0], delimiters_table))
+		str++;
+	if (!str[0])
+		return NULL;
+
+	str_len = strlen (str) + 1;
+	alloc_size = 8;
+
+	/* we allocate the buffer larger, so to copy @str at the
+	 * end of it as @s0. */
+	ptr0 = g_malloc ((sizeof (const char *) * (alloc_size + 1)) + str_len);
+	s0 = (char *) &ptr0[alloc_size + 1];
+	memcpy (s0, str, str_len);
+
+	plen = 0;
+	s = s0;
+	ptr = ptr0;
+
+	while (TRUE) {
+		if (plen >= alloc_size) {
+			const char **ptr_old = ptr;
+
+			/* reallocate the buffer. Note that for now the string
+			 * continues to be in ptr0/s0. We fix that at the end. */
+			alloc_size += 2;
+			ptr = g_malloc ((sizeof (const char *) * (alloc_size + 1)) + str_len);
+			memcpy (ptr, ptr_old, sizeof (const char *) * plen);
+			if (ptr_old != ptr0)
+				g_free (ptr_old);
+		}
+
+		ptr[plen++] = s;
+
+		nm_assert (s[0] && !_is_delimiter (s[0], delimiters_table));
+
+		while (TRUE) {
+			s++;
+			if (_is_delimiter (s[0], delimiters_table))
+				break;
+			if (s[0] == '\0')
+				goto done;
+		}
+
+		s[0] = '\0';
+		s++;
+		while (_is_delimiter (s[0], delimiters_table))
+			s++;
+		if (s[0] == '\0')
+			break;
+	}
+done:
+	ptr[plen] = NULL;
+
+	if (ptr != ptr0) {
+		/* we reallocated the buffer. We must copy over the
+		 * string @s0 and adjust the pointers. */
+		s = (char *) &ptr[alloc_size + 1];
+		memcpy (s, s0, str_len);
+		for (i = 0; i < plen; i++)
+			ptr[i] = &s[ptr[i] - s0];
+		g_free (ptr0);
+	}
+
+	return ptr;
+}
 
 /**
  * nm_utils_strv_find_first:
@@ -676,4 +993,99 @@ nm_utils_str_utf8safe_escape_take (char *str, NMUtilsStrUtf8SafeFlags flags)
 		return str_to_free;
 	}
 	return str;
+}
+
+/*****************************************************************************/
+
+/* taken from systemd's fd_wait_for_event(). Note that the timeout
+ * is here in nano-seconds, not micro-seconds. */
+int
+nm_utils_fd_wait_for_event (int fd, int event, gint64 timeout_ns)
+{
+	struct pollfd pollfd = {
+		.fd = fd,
+		.events = event,
+	};
+	struct timespec ts, *pts;
+	int r;
+
+	if (timeout_ns < 0)
+		pts = NULL;
+	else {
+		ts.tv_sec = (time_t) (timeout_ns / NM_UTILS_NS_PER_SECOND);
+		ts.tv_nsec = (long int) (timeout_ns % NM_UTILS_NS_PER_SECOND);
+		pts = &ts;
+	}
+
+	r = ppoll (&pollfd, 1, pts, NULL);
+	if (r < 0)
+		return -errno;
+	if (r == 0)
+		return 0;
+	return pollfd.revents;
+}
+
+/* taken from systemd's loop_read() */
+ssize_t
+nm_utils_fd_read_loop (int fd, void *buf, size_t nbytes, bool do_poll)
+{
+	uint8_t *p = buf;
+	ssize_t n = 0;
+
+	g_return_val_if_fail (fd >= 0, -EINVAL);
+	g_return_val_if_fail (buf, -EINVAL);
+
+	/* If called with nbytes == 0, let's call read() at least
+	 * once, to validate the operation */
+
+	if (nbytes > (size_t) SSIZE_MAX)
+		return -EINVAL;
+
+	do {
+		ssize_t k;
+
+		k = read (fd, p, nbytes);
+		if (k < 0) {
+			if (errno == EINTR)
+				continue;
+
+			if (errno == EAGAIN && do_poll) {
+
+				/* We knowingly ignore any return value here,
+				 * and expect that any error/EOF is reported
+				 * via read() */
+
+				(void) nm_utils_fd_wait_for_event (fd, POLLIN, -1);
+				continue;
+			}
+
+			return n > 0 ? n : -errno;
+		}
+
+		if (k == 0)
+			return n;
+
+		g_assert ((size_t) k <= nbytes);
+
+		p += k;
+		nbytes -= k;
+		n += k;
+	} while (nbytes > 0);
+
+	return n;
+}
+
+/* taken from systemd's loop_read_exact() */
+int
+nm_utils_fd_read_loop_exact (int fd, void *buf, size_t nbytes, bool do_poll)
+{
+	ssize_t n;
+
+	n = nm_utils_fd_read_loop (fd, buf, nbytes, do_poll);
+	if (n < 0)
+		return (int) n;
+	if ((size_t) n != nbytes)
+		return -EIO;
+
+	return 0;
 }

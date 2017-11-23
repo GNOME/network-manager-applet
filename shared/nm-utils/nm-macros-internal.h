@@ -26,19 +26,40 @@
 #include <stdlib.h>
 #include <errno.h>
 
+#define _nm_packed           __attribute__ ((packed))
+#define _nm_unused           __attribute__ ((unused))
+#define _nm_pure             __attribute__ ((pure))
+#define _nm_const            __attribute__ ((const))
+#define _nm_printf(a,b)      __attribute__ ((__format__ (__printf__, a, b)))
+#define _nm_align(s)         __attribute__ ((aligned (s)))
+#define _nm_alignof(type)    __alignof (type)
+#define _nm_alignas(type)    _nm_align (_nm_alignof (type))
+
+/*****************************************************************************/
+
+#ifdef thread_local
+#define _nm_thread_local thread_local
+/*
+ * Don't break on glibc < 2.16 that doesn't define __STDC_NO_THREADS__
+ * see http://gcc.gnu.org/bugzilla/show_bug.cgi?id=53769
+ */
+#elif __STDC_VERSION__ >= 201112L && !(defined(__STDC_NO_THREADS__) || (defined(__GNU_LIBRARY__) && __GLIBC__ == 2 && __GLIBC_MINOR__ < 16))
+#define _nm_thread_local _Thread_local
+#else
+#define _nm_thread_local __thread
+#endif
+
+/*****************************************************************************/
+
 #include "nm-glib.h"
 
 /*****************************************************************************/
 
-#define _nm_packed __attribute__ ((packed))
-#define _nm_unused __attribute__ ((unused))
-#define _nm_pure   __attribute__ ((pure))
-#define _nm_const  __attribute__ ((const))
-#define _nm_printf(a,b) __attribute__ ((__format__ (__printf__, a, b)))
-
 #define nm_offsetofend(t,m) (G_STRUCT_OFFSET (t,m) + sizeof (((t *) NULL)->m))
 
 #define nm_auto(fcn) __attribute__ ((cleanup(fcn)))
+
+static inline int nm_close (int fd);
 
 /**
  * nm_auto_free:
@@ -47,6 +68,30 @@
  */
 #define nm_auto_free nm_auto(_nm_auto_free_impl)
 GS_DEFINE_CLEANUP_FUNCTION(void*, _nm_auto_free_impl, free)
+
+static inline void
+nm_free_secret (char *secret)
+{
+	if (secret) {
+		memset (secret, 0, strlen (secret));
+		g_free (secret);
+	}
+}
+
+static inline void
+_nm_auto_free_secret_impl (char **v)
+{
+	nm_free_secret (*v);
+}
+
+/**
+ * nm_auto_free_secret:
+ *
+ * Call g_free() on a variable location when it goes out of scope.
+ * Also, previously, calls memset(loc, 0, strlen(loc)) to clear out
+ * the secret.
+ */
+#define nm_auto_free_secret nm_auto(_nm_auto_free_secret_impl)
 
 static inline void
 _nm_auto_unset_gvalue_impl (GValue *v)
@@ -77,7 +122,7 @@ _nm_auto_close_impl (int *pfd)
 	if (*pfd >= 0) {
 		int errsv = errno;
 
-		(void) close (*pfd);
+		(void) nm_close (*pfd);
 		errno = errsv;
 	}
 }
@@ -242,31 +287,137 @@ NM_G_ERROR_MSG (GError *error)
 
 /*****************************************************************************/
 
-#if (defined (__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 9 ))) || (defined (__clang__))
+#ifndef _NM_CC_SUPPORT_AUTO_TYPE
+#if (defined (__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 9 )))
+#define _NM_CC_SUPPORT_AUTO_TYPE 1
+#else
+#define _NM_CC_SUPPORT_AUTO_TYPE 0
+#endif
+#endif
+
+#ifndef _NM_CC_SUPPORT_GENERIC
+#if (defined (__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 9 ))) || (defined (__clang__))
 #define _NM_CC_SUPPORT_GENERIC 1
 #else
 #define _NM_CC_SUPPORT_GENERIC 0
 #endif
+#endif
+
+#if _NM_CC_SUPPORT_AUTO_TYPE
+#define _nm_auto_type __auto_type
+#endif
 
 #if _NM_CC_SUPPORT_GENERIC
-#define _NM_CONSTCAST(type, obj) \
-	(_Generic ((obj), \
-	           void *           : ((type *) (obj)), \
-	           void *const      : ((type *) (obj)), \
-	           const void *     : ((const type *) (obj)), \
-	           const void *const: ((const type *) (obj)), \
-	           const type *     : (obj), \
-	           const type *const: (obj), \
-	           type *           : (obj), \
-	           type *const      : (obj)))
+#define _NM_CONSTCAST_FULL_1(type, obj_expr, obj) \
+	(_Generic ((obj_expr), \
+	           const void        *const: ((const type *) (obj)), \
+	           const void        *     : ((const type *) (obj)), \
+	                 void        *const: ((      type *) (obj)), \
+	                 void        *     : ((      type *) (obj)), \
+	           const type        *const: ((const type *) (obj)), \
+	           const type        *     : ((const type *) (obj)), \
+	                 type        *const: ((      type *) (obj)), \
+	                 type        *     : ((      type *) (obj))))
+#define _NM_CONSTCAST_FULL_2(type, obj_expr, obj, alias_type2) \
+	(_Generic ((obj_expr), \
+	           const void        *const: ((const type *) (obj)), \
+	           const void        *     : ((const type *) (obj)), \
+	                 void        *const: ((      type *) (obj)), \
+	                 void        *     : ((      type *) (obj)), \
+	           const alias_type2 *const: ((const type *) (obj)), \
+	           const alias_type2 *     : ((const type *) (obj)), \
+	                 alias_type2 *const: ((      type *) (obj)), \
+	                 alias_type2 *     : ((      type *) (obj)), \
+	           const type        *const: ((const type *) (obj)), \
+	           const type        *     : ((const type *) (obj)), \
+	                 type        *const: ((      type *) (obj)), \
+	                 type        *     : ((      type *) (obj))))
+#define _NM_CONSTCAST_FULL_3(type, obj_expr, obj, alias_type2, alias_type3) \
+	(_Generic ((obj_expr), \
+	           const void        *const: ((const type *) (obj)), \
+	           const void        *     : ((const type *) (obj)), \
+	                 void        *const: ((      type *) (obj)), \
+	                 void        *     : ((      type *) (obj)), \
+	           const alias_type2 *const: ((const type *) (obj)), \
+	           const alias_type2 *     : ((const type *) (obj)), \
+	                 alias_type2 *const: ((      type *) (obj)), \
+	                 alias_type2 *     : ((      type *) (obj)), \
+	           const alias_type3 *const: ((const type *) (obj)), \
+	           const alias_type3 *     : ((const type *) (obj)), \
+	                 alias_type3 *const: ((      type *) (obj)), \
+	                 alias_type3 *     : ((      type *) (obj)), \
+	           const type        *const: ((const type *) (obj)), \
+	           const type        *     : ((const type *) (obj)), \
+	                 type        *const: ((      type *) (obj)), \
+	                 type        *     : ((      type *) (obj))))
+#define _NM_CONSTCAST_FULL_4(type, obj_expr, obj, alias_type2, alias_type3, alias_type4) \
+	(_Generic ((obj_expr), \
+	           const void        *const: ((const type *) (obj)), \
+	           const void        *     : ((const type *) (obj)), \
+	                 void        *const: ((      type *) (obj)), \
+	                 void        *     : ((      type *) (obj)), \
+	           const alias_type2 *const: ((const type *) (obj)), \
+	           const alias_type2 *     : ((const type *) (obj)), \
+	                 alias_type2 *const: ((      type *) (obj)), \
+	                 alias_type2 *     : ((      type *) (obj)), \
+	           const alias_type3 *const: ((const type *) (obj)), \
+	           const alias_type3 *     : ((const type *) (obj)), \
+	                 alias_type3 *const: ((      type *) (obj)), \
+	                 alias_type3 *     : ((      type *) (obj)), \
+	           const alias_type4 *const: ((const type *) (obj)), \
+	           const alias_type4 *     : ((const type *) (obj)), \
+	                 alias_type4 *const: ((      type *) (obj)), \
+	                 alias_type4 *     : ((      type *) (obj)), \
+	           const type        *const: ((const type *) (obj)), \
+	           const type        *     : ((const type *) (obj)), \
+	                 type        *const: ((      type *) (obj)), \
+	                 type        *     : ((      type *) (obj))))
+#define _NM_CONSTCAST_FULL_x(type, obj_expr, obj, n, ...)   (_NM_CONSTCAST_FULL_##n (type, obj_expr, obj,                        ##__VA_ARGS__))
+#define _NM_CONSTCAST_FULL_y(type, obj_expr, obj, n, ...)   (_NM_CONSTCAST_FULL_x   (type, obj_expr, obj, n,                     ##__VA_ARGS__))
+#define NM_CONSTCAST_FULL(   type, obj_expr, obj,    ...)   (_NM_CONSTCAST_FULL_y   (type, obj_expr, obj, NM_NARG (dummy, ##__VA_ARGS__), ##__VA_ARGS__))
 #else
-/* _NM_CONSTCAST() is there to preserve constness of a pointer.
- * It uses C11's _Generic(). If that is not supported, we fall back
- * to casting away constness. So, with _Generic, we get some additional
- * static type checking by preserving constness, without, we cast it
- * to a non-const pointer. */
-#define _NM_CONSTCAST(type, obj) \
-	((type *) (obj))
+#define NM_CONSTCAST_FULL(   type, obj_expr, obj,    ...)   ((type *) (obj))
+#endif
+
+#define NM_CONSTCAST(type, obj, ...) \
+	NM_CONSTCAST_FULL(type, (obj), (obj), ##__VA_ARGS__)
+
+#define NM_GOBJECT_CAST(type, obj, is_check, ...) \
+	({ \
+		const void *_obj = (obj); \
+		\
+		nm_assert (_obj || (is_check (_obj))); \
+		NM_CONSTCAST_FULL (type, (obj), _obj, GObject, ##__VA_ARGS__); \
+	})
+
+#define NM_GOBJECT_CAST_NON_NULL(type, obj, is_check, ...) \
+	({ \
+		const void *_obj = (obj); \
+		\
+		nm_assert (is_check (_obj)); \
+		NM_CONSTCAST_FULL (type, (obj), _obj, GObject, ##__VA_ARGS__); \
+	})
+
+#if _NM_CC_SUPPORT_GENERIC
+/* returns @value, if the type of @value matches @type.
+ * This requires support for C11 _Generic(). If no support is
+ * present, this returns @value directly.
+ *
+ * It's useful to check the let the compiler ensure that @value is
+ * of a certain type. */
+#define _NM_ENSURE_TYPE(type, value) (_Generic ((value), type: (value)))
+#else
+#define _NM_ENSURE_TYPE(type, value) (value)
+#endif
+
+#if _NM_CC_SUPPORT_GENERIC
+#define NM_PROPAGATE_CONST(test_expr, ptr) \
+	(_Generic ((test_expr), \
+	           const typeof (*(test_expr)) *: ((const typeof (*(ptr)) *) (ptr)), \
+	                                 default: (_Generic ((test_expr), \
+	                                                     typeof (*(test_expr)) *: (ptr)))))
+#else
+#define NM_PROPAGATE_CONST(test_expr, ptr) (ptr)
 #endif
 
 /*****************************************************************************/
@@ -410,21 +561,6 @@ _NM_IN_STRSET_streq (const char *x, const char *s)
 
 /*****************************************************************************/
 
-static inline guint
-NM_HASH_COMBINE (guint h, guint val)
-{
-	/* see g_str_hash() for reasons */
-	return (h << 5) + h + val;
-}
-
-static inline guint
-NM_HASH_COMBINE_UINT64 (guint h, guint64 val)
-{
-	return NM_HASH_COMBINE (h, (((guint) val) & 0xFFFFFFFFu) + ((guint) (val >> 32)));
-}
-
-/*****************************************************************************/
-
 /* NM_CACHED_QUARK() returns the GQuark for @string, but caches
  * it in a static variable to speed up future lookups.
  *
@@ -563,39 +699,17 @@ _notify (obj_type *obj, _PropertyEnums prop) \
 
 /*****************************************************************************/
 
-/* these are implemented as a macro, because they accept self
- * as both (type*) and (const type*), and return a const
- * private pointer accordingly. */
-#define __NM_GET_PRIVATE(self, type, is_check, addrop) \
+#define _NM_GET_PRIVATE(self, type, is_check, ...) (&(NM_GOBJECT_CAST_NON_NULL (type, (self), is_check, ##__VA_ARGS__)->_priv))
+#if _NM_CC_SUPPORT_AUTO_TYPE
+#define _NM_GET_PRIVATE_PTR(self, type, is_check, ...) \
 	({ \
-		/* preserve the const-ness of self. Unfortunately, that
-		 * way, @self cannot be a void pointer */ \
-		typeof (self) _self = (self); \
+		_nm_auto_type _self = NM_GOBJECT_CAST_NON_NULL (type, (self), is_check, ##__VA_ARGS__); \
 		\
-		/* Get compiler error if variable is of wrong type */ \
-		_nm_unused const type *const _self2 = (_self); \
-		\
-		nm_assert (is_check (_self)); \
-		( addrop ( _NM_CONSTCAST (type, _self)->_priv) ); \
+		NM_PROPAGATE_CONST (_self, _self->_priv); \
 	})
-
-#define _NM_GET_PRIVATE(self, type, is_check)     __NM_GET_PRIVATE(self, type, is_check, &)
-#define _NM_GET_PRIVATE_PTR(self, type, is_check) __NM_GET_PRIVATE(self, type, is_check,  )
-
-#define __NM_GET_PRIVATE_VOID(self, type, is_check, result_cmd) \
-	({ \
-		/* (self) can be any non-const pointer. It will be cast to "type *".
-		 * We don't explicitly cast but assign first to (void *) which
-		 * will fail if @self is pointing to const. */ \
-		void *const _self1 = (self); \
-		type *const _self = _self1; \
-		\
-		nm_assert (is_check (_self)); \
-		( result_cmd ); \
-	})
-
-#define _NM_GET_PRIVATE_VOID(self, type, is_check)     __NM_GET_PRIVATE_VOID(self, type, is_check, &_self->_priv)
-#define _NM_GET_PRIVATE_PTR_VOID(self, type, is_check) __NM_GET_PRIVATE_VOID(self, type, is_check,  _self->_priv)
+#else
+#define _NM_GET_PRIVATE_PTR(self, type, is_check, ...) (NM_GOBJECT_CAST_NON_NULL (type, (self), is_check, ##__VA_ARGS__)->_priv)
+#endif
 
 /*****************************************************************************/
 
@@ -619,6 +733,36 @@ nm_g_object_unref (gpointer obj)
 		g_object_unref (obj);
 }
 
+/* Assigns GObject @obj to destination @pdst, and takes an additional ref.
+ * The previous value of @pdst is unrefed.
+ *
+ * It makes sure to first increase the ref-count of @obj, and handles %NULL
+ * @obj correctly.
+ * */
+#define nm_g_object_ref_set(pp, obj) \
+	({ \
+		typeof (*(pp)) *const _pp = (pp); \
+		typeof (**_pp) *const _obj = (obj); \
+		typeof (**_pp) *_p; \
+		gboolean _changed = FALSE; \
+		\
+		if (   _pp \
+		    && ((_p = *_pp) != _obj)) { \
+			if (_obj) { \
+				nm_assert (G_IS_OBJECT (_obj)); \
+				 g_object_ref (_obj); \
+			} \
+			if (_p) { \
+				nm_assert (G_IS_OBJECT (_p)); \
+				*_pp = NULL; \
+				g_object_unref (_p); \
+			} \
+			*_pp = _obj; \
+			_changed = TRUE; \
+		} \
+		_changed; \
+	})
+
 /* basically, replaces
  *   g_clear_pointer (&location, g_free)
  * with
@@ -631,13 +775,32 @@ nm_g_object_unref (gpointer obj)
 #define nm_clear_g_free(pp) \
 	({  \
 		typeof (*(pp)) *_pp = (pp); \
-		typeof (**_pp) *_p = *_pp; \
+		typeof (**_pp) *_p; \
+		gboolean _changed = FALSE; \
 		\
-		if (_p) { \
+		if (  _pp \
+		    && (_p = *_pp)) { \
 			*_pp = NULL; \
 			g_free (_p); \
+			_changed = TRUE; \
 		} \
-		!!_p; \
+		_changed; \
+	})
+
+#define nm_clear_g_object(pp) \
+	({ \
+		typeof (*(pp)) *_pp = (pp); \
+		typeof (**_pp) *_p; \
+		gboolean _changed = FALSE; \
+		\
+		if (   _pp \
+		    && (_p = *_pp)) { \
+			nm_assert (G_IS_OBJECT (_p)); \
+			*_pp = NULL; \
+			g_object_unref (_p); \
+			_changed = TRUE; \
+		} \
+		_changed; \
 	})
 
 static inline gboolean
@@ -807,6 +970,33 @@ nm_strstrip (char *str)
 {
 	/* g_strstrip doesn't like NULL. */
 	return str ? g_strstrip (str) : NULL;
+}
+
+static inline const char *
+nm_strstrip_avoid_copy (const char *str, char **str_free)
+{
+	gsize l;
+	char *s;
+
+	nm_assert (str_free && !*str_free);
+
+	if (!str)
+		return NULL;
+
+	str = nm_str_skip_leading_spaces (str);
+	l = strlen (str);
+	if (   l == 0
+	    || !g_ascii_isspace (str[l - 1]))
+		return str;
+	while (   l > 0
+	       && g_ascii_isspace (str[l - 1]))
+		l--;
+
+	s = g_new (char, l + 1);
+	memcpy (s, str, l);
+	s[l] = '\0';
+	*str_free = s;
+	return s;
 }
 
 /* g_ptr_array_sort()'s compare function takes pointers to the
@@ -982,6 +1172,28 @@ nm_decode_version (guint version, guint *major, guint *minor, guint *micro)
 		_buf; \
 	})
 
+/* aims to alloca() a buffer and fill it with printf(format, name).
+ * Note that format must not contain any format specifier except
+ * "%s".
+ * If the resulting string would be too large for stack allocation,
+ * it allocates a buffer with g_malloc() and assigns it to *p_val_to_free. */
+#define nm_construct_name_a(format, name, p_val_to_free) \
+	({ \
+		const char *const _name = (name); \
+		char **const _p_val_to_free = (p_val_to_free); \
+		const gsize _name_len = strlen (_name); \
+		char *_buf2; \
+		\
+		nm_assert (_p_val_to_free && !*_p_val_to_free); \
+		if (NM_STRLEN (format) + _name_len < 200) \
+			_buf2 = nm_sprintf_bufa (NM_STRLEN (format) + _name_len, format, _name); \
+		else { \
+			_buf2 = g_strdup_printf (format, _name); \
+			*_p_val_to_free = _buf2; \
+		} \
+		(const char *) _buf2; \
+	})
+
 /*****************************************************************************/
 
 /**
@@ -1056,5 +1268,35 @@ nm_decode_version (guint version, guint *major, guint *minor, guint *micro)
 #endif
 
 /*****************************************************************************/
+
+static inline int
+nm_steal_fd (int *p_fd)
+{
+	int fd;
+
+	if (   p_fd
+	    && ((fd = *p_fd) >= 0)) {
+		*p_fd = -1;
+		return fd;
+	}
+	return -1;
+}
+
+/**
+ * nm_close:
+ *
+ * Like close() but throws an assertion if the input fd is
+ * invalid.  Closing an invalid fd is a programming error, so
+ * it's better to catch it early.
+ */
+static inline int
+nm_close (int fd)
+{
+	int r;
+
+	r = close (fd);
+	nm_assert (r != -1 || fd < 0 || errno != EBADF);
+	return r;
+}
 
 #endif /* __NM_MACROS_INTERNAL_H__ */
