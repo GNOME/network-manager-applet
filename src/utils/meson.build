@@ -1,7 +1,5 @@
 utils_inc = include_directories('.')
 
-sources = shared_sources + files('utils.c')
-
 incs = [
   top_inc,
   shared_inc
@@ -14,7 +12,9 @@ deps = [
 
 libutils_libnm = static_library(
   'utils-libnm',
-  sources: sources,
+  sources: shared_sources + files(
+    'utils.c',
+  ),
   include_directories: incs,
   dependencies: deps
 )
@@ -46,7 +46,9 @@ if enable_libnm_gtk
 
   libutils_libnm_glib = static_library(
     'utils-libnm-glib',
-    sources: sources,
+    sources: shared_legacy_sources + files(
+      'utils.c',
+    ),
     include_directories: incs,
     dependencies: deps,
     c_args: cflags
