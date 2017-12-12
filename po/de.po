@@ -21,9 +21,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet master\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
-"product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2017-09-22 19:31+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-12-12 11:18+0100\n"
 "PO-Revision-Date: 2017-10-10 20:06+0200\n"
 "Last-Translator: Mario Blättermann <mario.blaettermann@gmail.com>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
@@ -174,17 +173,17 @@ msgstr ""
 msgid "The NetworkManager Developers"
 msgstr "Die NetworkManager-Entwickler"
 
-#: ../shared/nm-utils/nm-shared-utils.c:477
+#: ../shared/nm-utils/nm-shared-utils.c:794
 #, c-format
 msgid "object class '%s' has no property named '%s'"
 msgstr "Objektklasse »%s« hat keine Eigenschaft namens »%s«"
 
-#: ../shared/nm-utils/nm-shared-utils.c:484
+#: ../shared/nm-utils/nm-shared-utils.c:801
 #, c-format
 msgid "property '%s' of object class '%s' is not writable"
 msgstr "Eigenschaft »%s« von Objektklasse »%s« ist nicht schreibbar"
 
-#: ../shared/nm-utils/nm-shared-utils.c:491
+#: ../shared/nm-utils/nm-shared-utils.c:808
 #, c-format
 msgid ""
 "construct property \"%s\" for object '%s' can't be set after construction"
@@ -192,20 +191,20 @@ msgstr ""
 "Konstruktor-Eigenschaft »%s« für Objekt »%s« kann nicht nach der "
 "Konstruktion gesetzt werden"
 
-#: ../shared/nm-utils/nm-shared-utils.c:499
+#: ../shared/nm-utils/nm-shared-utils.c:816
 #, c-format
 msgid "'%s::%s' is not a valid property name; '%s' is not a GObject subtype"
 msgstr ""
 "»%s::%s« ist ein ungültiger Eigenschaftsname. »%s« ist kein GObject-Untertyp"
 
-#: ../shared/nm-utils/nm-shared-utils.c:508
+#: ../shared/nm-utils/nm-shared-utils.c:825
 #, c-format
 msgid "unable to set property '%s' of type '%s' from value of type '%s'"
 msgstr ""
 "Eigenschaft »%s« des Typs »%s« von Wert des Typs »%s« kann nicht gesetzt "
 "werden"
 
-#: ../shared/nm-utils/nm-shared-utils.c:519
+#: ../shared/nm-utils/nm-shared-utils.c:836
 #, c-format
 msgid ""
 "value \"%s\" of type '%s' is invalid or out of range for property '%s' of "
@@ -1116,6 +1115,21 @@ msgstr "Geben Sie den neuen PIN-Code erneut ein:"
 msgid "Show PIN/PUK codes"
 msgstr "PIN/PUK-Codes anzeigen"
 
+#
+#: ../src/applet-vpn-request.c:201
+#, fuzzy
+msgid "Connection had no VPN setting"
+msgstr "Verbindung kann nicht gelöscht werden"
+
+#: ../src/applet-vpn-request.c:251
+#, fuzzy, c-format
+msgid "Failed to write connection to VPN UI: %s (%d)"
+msgstr "Aktivierung der Verbindung schlug fehl"
+
+#: ../src/applet-vpn-request.c:259
+msgid "Failed to write connection to VPN UI: incomplete write"
+msgstr ""
+
 #: ../src/connection-editor/ce-ip4-routes.ui.h:3
 #: ../src/connection-editor/ce-ip6-routes.ui.h:3
 #: ../src/connection-editor/ce-page.h:114
@@ -1131,7 +1145,7 @@ msgstr ""
 #: ../src/connection-editor/ce-page-bond.ui.h:12
 #: ../src/connection-editor/ce-page-bridge.ui.h:2
 #: ../src/connection-editor/ce-page-ip4.ui.h:7
-#: ../src/connection-editor/ce-page-ip6.ui.h:10
+#: ../src/connection-editor/ce-page-ip6.ui.h:12
 #: ../src/connection-editor/ce-page-team.ui.h:13
 #: ../src/connection-editor/nm-connection-list.ui.h:3
 msgid "_Add"
@@ -1142,7 +1156,7 @@ msgstr "_Hinzufügen"
 #: ../src/connection-editor/ce-page-bond.ui.h:14
 #: ../src/connection-editor/ce-page-bridge.ui.h:4
 #: ../src/connection-editor/ce-page-ip4.ui.h:8
-#: ../src/connection-editor/ce-page-ip6.ui.h:11
+#: ../src/connection-editor/ce-page-ip6.ui.h:13
 #: ../src/connection-editor/ce-page-team.ui.h:15
 #: ../src/connection-editor/connection-helpers.c:772
 #: ../src/connection-editor/nm-connection-list.ui.h:4
@@ -1732,7 +1746,7 @@ msgstr "Die Schnittstelle, über die die PPP-Verbindung aufgebaut wird."
 #: ../src/connection-editor/ce-page-proxy.ui.h:2
 #: ../src/connection-editor/ce-page-wifi.ui.h:1
 #: ../src/connection-editor/page-ip4.c:131
-#: ../src/connection-editor/page-ip6.c:136
+#: ../src/connection-editor/page-ip6.c:142
 #: ../src/wireless-security/eap-method-peap.ui.h:1
 msgid "Automatic"
 msgstr "Automatisch"
@@ -1778,7 +1792,7 @@ msgid "Full"
 msgstr "Voll"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:12
-#: ../src/connection-editor/page-ip6.c:149
+#: ../src/connection-editor/page-ip6.c:155
 msgid "Ignore"
 msgstr "Ignorieren"
 
@@ -1786,7 +1800,7 @@ msgstr "Ignorieren"
 #: ../src/connection-editor/ce-page-ip4.ui.h:3
 #: ../src/connection-editor/ce-page-ip6.ui.h:3
 #: ../src/connection-editor/page-ip4.c:168
-#: ../src/connection-editor/page-ip6.c:185
+#: ../src/connection-editor/page-ip6.c:191
 msgid "Manual"
 msgstr "Manuell"
 
@@ -2057,12 +2071,12 @@ msgstr "Link-Local"
 #: ../src/connection-editor/ce-page-ip4.ui.h:5
 #: ../src/connection-editor/ce-page-ip6.ui.h:5
 #: ../src/connection-editor/page-ip4.c:188
-#: ../src/connection-editor/page-ip6.c:205
+#: ../src/connection-editor/page-ip6.c:211
 msgid "Shared to other computers"
 msgstr "Gemeinsam mit anderen Rechnern"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:6
-#: ../src/connection-editor/ce-page-ip6.ui.h:9
+#: ../src/connection-editor/ce-page-ip6.ui.h:11
 msgid "_Method:"
 msgstr "_Methode:"
 
@@ -2077,7 +2091,7 @@ msgstr ""
 "ein, wenn Sie ihn verwenden möchten."
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:10
-#: ../src/connection-editor/ce-page-ip6.ui.h:12
+#: ../src/connection-editor/ce-page-ip6.ui.h:14
 msgid ""
 "Domains used when resolving host names. Use commas to separate multiple "
 "domains."
@@ -2090,16 +2104,16 @@ msgid "D_HCP client ID:"
 msgstr "D_HCP Client-Kennung:"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:12
-#: ../src/connection-editor/ce-page-ip6.ui.h:13
+#: ../src/connection-editor/ce-page-ip6.ui.h:15
 #: ../src/connection-editor/page-ip4.c:372
-#: ../src/connection-editor/page-ip6.c:335
+#: ../src/connection-editor/page-ip6.c:346
 msgid "S_earch domains:"
 msgstr "_Suchdomänen:"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:13
-#: ../src/connection-editor/ce-page-ip6.ui.h:14
+#: ../src/connection-editor/ce-page-ip6.ui.h:16
 #: ../src/connection-editor/page-ip4.c:363
-#: ../src/connection-editor/page-ip6.c:326
+#: ../src/connection-editor/page-ip6.c:337
 msgid "DNS ser_vers:"
 msgstr "_DNS-Server:"
 
@@ -2125,7 +2139,7 @@ msgstr ""
 "Konfiguration dagegen erfolgreich ist."
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:17
-#: ../src/connection-editor/ce-page-ip6.ui.h:19
+#: ../src/connection-editor/ce-page-ip6.ui.h:22
 msgid "_Routes…"
 msgstr "_Routen …"
 
@@ -2143,7 +2157,16 @@ msgstr "Aktivieren (öffentliche Adresse bevorzugen)"
 msgid "Enabled (prefer temporary address)"
 msgstr "Aktivieren (temporäre Adresse bevorzugen)"
 
-#: ../src/connection-editor/ce-page-ip6.ui.h:15
+#: ../src/connection-editor/ce-page-ip6.ui.h:9
+msgid "EUI64"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-ip6.ui.h:10
+#, fuzzy
+msgid "Stable privacy"
+msgstr "Stabil"
+
+#: ../src/connection-editor/ce-page-ip6.ui.h:17
 msgid ""
 "IP addresses of domain name servers used to resolve host names. Use commas "
 "to separate multiple domain name server addresses. Link-local addresses will "
@@ -2154,15 +2177,19 @@ msgstr ""
 "Adressen. Link-lokal-Adressen werden automatisch zur entsprechenden "
 "Schnittstelle weitergeleitet."
 
-#: ../src/connection-editor/ce-page-ip6.ui.h:16
+#: ../src/connection-editor/ce-page-ip6.ui.h:18
 msgid "IPv6 _privacy extensions:"
 msgstr "IPv6 Erweiterungen zum Schutz der _Privatsphäre:"
 
-#: ../src/connection-editor/ce-page-ip6.ui.h:17
+#: ../src/connection-editor/ce-page-ip6.ui.h:19
+msgid "IPv6 address _generation mode:"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-ip6.ui.h:20
 msgid "Require IPv_6 addressing for this connection to complete"
 msgstr "IPv_6-Adressierung zur Fertigstellung dieser Verbindung erforderlich"
 
-#: ../src/connection-editor/ce-page-ip6.ui.h:18
+#: ../src/connection-editor/ce-page-ip6.ui.h:21
 msgid ""
 "When connecting to IPv4-capable networks, allows the connection to complete "
 "if IPv6 configuration fails but IPv4 configuration succeeds."
@@ -3177,7 +3204,7 @@ msgstr "Sind Sie sicher, dass Sie die Verbindung %s löschen möchten?"
 #: ../src/connection-editor/ip4-routes-dialog.c:697
 #: ../src/connection-editor/ip6-routes-dialog.c:718
 #: ../src/connection-editor/page-ip4.c:1136
-#: ../src/connection-editor/page-ip6.c:1095
+#: ../src/connection-editor/page-ip6.c:1118
 msgid "Address"
 msgstr "Adresse"
 
@@ -3189,7 +3216,7 @@ msgstr "Netzmaske"
 #: ../src/connection-editor/ip4-routes-dialog.c:735
 #: ../src/connection-editor/ip6-routes-dialog.c:756
 #: ../src/connection-editor/page-ip4.c:1174
-#: ../src/connection-editor/page-ip6.c:1133
+#: ../src/connection-editor/page-ip6.c:1156
 msgid "Gateway"
 msgstr "Gateway"
 
@@ -3199,7 +3226,7 @@ msgid "Metric"
 msgstr "Metrik"
 
 #: ../src/connection-editor/ip6-routes-dialog.c:737
-#: ../src/connection-editor/page-ip6.c:1114
+#: ../src/connection-editor/page-ip6.c:1137
 msgid "Prefix"
 msgstr "Präfix"
 
@@ -3630,27 +3657,27 @@ msgid "IP tunnel connection %d"
 msgstr "IP-Tunnel-Verbindung %d"
 
 #: ../src/connection-editor/page-ip4.c:127
-#: ../src/connection-editor/page-ip6.c:130
+#: ../src/connection-editor/page-ip6.c:136
 msgid "Automatic (VPN)"
 msgstr "Automatisch (VPN)"
 
 #: ../src/connection-editor/page-ip4.c:128
-#: ../src/connection-editor/page-ip6.c:131
+#: ../src/connection-editor/page-ip6.c:137
 msgid "Automatic (VPN) addresses only"
 msgstr "Automatisch (VPN), nur Adressen"
 
 #: ../src/connection-editor/page-ip4.c:132
-#: ../src/connection-editor/page-ip6.c:137
+#: ../src/connection-editor/page-ip6.c:143
 msgid "Automatic, addresses only"
 msgstr "Automatisch, nur Adressen"
 
 #: ../src/connection-editor/page-ip4.c:134
-#: ../src/connection-editor/page-ip6.c:133
+#: ../src/connection-editor/page-ip6.c:139
 msgid "Automatic (PPPoE)"
 msgstr "Automatisch (PPPoE)"
 
 #: ../src/connection-editor/page-ip4.c:135
-#: ../src/connection-editor/page-ip6.c:134
+#: ../src/connection-editor/page-ip6.c:140
 msgid "Automatic (PPPoE) addresses only"
 msgstr "Automatisch (PPPoE), nur Adressen"
 
@@ -3663,17 +3690,17 @@ msgid "Automatic (DHCP) addresses only"
 msgstr "Automatisch (DHCP), nur Adressen"
 
 #: ../src/connection-editor/page-ip4.c:181
-#: ../src/connection-editor/page-ip6.c:198
+#: ../src/connection-editor/page-ip6.c:204
 msgid "Link-Local Only"
 msgstr "Nur per Link-Local"
 
 #: ../src/connection-editor/page-ip4.c:361
-#: ../src/connection-editor/page-ip6.c:324
+#: ../src/connection-editor/page-ip6.c:335
 msgid "Additional DNS ser_vers:"
 msgstr "Zusätzliche _DNS-Server:"
 
 #: ../src/connection-editor/page-ip4.c:370
-#: ../src/connection-editor/page-ip6.c:333
+#: ../src/connection-editor/page-ip6.c:344
 msgid "Additional s_earch domains:"
 msgstr "Zusätzliche Suchdomän_en:"
 
@@ -3710,39 +3737,39 @@ msgstr "IPv4-Gateway »%s« ist ungültig"
 msgid "IPv4 DNS server “%s” invalid"
 msgstr "IPv4-DNS-Server »%s« ist ungültig"
 
-#: ../src/connection-editor/page-ip6.c:173
+#: ../src/connection-editor/page-ip6.c:179
 msgid "Automatic, DHCP only"
 msgstr "Automatisch, nur DHCP"
 
-#: ../src/connection-editor/page-ip6.c:993
+#: ../src/connection-editor/page-ip6.c:1016
 #, c-format
 msgid "Editing IPv6 routes for %s"
 msgstr "IPv6-Routen für »%s« bearbeiten"
 
-#: ../src/connection-editor/page-ip6.c:1184
+#: ../src/connection-editor/page-ip6.c:1208
 msgid "IPv6 Settings"
 msgstr "IPv6-Einstellungen"
 
-#: ../src/connection-editor/page-ip6.c:1186
+#: ../src/connection-editor/page-ip6.c:1210
 msgid "Could not load IPv6 user interface."
 msgstr "IPv6-Benutzerschnittstelle konnte nicht geladen werden."
 
-#: ../src/connection-editor/page-ip6.c:1277
+#: ../src/connection-editor/page-ip6.c:1302
 #, c-format
 msgid "IPv6 address “%s” invalid"
 msgstr "IPv6-Adresse »%s« ist ungültig"
 
-#: ../src/connection-editor/page-ip6.c:1285
+#: ../src/connection-editor/page-ip6.c:1310
 #, c-format
 msgid "IPv6 prefix “%s” invalid"
 msgstr "IPv6-Präfix »%s« ist ungültig"
 
-#: ../src/connection-editor/page-ip6.c:1294
+#: ../src/connection-editor/page-ip6.c:1319
 #, c-format
 msgid "IPv6 gateway “%s” invalid"
 msgstr "IPv6-Gateway »%s« ist ungültig"
 
-#: ../src/connection-editor/page-ip6.c:1336
+#: ../src/connection-editor/page-ip6.c:1361
 #, c-format
 msgid "IPv6 DNS server “%s” invalid"
 msgstr "IPv6-DNS-Server »%s« ist ungültig"
