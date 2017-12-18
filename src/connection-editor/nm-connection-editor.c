@@ -166,7 +166,7 @@ update_sensitivity (NMConnectionEditor *editor)
 		/* If the user cannot ever be authorized to change system connections,
 		 * we desensitize the entire dialog.
 		 */
-		sensitive = authorized;
+		sensitive = actionable && authorized;
 	}
 
 	/* Cancel button is always sensitive */
