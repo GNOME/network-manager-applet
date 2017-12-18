@@ -643,11 +643,8 @@ static void
 set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
 {
 	NMACertChooser *cert_chooser = NMA_CERT_CHOOSER (object);
-	const NMACertChooserVtable *vtable;
 
 	g_return_if_fail (NMA_IS_CERT_CHOOSER (cert_chooser));
-
-	vtable = NMA_CERT_CHOOSER_GET_VTABLE (cert_chooser);
 
 	switch (property_id) {
 	case PROP_TITLE:
