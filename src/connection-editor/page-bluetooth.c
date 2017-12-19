@@ -137,8 +137,6 @@ ce_page_bluetooth_new (NMConnectionEditor *editor,
 
 	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
 
-	*out_secrets_setting_name = NM_SETTING_BLUETOOTH_SETTING_NAME;
-
 	return CE_PAGE (self);
 }
 
