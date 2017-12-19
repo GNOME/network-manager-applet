@@ -147,7 +147,7 @@ static void
 update_sensitivity (NMConnectionEditor *editor)
 {
 	NMSettingConnection *s_con;
-	gboolean actionable = FALSE, authorized = FALSE, sensitive = FALSE;
+	gboolean sensitive = FALSE;
 	GtkWidget *widget;
 	GSList *iter;
 
@@ -156,17 +156,13 @@ update_sensitivity (NMConnectionEditor *editor)
 	/* Can't modify read-only connections; can't modify anything before the
 	 * editor is initialized either.
 	 */
-	if (   !nm_setting_connection_get_read_only (s_con)
-	    && editor_is_initialized (editor)) {
-		if (editor->can_modify) {
-			actionable = ce_polkit_button_get_actionable (CE_POLKIT_BUTTON (editor->ok_button));
-			authorized = ce_polkit_button_get_authorized (CE_POLKIT_BUTTON (editor->ok_button));
-		}
-
+	if (   editor_is_initialized (editor)
+	    && editor->can_modify
+	    && !nm_setting_connection_get_read_only (s_con)) {
 		/* If the user cannot ever be authorized to change system connections,
 		 * we desensitize the entire dialog.
 		 */
-		sensitive = authorized;
+		sensitive = ce_polkit_button_get_authorized (CE_POLKIT_BUTTON (editor->ok_button));
 	}
 
 	/* Cancel button is always sensitive */
