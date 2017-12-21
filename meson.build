@@ -94,11 +94,11 @@ if nma_debug
     '-Wno-missing-field-initializers',
     '-Wno-pragmas',
     '-Wno-sign-compare',
-    '-Wno-unused-but-set-variable',
     '-Wno-unused-parameter',
     '-Wshadow',
     '-Wstrict-prototypes',
-    '-Wundef'
+    '-Wundef',
+    '-Wvla',
   ]
 
   common_flags += cc.get_supported_arguments(test_cflags)
