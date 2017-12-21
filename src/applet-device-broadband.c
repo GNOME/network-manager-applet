@@ -698,7 +698,7 @@ add_connection_item (NMDevice *device,
 
 	info = g_slice_new0 (BroadbandMenuItemInfo);
 	info->applet = applet;
-	info->device = g_object_ref (G_OBJECT (device));
+	info->device = g_object_ref (device);
 	info->connection = connection ? g_object_ref (connection) : NULL;
 
 	g_signal_connect_data (item, "activate",
