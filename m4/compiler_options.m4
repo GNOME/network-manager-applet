@@ -79,13 +79,13 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 		      -Wshift-negative-value \
 		      -Wstrict-prototypes \
 		      -Wundef \
+		      -Wvla \
 		      -Wno-duplicate-decl-specifier \
 		      -Wno-format-truncation \
 		      -Wno-format-y2k \
 		      -Wno-missing-field-initializers \
 		      -Wno-pragmas \
 		      -Wno-sign-compare \
-		      -Wno-unused-but-set-variable \
 		      -Wno-unused-parameter \
 		      ; do
 		dnl GCC 4.4 does not warn when checking for -Wno-* flags (https://gcc.gnu.org/wiki/FAQ#wnowarning)

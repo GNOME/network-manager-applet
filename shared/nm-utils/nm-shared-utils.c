@@ -569,7 +569,7 @@ nm_utils_strsplit_set (const char *str, const char *delimiters)
 
 			/* reallocate the buffer. Note that for now the string
 			 * continues to be in ptr0/s0. We fix that at the end. */
-			alloc_size += 2;
+			alloc_size *= 2;
 			ptr = g_malloc ((sizeof (const char *) * (alloc_size + 1)) + str_len);
 			memcpy (ptr, ptr_old, sizeof (const char *) * plen);
 			if (ptr_old != ptr0)
@@ -845,6 +845,32 @@ nm_g_object_set_property (GObject *object,
 	return TRUE;
 }
 
+gboolean
+nm_g_object_set_property_boolean (GObject *object,
+                                  const gchar  *property_name,
+                                  gboolean value,
+                                  GError **error)
+{
+	nm_auto_unset_gvalue GValue gvalue = { 0 };
+
+	g_value_init (&gvalue, G_TYPE_BOOLEAN);
+	g_value_set_boolean (&gvalue, !!value);
+	return nm_g_object_set_property (object, property_name, &gvalue, error);
+}
+
+gboolean
+nm_g_object_set_property_uint (GObject *object,
+                               const gchar  *property_name,
+                               guint value,
+                               GError **error)
+{
+	nm_auto_unset_gvalue GValue gvalue = { 0 };
+
+	g_value_init (&gvalue, G_TYPE_UINT);
+	g_value_set_uint (&gvalue, value);
+	return nm_g_object_set_property (object, property_name, &gvalue, error);
+}
+
 GParamSpec *
 nm_g_object_class_find_property_from_gtype (GType gtype,
                                             const char *property_name)
@@ -1088,4 +1114,81 @@ nm_utils_fd_read_loop_exact (int fd, void *buf, size_t nbytes, bool do_poll)
 		return -EIO;
 
 	return 0;
+}
+
+NMUtilsNamedValue *
+nm_utils_named_values_from_str_dict (GHashTable *hash, guint *out_len)
+{
+	GHashTableIter iter;
+	NMUtilsNamedValue *values;
+	guint i, len;
+
+	if (   !hash
+	    || !(len = g_hash_table_size (hash))) {
+		NM_SET_OUT (out_len, 0);
+		return NULL;
+	}
+
+	i = 0;
+	values = g_new (NMUtilsNamedValue, len + 1);
+	g_hash_table_iter_init (&iter, hash);
+	while (g_hash_table_iter_next (&iter,
+	                               (gpointer *) &values[i].name,
+	                               (gpointer *) &values[i].value_ptr))
+		i++;
+	nm_assert (i == len);
+	values[i].name = NULL;
+	values[i].value_ptr = NULL;
+
+	if (len > 1) {
+		g_qsort_with_data (values, len, sizeof (values[0]),
+		                   nm_utils_named_entry_cmp_with_data, NULL);
+	}
+
+	NM_SET_OUT (out_len, len);
+	return values;
+}
+
+const char **
+nm_utils_strdict_get_keys (const GHashTable *hash,
+                           gboolean sorted,
+                           guint *out_length)
+{
+	const char **names;
+	guint length;
+
+	if (   !hash
+	    || !g_hash_table_size ((GHashTable *) hash)) {
+		NM_SET_OUT (out_length, 0);
+		return NULL;
+	}
+
+	names = (const char **) g_hash_table_get_keys_as_array ((GHashTable *) hash, &length);
+	if (   sorted
+	    && length > 1) {
+		g_qsort_with_data (names,
+		                   length,
+		                   sizeof (char *),
+		                   nm_strcmp_p_with_data,
+		                   NULL);
+	}
+	NM_SET_OUT (out_length, length);
+	return names;
+}
+
+char **
+nm_utils_strv_make_deep_copied (const char **strv)
+{
+	gsize i;
+
+	/* it takes a strv dictionary, and copies each
+	 * strings. Note that this updates @strv *in-place*
+	 * and returns it. */
+
+	if (!strv)
+		return NULL;
+	for (i = 0; strv[i]; i++)
+		strv[i] = g_strdup (strv[i]);
+
+	return (char **) strv;
 }

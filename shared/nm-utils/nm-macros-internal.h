@@ -35,6 +35,12 @@
 #define _nm_alignof(type)    __alignof (type)
 #define _nm_alignas(type)    _nm_align (_nm_alignof (type))
 
+#if __GNUC__ >= 7
+#define _nm_fallthrough      __attribute__ ((fallthrough))
+#else
+#define _nm_fallthrough
+#endif
+
 /*****************************************************************************/
 
 #ifdef thread_local
@@ -577,7 +583,7 @@ _NM_IN_STRSET_streq (const char *x, const char *s)
 
 /* NM_CACHED_QUARK_FCN() is essentially the same as G_DEFINE_QUARK
  * with two differences:
- * - @string must be a quited string-literal
+ * - @string must be a quoted string-literal
  * - @fcn must be the full function name, while G_DEFINE_QUARK() appends
  *   "_quark" to the function name.
  * Both properties of G_DEFINE_QUARK() are non favorable, because you can no
@@ -721,6 +727,7 @@ nm_g_object_ref (gpointer obj)
 		g_object_ref (obj);
 	return obj;
 }
+#define nm_g_object_ref(obj) ((typeof (obj)) nm_g_object_ref (obj))
 
 static inline void
 nm_g_object_unref (gpointer obj)

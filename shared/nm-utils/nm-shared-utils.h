@@ -326,12 +326,18 @@ _nm_g_slice_free_fcn_define (16)
 		/* If mem_size is a compile time constant, the compiler
 		 * will be able to optimize this. Hence, you don't want
 		 * to call this with a non-constant size argument. */ \
-		switch (mem_size) { \
+		G_STATIC_ASSERT_EXPR (   ((mem_size) ==  1) \
+		                      || ((mem_size) ==  2) \
+		                      || ((mem_size) ==  4) \
+		                      || ((mem_size) ==  8) \
+		                      || ((mem_size) == 12) \
+		                      || ((mem_size) == 16)); \
+		switch ((mem_size)) { \
 		case  1: _fcn = _nm_g_slice_free_fcn_1;  break; \
 		case  2: _fcn = _nm_g_slice_free_fcn_2;  break; \
 		case  4: _fcn = _nm_g_slice_free_fcn_4;  break; \
 		case  8: _fcn = _nm_g_slice_free_fcn_8;  break; \
-		case 12: _fcn = _nm_g_slice_free_fcn_12;  break; \
+		case 12: _fcn = _nm_g_slice_free_fcn_12; break; \
 		case 16: _fcn = _nm_g_slice_free_fcn_16; break; \
 		default: g_assert_not_reached (); _fcn = NULL; break; \
 		} \
@@ -386,6 +392,16 @@ gboolean nm_g_object_set_property (GObject *object,
                                    const GValue *value,
                                    GError **error);
 
+gboolean nm_g_object_set_property_boolean (GObject *object,
+                                           const gchar  *property_name,
+                                           gboolean value,
+                                           GError **error);
+
+gboolean nm_g_object_set_property_uint (GObject *object,
+                                        const gchar  *property_name,
+                                        guint value,
+                                        GError **error);
+
 GParamSpec *nm_g_object_class_find_property_from_gtype (GType gtype,
                                                         const char *property_name);
 
@@ -424,6 +440,20 @@ typedef struct {
 
 #define nm_utils_named_entry_cmp           nm_strcmp_p
 #define nm_utils_named_entry_cmp_with_data nm_strcmp_p_with_data
+
+NMUtilsNamedValue *nm_utils_named_values_from_str_dict (GHashTable *hash, guint *out_len);
+
+const char **nm_utils_strdict_get_keys (const GHashTable *hash,
+                                        gboolean sorted,
+                                        guint *out_length);
+
+char **nm_utils_strv_make_deep_copied (const char **strv);
+
+static inline char **
+nm_utils_strv_make_deep_copied_nonnull (const char **strv)
+{
+	return nm_utils_strv_make_deep_copied (strv) ?: g_new0 (char *, 1);
+}
 
 /*****************************************************************************/
 
