@@ -1,7 +1,7 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* NetworkManager Connection editor -- Connection editor for NetworkManager
  *
  * Dan Williams <dcbw@redhat.com>
+ * Lubomir Rintel <lkundrak@v3.sk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2008 - 2011 Red Hat, Inc.
+ * (C) Copyright 2008 - 2018 Red Hat, Inc.
  */
 
 #ifndef MOBILE_WIZARD_H
@@ -27,7 +27,8 @@
 #include <NetworkManager.h>
 #include <nm-device.h>
 
-typedef struct NMAMobileWizard NMAMobileWizard;
+typedef struct _NMAMobileWizard NMAMobileWizard;
+typedef struct _NMAMobileWizardClass NMAMobileWizardClass;
 
 /**
  * NMAMobileWizardAccessMethod:
@@ -50,20 +51,28 @@ typedef struct {
 } NMAMobileWizardAccessMethod;
 
 typedef void (*NMAMobileWizardCallback) (NMAMobileWizard *self,
-										 gboolean canceled,
-										 NMAMobileWizardAccessMethod *method,
-										 gpointer user_data);
+                                         gboolean canceled,
+                                         NMAMobileWizardAccessMethod *method,
+                                         gpointer user_data);
+
+#define NMA_TYPE_MOBILE_WIZARD            (nma_mobile_wizard_get_type ())
+#define NMA_MOBILE_WIZARD(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), NMA_TYPE_MOBILE_WIZARD, NMAMobileWizard))
+#define NMA_MOBILE_WIZARD_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), NMA_TYPE_MOBILE_WIZARD, NMAMobileWizardClass))
+#define NMA_IS_MOBILE_WIZARD(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NMA_TYPE_MOBILE_WIZARD))
+#define NMA_IS_MOBILE_WIZARD_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), NMA_TYPE_MOBILE_WIZARD))
+#define NMA_MOBILE_WIZARD_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), NMA_TYPE_MOBILE_WIZARD, NMAMobileWizardClass))
+
+GType nma_mobile_wizard_get_type (void);
 
 NMAMobileWizard *nma_mobile_wizard_new (GtkWindow *parent,
-										GtkWindowGroup *window_group,
-										NMDeviceModemCapabilities modem_caps,
-										gboolean will_connect_after,
-										NMAMobileWizardCallback cb,
-										gpointer user_data);
+                                        GtkWindowGroup *window_group,
+                                        NMDeviceModemCapabilities modem_caps,
+                                        gboolean will_connect_after,
+                                        NMAMobileWizardCallback cb,
+                                        gpointer user_data);
 
 void nma_mobile_wizard_present (NMAMobileWizard *wizard);
 
 void nma_mobile_wizard_destroy (NMAMobileWizard *self);
 
 #endif /* MOBILE_WIZARD_H */
-
