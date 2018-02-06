@@ -598,6 +598,36 @@ src_libnma_NMA_1_0_gir_SCANNERFLAGS = --warn-all --identifier-prefix=NMA --symbo
 INTROSPECTION_GIRS += src/libnma/NMA-1.0.gir
 endif
 
+noinst_PROGRAMS += src/libnma/tests/mp
+
+src_libnma_tests_mp_CPPFLAGS = \
+	$(GLIB_CFLAGS) \
+	$(GTK3_CFLAGS) \
+	$(LIBNM_CFLAGS) \
+	"-I$(srcdir)/src/libnma" \
+	-Isrc/libnma
+
+src_libnma_tests_mp_LDADD = \
+	$(GLIB_LIBS) \
+	$(GTK3_LIBS) \
+	$(LIBNM_LIBS) \
+	src/libnma/libnma.la
+
+noinst_PROGRAMS += src/libnma/tests/pw
+
+src_libnma_tests_pw_CPPFLAGS = \
+	$(GLIB_CFLAGS) \
+	$(GTK3_CFLAGS) \
+	$(LIBNM_CFLAGS) \
+	"-I$(srcdir)/src/libnma" \
+	-Isrc/libnma
+
+src_libnma_tests_pw_LDADD = \
+	$(GLIB_LIBS) \
+	$(GTK3_LIBS) \
+	$(LIBNM_LIBS) \
+	src/libnma/libnma.la
+
 EXTRA_DIST += \
 	src/libnma/nma-version.h.in \
 	src/libnma/libnma.pc.in \
