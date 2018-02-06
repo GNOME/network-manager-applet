@@ -1,0 +1,32 @@
+deps = [
+  gtk_dep,
+  libnm_dep,
+  libnma_dep
+]
+
+executable(
+  'mobile-wizard',
+  'mobile-wizard.c',
+  include_directories: incs,
+  dependencies: deps,
+  c_args: cflags,
+  install: false
+)
+
+executable(
+  'vpn-password-dialog',
+  'vpn-password-dialog.c',
+  include_directories: incs,
+  dependencies: deps,
+  c_args: cflags,
+  install: false
+)
+
+executable(
+  'wifi-dialog',
+  'wifi-dialog.c',
+  include_directories: incs,
+  dependencies: deps,
+  c_args: cflags,
+  install: false
+)
