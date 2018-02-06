@@ -112,6 +112,8 @@ libnma_dep = declare_dependency(
   include_directories: libnma_inc
 )
 
+subdir('tests')
+
 pkg.generate(
   libraries: libnma,
   version: nma_version,
