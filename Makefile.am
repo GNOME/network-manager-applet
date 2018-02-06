@@ -14,7 +14,9 @@ lib_LTLIBRARIES =
 
 noinst_LTLIBRARIES =
 
-noinst_PROGRAMS =
+check_PROGRAMS_norun =
+
+noinst_PROGRAMS = $(check_PROGRAMS_norun)
 
 check_PROGRAMS =
 
@@ -609,6 +611,74 @@ src_libnma_NMA_1_0_gir_SCANNERFLAGS = --warn-all --identifier-prefix=NMA --symbo
 INTROSPECTION_GIRS += src/libnma/NMA-1.0.gir
 endif
 
+check_PROGRAMS_norun += src/libnma/tests/mobile-wizard
+
+src_libnma_tests_mobile_wizard_CPPFLAGS = \
+	$(dflt_cppflags) \
+	$(GLIB_CFLAGS) \
+	$(GTK3_CFLAGS) \
+	$(LIBNM_CFLAGS) \
+	"-I$(srcdir)/shared/" \
+	"-I$(srcdir)/src/libnma" \
+	-Isrc/libnma
+
+src_libnma_tests_mobile_wizard_LDADD = \
+	$(GLIB_LIBS) \
+	$(GTK3_LIBS) \
+	$(LIBNM_LIBS) \
+	src/libnma/libnma.la
+
+check_PROGRAMS_norun += src/libnma/tests/vpn-password-dialog
+
+src_libnma_tests_vpn_password_dialog_CPPFLAGS = \
+	$(dflt_cppflags) \
+	$(GLIB_CFLAGS) \
+	$(GTK3_CFLAGS) \
+	$(LIBNM_CFLAGS) \
+	"-I$(srcdir)/shared/" \
+	"-I$(srcdir)/src/libnma" \
+	-Isrc/libnma
+
+src_libnma_tests_vpn_password_dialog_LDADD = \
+	$(GLIB_LIBS) \
+	$(GTK3_LIBS) \
+	$(LIBNM_LIBS) \
+	src/libnma/libnma.la
+
+check_PROGRAMS_norun += src/libnma/tests/wifi-dialog
+
+src_libnma_tests_wifi_dialog_CPPFLAGS = \
+	$(dflt_cppflags) \
+	$(GLIB_CFLAGS) \
+	$(GTK3_CFLAGS) \
+	$(LIBNM_CFLAGS) \
+	"-I$(srcdir)/shared/" \
+	"-I$(srcdir)/src/libnma" \
+	-Isrc/libnma
+
+src_libnma_tests_wifi_dialog_LDADD = \
+	$(GLIB_LIBS) \
+	$(GTK3_LIBS) \
+	$(LIBNM_LIBS) \
+	src/libnma/libnma.la
+
+check_PROGRAMS_norun += src/libnma/tests/run-vpn
+
+src_libnma_tests_run_vpn_CPPFLAGS = \
+	$(dflt_cppflags) \
+	$(GLIB_CFLAGS) \
+	$(GTK3_CFLAGS) \
+	$(LIBNM_CFLAGS) \
+	"-I$(srcdir)/shared/" \
+	"-I$(srcdir)/src/libnma" \
+	-Isrc/libnma
+
+src_libnma_tests_run_vpn_LDADD = \
+	$(GLIB_LIBS) \
+	$(GTK3_LIBS) \
+	$(LIBNM_LIBS) \
+	src/libnma/libnma.la
+
 EXTRA_DIST += \
 	src/libnma/nma-version.h.in \
 	src/libnma/libnma.pc.in \
@@ -619,7 +689,8 @@ EXTRA_DIST += \
 	src/libnma/nma-pkcs11-cert-chooser-dialog.ui \
 	src/libnma/nma-vpn-password-dialog.ui \
 	src/libnma/nma.gresource.xml \
-	src/libnma/meson.build
+	src/libnma/meson.build \
+	src/libnma/tests/meson.build
 
 ###############################################################################
 
