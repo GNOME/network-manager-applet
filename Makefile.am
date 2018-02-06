@@ -592,6 +592,7 @@ EXTRA_DIST += \
 	src/libnma/nma-mobile-wizard.ui \
 	src/libnma/nma-pkcs11-token-login-dialog.ui \
 	src/libnma/nma-pkcs11-cert-chooser-dialog.ui \
+	src/libnma/nma-vpn-password-dialog.ui \
 	src/libnma/nma.gresource.xml \
 	src/libnma/meson.build
 
