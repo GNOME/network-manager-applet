@@ -745,6 +745,42 @@ src_libnma_NMA4_1_0_gir_SCANNERFLAGS = --warn-all --identifier-prefix=NMA --symb
 INTROSPECTION_GIRS += src/libnma/NMA4-1.0.gir
 endif
 
+noinst_PROGRAMS += src/libnma/tests/mp4
+
+src_libnma_tests_mp4_CPPFLAGS = \
+	$(GLIB_CFLAGS) \
+	$(GTK4_CFLAGS) \
+	$(LIBNM_CFLAGS) \
+	"-I$(srcdir)/src/libnma" \
+	-Isrc/libnma
+
+src_libnma_tests_mp4_LDADD = \
+	$(GLIB_LIBS) \
+	$(GTK4_LIBS) \
+	$(LIBNM_LIBS) \
+	src/libnma/libnma-gtk4.la
+
+src_libnma_tests_mp4_SOURCES = \
+	src/libnma/tests/mp.c
+
+noinst_PROGRAMS += src/libnma/tests/pw4
+
+src_libnma_tests_pw4_CPPFLAGS = \
+	$(GLIB_CFLAGS) \
+	$(GTK4_CFLAGS) \
+	$(LIBNM_CFLAGS) \
+	"-I$(srcdir)/src/libnma" \
+	-Isrc/libnma
+
+src_libnma_tests_pw4_LDADD = \
+	$(GLIB_LIBS) \
+	$(GTK4_LIBS) \
+	$(LIBNM_LIBS) \
+	src/libnma/libnma-gtk4.la
+
+src_libnma_tests_pw4_SOURCES = \
+	src/libnma/tests/pw.c
+
 #endif
 
 EXTRA_DIST += \
