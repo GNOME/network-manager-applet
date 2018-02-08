@@ -74,7 +74,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">0</property>
+            <property name="position">5</property>
           </packing>
         </child>
         <child>
@@ -88,112 +88,81 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">1</property>
+            <property name="position">6</property>
           </packing>
         </child>
         <child>
-          <object class="GtkAlignment">
+          <object class="GtkLabel" id="provider_name_label">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_left">25</property>
+            <property name="label" translatable="yes">Your broadband provider’s name</property>
             <property name="xalign">0</property>
-            <property name="yalign">0</property>
-            <property name="yscale">0</property>
-            <property name="bottom_padding">25</property>
-            <property name="left_padding">25</property>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="orientation">vertical</property>
-                <property name="spacing">6</property>
-                <child>
-                  <object class="GtkLabel" id="provider_name_label">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Your broadband provider’s name</property>
-                    <property name="xalign">0</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="plan_name_label">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Your broadband billing plan name</property>
-                    <property name="xalign">0</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="apn_label">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">(in some cases) Your broadband billing plan APN (Access Point Name)</property>
-                    <property name="xalign">0</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-              </object>
-            </child>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">2</property>
+            <property name="position">7</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="plan_name_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_left">25</property>
+            <property name="label" translatable="yes">Your broadband billing plan name</property>
+            <property name="xalign">0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">8</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="apn_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_left">25</property>
+            <property name="label" translatable="yes">(in some cases) Your broadband billing plan APN (Access Point Name)</property>
+            <property name="xalign">0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">9</property>
           </packing>
         </child>
         <child>
           <object class="GtkLabel">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="valign">end</property>
+            <property name="vexpand">True</property>
             <property name="label" translatable="yes">Create a connection for _this mobile broadband device:</property>
             <property name="use_underline">True</property>
-            <property name="mnemonic_widget">dev_combo</property>
             <property name="xalign">0</property>
             <property name="yalign">1</property>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">3</property>
+            <property name="position">10</property>
           </packing>
         </child>
         <child>
-          <object class="GtkAlignment">
+          <object class="GtkComboBox" id="dev_combo">
             <property name="visible">True</property>
+            <property name="sensitive">False</property>
             <property name="can_focus">False</property>
-            <property name="xalign">0</property>
-            <property name="yalign">0</property>
-            <property name="xscale">0.5</property>
-            <property name="yscale">0</property>
-            <property name="left_padding">25</property>
-            <child>
-              <object class="GtkComboBox" id="dev_combo">
-                <property name="visible">True</property>
-                <property name="sensitive">False</property>
-                <property name="can_focus">False</property>
-                <property name="model">dev_store</property>
-                <property name="active">0</property>
-                <signal name="changed" handler="intro_combo_changed" swapped="yes"/>
-              </object>
-            </child>
+            <property name="model">dev_store</property>
+            <property name="active">0</property>
+            <signal name="changed" handler="intro_combo_changed" swapped="yes"/>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">4</property>
+            <property name="position">11</property>
           </packing>
         </child>
       </object>
@@ -224,30 +193,23 @@
           </packing>
         </child>
         <child>
-          <object class="GtkAlignment">
+          <object class="GtkScrolledWindow">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="xalign">0</property>
-            <property name="yalign">0</property>
+            <property name="can_focus">True</property>
+            <property name="vexpand">True</property>
+            <property name="hscrollbar_policy">never</property>
+            <property name="shadow_type">in</property>
             <child>
-              <object class="GtkScrolledWindow">
+              <object class="GtkTreeView" id="country_view">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="hscrollbar_policy">never</property>
-                <property name="shadow_type">in</property>
-                <child>
-                  <object class="GtkTreeView" id="country_view">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="hexpand">True</property>
-                    <property name="vexpand">True</property>
-                    <property name="model">country_sort</property>
-                    <property name="search_column">0</property>
-                    <signal name="row-activated" handler="country_update_continue" swapped="yes"/>
-                    <child internal-child="selection">
-                      <object class="GtkTreeSelection"/>
-                    </child>
-                  </object>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
+                <property name="model">country_sort</property>
+                <property name="search_column">0</property>
+                <signal name="row-activated" handler="country_update_continue" swapped="yes"/>
+                <child internal-child="selection">
+                  <object class="GtkTreeSelection"/>
                 </child>
               </object>
             </child>
@@ -255,7 +217,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">2</property>
+            <property name="position">1</property>
           </packing>
         </child>
       </object>
@@ -277,7 +239,6 @@
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
             <property name="use_underline">True</property>
-            <property name="xalign">0</property>
             <property name="active">True</property>
             <property name="draw_indicator">True</property>
             <signal name="toggled" handler="providers_radio_toggled" swapped="no"/>
@@ -289,30 +250,22 @@
           </packing>
         </child>
         <child>
-          <object class="GtkAlignment">
+          <object class="GtkScrolledWindow">
+            <property name="height_request">140</property>
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="xalign">0</property>
-            <property name="yalign">0</property>
-            <property name="bottom_padding">12</property>
-            <property name="left_padding">25</property>
+            <property name="can_focus">True</property>
+            <property name="margin_left">25</property>
+            <property name="vexpand">True</property>
+            <property name="hscrollbar_policy">never</property>
+            <property name="shadow_type">in</property>
             <child>
-              <object class="GtkScrolledWindow">
-                <property name="height_request">140</property>
+              <object class="GtkTreeView" id="providers_view">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="hscrollbar_policy">never</property>
-                <property name="shadow_type">in</property>
-                <child>
-                  <object class="GtkTreeView" id="providers_view">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="model">providers_sort</property>
-                    <property name="search_column">0</property>
-                    <child internal-child="selection">
-                      <object class="GtkTreeSelection"/>
-                    </child>
-                  </object>
+                <property name="model">providers_sort</property>
+                <property name="search_column">0</property>
+                <child internal-child="selection">
+                  <object class="GtkTreeSelection"/>
                 </child>
               </object>
             </child>
@@ -330,7 +283,6 @@
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
             <property name="use_underline">True</property>
-            <property name="xalign">0</property>
             <property name="draw_indicator">True</property>
             <property name="group">providers_view_radio</property>
           </object>
@@ -341,71 +293,54 @@
           </packing>
         </child>
         <child>
-          <object class="GtkAlignment">
+          <object class="GtkGrid">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="xalign">0</property>
-            <property name="yalign">0</property>
-            <property name="xscale">0</property>
-            <property name="yscale">0</property>
-            <property name="left_padding">15</property>
+            <property name="margin_left">25</property>
+            <property name="row_spacing">12</property>
+            <property name="column_spacing">12</property>
             <child>
-              <object class="GtkGrid">
+              <object class="GtkComboBoxText" id="provider_unlisted_type_combo">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="row_spacing">12</property>
-                <property name="column_spacing">12</property>
-                <child>
-                  <object class="GtkComboBoxText" id="provider_unlisted_type_combo">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="active">0</property>
-                    <items>
-                      <item id="0" translatable="yes">My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)</item>
-                      <item id="1" translatable="yes">My provider uses CDMA technology (1xRTT, EVDO)</item>
-                    </items>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="top_attach">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkAlignment">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="hexpand">True</property>
-                    <property name="xalign">0</property>
-                    <property name="xscale">0.6600000262260437</property>
-                    <property name="yscale">0</property>
-                    <child>
-                      <object class="GtkEntry" id="provider_unlisted_entry">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="width_chars">40</property>
-                        <signal name="changed" handler="providers_update_complete" swapped="yes"/>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="top_attach">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Provider:</property>
-                    <property name="mnemonic_widget">provider_unlisted_type_combo</property>
-                    <property name="xalign">1</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">0</property>
-                  </packing>
-                </child>
+                <property name="active">0</property>
+                <items>
+                  <item id="0" translatable="yes">My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)</item>
+                  <item id="1" translatable="yes">My provider uses CDMA technology (1xRTT, EVDO)</item>
+                </items>
               </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Provider:</property>
+                <property name="mnemonic_widget">provider_unlisted_type_combo</property>
+                <property name="xalign">1</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="provider_unlisted_entry">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="width_chars">40</property>
+                <signal name="changed" handler="providers_update_complete" swapped="yes"/>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
             </child>
           </object>
           <packing>
@@ -432,7 +367,6 @@
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">_Select your plan:</property>
             <property name="use_underline">True</property>
-            <property name="mnemonic_widget">dev_combo</property>
             <property name="xalign">0</property>
           </object>
           <packing>
@@ -442,21 +376,11 @@
           </packing>
         </child>
         <child>
-          <object class="GtkAlignment">
+          <object class="GtkComboBox" id="plan_combo">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="xalign">0</property>
-            <property name="xscale">0.5</property>
-            <property name="yscale">0</property>
-            <property name="bottom_padding">12</property>
-            <child>
-              <object class="GtkComboBox" id="plan_combo">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="model">plan_store</property>
-                <signal name="changed" handler="plan_combo_changed" swapped="yes"/>
-              </object>
-            </child>
+            <property name="model">plan_store</property>
+            <signal name="changed" handler="plan_combo_changed" swapped="yes"/>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -470,7 +394,6 @@
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Selected plan _APN (Access Point Name):</property>
             <property name="use_underline">True</property>
-            <property name="mnemonic_widget">plan_unlisted_entry</property>
             <property name="xalign">0</property>
           </object>
           <packing>
@@ -480,22 +403,12 @@
           </packing>
         </child>
         <child>
-          <object class="GtkAlignment">
+          <object class="GtkEntry" id="plan_unlisted_entry">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="xalign">0</property>
-            <property name="xscale">0.5</property>
-            <property name="yscale">0</property>
-            <property name="bottom_padding">24</property>
-            <child>
-              <object class="GtkEntry" id="plan_unlisted_entry">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="max_length">64</property>
-                <signal name="changed" handler="plan_update_complete" swapped="yes"/>
-                <signal name="insert-text" handler="apn_filter_cb" swapped="no"/>
-              </object>
-            </child>
+            <property name="can_focus">True</property>
+            <property name="max_length">64</property>
+            <signal name="changed" handler="plan_update_complete" swapped="yes"/>
+            <signal name="insert-text" handler="apn_filter_cb" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -507,6 +420,8 @@
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="valign">end</property>
+            <property name="vexpand">True</property>
             <property name="spacing">6</property>
             <child>
               <object class="GtkImage">
@@ -587,20 +502,11 @@ If you are unsure of your plan please ask your provider for your plan’s APN.</
           </packing>
         </child>
         <child>
-          <object class="GtkAlignment">
+          <object class="GtkLabel" id="confirm_device">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_left">25</property>
             <property name="xalign">0</property>
-            <property name="xscale">0</property>
-            <property name="yscale">0</property>
-            <property name="bottom_padding">12</property>
-            <property name="left_padding">25</property>
-            <child>
-              <object class="GtkLabel" id="confirm_device">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-              </object>
-            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -622,20 +528,11 @@ If you are unsure of your plan please ask your provider for your plan’s APN.</
           </packing>
         </child>
         <child>
-          <object class="GtkAlignment">
+          <object class="GtkLabel" id="confirm_provider">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_left">25</property>
             <property name="xalign">0</property>
-            <property name="xscale">0</property>
-            <property name="yscale">0</property>
-            <property name="bottom_padding">12</property>
-            <property name="left_padding">25</property>
-            <child>
-              <object class="GtkLabel" id="confirm_provider">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-              </object>
-            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -644,7 +541,7 @@ If you are unsure of your plan please ask your provider for your plan’s APN.</
           </packing>
         </child>
         <child>
-          <object class="GtkLabel">
+          <object class="GtkLabel" id="confirm_plan_label">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Your Plan:</property>
@@ -657,44 +554,36 @@ If you are unsure of your plan please ask your provider for your plan’s APN.</
           </packing>
         </child>
         <child>
-          <object class="GtkAlignment">
+          <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="xalign">0</property>
-            <property name="xscale">0</property>
-            <property name="yscale">0</property>
-            <property name="left_padding">25</property>
+            <property name="orientation">vertical</property>
             <child>
-              <object class="GtkBox" id="confirm_plan_label">
+              <object class="GtkLabel" id="confirm_plan">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="orientation">vertical</property>
-                <child>
-                  <object class="GtkLabel" id="confirm_apn">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="ypad">6</property>
-                    <property name="xalign">0</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="confirm_plan">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="xalign">0</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
+                <property name="margin_left">25</property>
+                <property name="xalign">0</property>
               </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="confirm_apn">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_left">25</property>
+                <property name="ypad">6</property>
+                <property name="xalign">0</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
             </child>
           </object>
           <packing>
@@ -708,6 +597,8 @@ If you are unsure of your plan please ask your provider for your plan’s APN.</
             <property name="width_request">500</property>
             <property name="can_focus">False</property>
             <property name="no_show_all">True</property>
+            <property name="valign">end</property>
+            <property name="vexpand">True</property>
             <property name="label" translatable="yes">A connection will now be made to your mobile broadband provider using the settings you selected. If the connection fails or you cannot access network resources, double-check your settings. To modify your mobile broadband connection settings, choose “Network Connections” from the System → Preferences menu.</property>
             <property name="wrap">True</property>
             <property name="max_width_chars">60</property>
@@ -725,6 +616,9 @@ If you are unsure of your plan please ask your provider for your plan’s APN.</
         <property name="title" translatable="yes">Confirm Mobile Broadband Settings</property>
         <property name="complete">True</property>
       </packing>
+    </child>
+    <child>
+      <placeholder/>
     </child>
     <child internal-child="action_area">
       <object class="GtkBox">
