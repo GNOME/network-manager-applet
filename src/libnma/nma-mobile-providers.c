@@ -30,12 +30,8 @@
 
 #include "nma-mobile-providers.h"
 
-#ifndef MOBILE_BROADBAND_PROVIDER_INFO
-#define MOBILE_BROADBAND_PROVIDER_INFO DATADIR"/mobile-broadband-provider-info/serviceproviders.xml"
-#endif
-
-#define ISO_3166_COUNTRY_CODES ISO_CODES_PREFIX"/share/xml/iso-codes/iso_3166.xml"
-#define ISO_CODES_LOCALESDIR ISO_CODES_PREFIX"/share/locale"
+#define MOBILE_BROADBAND_PROVIDER_INFO "/mobile-broadband-provider-info/serviceproviders.xml"
+#define ISO_3166_COUNTRY_CODES "/xml/iso-codes/iso_3166.xml"
 
 /******************************************************************************/
 /* Access method type */
@@ -481,44 +477,38 @@ static const GMarkupParser iso_3166_parser = {
 	NULL  /* error */
 };
 
-static GHashTable *
-read_country_codes (const gchar *country_codes_file,
+static gboolean
+read_country_codes (GHashTable *table,
+                    const gchar *country_codes_file,
                     GCancellable *cancellable,
                     GError **error)
 {
-	GHashTable *table = NULL;
 	GMarkupParseContext *ctx;
 	char *buf;
 	gsize buf_len;
 
 	/* Set domain to iso_3166 for country name translation */
-	bindtextdomain ("iso_3166", ISO_CODES_LOCALESDIR);
+	bindtextdomain ("iso_3166", ISO_CODES_PREFIX "/locale");
 	bind_textdomain_codeset ("iso_3166", "UTF-8");
 
 	if (!g_file_get_contents (country_codes_file, &buf, &buf_len, error)) {
 		g_prefix_error (error,
 		                "Failed to load '%s' from 'iso-codes': ",
 		                country_codes_file);
-		return NULL;
+		return FALSE;
 	}
-
-	table = g_hash_table_new_full (g_str_hash,
-	                               g_str_equal,
-	                               g_free,
-	                               (GDestroyNotify)nma_country_info_unref);
 
 	ctx = g_markup_parse_context_new (&iso_3166_parser, 0, table, NULL);
 	if (!g_markup_parse_context_parse (ctx, buf, buf_len, error)) {
 		g_prefix_error (error,
 		                "Failed to parse '%s' from 'iso-codes': ",
 		                country_codes_file);
-		g_hash_table_destroy (table);
-		return NULL;
+		return FALSE;
 	}
 
 	g_markup_parse_context_free (ctx);
 	g_free (buf);
-	return table;
+	return TRUE;
 }
 
 /******************************************************************************/
@@ -997,25 +987,64 @@ mobile_providers_parse_sync (const gchar *country_codes,
                              GError **error)
 {
 	GHashTable *countries;
+	char *path;
+	const gchar * const *dirs;
+	int i;
+	gboolean success;
+
+	dirs = g_get_system_data_dirs ();
+	countries = g_hash_table_new_full (g_str_hash,
+                                           g_str_equal,
+                                           g_free,
+                                           (GDestroyNotify)nma_country_info_unref);
 
 	/* Use default paths if none given */
-	if (!country_codes)
-		country_codes = ISO_3166_COUNTRY_CODES;
-	if (!service_providers)
-		service_providers = MOBILE_BROADBAND_PROVIDER_INFO;
+	if (country_codes) {
+		if (!read_country_codes (countries, country_codes, cancellable, error)) {
+			g_hash_table_unref (countries);
+			return FALSE;
+		}
+	} else {
+		/* First try the user override file. */
+		path = g_build_filename (g_get_user_data_dir (), ISO_3166_COUNTRY_CODES, NULL);
+		success = read_country_codes (countries, path, cancellable, NULL);
+		g_free (path);
 
-	countries = read_country_codes (country_codes,
-	                                cancellable,
-	                                error);
-	if (!countries)
-		return NULL;
+		/* Look in system locations. */
+		for (i = 0; dirs[i] && !success; i++) {
+			path = g_build_filename (dirs[i], ISO_3166_COUNTRY_CODES, NULL);
+			success = read_country_codes (countries, path, cancellable, NULL);
+			g_free (path);
+		}
 
-	if (!read_service_providers (countries,
-	                             service_providers,
-	                             cancellable,
-	                             error)) {
-		g_hash_table_unref (countries);
-		return NULL;
+		if (!success) {
+			g_warning ("Could not find the country codes file (%s): check your installation\n",
+			           ISO_3166_COUNTRY_CODES);
+		}
+	}
+
+	if (service_providers) {
+		if (!read_service_providers (countries, service_providers, cancellable, error)) {
+			g_hash_table_unref (countries);
+			return FALSE;
+		}
+	} else {
+		/* First try the user override file. */
+		path = g_build_filename (g_get_user_data_dir (), MOBILE_BROADBAND_PROVIDER_INFO, NULL);
+		success = read_service_providers (countries, path, cancellable, NULL);
+		g_free (path);
+
+		/* Look in system locations. */
+		for (i = 0; dirs[i] && !success; i++) {
+			path = g_build_filename (dirs[i], MOBILE_BROADBAND_PROVIDER_INFO, NULL);
+			success = read_service_providers (countries, path, cancellable, NULL);
+			g_free (path);
+		}
+
+		if (!success) {
+			g_warning ("Could not find the provider data (%s): check your installation\n",
+			           ISO_3166_COUNTRY_CODES);
+		}
 	}
 
 	return countries;
