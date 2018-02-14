@@ -824,14 +824,14 @@ static void
 country_update_complete (NMAMobileWizard *self)
 {
 	NMAMobileWizardPrivate *priv = NMA_MOBILE_WIZARD_GET_PRIVATE (self);
-	NMACountryInfo *country_info;
+	GtkTreeSelection *selection;
 
-	country_info = get_selected_country (self);
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->country_view));
+	g_assert (selection);
+
 	gtk_assistant_set_page_complete (GTK_ASSISTANT (self),
 	                                 priv->country_page,
-	                                 (!!country_info));
-	if (country_info)
-		nma_country_info_unref (country_info);
+	                                 gtk_tree_selection_get_selected (selection, NULL, NULL));
 }
 
 static void
