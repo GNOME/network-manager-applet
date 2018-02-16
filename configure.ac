@@ -290,10 +290,9 @@ GLIB_CONFIG_NMA
 GLIB_GSETTINGS
 AC_PATH_PROG(GLIB_COMPILE_RESOURCES, glib-compile-resources)
 
-NM_COMPILER_WARNINGS([yes])
+NM_COMPILER_WARNINGS(CFLAGS, [yes])
 NM_LTO
 NM_LD_GC
-
 
 AC_ARG_WITH(more-asserts,
             AS_HELP_STRING([--with-more-asserts=level], [Enable more assertions for debugging (default: 0)]),
