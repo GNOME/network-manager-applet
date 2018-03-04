@@ -101,7 +101,7 @@ uri_to_value_with_scheme (const gchar *uri, NMSetting8021xCKScheme *scheme)
 		return NULL;
 	} else if (g_str_has_prefix (uri, NM_SETTING_802_1X_CERT_SCHEME_PREFIX_PATH)) {
 		*scheme = NM_SETTING_802_1X_CK_SCHEME_PATH;
-		return g_strdup (uri + sizeof (NM_SETTING_802_1X_CERT_SCHEME_PREFIX_PATH) - 1);
+		return g_uri_unescape_string (uri + NM_STRLEN (NM_SETTING_802_1X_CERT_SCHEME_PREFIX_PATH), NULL);
 	} else if (g_str_has_prefix (uri, NM_SETTING_802_1X_CERT_SCHEME_PREFIX_PKCS11)) {
 		*scheme = NM_SETTING_802_1X_CK_SCHEME_PKCS11;
 		return g_strdup (uri);
@@ -131,7 +131,7 @@ uri_to_value_with_scheme (const gchar *uri, NMSetting8021xCKScheme *scheme)
 	}
 
 	g_return_val_if_fail (g_str_has_prefix (uri, "file://"), NULL);
-	return g_strdup (uri + 7);
+	return g_uri_unescape_string (uri + 7, NULL);
 }
 
 #endif
