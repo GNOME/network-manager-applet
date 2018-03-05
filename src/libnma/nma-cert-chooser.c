@@ -131,6 +131,7 @@ uri_to_value_with_scheme (const gchar *uri, NMSetting8021xCKScheme *scheme)
 	}
 
 	g_return_val_if_fail (g_str_has_prefix (uri, "file://"), NULL);
+	*scheme = NM_SETTING_802_1X_CK_SCHEME_PATH;
 	return g_uri_unescape_string (uri + 7, NULL);
 }
 
