@@ -100,18 +100,18 @@ static gchar *
 uri_to_value_with_scheme (const gchar *uri, NMSetting8021xCKScheme *scheme)
 {
 	if (!uri) {
-		*scheme = NM_SETTING_802_1X_CK_SCHEME_UNKNOWN;
+		NM_SET_OUT (scheme, NM_SETTING_802_1X_CK_SCHEME_UNKNOWN);
 		return NULL;
 	}
 
 	if (g_str_has_prefix (uri, NM_SETTING_802_1X_CERT_SCHEME_PREFIX_PATH)) {
-		*scheme = NM_SETTING_802_1X_CK_SCHEME_PATH;
+		NM_SET_OUT (scheme, NM_SETTING_802_1X_CK_SCHEME_PATH);
 		return g_uri_unescape_string (uri + NM_STRLEN (NM_SETTING_802_1X_CERT_SCHEME_PREFIX_PATH), NULL);
 	}
 
 #if LIBNM_BUILD
 	if (g_str_has_prefix (uri, NM_SETTING_802_1X_CERT_SCHEME_PREFIX_PKCS11)) {
-		*scheme = NM_SETTING_802_1X_CK_SCHEME_PKCS11;
+		NM_SET_OUT (scheme, NM_SETTING_802_1X_CK_SCHEME_PKCS11);
 		return g_strdup (uri);
 	}
 #endif
