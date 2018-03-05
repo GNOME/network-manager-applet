@@ -25,6 +25,10 @@
 
 #include "nma-cert-chooser-private.h"
 
+#if !LIBNM_BUILD
+#define NM_SETTING_802_1X_CERT_SCHEME_PREFIX_PATH "file://"
+#endif
+
 /**
  * SECTION:nma-cert-chooser
  * @title: NMACertChooser
@@ -77,19 +81,18 @@ accu_validation_error (GSignalInvocationHint *ihint,
 	return TRUE;
 }
 
-#if LIBNM_BUILD
-
 static gchar *
 value_with_scheme_to_uri (const gchar *value, NMSetting8021xCKScheme scheme)
 {
 	switch (scheme) {
 	case NM_SETTING_802_1X_CK_SCHEME_PATH:
 		return g_strdup_printf (NM_SETTING_802_1X_CERT_SCHEME_PREFIX_PATH "%s", value);
+#if LIBNM_BUILD
 	case NM_SETTING_802_1X_CK_SCHEME_PKCS11:
 		return g_strdup (value);
+#endif
 	default:
-		g_warning ("The key '%s' uses an unknown scheme %d\n", value, scheme);
-		return NULL;
+		g_return_val_if_reached (NULL);
 	}
 }
 
@@ -99,43 +102,22 @@ uri_to_value_with_scheme (const gchar *uri, NMSetting8021xCKScheme *scheme)
 	if (!uri) {
 		*scheme = NM_SETTING_802_1X_CK_SCHEME_UNKNOWN;
 		return NULL;
-	} else if (g_str_has_prefix (uri, NM_SETTING_802_1X_CERT_SCHEME_PREFIX_PATH)) {
+	}
+
+	if (g_str_has_prefix (uri, NM_SETTING_802_1X_CERT_SCHEME_PREFIX_PATH)) {
 		*scheme = NM_SETTING_802_1X_CK_SCHEME_PATH;
 		return g_uri_unescape_string (uri + NM_STRLEN (NM_SETTING_802_1X_CERT_SCHEME_PREFIX_PATH), NULL);
-	} else if (g_str_has_prefix (uri, NM_SETTING_802_1X_CERT_SCHEME_PREFIX_PKCS11)) {
+	}
+
+#if LIBNM_BUILD
+	if (g_str_has_prefix (uri, NM_SETTING_802_1X_CERT_SCHEME_PREFIX_PKCS11)) {
 		*scheme = NM_SETTING_802_1X_CK_SCHEME_PKCS11;
 		return g_strdup (uri);
-	} else {
-		g_warning ("The dialog returned URI of unknown scheme: '%s'\n", uri);
-		return NULL;
 	}
-}
-
-#else
-
-/* libnm-glib only supports certificates in files. */
-
-static gchar *
-value_with_scheme_to_uri (const gchar *value, NMSetting8021xCKScheme scheme)
-{
-	g_return_val_if_fail (scheme == NM_SETTING_802_1X_CK_SCHEME_PATH, NULL);
-	return g_strdup_printf ("file://%s", value);
-}
-
-static gchar *
-uri_to_value_with_scheme (const gchar *uri, NMSetting8021xCKScheme *scheme)
-{
-	if (!uri) {
-		*scheme = NM_SETTING_802_1X_CK_SCHEME_UNKNOWN;
-		return NULL;
-	}
-
-	g_return_val_if_fail (g_str_has_prefix (uri, "file://"), NULL);
-	*scheme = NM_SETTING_802_1X_CK_SCHEME_PATH;
-	return g_uri_unescape_string (uri + 7, NULL);
-}
-
 #endif
+
+	g_return_val_if_reached (NULL);
+}
 
 /**
  * nma_cert_chooser_set_cert_uri:
