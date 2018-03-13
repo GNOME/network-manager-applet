@@ -332,18 +332,18 @@ method_changed (GtkComboBox *combo, gpointer user_data)
 
 	gtk_widget_set_sensitive (priv->dns_servers_label, dns_enabled);
 	if (method_auto)
-		gtk_label_set_text_with_mnemonic (GTK_LABEL (priv->dns_servers_label), _("Additional DNS ser_vers:"));
+		gtk_label_set_text_with_mnemonic (GTK_LABEL (priv->dns_servers_label), _("Additional DNS ser_vers"));
 	else
-		gtk_label_set_text_with_mnemonic (GTK_LABEL (priv->dns_servers_label), _("DNS ser_vers:"));
+		gtk_label_set_text_with_mnemonic (GTK_LABEL (priv->dns_servers_label), _("DNS ser_vers"));
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->dns_servers), dns_enabled);
 	if (!dns_enabled)
 		gtk_entry_set_text (priv->dns_servers, "");
 
 	gtk_widget_set_sensitive (priv->dns_searches_label, dns_enabled);
 	if (method_auto)
-		gtk_label_set_text_with_mnemonic (GTK_LABEL (priv->dns_searches_label), _("Additional s_earch domains:"));
+		gtk_label_set_text_with_mnemonic (GTK_LABEL (priv->dns_searches_label), _("Additional s_earch domains"));
 	else
-		gtk_label_set_text_with_mnemonic (GTK_LABEL (priv->dns_searches_label), _("S_earch domains:"));
+		gtk_label_set_text_with_mnemonic (GTK_LABEL (priv->dns_searches_label), _("S_earch domains"));
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->dns_searches), dns_enabled);
 	if (!dns_enabled)
 		gtk_entry_set_text (priv->dns_searches, "");
