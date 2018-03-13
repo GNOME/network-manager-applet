@@ -24,6 +24,10 @@
 #define WIRELESS_SECURITY_H
 
 typedef struct _WirelessSecurity WirelessSecurity;
+GType wireless_security_get_type (void);
+
+#define WIRELESS_TYPE_SECURITY (wireless_security_get_type ())
+#define WIRELESS_SECURITY(x) ((WirelessSecurity *) x)
 
 typedef void (*WSChangedFunc) (WirelessSecurity *sec, gpointer user_data);
 
@@ -54,9 +58,6 @@ struct _WirelessSecurity {
 	WSValidateFunc validate;
 	WSDestroyFunc destroy;
 };
-
-#define WIRELESS_SECURITY(x) ((WirelessSecurity *) x)
-
 
 GtkWidget *wireless_security_get_widget (WirelessSecurity *sec);
 
@@ -90,8 +91,6 @@ void wireless_security_set_userpass_802_1x (WirelessSecurity *sec,
 WirelessSecurity *wireless_security_ref (WirelessSecurity *sec);
 
 void wireless_security_unref (WirelessSecurity *sec);
-
-GType wireless_security_get_type (void);
 
 /* Below for internal use only */
 

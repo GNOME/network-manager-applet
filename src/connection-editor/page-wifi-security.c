@@ -324,7 +324,7 @@ finish_setup (CEPageWifiSecurity *self, gpointer unused, GError *error, gpointer
 	if (s_wireless_sec)
 		default_type = get_default_type_for_security (s_wireless_sec);
 
-	sec_model = gtk_list_store_new (4, G_TYPE_STRING, wireless_security_get_type (), G_TYPE_BOOLEAN, G_TYPE_BOOLEAN);
+	sec_model = gtk_list_store_new (4, G_TYPE_STRING, WIRELESS_TYPE_SECURITY, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN);
 
 	if (security_valid (NMU_SEC_NONE, mode)) {
 		gtk_list_store_append (sec_model, &iter);
