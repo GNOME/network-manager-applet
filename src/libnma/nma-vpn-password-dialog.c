@@ -16,42 +16,35 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  * Copyright (C) 1999, 2000 Eazel, Inc.
- * Copyright (C) 2011, 2017 Red Hat, Inc.
+ * Copyright (C) 2011 - 2018 Red Hat, Inc.
  *
  * Authors: Ramiro Estrugo <ramiro@eazel.com>
  *          Dan Williams <dcbw@redhat.com>
+ *          Lubomir Rintel <lkundrak@v3.sk>
  */
 
 #include "nm-default.h"
 
 #include "nma-vpn-password-dialog.h"
 
-G_DEFINE_TYPE (NMAVpnPasswordDialog, nma_vpn_password_dialog, GTK_TYPE_DIALOG)
+typedef struct {
+	GtkWidget *message_label;
+	GtkWidget *password_label;
+	GtkWidget *password_label_secondary;
+	GtkWidget *password_label_tertiary;
+	GtkWidget *password_entry;
+	GtkWidget *password_entry_secondary;
+	GtkWidget *password_entry_tertiary;
+	GtkWidget *show_passwords_checkbox;
+} NMAVpnPasswordDialogPrivate;
+
+G_DEFINE_TYPE_WITH_CODE (NMAVpnPasswordDialog, nma_vpn_password_dialog, GTK_TYPE_DIALOG,
+                         G_ADD_PRIVATE (NMAVpnPasswordDialog))
+
 
 #define NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), \
                                                 NMA_VPN_TYPE_PASSWORD_DIALOG, \
                                                 NMAVpnPasswordDialogPrivate))
-
-typedef struct {
-	/* Attributes */
-	gboolean show_password;
-	gboolean show_password_secondary;
-	gboolean show_password_ternary;
-
-	/* Internal widgetry and flags */
-	GtkWidget *password_entry;
-	GtkWidget *password_entry_secondary;
-	GtkWidget *password_entry_ternary;
-	GtkWidget *show_passwords_checkbox;
-
-	GtkWidget *grid_alignment;
-	GtkWidget *grid;
-	GtkSizeGroup *group;
-
-	char *primary_password_label;
-	char *secondary_password_label;
-	char *ternary_password_label;
-} NMAVpnPasswordDialogPrivate;
 
 /* NMAVpnPasswordDialogClass methods */
 static void nma_vpn_password_dialog_class_init (NMAVpnPasswordDialogClass *password_dialog_class);
@@ -62,44 +55,47 @@ static void dialog_show_callback (GtkWidget *widget, gpointer callback_data);
 static void dialog_close_callback (GtkWidget *widget, gpointer callback_data);
 
 static void
-finalize (GObject *object)
+show_passwords_toggled_cb (GtkWidget *widget, gpointer user_data)
 {
-	NMAVpnPasswordDialogPrivate *priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (object);
-	
-	g_object_unref (priv->password_entry);
-	g_object_unref (priv->password_entry_secondary);
-	g_object_unref (priv->password_entry_ternary);
-	g_object_unref (priv->group);
+	NMAVpnPasswordDialog *dialog = NMA_VPN_PASSWORD_DIALOG (user_data);
+	NMAVpnPasswordDialogPrivate *priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
+	gboolean visible;
 
-	g_free (priv->primary_password_label);
-	g_free (priv->secondary_password_label);
-	g_free (priv->ternary_password_label);
+	visible = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
 
-	G_OBJECT_CLASS (nma_vpn_password_dialog_parent_class)->finalize (object);
+	gtk_entry_set_visibility (GTK_ENTRY (priv->password_entry), visible);
+	gtk_entry_set_visibility (GTK_ENTRY (priv->password_entry_secondary), visible);
+	gtk_entry_set_visibility (GTK_ENTRY (priv->password_entry_tertiary), visible);
 }
 
 static void
 nma_vpn_password_dialog_class_init (NMAVpnPasswordDialogClass *klass)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-	g_type_class_add_private (object_class, sizeof (NMAVpnPasswordDialogPrivate));
+	g_type_ensure (NM_TYPE_DEVICE);
+	gtk_widget_class_set_template_from_resource (widget_class,
+	                                             "/org/freedesktop/network-manager-applet/nma-vpn-password-dialog.ui");
 
-	object_class->finalize = finalize;
+	gtk_widget_class_bind_template_child_private (widget_class, NMAVpnPasswordDialog, message_label);
+	gtk_widget_class_bind_template_child_private (widget_class, NMAVpnPasswordDialog, password_label);
+	gtk_widget_class_bind_template_child_private (widget_class, NMAVpnPasswordDialog, password_label_secondary);
+	gtk_widget_class_bind_template_child_private (widget_class, NMAVpnPasswordDialog, password_label_tertiary);
+	gtk_widget_class_bind_template_child_private (widget_class, NMAVpnPasswordDialog, password_entry);
+	gtk_widget_class_bind_template_child_private (widget_class, NMAVpnPasswordDialog, password_entry_secondary);
+	gtk_widget_class_bind_template_child_private (widget_class, NMAVpnPasswordDialog, password_entry_tertiary);
+	gtk_widget_class_bind_template_child_private (widget_class, NMAVpnPasswordDialog, show_passwords_checkbox);
+
+	gtk_widget_class_bind_template_callback (widget_class, dialog_close_callback);
+	gtk_widget_class_bind_template_callback (widget_class, dialog_show_callback);
+	gtk_widget_class_bind_template_callback (widget_class, gtk_window_activate_default);
+	gtk_widget_class_bind_template_callback (widget_class, show_passwords_toggled_cb);
 }
 
 static void
 nma_vpn_password_dialog_init (NMAVpnPasswordDialog *dialog)
 {
-	NMAVpnPasswordDialogPrivate *priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
-
-	priv->show_password = TRUE;
-	priv->primary_password_label = g_strdup ( _("_Password:") );
-	priv->show_password_secondary = TRUE;
-	priv->secondary_password_label = g_strdup ( _("_Secondary Password:") );
-	/* Make ternary password entry hidden by default */
-	priv->show_password_ternary = FALSE;
-	priv->ternary_password_label = g_strdup ( _("_Tertiary Password:") );
+	gtk_widget_init_template (GTK_WIDGET (dialog));
 }
 
 /* GtkDialog callbacks */
@@ -113,73 +109,14 @@ dialog_show_callback (GtkWidget *widget, gpointer callback_data)
 		gtk_widget_grab_focus (priv->password_entry);
 	else if (gtk_widget_get_visible (priv->password_entry_secondary))
 		gtk_widget_grab_focus (priv->password_entry_secondary);
-	else if (gtk_widget_get_visible (priv->password_entry_ternary))
-		gtk_widget_grab_focus (priv->password_entry_ternary);
+	else if (gtk_widget_get_visible (priv->password_entry_tertiary))
+		gtk_widget_grab_focus (priv->password_entry_tertiary);
 }
 
 static void
 dialog_close_callback (GtkWidget *widget, gpointer callback_data)
 {
 	gtk_widget_hide (widget);
-}
-
-static void
-add_row (GtkWidget *grid, int row, const char *label_text, GtkWidget *entry)
-{
-	GtkWidget *label;
-
-	label = gtk_label_new_with_mnemonic (label_text);
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-
-	gtk_grid_attach (GTK_GRID (grid), label, 0, row, 1, 1);
-	gtk_grid_attach (GTK_GRID (grid), entry, 1, row, 1, 1);
-
-	gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
-}
-
-static void
-remove_child (GtkWidget *child, GtkWidget *grid)
-{
-	gtk_container_remove (GTK_CONTAINER (grid), child);
-}
-
-static void
-add_grid_rows (NMAVpnPasswordDialog *dialog)
-{
-	NMAVpnPasswordDialogPrivate *priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
-	int row;
-	int offset = 0;
-
-	gtk_alignment_set_padding (GTK_ALIGNMENT (priv->grid_alignment), 0, 0, offset, 0);
-
-	/* This will not kill the entries, since they are ref:ed */
-	gtk_container_foreach (GTK_CONTAINER (priv->grid), (GtkCallback) remove_child, priv->grid);
-	
-	row = 0;
-	if (priv->show_password)
-		add_row (priv->grid, row++, priv->primary_password_label, priv->password_entry);
-	if (priv->show_password_secondary)
-		add_row (priv->grid, row++, priv->secondary_password_label,  priv->password_entry_secondary);
-	if (priv->show_password_ternary)
-		add_row (priv->grid, row++, priv->ternary_password_label,  priv->password_entry_ternary);
-
-	gtk_grid_attach (GTK_GRID (priv->grid), priv->show_passwords_checkbox, 1, row, 1, 1);
-
-	gtk_widget_show_all (priv->grid);
-}
-
-static void
-show_passwords_toggled_cb (GtkWidget *widget, gpointer user_data)
-{
-	NMAVpnPasswordDialog *dialog = NMA_VPN_PASSWORD_DIALOG (user_data);
-	NMAVpnPasswordDialogPrivate *priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
-	gboolean visible;
-
-	visible = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
-
-	gtk_entry_set_visibility (GTK_ENTRY (priv->password_entry), visible);
-	gtk_entry_set_visibility (GTK_ENTRY (priv->password_entry_secondary), visible);
-	gtk_entry_set_visibility (GTK_ENTRY (priv->password_entry_ternary), visible);
 }
 
 /* Public NMAVpnPasswordDialog methods */
@@ -190,107 +127,16 @@ nma_vpn_password_dialog_new (const char *title,
 {
 	GtkWidget *dialog;
 	NMAVpnPasswordDialogPrivate *priv;
-	GtkLabel *message_label;
-	GtkWidget *hbox;
-	GtkWidget *vbox;
-	GtkWidget *main_vbox;
-	GtkWidget *dialog_icon;
-	GtkBox *content;
 
-	dialog = gtk_widget_new (NMA_VPN_TYPE_PASSWORD_DIALOG, NULL);
+	dialog = gtk_widget_new (NMA_VPN_TYPE_PASSWORD_DIALOG, "title", title, NULL);
 	if (!dialog)
 		return NULL;
 	priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
 
-	gtk_window_set_title (GTK_WINDOW (dialog), title);
-	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
-
-	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-	                        _("_Cancel"), GTK_RESPONSE_CANCEL,
-	                        _("_OK"), GTK_RESPONSE_OK,
-	                        NULL);
-	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
-
- 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-
-	g_signal_connect (dialog, "show",
-	                  G_CALLBACK (dialog_show_callback),
-	                  dialog);
-	g_signal_connect (dialog, "close",
-	                  G_CALLBACK (dialog_close_callback),
-	                  dialog);
-
-	/* The grid that holds the captions */
-	priv->grid_alignment = gtk_alignment_new (0.0, 0.0, 0.0, 0.0);
-
-	priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
-
-	priv->grid = gtk_grid_new ();
-	gtk_grid_set_column_spacing (GTK_GRID (priv->grid), 12);
-	gtk_grid_set_row_spacing (GTK_GRID (priv->grid), 6);
-	gtk_container_add (GTK_CONTAINER (priv->grid_alignment), priv->grid);
-
-	priv->password_entry = gtk_entry_new ();
-	priv->password_entry_secondary = gtk_entry_new ();
-	priv->password_entry_ternary = gtk_entry_new ();
-
-	priv->show_passwords_checkbox = gtk_check_button_new_with_mnemonic (_("Sh_ow passwords"));
-
-	/* We want to hold on to these during the grid rearrangement */
-	g_object_ref_sink (priv->password_entry);
-	g_object_ref_sink (priv->password_entry_secondary);
-	g_object_ref_sink (priv->password_entry_ternary);
-	g_object_ref_sink (priv->show_passwords_checkbox);
-	
-	gtk_entry_set_visibility (GTK_ENTRY (priv->password_entry), FALSE);
-	gtk_entry_set_visibility (GTK_ENTRY (priv->password_entry_secondary), FALSE);
-	gtk_entry_set_visibility (GTK_ENTRY (priv->password_entry_ternary), FALSE);
-
-	g_signal_connect_swapped (priv->password_entry, "activate",
-	                          G_CALLBACK (gtk_window_activate_default),
-	                          dialog);
-	g_signal_connect_swapped (priv->password_entry_secondary, "activate",
-	                          G_CALLBACK (gtk_window_activate_default),
-	                          dialog);
-	g_signal_connect_swapped (priv->password_entry_ternary, "activate",
-	                          G_CALLBACK (gtk_window_activate_default),
-	                          dialog);
-
-	g_signal_connect (priv->show_passwords_checkbox, "toggled",
-	                  G_CALLBACK (show_passwords_toggled_cb),
-	                  dialog);
-
-	add_grid_rows (NMA_VPN_PASSWORD_DIALOG (dialog));
-
-	/* Adds some eye-candy to the dialog */
-	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
- 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
-	dialog_icon = gtk_image_new_from_icon_name ("dialog-password", GTK_ICON_SIZE_DIALOG);
-	gtk_misc_set_alignment (GTK_MISC (dialog_icon), 0.5, 0.0);
-	gtk_box_pack_start (GTK_BOX (hbox), dialog_icon, FALSE, FALSE, 0);
-
-	/* Fills the vbox */
-	main_vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 18);
-
 	if (message) {
-		message_label = GTK_LABEL (gtk_label_new (message));
-		gtk_label_set_justify (message_label, GTK_JUSTIFY_LEFT);
-		gtk_label_set_line_wrap (message_label, TRUE);
-		gtk_label_set_max_width_chars (message_label, 35);
-		gtk_size_group_add_widget (priv->group, GTK_WIDGET (message_label));
-		gtk_box_pack_start (GTK_BOX (main_vbox), GTK_WIDGET (message_label), FALSE, FALSE, 0);
-		gtk_size_group_add_widget (priv->group, priv->grid_alignment);
+		gtk_label_set_text (GTK_LABEL (priv->message_label), message);
+		gtk_widget_show (priv->message_label);
 	}
-
-	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
-	gtk_box_pack_start (GTK_BOX (main_vbox), vbox, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (vbox), priv->grid_alignment, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (hbox), main_vbox, FALSE, FALSE, 0);
-
-	content = GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog)));
-	gtk_box_pack_start (content, hbox, FALSE, FALSE, 0);
-	gtk_widget_show_all (GTK_WIDGET (content));
 
 	nma_vpn_password_dialog_set_password (NMA_VPN_PASSWORD_DIALOG (dialog), password);
 	
@@ -338,15 +184,15 @@ nma_vpn_password_dialog_set_password_secondary (NMAVpnPasswordDialog *dialog,
 
 void
 nma_vpn_password_dialog_set_password_ternary (NMAVpnPasswordDialog *dialog,
-                                              const char *password_ternary)
+                                              const char *password_tertiary)
 {
 	NMAVpnPasswordDialogPrivate *priv;
 
 	g_return_if_fail (NMA_VPN_IS_PASSWORD_DIALOG (dialog));
 
 	priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
-	gtk_entry_set_text (GTK_ENTRY (priv->password_entry_ternary),
-	                    password_ternary ? password_ternary : "");
+	gtk_entry_set_text (GTK_ENTRY (priv->password_entry_tertiary),
+	                    password_tertiary ? password_tertiary : "");
 }
 
 void
@@ -358,12 +204,8 @@ nma_vpn_password_dialog_set_show_password (NMAVpnPasswordDialog *dialog, gboolea
 	g_return_if_fail (NMA_VPN_IS_PASSWORD_DIALOG (dialog));
 
 	priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
-
-	show = !!show;
-	if (priv->show_password != show) {
-		priv->show_password = show;
-		add_grid_rows (dialog);
-	}
+	gtk_widget_set_visible (priv->password_label, show);
+	gtk_widget_set_visible (priv->password_entry, show);
 }
 
 void
@@ -376,12 +218,8 @@ nma_vpn_password_dialog_set_show_password_secondary (NMAVpnPasswordDialog *dialo
 	g_return_if_fail (NMA_VPN_IS_PASSWORD_DIALOG (dialog));
 
 	priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
-
-	show = !!show;
-	if (priv->show_password_secondary != show) {
-		priv->show_password_secondary = show;
-		add_grid_rows (dialog);
-	}
+	gtk_widget_set_visible (priv->password_label_secondary, show);
+	gtk_widget_set_visible (priv->password_entry_secondary, show);
 }
 
 void
@@ -394,12 +232,8 @@ nma_vpn_password_dialog_set_show_password_ternary (NMAVpnPasswordDialog *dialog,
 	g_return_if_fail (NMA_VPN_IS_PASSWORD_DIALOG (dialog));
 
 	priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
-
-	show = !!show;
-	if (priv->show_password_ternary != show) {
-		priv->show_password_ternary = show;
-		add_grid_rows (dialog);
-	}
+	gtk_widget_set_visible (priv->password_label_tertiary, show);
+	gtk_widget_set_visible (priv->password_entry_tertiary, show);
 }
 
 void
@@ -411,7 +245,7 @@ nma_vpn_password_dialog_focus_password (NMAVpnPasswordDialog *dialog)
 	g_return_if_fail (NMA_VPN_IS_PASSWORD_DIALOG (dialog));
 
 	priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
-	if (priv->show_password)
+	if (gtk_widget_get_visible (priv->password_entry))
 		gtk_widget_grab_focus (priv->password_entry);
 }
 
@@ -424,7 +258,7 @@ nma_vpn_password_dialog_focus_password_secondary (NMAVpnPasswordDialog *dialog)
 	g_return_if_fail (NMA_VPN_IS_PASSWORD_DIALOG (dialog));
 
 	priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
-	if (priv->show_password_secondary)
+	if (gtk_widget_get_visible (priv->password_entry_secondary))
 		gtk_widget_grab_focus (priv->password_entry_secondary);
 }
 
@@ -437,8 +271,8 @@ nma_vpn_password_dialog_focus_password_ternary (NMAVpnPasswordDialog *dialog)
 	g_return_if_fail (NMA_VPN_IS_PASSWORD_DIALOG (dialog));
 
 	priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
-	if (priv->show_password_ternary)
-		gtk_widget_grab_focus (priv->password_entry_ternary);
+	if (gtk_widget_get_visible (priv->password_entry_tertiary))
+		gtk_widget_grab_focus (priv->password_entry_tertiary);
 }
 
 const char *
@@ -471,7 +305,7 @@ nma_vpn_password_dialog_get_password_ternary (NMAVpnPasswordDialog *dialog)
 	g_return_val_if_fail (NMA_VPN_IS_PASSWORD_DIALOG (dialog), NULL);
 
 	priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
-	return gtk_entry_get_text (GTK_ENTRY (priv->password_entry_ternary));
+	return gtk_entry_get_text (GTK_ENTRY (priv->password_entry_tertiary));
 }
 
 void nma_vpn_password_dialog_set_password_label (NMAVpnPasswordDialog *dialog,
@@ -484,11 +318,7 @@ void nma_vpn_password_dialog_set_password_label (NMAVpnPasswordDialog *dialog,
 
 	priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
 
-	g_free (priv->primary_password_label);
-	priv->primary_password_label = g_strdup (label);
-
-	if (priv->show_password)
-		add_grid_rows (dialog);
+	gtk_label_set_text (GTK_LABEL (priv->password_label), label);
 }
 
 void nma_vpn_password_dialog_set_password_secondary_label (NMAVpnPasswordDialog *dialog,
@@ -501,11 +331,7 @@ void nma_vpn_password_dialog_set_password_secondary_label (NMAVpnPasswordDialog 
 
 	priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
 
-	g_free (priv->secondary_password_label);
-	priv->secondary_password_label = g_strdup (label);
-
-	if (priv->show_password_secondary)
-		add_grid_rows (dialog);
+	gtk_label_set_text (GTK_LABEL (priv->password_label_secondary), label);
 }
 
 void
@@ -519,10 +345,6 @@ nma_vpn_password_dialog_set_password_ternary_label (NMAVpnPasswordDialog *dialog
 
 	priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
 
-	g_free (priv->ternary_password_label);
-	priv->ternary_password_label = g_strdup (label);
-
-	if (priv->show_password_ternary)
-		add_grid_rows (dialog);
+	gtk_label_set_text (GTK_LABEL (priv->password_label_tertiary), label);
 }
 
