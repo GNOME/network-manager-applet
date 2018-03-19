@@ -1,13 +1,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
-# Sveinn í Felli <sv1@fellsnet.is>, 2015, 2016.
+# Sveinn í Felli <sv1@fellsnet.is>, 2015, 2016, 2018.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-10 12:44+0200\n"
-"PO-Revision-Date: 2016-01-08 18:03+0000\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
+"product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
+"POT-Creation-Date: 2018-03-19 00:48+0000\n"
+"PO-Revision-Date: 2018-03-19 13:08+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic <translation-team-is@lists.sourceforge.net>\n"
 "Language: is\n"
@@ -17,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Lokalize 1.5\n"
 
-#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3175
+#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3191
 msgid "Network"
 msgstr "Netkerfi"
 
@@ -26,7 +27,7 @@ msgid "Manage your network connections"
 msgstr "Sýsla með nettengingar"
 
 #: ../nm-connection-editor.desktop.in.h:1
-#: ../src/connection-editor/nm-connection-editor.ui.h:1
+#: ../src/connection-editor/nm-connection-list.ui.h:1
 msgid "Network Connections"
 msgstr "Nettengingar"
 
@@ -131,9 +132,8 @@ msgid "NetworkManager"
 msgstr "NetworkManager netstýring"
 
 #: ../nm-connection-editor.appdata.xml.in.h:2
-#, fuzzy
 msgid "NetworkManager connection editor"
-msgstr "Engin nettenging"
+msgstr "NetworkManager tengingaritill"
 
 #: ../nm-connection-editor.appdata.xml.in.h:3
 msgid ""
@@ -152,59 +152,71 @@ msgstr ""
 "tengisnið og breyta þeim sem þegar eru fyrir hendi í NetworkManager."
 
 #: ../nm-connection-editor.appdata.xml.in.h:5
-#, fuzzy
 msgid "The NetworkManager Developers"
-msgstr "NetworkManager forrit"
+msgstr "Þróunarteymi NetworkManager"
 
-#: ../shared/nm-utils/nm-shared-utils.c:185
+#: ../shared/nm-utils/nm-shared-utils.c:794
 #, c-format
 msgid "object class '%s' has no property named '%s'"
 msgstr ""
 
-#: ../shared/nm-utils/nm-shared-utils.c:192
+#: ../shared/nm-utils/nm-shared-utils.c:801
 #, c-format
 msgid "property '%s' of object class '%s' is not writable"
 msgstr ""
 
-#: ../shared/nm-utils/nm-shared-utils.c:199
+#: ../shared/nm-utils/nm-shared-utils.c:808
 #, c-format
 msgid ""
 "construct property \"%s\" for object '%s' can't be set after construction"
 msgstr ""
 
-#: ../shared/nm-utils/nm-shared-utils.c:207
+#: ../shared/nm-utils/nm-shared-utils.c:816
 #, c-format
 msgid "'%s::%s' is not a valid property name; '%s' is not a GObject subtype"
 msgstr ""
 
-#: ../shared/nm-utils/nm-shared-utils.c:216
+#: ../shared/nm-utils/nm-shared-utils.c:825
 #, c-format
 msgid "unable to set property '%s' of type '%s' from value of type '%s'"
 msgstr ""
 
-#: ../shared/nm-utils/nm-shared-utils.c:227
+#: ../shared/nm-utils/nm-shared-utils.c:836
 #, c-format
 msgid ""
 "value \"%s\" of type '%s' is invalid or out of range for property '%s' of "
 "type '%s'"
 msgstr ""
 
-#. ***************************************************************************
 #: ../src/8021x.ui.h:1 ../src/ethernet-dialog.c:99
 msgid "802.1X authentication"
 msgstr "802.1X auðkenning"
 
-#: ../src/8021x.ui.h:2 ../src/connection-editor/ce-ip4-routes.ui.h:1
+#: ../src/8021x.ui.h:2 ../src/applet-device-ethernet.c:349
+#: ../src/applet-dialogs.c:1059 ../src/connection-editor/ce-ip4-routes.ui.h:1
 #: ../src/connection-editor/ce-ip6-routes.ui.h:1
 #: ../src/connection-editor/ce-new-connection.ui.h:1
 #: ../src/connection-editor/ce-page-dcb.ui.h:17
 #: ../src/connection-editor/ce-ppp-auth-methods.ui.h:1
-#: ../src/connection-editor/nm-connection-editor.ui.h:8
-#: ../src/gsm-unlock.ui.h:1 ../src/libnma/nma-pkcs11-token-login-dialog.ui.h:1
+#: ../src/connection-editor/connection-helpers.c:308
+#: ../src/connection-editor/connection-helpers.c:771
+#: ../src/connection-editor/nm-connection-editor.ui.h:5
+#: ../src/connection-editor/page-bluetooth.c:309
+#: ../src/connection-editor/page-mobile.c:543
+#: ../src/connection-editor/page-proxy.c:121
+#: ../src/connection-editor/page-team.c:344
+#: ../src/connection-editor/page-team-port.c:206
+#: ../src/connection-editor/vpn-helpers.c:212 ../src/gsm-unlock.ui.h:1
+#: ../src/libnma/nma-pkcs11-token-login-dialog.ui.h:1
+#: ../src/libnma/nma-vpn-password-dialog.ui.h:1
+#: ../src/libnma/nma-wifi-dialog.c:1066
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:209
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1067 ../src/mobile-helpers.c:465
 msgid "_Cancel"
 msgstr "_Hætta við"
 
-#: ../src/8021x.ui.h:3
+#: ../src/8021x.ui.h:3 ../src/libnma/nma-wifi-dialog.c:1072
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1073
 msgid "C_onnect"
 msgstr "_Tengjast"
 
@@ -220,39 +232,38 @@ msgstr "beintengt (ad-hoc)"
 msgid "secure."
 msgstr "öruggt."
 
-#: ../src/applet.c:381
+#: ../src/applet.c:392
 msgid "Failed to add/activate connection"
 msgstr "Mistókst að bæta við/virkja tengingu"
 
-#: ../src/applet.c:383 ../src/applet.c:437 ../src/applet.c:472
-#: ../src/applet-device-wifi.c:1387 ../src/applet-device-wifi.c:1410
+#: ../src/applet.c:394 ../src/applet.c:448 ../src/applet.c:483
+#: ../src/applet-device-wifi.c:1388 ../src/applet-device-wifi.c:1411
 msgid "Unknown error"
 msgstr "Óþekkt villa"
 
-#: ../src/applet.c:386 ../src/applet.c:475 ../src/applet-device-wifi.c:539
-#: ../src/applet-device-wifi.c:1390 ../src/applet-device-wifi.c:1413
+#: ../src/applet.c:397 ../src/applet.c:486 ../src/applet-device-wifi.c:539
+#: ../src/applet-device-wifi.c:1391 ../src/applet-device-wifi.c:1414
 msgid "Connection failure"
 msgstr "Tenging brást"
 
-#: ../src/applet.c:435
+#: ../src/applet.c:446
 msgid "Device disconnect failed"
 msgstr "Tókst ekki að tengjast við tæki"
 
-#: ../src/applet.c:440
+#: ../src/applet.c:451
 msgid "Disconnect failure"
 msgstr "Aftenging  mistókst"
 
-#: ../src/applet.c:470
+#: ../src/applet.c:481
 msgid "Connection activation failed"
 msgstr "Virkjun tengingar mistókst"
 
-#: ../src/applet.c:793 ../src/applet-device-wifi.c:1126
-#, fuzzy
+#: ../src/applet.c:809 ../src/applet-device-wifi.c:1127
 msgid "Don’t show this message again"
 msgstr "Ekki sýna þessi skilaboð aftur"
 
-#: ../src/applet.c:883
-#, fuzzy, c-format
+#: ../src/applet.c:899
+#, c-format
 msgid ""
 "\n"
 "The VPN connection “%s” disconnected because the network connection was "
@@ -261,8 +272,8 @@ msgstr ""
 "\n"
 "VPN-tengingin '%s' aftengdist þar sem nettengingin var trufluð."
 
-#: ../src/applet.c:885
-#, fuzzy, c-format
+#: ../src/applet.c:901
+#, c-format
 msgid ""
 "\n"
 "The VPN connection “%s” failed because the network connection was "
@@ -271,8 +282,8 @@ msgstr ""
 "\n"
 "VPN-tengingin '%s' brást þar sem nettengingin var trufluð."
 
-#: ../src/applet.c:887
-#, fuzzy, c-format
+#: ../src/applet.c:903
+#, c-format
 msgid ""
 "\n"
 "The VPN connection “%s” failed because the VPN service stopped unexpectedly."
@@ -280,8 +291,8 @@ msgstr ""
 "\n"
 "VPN-tengingin '%s' brást þar sem VPN þjónustan stöðvaði óvænt."
 
-#: ../src/applet.c:889
-#, fuzzy, c-format
+#: ../src/applet.c:905
+#, c-format
 msgid ""
 "\n"
 "The VPN connection “%s” failed because the VPN service returned invalid "
@@ -290,8 +301,8 @@ msgstr ""
 "\n"
 "VPN-tengingin '%s' brást þar sem VPN-þjónustan skilaði röngum stillingum."
 
-#: ../src/applet.c:891
-#, fuzzy, c-format
+#: ../src/applet.c:907
+#, c-format
 msgid ""
 "\n"
 "The VPN connection “%s” failed because the connection attempt timed out."
@@ -299,8 +310,8 @@ msgstr ""
 "\n"
 "VPN-tengingin '%s' brást þar sem tilraun til tengingar rann út á tíma."
 
-#: ../src/applet.c:893
-#, fuzzy, c-format
+#: ../src/applet.c:909
+#, c-format
 msgid ""
 "\n"
 "The VPN connection “%s” failed because the VPN service did not start in time."
@@ -308,8 +319,8 @@ msgstr ""
 "\n"
 "VPN-tengingin '%s' brást þar sem VPN-þjónustan fór ekki í gang á réttum tíma."
 
-#: ../src/applet.c:895
-#, fuzzy, c-format
+#: ../src/applet.c:911
+#, c-format
 msgid ""
 "\n"
 "The VPN connection “%s” failed because the VPN service failed to start."
@@ -317,8 +328,8 @@ msgstr ""
 "\n"
 "VPN-tengingin '%s' brást þar sem VPN-þjónustan fór ekki í gang."
 
-#: ../src/applet.c:897
-#, fuzzy, c-format
+#: ../src/applet.c:913
+#, c-format
 msgid ""
 "\n"
 "The VPN connection “%s” failed because there were no valid VPN secrets."
@@ -327,8 +338,8 @@ msgstr ""
 "VPN-tengingin '%s' brást þar sem ekki fengust nein gild VPN-leyndarauðkenni "
 "(secrets)."
 
-#: ../src/applet.c:899
-#, fuzzy, c-format
+#: ../src/applet.c:915
+#, c-format
 msgid ""
 "\n"
 "The VPN connection “%s” failed because of invalid VPN secrets."
@@ -337,8 +348,8 @@ msgstr ""
 "VPN-tengingin '%s' brást þar sem VPN-leyndarauðkenni (secrets) reyndust "
 "ógild."
 
-#: ../src/applet.c:904
-#, fuzzy, c-format
+#: ../src/applet.c:920
+#, c-format
 msgid ""
 "\n"
 "The VPN connection “%s” failed."
@@ -346,7 +357,7 @@ msgstr ""
 "\n"
 "VPN-tengingin '%s' brást."
 
-#: ../src/applet.c:931
+#: ../src/applet.c:947
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -357,20 +368,20 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: ../src/applet.c:933
+#: ../src/applet.c:949
 msgid "VPN connection has been successfully established.\n"
 msgstr "VPN-tengingu hefur verið komið á.\n"
 
-#: ../src/applet.c:935
+#: ../src/applet.c:951
 msgid "VPN Login Message"
 msgstr "Innskráningarskilaboð VPN-nets"
 
-#: ../src/applet.c:943 ../src/applet.c:983
+#: ../src/applet.c:959 ../src/applet.c:999
 msgid "VPN Connection Failed"
 msgstr "VPN-nettenging brást"
 
-#: ../src/applet.c:987
-#, fuzzy, c-format
+#: ../src/applet.c:1003
+#, c-format
 msgid ""
 "\n"
 "The VPN connection “%s” failed because the VPN service failed to start.\n"
@@ -382,8 +393,8 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:990
-#, fuzzy, c-format
+#: ../src/applet.c:1006
+#, c-format
 msgid ""
 "\n"
 "The VPN connection “%s” failed to start.\n"
@@ -395,148 +406,144 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1279
+#: ../src/applet.c:1295
 msgid "device not ready (firmware missing)"
 msgstr "tæki ekki tilbúið (grunnhugbúnað/firmware vantar)"
 
-#: ../src/applet.c:1281
+#: ../src/applet.c:1297
 msgid "device not ready"
 msgstr "tæki ekki tilbúið"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet.c:1291 ../src/applet-device-ethernet.c:109
+#: ../src/applet.c:1307 ../src/applet-device-ethernet.c:109
 msgid "disconnected"
 msgstr "aftengdist"
 
-#: ../src/applet.c:1307
+#: ../src/applet.c:1323
 msgid "Disconnect"
 msgstr "Aftengja"
 
-#: ../src/applet.c:1321
+#: ../src/applet.c:1337
 msgid "device not managed"
 msgstr "tæki er í ekki stýringu (managed)"
 
-#: ../src/applet.c:1394
+#: ../src/applet.c:1410
 msgid "No network devices available"
 msgstr "Engin net tiltæk"
 
-#: ../src/applet.c:1448
+#: ../src/applet.c:1464
 msgid "_VPN Connections"
 msgstr "_VPN-nettengingar"
 
-#: ../src/applet.c:1492
-#, fuzzy
+#: ../src/applet.c:1508
 msgid "_Configure VPN…"
-msgstr "_Breyta VPN-netinu..."
+msgstr "Stilla V_PN-net..."
 
-#: ../src/applet.c:1495
-#, fuzzy
+#: ../src/applet.c:1511
 msgid "_Add a VPN connection…"
-msgstr "_VPN-nettengingar"
+msgstr "Bæt_a við VPN-nettengingu…"
 
-#: ../src/applet.c:1601
-#, fuzzy
+#: ../src/applet.c:1617
 msgid "NetworkManager is not running…"
 msgstr "NetworkManager er ekki í gangi..."
 
-#: ../src/applet.c:1606 ../src/applet.c:2671
+#: ../src/applet.c:1622 ../src/applet.c:2687
 msgid "Networking disabled"
 msgstr "Netvinnsla óvirk"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1816
+#: ../src/applet.c:1832
 msgid "Enable _Networking"
 msgstr "Leyfa _nettengingu"
 
 #. 'Enable Wi-Fi' item
-#: ../src/applet.c:1825
+#: ../src/applet.c:1841
 msgid "Enable _Wi-Fi"
 msgstr "Virkja _Wi-Fi"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:1834
+#: ../src/applet.c:1850
 msgid "Enable _Mobile Broadband"
 msgstr "Virkja ferða_breiðband"
 
 #. Toggle notifications item
-#: ../src/applet.c:1846
+#: ../src/applet.c:1862
 msgid "Enable N_otifications"
 msgstr "Virkja tilk_ynningar"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1858
+#: ../src/applet.c:1874
 msgid "Connection _Information"
 msgstr "_Upplýsingar um tengingu"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1866
-#, fuzzy
+#: ../src/applet.c:1882
 msgid "Edit Connections…"
 msgstr "Breyta tengingum..."
 
-#: ../src/applet.c:1880
+#: ../src/applet.c:1896
 msgid "_About"
 msgstr "_Um hugbúnaðinn"
 
-#: ../src/applet.c:2191
-#, fuzzy, c-format
+#: ../src/applet.c:2207
+#, c-format
 msgid "You are now connected to “%s”."
-msgstr "Þú ert núna tengdur við ‚%s‘."
+msgstr "Þú ert núna tengdur við “%s”."
 
-#: ../src/applet.c:2231
+#: ../src/applet.c:2247
 msgid "Disconnected"
 msgstr "Ótengt"
 
-#: ../src/applet.c:2232
+#: ../src/applet.c:2248
 msgid "The network connection has been disconnected."
 msgstr "Nettengingin hefur verið aftengd."
 
-#: ../src/applet.c:2534
-#, fuzzy, c-format
+#: ../src/applet.c:2550
+#, c-format
 msgid "Preparing network connection “%s”…"
-msgstr "Undirbý að tengjast ‚%s‘..."
+msgstr "Undirbý að tengjast “%s”…"
 
-#: ../src/applet.c:2537
-#, fuzzy, c-format
+#: ../src/applet.c:2553
+#, c-format
 msgid "User authentication required for network connection “%s”…"
-msgstr "Notandinn þarf að samþykja tengingu við ‚%s‘..."
+msgstr "Notandinn þarf að samþykkja tengingu við “%s”…"
 
-#: ../src/applet.c:2540 ../src/applet-device-bt.c:125
-#: ../src/mobile-helpers.c:608
-#, fuzzy, c-format
+#: ../src/applet.c:2556 ../src/applet-device-bt.c:125
+#: ../src/mobile-helpers.c:607
+#, c-format
 msgid "Requesting a network address for “%s”…"
-msgstr "Sæki um netkerfisvistfang fyrir '%s'..."
+msgstr "Sæki um netkerfisvistfang fyrir “%s”…"
 
-#: ../src/applet.c:2543
-#, fuzzy, c-format
+#: ../src/applet.c:2559
+#, c-format
 msgid "Network connection “%s” active"
-msgstr "Nettengingin ‚%s‘ er virk"
+msgstr "Nettengingin “%s” er virk"
 
-#: ../src/applet.c:2616
-#, fuzzy, c-format
+#: ../src/applet.c:2632
+#, c-format
 msgid "Starting VPN connection “%s”…"
-msgstr "Byrja VPN-nettenginguna ‚%s‘..."
+msgstr "Ræsi VPN-nettenginguna “%s”…"
 
-#: ../src/applet.c:2619
-#, fuzzy, c-format
+#: ../src/applet.c:2635
+#, c-format
 msgid "User authentication required for VPN connection “%s”…"
-msgstr "Notandinn þarf að samþykja VPN-nettenginguna ‚%s‘..."
+msgstr "Notandinn þarf að samþykkja VPN-nettenginguna “%s”…"
 
-#: ../src/applet.c:2622
-#, fuzzy, c-format
+#: ../src/applet.c:2638
+#, c-format
 msgid "Requesting a VPN address for “%s”…"
-msgstr "Bið um VPN-netvistfang fyrir ‚%s‘..."
+msgstr "Bið um VPN-vistfang fyrir “%s”…"
 
-#: ../src/applet.c:2625
-#, fuzzy, c-format
+#: ../src/applet.c:2641
+#, c-format
 msgid "VPN connection active"
-msgstr "VPN-nettengingingin ‚%s‘ er virk"
+msgstr "VPN-nettenginging er virk"
 
-#: ../src/applet.c:2675
+#: ../src/applet.c:2691
 msgid "No network connection"
 msgstr "Engin nettenging"
 
-#: ../src/applet.c:3276
+#: ../src/applet.c:3292
 msgid "NetworkManager Applet"
 msgstr "NetworkManager forrit"
 
@@ -550,51 +557,49 @@ msgstr "Rangt PIN-númer; hafðu samband við þjónustuveituna þína."
 
 #. Start the spinner to show the progress of the unlock
 #: ../src/applet-device-broadband.c:254
-#, fuzzy
 msgid "Sending unlock code…"
-msgstr "Sendi aflæsikóða..."
+msgstr "Sendi aflæsikóða…"
 
-#: ../src/applet-device-broadband.c:736 ../src/applet-dialogs.c:506
+#: ../src/applet-device-broadband.c:737 ../src/applet-dialogs.c:507
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "Ferðabreiðband (%s)"
 
-#: ../src/applet-device-broadband.c:738
-#: ../src/connection-editor/connection-helpers.c:107
+#: ../src/applet-device-broadband.c:739
+#: ../src/connection-editor/connection-helpers.c:108
 #: ../src/connection-editor/page-mobile.c:308
 #: ../src/libnm-gtk/nm-ui-utils.c:329
 msgid "Mobile Broadband"
 msgstr "Ferðabreiðband"
 
-#: ../src/applet-device-broadband.c:790 ../src/applet-device-bt.c:75
-#: ../src/applet-device-ethernet.c:117 ../src/applet-device-wifi.c:906
+#: ../src/applet-device-broadband.c:792 ../src/applet-device-bt.c:75
+#: ../src/applet-device-ethernet.c:117 ../src/applet-device-wifi.c:907
 msgid "Available"
 msgstr "Tiltækt"
 
 #. Default connection item
-#: ../src/applet-device-broadband.c:803
-#, fuzzy
+#: ../src/applet-device-broadband.c:805
 msgid "New Mobile Broadband connection…"
-msgstr "Ný ferðabreiðbandstenging"
+msgstr "Ný ferðabreiðbandstenging…"
 
-#: ../src/applet-device-broadband.c:817 ../src/applet-device-bt.c:87
-#: ../src/applet-device-ethernet.c:132 ../src/applet-device-wifi.c:1308
+#: ../src/applet-device-broadband.c:819 ../src/applet-device-bt.c:87
+#: ../src/applet-device-ethernet.c:132 ../src/applet-device-wifi.c:1309
 msgid "Connection Established"
 msgstr "Tengingu hefur verið komið á"
 
-#: ../src/applet-device-broadband.c:818
+#: ../src/applet-device-broadband.c:820
 msgid "You are now connected to the Mobile Broadband network."
 msgstr "Þú hefur tengst við ferðabreiðbandsnet."
 
-#: ../src/applet-device-broadband.c:958 ../src/applet-device-broadband.c:964
+#: ../src/applet-device-broadband.c:960 ../src/applet-device-broadband.c:966
 msgid "Mobile Broadband network."
 msgstr "Ferðabreiðbandsnet."
 
-#: ../src/applet-device-broadband.c:959
+#: ../src/applet-device-broadband.c:961
 msgid "You are now registered on the home network."
 msgstr "Þú ert núna tengdur við heimanetið."
 
-#: ../src/applet-device-broadband.c:965
+#: ../src/applet-device-broadband.c:967
 msgid "You are now registered on a roaming network."
 msgstr "Þú ert núna tengdur við reikinet."
 
@@ -602,24 +607,23 @@ msgstr "Þú ert núna tengdur við reikinet."
 msgid "You are now connected to the mobile broadband network."
 msgstr "Þú hefur tengst við ferðabreiðbandsnet."
 
-#: ../src/applet-device-bt.c:116 ../src/mobile-helpers.c:599
-#, fuzzy, c-format
+#: ../src/applet-device-bt.c:116 ../src/mobile-helpers.c:598
+#, c-format
 msgid "Preparing mobile broadband connection “%s”…"
-msgstr "Undirbý ferðabreiðbandstenginguna '%s'..."
+msgstr "Undirbý ferðabreiðbandstenginguna “%s”…"
 
-#: ../src/applet-device-bt.c:119 ../src/mobile-helpers.c:602
-#, fuzzy, c-format
+#: ../src/applet-device-bt.c:119 ../src/mobile-helpers.c:601
+#, c-format
 msgid "Configuring mobile broadband connection “%s”…"
-msgstr "Stilli ferðabreiðbandstenginguna '%s'..."
+msgstr "Stilli ferðabreiðbandstenginguna “%s”…"
 
-#: ../src/applet-device-bt.c:122 ../src/mobile-helpers.c:605
-#, fuzzy, c-format
+#: ../src/applet-device-bt.c:122 ../src/mobile-helpers.c:604
+#, c-format
 msgid "User authentication required for mobile broadband connection “%s”…"
-msgstr ""
-"Auðkenningar notanda er krafist fyrir ferðabreiðbandstenginguna '%s'..."
+msgstr "Auðkenningar notanda er krafist fyrir ferðabreiðbandstenginguna “%s”…"
 
-#: ../src/applet-device-bt.c:129 ../src/mobile-helpers.c:627
-#, fuzzy, c-format
+#: ../src/applet-device-bt.c:129 ../src/mobile-helpers.c:626
+#, c-format
 msgid "Mobile broadband connection “%s” active"
 msgstr "Ferðabreiðbandstenging '%s' virk"
 
@@ -650,128 +654,138 @@ msgid "You are now connected to the ethernet network."
 msgstr "Þú ert núna tengdur við Ethernet íðnetið."
 
 #: ../src/applet-device-ethernet.c:161
-#, fuzzy, c-format
+#, c-format
 msgid "Preparing ethernet network connection “%s”…"
-msgstr "Undirbý ethernet nettenginu '%s'..."
+msgstr "Undirbý ethernet-tengingu “%s”…"
 
 #: ../src/applet-device-ethernet.c:164
-#, fuzzy, c-format
+#, c-format
 msgid "Configuring ethernet network connection “%s”…"
-msgstr "Stilli ethernet ethernet nettengingu '%s'..."
+msgstr "Stilli ethernet-tengingu “%s”…"
 
 #: ../src/applet-device-ethernet.c:167
-#, fuzzy, c-format
+#, c-format
 msgid "User authentication required for ethernet network connection “%s”…"
-msgstr "Notanda auðkenning er krafist fyrir ethernet nettenginguna '%s'..."
+msgstr "Auðkenningar notanda er krafist fyrir ethernet-tenginguna“%s”…"
 
 #: ../src/applet-device-ethernet.c:170
-#, fuzzy, c-format
+#, c-format
 msgid "Requesting an ethernet network address for “%s”…"
-msgstr "Sæki um ethernet netvistfang fyrir '%s'..."
+msgstr "Sæki um ethernet-vistfang fyrir “%s”…"
 
 #: ../src/applet-device-ethernet.c:174
-#, fuzzy, c-format
+#, c-format
 msgid "Ethernet network connection “%s” active"
-msgstr "Ethernet nettenginging '%s' er virk"
+msgstr "Ethernet-tengingin '%s' er virk"
 
 #: ../src/applet-device-ethernet.c:346
 msgid "DSL authentication"
 msgstr "DSL auðkenning"
 
+#: ../src/applet-device-ethernet.c:350 ../src/applet-dialogs.c:1060
+#: ../src/connection-editor/ce-ip4-routes.ui.h:2
+#: ../src/connection-editor/ce-ip6-routes.ui.h:2
+#: ../src/connection-editor/ce-page-dcb.ui.h:18
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:2
+#: ../src/connection-editor/page-bluetooth.c:311
+#: ../src/connection-editor/page-mobile.c:545
+#: ../src/libnma/nma-vpn-password-dialog.ui.h:2
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:210 ../src/mobile-helpers.c:466
+msgid "_OK"
+msgstr "Í _lagi"
+
 #: ../src/applet-device-wifi.c:225
-#, fuzzy
 msgid "_Connect to Hidden Wi-Fi Network…"
-msgstr "Tengjast við falið Wi-Fi netkerfi"
+msgstr "Tengjast við falið Wi-Fi netkerfi…"
 
 #: ../src/applet-device-wifi.c:276
-#, fuzzy
 msgid "Create _New Wi-Fi Network…"
-msgstr "Búa til nýtt Wi-Fi netkerfi"
+msgstr "Búa til nýtt Wi-Fi netkerfi…"
 
 #: ../src/applet-device-wifi.c:358
 msgid "(none)"
 msgstr "(ekkert)"
 
-#: ../src/applet-device-wifi.c:536 ../src/applet-device-wifi.c:1408
+#: ../src/applet-device-wifi.c:536 ../src/applet-device-wifi.c:1409
 msgid "Failed to add new connection"
 msgstr "Mistókst að bæta við tengingu"
 
 #: ../src/applet-device-wifi.c:537
 msgid "Insufficient privileges."
-msgstr ""
+msgstr "Ekki nægar heimildir."
 
-#: ../src/applet-device-wifi.c:838
+#: ../src/applet-device-wifi.c:839
 #, c-format
 msgid "Wi-Fi Networks (%s)"
 msgstr "Wi-Fi netkerfi (%s)"
 
-#: ../src/applet-device-wifi.c:840
+#: ../src/applet-device-wifi.c:841
 #, c-format
 msgid "Wi-Fi Network (%s)"
 msgstr "Wi-Fi netkerfi (%s)"
 
-#: ../src/applet-device-wifi.c:842
+#: ../src/applet-device-wifi.c:843
 msgid "Wi-Fi Network"
 msgid_plural "Wi-Fi Networks"
 msgstr[0] "Wi-Fi netkerfi"
 msgstr[1] "Wi-Fi Netkerfi"
 
-#: ../src/applet-device-wifi.c:871
+#: ../src/applet-device-wifi.c:872
 msgid "Wi-Fi is disabled"
 msgstr "Wi-Fi er óvirkt"
 
-#: ../src/applet-device-wifi.c:872
+#: ../src/applet-device-wifi.c:873
 msgid "Wi-Fi is disabled by hardware switch"
 msgstr "Wi-Fi er gert óvirkt með vélbúnaðarrofa"
 
-#: ../src/applet-device-wifi.c:933
+#: ../src/applet-device-wifi.c:934
 msgid "More networks"
 msgstr "Fleiri net"
 
-#: ../src/applet-device-wifi.c:1122
+#: ../src/applet-device-wifi.c:1123
 msgid "Wi-Fi Networks Available"
 msgstr "Wi-Fi netkerfi tiltæk"
 
-#: ../src/applet-device-wifi.c:1123
+#: ../src/applet-device-wifi.c:1124
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Notaðu netkerfavalmyndina til að tengjast við þráðlaus Wi-Fi netkerfi"
 
-#: ../src/applet-device-wifi.c:1307
-#, fuzzy, c-format
+#: ../src/applet-device-wifi.c:1308
+#, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
-msgstr "Þú ert núna tengdur við Wi-Fi netið '%s'."
+msgstr "Þú ert núna tengdur við Wi-Fi netið “%s”."
 
-#: ../src/applet-device-wifi.c:1342
-#, fuzzy, c-format
+#: ../src/applet-device-wifi.c:1343
+#, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
-msgstr "Undirbý Wi-Fi nettenginguna '%s'"
+msgstr "Undirbý Wi-Fi nettenginguna “%s”…"
 
-#: ../src/applet-device-wifi.c:1345
-#, fuzzy, c-format
+#: ../src/applet-device-wifi.c:1346
+#, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
-msgstr "Stilli Wi-Fi nettenginguna '%s'..."
+msgstr "Stilli Wi-Fi nettenginguna “%s”…"
 
-#: ../src/applet-device-wifi.c:1348
-#, fuzzy, c-format
+#: ../src/applet-device-wifi.c:1349
+#, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
-msgstr "Auðkenningar notanda er krafist fyrir Wi-Fi netkerfið '%s'..."
+msgstr "Auðkenningar notanda er krafist fyrir Wi-Fi netkerfið “%s”…"
 
-#: ../src/applet-device-wifi.c:1351
-#, fuzzy, c-format
+#: ../src/applet-device-wifi.c:1352
+#, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
-msgstr "Sæki um Wi-Fi net vistfang fyrir '%s'..."
+msgstr "Sæki um Wi-Fi vistfang fyrir “%s”…"
 
-#: ../src/applet-device-wifi.c:1362
-#, fuzzy, c-format
+#: ../src/applet-device-wifi.c:1363
+#, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "Wi-Fi nettengingin '%s' virk: %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1366
-#, fuzzy, c-format
+#: ../src/applet-device-wifi.c:1367
+#, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "Wi-Fi nettengingin '%s' virk"
 
-#: ../src/applet-device-wifi.c:1385
+#: ../src/applet-device-wifi.c:1386
 msgid "Failed to activate connection"
 msgstr "Mistókst að virkja tengingu"
 
@@ -779,193 +793,201 @@ msgstr "Mistókst að virkja tengingu"
 msgid "Error displaying connection information:"
 msgstr "Villa kom upp við að birta upplýsingar um tenginguna:"
 
-#: ../src/applet-dialogs.c:72 ../src/connection-editor/page-wifi-security.c:379
+#: ../src/applet-dialogs.c:73 ../src/connection-editor/page-wifi-security.c:381
 #: ../src/libnma/nma-wifi-dialog.c:949 ../src/libnm-gtk/nm-wifi-dialog.c:948
 #: ../src/wireless-security/wireless-security.c:448
 msgid "LEAP"
 msgstr "LEAP"
 
-#: ../src/applet-dialogs.c:74
+#: ../src/applet-dialogs.c:75
 msgid "Dynamic WEP"
 msgstr "Breytilegt (dynamic) WEP"
 
-#: ../src/applet-dialogs.c:76 ../src/applet-dialogs.c:228
-#: ../src/applet-dialogs.c:230
+#: ../src/applet-dialogs.c:77 ../src/applet-dialogs.c:229
+#: ../src/applet-dialogs.c:231
 msgid "WPA/WPA2"
 msgstr "WPA/WPA2"
 
 #. Create the expander
-#: ../src/applet-dialogs.c:151
+#: ../src/applet-dialogs.c:152
 msgid "More addresses"
 msgstr "Fleiri vistföng"
 
-#: ../src/applet-dialogs.c:226
+#: ../src/applet-dialogs.c:227
 msgid "WEP"
 msgstr "WEP"
 
-#: ../src/applet-dialogs.c:234 ../src/applet-dialogs.c:243
-#: ../src/connection-editor/page-wifi-security.c:330
+#: ../src/applet-dialogs.c:235 ../src/applet-dialogs.c:244
+#: ../src/connection-editor/page-wifi-security.c:332
 msgctxt "Wi-Fi/Ethernet security"
 msgid "None"
 msgstr "Ekkert"
 
-#: ../src/applet-dialogs.c:260
+#: ../src/applet-dialogs.c:261
 #, c-format
 msgid "%s (default)"
 msgstr "%s (sjálfgefið)"
 
-#: ../src/applet-dialogs.c:329 ../src/applet-dialogs.c:580
+#: ../src/applet-dialogs.c:330 ../src/applet-dialogs.c:581
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/sek"
 
-#: ../src/applet-dialogs.c:331 ../src/applet-dialogs.c:582
+#: ../src/applet-dialogs.c:332 ../src/applet-dialogs.c:583
 msgctxt "Speed"
 msgid "Unknown"
 msgstr "Óþekkt"
 
 #. Address
-#: ../src/applet-dialogs.c:346 ../src/applet-dialogs.c:368
+#: ../src/applet-dialogs.c:347 ../src/applet-dialogs.c:369
 msgctxt "Address"
 msgid "Unknown"
 msgstr "Óþekkt"
 
-#: ../src/applet-dialogs.c:347 ../src/applet-dialogs.c:420
+#: ../src/applet-dialogs.c:348 ../src/applet-dialogs.c:421
 msgid "IP Address:"
 msgstr "IP vistfang:"
 
-#: ../src/applet-dialogs.c:369
+#: ../src/applet-dialogs.c:370
 msgid "Broadcast Address:"
 msgstr "Útvörpunarvistfang:"
 
 #. Prefix
-#: ../src/applet-dialogs.c:381
+#: ../src/applet-dialogs.c:382
 msgctxt "Subnet Mask"
 msgid "Unknown"
 msgstr "Óþekkt"
 
-#: ../src/applet-dialogs.c:382
+#: ../src/applet-dialogs.c:383
 msgid "Subnet Mask:"
 msgstr "Undirnetssía:"
 
-#: ../src/applet-dialogs.c:492
+#: ../src/applet-dialogs.c:493
 #, c-format
 msgid "Ethernet (%s)"
 msgstr "Ethernet (%s)"
 
-#: ../src/applet-dialogs.c:495
+#: ../src/applet-dialogs.c:496
 #, c-format
 msgid "802.11 WiFi (%s)"
 msgstr "802.11 WiFi (%s)"
 
-#: ../src/applet-dialogs.c:502
+#: ../src/applet-dialogs.c:503
 #, c-format
 msgid "GSM (%s)"
 msgstr "GSM (%s)"
 
-#: ../src/applet-dialogs.c:504
+#: ../src/applet-dialogs.c:505
 #, c-format
 msgid "CDMA (%s)"
 msgstr "CDMA (%s)"
 
 #. --- General ---
-#: ../src/applet-dialogs.c:512 ../src/applet-dialogs.c:810
+#: ../src/applet-dialogs.c:513 ../src/applet-dialogs.c:811
 #: ../src/connection-editor/ce-page-team-port.ui.h:23
 #: ../src/connection-editor/ce-page-team.ui.h:48
 #: ../src/connection-editor/page-general.c:367
 msgid "General"
 msgstr "Almennt"
 
-#: ../src/applet-dialogs.c:516
+#: ../src/applet-dialogs.c:517
 msgid "Interface:"
 msgstr "Tengi:"
 
-#: ../src/applet-dialogs.c:536
+#: ../src/applet-dialogs.c:537
 msgid "Hardware Address:"
 msgstr "Vistfang vélbúnaðar:"
 
 #. Driver
-#: ../src/applet-dialogs.c:550
+#: ../src/applet-dialogs.c:551
 msgid "Driver:"
 msgstr "Drif:"
 
-#: ../src/applet-dialogs.c:585
+#: ../src/applet-dialogs.c:586
 msgid "Speed:"
 msgstr "Hraði:"
 
-#: ../src/applet-dialogs.c:600
+#: ../src/applet-dialogs.c:601
 msgid "Security:"
 msgstr "Öryggi:"
 
 #. --- IPv4 ---
-#: ../src/applet-dialogs.c:618 ../src/applet-dialogs.c:851
+#: ../src/applet-dialogs.c:619 ../src/applet-dialogs.c:852
 #: ../src/connection-editor/ce-page-team.ui.h:29
 msgid "IPv4"
 msgstr "IPv4"
 
-#: ../src/applet-dialogs.c:638 ../src/applet-dialogs.c:689
+#: ../src/applet-dialogs.c:639 ../src/applet-dialogs.c:690
 msgid "Default Route:"
 msgstr "Sjálfgefin tengileið (route):"
 
 #. --- IPv6 ---
-#: ../src/applet-dialogs.c:658 ../src/applet-dialogs.c:873
+#: ../src/applet-dialogs.c:659 ../src/applet-dialogs.c:874
 #: ../src/connection-editor/ce-page-team.ui.h:30
 msgid "IPv6"
 msgstr "IPv6"
 
-#: ../src/applet-dialogs.c:667 ../src/applet-dialogs.c:882
+#: ../src/applet-dialogs.c:668 ../src/applet-dialogs.c:883
 msgid "Ignored"
 msgstr "Hunsað"
 
-#: ../src/applet-dialogs.c:815
+#: ../src/applet-dialogs.c:816
 msgid "VPN Type:"
 msgstr "Tegund VPN:"
 
-#: ../src/applet-dialogs.c:822
+#: ../src/applet-dialogs.c:823
 msgid "VPN Gateway:"
 msgstr "VPN-netgátt (gateway):"
 
-#: ../src/applet-dialogs.c:828
+#: ../src/applet-dialogs.c:829
 msgid "VPN Username:"
 msgstr "VPN-notandanafn:"
 
-#: ../src/applet-dialogs.c:834
+#: ../src/applet-dialogs.c:835
 msgid "VPN Banner:"
 msgstr "VPN tilkynningaborði (banner):"
 
-#: ../src/applet-dialogs.c:840
+#: ../src/applet-dialogs.c:841
 msgid "Base Connection:"
 msgstr "Grunntenging:"
 
-#: ../src/applet-dialogs.c:842 ../src/libnm-gtk/nm-ui-utils.c:343
+#: ../src/applet-dialogs.c:843 ../src/libnm-gtk/nm-ui-utils.c:343
 msgid "Unknown"
 msgstr "Óþekkt"
 
 #. Shouldn't really happen but ...
-#: ../src/applet-dialogs.c:957
+#: ../src/applet-dialogs.c:958
 msgid "No valid active connections found!"
 msgstr "Fann engar virkar tengingar!"
 
-#: ../src/applet-dialogs.c:985
+#: ../src/applet-dialogs.c:1007
+#| msgid ""
+#| "Copyright © 2004-2014 Red Hat, Inc.\n"
+#| "Copyright © 2005-2008 Novell, Inc.\n"
+#| "and many other community contributors and translators"
 msgid ""
-"Copyright © 2004-2014 Red Hat, Inc.\n"
+"Copyright © 2004-2017 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc.\n"
 "and many other community contributors and translators"
 msgstr ""
-"Höfundarréttur © 2004-2014 Red Hat, Inc.\n"
+"Höfundarréttur © 2004-2017 Red Hat, Inc.\n"
 "Höfundarréttur © 2005-2008 Novell, Inc.\n"
 "og margir aðrir í frjálsa hugbúnaðarsamfélaginu"
 
-#: ../src/applet-dialogs.c:988
+#: ../src/applet-dialogs.c:1010
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr "Forrit sem sér um nettæki og að tengjast við netið."
 
-#: ../src/applet-dialogs.c:990
+#: ../src/applet-dialogs.c:1012
 msgid "NetworkManager Website"
 msgstr "Heimasíða NetworkManager"
 
-#: ../src/applet-dialogs.c:1001
+#: ../src/applet-dialogs.c:1016
+msgid "translator-credits"
+msgstr "Sveinn í Felli, sv1@fellsnet.is"
+
+#: ../src/applet-dialogs.c:1026
 msgid ""
 "The NetworkManager Applet could not find some required resources (the .ui "
 "file was not found)."
@@ -973,34 +995,34 @@ msgstr ""
 "NetworkManager forritlingurinn gat ekki fundið nauðsynleg tilföng (.ui-"
 "skráin fannst ekki)."
 
-#: ../src/applet-dialogs.c:1006
+#: ../src/applet-dialogs.c:1031
 msgid "Missing resources"
 msgstr "Vantar tilföng"
 
-#: ../src/applet-dialogs.c:1031
+#: ../src/applet-dialogs.c:1057
 msgid "Mobile broadband network password"
 msgstr "Lykilorð fyrir þráðlaust breiðbandsnet"
 
-#: ../src/applet-dialogs.c:1040
-#, fuzzy, c-format
+#: ../src/applet-dialogs.c:1066
+#, c-format
 msgid "A password is required to connect to “%s”."
-msgstr "Það er nauðsynlegt að gefa upp lykilorð til að tengjast við ‚%s‘."
+msgstr "Það er nauðsynlegt að gefa upp lykilorð til að tengjast við '%s‘."
 
-#: ../src/applet-dialogs.c:1055
+#: ../src/applet-dialogs.c:1081
 msgid "Password:"
 msgstr "Lykilorð:"
 
-#: ../src/applet-dialogs.c:1337
+#: ../src/applet-dialogs.c:1363
 msgid "SIM PIN unlock required"
 msgstr "Krafist er PIN-númers til að aflæsa SIM-korti"
 
-#: ../src/applet-dialogs.c:1338
+#: ../src/applet-dialogs.c:1364
 msgid "SIM PIN Unlock Required"
 msgstr "Krafist er PIN-númers til að aflæsa SIM-korti"
 
 #. FIXME: some warning about # of times you can enter incorrect PIN
-#: ../src/applet-dialogs.c:1340
-#, fuzzy, c-format
+#: ../src/applet-dialogs.c:1366
+#, c-format
 msgid ""
 "The mobile broadband device “%s” requires a SIM PIN code before it can be "
 "used."
@@ -1009,26 +1031,26 @@ msgstr ""
 "verður að nota það."
 
 #. Translators: PIN code entry label
-#: ../src/applet-dialogs.c:1342
+#: ../src/applet-dialogs.c:1368
 msgid "PIN code:"
 msgstr "PIN-númer:"
 
 #. Translators: Show/obscure PIN checkbox label
-#: ../src/applet-dialogs.c:1346
+#: ../src/applet-dialogs.c:1372
 msgid "Show PIN code"
 msgstr "Sýna PIN-númer"
 
-#: ../src/applet-dialogs.c:1348
+#: ../src/applet-dialogs.c:1374
 msgid "SIM PUK unlock required"
 msgstr "Krafist er PUK-kóða til að aflæsa SIM-korti"
 
-#: ../src/applet-dialogs.c:1349
+#: ../src/applet-dialogs.c:1375
 msgid "SIM PUK Unlock Required"
 msgstr "Krafist er PUK-kóða til að aflæsa SIM-korti"
 
 #. FIXME: some warning about # of times you can enter incorrect PUK
-#: ../src/applet-dialogs.c:1351
-#, fuzzy, c-format
+#: ../src/applet-dialogs.c:1377
+#, c-format
 msgid ""
 "The mobile broadband device “%s” requires a SIM PUK code before it can be "
 "used."
@@ -1037,36 +1059,43 @@ msgstr ""
 "að nota það."
 
 #. Translators: PUK code entry label
-#: ../src/applet-dialogs.c:1353
+#: ../src/applet-dialogs.c:1379
 msgid "PUK code:"
 msgstr "PUK-kóði:"
 
 #. Translators: New PIN entry label
-#: ../src/applet-dialogs.c:1356
+#: ../src/applet-dialogs.c:1382
 msgid "New PIN code:"
 msgstr "Nýtt PIN-númer:"
 
 #. Translators: New PIN verification entry label
-#: ../src/applet-dialogs.c:1358
+#: ../src/applet-dialogs.c:1384
 msgid "Re-enter new PIN code:"
 msgstr "Sláðu aftur inn nýja PIN-númerið:"
 
 #. Translators: Show/obscure PIN/PUK checkbox label
-#: ../src/applet-dialogs.c:1363
+#: ../src/applet-dialogs.c:1389
 msgid "Show PIN/PUK codes"
 msgstr "Sýna PIN/PUK-númer"
 
-#: ../src/connection-editor/ce-ip4-routes.ui.h:2
-#: ../src/connection-editor/ce-ip6-routes.ui.h:2
-#: ../src/connection-editor/ce-page-dcb.ui.h:18
-#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:2
-msgid "_OK"
-msgstr "Í _lagi"
+#: ../src/applet-vpn-request.c:201
+#| msgid "Connection Information"
+msgid "Connection had no VPN setting"
+msgstr "Tenging er ekki með stillingar fyrir VPN"
+
+#: ../src/applet-vpn-request.c:251
+#, fuzzy, c-format
+#| msgid "Failed to create DUN connection: %s"
+msgid "Failed to write connection to VPN UI: %s (%d)"
+msgstr "Mistókst að búa til DUN-tengingu: %s"
+
+#: ../src/applet-vpn-request.c:259
+msgid "Failed to write connection to VPN UI: incomplete write"
+msgstr ""
 
 #: ../src/connection-editor/ce-ip4-routes.ui.h:3
 #: ../src/connection-editor/ce-ip6-routes.ui.h:3
 #: ../src/connection-editor/ce-page.h:114
-#, fuzzy
 msgid ""
 "IP addresses identify your computer on the network. Click the “Add” button "
 "to add an IP address."
@@ -1079,21 +1108,21 @@ msgstr ""
 #: ../src/connection-editor/ce-page-bond.ui.h:12
 #: ../src/connection-editor/ce-page-bridge.ui.h:2
 #: ../src/connection-editor/ce-page-ip4.ui.h:7
-#: ../src/connection-editor/ce-page-ip6.ui.h:10
+#: ../src/connection-editor/ce-page-ip6.ui.h:12
 #: ../src/connection-editor/ce-page-team.ui.h:13
-#: ../src/connection-editor/nm-connection-editor.ui.h:3
+#: ../src/connection-editor/nm-connection-list.ui.h:3
 msgid "_Add"
 msgstr "_Bæta við"
 
-#. Delete
 #: ../src/connection-editor/ce-ip4-routes.ui.h:5
 #: ../src/connection-editor/ce-ip6-routes.ui.h:5
 #: ../src/connection-editor/ce-page-bond.ui.h:14
 #: ../src/connection-editor/ce-page-bridge.ui.h:4
 #: ../src/connection-editor/ce-page-ip4.ui.h:8
-#: ../src/connection-editor/ce-page-ip6.ui.h:11
+#: ../src/connection-editor/ce-page-ip6.ui.h:13
 #: ../src/connection-editor/ce-page-team.ui.h:15
-#: ../src/connection-editor/nm-connection-list.c:711
+#: ../src/connection-editor/connection-helpers.c:772
+#: ../src/connection-editor/nm-connection-list.ui.h:4
 msgid "_Delete"
 msgstr "_Eyða"
 
@@ -1117,9 +1146,8 @@ msgstr ""
 "nettenging."
 
 #: ../src/connection-editor/ce-new-connection.ui.h:2
-#, fuzzy
 msgid "C_reate…"
-msgstr "Búa til..."
+msgstr "_Búa til…"
 
 #: ../src/connection-editor/ce-new-connection.ui.h:3
 msgid "Choose a Connection Type"
@@ -1132,6 +1160,10 @@ msgid ""
 "If you are creating a VPN, and the VPN connection you wish to create does "
 "not appear in the list, you may not have the correct VPN plugin installed."
 msgstr ""
+"Veldu þá tegund tengingar sem þú vilt búa til.\n"
+"\n"
+"Ef þú vilt búa til VPN-tengingu og slík tenging er ekki í listanum, er "
+"hugsanlegt að þú sért ekki með rétt VPN-viðbótarforrit uppsett."
 
 #: ../src/connection-editor/ce-page-bond.ui.h:1
 #: ../src/connection-editor/ce-page-team.ui.h:21
@@ -1141,7 +1173,7 @@ msgstr "Hringbeining (Round-Robin)"
 #: ../src/connection-editor/ce-page-bond.ui.h:2
 #: ../src/connection-editor/ce-page-team.ui.h:22
 msgid "Active backup"
-msgstr ""
+msgstr "Virk öryggisafritun"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:3
 msgid "XOR"
@@ -1173,25 +1205,27 @@ msgid "ARP"
 msgstr "ARP"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:10
-msgid "Bonded _connections:"
-msgstr "_Bundnar tengingar:"
+#| msgid "Bonded _connections:"
+msgid "Bonded _connections"
+msgstr "Bun_dnar tengingar"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:11
 #: ../src/connection-editor/ce-page-wifi.ui.h:18
-msgid "M_ode:"
-msgstr "_Hamur:"
+#| msgid "M_ode:"
+msgid "M_ode"
+msgstr "_Hamur"
 
-#. Edit
 #: ../src/connection-editor/ce-page-bond.ui.h:13
 #: ../src/connection-editor/ce-page-bridge.ui.h:3
 #: ../src/connection-editor/ce-page-team.ui.h:14
-#: ../src/connection-editor/nm-connection-list.c:695
+#: ../src/connection-editor/nm-connection-list.ui.h:5
 msgid "_Edit"
 msgstr "_Breyta"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:15
-msgid "Monitoring _frequency:"
-msgstr "Tíðni _vöktunar:"
+#| msgid "Monitoring _frequency:"
+msgid "Monitoring _frequency"
+msgstr "Tíðni _vöktunar"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:16
 msgid "ms"
@@ -1200,34 +1234,40 @@ msgstr "msek"
 #: ../src/connection-editor/ce-page-bond.ui.h:17
 #: ../src/connection-editor/ce-page-bridge.ui.h:6
 #: ../src/connection-editor/ce-page-team.ui.h:16
-msgid "_Interface name:"
-msgstr "_Heiti viðmóts:"
+#| msgid "_Interface name:"
+msgid "_Interface name"
+msgstr "_Heiti viðmóts"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:18
-msgid "_Link Monitoring:"
-msgstr "Vöktun tengis:"
+#| msgid "_Link Monitoring:"
+msgid "_Link Monitoring"
+msgstr "Vö_ktun tengis"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:19
-msgid "ARP _targets:"
-msgstr "ARP ú_ttök:"
+#| msgid "ARP _targets:"
+msgid "ARP _targets"
+msgstr "ARP ú_ttök"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:20
 msgid ""
 "An IP address, or a comma-separated list of IP addresses, to look for when "
 "checking the link status."
 msgstr ""
+"IP-vistfang, eða kommu-aðgreindur listi IP-vistfanga, sem leita skal að þegar "
+"skoðuð er staða tengils."
 
 #: ../src/connection-editor/ce-page-bond.ui.h:21
-msgid "Link _up delay:"
-msgstr ""
+msgid "Link _up delay"
+msgstr "Töf virkra tengla (_up)"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:22
-msgid "Link _down delay:"
-msgstr ""
+msgid "Link _down delay"
+msgstr "Töf óvirkra tengla (_down)"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:23
-msgid "_Primary:"
-msgstr "_Aðal:"
+#| msgid "_Primary:"
+msgid "_Primary"
+msgstr "_Aðal"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:24
 msgid ""
@@ -1239,16 +1279,17 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page-bond.ui.h:25
 #: ../src/connection-editor/ce-page-ethernet.ui.h:17
-#: ../src/connection-editor/ce-page-infiniband.ui.h:4
+#: ../src/connection-editor/ce-page-infiniband.ui.h:8
 #: ../src/connection-editor/ce-page-team.ui.h:17
 #: ../src/connection-editor/ce-page-vlan.ui.h:4
 #: ../src/connection-editor/ce-page-wifi.ui.h:8
-msgid "_MTU:"
-msgstr "_MTU:"
+#| msgid "_MTU:"
+msgid "_MTU"
+msgstr "_MTU"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:26
 #: ../src/connection-editor/ce-page-ethernet.ui.h:18
-#: ../src/connection-editor/ce-page-infiniband.ui.h:3
+#: ../src/connection-editor/ce-page-infiniband.ui.h:7
 #: ../src/connection-editor/ce-page-team.ui.h:18
 #: ../src/connection-editor/ce-page-vlan.ui.h:5
 #: ../src/connection-editor/ce-page-wifi.ui.h:7
@@ -1256,49 +1297,102 @@ msgid "bytes"
 msgstr "bæti"
 
 #: ../src/connection-editor/ce-page-bridge-port.ui.h:1
-msgid "Path _cost:"
-msgstr "_Kostnaður slóðar:"
+#| msgid "Path _cost:"
+msgid "Path _cost"
+msgstr "_Kostnaður slóðar"
 
 #: ../src/connection-editor/ce-page-bridge-port.ui.h:2
 #: ../src/connection-editor/ce-page-bridge.ui.h:5
-msgid "_Priority:"
-msgstr "_Forgangur:"
+#| msgid "_Priority:"
+msgid "_Priority"
+msgstr "_Forgangur"
 
 #: ../src/connection-editor/ce-page-bridge-port.ui.h:3
-msgid "_Hairpin mode:"
-msgstr "_Hárnálarhamur (reflective relay):"
+#| msgid "_Hairpin mode:"
+msgid "_Hairpin mode"
+msgstr "_Hárnálarhamur (reflective relay)"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:1
-msgid "Bridged _connections:"
-msgstr "_Brúaðar tengingar:"
+#| msgid "Bridged _connections:"
+msgid "Bridged _connections"
+msgstr "_Brúaðar tengingar"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:7
-msgid "_Forward delay:"
-msgstr ""
+msgid "_Forward delay"
+msgstr "Tö_f áframbeiningar"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:8
-msgid "_Hello time:"
-msgstr "\"_Halló\"-tími:"
+#| msgid "_Hello time:"
+msgid "_Hello time"
+msgstr "\"_Halló\"-tími"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:9
+msgid "STP forwarding delay, in seconds"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:10
 msgid "s"
 msgstr "sek"
 
-#: ../src/connection-editor/ce-page-bridge.ui.h:10
+#: ../src/connection-editor/ce-page-bridge.ui.h:11
+msgid "STP hello time, in seconds"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:12
 msgid "Enable I_GMP snooping"
 msgstr "Virkja I_GMP hlustun"
 
-#: ../src/connection-editor/ce-page-bridge.ui.h:11
+#: ../src/connection-editor/ce-page-bridge.ui.h:13
+msgid ""
+"Controls whether IGMP snooping is enabled for this bridge. Note that if "
+"snooping was automatically disabled due to hash collisions, the system may "
+"refuse to enable the feature until the collisions are resolved."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:14
 msgid "Enable _STP (Spanning Tree Protocol)"
 msgstr "Virkja _STP (Spanning Tree Protocol)"
 
-#: ../src/connection-editor/ce-page-bridge.ui.h:12
-msgid "_Max age:"
-msgstr "Há_marksaldur:"
+#: ../src/connection-editor/ce-page-bridge.ui.h:15
+msgid ""
+"Controls whether Spanning Tree Protocol (STP) is enabled for this bridge"
+msgstr ""
 
-#: ../src/connection-editor/ce-page-bridge.ui.h:13
-msgid "_Aging time:"
-msgstr "Öldrun_artími:"
+#: ../src/connection-editor/ce-page-bridge.ui.h:16
+msgid ""
+"STP priority for this bridge. Lower values are “better”; the lowest priority "
+"bridge will be elected the root bridge."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:17
+#| msgid "_Max age:"
+msgid "_Max age"
+msgstr "Há_marksaldur"
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:18
+msgid "STP maximum message age, in seconds"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:19
+#| msgid "_Aging time:"
+msgid "_Aging time"
+msgstr "Öldrun_artími"
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:20
+msgid "The Ethernet MAC address aging time, in seconds"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:21
+msgid "Group _forward mask"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:22
+msgid ""
+"A mask of 16 bits, each corresponding to a group address in the range from "
+"01:80:C2:00:00:00 to 01:80:C2:00:00:0F that must be forwarded. The mask "
+"can’t have bits 0, 1 or 2 set because they are used for STP, MAC pause "
+"frames and LACP."
+msgstr ""
 
 #: ../src/connection-editor/ce-page.c:78 ../src/connection-editor/ce-page.c:112
 msgid "automatic"
@@ -1330,9 +1424,8 @@ msgid "Random"
 msgstr ""
 
 #: ../src/connection-editor/ce-page.c:297
-#, fuzzy
 msgid "Stable"
-msgstr "Virkja"
+msgstr "Stöðugt"
 
 #: ../src/connection-editor/ce-page.c:301
 msgid ""
@@ -1360,28 +1453,27 @@ msgid "invalid %s (%s)"
 msgstr "ógilt %s (%s)"
 
 #: ../src/connection-editor/ce-page.c:388
-#, fuzzy, c-format
+#, c-format
 msgid "invalid interface-name for %s (%s): "
-msgstr "ógilt viðmóts-nafn fyrir %s (%s)"
+msgstr "ógilt viðmótsheiti fyrir %s (%s): "
 
 #: ../src/connection-editor/ce-page.c:392
-#, fuzzy, c-format
+#, c-format
 msgid "invalid interface-name (%s): "
-msgstr "ógilt viðmóts-nafn (%s)"
+msgstr "ógilt viðmótsheiti (%s): "
 
 #: ../src/connection-editor/ce-page.c:571
 msgid "can’t parse device name"
 msgstr ""
 
 #: ../src/connection-editor/ce-page.c:589
-#, fuzzy
 msgid "invalid hardware address"
-msgstr "Vistfang vélbúnaðar:"
+msgstr "ógilt vistfang vélbúnaðar"
 
 #: ../src/connection-editor/ce-page.c:611
-#, fuzzy, c-format
+#, c-format
 msgid "invalid %s (%s): "
-msgstr "ógilt %s (%s)"
+msgstr "ógilt %s (%s): "
 
 #: ../src/connection-editor/ce-page.c:612
 #: ../src/connection-editor/ce-page.c:617
@@ -1389,18 +1481,17 @@ msgid "device"
 msgstr "tæki"
 
 #: ../src/connection-editor/ce-page.c:616
-#, fuzzy, c-format
+#, c-format
 msgid "invalid %s (%s) "
-msgstr "ógilt %s (%s)"
+msgstr "ógilt %s (%s) "
 
 #: ../src/connection-editor/ce-page.c:725
 msgid "Failed to update connection secrets due to an unknown error."
 msgstr "Mistókst að uppfæra leyndarauðkenni tengingar vegna óþekktrar villu."
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:1
-#, fuzzy
 msgid "_Use Data Center Bridging (DCB) for this connection"
-msgstr "Nota gagnaverabrúun (data center bridging - DCB) fyrir þessa tengingu"
+msgstr "Nota _gagnaverabrúun (data center bridging - DCB) fyrir þessa tengingu"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:2
 msgid "FCoE"
@@ -1439,9 +1530,8 @@ msgid "Priority"
 msgstr "Forgangur"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:11
-#, fuzzy
 msgid "Options…"
-msgstr "Valkostir..."
+msgstr "Valkostir…"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:12
 msgid "Priority Groups"
@@ -1464,82 +1554,83 @@ msgid "Enable or disable priority pause transmission for each User Priority."
 msgstr ""
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:20
-msgid "Priority:"
-msgstr "Forgangur:"
+msgid "0"
+msgstr "0"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:21
-msgid "0:"
-msgstr "0:"
+msgid "1"
+msgstr "1"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:22
-msgid "1:"
-msgstr "1:"
+msgid "2"
+msgstr "2"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:23
-msgid "2:"
-msgstr "2:"
+msgid "3"
+msgstr "3"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:24
-msgid "3:"
-msgstr "3:"
+msgid "4"
+msgstr "4"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:25
-msgid "4:"
-msgstr "4:"
+msgid "5"
+msgstr "5"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:26
-msgid "5:"
-msgstr "5:"
+msgid "6"
+msgstr "6"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:27
-msgid "6:"
-msgstr "6:"
+msgid "7"
+msgstr "7"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:28
-msgid "7:"
-msgstr "7:"
+#| msgid "Traffic Class:"
+msgid "Traffic Class"
+msgstr "Flokkur umferðar"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:29
-msgid "Traffic Class:"
-msgstr "Flokkur umferðar:"
+#| msgid "Strict Bandwidth:"
+msgid "Strict Bandwidth"
+msgstr "Ströng bandbreidd"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:30
-msgid "Strict Bandwidth:"
-msgstr "Ströng bandbreidd:"
+#| msgid "Priority Bandwidth:"
+msgid "Priority Bandwidth"
+msgstr "Forgangur bandbreiddar"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:31
-msgid "Priority Bandwidth:"
-msgstr "Forgangur bandbreiddar:"
+#| msgid "Group Bandwidth:"
+msgid "Group Bandwidth"
+msgstr "Hópur bandbreiddar"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:32
-msgid "Group Bandwidth:"
-msgstr "Hópur bandbreiddar:"
+#| msgid "Group ID:"
+msgid "Group ID"
+msgstr "Hópauðkenni"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:33
-msgid "Group ID:"
-msgstr "Hópauðkenni:"
-
-#: ../src/connection-editor/ce-page-dcb.ui.h:34
 msgid "Enter the priority group ID for each User Priority."
 msgstr ""
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:36
+#: ../src/connection-editor/ce-page-dcb.ui.h:35
 #, no-c-format
 msgid ""
 "Enter the allowed link bandwidth percent each Priority Group may use. The "
 "sum of all groups must total 100%."
 msgstr ""
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:37
+#: ../src/connection-editor/ce-page-dcb.ui.h:36
 msgid ""
 "Enter the percentage of priority group bandwidth each user priority may use."
 msgstr ""
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:38
+#: ../src/connection-editor/ce-page-dcb.ui.h:37
 msgid "Enable or disable strict bandwidth for each user priority."
 msgstr ""
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:39
+#: ../src/connection-editor/ce-page-dcb.ui.h:38
 msgid "Enter the traffic class for each user priority."
 msgstr ""
 
@@ -1548,14 +1639,26 @@ msgstr ""
 #: ../src/wireless-security/eap-method-leap.ui.h:1
 #: ../src/wireless-security/eap-method-simple.ui.h:1
 #: ../src/wireless-security/ws-leap.ui.h:1
-msgid "_Username:"
-msgstr "_Notandanafn:"
+#| msgid "_Username:"
+msgid "_Username"
+msgstr "Notan_danafn"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:2
-msgid "_Service:"
-msgstr "_Þjónusta:"
+msgid "Username used to authenticate with the PPPoE service."
+msgstr ""
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:3
+msgid ""
+"Only initiate sessions with access concentrators that provide the specified "
+"service. For most providers this should be left blank."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:4
+#| msgid "_Service:"
+msgid "_Service"
+msgstr "Þjónu_sta"
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:5
 #: ../src/wireless-security/eap-method-leap.ui.h:3
 #: ../src/wireless-security/eap-method-simple.ui.h:3
 #: ../src/wireless-security/ws-leap.ui.h:3
@@ -1563,24 +1666,44 @@ msgstr "_Þjónusta:"
 msgid "Sho_w password"
 msgstr "_Sýna lykilorð"
 
-#: ../src/connection-editor/ce-page-dsl.ui.h:4
+#: ../src/connection-editor/ce-page-dsl.ui.h:6
+msgid "Password used to authenticate with the PPPoE service."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:7
 #: ../src/connection-editor/ce-page-mobile.ui.h:4
-#: ../src/libnma/nma-vpn-password-dialog.c:97
-#: ../src/libnm-gtk/nm-vpn-password-dialog.c:97
 #: ../src/wireless-security/eap-method-leap.ui.h:2
 #: ../src/wireless-security/eap-method-simple.ui.h:2
 #: ../src/wireless-security/ws-leap.ui.h:2
 #: ../src/wireless-security/ws-wpa-psk.ui.h:1
-msgid "_Password:"
-msgstr "_Lykilorð:"
+#| msgid "_Password:"
+msgid "_Password"
+msgstr "Lykil_orð"
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:8
+#| msgid "Interface:"
+msgid "PPP _interface"
+msgstr "PPP _viðmót"
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:9
+msgid "P_arent interface"
+msgstr "_Aðalviðmót"
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:10
+msgid "An arbitrary name to assign to the newly created PPP interface."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:11
+msgid "The interface on which the PPP connection will be established."
+msgstr ""
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:1
 #: ../src/connection-editor/ce-page-ip4.ui.h:1
 #: ../src/connection-editor/ce-page-ip6.ui.h:1
-#: ../src/connection-editor/ce-page-proxy.ui.h:3
+#: ../src/connection-editor/ce-page-proxy.ui.h:2
 #: ../src/connection-editor/ce-page-wifi.ui.h:1
 #: ../src/connection-editor/page-ip4.c:131
-#: ../src/connection-editor/page-ip6.c:136
+#: ../src/connection-editor/page-ip6.c:142
 #: ../src/wireless-security/eap-method-peap.ui.h:1
 msgid "Automatic"
 msgstr "Sjálfvirkt"
@@ -1626,7 +1749,7 @@ msgid "Full"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:12
-#: ../src/connection-editor/page-ip6.c:149
+#: ../src/connection-editor/page-ip6.c:155
 msgid "Ignore"
 msgstr "Hunsa"
 
@@ -1634,37 +1757,40 @@ msgstr "Hunsa"
 #: ../src/connection-editor/ce-page-ip4.ui.h:3
 #: ../src/connection-editor/ce-page-ip6.ui.h:3
 #: ../src/connection-editor/page-ip4.c:168
-#: ../src/connection-editor/page-ip6.c:185
+#: ../src/connection-editor/page-ip6.c:191
 msgid "Manual"
 msgstr "Handvirkt"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:14
-msgid "_Port:"
-msgstr "_Gátt:"
+#| msgid "_Port:"
+msgid "_Port"
+msgstr "_Gátt"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:15
-#: ../src/connection-editor/ce-page-infiniband.ui.h:2
+#: ../src/connection-editor/ce-page-infiniband.ui.h:6
 #: ../src/connection-editor/ce-page-wifi.ui.h:9
-msgid "_Device:"
-msgstr "_Tæki:"
+#| msgid "_Device:"
+msgid "_Device"
+msgstr "Tæ_ki"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:16
 #: ../src/connection-editor/ce-page-wifi.ui.h:10
-msgid "C_loned MAC address:"
-msgstr "_Klónað MAC vistfang:"
+#| msgid "C_loned MAC address:"
+msgid "C_loned MAC address"
+msgstr "K_lónað MAC vistfang"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:19
-msgid "Wake on LAN:"
-msgstr "Vakning af staðarneti (Wake on LAN):"
+#| msgid "Wake on LAN:"
+msgid "Wake on LAN"
+msgstr "Vakning af staðarneti (Wake on LAN)"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:20
 msgid "De_fault"
 msgstr "Sjál_fgefið"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:21
-#, fuzzy
 msgid "_Ignore"
-msgstr "Hunsa"
+msgstr "_Hunsa"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:22
 msgid "_Phy"
@@ -1691,8 +1817,9 @@ msgid "Ma_gic"
 msgstr "Ma_gic"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:28
-msgid "_Wake on LAN password:"
-msgstr "_Lykilorð fyrir vakningu af staðarneti:"
+#| msgid "_Wake on LAN password:"
+msgid "_Wake on LAN password"
+msgstr "_Lykilorð fyrir vakningu af staðarneti"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:29
 msgid ""
@@ -1702,7 +1829,7 @@ msgstr ""
 "magic-pakka."
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:30
-msgid "Lin_k negotiation:"
+msgid "Lin_k negotiation"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:31
@@ -1713,8 +1840,9 @@ msgid ""
 msgstr ""
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:32
-msgid "_Speed:"
-msgstr "_Hraði:"
+#| msgid "_Speed:"
+msgid "_Speed"
+msgstr "_Hraði"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:33
 msgid ""
@@ -1724,9 +1852,8 @@ msgid ""
 msgstr ""
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:34
-#, fuzzy
-msgid "Duple_x:"
-msgstr "Fullur tvíhliðahamur"
+msgid "Duple_x"
+msgstr "Tvíhliða_hamur"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:35
 msgid ""
@@ -1749,7 +1876,7 @@ msgstr "_Tengjast þessu neti sjálfkrafa þegar það er tiltækt"
 
 #: ../src/connection-editor/ce-page-general.ui.h:4
 #, fuzzy
-msgid "Connection _priority for auto-activation:"
+msgid "Connection _priority for auto-activation"
 msgstr "_Upplýsingar um tengingu"
 
 #: ../src/connection-editor/ce-page-general.ui.h:5
@@ -1760,8 +1887,9 @@ msgid ""
 msgstr ""
 
 #: ../src/connection-editor/ce-page-general.ui.h:6
-msgid "Firewall _zone:"
-msgstr "Svæði í _eldvegg:"
+#| msgid "Firewall _zone:"
+msgid "Firewall _zone"
+msgstr "Svæði í _eldvegg"
 
 #: ../src/connection-editor/ce-page.h:111
 #, fuzzy
@@ -1793,19 +1921,20 @@ msgstr "Vistföng"
 msgid "Address (optional)"
 msgstr ""
 
-#: ../src/connection-editor/ce-page-infiniband.ui.h:1
-msgid "_Transport mode:"
-msgstr "F_lutningshamur:"
-
 #. IP-over-InfiniBand "datagram mode"
-#: ../src/connection-editor/ce-page-infiniband.ui.h:6
+#: ../src/connection-editor/ce-page-infiniband.ui.h:2
 msgid "Datagram"
 msgstr "Datagram"
 
 #. IP-over-InfiniBand "connected mode"
-#: ../src/connection-editor/ce-page-infiniband.ui.h:8
+#: ../src/connection-editor/ce-page-infiniband.ui.h:4
 msgid "Connected"
 msgstr "Tengt"
+
+#: ../src/connection-editor/ce-page-infiniband.ui.h:5
+#| msgid "_Transport mode:"
+msgid "_Transport mode"
+msgstr "F_lutningshamur"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:1
 msgid "IPIP"
@@ -1844,16 +1973,17 @@ msgid "VTI6"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:10
-#, fuzzy
+#: ../src/connection-editor/ce-page-macsec.ui.h:6
 msgid "Device name"
-msgstr "Heiti tækis + tala"
+msgstr "Heiti tækis"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:11
-#, fuzzy
+#: ../src/connection-editor/ce-page-macsec.ui.h:8
 msgid "Parent device"
-msgstr "Ethernet nettæki"
+msgstr "Yfirtæki"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:12
+#: ../src/connection-editor/ce-page-macsec.ui.h:16
 msgid "Mode"
 msgstr ""
 
@@ -1874,9 +2004,8 @@ msgid "Output key"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:17
-#, fuzzy
 msgid "MTU"
-msgstr "_MTU:"
+msgstr "MTU"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:2
 #: ../src/connection-editor/ce-page-ip6.ui.h:2
@@ -1891,14 +2020,15 @@ msgstr "Staðvær tengi (link-local)"
 #: ../src/connection-editor/ce-page-ip4.ui.h:5
 #: ../src/connection-editor/ce-page-ip6.ui.h:5
 #: ../src/connection-editor/page-ip4.c:188
-#: ../src/connection-editor/page-ip6.c:205
+#: ../src/connection-editor/page-ip6.c:211
 msgid "Shared to other computers"
 msgstr "Samnýtt með öðrum tölvum"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:6
-#: ../src/connection-editor/ce-page-ip6.ui.h:9
-msgid "_Method:"
-msgstr "_Aðferð:"
+#: ../src/connection-editor/ce-page-ip6.ui.h:11
+#| msgid "_Method:"
+msgid "_Method"
+msgstr "_Aðferð"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:9
 msgid ""
@@ -1908,52 +2038,62 @@ msgid ""
 msgstr ""
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:10
-#: ../src/connection-editor/ce-page-ip6.ui.h:12
+#: ../src/connection-editor/ce-page-ip6.ui.h:14
 msgid ""
 "Domains used when resolving host names. Use commas to separate multiple "
 "domains."
 msgstr ""
+"Lén sem notuð eru til að leysa vélaheiti. Notaðu kommur til að aðgreina "
+"vistföng margra nafnaþjóna."
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:11
-msgid "D_HCP client ID:"
-msgstr "Auðkenni _DHCP biðlara:"
+#| msgid "D_HCP client ID:"
+msgid "D_HCP client ID"
+msgstr "Auðkenni D_HCP biðlara"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:12
-#: ../src/connection-editor/ce-page-ip6.ui.h:13
+#: ../src/connection-editor/ce-page-ip6.ui.h:15
 #: ../src/connection-editor/page-ip4.c:372
-#: ../src/connection-editor/page-ip6.c:335
-msgid "S_earch domains:"
-msgstr "L_eitarlén:"
+#: ../src/connection-editor/page-ip6.c:346
+#| msgid "S_earch domains:"
+msgid "S_earch domains"
+msgstr "L_eitarlén"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:13
-#: ../src/connection-editor/ce-page-ip6.ui.h:14
+#: ../src/connection-editor/ce-page-ip6.ui.h:16
 #: ../src/connection-editor/page-ip4.c:363
-#: ../src/connection-editor/page-ip6.c:326
-msgid "DNS ser_vers:"
-msgstr "DNS nafna_miðlarar:"
+#: ../src/connection-editor/page-ip6.c:337
+#| msgid "DNS ser_vers:"
+msgid "DNS ser_vers"
+msgstr "DNS nafna_miðlarar"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:14
 msgid ""
 "IP addresses of domain name servers used to resolve host names. Use commas "
 "to separate multiple domain name server addresses."
 msgstr ""
+"IP-vistföng lénanafnaþjóna sem notaðir eru til að leysa vélaheiti. Notaðu "
+"kommur til að aðgreina vistföng margra nafnaþjóna."
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:15
 msgid "Require IPv_4 addressing for this connection to complete"
-msgstr ""
+msgstr "Krefjast IPv_4-vistfanga til að klára þessa tengingu"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:16
 msgid ""
 "When connecting to IPv6-capable networks, allows the connection to complete "
 "if IPv4 configuration fails but IPv6 configuration succeeds."
 msgstr ""
+"Þegar tengst er netkerfum með IPv6-getu, er gert kleift að ljúka tengingu "
+"þótt IPv4 uppsetning mistakist en IPv6 uppsetning tekst."
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:17
-#: ../src/connection-editor/ce-page-ip6.ui.h:19
+#: ../src/connection-editor/ce-page-ip6.ui.h:22
 msgid "_Routes…"
 msgstr "_Beiningar…"
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:6
+#: ../src/connection-editor/ce-page-macsec.ui.h:3
 #: ../src/connection-editor/page-ip4.c:198
 msgid "Disabled"
 msgstr "Óvirkt"
@@ -1966,25 +2106,132 @@ msgstr "Virkt (velja frekar almennt vistfang)"
 msgid "Enabled (prefer temporary address)"
 msgstr "Virkt (velja frekar bráðabirgðavistfang)"
 
-#: ../src/connection-editor/ce-page-ip6.ui.h:15
+#: ../src/connection-editor/ce-page-ip6.ui.h:9
+msgid "EUI64"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-ip6.ui.h:10
+#, fuzzy
+msgid "Stable privacy"
+msgstr "Virkja"
+
+#: ../src/connection-editor/ce-page-ip6.ui.h:17
 msgid ""
 "IP addresses of domain name servers used to resolve host names. Use commas "
 "to separate multiple domain name server addresses. Link-local addresses will "
 "be automatically scoped to the connecting interface."
 msgstr ""
-
-#: ../src/connection-editor/ce-page-ip6.ui.h:16
-msgid "IPv6 _privacy extensions:"
-msgstr ""
-
-#: ../src/connection-editor/ce-page-ip6.ui.h:17
-msgid "Require IPv_6 addressing for this connection to complete"
-msgstr ""
+"IP-vistföng lénanafnaþjóna sem notaðir eru til að leysa vélaheiti. Notaðu "
+"kommur til að aðgreina vistföng margra nafnaþjóna. Vistföng staðværra tengja "
+"(link-local) verða afrituð sjálfvirkt yfir í viðmót tengingar."
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:18
+msgid "IPv6 _privacy extensions"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-ip6.ui.h:19
+msgid "IPv6 address _generation mode"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-ip6.ui.h:20
+msgid "Require IPv_6 addressing for this connection to complete"
+msgstr "Krefjast IPv_6-vistfanga til að klára þessa tengingu"
+
+#: ../src/connection-editor/ce-page-ip6.ui.h:21
 msgid ""
 "When connecting to IPv4-capable networks, allows the connection to complete "
 "if IPv6 configuration fails but IPv4 configuration succeeds."
+msgstr ""
+"Þegar tengst er netkerfum með IPv4-getu, er gert kleift að ljúka tengingu "
+"þótt IPv6 uppsetning mistakist en IPv4 uppsetning tekst."
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:1
+msgid "PSK"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:2
+#: ../src/connection-editor/page-ppp.c:129
+msgid "EAP"
+msgstr "EAP"
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:4
+msgid "Check"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:5
+#| msgid "Metric"
+msgid "Strict"
+msgstr "Strangt"
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:7
+msgid "The name of the MACsec device."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:9
+msgid ""
+"The parent interface name or parent connection UUID from which this MACSEC "
+"interface should be created."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:10
+msgid ""
+"The parent interface name or parent connection UUID from which this MACsec "
+"interface should be created"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:11
+msgid " The pre-shared Connectivity-association Key Name"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:12
+msgid "The pre-shared Connectivity Association Key"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:13
+msgid ""
+"Specifies how the CAK (Connectivity Association Key) for MKA (MACsec Key "
+"Agreement) is obtained. For the EAP mode, fill the parameters in the 802.1X "
+"security page"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:14
+msgid "CKN"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:15
+msgid "CAK"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:17
+msgid "Keys"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:18
+msgid "Parameters"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:19
+msgid "Validation"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:20
+msgid "SCI port"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:21
+msgid "Specifies the validation mode for incoming frames"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:22
+msgid "Encrypt"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:23
+msgid "Whether the transmitted traffic must be encrypted"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:24
+msgid "The port component of the SCI (Secure Channel Identifier)"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:1
@@ -1993,29 +2240,32 @@ msgid "Basic"
 msgstr "Einfalt"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:2
-msgid "Nu_mber:"
-msgstr "_Númer:"
+#| msgid "Nu_mber:"
+msgid "Nu_mber"
+msgstr "Nú_mer"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:5
 msgid "Advanced"
 msgstr "Nánar"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:6
-msgid "_APN:"
-msgstr "_APN:"
+#| msgid "_APN:"
+msgid "_APN"
+msgstr "_APN"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:7
-msgid "N_etwork ID:"
-msgstr "Auðk_enni netkerfis:"
+#| msgid "N_etwork ID:"
+msgid "N_etwork ID"
+msgstr "Auðk_enni netkerfis"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:8
-#, fuzzy
 msgid "Change…"
-msgstr "Breyta..."
+msgstr "Breyta…"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:9
-msgid "P_IN:"
-msgstr "P_IN:"
+#| msgid "P_IN:"
+msgid "P_IN"
+msgstr "P_IN"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:10
 msgid "Allow _roaming if home network is not available"
@@ -2030,8 +2280,9 @@ msgid "Authentication"
 msgstr "Auðkenning"
 
 #: ../src/connection-editor/ce-page-ppp.ui.h:2
-msgid "Allowed methods:"
-msgstr "Leyfa aðferðir:"
+#| msgid "Allowed methods:"
+msgid "Allowed methods"
+msgstr "Leyfðar aðferðir"
 
 #: ../src/connection-editor/ce-page-ppp.ui.h:3
 msgid "Configure _Methods…"
@@ -2051,7 +2302,7 @@ msgstr "Krefjast 128-bita dulkóðunar"
 
 #: ../src/connection-editor/ce-page-ppp.ui.h:7
 msgid "Use _stateful MPPE"
-msgstr ""
+msgstr "Nota _stateful MPPE"
 
 #: ../src/connection-editor/ce-page-ppp.ui.h:8
 msgid "Allow _BSD data compression"
@@ -2074,26 +2325,24 @@ msgid "Send PPP _echo packets"
 msgstr "Senda PPP _echo pakka"
 
 #: ../src/connection-editor/ce-page-proxy.ui.h:1
-#, fuzzy
-msgid "Method:"
-msgstr "_Aðferð:"
-
-#: ../src/connection-editor/ce-page-proxy.ui.h:2
 #: ../src/connection-editor/ce-page-team.ui.h:25
-#, fuzzy
 msgid "None"
 msgstr "Ekkert"
 
-#: ../src/connection-editor/ce-page-proxy.ui.h:4
+#: ../src/connection-editor/ce-page-proxy.ui.h:3
 msgid "For browser only"
 msgstr ""
 
-#: ../src/connection-editor/ce-page-proxy.ui.h:5
+#: ../src/connection-editor/ce-page-proxy.ui.h:4
 msgid "Use this proxy configuration for only browser clients/schemes."
 msgstr ""
 
+#: ../src/connection-editor/ce-page-proxy.ui.h:5
+msgid "PAC URL"
+msgstr ""
+
 #: ../src/connection-editor/ce-page-proxy.ui.h:6
-msgid "PAC URL:"
+msgid "PAC script"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-proxy.ui.h:7
@@ -2101,19 +2350,17 @@ msgid "URL from where the PAC script is to be obtained."
 msgstr ""
 
 #: ../src/connection-editor/ce-page-proxy.ui.h:8
-msgid "PAC script:"
-msgstr ""
+msgid "Import script from a file…"
+msgstr "Flytja skriftu inn úr skrá…"
 
 #: ../src/connection-editor/ce-page-proxy.ui.h:9
-#, fuzzy
-msgid "Import script from a file…"
-msgstr "Flytja _inn hópunaruppsetningu úr skrá..."
+msgid "Method"
+msgstr "Aðferð"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:1
 #: ../src/connection-editor/ce-page-team.ui.h:19
-#, fuzzy
 msgid "Ad_vanced…"
-msgstr "Nánar"
+msgstr "_Nánar…"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:2
 msgid "Set by master"
@@ -2121,9 +2368,8 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:3
 #: ../src/connection-editor/ce-page-team.ui.h:9
-#, fuzzy
 msgid "Ethernet port state"
-msgstr "Ethernet netkerfi"
+msgstr "Staða ethernet-gáttar"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:4
 #: ../src/connection-editor/ce-page-team.ui.h:10
@@ -2141,7 +2387,7 @@ msgid "Team Advanced Options"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:7
-msgid "_Queue ID:"
+msgid "_Queue ID"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:8
@@ -2156,115 +2402,113 @@ msgid "ID of queue which this port should be mapped to."
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:10
-#, fuzzy
-msgid "_Port priority:"
-msgstr "_Forgangur:"
+msgid "Active-Backup runner options"
+msgstr ""
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:11
-msgid "Port _sticky"
-msgstr ""
+msgid "_Port priority"
+msgstr "_Forgangur gáttar"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:12
-#: ../src/connection-editor/ce-page-team.ui.h:82
-msgid ""
-"Validate received ARP packets on active ports. If this is not checked, all "
-"incoming ARP packets will be considered as a good reply."
-msgstr ""
-
-#: ../src/connection-editor/ce-page-team-port.ui.h:13
 #: ../src/connection-editor/ce-page-team.ui.h:44
 msgid ""
 "Value is positive number in milliseconds. Specifies an interval between "
 "bursts of notify-peer packets."
 msgstr ""
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:14
+#: ../src/connection-editor/ce-page-team-port.ui.h:13
 msgid "Port priority. The higher number means higher priority."
 msgstr ""
 
+#: ../src/connection-editor/ce-page-team-port.ui.h:14
+msgid "Port _sticky"
+msgstr ""
+
 #: ../src/connection-editor/ce-page-team-port.ui.h:15
-msgid "Active-Backup runner options"
+#: ../src/connection-editor/ce-page-team.ui.h:82
+msgid ""
+"Validate received ARP packets on active ports. If this is not checked, all "
+"incoming ARP packets will be considered as a good reply."
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:16
-#, fuzzy
-msgid "_LACP port priority:"
-msgstr "_Forgangur:"
+msgid "LACP runner options"
+msgstr ""
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:17
-#, fuzzy
-msgid "LACP port _key:"
-msgstr "_Einkalykill:"
+msgid "_LACP port priority"
+msgstr "Forgangur _LACP gáttar"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:18
+msgid "LACP port _key"
+msgstr "Ly_kill LACP gáttar"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:19
 #: ../src/connection-editor/ce-page-team.ui.h:43
 msgid ""
 "Number of bursts of multicast group rejoin requests sent after port is "
 "enabled or disabled."
 msgstr ""
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:19
+#: ../src/connection-editor/ce-page-team-port.ui.h:20
 msgid ""
 "Port priority according to LACP standard. The lower number means higher "
 "priority."
 msgstr ""
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:20
+#: ../src/connection-editor/ce-page-team-port.ui.h:21
 #: ../src/connection-editor/ce-page-team.ui.h:45
 msgid ""
 "Value is positive number in milliseconds. Specifies an interval between "
 "bursts of multicast group rejoin requests."
 msgstr ""
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:21
+#: ../src/connection-editor/ce-page-team-port.ui.h:22
 msgid ""
 "Port key according to LACP standard. It is only possible to aggregate ports "
 "with the same key."
 msgstr ""
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:22
-msgid "LACP runner options"
-msgstr ""
-
 #: ../src/connection-editor/ce-page-team-port.ui.h:24
 #: ../src/connection-editor/ce-page-team.ui.h:70
-msgid "_Link watcher:"
+msgid "_Link watcher"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:25
 #: ../src/connection-editor/ce-page-team.ui.h:71
-msgid "_Up delay:"
+msgid "_Up delay"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:26
 #: ../src/connection-editor/ce-page-team.ui.h:72
-msgid "_Down delay:"
+msgid "_Down delay"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:27
 #: ../src/connection-editor/ce-page-team.ui.h:73
-msgid "Send _interval:"
+msgid "Send _interval"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:28
 #: ../src/connection-editor/ce-page-team.ui.h:74
-msgid "Delay _before first send:"
+msgid "Delay _before first send"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:29
 #: ../src/connection-editor/ce-page-team.ui.h:75
-msgid "_Maximum missed replies:"
+msgid "_Maximum missed replies"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:30
 #: ../src/connection-editor/ce-page-team.ui.h:76
-msgid "_Source host:"
-msgstr ""
+#, fuzzy
+msgid "_Source host"
+msgstr "ARP ú_ttök:"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:31
 #: ../src/connection-editor/ce-page-team.ui.h:77
 #, fuzzy
-msgid "_Target host:"
+msgid "_Target host"
 msgstr "ARP ú_ttök:"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:32
@@ -2358,9 +2602,8 @@ msgstr "Flytja inn hó_punaruppsetningu úr skrá..."
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:47
 #: ../src/connection-editor/ce-page-team.ui.h:94
-#, fuzzy
-msgid "Edit _JSON configuration:"
-msgstr "_JSON stillingar:"
+msgid "Edit _JSON configuration"
+msgstr "Breyta _JSON-uppsetningu"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:48
 #: ../src/connection-editor/ce-page-team.ui.h:95
@@ -2376,18 +2619,16 @@ msgid "Highest priority (stable)"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team.ui.h:3
-#, fuzzy
 msgid "Bandwidth"
-msgstr "Hópur bandbreiddar:"
+msgstr "Bandbreidd"
 
 #: ../src/connection-editor/ce-page-team.ui.h:4
 msgid "Highest number of ports"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team.ui.h:5
-#, fuzzy
 msgid "Port priority"
-msgstr "Forgangur"
+msgstr "Forgangur gáttar"
 
 #: ../src/connection-editor/ce-page-team.ui.h:6
 #, fuzzy
@@ -2403,7 +2644,9 @@ msgid "From active to team device"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team.ui.h:12
-msgid "_Teamed connections:"
+#, fuzzy
+#| msgid "_Teamed connections:"
+msgid "_Teamed connections"
 msgstr "Hópaðar _tengingar:"
 
 #: ../src/connection-editor/ce-page-team.ui.h:23
@@ -2415,32 +2658,30 @@ msgid "LACP"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team.ui.h:27
-#: ../src/connection-editor/connection-helpers.c:104
+#: ../src/connection-editor/connection-helpers.c:105
 #: ../src/connection-editor/page-ethernet.c:351
 #: ../src/libnm-gtk/nm-ui-utils.c:321
 msgid "Ethernet"
 msgstr "Ethernet"
 
 #: ../src/connection-editor/ce-page-team.ui.h:28
-#: ../src/connection-editor/connection-helpers.c:119
+#: ../src/connection-editor/connection-helpers.c:120
 #: ../src/connection-editor/page-vlan.c:594 ../src/libnm-gtk/nm-ui-utils.c:339
 #: ../src/libnm-gtk/nm-ui-utils.c:583
 msgid "VLAN"
 msgstr "VLAN"
 
 #: ../src/connection-editor/ce-page-team.ui.h:31
-#, fuzzy
 msgid "IP"
-msgstr "FIP"
+msgstr "IP"
 
 #: ../src/connection-editor/ce-page-team.ui.h:32
 msgid "Any L3 protocol"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team.ui.h:33
-#, fuzzy
 msgid "TCP"
-msgstr "GTC"
+msgstr "TCP"
 
 #: ../src/connection-editor/ce-page-team.ui.h:34
 msgid "UDP"
@@ -2455,24 +2696,24 @@ msgid "Any L4 protocol"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team.ui.h:38
-msgid "_Peer notification count:"
+msgid "_Peer notification count"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team.ui.h:39
-msgid "Peer _notification interval:"
+msgid "Peer _notification interval"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team.ui.h:40
-msgid "_Multicast rejoin count:"
+msgid "_Multicast rejoin count"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team.ui.h:41
-msgid "Multicast _rejoin interval:"
+msgid "Multicast _rejoin interval"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team.ui.h:46
 #, fuzzy
-msgid "_Hardware Address:"
+msgid "_Hardware Address"
 msgstr "Vistfang vélbúnaðar:"
 
 #: ../src/connection-editor/ce-page-team.ui.h:47
@@ -2482,12 +2723,12 @@ msgid ""
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team.ui.h:49
-msgid "_Runner:"
+msgid "_Runner"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team.ui.h:50
 #, fuzzy
-msgid "_Hardware address policy:"
+msgid "_Hardware address policy"
 msgstr "Vistfang vélbúnaðar:"
 
 #: ../src/connection-editor/ce-page-team.ui.h:51
@@ -2523,15 +2764,15 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page-team.ui.h:57
 #, fuzzy
-msgid "_System priority:"
+msgid "_System priority"
 msgstr "_Forgangur:"
 
 #: ../src/connection-editor/ce-page-team.ui.h:58
-msgid "_Minimum ports:"
+msgid "_Minimum ports"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team.ui.h:59
-msgid "_Aggregator selection policy:"
+msgid "_Aggregator selection policy"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team.ui.h:60
@@ -2568,12 +2809,12 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page-team.ui.h:67
 #, fuzzy
-msgid "Transmission _balancing interval:"
+msgid "Transmission _balancing interval"
 msgstr "Sendist_yrkur:"
 
 #: ../src/connection-editor/ce-page-team.ui.h:68
 #, fuzzy
-msgid "_Transmission balancer:"
+msgid "_Transmission balancer"
 msgstr "Sendist_yrkur:"
 
 #: ../src/connection-editor/ce-page-team.ui.h:69
@@ -2581,26 +2822,27 @@ msgid "Runner"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:1
-msgid "_Parent interface:"
-msgstr ""
+#, fuzzy
+msgid "_Parent interface"
+msgstr "Ethernet nettæki"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:2
-#, fuzzy
-msgid "VLAN inter_face name:"
-msgstr "Heiti VLA_N viðmóts:"
+msgid "VLAN inter_face name"
+msgstr "Heiti VLA_N viðmóts"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:3
-#, fuzzy
-msgid "Cloned MAC _address:"
-msgstr "_Klónað MAC vistfang:"
+msgid "Cloned MAC _address"
+msgstr "Klónað M_AC-vistfang"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:6
-msgid "VLAN _id:"
-msgstr "VLAN _ID:"
+#| msgid "VLAN _id:"
+msgid "VLAN _id"
+msgstr "VLAN _ID"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:7
-msgid "Flags:"
-msgstr "Flögg:"
+#| msgid "Flags:"
+msgid "Flags"
+msgstr "Flögg"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:8
 msgid "_Reorder headers"
@@ -2616,7 +2858,7 @@ msgstr "_Lausleg binding"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:11
 msgid "M_VRP"
-msgstr ""
+msgstr "M_VRP"
 
 #. In context, this means "concatenate the device name and the VLAN ID number together"
 #: ../src/connection-editor/ce-page-vlan.ui.h:13
@@ -2629,8 +2871,9 @@ msgid "\"vlan\" + number"
 msgstr "\"vlan\" + tala"
 
 #: ../src/connection-editor/ce-page-wifi-security.ui.h:1
-msgid "S_ecurity:"
-msgstr "Ör_yggi:"
+#| msgid "S_ecurity:"
+msgid "S_ecurity"
+msgstr "Öry_ggi"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:2
 msgid "A (5 GHz)"
@@ -2657,33 +2900,40 @@ msgid "mW"
 msgstr "mW"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:12
-msgid "Transmission po_wer:"
-msgstr "Sendist_yrkur:"
+#| msgid "Transmission po_wer:"
+msgid "Transmission po_wer"
+msgstr "Sendist_yrkur"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:13
 msgid "Mb/s"
 msgstr "MB/sek"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:14
-msgid "_Rate:"
-msgstr "Hr_aði:"
+#| msgid "_Rate:"
+msgid "_Rate"
+msgstr "H_raði"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:15
-msgid "_BSSID:"
-msgstr "_BSSID:"
+#| msgid "_BSSID:"
+msgid "_BSSID"
+msgstr "_BSSID"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:16
-msgid "C_hannel:"
-msgstr "_Rás:"
+#| msgid "C_hannel:"
+msgid "C_hannel"
+msgstr "_Rás"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:17
-msgid "Ban_d:"
-msgstr "Tíðn_isvið:"
+#| msgid "Ban_d:"
+msgid "Ban_d"
+msgstr "Tíðn_isvið"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:19
-msgid "SS_ID:"
-msgstr "SS_ID:"
+#| msgid "SS_ID:"
+msgid "SS_ID"
+msgstr "SS_ID"
 
+#: ../src/connection-editor/ce-polkit.c:63
 #: ../src/connection-editor/ce-polkit-button.c:74
 msgid "No polkit authorization to perform the action"
 msgstr "Ekki heimild frá polkit til að framkvæma þessa aðgerð"
@@ -2738,70 +2988,75 @@ msgid ""
 "methods. If connections fail, try disabling support for some methods."
 msgstr ""
 
-#: ../src/connection-editor/connection-helpers.c:105
+#: ../src/connection-editor/connection-helpers.c:106
 #: ../src/connection-editor/page-wifi.c:440 ../src/libnm-gtk/nm-ui-utils.c:323
 msgid "Wi-Fi"
 msgstr "Wi-Fi"
 
-#: ../src/connection-editor/connection-helpers.c:113
+#: ../src/connection-editor/connection-helpers.c:114
 #: ../src/connection-editor/page-bluetooth.c:123
 #: ../src/libnm-gtk/nm-ui-utils.c:325
 msgid "Bluetooth"
 msgstr "Bluetooth"
 
-#: ../src/connection-editor/connection-helpers.c:114
-#: ../src/connection-editor/page-dsl.c:127
-msgid "DSL"
-msgstr "DSL"
-
 #: ../src/connection-editor/connection-helpers.c:115
+#: ../src/connection-editor/page-dsl.c:201
+msgid "DSL/PPPoE"
+msgstr ""
+
+#: ../src/connection-editor/connection-helpers.c:116
 #: ../src/connection-editor/page-infiniband.c:148
 #: ../src/libnm-gtk/nm-ui-utils.c:331
 msgid "InfiniBand"
 msgstr "InfiniBand"
 
-#: ../src/connection-editor/connection-helpers.c:116
+#: ../src/connection-editor/connection-helpers.c:117
 #: ../src/connection-editor/page-bond.c:446 ../src/libnm-gtk/nm-ui-utils.c:333
 #: ../src/libnm-gtk/nm-ui-utils.c:577
 msgid "Bond"
 msgstr "Bundið (bond)"
 
-#: ../src/connection-editor/connection-helpers.c:117
-#: ../src/connection-editor/page-team.c:1153 ../src/libnm-gtk/nm-ui-utils.c:335
+#: ../src/connection-editor/connection-helpers.c:118
+#: ../src/connection-editor/page-team.c:1031 ../src/libnm-gtk/nm-ui-utils.c:335
 #: ../src/libnm-gtk/nm-ui-utils.c:579
 msgid "Team"
 msgstr "Hópað (team)"
 
-#: ../src/connection-editor/connection-helpers.c:118
-#: ../src/connection-editor/page-bridge.c:212
+#: ../src/connection-editor/connection-helpers.c:119
+#: ../src/connection-editor/page-bridge.c:233
 #: ../src/libnm-gtk/nm-ui-utils.c:337 ../src/libnm-gtk/nm-ui-utils.c:581
 msgid "Bridge"
 msgstr "Brúun (bridge)"
 
-#: ../src/connection-editor/connection-helpers.c:120
+#: ../src/connection-editor/connection-helpers.c:121
 #: ../src/connection-editor/page-ip-tunnel.c:176
 msgid "IP tunnel"
 msgstr ""
 
 #: ../src/connection-editor/connection-helpers.c:122
-#: ../src/connection-editor/connection-helpers.c:396
-#: ../src/connection-editor/page-vpn.c:96
+#: ../src/connection-editor/page-macsec.c:190
+msgid "MACsec"
+msgstr ""
+
+#: ../src/connection-editor/connection-helpers.c:124
+#: ../src/connection-editor/connection-helpers.c:398
+#: ../src/connection-editor/page-vpn.c:103
 msgid "VPN"
 msgstr "VPN-net"
 
-#: ../src/connection-editor/connection-helpers.c:205
+#: ../src/connection-editor/connection-helpers.c:207
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
 "Error: no VPN service type."
 msgstr ""
 
-#: ../src/connection-editor/connection-helpers.c:217
+#: ../src/connection-editor/connection-helpers.c:219
 msgid "Cannot import VPN connection"
 msgstr "Get ekki tekið á móti VPN-nettengingu"
 
-#: ../src/connection-editor/connection-helpers.c:219
-#, fuzzy, c-format
+#: ../src/connection-editor/connection-helpers.c:221
+#, c-format
 msgid ""
 "The file “%s” could not be read or does not contain recognized VPN "
 "connection information\n"
@@ -2813,46 +3068,52 @@ msgstr ""
 "\n"
 "Villa: %s."
 
-#: ../src/connection-editor/connection-helpers.c:220
+#: ../src/connection-editor/connection-helpers.c:222
 msgid "unknown error"
 msgstr "óþekkt villa"
 
-#: ../src/connection-editor/connection-helpers.c:303
+#: ../src/connection-editor/connection-helpers.c:305
 #: ../src/connection-editor/page-proxy.c:118
 #: ../src/connection-editor/page-team.c:341
 #: ../src/connection-editor/page-team-port.c:203
 msgid "Select file to import"
 msgstr "Veldu skrá til að flytja inn"
 
-#: ../src/connection-editor/connection-helpers.c:338
+#: ../src/connection-editor/connection-helpers.c:309
+#: ../src/connection-editor/page-proxy.c:122
+#: ../src/connection-editor/page-team.c:345
+#: ../src/connection-editor/page-team-port.c:207
+msgid "_Open"
+msgstr ""
+
+#: ../src/connection-editor/connection-helpers.c:340
 msgid "Hardware"
 msgstr "Vélbúnaður"
 
-#: ../src/connection-editor/connection-helpers.c:365
+#: ../src/connection-editor/connection-helpers.c:367
 msgid "Virtual"
 msgstr "Sýndar"
 
-#: ../src/connection-editor/connection-helpers.c:514
 #: ../src/connection-editor/connection-helpers.c:516
-#, fuzzy
+#: ../src/connection-editor/connection-helpers.c:518
 msgid "Import a saved VPN configuration…"
-msgstr "Flytja inn vistaða VPN uppsetningu..."
+msgstr "Flytja inn vistaða VPN uppsetningu…"
 
-#: ../src/connection-editor/connection-helpers.c:546
+#: ../src/connection-editor/connection-helpers.c:548
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
-msgstr ""
+msgstr "Ekki var hægt að frumstilla tengingaritilinn vegna óþekktrar villu."
 
-#: ../src/connection-editor/connection-helpers.c:555
+#: ../src/connection-editor/connection-helpers.c:557
 msgid "Could not create new connection"
 msgstr "Gat ekki búið til nýja tengingu"
 
-#: ../src/connection-editor/connection-helpers.c:718
+#: ../src/connection-editor/connection-helpers.c:720
 msgid "Connection delete failed"
 msgstr "Það tókst ekki að eyða tengingunni"
 
-#: ../src/connection-editor/connection-helpers.c:766
+#: ../src/connection-editor/connection-helpers.c:768
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Ertu viss um að þú viljir eyða tengingu %s?"
@@ -2860,7 +3121,7 @@ msgstr "Ertu viss um að þú viljir eyða tengingu %s?"
 #: ../src/connection-editor/ip4-routes-dialog.c:697
 #: ../src/connection-editor/ip6-routes-dialog.c:718
 #: ../src/connection-editor/page-ip4.c:1136
-#: ../src/connection-editor/page-ip6.c:1095
+#: ../src/connection-editor/page-ip6.c:1118
 msgid "Address"
 msgstr "Vistfang"
 
@@ -2872,7 +3133,7 @@ msgstr "Nethula (mask)"
 #: ../src/connection-editor/ip4-routes-dialog.c:735
 #: ../src/connection-editor/ip6-routes-dialog.c:756
 #: ../src/connection-editor/page-ip4.c:1174
-#: ../src/connection-editor/page-ip6.c:1133
+#: ../src/connection-editor/page-ip6.c:1156
 msgid "Gateway"
 msgstr "Gátt"
 
@@ -2882,39 +3143,38 @@ msgid "Metric"
 msgstr "Leiðargæði (metric)"
 
 #: ../src/connection-editor/ip6-routes-dialog.c:737
-#: ../src/connection-editor/page-ip6.c:1114
+#: ../src/connection-editor/page-ip6.c:1137
 msgid "Prefix"
 msgstr "Forskeyti"
 
-#: ../src/connection-editor/nm-connection-editor.c:108
+#: ../src/connection-editor/nm-connection-editor.c:109
 #, c-format
 msgid "Editing %s"
 msgstr "Breyti %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:112
+#: ../src/connection-editor/nm-connection-editor.c:113
 msgid "Editing un-named connection"
 msgstr "Breyti nafnlausri tengingu"
 
-#: ../src/connection-editor/nm-connection-editor.c:132
+#: ../src/connection-editor/nm-connection-editor.c:133
 msgid "Missing connection name"
 msgstr "Heiti tengingar vantar"
 
-#: ../src/connection-editor/nm-connection-editor.c:352
-#, fuzzy
+#: ../src/connection-editor/nm-connection-editor.c:349
 msgid "Editor initializing…"
-msgstr "Frumstilling ritils..."
+msgstr "Frumstilling ritils…"
 
-#: ../src/connection-editor/nm-connection-editor.c:359
-#: ../src/connection-editor/nm-connection-list.c:408
+#: ../src/connection-editor/nm-connection-editor.c:356
+#: ../src/connection-editor/nm-connection-list.c:443
 msgid "Connection cannot be modified"
 msgstr "Ekki er hægt að breyta tengingu"
 
-#: ../src/connection-editor/nm-connection-editor.c:374
+#: ../src/connection-editor/nm-connection-editor.c:371
 #, c-format
 msgid "Invalid setting %s: %s"
 msgstr "Ógild stilling %s: %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:450
+#: ../src/connection-editor/nm-connection-editor.c:447
 msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
@@ -2922,54 +3182,51 @@ msgstr ""
 "Tengingaritillinn gat ekki fundið nauðsynleg tilföng (.ui-skráin fannst "
 "ekki)."
 
-#: ../src/connection-editor/nm-connection-editor.c:577
+#: ../src/connection-editor/nm-connection-editor.c:574
+#: ../src/connection-editor/vpn-helpers.c:213
 msgid "_Save"
 msgstr "Vi_sta"
 
-#: ../src/connection-editor/nm-connection-editor.c:578
+#: ../src/connection-editor/nm-connection-editor.c:575
 msgid "Save any changes made to this connection."
 msgstr "Vista allar breytingar á þessari tengingu."
 
-#: ../src/connection-editor/nm-connection-editor.c:579
+#: ../src/connection-editor/nm-connection-editor.c:576
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "Auðkenndu þig til að vista þessa tengingu fyrir alla notendur tölvunnar."
 
-#: ../src/connection-editor/nm-connection-editor.c:595
+#: ../src/connection-editor/nm-connection-editor.c:592
 msgid "Could not create connection"
 msgstr "Gat ekki búið til tengingu"
 
-#: ../src/connection-editor/nm-connection-editor.c:595
+#: ../src/connection-editor/nm-connection-editor.c:592
 msgid "Could not edit connection"
 msgstr "Gat ekki breytt tengingunni"
 
-#: ../src/connection-editor/nm-connection-editor.c:597
+#: ../src/connection-editor/nm-connection-editor.c:594
 msgid "Unknown error creating connection editor dialog."
 msgstr "Villa við að búa til glugga tengingaritils."
 
-#: ../src/connection-editor/nm-connection-editor.c:738
+#: ../src/connection-editor/nm-connection-editor.c:735
 msgid ""
 "Warning: the connection contains some properties not supported by the "
 "editor. They will be cleared upon save."
 msgstr ""
 
-#: ../src/connection-editor/nm-connection-editor.c:758
+#: ../src/connection-editor/nm-connection-editor.c:755
 msgid "Error initializing editor"
 msgstr "Villa í frumstillingu ritils"
 
-#: ../src/connection-editor/nm-connection-editor.c:1142
+#: ../src/connection-editor/nm-connection-editor.c:1153
 msgid "Connection add failed"
 msgstr "Það tókst ekki að bæta við"
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:2 ../src/info.ui.h:2
-msgid "_Close"
-msgstr "_Loka"
-
-#: ../src/connection-editor/nm-connection-editor.ui.h:4
+#: ../src/connection-editor/nm-connection-editor.ui.h:1
 msgid "Fix"
 msgstr ""
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:5
+#: ../src/connection-editor/nm-connection-editor.ui.h:2
 #, fuzzy
 msgid ""
 "Security labels may prevent some files from being used with certificate "
@@ -2978,173 +3235,194 @@ msgstr ""
 "Settu þetta sem satt til að afvirkja tilkynningar varðandi CA-skilríki í EAP-"
 "auðkenningu."
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:6
-msgid "Connection _name:"
-msgstr "Heiti _tengingar:"
+#: ../src/connection-editor/nm-connection-editor.ui.h:3
+#| msgid "Connection _name:"
+msgid "Connection _name"
+msgstr "Heiti _tengingar"
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:7
-#, fuzzy
+#: ../src/connection-editor/nm-connection-editor.ui.h:4
 msgid "_Export…"
 msgstr "_Flytja út..."
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:9
+#: ../src/connection-editor/nm-connection-editor.ui.h:6
 msgid "File Relabel"
 msgstr ""
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:10
+#: ../src/connection-editor/nm-connection-editor.ui.h:7
 msgid "_Relabel"
 msgstr ""
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:11
+#: ../src/connection-editor/nm-connection-editor.ui.h:8
 msgid ""
 "The following files are not labelled for use with certificate "
 "authentication. Do you wish to adjust the labels?"
 msgstr ""
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:12
+#: ../src/connection-editor/nm-connection-editor.ui.h:9
 msgid "Relabel"
 msgstr ""
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:13
+#: ../src/connection-editor/nm-connection-editor.ui.h:10
 msgid "Filename"
 msgstr ""
 
-#: ../src/connection-editor/nm-connection-list.c:127
+#: ../src/connection-editor/nm-connection-list.c:151
 msgid "never"
 msgstr "aldrei"
 
-#: ../src/connection-editor/nm-connection-list.c:138
-#: ../src/connection-editor/nm-connection-list.c:149
+#: ../src/connection-editor/nm-connection-list.c:162
+#: ../src/connection-editor/nm-connection-list.c:173
 msgid "now"
 msgstr "núna"
 
 #. less than an hour ago
-#: ../src/connection-editor/nm-connection-list.c:156
+#: ../src/connection-editor/nm-connection-list.c:180
 #, c-format
 msgid "%d minute ago"
 msgid_plural "%d minutes ago"
 msgstr[0] "fyrir %d mínútu síðan"
 msgstr[1] "fyrir %d mínútum síðan"
 
-#: ../src/connection-editor/nm-connection-list.c:160
+#: ../src/connection-editor/nm-connection-list.c:184
 #, c-format
 msgid "%d hour ago"
 msgid_plural "%d hours ago"
 msgstr[0] "fyrir %d klukkustund síðan"
 msgstr[1] "fyrir %d klukkustundum síðan"
 
-#: ../src/connection-editor/nm-connection-list.c:172
+#: ../src/connection-editor/nm-connection-list.c:196
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "Fyrir %d degi"
 msgstr[1] "Fyrir %d dögum"
 
-#: ../src/connection-editor/nm-connection-list.c:178
+#: ../src/connection-editor/nm-connection-list.c:202
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
 msgstr[0] "Fyrir %d mánuði"
 msgstr[1] "Fyrir %d mánuðum"
 
-#: ../src/connection-editor/nm-connection-list.c:182
+#: ../src/connection-editor/nm-connection-list.c:206
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
 msgstr[0] "Fyrir %d ári"
 msgstr[1] "Fyrir %d árum"
 
-#: ../src/connection-editor/nm-connection-list.c:635
+#: ../src/connection-editor/nm-connection-list.c:445
+#| msgid "Connection cannot be modified"
+msgid "Connection cannot be deleted"
+msgstr "Ekki er hægt að eyða tengingu"
+
+#: ../src/connection-editor/nm-connection-list.c:448
+#, fuzzy
+#| msgid "Team connection %d"
+msgid "Select a connection to edit"
+msgstr "Hópa tenginguna %d"
+
+#: ../src/connection-editor/nm-connection-list.c:450
+#, fuzzy
+#| msgid "Team connection %d"
+msgid "Select a connection to delete"
+msgstr "Hópa tenginguna %d"
+
+#: ../src/connection-editor/nm-connection-list.c:785
 #: ../src/libnma/nma-pkcs11-cert-chooser-dialog.ui.h:2
 msgid "Name"
 msgstr "Nafn"
 
-#: ../src/connection-editor/nm-connection-list.c:648
+#: ../src/connection-editor/nm-connection-list.c:798
 msgid "Last Used"
 msgstr "Síðast notað"
 
-#: ../src/connection-editor/nm-connection-list.c:696
+#: ../src/connection-editor/nm-connection-list.c:836
 msgid "Edit the selected connection"
 msgstr "Breyta valinni tengingu"
 
-#: ../src/connection-editor/nm-connection-list.c:697
+#: ../src/connection-editor/nm-connection-list.c:837
 msgid "Authenticate to edit the selected connection"
 msgstr "Auðkenndu þig til að breyta valinni tengingu"
 
-#: ../src/connection-editor/nm-connection-list.c:712
+#: ../src/connection-editor/nm-connection-list.c:842
 msgid "Delete the selected connection"
 msgstr "Eyða valdri tengingu"
 
-#: ../src/connection-editor/nm-connection-list.c:713
+#: ../src/connection-editor/nm-connection-list.c:843
 msgid "Authenticate to delete the selected connection"
 msgstr "Auðkenndu þig til að eyða valinni tengingu"
 
-#: ../src/connection-editor/nm-connection-list.c:935
-#: ../src/connection-editor/nm-connection-list.c:938
+#: ../src/connection-editor/nm-connection-list.c:1048
+#: ../src/connection-editor/nm-connection-list.c:1051
 msgid "Error creating connection"
 msgstr "Villa við að búa til tengingu"
 
-#: ../src/connection-editor/nm-connection-list.c:936
+#: ../src/connection-editor/nm-connection-list.c:1049
 msgid "No VPN plugins are installed."
 msgstr "Engar VPN-viðbætur eru uppsettar."
 
-#: ../src/connection-editor/nm-connection-list.c:939
-#, fuzzy, c-format
+#: ../src/connection-editor/nm-connection-list.c:1052
+#, c-format
 msgid "Don’t know how to create “%s” connections"
 msgstr "Kann ekki að búa til '%s' tengingar"
 
-#: ../src/connection-editor/nm-connection-list.c:970
+#: ../src/connection-editor/nm-connection-list.c:1085
 msgid "Error editing connection"
 msgstr "Villa við að breyta tengingu"
 
-#: ../src/connection-editor/nm-connection-list.c:971
-#, fuzzy, c-format
+#: ../src/connection-editor/nm-connection-list.c:1086
+#, c-format
 msgid "Did not find a connection with UUID “%s”"
 msgstr "Finn ekki tengingu með UUID '%s'"
 
-#: ../src/connection-editor/page-8021x-security.c:109
+#: ../src/connection-editor/nm-connection-list.ui.h:2
+msgid "Add a new connection"
+msgstr "Bæta við nýrri tengingu"
+
+#: ../src/connection-editor/page-8021x-security.c:116
 msgid "802.1X Security"
 msgstr "Öruggt 802.1X"
 
-#: ../src/connection-editor/page-8021x-security.c:111
+#: ../src/connection-editor/page-8021x-security.c:118
 msgid "Could not load 802.1X Security user interface."
 msgstr "Gat ekki hlaðið inn notandaviðmóti fyrir Öruggt 802.1X"
 
-#: ../src/connection-editor/page-8021x-security.c:125
+#: ../src/connection-editor/page-8021x-security.c:132
 msgid "Use 802.1_X security for this connection"
 msgstr "Notaðu öruggt 802.1_x fyrir þessa tengingu"
 
 #: ../src/connection-editor/page-bluetooth.c:58
 msgid "MAC address of the Bluetooth device. Example: 00:11:22:33:44:55"
-msgstr ""
+msgstr "MAC-vistfang Bluetooth-tækisins. Dæmi: 00:11:22:33:44:55"
 
 #: ../src/connection-editor/page-bluetooth.c:125
 msgid "Could not load Bluetooth user interface."
 msgstr "Gat ekki hlaðið inn Bluetooth notandaviðmóti."
 
-#: ../src/connection-editor/page-bluetooth.c:175
-#, fuzzy, c-format
+#: ../src/connection-editor/page-bluetooth.c:173
+#, c-format
 msgid "invalid Bluetooth device (%s)"
-msgstr "ógilt viðmóts-nafn (%s)"
+msgstr "ógilt Bluetooth-tæki (%s)"
 
-#: ../src/connection-editor/page-bluetooth.c:258
+#: ../src/connection-editor/page-bluetooth.c:256
 #, c-format
 msgid "Bluetooth connection %d"
 msgstr "Bluetooth-tenging %d"
 
-#: ../src/connection-editor/page-bluetooth.c:308
+#: ../src/connection-editor/page-bluetooth.c:306
 msgid "Bluetooth Type"
 msgstr "Gerð af Bluetooth"
 
-#: ../src/connection-editor/page-bluetooth.c:326
+#: ../src/connection-editor/page-bluetooth.c:324
 msgid "Select the type of the Bluetooth connection profile."
 msgstr "Vinsamlegast veldu gerð Bluetooth tengisniðs."
 
-#: ../src/connection-editor/page-bluetooth.c:331
+#: ../src/connection-editor/page-bluetooth.c:329
 msgid "_Personal Area Network"
 msgstr "Einkanet (_Personal Area Network)"
 
-#: ../src/connection-editor/page-bluetooth.c:336
+#: ../src/connection-editor/page-bluetooth.c:334
 msgid "_Dial-Up Network"
 msgstr "Innhringinet (_Dial-Up)"
 
@@ -3161,11 +3439,11 @@ msgstr "aðal"
 msgid "Bond connection %d"
 msgstr "Binda tenginguna %d"
 
-#: ../src/connection-editor/page-bridge.c:215
+#: ../src/connection-editor/page-bridge.c:236
 msgid "Could not load bridge user interface."
 msgstr "Gat ekki hlaðið inn notandaviðmóti brúunar."
 
-#: ../src/connection-editor/page-bridge.c:317
+#: ../src/connection-editor/page-bridge.c:352
 #, c-format
 msgid "Bridge connection %d"
 msgstr "Brúa tenginguna %d"
@@ -3189,17 +3467,20 @@ msgstr "DCB"
 msgid "Could not load DCB user interface."
 msgstr "Gat ekki hlaðið inn DBC notandaviðmóti."
 
-#: ../src/connection-editor/page-dsl.c:129
+#: ../src/connection-editor/page-dsl.c:203
 msgid "Could not load DSL user interface."
 msgstr "Gat ekki hlaðið inn DSL notandaviðmóti."
 
-#: ../src/connection-editor/page-dsl.c:219
+#: ../src/connection-editor/page-dsl.c:298
+msgid "missing parent interface"
+msgstr ""
+
+#: ../src/connection-editor/page-dsl.c:343
 #, c-format
 msgid "DSL connection %d"
 msgstr "DSL tenging %d"
 
 #: ../src/connection-editor/page-ethernet.c:81
-#, fuzzy
 msgid ""
 "This option locks this connection to the network device specified either by "
 "its interface name or permanent MAC or both. Examples: “em1”, "
@@ -3210,9 +3491,8 @@ msgstr ""
 "\"em1\", \"3C:97:0E:42:1A:19\", \"em1 (3C:97:0E:42:1A:19)\""
 
 #: ../src/connection-editor/page-ethernet.c:262
-#, fuzzy
 msgid "ignored"
-msgstr "Hunsað"
+msgstr "hunsað"
 
 #: ../src/connection-editor/page-ethernet.c:353
 msgid "Could not load ethernet user interface."
@@ -3239,7 +3519,7 @@ msgstr "Ethernet tenging %d"
 
 #. TRANSLATORS: Default zone set for firewall, when no zone is selected
 #: ../src/connection-editor/page-general.c:54
-#: ../src/libnma/nma-mobile-providers.c:817
+#: ../src/libnma/nma-mobile-providers.c:807
 #: ../src/libnm-gtk/nm-mobile-providers.c:806
 msgid "Default"
 msgstr "Sjálfgefið"
@@ -3256,7 +3536,6 @@ msgid "Could not load General user interface."
 msgstr "Gat ekki hlaðið inn almennu notandaviðmóti."
 
 #: ../src/connection-editor/page-infiniband.c:57
-#, fuzzy
 msgid ""
 "This option locks this connection to the network device specified either by "
 "its interface name or permanent MAC or both. Examples: “ib0”, “80:00:00:48:"
@@ -3292,27 +3571,27 @@ msgid "IP tunnel connection %d"
 msgstr "Ethernet tenging %d"
 
 #: ../src/connection-editor/page-ip4.c:127
-#: ../src/connection-editor/page-ip6.c:130
+#: ../src/connection-editor/page-ip6.c:136
 msgid "Automatic (VPN)"
 msgstr "Sjálfvirkt (VPN-net)"
 
 #: ../src/connection-editor/page-ip4.c:128
-#: ../src/connection-editor/page-ip6.c:131
+#: ../src/connection-editor/page-ip6.c:137
 msgid "Automatic (VPN) addresses only"
 msgstr "Aðeins sjálfvirk (VPN) vistföng"
 
 #: ../src/connection-editor/page-ip4.c:132
-#: ../src/connection-editor/page-ip6.c:137
+#: ../src/connection-editor/page-ip6.c:143
 msgid "Automatic, addresses only"
 msgstr "Sjálfvirkt, aðeins vistföng"
 
 #: ../src/connection-editor/page-ip4.c:134
-#: ../src/connection-editor/page-ip6.c:133
+#: ../src/connection-editor/page-ip6.c:139
 msgid "Automatic (PPPoE)"
 msgstr "Sjálfvirkt (PPPoE)"
 
 #: ../src/connection-editor/page-ip4.c:135
-#: ../src/connection-editor/page-ip6.c:134
+#: ../src/connection-editor/page-ip6.c:140
 msgid "Automatic (PPPoE) addresses only"
 msgstr "Aðeins sjálfvirk (PPPoE) vistföng"
 
@@ -3325,18 +3604,21 @@ msgid "Automatic (DHCP) addresses only"
 msgstr "Aðeins sjálfvirk (DHCP) vistföng"
 
 #: ../src/connection-editor/page-ip4.c:181
-#: ../src/connection-editor/page-ip6.c:198
+#: ../src/connection-editor/page-ip6.c:204
 msgid "Link-Local Only"
 msgstr "Einungis staðvær tengi (link-local)"
 
 #: ../src/connection-editor/page-ip4.c:361
-#: ../src/connection-editor/page-ip6.c:324
-msgid "Additional DNS ser_vers:"
-msgstr "Auka DNS nafna_miðlarar:"
+#: ../src/connection-editor/page-ip6.c:335
+#| msgid "Additional DNS ser_vers:"
+msgid "Additional DNS ser_vers"
+msgstr "Auka DNS nafna_miðlarar"
 
 #: ../src/connection-editor/page-ip4.c:370
-#: ../src/connection-editor/page-ip6.c:333
-msgid "Additional s_earch domains:"
+#: ../src/connection-editor/page-ip6.c:344
+#, fuzzy
+#| msgid "Additional s_earch domains:"
+msgid "Additional s_earch domains"
 msgstr "Aukal_eg leitarlén:"
 
 #: ../src/connection-editor/page-ip4.c:1033
@@ -3372,42 +3654,54 @@ msgstr "IPv4 netgátt  \"%s\" er ógild"
 msgid "IPv4 DNS server “%s” invalid"
 msgstr "IPv4 DNS nafnaþjónn \"%s\" er ógildur"
 
-#: ../src/connection-editor/page-ip6.c:173
+#: ../src/connection-editor/page-ip6.c:179
 msgid "Automatic, DHCP only"
 msgstr "Sjálfvirkt, aðeins DHCP"
 
-#: ../src/connection-editor/page-ip6.c:993
+#: ../src/connection-editor/page-ip6.c:1016
 #, c-format
 msgid "Editing IPv6 routes for %s"
 msgstr "Breyti IPv6 beiningum fyrir %s"
 
-#: ../src/connection-editor/page-ip6.c:1184
+#: ../src/connection-editor/page-ip6.c:1208
 msgid "IPv6 Settings"
 msgstr "IPv6 stillingar"
 
-#: ../src/connection-editor/page-ip6.c:1186
+#: ../src/connection-editor/page-ip6.c:1210
 msgid "Could not load IPv6 user interface."
 msgstr "Gat ekki hlaðið inn IPv6 notandaviðmóti."
 
-#: ../src/connection-editor/page-ip6.c:1277
+#: ../src/connection-editor/page-ip6.c:1302
 #, fuzzy, c-format
 msgid "IPv6 address “%s” invalid"
 msgstr "IPv6 vistfangið \"%s\" er ógilt"
 
-#: ../src/connection-editor/page-ip6.c:1285
+#: ../src/connection-editor/page-ip6.c:1310
 #, fuzzy, c-format
 msgid "IPv6 prefix “%s” invalid"
 msgstr "IPv6 forskeytið \"%s\" er ógilt"
 
-#: ../src/connection-editor/page-ip6.c:1294
+#: ../src/connection-editor/page-ip6.c:1319
 #, fuzzy, c-format
 msgid "IPv6 gateway “%s” invalid"
 msgstr "IPv6 netgátt  \"%s\" er ógild"
 
-#: ../src/connection-editor/page-ip6.c:1336
+#: ../src/connection-editor/page-ip6.c:1361
 #, fuzzy, c-format
 msgid "IPv6 DNS server “%s” invalid"
 msgstr "IPv6 DNS nafnaþjónn \"%s\" er ógildur"
+
+#: ../src/connection-editor/page-macsec.c:192
+#, fuzzy
+#| msgid "Could not load WiMAX user interface."
+msgid "Could not load MACsec user interface."
+msgstr "Gat ekki hlaðið inn WiMAX notandaviðmóti."
+
+#: ../src/connection-editor/page-macsec.c:331
+#, fuzzy, c-format
+#| msgid "WiMAX connection %d"
+msgid "MACSEC connection %d"
+msgstr "WiMAX tenging %d"
 
 #: ../src/connection-editor/page-master.c:247
 #: ../src/connection-editor/page-master.c:258
@@ -3466,38 +3760,34 @@ msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr "Þjónustuveitan mín notar C_DMA-tækni (t.d. 1xRTT, EVDO)"
 
 #: ../src/connection-editor/page-mobile.c:589 ../src/mb-menu-item.c:50
-#: ../src/mobile-helpers.c:283
+#: ../src/mobile-helpers.c:282
 msgid "CDMA"
 msgstr "CDMA"
 
 #: ../src/connection-editor/page-mobile.c:592 ../src/mb-menu-item.c:54
-#: ../src/mobile-helpers.c:281
+#: ../src/mobile-helpers.c:280
 msgid "GSM"
 msgstr "GSM"
 
-#: ../src/connection-editor/page-ppp.c:129
-msgid "EAP"
-msgstr "EAP"
-
 #: ../src/connection-editor/page-ppp.c:130
-#: ../src/wireless-security/eap-method-ttls.c:260
+#: ../src/wireless-security/eap-method-ttls.c:287
 msgid "PAP"
 msgstr "PAP"
 
 #: ../src/connection-editor/page-ppp.c:131
-#: ../src/wireless-security/eap-method-ttls.c:322
+#: ../src/wireless-security/eap-method-ttls.c:349
 msgid "CHAP"
 msgstr "CHAP"
 
 #: ../src/connection-editor/page-ppp.c:132
-#: ../src/wireless-security/eap-method-fast.c:284
-#: ../src/wireless-security/eap-method-peap.c:273
-#: ../src/wireless-security/eap-method-ttls.c:290
+#: ../src/wireless-security/eap-method-fast.c:282
+#: ../src/wireless-security/eap-method-peap.c:299
+#: ../src/wireless-security/eap-method-ttls.c:317
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
 #: ../src/connection-editor/page-ppp.c:133
-#: ../src/wireless-security/eap-method-ttls.c:275
+#: ../src/wireless-security/eap-method-ttls.c:302
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
@@ -3534,11 +3824,11 @@ msgstr "Gat ekki hlaðið inn notandaviðmóti bindingar."
 msgid "Error: file doesn’t contain a valid JSON configuration"
 msgstr "Villa: skrá inniheldur ekki gilda JSON uppsetningu"
 
-#: ../src/connection-editor/page-team.c:1156
+#: ../src/connection-editor/page-team.c:1034
 msgid "Could not load team user interface."
 msgstr "Gat ekki hlaðið inn notandaviðmóti hópunar."
 
-#: ../src/connection-editor/page-team.c:1253
+#: ../src/connection-editor/page-team.c:1131
 #, c-format
 msgid "Team connection %d"
 msgstr "Hópa tenginguna %d"
@@ -3546,11 +3836,11 @@ msgstr "Hópa tenginguna %d"
 #. Translators: a "Team Port" is a network
 #. * device that is part of a team.
 #.
-#: ../src/connection-editor/page-team-port.c:732
+#: ../src/connection-editor/page-team-port.c:655
 msgid "Team Port"
 msgstr "Gátt hópunar"
 
-#: ../src/connection-editor/page-team-port.c:734
+#: ../src/connection-editor/page-team-port.c:657
 msgid "Could not load team port user interface."
 msgstr "Gat ekki hlaðið inn notandaviðmóti gáttar fyrir hópun."
 
@@ -3558,14 +3848,14 @@ msgstr "Gat ekki hlaðið inn notandaviðmóti gáttar fyrir hópun."
 #. * second is a connection name (eg, "Auto Ethernet").
 #.
 #: ../src/connection-editor/page-vlan.c:415
-#, fuzzy, c-format
+#, c-format
 msgid "%s (via “%s”)"
 msgstr "%s (um \"%s\")"
 
 #: ../src/connection-editor/page-vlan.c:427
-#, fuzzy, c-format
+#, c-format
 msgid "New connection…"
-msgstr "Ný tenging..."
+msgstr "Ný tenging…"
 
 #: ../src/connection-editor/page-vlan.c:596
 msgid "Could not load vlan user interface."
@@ -3580,35 +3870,34 @@ msgstr ""
 msgid "VLAN connection %d"
 msgstr "VLAN nettenging %d"
 
-#: ../src/connection-editor/page-vpn.c:98
-msgid "Could not load VPN user interface."
-msgstr "Gat ekki hlaðið inn VPN notandaviðmóti."
-
-#: ../src/connection-editor/page-vpn.c:113
-#, fuzzy, c-format
-msgid "Could not find VPN plugin for “%s”."
-msgstr "Fann ekki þjónustu fyrir VPN-viðbætur fyrir '%s'."
-
-#: ../src/connection-editor/page-vpn.c:122
+#: ../src/connection-editor/page-vpn.c:67
 #, fuzzy, c-format
 msgid "Could not load editor VPN plugin for “%s” (%s)."
 msgstr "Fann ekki þjónustu fyrir VPN-viðbætur fyrir '%s'."
 
-#: ../src/connection-editor/page-vpn.c:123
-#, fuzzy
+#: ../src/connection-editor/page-vpn.c:68
 msgid "unknown failure"
-msgstr "Tenging brást"
+msgstr "óþekkt bilun"
 
-#: ../src/connection-editor/page-vpn.c:205
+#: ../src/connection-editor/page-vpn.c:105
+msgid "Could not load VPN user interface."
+msgstr "Gat ekki hlaðið inn VPN notandaviðmóti."
+
+#: ../src/connection-editor/page-vpn.c:120
+#, fuzzy, c-format
+msgid "Could not find VPN plugin for “%s”."
+msgstr "Fann ekki þjónustu fyrir VPN-viðbætur fyrir '%s'."
+
+#: ../src/connection-editor/page-vpn.c:202
 #, c-format
 msgid "VPN connection %d"
 msgstr "VPN-nettenging %d"
 
-#: ../src/connection-editor/page-vpn.c:211
+#: ../src/connection-editor/page-vpn.c:208
 msgid "Choose a VPN Connection Type"
 msgstr "Veldu tegund VPN-tengingar"
 
-#: ../src/connection-editor/page-vpn.c:212
+#: ../src/connection-editor/page-vpn.c:209
 msgid ""
 "Select the type of VPN you wish to use for the new connection. If the type "
 "of VPN connection you wish to create does not appear in the list, you may "
@@ -3657,50 +3946,50 @@ msgstr "Wi-Fi tæki"
 msgid "Wi-Fi connection %d"
 msgstr "Wi-Fi tenging %d"
 
-#: ../src/connection-editor/page-wifi-security.c:356
+#: ../src/connection-editor/page-wifi-security.c:358
 #: ../src/libnma/nma-wifi-dialog.c:923 ../src/libnm-gtk/nm-wifi-dialog.c:922
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "WEP 40/128-bit lykill (Hex eða ASCII)"
 
-#: ../src/connection-editor/page-wifi-security.c:366
+#: ../src/connection-editor/page-wifi-security.c:368
 #: ../src/libnma/nma-wifi-dialog.c:932 ../src/libnm-gtk/nm-wifi-dialog.c:931
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128-bit lykilsetning"
 
-#: ../src/connection-editor/page-wifi-security.c:392
+#: ../src/connection-editor/page-wifi-security.c:394
 msgid "Dynamic WEP (802.1X)"
 msgstr "Breytilegt (dynamic) WEP (802.1X)"
 
-#: ../src/connection-editor/page-wifi-security.c:405
+#: ../src/connection-editor/page-wifi-security.c:407
 #: ../src/libnma/nma-wifi-dialog.c:976 ../src/libnm-gtk/nm-wifi-dialog.c:975
 msgid "WPA & WPA2 Personal"
 msgstr "WPA og WPA2 einka"
 
-#: ../src/connection-editor/page-wifi-security.c:418
+#: ../src/connection-editor/page-wifi-security.c:420
 #: ../src/libnma/nma-wifi-dialog.c:990 ../src/libnm-gtk/nm-wifi-dialog.c:989
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA og WPA2 fyrirtækja"
 
-#: ../src/connection-editor/page-wifi-security.c:461
+#: ../src/connection-editor/page-wifi-security.c:463
 msgid "Could not load Wi-Fi security user interface; missing Wi-Fi setting."
 msgstr ""
 "Gat ekki hlaðið inn notandaviðmóti fyrir Öruggt Wi-Fi; vantar Wi-Fi "
 "stillingar."
 
-#: ../src/connection-editor/page-wifi-security.c:472
+#: ../src/connection-editor/page-wifi-security.c:474
 msgid "Wi-Fi Security"
 msgstr "Öruggt Wi-Fi"
 
-#: ../src/connection-editor/page-wifi-security.c:474
+#: ../src/connection-editor/page-wifi-security.c:476
 msgid "Could not load Wi-Fi security user interface."
 msgstr "Gat ekki hlaðið inn notandaviðmóti fyrir Öruggt Wi-Fi."
 
-#: ../src/connection-editor/page-wifi-security.c:558
+#: ../src/connection-editor/page-wifi-security.c:560
 #, c-format
 msgid "missing SSID"
 msgstr "vantar SSID"
 
-#: ../src/connection-editor/page-wifi-security.c:564
+#: ../src/connection-editor/page-wifi-security.c:566
 #, c-format
 msgid "Security not compatible with Ad-Hoc mode"
 msgstr "Öruggt Wi-Fi er ekki samhæft við beintengiham (ad-hoc)"
@@ -3751,113 +4040,194 @@ msgstr "Aflæsa þessu tæki sjálfkrafa"
 msgid "Connection Information"
 msgstr "Upplýsingar um tengingu"
 
+#: ../src/info.ui.h:2
+msgid "_Close"
+msgstr "_Loka"
+
 #: ../src/info.ui.h:3
 msgid "Active Network Connections"
 msgstr "Virkar nettengingar"
 
 #: ../src/libnma/nma-file-cert-chooser.c:108
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:140
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:146
 #, fuzzy
 msgid "No certificate set"
 msgstr "CA skilríkis e_r ekki krafist"
 
 #: ../src/libnma/nma-file-cert-chooser.c:126
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:164
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:170
 msgid "No key set"
 msgstr ""
 
 #: ../src/libnma/nma-file-cert-chooser.c:246
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:364
-#, fuzzy, c-format
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:370
+#, c-format
 msgid "Choose a key for %s Certificate"
-msgstr "Veldu þitt einkaskilríki..."
+msgstr "Veldu lykil fyrir skilríki %s"
 
 #: ../src/libnma/nma-file-cert-chooser.c:250
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:368
-#, fuzzy, c-format
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:374
+#, c-format
 msgid "%s private _key:"
-msgstr "_Einkalykill:"
+msgstr "Einkaly_kill %s:"
 
 #: ../src/libnma/nma-file-cert-chooser.c:254
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:372
-#, fuzzy, c-format
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:378
+#, c-format
 msgid "%s key _password:"
-msgstr "_Lykilorð einkalykils:"
+msgstr "Lykil_orð einkalykils %s:"
 
 #: ../src/libnma/nma-file-cert-chooser.c:258
-#, fuzzy, c-format
+#, c-format
 msgid "Choose %s Certificate"
-msgstr "Veldu þitt einkaskilríki..."
+msgstr "Veldu skilríki %s"
 
 #: ../src/libnma/nma-file-cert-chooser.c:262
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:380
-#, fuzzy, c-format
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:386
+#, c-format
 msgid "%s _certificate:"
-msgstr "_Skilríki notanda:"
+msgstr "_Skilríki %s:"
 
-#: ../src/libnma/nma-mobile-wizard.c:198
-#: ../src/libnm-gtk/nm-mobile-wizard.c:199
-msgid ""
-"Your mobile broadband connection is configured with the following settings:"
-msgstr "Ferðabreiðbandstengingin þín er stillt með eftirfarandi breytum:"
-
-#. Device
-#: ../src/libnma/nma-mobile-wizard.c:205
-#: ../src/libnm-gtk/nm-mobile-wizard.c:206
-msgid "Your Device:"
-msgstr "Tækið þitt:"
-
-#. Provider
-#: ../src/libnma/nma-mobile-wizard.c:216
-#: ../src/libnm-gtk/nm-mobile-wizard.c:217
-msgid "Your Provider:"
-msgstr "Þjónustuveitan þín:"
-
-#. Plan and APN
-#: ../src/libnma/nma-mobile-wizard.c:227
-#: ../src/libnm-gtk/nm-mobile-wizard.c:228
-msgid "Your Plan:"
-msgstr "Áskriftin þín:"
-
-#: ../src/libnma/nma-mobile-wizard.c:248
-#: ../src/libnm-gtk/nm-mobile-wizard.c:249
-#, fuzzy
-msgid ""
-"A connection will now be made to your mobile broadband provider using the "
-"settings you selected. If the connection fails or you cannot access network "
-"resources, double-check your settings. To modify your mobile broadband "
-"connection settings, choose “Network Connections” from the System → "
-"Preferences menu."
-msgstr ""
-"Nú verður reynt að tengjast þjónustuveitu ferðabreiðbandsins með þeim "
-"stillingum sem þú valdir.  Ef tengingin mistekst eða að þú nærð ekki "
-"sambandi við tilföng á netinu, ættirðu að yfirfara stillingarnar.  Til að "
-"breyta stillingum ferðabreiðbandsins, veldu \"Nettengingar\" úr valmyndinni "
-"Kerfi >> Kjörstillingar."
-
-#: ../src/libnma/nma-mobile-wizard.c:261
-#: ../src/libnm-gtk/nm-mobile-wizard.c:262
-msgid "Confirm Mobile Broadband Settings"
-msgstr "Staðfestu stillingar ferðabreiðbands"
-
-#: ../src/libnma/nma-mobile-wizard.c:325
+#: ../src/libnma/nma-mobile-wizard.c:281
 #: ../src/libnm-gtk/nm-mobile-wizard.c:326
 msgid "Unlisted"
 msgstr "Óskráð"
 
-#: ../src/libnma/nma-mobile-wizard.c:456
+#: ../src/libnma/nma-mobile-wizard.c:465
+#: ../src/libnm-gtk/nm-mobile-wizard.c:558
+msgid "My plan is not listed…"
+msgstr "Áskriftin mín er ekki á listanum…"
+
+#: ../src/libnma/nma-mobile-wizard.c:626
+#: ../src/libnm-gtk/nm-mobile-wizard.c:724
+msgid "Provider"
+msgstr "Þjónustuveita"
+
+#: ../src/libnma/nma-mobile-wizard.c:908
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1067
+msgid "Country or region"
+msgstr "Land eða svæði"
+
+#: ../src/libnma/nma-mobile-wizard.c:918
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1077
+msgid "My country is not listed"
+msgstr "Landið mitt er ekki á listanum"
+
+#: ../src/libnma/nma-mobile-wizard.c:999
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1184
+msgid "Installed GSM device"
+msgstr "Uppsett GSM tæki"
+
+#: ../src/libnma/nma-mobile-wizard.c:1002
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1187
+msgid "Installed CDMA device"
+msgstr "Uppsett CDMA tæki"
+
+#: ../src/libnma/nma-mobile-wizard.c:1208
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1428
+msgid "Any device"
+msgstr "Eitthvað tæki"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:1
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1614
+msgid "New Mobile Broadband Connection"
+msgstr "Ný ferðabreiðbandstenging"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:2
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1355
+msgid ""
+"This assistant helps you easily set up a mobile broadband connection to a "
+"cellular (3G) network."
+msgstr ""
+"Þessi leiðarvísir hjálpar þér að setja upp ferðabreiðbandstengingu fyrir "
+"farsímakerfi (3G)."
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:3
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1361
+msgid "You will need the following information:"
+msgstr "Þú þarft á eftirfarandi upplýsingum að halda:"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:4
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1372
+msgid "Your broadband provider’s name"
+msgstr "Nafn breiðbandsþjónustuveitunnar þinnar"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:5
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1378
+msgid "Your broadband billing plan name"
+msgstr "Nafn breiðbandsáskriftarinnar þinnar"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:6
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1384
+msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
+msgstr ""
+"(í sumum tilfellum) APN aðgangspunktur áskriftarinnar þinnar (Access Point "
+"Name)"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:7
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1413
+msgid "Create a connection for _this mobile broadband device:"
+msgstr "Búa til _tengingu fyrir þetta ferðabreiðbandstæki:"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:8
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1441
+msgid "Set up a Mobile Broadband Connection"
+msgstr "Setja upp ferðabreiðbandstengingu"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:9
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1054
+msgid "Country or Region List:"
+msgstr "Listi yfir land eða svæði:"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:10
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1127
+msgid "Choose your Provider’s Country or Region"
+msgstr "Veldu land eða hérað þjónustuveitunnar"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:11
+#: ../src/libnm-gtk/nm-mobile-wizard.c:711
+msgid "Select your provider from a _list:"
+msgstr "Veldu þjónustuaðila úr _listanum:"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:12
+#: ../src/libnm-gtk/nm-mobile-wizard.c:749
+msgid "I can’t find my provider and I wish to enter it _manually:"
+msgstr ""
+"Ég finn ekki þjónustuaðilann _minn og vil því setja handvirkt inn upplýsingar "
+"um hann:"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:13
+#: ../src/libnm-gtk/nm-mobile-wizard.c:779
+msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
+msgstr "Þjónustuveitan mín notar GSM-tækni (GPRS, EDGE, UMTS, HSDPA)"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:14
+#: ../src/libnm-gtk/nm-mobile-wizard.c:781
+msgid "My provider uses CDMA technology (1xRTT, EVDO)"
+msgstr "Þjónustuveitan mín notar CDMA-tækni (xRTT, EVDO)"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:15
+#: ../src/libnm-gtk/nm-mobile-wizard.c:762
+msgid "Provider:"
+msgstr "Þjónustuveita:"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:16
+#: ../src/libnm-gtk/nm-mobile-wizard.c:792
+msgid "Choose your Provider"
+msgstr "Veldu þjónustuveituna"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:17
 #: ../src/libnm-gtk/nm-mobile-wizard.c:457
 msgid "_Select your plan:"
 msgstr "_Veldu áskriftina þína:"
 
-#: ../src/libnma/nma-mobile-wizard.c:480
+#: ../src/libnma/nma-mobile-wizard.ui.h:18
 #: ../src/libnm-gtk/nm-mobile-wizard.c:481
 msgid "Selected plan _APN (Access Point Name):"
 msgstr "Valinn  _APN aðgangspunktur (Access Point Name):"
 
-#: ../src/libnma/nma-mobile-wizard.c:500
+#: ../src/libnma/nma-mobile-wizard.ui.h:19
 #: ../src/libnm-gtk/nm-mobile-wizard.c:501
-#, fuzzy
 msgid ""
 "Warning: Selecting an incorrect plan may result in billing issues for your "
 "broadband account or may prevent connectivity.\n"
@@ -3871,180 +4241,94 @@ msgstr ""
 "Ef þú ert ekki viss um hvaða áskrift þú ert með ættirðu að hafa samband við "
 "þjónustuveituna þína og spyrja um viðeigandi APN aðgangspunkt."
 
-#: ../src/libnma/nma-mobile-wizard.c:508
+#: ../src/libnma/nma-mobile-wizard.ui.h:22
 #: ../src/libnm-gtk/nm-mobile-wizard.c:509
 msgid "Choose your Billing Plan"
 msgstr "Veldu áskriftina þína"
 
-#: ../src/libnma/nma-mobile-wizard.c:557
-#: ../src/libnm-gtk/nm-mobile-wizard.c:558
-#, fuzzy
-msgid "My plan is not listed…"
-msgstr "Áskriftin mín er ekki á listanum..."
-
-#: ../src/libnma/nma-mobile-wizard.c:710
-#: ../src/libnm-gtk/nm-mobile-wizard.c:711
-msgid "Select your provider from a _list:"
-msgstr "Veldu þjónustuaðila úr _listanum:"
-
-#: ../src/libnma/nma-mobile-wizard.c:723
-#: ../src/libnm-gtk/nm-mobile-wizard.c:724
-msgid "Provider"
-msgstr "Þjónustuveita"
-
-#: ../src/libnma/nma-mobile-wizard.c:748
-#: ../src/libnm-gtk/nm-mobile-wizard.c:749
-#, fuzzy
-msgid "I can’t find my provider and I wish to enter it _manually:"
-msgstr ""
-"Ég finn ekki þjónustuaðilann _minn og vil því slá inn upplýsingar um hann "
-"handvirkt:"
-
-#: ../src/libnma/nma-mobile-wizard.c:761
-#: ../src/libnm-gtk/nm-mobile-wizard.c:762
-msgid "Provider:"
-msgstr "Þjónustuveita:"
-
-#: ../src/libnma/nma-mobile-wizard.c:778
-#: ../src/libnm-gtk/nm-mobile-wizard.c:779
-msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
-msgstr "Þjónustuveitan mín notar GSM-tækni (GPRS, EDGE, UMTS, HSDPA)"
-
-#: ../src/libnma/nma-mobile-wizard.c:780
-#: ../src/libnm-gtk/nm-mobile-wizard.c:781
-msgid "My provider uses CDMA technology (1xRTT, EVDO)"
-msgstr "Þjónustuveitan mín notar CDMA-tækni (xRTT, EVDO)"
-
-#: ../src/libnma/nma-mobile-wizard.c:791
-#: ../src/libnm-gtk/nm-mobile-wizard.c:792
-msgid "Choose your Provider"
-msgstr "Veldu þjónustuveituna"
-
-#: ../src/libnma/nma-mobile-wizard.c:1053
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1054
-msgid "Country or Region List:"
-msgstr "Listi yfir land eða svæði:"
-
-#: ../src/libnma/nma-mobile-wizard.c:1066
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1067
-msgid "Country or region"
-msgstr "Land eða svæði"
-
-#: ../src/libnma/nma-mobile-wizard.c:1076
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1077
-msgid "My country is not listed"
-msgstr "Landið mitt er ekki á listanum"
-
-#: ../src/libnma/nma-mobile-wizard.c:1126
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1127
-#, fuzzy
-msgid "Choose your Provider’s Country or Region"
-msgstr "Veldu land eða hérað þjónustuveitunnar"
-
-#: ../src/libnma/nma-mobile-wizard.c:1183
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1184
-msgid "Installed GSM device"
-msgstr "Uppsett GSM tæki"
-
-#: ../src/libnma/nma-mobile-wizard.c:1186
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1187
-msgid "Installed CDMA device"
-msgstr "Uppsett CDMA tæki"
-
-#: ../src/libnma/nma-mobile-wizard.c:1354
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1355
+#: ../src/libnma/nma-mobile-wizard.ui.h:23
+#: ../src/libnm-gtk/nm-mobile-wizard.c:199
 msgid ""
-"This assistant helps you easily set up a mobile broadband connection to a "
-"cellular (3G) network."
+"Your mobile broadband connection is configured with the following settings:"
+msgstr "Ferðabreiðbandstengingin þín er stillt með eftirfarandi breytum:"
+
+#. Device
+#: ../src/libnma/nma-mobile-wizard.ui.h:24
+#: ../src/libnm-gtk/nm-mobile-wizard.c:206
+msgid "Your Device:"
+msgstr "Tækið þitt:"
+
+#. Provider
+#: ../src/libnma/nma-mobile-wizard.ui.h:25
+#: ../src/libnm-gtk/nm-mobile-wizard.c:217
+msgid "Your Provider:"
+msgstr "Þjónustuveitan þín:"
+
+#. Plan and APN
+#: ../src/libnma/nma-mobile-wizard.ui.h:26
+#: ../src/libnm-gtk/nm-mobile-wizard.c:228
+msgid "Your Plan:"
+msgstr "Áskriftin þín:"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:27
+#: ../src/libnm-gtk/nm-mobile-wizard.c:249
+msgid ""
+"A connection will now be made to your mobile broadband provider using the "
+"settings you selected. If the connection fails or you cannot access network "
+"resources, double-check your settings. To modify your mobile broadband "
+"connection settings, choose “Network Connections” from the System → "
+"Preferences menu."
 msgstr ""
-"Þessi leiðarvísir hjálpar þér að setja upp ferðabreiðbandstengingu fyrir "
-"farsímakerfi (3G)."
+"Nú verður reynt að tengjast þjónustuveitu ferðabreiðbandsins með þeim "
+"stillingum sem þú valdir.  Ef tengingin mistekst eða að þú nærð ekki "
+"sambandi við tilföng á netinu, ættirðu að yfirfara stillingarnar.  Til að "
+"breyta stillingum ferðabreiðbandsins, veldu \"Nettengingar\" úr valmyndinni "
+"Kerfi >> Kjörstillingar."
 
-#: ../src/libnma/nma-mobile-wizard.c:1360
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1361
-msgid "You will need the following information:"
-msgstr "Þú þarft á eftirfarandi upplýsingum að halda:"
+#: ../src/libnma/nma-mobile-wizard.ui.h:28
+#: ../src/libnm-gtk/nm-mobile-wizard.c:262
+msgid "Confirm Mobile Broadband Settings"
+msgstr "Staðfestu stillingar ferðabreiðbands"
 
-#: ../src/libnma/nma-mobile-wizard.c:1371
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1372
-#, fuzzy
-msgid "Your broadband provider’s name"
-msgstr "Nafn breiðbandsþjónustuveitunnar þinnar"
-
-#: ../src/libnma/nma-mobile-wizard.c:1377
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1378
-msgid "Your broadband billing plan name"
-msgstr "Nafn breiðbandsáskriftarinnar þinnar"
-
-#: ../src/libnma/nma-mobile-wizard.c:1383
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1384
-msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
-msgstr ""
-"(í sumum tilfellum) APN aðgangspunktur áskriftarinnar þinnar (Access Point "
-"Name)"
-
-#: ../src/libnma/nma-mobile-wizard.c:1412
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1413
-msgid "Create a connection for _this mobile broadband device:"
-msgstr "Búa til _tengingu fyrir þetta ferðabreiðbandstæki:"
-
-#: ../src/libnma/nma-mobile-wizard.c:1427
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1428
-msgid "Any device"
-msgstr "Eitthvað tæki"
-
-#: ../src/libnma/nma-mobile-wizard.c:1440
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1441
-msgid "Set up a Mobile Broadband Connection"
-msgstr "Setja upp ferðabreiðbandstengingu"
-
-#: ../src/libnma/nma-mobile-wizard.c:1620
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1614
-msgid "New Mobile Broadband Connection"
-msgstr "Ný ferðabreiðbandstenging"
-
-#: ../src/libnma/nma-cert-chooser-button.c:162
-#, fuzzy
+#: ../src/libnma/nma-cert-chooser-button.c:165
 msgid "(None)"
 msgstr "(ekkert)"
 
-#: ../src/libnma/nma-cert-chooser-button.c:170
+#: ../src/libnma/nma-cert-chooser-button.c:173
 #, c-format
 msgid "Key in %s"
 msgstr ""
 
-#: ../src/libnma/nma-cert-chooser-button.c:171
-#, fuzzy, c-format
+#: ../src/libnma/nma-cert-chooser-button.c:174
+#, c-format
 msgid "Certificate in %s"
-msgstr "C_A skilríki:"
+msgstr "Skilríki í %s"
 
-#: ../src/libnma/nma-cert-chooser-button.c:190
+#: ../src/libnma/nma-cert-chooser-button.c:193
 #: ../src/libnma/nma-pkcs11-cert-chooser-dialog.c:183
-#, fuzzy
 msgid "(Unknown)"
-msgstr "Óþekkt"
+msgstr "(óþekkt)"
 
-#: ../src/libnma/nma-cert-chooser-button.c:212
-#: ../src/libnma/nma-cert-chooser-button.c:242
+#: ../src/libnma/nma-cert-chooser-button.c:215
+#: ../src/libnma/nma-cert-chooser-button.c:245
 msgid "Select"
 msgstr ""
 
-#: ../src/libnma/nma-cert-chooser-button.c:213
-#: ../src/libnma/nma-cert-chooser-button.c:243
-#, fuzzy
+#: ../src/libnma/nma-cert-chooser-button.c:216
+#: ../src/libnma/nma-cert-chooser-button.c:246
 msgid "Cancel"
-msgstr "_Hætta við"
+msgstr "Hætta við"
 
-#: ../src/libnma/nma-cert-chooser-button.c:469
+#: ../src/libnma/nma-cert-chooser-button.c:472
 msgid "Select from file…"
 msgstr ""
 
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:376
-#, fuzzy, c-format
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:382
+#, c-format
 msgid "Choose a %s Certificate"
-msgstr "Veldu þitt einkaskilríki..."
+msgstr "Veldu %s skilríki"
 
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:384
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:390
 #, fuzzy, c-format
 msgid "%s certificate _password:"
 msgstr "_Skilríki notanda:"
@@ -4054,14 +4338,12 @@ msgid "Error logging in: "
 msgstr ""
 
 #: ../src/libnma/nma-pkcs11-cert-chooser-dialog.c:277
-#, fuzzy
 msgid "Error opening a session: "
-msgstr "Villa við að breyta tengingu"
+msgstr "Villa við að opna setu: "
 
 #: ../src/libnma/nma-pkcs11-cert-chooser-dialog.ui.h:1
-#, fuzzy
 msgid "_Unlock token"
-msgstr "_Aflæsa"
+msgstr "_Aflæsa teikni"
 
 #: ../src/libnma/nma-pkcs11-cert-chooser-dialog.ui.h:3
 msgid "Issued By"
@@ -4096,20 +4378,25 @@ msgstr "Spyrja í hvert sinn um þetta lykilorð"
 msgid "The password is not required"
 msgstr "Lykilorðsins er ekki krafist"
 
-#: ../src/libnma/nma-vpn-password-dialog.c:99
-#: ../src/libnm-gtk/nm-vpn-password-dialog.c:99
-msgid "_Secondary Password:"
-msgstr "_Auka-lykilorð"
+#: ../src/libnma/nma-vpn-password-dialog.ui.h:3
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:238
+msgid "Sh_ow passwords"
+msgstr "Sýna lykil_orð"
 
-#: ../src/libnma/nma-vpn-password-dialog.c:102
+#: ../src/libnma/nma-vpn-password-dialog.ui.h:4
 #: ../src/libnm-gtk/nm-vpn-password-dialog.c:102
 msgid "_Tertiary Password:"
 msgstr "Þriðja _lykilorð:"
 
-#: ../src/libnma/nma-vpn-password-dialog.c:247
-#: ../src/libnm-gtk/nm-vpn-password-dialog.c:247
-msgid "Sh_ow passwords"
-msgstr "Sýna lykil_orð"
+#: ../src/libnma/nma-vpn-password-dialog.ui.h:5
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:99
+msgid "_Secondary Password:"
+msgstr "_Auka-lykilorð"
+
+#: ../src/libnma/nma-vpn-password-dialog.ui.h:6
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:97
+msgid "_Password:"
+msgstr "_Lykilorð:"
 
 #: ../src/libnma/nma-wifi-dialog.c:132 ../src/libnm-gtk/nm-wifi-dialog.c:141
 msgid "Click to connect"
@@ -4133,51 +4420,50 @@ msgid "None"
 msgstr "Ekkert"
 
 #: ../src/libnma/nma-wifi-dialog.c:962 ../src/libnm-gtk/nm-wifi-dialog.c:961
-#, fuzzy
 msgid "Dynamic WEP (802.1x)"
-msgstr "Breytilegt (dynamic) WEP (802.1X)"
+msgstr "Breytilegt (dynamic) WEP (802.1x)"
 
-#: ../src/libnma/nma-wifi-dialog.c:1074 ../src/libnm-gtk/nm-wifi-dialog.c:1075
+#: ../src/libnma/nma-wifi-dialog.c:1070 ../src/libnm-gtk/nm-wifi-dialog.c:1071
 msgid "C_reate"
 msgstr "_Búa til"
 
-#: ../src/libnma/nma-wifi-dialog.c:1160 ../src/libnm-gtk/nm-wifi-dialog.c:1161
-#, fuzzy, c-format
+#: ../src/libnma/nma-wifi-dialog.c:1149 ../src/libnm-gtk/nm-wifi-dialog.c:1150
+#, c-format
 msgid ""
 "Passwords or encryption keys are required to access the Wi-Fi network “%s”."
 msgstr ""
-"Lykilorða eða dulritunarlykla er krafist til að tengjast Wi-Fi netkerfinu "
-"'%s'."
+"Lykilorða eða dulritunarlykla er krafist til að tengjast Wi-Fi netkerfinu '%"
+"s'."
 
-#: ../src/libnma/nma-wifi-dialog.c:1162 ../src/libnm-gtk/nm-wifi-dialog.c:1163
+#: ../src/libnma/nma-wifi-dialog.c:1151 ../src/libnm-gtk/nm-wifi-dialog.c:1152
 msgid "Wi-Fi Network Authentication Required"
 msgstr "Wi-Fi netkerfisauðkenningar krafist"
 
-#: ../src/libnma/nma-wifi-dialog.c:1164 ../src/libnm-gtk/nm-wifi-dialog.c:1165
+#: ../src/libnma/nma-wifi-dialog.c:1153 ../src/libnm-gtk/nm-wifi-dialog.c:1154
 msgid "Authentication required by Wi-Fi network"
 msgstr "Auðkenningar er krafist af Wi-Fi netkerfi"
 
-#: ../src/libnma/nma-wifi-dialog.c:1169 ../src/libnm-gtk/nm-wifi-dialog.c:1170
+#: ../src/libnma/nma-wifi-dialog.c:1158 ../src/libnm-gtk/nm-wifi-dialog.c:1159
 msgid "Create New Wi-Fi Network"
 msgstr "Búa til nýtt Wi-Fi netkerfi"
 
-#: ../src/libnma/nma-wifi-dialog.c:1171 ../src/libnm-gtk/nm-wifi-dialog.c:1172
+#: ../src/libnma/nma-wifi-dialog.c:1160 ../src/libnm-gtk/nm-wifi-dialog.c:1161
 msgid "New Wi-Fi network"
 msgstr "Nýtt Wi-Fi netkerfi"
 
-#: ../src/libnma/nma-wifi-dialog.c:1172 ../src/libnm-gtk/nm-wifi-dialog.c:1173
+#: ../src/libnma/nma-wifi-dialog.c:1161 ../src/libnm-gtk/nm-wifi-dialog.c:1162
 msgid "Enter a name for the Wi-Fi network you wish to create."
 msgstr "Settu inn heiti fyrir Wi-Fi netkerfið sem þú vilt búa til."
 
-#: ../src/libnma/nma-wifi-dialog.c:1174 ../src/libnm-gtk/nm-wifi-dialog.c:1175
+#: ../src/libnma/nma-wifi-dialog.c:1163 ../src/libnm-gtk/nm-wifi-dialog.c:1164
 msgid "Connect to Hidden Wi-Fi Network"
 msgstr "Tengjast við falið Wi-Fi netkerfi"
 
-#: ../src/libnma/nma-wifi-dialog.c:1176 ../src/libnm-gtk/nm-wifi-dialog.c:1177
+#: ../src/libnma/nma-wifi-dialog.c:1165 ../src/libnm-gtk/nm-wifi-dialog.c:1166
 msgid "Hidden Wi-Fi network"
 msgstr "Falið Wi-Fi netkerfi"
 
-#: ../src/libnma/nma-wifi-dialog.c:1177 ../src/libnm-gtk/nm-wifi-dialog.c:1178
+#: ../src/libnma/nma-wifi-dialog.c:1166 ../src/libnm-gtk/nm-wifi-dialog.c:1167
 msgid ""
 "Enter the name and security details of the hidden Wi-Fi network you wish to "
 "connect to."
@@ -4331,27 +4617,27 @@ msgstr "Reikinet (%s)"
 msgid "Roaming network"
 msgstr "Reikinet"
 
-#: ../src/mobile-helpers.c:331
-#, fuzzy, c-format
+#: ../src/mobile-helpers.c:330
+#, c-format
 msgid "PIN code for SIM card “%s” on “%s”"
 msgstr "PIN-númer fyrir SIM-kortið '%s' á '%s'"
 
-#: ../src/mobile-helpers.c:464
+#: ../src/mobile-helpers.c:463
 msgid "PIN code required"
 msgstr "Krafist er PIN-númers"
 
-#: ../src/mobile-helpers.c:472
+#: ../src/mobile-helpers.c:471
 msgid "PIN code is needed for the mobile broadband device"
 msgstr ""
 "Þú þarft að slá inn PIN-númer til að þess að tengjast við "
 "ferðabreiðbandstækið (síma/netpung)"
 
-#: ../src/mobile-helpers.c:622
+#: ../src/mobile-helpers.c:621
 #, fuzzy, c-format
 msgid "Mobile broadband connection “%s” active: (%d%%%s%s)"
 msgstr "Ferðabreiðbandstenging '%s' virk: (%d%%%s%s)"
 
-#: ../src/mobile-helpers.c:625
+#: ../src/mobile-helpers.c:624
 msgid "roaming"
 msgstr "reiki"
 
@@ -4361,12 +4647,11 @@ msgstr "reiki"
 msgid "%s connection"
 msgstr "%s tenging"
 
-#: ../src/utils/utils.c:563
-#, fuzzy
+#: ../src/utils/utils.c:565
 msgid "PEM certificates (*.pem, *.crt, *.cer)"
-msgstr "DER eða PEM skilríki (*.der, *.pem, *.crt, *.cer)"
+msgstr "PEM skilríki (*.pem, *.crt, *.cer)"
 
-#: ../src/utils/utils.c:575
+#: ../src/utils/utils.c:577
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "DER, PEM, eða PKCS#12 einkalyklar (*.der, *.pem, *.p12, *.key)"
 
@@ -4374,39 +4659,33 @@ msgstr "DER, PEM, eða PKCS#12 einkalyklar (*.der, *.pem, *.p12, *.key)"
 msgid "undefined error in 802.1X security (wpa-eap)"
 msgstr "óskilgreind villa í öruggu 802.1X (wpa-eap)"
 
-#: ../src/wireless-security/eap-method.c:227
-msgid "no file selected"
+#: ../src/wireless-security/eap-method.c:365
+msgid "no CA certificate selected"
+msgstr "ekkert CA skilríki valið"
+
+#: ../src/wireless-security/eap-method.c:370
+msgid "selected CA certificate file does not exist"
 msgstr ""
 
-#: ../src/wireless-security/eap-method.c:235
-#, c-format
-msgid "file “%s” does not exist"
-msgstr ""
-
-#: ../src/wireless-security/eap-method.c:258
-msgid "unspecified error validating eap-method file"
-msgstr "óskilgreind villa við sannvottun á eap-method skrá"
-
-#: ../src/wireless-security/eap-method-fast.c:73
+#: ../src/wireless-security/eap-method-fast.c:71
 msgid "missing EAP-FAST PAC file"
 msgstr "vantar EAP-FAST PAC skrá"
 
-#: ../src/wireless-security/eap-method-fast.c:269
-#: ../src/wireless-security/eap-method-peap.c:303
-#: ../src/wireless-security/eap-method-ttls.c:352
+#: ../src/wireless-security/eap-method-fast.c:267
+#: ../src/wireless-security/eap-method-peap.c:329
+#: ../src/wireless-security/eap-method-ttls.c:379
 msgid "GTC"
 msgstr "GTC"
 
-#: ../src/wireless-security/eap-method-fast.c:407
-#, fuzzy
+#: ../src/wireless-security/eap-method-fast.c:405
 msgid "Choose a PAC file"
-msgstr "Veldu PAC-skrá..."
+msgstr "Veldu PAC-skrá"
 
-#: ../src/wireless-security/eap-method-fast.c:414
+#: ../src/wireless-security/eap-method-fast.c:412
 msgid "PAC files (*.pac)"
 msgstr "PAC skrár (*.pac)"
 
-#: ../src/wireless-security/eap-method-fast.c:418
+#: ../src/wireless-security/eap-method-fast.c:416
 msgid "All files"
 msgstr "Allar skrár"
 
@@ -4424,19 +4703,22 @@ msgstr "Bæði"
 
 #: ../src/wireless-security/eap-method-fast.ui.h:4
 #: ../src/wireless-security/eap-method-peap.ui.h:4
-#: ../src/wireless-security/eap-method-ttls.ui.h:1
-msgid "Anony_mous identity:"
-msgstr "_Nafnlaust auðkenni:"
+#: ../src/wireless-security/eap-method-ttls.ui.h:3
+#| msgid "Anony_mous identity:"
+msgid "Anony_mous identity"
+msgstr "_Nafnlaust auðkenni"
 
 #: ../src/wireless-security/eap-method-fast.ui.h:5
-msgid "PAC _file:"
-msgstr "PAC _skrá:"
+#| msgid "PAC _file:"
+msgid "PAC _file"
+msgstr "PAC _skrá"
 
 #: ../src/wireless-security/eap-method-fast.ui.h:6
 #: ../src/wireless-security/eap-method-peap.ui.h:7
-#: ../src/wireless-security/eap-method-ttls.ui.h:4
-msgid "_Inner authentication:"
-msgstr "_Innra auðkenni:"
+#: ../src/wireless-security/eap-method-ttls.ui.h:1
+#| msgid "_Inner authentication:"
+msgid "_Inner authentication"
+msgstr "_Innri auðkenning"
 
 #: ../src/wireless-security/eap-method-fast.ui.h:7
 msgid "Allow automatic PAC pro_visioning"
@@ -4450,26 +4732,11 @@ msgstr "vantar EAP-LEAP notandanafn"
 msgid "missing EAP-LEAP password"
 msgstr "vantar EAP-LEAP lykilorð"
 
-#: ../src/wireless-security/eap-method-peap.c:64
-#, c-format
-msgid "invalid EAP-PEAP CA certificate: %s"
-msgstr "ógilt EAP-PEAP CA skilríki: %s"
-
-#: ../src/wireless-security/eap-method-peap.c:69
-msgid "invalid EAP-PEAP CA certificate: no certificate specified"
-msgstr "ógilt EAP-PEAP CA skilríki: ekkert skilríki tiltekið"
-
-#: ../src/wireless-security/eap-method-peap.c:288
-#: ../src/wireless-security/eap-method-ttls.c:337
+#: ../src/wireless-security/eap-method-peap.c:314
+#: ../src/wireless-security/eap-method-ttls.c:364
 #: ../src/wireless-security/wireless-security.c:424
 msgid "MD5"
 msgstr "MD5"
-
-#: ../src/wireless-security/eap-method-peap.c:382
-#: ../src/wireless-security/eap-method-ttls.c:431
-#, fuzzy
-msgid "Choose a Certificate Authority certificate"
-msgstr "Veldu skilríki frá vottunarstöð (CA)..."
 
 #: ../src/wireless-security/eap-method-peap.ui.h:2
 msgid "Version 0"
@@ -4480,19 +4747,27 @@ msgid "Version 1"
 msgstr "Útgáfa 1"
 
 #: ../src/wireless-security/eap-method-peap.ui.h:5
-#: ../src/wireless-security/eap-method-ttls.ui.h:2
-msgid "C_A certificate:"
-msgstr "C_A skilríki:"
-
-#: ../src/wireless-security/eap-method-peap.ui.h:6
 #: ../src/wireless-security/eap-method-tls.ui.h:2
-#: ../src/wireless-security/eap-method-ttls.ui.h:3
+#: ../src/wireless-security/eap-method-ttls.ui.h:2
 msgid "No CA certificate is _required"
 msgstr "CA skilríkis e_r ekki krafist"
 
+#: ../src/wireless-security/eap-method-peap.ui.h:6
+#| msgid "PEAP _version:"
+msgid "PEAP _version"
+msgstr "PEAP út_gáfa"
+
 #: ../src/wireless-security/eap-method-peap.ui.h:8
-msgid "PEAP _version:"
-msgstr "PEAP út_gáfa:"
+#: ../src/wireless-security/eap-method-tls.ui.h:3
+#: ../src/wireless-security/eap-method-ttls.ui.h:4
+msgid "Suffix of the server certificate name."
+msgstr ""
+
+#: ../src/wireless-security/eap-method-peap.ui.h:9
+#: ../src/wireless-security/eap-method-tls.ui.h:4
+#: ../src/wireless-security/eap-method-ttls.ui.h:5
+msgid "_Domain"
+msgstr ""
 
 #: ../src/wireless-security/eap-method-simple.c:75
 msgid "missing EAP username"
@@ -4506,49 +4781,31 @@ msgstr "vantar EAP lykilorð"
 msgid "missing EAP-TLS identity"
 msgstr "vantar EAP-TLS auðkenni"
 
-#: ../src/wireless-security/eap-method-tls.c:238
+#: ../src/wireless-security/eap-method-tls.c:256
 #, fuzzy
 msgid "no user certificate selected"
 msgstr "CA skilríkis e_r ekki krafist"
 
-#: ../src/wireless-security/eap-method-tls.c:243
+#: ../src/wireless-security/eap-method-tls.c:261
 msgid "selected user certificate file does not exist"
 msgstr ""
 
-#: ../src/wireless-security/eap-method-tls.c:263
+#: ../src/wireless-security/eap-method-tls.c:281
 msgid "no key selected"
 msgstr ""
 
-#: ../src/wireless-security/eap-method-tls.c:268
+#: ../src/wireless-security/eap-method-tls.c:286
 msgid "selected key file does not exist"
 msgstr ""
 
-#: ../src/wireless-security/eap-method-tls.c:314
-#, fuzzy
-msgid "no CA certificate selected"
-msgstr "CA skilríkis e_r ekki krafist"
-
-#: ../src/wireless-security/eap-method-tls.c:319
-msgid "selected CA certificate file does not exist"
-msgstr ""
-
 #: ../src/wireless-security/eap-method-tls.ui.h:1
-msgid "I_dentity:"
-msgstr "_Auðkenni:"
+#| msgid "I_dentity:"
+msgid "I_dentity"
+msgstr "_Auðkenni"
 
-#: ../src/wireless-security/eap-method-ttls.c:64
-#, c-format
-msgid "invalid EAP-TTLS CA certificate: %s"
-msgstr "ógilt EAP-TTLS CA skilríki: %s"
-
-#: ../src/wireless-security/eap-method-ttls.c:69
-msgid "invalid EAP-TTLS CA certificate: no certificate specified"
-msgstr "ógilt EAP-TTLS CA skilríki: ekkert skilríki tiltekið"
-
-#: ../src/wireless-security/eap-method-ttls.c:306
-#, fuzzy
+#: ../src/wireless-security/eap-method-ttls.c:333
 msgid "MSCHAPv2 (no EAP)"
-msgstr "MSCHAPv2"
+msgstr "MSCHAPv2 (ekkert EAP)"
 
 #: ../src/wireless-security/wireless-security.c:72
 msgid "Unknown error validating 802.1X security"
@@ -4577,8 +4834,9 @@ msgstr "Protected EAP (PEAP)"
 #: ../src/wireless-security/ws-dynamic-wep.ui.h:1
 #: ../src/wireless-security/ws-wep-key.ui.h:6
 #: ../src/wireless-security/ws-wpa-eap.ui.h:1
-msgid "Au_thentication:"
-msgstr "Auð_kenning:"
+#| msgid "Au_thentication:"
+msgid "Au_thentication"
+msgstr "_Auðkenning"
 
 #: ../src/wireless-security/ws-leap.c:63
 msgid "missing leap-username"
@@ -4596,12 +4854,14 @@ msgstr "vantar wep-lykil"
 #, c-format
 msgid "invalid wep-key: key with a length of %zu must contain only hex-digits"
 msgstr ""
+"ógildur wep-lykill: lykill með lengdina %zu má aðeins innihalda hex-stafi"
 
 #: ../src/wireless-security/ws-wep-key.c:124
 #, c-format
 msgid ""
 "invalid wep-key: key with a length of %zu must contain only ascii characters"
 msgstr ""
+"ógildur wep-lykill: lykill með lengdina %zu má aðeins innihalda ascii-stafi"
 
 #: ../src/wireless-security/ws-wep-key.c:130
 #, c-format
@@ -4609,38 +4869,43 @@ msgid ""
 "invalid wep-key: wrong key length %zu. A key must be either of length 5/13 "
 "(ascii) or 10/26 (hex)"
 msgstr ""
+"ógildur wep-lykill: röng lengd lykils %zu. Lengd lykils verður að vera annað "
+"hvort 5/13 "
+"(ascii) eða 10/26 (hex)"
 
 #: ../src/wireless-security/ws-wep-key.c:137
 msgid "invalid wep-key: passphrase must be non-empty"
-msgstr ""
+msgstr "ógildur wep-lykill: lykilfrasi má ekki vera tómur"
 
 #: ../src/wireless-security/ws-wep-key.c:139
 msgid "invalid wep-key: passphrase must be shorter than 64 characters"
-msgstr ""
+msgstr "ógildur wep-lykill: lykilfrasi verður að vera styttri en 64 stafir"
 
 #: ../src/wireless-security/ws-wep-key.ui.h:1
-msgid "1 (Default)"
-msgstr "1 (sjálfgefið)"
-
-#: ../src/wireless-security/ws-wep-key.ui.h:2
 msgid "Open System"
 msgstr "Opið kerfi"
 
-#: ../src/wireless-security/ws-wep-key.ui.h:3
+#: ../src/wireless-security/ws-wep-key.ui.h:2
 msgid "Shared Key"
 msgstr "Dreifilykill"
 
+#: ../src/wireless-security/ws-wep-key.ui.h:3
+msgid "1 (Default)"
+msgstr "1 (sjálfgefið)"
+
 #: ../src/wireless-security/ws-wep-key.ui.h:4
-msgid "_Key:"
-msgstr "_Lykill:"
+#| msgid "_Key:"
+msgid "_Key"
+msgstr "_Lykill"
 
 #: ../src/wireless-security/ws-wep-key.ui.h:5
 msgid "Sho_w key"
 msgstr "_Sýna lykil"
 
 #: ../src/wireless-security/ws-wep-key.ui.h:7
-msgid "WEP inde_x:"
-msgstr "WEP _vísir:"
+#| msgid "WEP inde_x:"
+msgid "WEP inde_x"
+msgstr "WEP _vísir"
 
 #: ../src/wireless-security/ws-wpa-psk.c:70
 #, c-format
@@ -4648,14 +4913,69 @@ msgid ""
 "invalid wpa-psk: invalid key-length %zu. Must be [8,63] bytes or 64 hex "
 "digits"
 msgstr ""
+"ógildur wpa-psk: röng lengd lykils %zu. Lengd lykils verður að vera annað "
+"hvort [8,63] bæti eða 64 hex-stafir"
 
 #: ../src/wireless-security/ws-wpa-psk.c:79
 msgid "invalid wpa-psk: cannot interpret key with 64 bytes as hex"
-msgstr ""
+msgstr "ógildur wpa-psk: get ekki túlkað lykil með 64 bætum sem hex"
 
 #: ../src/wireless-security/ws-wpa-psk.ui.h:2
-msgid "_Type:"
-msgstr "_Gerð:"
+#| msgid "_Type:"
+msgid "_Type"
+msgstr "_Tegund"
+
+#~ msgid "Priority:"
+#~ msgstr "Forgangur:"
+
+#~ msgid "0:"
+#~ msgstr "0:"
+
+#~ msgid "1:"
+#~ msgstr "1:"
+
+#~ msgid "2:"
+#~ msgstr "2:"
+
+#~ msgid "3:"
+#~ msgstr "3:"
+
+#~ msgid "4:"
+#~ msgstr "4:"
+
+#~ msgid "5:"
+#~ msgstr "5:"
+
+#~ msgid "6:"
+#~ msgstr "6:"
+
+#~ msgid "7:"
+#~ msgstr "7:"
+
+#~ msgid "DSL"
+#~ msgstr "DSL"
+
+#~ msgid "unspecified error validating eap-method file"
+#~ msgstr "óskilgreind villa við sannvottun á eap-method skrá"
+
+#~ msgid "invalid EAP-PEAP CA certificate: %s"
+#~ msgstr "ógilt EAP-PEAP CA skilríki: %s"
+
+#~ msgid "invalid EAP-PEAP CA certificate: no certificate specified"
+#~ msgstr "ógilt EAP-PEAP CA skilríki: ekkert skilríki tiltekið"
+
+#, fuzzy
+#~ msgid "Choose a Certificate Authority certificate"
+#~ msgstr "Veldu skilríki frá vottunarstöð (CA)..."
+
+#~ msgid "C_A certificate:"
+#~ msgstr "C_A skilríki:"
+
+#~ msgid "invalid EAP-TTLS CA certificate: %s"
+#~ msgstr "ógilt EAP-TTLS CA skilríki: %s"
+
+#~ msgid "invalid EAP-TTLS CA certificate: no certificate specified"
+#~ msgstr "ógilt EAP-TTLS CA skilríki: ekkert skilríki tiltekið"
 
 #~ msgid "NetworkManager for GNOME"
 #~ msgstr "Netstýring fyrir GNOME"
@@ -4688,30 +5008,6 @@ msgstr "_Gerð:"
 
 #~ msgid " "
 #~ msgstr " "
-
-#~ msgid "0"
-#~ msgstr "0"
-
-#~ msgid "1"
-#~ msgstr "1"
-
-#~ msgid "2"
-#~ msgstr "2"
-
-#~ msgid "3"
-#~ msgstr "3"
-
-#~ msgid "4"
-#~ msgstr "4"
-
-#~ msgid "5"
-#~ msgstr "5"
-
-#~ msgid "6"
-#~ msgstr "6"
-
-#~ msgid "7"
-#~ msgstr "7"
 
 #~ msgid "15"
 #~ msgstr "15"
@@ -4884,17 +5180,11 @@ msgstr "_Gerð:"
 #~ msgid "IPv6 prefix \"%s\" missing"
 #~ msgstr "IPv6 forskeytið \"%s\" vantar"
 
-#~ msgid "Could not load WiMAX user interface."
-#~ msgstr "Gat ekki hlaðið inn WiMAX notandaviðmóti."
-
 #~ msgid "WiMAX name missing"
 #~ msgstr "WiMAX nafn vantar"
 
 #~ msgid "WiMAX device"
 #~ msgstr "WiMAX tæki"
-
-#~ msgid "WiMAX connection %d"
-#~ msgstr "WiMAX tenging %d"
 
 #~ msgid "Use your mobile phone as a network device (PAN/NAP)"
 #~ msgstr "Notaðu farsímann þinn sem nettæki (PAN/NAP)"
@@ -4904,9 +5194,6 @@ msgstr "_Gerð:"
 
 #~ msgid "Error: %s"
 #~ msgstr "Villa: %s"
-
-#~ msgid "Failed to create DUN connection: %s"
-#~ msgstr "Mistókst að búa til DUN-tengingu: %s"
 
 #~ msgid "Your phone is now ready to use!"
 #~ msgstr "Síminn þinn er núna tilbúinn til notkunar!"
