@@ -16,6 +16,23 @@
       <column type="gchararray"/>
     </columns>
   </object>
+  <object class="GtkListStore" id="metered_store">
+    <columns>
+      <!-- column-name Name -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Automatic</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Yes</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">No</col>
+      </row>
+    </data>
+  </object>
   <object class="GtkGrid" id="GeneralPage">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -91,6 +108,37 @@
       <packing>
         <property name="left_attach">1</property>
         <property name="top_attach">3</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="metered_label">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">_Metered connection</property>
+        <property name="use_underline">True</property>
+        <property name="xalign">0</property>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">4</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkComboBox" id="metered_combo">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="tooltip_text" translatable="yes">NetworkManager indicates to applications whether the connection is metered and therefore data usage should be restricted. Select which value ('Yes' or 'No') to indicate to applications, or 'Automatic' to use a default value based on the connection type and other heuristics.</property>
+        <property name="model">metered_store</property>
+        <child>
+          <object class="GtkCellRendererText" id="renderer2"/>
+          <attributes>
+            <attribute name="text">0</attribute>
+          </attributes>
+        </child>
+      </object>
+      <packing>
+        <property name="left_attach">1</property>
+        <property name="top_attach">4</property>
       </packing>
     </child>
     <child>

@@ -47,6 +47,8 @@ typedef struct {
 	GtkSpinButton *autoconnect_prio;
 	GtkWidget *all_checkbutton;
 
+	GtkComboBox *metered_combo;
+
 	gboolean setup_finished;
 } CEPageGeneralPrivate;
 
@@ -168,6 +170,7 @@ general_private_init (CEPageGeneral *self)
 	priv->autoconnect_prio_label = GTK_WIDGET (gtk_builder_get_object (builder, "autoconnect_prio_label"));
 	priv->autoconnect_prio = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "autoconnect_prio"));
 	priv->all_checkbutton = GTK_WIDGET (gtk_builder_get_object (builder, "system_checkbutton"));
+	priv->metered_combo = GTK_COMBO_BOX (gtk_builder_get_object (builder, "metered_combo"));
 }
 
 static void
@@ -316,6 +319,9 @@ populate_ui (CEPageGeneral *self)
 		global_connection = FALSE;
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->all_checkbutton), global_connection);
 
+	/* Metered */
+	gtk_combo_box_set_active (priv->metered_combo, nm_setting_connection_get_metered (priv->setting));
+
 	stuff_changed (NULL, self);
 }
 
@@ -433,6 +439,11 @@ ui_to_setting (CEPageGeneral *self)
 		/* Only visible to this user */
 		nm_setting_connection_add_permission (priv->setting, "user", g_get_user_name (), NULL);
 	}
+
+	g_object_set (G_OBJECT (priv->setting),
+	              NM_SETTING_CONNECTION_METERED,
+	              gtk_combo_box_get_active (priv->metered_combo),
+	              NULL);
 }
 
 static gboolean
