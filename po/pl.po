@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-19 17:15+0100\n"
-"PO-Revision-Date: 2018-03-19 17:17+0100\n"
+"POT-Creation-Date: 2018-03-28 19:37+0200\n"
+"PO-Revision-Date: 2018-03-28 19:38+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -900,7 +900,7 @@ msgstr "CDMA (%s)"
 #: ../src/applet-dialogs.c:513 ../src/applet-dialogs.c:811
 #: ../src/connection-editor/ce-page-team-port.ui.h:23
 #: ../src/connection-editor/ce-page-team.ui.h:48
-#: ../src/connection-editor/page-general.c:367
+#: ../src/connection-editor/page-general.c:373
 msgid "General"
 msgstr "Ogólne"
 
@@ -1720,6 +1720,7 @@ msgid "The interface on which the PPP connection will be established."
 msgstr "Interfejs, na którym nawiązać połączenie PPP."
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:1
+#: ../src/connection-editor/ce-page-general.ui.h:1
 #: ../src/connection-editor/ce-page-ip4.ui.h:1
 #: ../src/connection-editor/ce-page-ip6.ui.h:1
 #: ../src/connection-editor/ce-page-proxy.ui.h:2
@@ -1887,23 +1888,47 @@ msgstr ""
 "wybrano opcji „Ignorowanie” lub „Automatycznie”. Przed podaniem trybu "
 "dupleksu należy się upewnić, że urządzenie go obsługuje."
 
-#: ../src/connection-editor/ce-page-general.ui.h:1
-msgid "Automatically connect to _VPN when using this connection"
-msgstr "Automatyczne łączenie z _VPN podczas używania tego połączenia"
-
 #: ../src/connection-editor/ce-page-general.ui.h:2
+msgid "Yes"
+msgstr "Tak"
+
+#: ../src/connection-editor/ce-page-general.ui.h:3
+msgid "No"
+msgstr "Nie"
+
+#: ../src/connection-editor/ce-page-general.ui.h:4
 msgid "All _users may connect to this network"
 msgstr "Wszyscy _użytkownicy mogą łączyć się z tą siecią"
 
-#: ../src/connection-editor/ce-page-general.ui.h:3
-msgid "_Automatically connect to this network when it is available"
-msgstr "_Automatyczne łączenie z tą siecią, kiedy jest dostępna"
-
-#: ../src/connection-editor/ce-page-general.ui.h:4
-msgid "Connection _priority for auto-activation"
-msgstr "_Priorytet połączenia dla automatycznej aktywacji"
-
 #: ../src/connection-editor/ce-page-general.ui.h:5
+msgid "Automatically connect to _VPN"
+msgstr "Automatyczne łączenie z _VPN"
+
+#: ../src/connection-editor/ce-page-general.ui.h:6
+msgid "Firewall _zone"
+msgstr "_Strefa zapory sieciowej"
+
+#: ../src/connection-editor/ce-page-general.ui.h:7
+msgid "_Metered connection"
+msgstr "_Mierzone połączenie"
+
+#: ../src/connection-editor/ce-page-general.ui.h:8
+msgid ""
+"NetworkManager indicates to applications whether the connection is metered "
+"and therefore data usage should be restricted. Select which value (“Yes” or "
+"“No”) to indicate to applications, or “Automatic” to use a default value "
+"based on the connection type and other heuristics."
+msgstr ""
+"Usługa NetworkManager przekazuje programom, czy połączenie jest mierzone, "
+"więc użycie danych ma być ograniczone. Proszę wybrać wartość („Tak” lub "
+"„Nie”) przekazywaną programom lub „Automatycznie”, aby używać domyślnej "
+"wartości na podstawie typu połączenia i innych danych."
+
+#: ../src/connection-editor/ce-page-general.ui.h:9
+msgid "Connect _automatically with priority"
+msgstr "_Priorytetowe łączenie automatyczne"
+
+#: ../src/connection-editor/ce-page-general.ui.h:10
 msgid ""
 "Connection priority for automatic activation. Connections with higher "
 "numbers are preferred when selecting profiles for automatic activation. "
@@ -1912,10 +1937,6 @@ msgstr ""
 "Priorytet połączenia dla automatycznej aktywacji. Połączenia o wyższych "
 "numerach są preferowane podczas wybierania profili do automatycznej "
 "aktywacji."
-
-#: ../src/connection-editor/ce-page-general.ui.h:6
-msgid "Firewall _zone"
-msgstr "_Strefa zapory sieciowej"
 
 #: ../src/connection-editor/ce-page.h:111
 msgid ""
@@ -3578,13 +3599,13 @@ msgid "Ethernet connection %d"
 msgstr "Połączenie ethernetowe %d"
 
 #. TRANSLATORS: Default zone set for firewall, when no zone is selected
-#: ../src/connection-editor/page-general.c:54
+#: ../src/connection-editor/page-general.c:56
 #: ../src/libnma/nma-mobile-providers.c:807
 #: ../src/libnm-gtk/nm-mobile-providers.c:806
 msgid "Default"
 msgstr "Domyślne"
 
-#: ../src/connection-editor/page-general.c:55
+#: ../src/connection-editor/page-general.c:57
 msgid ""
 "The zone defines the trust level of the connection. Default is not a regular "
 "zone, selecting it results in the use of the default zone set in the "
@@ -3594,7 +3615,7 @@ msgstr ""
 "wybranie jej powoduje użycie domyślnej strefy ustawionej w zaporze "
 "sieciowej. Można tego używać tylko, jeśli usługa firewalld jest aktywna."
 
-#: ../src/connection-editor/page-general.c:370
+#: ../src/connection-editor/page-general.c:376
 msgid "Could not load General user interface."
 msgstr "Nie można wczytać interfejsu użytkownika karty ogólnej."
 
@@ -4569,8 +4590,8 @@ msgid ""
 "This program is a component of NetworkManager (https://wiki.gnome.org/"
 "Projects/NetworkManager/)."
 msgstr ""
-"Ten program jest komponentem oprogramowania NetworkManager (https://wiki."
-"gnome.org/Projects/NetworkManager/)."
+"Ten program jest częścią projektu NetworkManager (https://wiki.gnome.org/"
+"Projects/NetworkManager/)."
 
 #: ../src/main.c:45
 msgid ""
