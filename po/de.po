@@ -9,7 +9,7 @@
 # Jochen Skulj <jochen@jochenskulj.de>, 2008.
 # Tobias Wolf <towolf@gmx.net>, 2008.
 # Hauke Mehrtens <hauke@hauke-m.de>, 2008.
-# Mario Blättermann <mario.blaettermann@gmail.com>, 2008-2013, 2016-2017.
+# Mario Blättermann <mario.blaettermann@gmail.com>, 2008-2013, 2016-2018.
 # Stefan Horning <stefan@hornings.de>, 2009.
 # Timo Trinks <ttrinks@redhat.com>, 2010.
 # Wolfgang Stöggl <c72578@yahoo.de>, 2011, 2012, 2016.
@@ -23,16 +23,16 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=NetworkManager&keywords=I18N+L10N&component=nm-applet\n"
-"POT-Creation-Date: 2017-12-21 15:09+0000\n"
-"PO-Revision-Date: 2017-12-26 19:34+0100\n"
-"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
+"POT-Creation-Date: 2018-04-08 15:03+0000\n"
+"PO-Revision-Date: 2018-04-13 21:28+0200\n"
+"Last-Translator: Mario Blättermann <mario.blaettermann@gmail.com>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.5\n"
+"X-Generator: Poedit 2.0.6\n"
 
 #: ../nm-applet.desktop.in.h:1 ../src/applet.c:3191
 msgid "Network"
@@ -234,7 +234,7 @@ msgstr "802.1X-Legitimierung"
 #: ../src/connection-editor/page-team-port.c:206
 #: ../src/connection-editor/vpn-helpers.c:212 ../src/gsm-unlock.ui.h:1
 #: ../src/libnma/nma-pkcs11-token-login-dialog.ui.h:1
-#: ../src/libnma/nma-vpn-password-dialog.c:209
+#: ../src/libnma/nma-vpn-password-dialog.ui.h:1
 #: ../src/libnma/nma-wifi-dialog.c:1066
 #: ../src/libnm-gtk/nm-vpn-password-dialog.c:209
 #: ../src/libnm-gtk/nm-wifi-dialog.c:1067 ../src/mobile-helpers.c:465
@@ -725,7 +725,7 @@ msgstr "DSL-Legitimierung"
 #: ../src/connection-editor/ce-ppp-auth-methods.ui.h:2
 #: ../src/connection-editor/page-bluetooth.c:311
 #: ../src/connection-editor/page-mobile.c:545
-#: ../src/libnma/nma-vpn-password-dialog.c:210
+#: ../src/libnma/nma-vpn-password-dialog.ui.h:2
 #: ../src/libnm-gtk/nm-vpn-password-dialog.c:210 ../src/mobile-helpers.c:466
 msgid "_OK"
 msgstr "_OK"
@@ -923,7 +923,7 @@ msgstr "CDMA (%s)"
 #: ../src/applet-dialogs.c:513 ../src/applet-dialogs.c:811
 #: ../src/connection-editor/ce-page-team-port.ui.h:23
 #: ../src/connection-editor/ce-page-team.ui.h:48
-#: ../src/connection-editor/page-general.c:367
+#: ../src/connection-editor/page-general.c:373
 msgid "General"
 msgstr "Allgemein"
 
@@ -1118,9 +1118,10 @@ msgid "Connection had no VPN setting"
 msgstr "Die Verbindung hat keine VPN-Einstellungen"
 
 #: ../src/applet-vpn-request.c:251
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to write connection to VPN UI: %s (%d)"
-msgstr "Aktivierung der Verbindung schlug fehl"
+msgstr ""
+"Verbindungsmeldung an die VPN Benutzeroberfläche fehlgeschlagen: %s (%d)"
 
 #: ../src/applet-vpn-request.c:259
 msgid "Failed to write connection to VPN UI: incomplete write"
@@ -1239,13 +1240,13 @@ msgid "ARP"
 msgstr "ARP"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:10
-msgid "Bonded _connections:"
-msgstr "Ge_bündelte Verbindungen:"
+msgid "Bonded _connections"
+msgstr "Ge_bündelte Verbindungen"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:11
 #: ../src/connection-editor/ce-page-wifi.ui.h:18
-msgid "M_ode:"
-msgstr "M_odus:"
+msgid "M_ode"
+msgstr "M_odus"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:13
 #: ../src/connection-editor/ce-page-bridge.ui.h:3
@@ -1255,8 +1256,8 @@ msgid "_Edit"
 msgstr "_Bearbeiten"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:15
-msgid "Monitoring _frequency:"
-msgstr "Überwachungs_frequenz:"
+msgid "Monitoring _frequency"
+msgstr "Überwachungs_häufigkeit"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:16
 msgid "ms"
@@ -1265,16 +1266,16 @@ msgstr "ms"
 #: ../src/connection-editor/ce-page-bond.ui.h:17
 #: ../src/connection-editor/ce-page-bridge.ui.h:6
 #: ../src/connection-editor/ce-page-team.ui.h:16
-msgid "_Interface name:"
-msgstr "Name der _Schnittstelle:"
+msgid "_Interface name"
+msgstr "Name der _Schnittstelle"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:18
-msgid "_Link Monitoring:"
-msgstr "_Verbindungsüberwachung:"
+msgid "_Link Monitoring"
+msgstr "_Verbindungsüberwachung"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:19
-msgid "ARP _targets:"
-msgstr "ARP-_Ziele:"
+msgid "ARP _targets"
+msgstr "ARP-_Ziele"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:20
 msgid ""
@@ -1285,16 +1286,16 @@ msgstr ""
 "nach denen gesucht wird, wenn der Verbindungsstatus geprüft wird."
 
 #: ../src/connection-editor/ce-page-bond.ui.h:21
-msgid "Link _up delay:"
-msgstr "Verzögerung bei _Aktivierung einer Verbindung:"
+msgid "Link _up delay"
+msgstr "Verzögerung bei _Aktivierung einer Verbindung"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:22
-msgid "Link _down delay:"
-msgstr "Verzögerung bei _Deaktivierung einer Verbindung:"
+msgid "Link _down delay"
+msgstr "Verzögerung bei _Deaktivierung einer Verbindung"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:23
-msgid "_Primary:"
-msgstr "_Primär:"
+msgid "_Primary"
+msgstr "_Primär"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:24
 msgid ""
@@ -1310,8 +1311,8 @@ msgstr ""
 #: ../src/connection-editor/ce-page-team.ui.h:17
 #: ../src/connection-editor/ce-page-vlan.ui.h:4
 #: ../src/connection-editor/ce-page-wifi.ui.h:8
-msgid "_MTU:"
-msgstr "_MTU:"
+msgid "_MTU"
+msgstr "_MTU"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:26
 #: ../src/connection-editor/ce-page-ethernet.ui.h:18
@@ -1324,33 +1325,33 @@ msgstr "Bytes"
 
 # Thema: Routing-Protokoll
 #: ../src/connection-editor/ce-page-bridge-port.ui.h:1
-msgid "Path _cost:"
-msgstr "Pfad_kosten:"
+msgid "Path _cost"
+msgstr "Pfad_kosten"
 
 #: ../src/connection-editor/ce-page-bridge-port.ui.h:2
 #: ../src/connection-editor/ce-page-bridge.ui.h:5
-msgid "_Priority:"
-msgstr "_Priorität:"
+msgid "_Priority"
+msgstr "_Priorität"
 
 #: ../src/connection-editor/ce-page-bridge-port.ui.h:3
-msgid "_Hairpin mode:"
-msgstr "_Hairpin-Modus:"
+msgid "_Hairpin mode"
+msgstr "_Hairpin-Modus"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:1
-msgid "Bridged _connections:"
-msgstr "_Verbindungen über Brücke:"
+msgid "Bridged _connections"
+msgstr "_Verbindungen über Brücke"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:7
-msgid "_Forward delay:"
-msgstr "_Weiterleitungsverzögerung:"
+msgid "_Forward delay"
+msgstr "_Zustellungsverzögerung"
 
 # Im Allgemeinen ist ein Hello-Protokoll  für den Netzwerkbetrieb ein integraler Bestandteil, verantwortlich für:
 # * Senden von Keepalives in bestimmten Intervallen (damit wird bestätigt, ob die Kommunikation noch besteht)
 # * Zur Entdeckung eines Nachbarn
 # * Aushandlung Parameter ...
 #: ../src/connection-editor/ce-page-bridge.ui.h:8
-msgid "_Hello time:"
-msgstr "_Hello-Zeitintervall:"
+msgid "_Hello time"
+msgstr "_Hello-Zeitintervall"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:9
 msgid "STP forwarding delay, in seconds"
@@ -1375,6 +1376,9 @@ msgid ""
 "snooping was automatically disabled due to hash collisions, the system may "
 "refuse to enable the feature until the collisions are resolved."
 msgstr ""
+"Legt fest, ob »IGMP snooping« für diese Brücke aktiviert wird. Beachten Sie, "
+"dass das System diese Funktion automatisch verweigern kann, solange eine "
+"Hash-Kollision erkannt wird."
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:14
 msgid "Enable _STP (Spanning Tree Protocol)"
@@ -1388,30 +1392,31 @@ msgstr ""
 "sein soll"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:16
-#, fuzzy
 msgid ""
 "STP priority for this bridge. Lower values are “better”; the lowest priority "
 "bridge will be elected the root bridge."
-msgstr "STP-Priorität für diese Bridge. Niedrigere Werte sind »besser«; "
+msgstr ""
+"STP-Priorität für diese Brücke. Niedrigere Werte sind »besser«. Die Brücke "
+"mit der niedrigsten Priorität wird zur »root-Brücke« gewählt."
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:17
-msgid "_Max age:"
-msgstr "_Höchstzulässiges Alter:"
+msgid "_Max age"
+msgstr "_Höchstzulässiges Alter"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:18
 msgid "STP maximum message age, in seconds"
-msgstr ""
+msgstr "Höchstzulässiges Alter von STP-Nachrichten in Sekunden"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:19
-msgid "_Aging time:"
-msgstr "_Alterungszeit:"
+msgid "_Aging time"
+msgstr "_Alterungszeit"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:20
 msgid "The Ethernet MAC address aging time, in seconds"
 msgstr "Die Lebensdauer der Ethernet MAC-Adresse in Sekunden"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:21
-msgid "Group _forward mask:"
+msgid "Group _forward mask"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:22
@@ -1594,67 +1599,63 @@ msgstr ""
 "deaktivieren."
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:20
-msgid "Priority:"
-msgstr "Priorität:"
+msgid "0"
+msgstr "0"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:21
-msgid "0:"
-msgstr "0:"
+msgid "1"
+msgstr "1"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:22
-msgid "1:"
-msgstr "1:"
+msgid "2"
+msgstr "2"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:23
-msgid "2:"
-msgstr "2:"
+msgid "3"
+msgstr "3"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:24
-msgid "3:"
-msgstr "3:"
+msgid "4"
+msgstr "4"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:25
-msgid "4:"
-msgstr "4:"
+msgid "5"
+msgstr "5"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:26
-msgid "5:"
-msgstr "5:"
+msgid "6"
+msgstr "6"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:27
-msgid "6:"
-msgstr "6:"
+msgid "7"
+msgstr "7"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:28
-msgid "7:"
-msgstr "7:"
+msgid "Traffic Class"
+msgstr "Verkehrsklasse"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:29
-msgid "Traffic Class:"
-msgstr "Verkehrsklasse:"
+msgid "Strict Bandwidth"
+msgstr "Strikte Bandbreite"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:30
-msgid "Strict Bandwidth:"
-msgstr "Strikte Bandbreite:"
+msgid "Priority Bandwidth"
+msgstr "Priorität-Bandbreite"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:31
-msgid "Priority Bandwidth:"
-msgstr "Priorität-Bandbreite:"
+msgid "Group Bandwidth"
+msgstr "Gruppenbandbreite"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:32
-msgid "Group Bandwidth:"
-msgstr "Gruppenbandbreite:"
+msgid "Group ID"
+msgstr "Gruppenkennung"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:33
-msgid "Group ID:"
-msgstr "Gruppenkennung:"
-
-#: ../src/connection-editor/ce-page-dcb.ui.h:34
 msgid "Enter the priority group ID for each User Priority."
 msgstr ""
 "Geben Sie die Priorität-Gruppenkennung für jede Benutzer-Priorität ein."
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:36
+#: ../src/connection-editor/ce-page-dcb.ui.h:35
 #, no-c-format
 msgid ""
 "Enter the allowed link bandwidth percent each Priority Group may use. The "
@@ -1663,18 +1664,18 @@ msgstr ""
 "Geben Sie die erlaubte Verbindungsbandbreite in Prozent ein, die jede "
 "Prioritäten-Gruppe verwenden darf. Die Summe aller Gruppen muss 100% ergeben."
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:37
+#: ../src/connection-editor/ce-page-dcb.ui.h:36
 msgid ""
 "Enter the percentage of priority group bandwidth each user priority may use."
 msgstr ""
 "Geben Sie den Prozentsatz jeder Priorität-Gruppenbandbreite ein, die jede "
 "Benutzer-Priorität verwenden darf."
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:38
+#: ../src/connection-editor/ce-page-dcb.ui.h:37
 msgid "Enable or disable strict bandwidth for each user priority."
 msgstr "Strikte Bandbreite für jede Benutzer-Priorität ein- oder ausschalten."
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:39
+#: ../src/connection-editor/ce-page-dcb.ui.h:38
 msgid "Enter the traffic class for each user priority."
 msgstr "Geben Sie die Verkehrsklasse für jede Benutzer-Priorität ein."
 
@@ -1683,8 +1684,8 @@ msgstr "Geben Sie die Verkehrsklasse für jede Benutzer-Priorität ein."
 #: ../src/wireless-security/eap-method-leap.ui.h:1
 #: ../src/wireless-security/eap-method-simple.ui.h:1
 #: ../src/wireless-security/ws-leap.ui.h:1
-msgid "_Username:"
-msgstr "Ben_utzername:"
+msgid "_Username"
+msgstr "_Benutzername"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:2
 msgid "Username used to authenticate with the PPPoE service."
@@ -1697,8 +1698,8 @@ msgid ""
 msgstr ""
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:4
-msgid "_Service:"
-msgstr "_Dienst:"
+msgid "_Service"
+msgstr "_Dienst"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:5
 #: ../src/wireless-security/eap-method-leap.ui.h:3
@@ -1714,22 +1715,20 @@ msgstr "Zur Legitimierung am PPPoE-Dienst verwendetes Passwort."
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:7
 #: ../src/connection-editor/ce-page-mobile.ui.h:4
-#: ../src/libnma/nma-vpn-password-dialog.c:97
-#: ../src/libnm-gtk/nm-vpn-password-dialog.c:97
 #: ../src/wireless-security/eap-method-leap.ui.h:2
 #: ../src/wireless-security/eap-method-simple.ui.h:2
 #: ../src/wireless-security/ws-leap.ui.h:2
 #: ../src/wireless-security/ws-wpa-psk.ui.h:1
-msgid "_Password:"
-msgstr "_Passwort:"
+msgid "_Password"
+msgstr "_Passwort"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:8
-msgid "PPP _interface:"
-msgstr "PPP-Schn_ittstelle:"
+msgid "PPP _interface"
+msgstr "PPP-Schn_ittstelle"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:9
-msgid "P_arent interface:"
-msgstr "Ü_bergeordnete Schnittstelle:"
+msgid "P_arent interface"
+msgstr "Ü_bergeordnete Schnittstelle"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:10
 msgid "An arbitrary name to assign to the newly created PPP interface."
@@ -1742,6 +1741,7 @@ msgid "The interface on which the PPP connection will be established."
 msgstr "Die Schnittstelle, über die die PPP-Verbindung aufgebaut wird."
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:1
+#: ../src/connection-editor/ce-page-general.ui.h:1
 #: ../src/connection-editor/ce-page-ip4.ui.h:1
 #: ../src/connection-editor/ce-page-ip6.ui.h:1
 #: ../src/connection-editor/ce-page-proxy.ui.h:2
@@ -1806,23 +1806,23 @@ msgid "Manual"
 msgstr "Manuell"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:14
-msgid "_Port:"
-msgstr "_Port:"
+msgid "_Port"
+msgstr "_Port"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:15
 #: ../src/connection-editor/ce-page-infiniband.ui.h:6
 #: ../src/connection-editor/ce-page-wifi.ui.h:9
-msgid "_Device:"
-msgstr "_Gerät:"
+msgid "_Device"
+msgstr "_Gerät"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:16
 #: ../src/connection-editor/ce-page-wifi.ui.h:10
-msgid "C_loned MAC address:"
-msgstr "Benutzerdefinierte MA_C-Adresse:"
+msgid "C_loned MAC address"
+msgstr "Duplizierte MA_C-Adresse"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:19
-msgid "Wake on LAN:"
-msgstr "Aufwecken über LAN:"
+msgid "Wake on LAN"
+msgstr "Aufwecken über LAN"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:20
 msgid "De_fault"
@@ -1857,8 +1857,8 @@ msgid "Ma_gic"
 msgstr "Ma_gic"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:28
-msgid "_Wake on LAN password:"
-msgstr "Passwort für Auf_wecken über LAN:"
+msgid "_Wake on LAN password"
+msgstr "Passwort für Auf_wecken über LAN"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:29
 msgid ""
@@ -1868,8 +1868,8 @@ msgstr ""
 "Pakete gültig."
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:30
-msgid "Lin_k negotiation:"
-msgstr "_Verbindungsverhandlung:"
+msgid "Lin_k negotiation"
+msgstr "_Verbindungsaushandlung"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:31
 msgid ""
@@ -1882,8 +1882,8 @@ msgstr ""
 "Zweifelsfall die Einstellung auf »Ignore« belassen oder »Automatic« wählen."
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:32
-msgid "_Speed:"
-msgstr "_Geschwindigkeit:"
+msgid "_Speed"
+msgstr "_Geschwindigkeit"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:33
 msgid ""
@@ -1897,8 +1897,8 @@ msgstr ""
 "diese Einstellung unterstützt."
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:34
-msgid "Duple_x:"
-msgstr "Duple_x:"
+msgid "Duple_x"
+msgstr "Duple_x"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:35
 msgid ""
@@ -1911,23 +1911,49 @@ msgstr ""
 "eines Duplex-Modus sollte geprüft werden, dass das Gerät diese Einstellung "
 "unterstützt."
 
-#: ../src/connection-editor/ce-page-general.ui.h:1
-msgid "Automatically connect to _VPN when using this connection"
-msgstr "Automatisch über _VPN verbinden, wenn dieses Netzwerk verwendet wird"
-
 #: ../src/connection-editor/ce-page-general.ui.h:2
+msgid "Yes"
+msgstr "Ja"
+
+#: ../src/connection-editor/ce-page-general.ui.h:3
+msgid "No"
+msgstr "Nein"
+
+#: ../src/connection-editor/ce-page-general.ui.h:4
 msgid "All _users may connect to this network"
 msgstr "Alle Ben_utzer dürfen dieses Netzwerk verwenden"
 
-#: ../src/connection-editor/ce-page-general.ui.h:3
-msgid "_Automatically connect to this network when it is available"
-msgstr "_Automatisch mit diesem Netzwerk verbinden, wenn es verfügbar ist"
-
-#: ../src/connection-editor/ce-page-general.ui.h:4
-msgid "Connection _priority for auto-activation:"
-msgstr "Verbindungs_priorität für automatische Aktivierung:"
-
 #: ../src/connection-editor/ce-page-general.ui.h:5
+msgid "Automatically connect to _VPN"
+msgstr "Automatisch mit _VPN verbinden"
+
+#: ../src/connection-editor/ce-page-general.ui.h:6
+msgid "Firewall _zone"
+msgstr "Firewall-_Zone"
+
+# Gemeint ist eine Verbindung, deren Nutzung gemessen und entsprechend abgerechnet wird.
+#: ../src/connection-editor/ce-page-general.ui.h:7
+msgid "_Metered connection"
+msgstr "_Kostenpflichtige Verbindung"
+
+#: ../src/connection-editor/ce-page-general.ui.h:8
+msgid ""
+"NetworkManager indicates to applications whether the connection is metered "
+"and therefore data usage should be restricted. Select which value (“Yes” or "
+"“No”) to indicate to applications, or “Automatic” to use a default value "
+"based on the connection type and other heuristics."
+msgstr ""
+"NetworkManager gibt Anwendungen bekannt, ob die Verbindung gebührenpflichtig "
+"ist und entsprechend der Datendurchsatz eingeschränkt werden soll. Wählen "
+"Sie, ob »yes« (ja) oder »no« (nein) der Anwendung mitgeteilt werden soll "
+"oder »automatic« (automatisch), um den anhand von Verbindungstyp und anderen "
+"Heuristiken vorgegebenen Wert zu verwenden."
+
+#: ../src/connection-editor/ce-page-general.ui.h:9
+msgid "Connect _automatically with priority"
+msgstr "Automatisch mit Priorität _verbinden"
+
+#: ../src/connection-editor/ce-page-general.ui.h:10
 msgid ""
 "Connection priority for automatic activation. Connections with higher "
 "numbers are preferred when selecting profiles for automatic activation. "
@@ -1936,10 +1962,6 @@ msgstr ""
 "Die Verbindungspriorität für die automatische Aktivierung. Verbindungen mit "
 "größeren Zahlen werden bei der Auswahl der Profile für die automatische "
 "Aktivierung bevorzugt. Der Vorgabewert ist 0."
-
-#: ../src/connection-editor/ce-page-general.ui.h:6
-msgid "Firewall _zone:"
-msgstr "Firewall-_Zone:"
 
 #: ../src/connection-editor/ce-page.h:111
 msgid ""
@@ -1985,8 +2007,8 @@ msgid "Connected"
 msgstr "Verbunden"
 
 #: ../src/connection-editor/ce-page-infiniband.ui.h:5
-msgid "_Transport mode:"
-msgstr "Über_tragungsmodus:"
+msgid "_Transport mode"
+msgstr "Über_tragungsmodus"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:1
 msgid "IPIP"
@@ -2026,38 +2048,38 @@ msgstr "VTI6"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:10
 #: ../src/connection-editor/ce-page-macsec.ui.h:6
-msgid "Device name:"
-msgstr "Gerätename:"
+msgid "Device name"
+msgstr "Gerätename"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:11
 #: ../src/connection-editor/ce-page-macsec.ui.h:8
-msgid "Parent device:"
-msgstr "Übergeordnetes Gerät:"
+msgid "Parent device"
+msgstr "Übergeordnetes Gerät"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:12
 #: ../src/connection-editor/ce-page-macsec.ui.h:16
-msgid "Mode:"
-msgstr "Modus:"
+msgid "Mode"
+msgstr "Modus"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:13
-msgid "Local IP:"
-msgstr "Lokale IP:"
+msgid "Local IP"
+msgstr "Lokale IP"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:14
-msgid "Remote IP:"
-msgstr "Entfernte IP:"
+msgid "Remote IP"
+msgstr "Entfernte IP"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:15
-msgid "Input key:"
-msgstr "Eingabeschlüssel:"
+msgid "Input key"
+msgstr "Eingabeschlüssel"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:16
-msgid "Output key:"
-msgstr "Ausgabeschlüssel:"
+msgid "Output key"
+msgstr "Ausgabeschlüssel"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:17
-msgid "MTU:"
-msgstr "Größtmögliches Datenpaket:"
+msgid "MTU"
+msgstr "MTU"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:2
 #: ../src/connection-editor/ce-page-ip6.ui.h:2
@@ -2078,8 +2100,8 @@ msgstr "Gemeinsam mit anderen Rechnern"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:6
 #: ../src/connection-editor/ce-page-ip6.ui.h:11
-msgid "_Method:"
-msgstr "_Methode:"
+msgid "_Method"
+msgstr "_Methode"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:9
 msgid ""
@@ -2101,22 +2123,22 @@ msgstr ""
 "durch Kommata getrennt."
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:11
-msgid "D_HCP client ID:"
-msgstr "D_HCP Client-Kennung:"
+msgid "D_HCP client ID"
+msgstr "D_HCP Client-Kennung"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:12
 #: ../src/connection-editor/ce-page-ip6.ui.h:15
 #: ../src/connection-editor/page-ip4.c:372
 #: ../src/connection-editor/page-ip6.c:346
-msgid "S_earch domains:"
-msgstr "_Suchdomänen:"
+msgid "S_earch domains"
+msgstr "_Suchdomänen"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:13
 #: ../src/connection-editor/ce-page-ip6.ui.h:16
 #: ../src/connection-editor/page-ip4.c:363
 #: ../src/connection-editor/page-ip6.c:337
-msgid "DNS ser_vers:"
-msgstr "_DNS-Server:"
+msgid "DNS ser_vers"
+msgstr "_DNS-Server"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:14
 msgid ""
@@ -2178,12 +2200,12 @@ msgstr ""
 "Schnittstelle weitergeleitet."
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:18
-msgid "IPv6 _privacy extensions:"
-msgstr "IPv6 Erweiterungen zum Schutz der _Privatsphäre:"
+msgid "IPv6 _privacy extensions"
+msgstr "IPv6-Erweiterungen zum Schutz der _Privatsphäre"
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:19
-msgid "IPv6 address _generation mode:"
-msgstr "IPv6-Adress_erstellungsmodus:"
+msgid "IPv6 address _generation mode"
+msgstr "IPv6-Adress_erstellungsmodus"
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:20
 msgid "Require IPv_6 addressing for this connection to complete"
@@ -2226,12 +2248,18 @@ msgid ""
 "The parent interface name or parent connection UUID from which this MACSEC "
 "interface should be created."
 msgstr ""
+"Der Name der übergeordneten Schnittstelle oder die übergeordnete "
+"Verbindungskennung, anhand der diese MACSEC-Schnittstelle angelegt werden "
+"soll."
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:10
 msgid ""
 "The parent interface name or parent connection UUID from which this MACsec "
 "interface should be created"
 msgstr ""
+"Der Name der übergeordneten Schnittstelle oder die übergeordnete "
+"Verbindungskennung, anhand der diese MACsec-Schnittstelle angelegt werden "
+"soll."
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:11
 msgid " The pre-shared Connectivity-association Key Name"
@@ -2249,32 +2277,33 @@ msgid ""
 msgstr ""
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:14
-msgid "CKN:"
-msgstr "CKN:"
+msgid "CKN"
+msgstr "CKN"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:15
-msgid "CAK:"
-msgstr "CAK:"
+msgid "CAK"
+msgstr "CAK"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:17
-msgid "Keys:"
-msgstr "Schlüssel:"
+msgid "Keys"
+msgstr "Schlüssel"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:18
-msgid "Parameters:"
-msgstr "Parameter:"
+msgid "Parameters"
+msgstr "Parameter"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:19
-msgid "Validation:"
-msgstr "Überprüfung:"
+msgid "Validation"
+msgstr "Überprüfung"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:20
-msgid "SCI port:"
-msgstr "SCI-Port:"
+msgid "SCI port"
+msgstr "SCI-Port"
 
+# Gemeint sind Ethernet-Rahmen
 #: ../src/connection-editor/ce-page-macsec.ui.h:21
 msgid "Specifies the validation mode for incoming frames"
-msgstr ""
+msgstr "Legt den Prüfmodus für eingehende Rahmen fest"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:22
 msgid "Encrypt"
@@ -2294,28 +2323,28 @@ msgid "Basic"
 msgstr "Grundlegend"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:2
-msgid "Nu_mber:"
-msgstr "Nu_mmer:"
+msgid "Nu_mber"
+msgstr "Nu_mmer"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:5
 msgid "Advanced"
 msgstr "Erweitert"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:6
-msgid "_APN:"
-msgstr "_APN:"
+msgid "_APN"
+msgstr "_APN (Zugangspunkt)"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:7
-msgid "N_etwork ID:"
-msgstr "N_etzwerkkennung:"
+msgid "N_etwork ID"
+msgstr "N_etzwerkkennung"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:8
 msgid "Change…"
 msgstr "Ändern …"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:9
-msgid "P_IN:"
-msgstr "PI_N:"
+msgid "P_IN"
+msgstr "PI_N"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:10
 msgid "Allow _roaming if home network is not available"
@@ -2330,8 +2359,8 @@ msgid "Authentication"
 msgstr "Legitimierung"
 
 #: ../src/connection-editor/ce-page-ppp.ui.h:2
-msgid "Allowed methods:"
-msgstr "Zulässige Methoden:"
+msgid "Allowed methods"
+msgstr "Zulässige Methoden"
 
 #: ../src/connection-editor/ce-page-ppp.ui.h:3
 msgid "Configure _Methods…"
@@ -2387,12 +2416,12 @@ msgid "Use this proxy configuration for only browser clients/schemes."
 msgstr "Verwenden Sie diese Proxy-Einstellung nur für Browser."
 
 #: ../src/connection-editor/ce-page-proxy.ui.h:5
-msgid "PAC URL:"
-msgstr "PAC-Adresse:"
+msgid "PAC URL"
+msgstr "PAC-Adresse"
 
 #: ../src/connection-editor/ce-page-proxy.ui.h:6
-msgid "PAC script:"
-msgstr "PAC-Skript:"
+msgid "PAC script"
+msgstr "PAC-Skript"
 
 #: ../src/connection-editor/ce-page-proxy.ui.h:7
 msgid "URL from where the PAC script is to be obtained."
@@ -2403,8 +2432,8 @@ msgid "Import script from a file…"
 msgstr "Skript aus Datei importieren …"
 
 #: ../src/connection-editor/ce-page-proxy.ui.h:9
-msgid "Method:"
-msgstr "Methode:"
+msgid "Method"
+msgstr "Methode"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:1
 #: ../src/connection-editor/ce-page-team.ui.h:19
@@ -2436,8 +2465,8 @@ msgid "Team Advanced Options"
 msgstr "Erweiterte Einstellungen für Team"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:7
-msgid "_Queue ID:"
-msgstr "_Warteschlangenkennung:"
+msgid "_Queue ID"
+msgstr "_Warteschlangenkennung"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:8
 #: ../src/connection-editor/ce-page-team.ui.h:42
@@ -2458,8 +2487,8 @@ msgid "Active-Backup runner options"
 msgstr "Optionen für Active-Backup-Runner"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:11
-msgid "_Port priority:"
-msgstr "Port-_Priorität:"
+msgid "_Port priority"
+msgstr "Port-_Priorität"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:12
 #: ../src/connection-editor/ce-page-team.ui.h:44
@@ -2493,12 +2522,12 @@ msgid "LACP runner options"
 msgstr "Optionen für LACP-Runner"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:17
-msgid "_LACP port priority:"
-msgstr "_LACP-Port-Priorität:"
+msgid "_LACP port priority"
+msgstr "_LACP-Port-Priorität"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:18
-msgid "LACP port _key:"
-msgstr "LACP-Port-_Schlüssel:"
+msgid "LACP port _key"
+msgstr "LACP-Port-_Schlüssel"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:19
 #: ../src/connection-editor/ce-page-team.ui.h:43
@@ -2536,43 +2565,43 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:24
 #: ../src/connection-editor/ce-page-team.ui.h:70
-msgid "_Link watcher:"
-msgstr "_Verbindungsüberwachung:"
+msgid "_Link watcher"
+msgstr "_Verbindungsüberwachung"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:25
 #: ../src/connection-editor/ce-page-team.ui.h:71
-msgid "_Up delay:"
-msgstr "Verzögerung bei _Aktivierung:"
+msgid "_Up delay"
+msgstr "Verzögerung bei _Aktivierung"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:26
 #: ../src/connection-editor/ce-page-team.ui.h:72
-msgid "_Down delay:"
-msgstr "Verzögerung bei _Deaktivierung:"
+msgid "_Down delay"
+msgstr "Verzögerung bei _Deaktivierung"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:27
 #: ../src/connection-editor/ce-page-team.ui.h:73
-msgid "Send _interval:"
-msgstr "Sende_intervall:"
+msgid "Send _interval"
+msgstr "Sende_intervall"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:28
 #: ../src/connection-editor/ce-page-team.ui.h:74
-msgid "Delay _before first send:"
-msgstr "Verzögerung _vor erstmaligem Senden:"
+msgid "Delay _before first send"
+msgstr "Verzögerung _vor erstmaligem Senden"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:29
 #: ../src/connection-editor/ce-page-team.ui.h:75
-msgid "_Maximum missed replies:"
-msgstr "_Maximal nicht erhaltene Antworten:"
+msgid "_Maximum missed replies"
+msgstr "_Maximal nicht erhaltene Antworten"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:30
 #: ../src/connection-editor/ce-page-team.ui.h:76
-msgid "_Source host:"
-msgstr "_Quellrechner:"
+msgid "_Source host"
+msgstr "_Quellrechner"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:31
 #: ../src/connection-editor/ce-page-team.ui.h:77
-msgid "_Target host:"
-msgstr "_Zielrechner:"
+msgid "_Target host"
+msgstr "_Zielrechner"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:32
 #: ../src/connection-editor/ce-page-team.ui.h:78
@@ -2680,8 +2709,8 @@ msgstr "Team-Konfiguration aus Datei _importieren …"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:47
 #: ../src/connection-editor/ce-page-team.ui.h:94
-msgid "Edit _JSON configuration:"
-msgstr "_JSON-Konfiguration bearbeiten:"
+msgid "Edit _JSON configuration"
+msgstr "_JSON-Konfiguration bearbeiten"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:48
 #: ../src/connection-editor/ce-page-team.ui.h:95
@@ -2721,8 +2750,8 @@ msgid "From active to team device"
 msgstr "Vom aktiven zum Team-Gerät"
 
 #: ../src/connection-editor/ce-page-team.ui.h:12
-msgid "_Teamed connections:"
-msgstr "Netzwerk-_Team:"
+msgid "_Teamed connections"
+msgstr "Netzwerk-_Team"
 
 #: ../src/connection-editor/ce-page-team.ui.h:23
 msgid "Load balance"
@@ -2771,24 +2800,24 @@ msgid "Any L4 protocol"
 msgstr "Jedes L4-Protokoll"
 
 #: ../src/connection-editor/ce-page-team.ui.h:38
-msgid "_Peer notification count:"
-msgstr "Benachrichtigungs_anzahl der Gegenstelle:"
+msgid "_Peer notification count"
+msgstr "Benachrichtigungs_anzahl der Gegenstelle"
 
 #: ../src/connection-editor/ce-page-team.ui.h:39
-msgid "Peer _notification interval:"
-msgstr "Benachrichtigungs_intervall der Gegenstelle:"
+msgid "Peer _notification interval"
+msgstr "Benachrichtigungs_intervall der Gegenstelle"
 
 #: ../src/connection-editor/ce-page-team.ui.h:40
-msgid "_Multicast rejoin count:"
-msgstr "Rejoin-Anzahl für _Multicast:"
+msgid "_Multicast rejoin count"
+msgstr "Rejoin-Anzahl für _Multicast"
 
 #: ../src/connection-editor/ce-page-team.ui.h:41
-msgid "Multicast _rejoin interval:"
-msgstr "_Rejoin-Intervall für Multicast:"
+msgid "Multicast _rejoin interval"
+msgstr "_Rejoin-Intervall für Multicast"
 
 #: ../src/connection-editor/ce-page-team.ui.h:46
-msgid "_Hardware Address:"
-msgstr "_Hardware-Adresse:"
+msgid "_Hardware Address"
+msgstr "_Hardware-Adresse"
 
 #: ../src/connection-editor/ce-page-team.ui.h:47
 msgid ""
@@ -2799,12 +2828,12 @@ msgstr ""
 "übliche Format für MAC-Adressen."
 
 #: ../src/connection-editor/ce-page-team.ui.h:49
-msgid "_Runner:"
-msgstr "_Runner:"
+msgid "_Runner"
+msgstr "_Runner"
 
 #: ../src/connection-editor/ce-page-team.ui.h:50
-msgid "_Hardware address policy:"
-msgstr "Richtlinie der _Hardware-Adresse:"
+msgid "_Hardware address policy"
+msgstr "Richtlinie der _Hardware-Adresse"
 
 #: ../src/connection-editor/ce-page-team.ui.h:51
 msgid "Name of runner to be used."
@@ -2846,16 +2875,16 @@ msgstr ""
 "ansonsten eines alle 30 Sekunden."
 
 #: ../src/connection-editor/ce-page-team.ui.h:57
-msgid "_System priority:"
-msgstr "_Systempriorität:"
+msgid "_System priority"
+msgstr "_Systempriorität"
 
 #: ../src/connection-editor/ce-page-team.ui.h:58
-msgid "_Minimum ports:"
-msgstr "_Minimale Ports:"
+msgid "_Minimum ports"
+msgstr "_Minimale Ports"
 
 #: ../src/connection-editor/ce-page-team.ui.h:59
-msgid "_Aggregator selection policy:"
-msgstr "Richtlinie für die _Aggregator-Auswahl:"
+msgid "_Aggregator selection policy"
+msgstr "Richtlinie für die _Aggregator-Auswahl"
 
 #: ../src/connection-editor/ce-page-team.ui.h:60
 msgid "System priority, value can be 0 – 65535."
@@ -2898,36 +2927,36 @@ msgstr ""
 "ausgeschaltet."
 
 #: ../src/connection-editor/ce-page-team.ui.h:67
-msgid "Transmission _balancing interval:"
-msgstr "_Intervall der Übertragungsbalancierung:"
+msgid "Transmission _balancing interval"
+msgstr "_Intervall der Übertragungsbalancierung"
 
 #: ../src/connection-editor/ce-page-team.ui.h:68
-msgid "_Transmission balancer:"
-msgstr "_Übertragungsbalancierung:"
+msgid "_Transmission balancer"
+msgstr "_Übertragungsbalancierung"
 
 #: ../src/connection-editor/ce-page-team.ui.h:69
 msgid "Runner"
 msgstr "Runner"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:1
-msgid "_Parent interface:"
-msgstr "Ü_bergeordnete Schnittstelle:"
+msgid "_Parent interface"
+msgstr "Ü_bergeordnete Schnittstelle"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:2
-msgid "VLAN inter_face name:"
-msgstr "Name der VLAN-_Schnittstelle:"
+msgid "VLAN inter_face name"
+msgstr "Name der VLAN-_Schnittstelle"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:3
-msgid "Cloned MAC _address:"
-msgstr "_Duplizierte MAC-Adresse:"
+msgid "Cloned MAC _address"
+msgstr "_Duplizierte MAC-Adresse"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:6
-msgid "VLAN _id:"
-msgstr "VLAN-_Kennung:"
+msgid "VLAN _id"
+msgstr "VLAN-_Kennung"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:7
-msgid "Flags:"
-msgstr "Flags:"
+msgid "Flags"
+msgstr "Flags"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:8
 msgid "_Reorder headers"
@@ -2956,8 +2985,8 @@ msgid "\"vlan\" + number"
 msgstr "»vlan« + Nummer"
 
 #: ../src/connection-editor/ce-page-wifi-security.ui.h:1
-msgid "S_ecurity:"
-msgstr "Sich_erheit:"
+msgid "S_ecurity"
+msgstr "Sich_erheit"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:2
 msgid "A (5 GHz)"
@@ -2984,32 +3013,32 @@ msgid "mW"
 msgstr "mW"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:12
-msgid "Transmission po_wer:"
-msgstr "_Sendeleistung:"
+msgid "Transmission po_wer"
+msgstr "_Sendeleistung"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:13
 msgid "Mb/s"
 msgstr "Mb/s"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:14
-msgid "_Rate:"
-msgstr "_Rate:"
+msgid "_Rate"
+msgstr "_Rate"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:15
-msgid "_BSSID:"
-msgstr "_BSSID:"
+msgid "_BSSID"
+msgstr "_BSSID"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:16
-msgid "C_hannel:"
-msgstr "_Kanal:"
+msgid "C_hannel"
+msgstr "_Kanal"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:17
-msgid "Ban_d:"
-msgstr "Ban_d:"
+msgid "Ban_d"
+msgstr "Ban_d"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:19
-msgid "SS_ID:"
-msgstr "_SSID:"
+msgid "SS_ID"
+msgstr "SS_ID"
 
 #: ../src/connection-editor/ce-polkit.c:63
 #: ../src/connection-editor/ce-polkit-button.c:74
@@ -3317,37 +3346,46 @@ msgstr "Hinzufügen der Verbindung fehlgeschlagen"
 msgid "Fix"
 msgstr "Fest"
 
+# SELinux
 #: ../src/connection-editor/nm-connection-editor.ui.h:2
 msgid ""
 "Security labels may prevent some files from being used with certificate "
 "authentication."
 msgstr ""
+"Sicherheitsmarkierungen können verhindern, dass einige Dateien für die "
+"zertifikatbasierte Authentifizierung verwendet werden."
 
 #: ../src/connection-editor/nm-connection-editor.ui.h:3
-msgid "Connection _name:"
-msgstr "Verbindungs_name:"
+msgid "Connection _name"
+msgstr "Verbindungs_name"
 
 #: ../src/connection-editor/nm-connection-editor.ui.h:4
 msgid "_Export…"
 msgstr "E_xportieren …"
 
+# SELinux
 #: ../src/connection-editor/nm-connection-editor.ui.h:6
 msgid "File Relabel"
-msgstr "Datei umbenennen"
+msgstr "Datei neu markieren"
 
+# SELinux
 #: ../src/connection-editor/nm-connection-editor.ui.h:7
 msgid "_Relabel"
-msgstr "_Umbenennen"
+msgstr "_Neu markieren"
 
+# SELinux label, oder was ist hier gemeint?
 #: ../src/connection-editor/nm-connection-editor.ui.h:8
 msgid ""
 "The following files are not labelled for use with certificate "
 "authentication. Do you wish to adjust the labels?"
 msgstr ""
+"Die folgenden Dateien sind nicht für die Authentifizierung mittels "
+"Zertifikat markiert. Möchten Sie die Markierung anpassen?"
 
+# SELinux
 #: ../src/connection-editor/nm-connection-editor.ui.h:9
 msgid "Relabel"
-msgstr "Umbenennen"
+msgstr "Neu markieren"
 
 #: ../src/connection-editor/nm-connection-editor.ui.h:10
 msgid "Filename"
@@ -3601,13 +3639,13 @@ msgid "Ethernet connection %d"
 msgstr "Ethernet-Verbindung %d"
 
 #. TRANSLATORS: Default zone set for firewall, when no zone is selected
-#: ../src/connection-editor/page-general.c:54
-#: ../src/libnma/nma-mobile-providers.c:817
+#: ../src/connection-editor/page-general.c:56
+#: ../src/libnma/nma-mobile-providers.c:807
 #: ../src/libnm-gtk/nm-mobile-providers.c:806
 msgid "Default"
 msgstr "Vorgabe"
 
-#: ../src/connection-editor/page-general.c:55
+#: ../src/connection-editor/page-general.c:57
 msgid ""
 "The zone defines the trust level of the connection. Default is not a regular "
 "zone, selecting it results in the use of the default zone set in the "
@@ -3617,7 +3655,7 @@ msgstr ""
 "Voreinstellung ist »keine reguläre Zone«. Dadurch wird die voreingestellte "
 "Zone der Firewall verwendet. Ist nur relevant, wenn firewalld aktiv ist."
 
-#: ../src/connection-editor/page-general.c:370
+#: ../src/connection-editor/page-general.c:376
 msgid "Could not load General user interface."
 msgstr "Allgemeine Benutzerschnittstelle konnte nicht geladen werden."
 
@@ -3696,13 +3734,13 @@ msgstr "Nur per Link-Local"
 
 #: ../src/connection-editor/page-ip4.c:361
 #: ../src/connection-editor/page-ip6.c:335
-msgid "Additional DNS ser_vers:"
-msgstr "Zusätzliche _DNS-Server:"
+msgid "Additional DNS ser_vers"
+msgstr "Zusätzliche _DNS-Server"
 
 #: ../src/connection-editor/page-ip4.c:370
 #: ../src/connection-editor/page-ip6.c:344
-msgid "Additional s_earch domains:"
-msgstr "Zusätzliche Suchdomän_en:"
+msgid "Additional s_earch domains"
+msgstr "Zusätzliche Suchdomän_en"
 
 #: ../src/connection-editor/page-ip4.c:1033
 #, c-format
@@ -4176,7 +4214,164 @@ msgstr "Wählen Sie das %s-Zertifikat"
 msgid "%s _certificate:"
 msgstr "%s-_Zertifikat:"
 
-#: ../src/libnma/nma-mobile-wizard.c:198
+#: ../src/libnma/nma-mobile-wizard.c:281
+#: ../src/libnm-gtk/nm-mobile-wizard.c:326
+msgid "Unlisted"
+msgstr "Nicht aufgelistet"
+
+#: ../src/libnma/nma-mobile-wizard.c:465
+#: ../src/libnm-gtk/nm-mobile-wizard.c:558
+msgid "My plan is not listed…"
+msgstr "Mein Abrechnungsmodus ist nicht aufgelistet …"
+
+#: ../src/libnma/nma-mobile-wizard.c:626
+#: ../src/libnm-gtk/nm-mobile-wizard.c:724
+msgid "Provider"
+msgstr "Dienstanbieter"
+
+#: ../src/libnma/nma-mobile-wizard.c:908
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1067
+msgid "Country or region"
+msgstr "Land oder Region"
+
+#: ../src/libnma/nma-mobile-wizard.c:918
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1077
+msgid "My country is not listed"
+msgstr "Mein Land ist nicht aufgelistet"
+
+#: ../src/libnma/nma-mobile-wizard.c:999
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1184
+msgid "Installed GSM device"
+msgstr "Installiertes GSM-Gerät"
+
+#: ../src/libnma/nma-mobile-wizard.c:1002
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1187
+msgid "Installed CDMA device"
+msgstr "Installiertes CDMA-Gerät"
+
+#: ../src/libnma/nma-mobile-wizard.c:1208
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1428
+msgid "Any device"
+msgstr "Irgendein Gerät"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:1
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1614
+msgid "New Mobile Broadband Connection"
+msgstr "Neue mobile Breitbandverbindung"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:2
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1355
+msgid ""
+"This assistant helps you easily set up a mobile broadband connection to a "
+"cellular (3G) network."
+msgstr ""
+"Dieser Assistent hilft Ihnen bei der Einrichtung einer mobilen "
+"Breitbandverbindung über ein UMTS-(3G)-Netzwerk."
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:3
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1361
+msgid "You will need the following information:"
+msgstr "Folgende Informationen sind notwendig:"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:4
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1372
+msgid "Your broadband provider’s name"
+msgstr "Name Ihres Breitbandanbieters"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:5
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1378
+msgid "Your broadband billing plan name"
+msgstr "Name des Abrechnungsmodus Ihres Dienstanbieters"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:6
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1384
+msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
+msgstr ""
+"(in einigen Fällen) Name des Zugangspunktes für Ihren Abrechnungsmodus:"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:7
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1413
+msgid "Create a connection for _this mobile broadband device:"
+msgstr "Eine Verbindung für dieses mobile Brei_tbandgerät einrichten:"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:8
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1441
+msgid "Set up a Mobile Broadband Connection"
+msgstr "Eine mobile Breitbandverbindung einrichten"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:9
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1054
+msgid "Country or Region List:"
+msgstr "Länder- oder Regionsliste:"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:10
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1127
+msgid "Choose your Provider’s Country or Region"
+msgstr "Land oder Region des Dienstanbieters auswählen"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:11
+#: ../src/libnm-gtk/nm-mobile-wizard.c:711
+msgid "Select your provider from a _list:"
+msgstr "Dienstanbieter aus einer _Liste auswählen:"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:12
+#: ../src/libnm-gtk/nm-mobile-wizard.c:749
+msgid "I can’t find my provider and I wish to enter it _manually:"
+msgstr ""
+"Ich kann meinen Dienstanbieter nicht finden und möchte ihn _manuell eingeben:"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:13
+#: ../src/libnm-gtk/nm-mobile-wizard.c:779
+msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
+msgstr ""
+"Mein Dienstanbieter verwendet GSM-Technologien (GPRS, EDGE, UMTS, HSPA)"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:14
+#: ../src/libnm-gtk/nm-mobile-wizard.c:781
+msgid "My provider uses CDMA technology (1xRTT, EVDO)"
+msgstr "Mein Dienstanbieter verwendet CDMA-Technologien (1xRTT, EVDO)"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:15
+#: ../src/libnm-gtk/nm-mobile-wizard.c:762
+msgid "Provider:"
+msgstr "Dienstanbieter:"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:16
+#: ../src/libnm-gtk/nm-mobile-wizard.c:792
+msgid "Choose your Provider"
+msgstr "Dienstanbieter auswählen"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:17
+#: ../src/libnm-gtk/nm-mobile-wizard.c:457
+msgid "_Select your plan:"
+msgstr "Abrechnung_smodus auswählen:"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:18
+#: ../src/libnm-gtk/nm-mobile-wizard.c:481
+msgid "Selected plan _APN (Access Point Name):"
+msgstr "Zugangspunkt (APN) zum ausgewählten _Abrechnungsmodus:"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:19
+#: ../src/libnm-gtk/nm-mobile-wizard.c:501
+msgid ""
+"Warning: Selecting an incorrect plan may result in billing issues for your "
+"broadband account or may prevent connectivity.\n"
+"\n"
+"If you are unsure of your plan please ask your provider for your plan’s APN."
+msgstr ""
+"Warnung: Die Auswahl des falschen Abrechnungsmodus könnte zu "
+"Bezahlungsproblemen für Ihren Breitbandzugang führen oder eine Verbindung "
+"verhindern.\n"
+"\n"
+"Im Zweifelsfall sollten Sie Ihren Dienstanbieter nach dem Abrechnungsmodus "
+"Ihres Zugangspunktes fragen."
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:22
+#: ../src/libnm-gtk/nm-mobile-wizard.c:509
+msgid "Choose your Billing Plan"
+msgstr "Abrechnungsmodus wählen"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:23
 #: ../src/libnm-gtk/nm-mobile-wizard.c:199
 msgid ""
 "Your mobile broadband connection is configured with the following settings:"
@@ -4185,24 +4380,24 @@ msgstr ""
 "eingerichtet:"
 
 #. Device
-#: ../src/libnma/nma-mobile-wizard.c:205
+#: ../src/libnma/nma-mobile-wizard.ui.h:24
 #: ../src/libnm-gtk/nm-mobile-wizard.c:206
 msgid "Your Device:"
 msgstr "Ihr Gerät:"
 
 #. Provider
-#: ../src/libnma/nma-mobile-wizard.c:216
+#: ../src/libnma/nma-mobile-wizard.ui.h:25
 #: ../src/libnm-gtk/nm-mobile-wizard.c:217
 msgid "Your Provider:"
 msgstr "Ihr Dienstanbieter:"
 
 #. Plan and APN
-#: ../src/libnma/nma-mobile-wizard.c:227
+#: ../src/libnma/nma-mobile-wizard.ui.h:26
 #: ../src/libnm-gtk/nm-mobile-wizard.c:228
 msgid "Your Plan:"
 msgstr "Ihr Abrechnungsmodus:"
 
-#: ../src/libnma/nma-mobile-wizard.c:248
+#: ../src/libnma/nma-mobile-wizard.ui.h:27
 #: ../src/libnm-gtk/nm-mobile-wizard.c:249
 msgid ""
 "A connection will now be made to your mobile broadband provider using the "
@@ -4218,167 +4413,10 @@ msgstr ""
 "Breitbandverbindungen zu ändern, wählen Sie »Netzwerkverbindungen« im Menü "
 "System → Einstellungen."
 
-#: ../src/libnma/nma-mobile-wizard.c:261
+#: ../src/libnma/nma-mobile-wizard.ui.h:28
 #: ../src/libnm-gtk/nm-mobile-wizard.c:262
 msgid "Confirm Mobile Broadband Settings"
 msgstr "Mobile Breitbandeinstellungen bestätigen"
-
-#: ../src/libnma/nma-mobile-wizard.c:325
-#: ../src/libnm-gtk/nm-mobile-wizard.c:326
-msgid "Unlisted"
-msgstr "Nicht aufgelistet"
-
-#: ../src/libnma/nma-mobile-wizard.c:456
-#: ../src/libnm-gtk/nm-mobile-wizard.c:457
-msgid "_Select your plan:"
-msgstr "Abrechnung_smodus auswählen:"
-
-#: ../src/libnma/nma-mobile-wizard.c:480
-#: ../src/libnm-gtk/nm-mobile-wizard.c:481
-msgid "Selected plan _APN (Access Point Name):"
-msgstr "Zugangspunkt (APN) zum ausgewählten _Abrechnungsmodus:"
-
-#: ../src/libnma/nma-mobile-wizard.c:500
-#: ../src/libnm-gtk/nm-mobile-wizard.c:501
-msgid ""
-"Warning: Selecting an incorrect plan may result in billing issues for your "
-"broadband account or may prevent connectivity.\n"
-"\n"
-"If you are unsure of your plan please ask your provider for your plan’s APN."
-msgstr ""
-"Warnung: Die Auswahl des falschen Abrechnungsmodus könnte zu "
-"Bezahlungsproblemen für Ihren Breitbandzugang führen oder eine Verbindung "
-"verhindern.\n"
-"\n"
-"Im Zweifelsfall sollten Sie Ihren Dienstanbieter nach dem Abrechnungsmodus "
-"Ihres Zugangspunktes fragen."
-
-#: ../src/libnma/nma-mobile-wizard.c:508
-#: ../src/libnm-gtk/nm-mobile-wizard.c:509
-msgid "Choose your Billing Plan"
-msgstr "Abrechnungsmodus wählen"
-
-#: ../src/libnma/nma-mobile-wizard.c:557
-#: ../src/libnm-gtk/nm-mobile-wizard.c:558
-msgid "My plan is not listed…"
-msgstr "Mein Abrechnungsmodus ist nicht aufgelistet …"
-
-#: ../src/libnma/nma-mobile-wizard.c:710
-#: ../src/libnm-gtk/nm-mobile-wizard.c:711
-msgid "Select your provider from a _list:"
-msgstr "Dienstanbieter aus einer _Liste auswählen:"
-
-#: ../src/libnma/nma-mobile-wizard.c:723
-#: ../src/libnm-gtk/nm-mobile-wizard.c:724
-msgid "Provider"
-msgstr "Dienstanbieter"
-
-#: ../src/libnma/nma-mobile-wizard.c:748
-#: ../src/libnm-gtk/nm-mobile-wizard.c:749
-msgid "I can’t find my provider and I wish to enter it _manually:"
-msgstr ""
-"Ich kann meinen Dienstanbieter nicht finden und möchte ihn _manuell eingeben:"
-
-#: ../src/libnma/nma-mobile-wizard.c:761
-#: ../src/libnm-gtk/nm-mobile-wizard.c:762
-msgid "Provider:"
-msgstr "Dienstanbieter:"
-
-#: ../src/libnma/nma-mobile-wizard.c:778
-#: ../src/libnm-gtk/nm-mobile-wizard.c:779
-msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
-msgstr ""
-"Mein Dienstanbieter verwendet GSM-Technologien (GPRS, EDGE, UMTS, HSPA)"
-
-#: ../src/libnma/nma-mobile-wizard.c:780
-#: ../src/libnm-gtk/nm-mobile-wizard.c:781
-msgid "My provider uses CDMA technology (1xRTT, EVDO)"
-msgstr "Mein Dienstanbieter verwendet CDMA-Technologien (1xRTT, EVDO)"
-
-#: ../src/libnma/nma-mobile-wizard.c:791
-#: ../src/libnm-gtk/nm-mobile-wizard.c:792
-msgid "Choose your Provider"
-msgstr "Dienstanbieter auswählen"
-
-#: ../src/libnma/nma-mobile-wizard.c:1053
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1054
-msgid "Country or Region List:"
-msgstr "Länder- oder Regionsliste:"
-
-#: ../src/libnma/nma-mobile-wizard.c:1066
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1067
-msgid "Country or region"
-msgstr "Land oder Region"
-
-#: ../src/libnma/nma-mobile-wizard.c:1076
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1077
-msgid "My country is not listed"
-msgstr "Mein Land ist nicht aufgelistet"
-
-#: ../src/libnma/nma-mobile-wizard.c:1126
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1127
-msgid "Choose your Provider’s Country or Region"
-msgstr "Land oder Region des Dienstanbieters auswählen"
-
-#: ../src/libnma/nma-mobile-wizard.c:1183
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1184
-msgid "Installed GSM device"
-msgstr "Installiertes GSM-Gerät"
-
-#: ../src/libnma/nma-mobile-wizard.c:1186
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1187
-msgid "Installed CDMA device"
-msgstr "Installiertes CDMA-Gerät"
-
-#: ../src/libnma/nma-mobile-wizard.c:1354
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1355
-msgid ""
-"This assistant helps you easily set up a mobile broadband connection to a "
-"cellular (3G) network."
-msgstr ""
-"Dieser Assistent hilft Ihnen bei der Einrichtung einer mobilen "
-"Breitbandverbindung über ein UMTS-(3G)-Netzwerk."
-
-#: ../src/libnma/nma-mobile-wizard.c:1360
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1361
-msgid "You will need the following information:"
-msgstr "Folgende Informationen sind notwendig:"
-
-#: ../src/libnma/nma-mobile-wizard.c:1371
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1372
-msgid "Your broadband provider’s name"
-msgstr "Name Ihres Breitbandanbieters"
-
-#: ../src/libnma/nma-mobile-wizard.c:1377
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1378
-msgid "Your broadband billing plan name"
-msgstr "Name des Abrechnungsmodus Ihres Dienstanbieters"
-
-#: ../src/libnma/nma-mobile-wizard.c:1383
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1384
-msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
-msgstr ""
-"(in einigen Fällen) Name des Zugangspunktes für Ihren Abrechnungsmodus:"
-
-#: ../src/libnma/nma-mobile-wizard.c:1412
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1413
-msgid "Create a connection for _this mobile broadband device:"
-msgstr "Eine Verbindung für dieses mobile Brei_tbandgerät einrichten:"
-
-#: ../src/libnma/nma-mobile-wizard.c:1427
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1428
-msgid "Any device"
-msgstr "Irgendein Gerät"
-
-#: ../src/libnma/nma-mobile-wizard.c:1440
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1441
-msgid "Set up a Mobile Broadband Connection"
-msgstr "Eine mobile Breitbandverbindung einrichten"
-
-#: ../src/libnma/nma-mobile-wizard.c:1620
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1614
-msgid "New Mobile Broadband Connection"
-msgstr "Neue mobile Breitbandverbindung"
 
 #: ../src/libnma/nma-cert-chooser-button.c:165
 msgid "(None)"
@@ -4468,20 +4506,25 @@ msgstr "Jedes Mal nach diesem Passwort fragen"
 msgid "The password is not required"
 msgstr "Das Passwort ist nicht erforderlich"
 
-#: ../src/libnma/nma-vpn-password-dialog.c:99
-#: ../src/libnm-gtk/nm-vpn-password-dialog.c:99
-msgid "_Secondary Password:"
-msgstr "_Sekundäres Passwort:"
+#: ../src/libnma/nma-vpn-password-dialog.ui.h:3
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:238
+msgid "Sh_ow passwords"
+msgstr "Passwörter _zeigen"
 
-#: ../src/libnma/nma-vpn-password-dialog.c:102
+#: ../src/libnma/nma-vpn-password-dialog.ui.h:4
 #: ../src/libnm-gtk/nm-vpn-password-dialog.c:102
 msgid "_Tertiary Password:"
 msgstr "_Tertiäres Passwort:"
 
-#: ../src/libnma/nma-vpn-password-dialog.c:238
-#: ../src/libnm-gtk/nm-vpn-password-dialog.c:238
-msgid "Sh_ow passwords"
-msgstr "Passwörter _zeigen"
+#: ../src/libnma/nma-vpn-password-dialog.ui.h:5
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:99
+msgid "_Secondary Password:"
+msgstr "_Sekundäres Passwort:"
+
+#: ../src/libnma/nma-vpn-password-dialog.ui.h:6
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:97
+msgid "_Password:"
+msgstr "_Passwort:"
 
 #: ../src/libnma/nma-wifi-dialog.c:132 ../src/libnm-gtk/nm-wifi-dialog.c:141
 msgid "Click to connect"
@@ -4493,7 +4536,7 @@ msgid ""
 "case, you have to edit the connection with nm-connection-editor first"
 msgstr ""
 "Entweder fehlt ein Passwort oder die Verbindung ist ungültig. In letztem "
-"Fall müssen Sie die Verbindung zuerst mit nm-connection-editor bearbeiten."
+"Fall müssen Sie die Verbindung zuerst mit nm-connection-editor bearbeiten"
 
 #: ../src/libnma/nma-wifi-dialog.c:468 ../src/libnm-gtk/nm-wifi-dialog.c:465
 msgid "New…"
@@ -4788,18 +4831,18 @@ msgstr "Beide"
 #: ../src/wireless-security/eap-method-fast.ui.h:4
 #: ../src/wireless-security/eap-method-peap.ui.h:4
 #: ../src/wireless-security/eap-method-ttls.ui.h:3
-msgid "Anony_mous identity:"
-msgstr "Anony_me Identität:"
+msgid "Anony_mous identity"
+msgstr "Anony_me Identität"
 
 #: ../src/wireless-security/eap-method-fast.ui.h:5
-msgid "PAC _file:"
-msgstr "_PAC-Datei:"
+msgid "PAC _file"
+msgstr "_PAC-Datei"
 
 #: ../src/wireless-security/eap-method-fast.ui.h:6
 #: ../src/wireless-security/eap-method-peap.ui.h:7
 #: ../src/wireless-security/eap-method-ttls.ui.h:1
-msgid "_Inner authentication:"
-msgstr "I_nnere Legitimierung:"
+msgid "_Inner authentication"
+msgstr "I_nnere Legitimierung"
 
 #: ../src/wireless-security/eap-method-fast.ui.h:7
 msgid "Allow automatic PAC pro_visioning"
@@ -4834,8 +4877,8 @@ msgid "No CA certificate is _required"
 msgstr "CA-Zertifikat igno_rieren"
 
 #: ../src/wireless-security/eap-method-peap.ui.h:6
-msgid "PEAP _version:"
-msgstr "_PEAP-Version:"
+msgid "PEAP _version"
+msgstr "_PEAP-Version"
 
 #: ../src/wireless-security/eap-method-peap.ui.h:8
 #: ../src/wireless-security/eap-method-tls.ui.h:3
@@ -4846,8 +4889,8 @@ msgstr "Suffix des Namens des Serverzertifikats."
 #: ../src/wireless-security/eap-method-peap.ui.h:9
 #: ../src/wireless-security/eap-method-tls.ui.h:4
 #: ../src/wireless-security/eap-method-ttls.ui.h:5
-msgid "_Domain:"
-msgstr "_Domäne:"
+msgid "_Domain"
+msgstr "_Domäne"
 
 #: ../src/wireless-security/eap-method-simple.c:75
 msgid "missing EAP username"
@@ -4878,8 +4921,8 @@ msgid "selected key file does not exist"
 msgstr "Die gewählte Schlüsseldatei ist nicht vorhanden"
 
 #: ../src/wireless-security/eap-method-tls.ui.h:1
-msgid "I_dentity:"
-msgstr "I_dentität:"
+msgid "I_dentity"
+msgstr "_Identität"
 
 #: ../src/wireless-security/eap-method-ttls.c:333
 msgid "MSCHAPv2 (no EAP)"
@@ -4912,8 +4955,8 @@ msgstr "Geschütztes EAP (PEAP)"
 #: ../src/wireless-security/ws-dynamic-wep.ui.h:1
 #: ../src/wireless-security/ws-wep-key.ui.h:6
 #: ../src/wireless-security/ws-wpa-eap.ui.h:1
-msgid "Au_thentication:"
-msgstr "_Legitimierung:"
+msgid "Au_thentication"
+msgstr "_Legitimierung"
 
 #: ../src/wireless-security/ws-leap.c:63
 msgid "missing leap-username"
@@ -4972,16 +5015,16 @@ msgid "1 (Default)"
 msgstr "1 (Vorgabe)"
 
 #: ../src/wireless-security/ws-wep-key.ui.h:4
-msgid "_Key:"
-msgstr "_Schlüssel:"
+msgid "_Key"
+msgstr "_Schlüssel"
 
 #: ../src/wireless-security/ws-wep-key.ui.h:5
 msgid "Sho_w key"
 msgstr "Schlüssel an_zeigen"
 
 #: ../src/wireless-security/ws-wep-key.ui.h:7
-msgid "WEP inde_x:"
-msgstr "WEP-Inde_x:"
+msgid "WEP inde_x"
+msgstr "WEP-Inde_x"
 
 #: ../src/wireless-security/ws-wpa-psk.c:70
 #, c-format
@@ -4999,5 +5042,14 @@ msgstr ""
 "interpretiert werden"
 
 #: ../src/wireless-security/ws-wpa-psk.ui.h:2
-msgid "_Type:"
-msgstr "_Typ:"
+msgid "_Type"
+msgstr "_Typ"
+
+#~ msgid "Priority:"
+#~ msgstr "Priorität:"
+
+#~ msgid "_Automatically connect to this network when it is available"
+#~ msgstr "_Automatisch mit diesem Netzwerk verbinden, wenn es verfügbar ist"
+
+#~ msgid "Connection _priority for auto-activation:"
+#~ msgstr "Verbindungs_priorität für automatische Aktivierung:"
