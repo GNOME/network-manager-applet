@@ -32,7 +32,11 @@
 #include <libnotify/notify.h>
 
 #ifdef WITH_APPINDICATOR
-#include <libappindicator/app-indicator.h>
+# ifdef USE_AYATANA_INDICATORS
+#  include <libayatana-appindicator/app-indicator.h>
+# else
+#  include <libappindicator/app-indicator.h>
+# endif
 #endif
 
 #include <NetworkManager.h>

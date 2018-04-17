@@ -93,7 +93,7 @@ if have_version_script
   ldflags += '-Wl,--version-script,@0@'.format(linker_script_ver)
 endif
 
-if enable_appindicator
+if enable_appindicator == 'ayatana' or enable_appindicator == 'ubuntu'
   deps += [
     appindicator_dep,
     dbusmenu_dep

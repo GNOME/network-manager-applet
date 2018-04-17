@@ -201,11 +201,40 @@ if enable_libnm_gtk
 endif
 
 enable_appindicator = get_option('appindicator')
-if enable_appindicator
+if enable_appindicator == 'auto'
+
+  # prefer building against Ayatana AppIndicator
+
+  appindicator_dep = dependency('ayatana-appindicator3-0.1', required: false)
+  if appindicator_dep.found()
+    enable_appindicator = 'ayatana'
+  else
+
+    # fall back to Ubuntu's AppIndicator if needed
+
+    appindicator_dep = dependency('appindicator3-0.1',required: false)
+    if appindicator_dep.found()
+      enable_appindicator = 'ubuntu'
+    endif
+  endif
+
+  # bail out, if 'yes' was given, but not AppIndicator shared lib is available
+  assert(appindicator_dep.found(), 'Neither Ubuntu\'s AppIndicator nor Ayatana AppIndicator found.')
+
+endif
+
+if enable_appindicator == 'ubuntu'
   appindicator_dep = dependency('appindicator3-0.1')
   dbusmenu_dep = dependency('dbusmenu-gtk3-0.4', version: '>= 16.04.0')
+  config_h.set('WITH_APPINDICATOR', true)
+elif enable_appindicator == 'ayatana'
+  config_h.set('USE_AYATANA_INDICATORS', true)
+  appindicator_dep = dependency('ayatana-appindicator3-0.1')
+  dbusmenu_dep = dependency('dbusmenu-gtk3-0.4', version: '>= 16.04.0')
+  config_h.set('WITH_APPINDICATOR', true)
+else
+  error('Options allowed for -Dappindicator=<str> are: auto, ubuntu, ayatana.')
 endif
-config_h.set('WITH_APPINDICATOR', enable_appindicator)
 
 # ModemManager1 with libmm-glib for WWAN support
 enable_wwan = get_option('wwan')
