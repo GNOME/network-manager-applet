@@ -131,40 +131,35 @@ PKG_CHECK_MODULES(NOTIFY, [libnotify >= 0.4.3])
 PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 3.10)
 GTK_CFLAGS="$GTK_CFLAGS -DGDK_VERSION_MIN_REQUIRED=GDK_VERSION_3_4 -DGTK_VERSION_MAX_ALLOWED=GTK_VERSION_3_4"
 
-AC_ARG_WITH([appindicator], AS_HELP_STRING([--with-appindicator|--without-appindicator], [Build with lib(ayatana-)appindicator support instead of xembed systray support.]))
-
-if (test "x$with_appindicator" = "xyes"); then
-
-	AC_ARG_VAR([APPINDICATOR_VARIANT], [Set to "auto" (default), "ubuntu" (for libappindicator) or "ayatana" (for libayatana-appindicator)])
-
-	if (test "x${APPINDICATOR_VARIANT}" = "x"); then
-		APPINDICATOR_VARIANT=auto
-	fi
-
-	if (test "x${APPINDICATOR_VARIANT}" = "xauto"); then
-		PKG_CHECK_EXISTS(appindicator3-0.1,
-			[APPINDICATOR_VARIANT=ubuntu])
-		PKG_CHECK_EXISTS(ayatana-appindicator3-0.1,
-			[APPINDICATOR_VARIANT=ayatana])
-	fi
-
-	if (test "x${APPINDICATOR_VARIANT}" = "xauto"); then
-		AC_MSG_ERROR([Neither Ubuntu's AppIndicator nor Ayatana AppIndicator found.])
-	fi
-
-	if (test "x${APPINDICATOR_VARIANT}" != "xubuntu" -a "x${APPINDICATOR_VARIANT}" != "xayatana"); then
-		AC_MSG_ERROR([Options allowed for APPINDICATOR_VARIANT=<str> are: auto, ubuntu, ayatana.])
-	fi
-
-	if (test "x${APPINDICATOR_VARIANT}" = "xayatana"); then
+AC_ARG_WITH([appindicator],
+            AS_HELP_STRING([--with-appindicator=no|yes|auto|ayatana|ubuntu], [Build with lib(ayatana-)appindicator support instead of xembed systray support.]),
+            [], [with_appindicator=no])
+if test "$with_appindicator" != "no"; then
+	if test "$with_appindicator" = "yes" -o "$with_appindicator" = "auto"; then
+		PKG_CHECK_MODULES(APPINDICATOR, ayatana-appindicator3-0.1, [with_appindicator=ayatana], [with_appindicator=no])
+		if test "$with_appindicator" = "no"; then
+			PKG_CHECK_MODULES(APPINDICATOR, appindicator3-0.1, [with_appindicator=ubuntu], [with_appindicator=no])
+			if test "$with_appindicator" = "no"; then
+				AC_MSG_ERROR([Neither Ubuntu's AppIndicator nor Ayatana AppIndicator found. Better --without-appindicator?])
+			fi
+		fi
+	elif test "$with_appindicator" = "ayatana"; then
 		PKG_CHECK_MODULES(APPINDICATOR, ayatana-appindicator3-0.1)
+	elif test "$with_appindicator" = "ubuntu"; then
+		PKG_CHECK_MODULES(APPINDICATOR, appindicator3-0.1)
+	else
+		AC_MSG_ERROR([Invalid --with-appindicator option. Must be one of no|yes|auto|ayatana|ubuntu])
+	fi
+
+	if test "$with_appindicator" = "ayatana"; then
+		PKG_CHECK_MODULES(DBUSMENU, dbusmenu-gtk3-0.4 >= 16.04.0)
 		AC_DEFINE([WITH_APPINDICATOR], 1, [Enable AppIndicator support and use Ayatana AppIndicator])
 		AC_DEFINE([USE_AYATANA_INDICATORS], 1, [Explicitly enforce Ayatana AppIndicator])
-	elif (test "x${APPINDICATOR_VARIANT}" = "xubuntu"); then
-		PKG_CHECK_MODULES(APPINDICATOR, appindicator3-0.1)
+	else
+		PKG_CHECK_MODULES(DBUSMENU, dbusmenu-gtk3-0.4 >= 16.04.0)
 		AC_DEFINE([WITH_APPINDICATOR], 1, [Enable AppIndicator support and use Ubuntu AppIndicator])
+		AC_DEFINE([USE_AYATANA_INDICATORS], 0, [Explicitly enforce Ayatana AppIndicator])
 	fi
-	PKG_CHECK_MODULES(DBUSMENU, dbusmenu-gtk3-0.4 >= 16.04.0)
 fi
 
 AM_CONDITIONAL(HAVE_GBT, test x"$have_gbt" = "xyes")
@@ -321,4 +316,5 @@ echo "  Build legacy library libnm-gtk: --with-libnm-gtk=${with_libnm_gtk}"
 echo "  GCR: --with-gcr=$have_gcr"
 echo "  LTO: --enable-lto=$enable_lto"
 echo "  Linker garbage collection: --enable-ld-gc=$enable_ld_gc"
+echo "  appindicator: $with_appindicator"
 echo ""

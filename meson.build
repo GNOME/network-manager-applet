@@ -201,39 +201,37 @@ if enable_libnm_gtk
 endif
 
 enable_appindicator = get_option('appindicator')
-if enable_appindicator == 'auto'
-
-  # prefer building against Ayatana AppIndicator
-
+if enable_appindicator == 'auto' or enable_appindicator == 'yes'
   appindicator_dep = dependency('ayatana-appindicator3-0.1', required: false)
   if appindicator_dep.found()
     enable_appindicator = 'ayatana'
   else
-
-    # fall back to Ubuntu's AppIndicator if needed
-
-    appindicator_dep = dependency('appindicator3-0.1',required: false)
+    appindicator_dep = dependency('appindicator3-0.1', required: false)
     if appindicator_dep.found()
       enable_appindicator = 'ubuntu'
+    else
+      assert(appindicator_dep.found(), 'Neither Ubuntu\'s AppIndicator nor Ayatana AppIndicator found.')
     endif
   endif
-
-  # bail out, if 'yes' was given, but not AppIndicator shared lib is available
-  assert(appindicator_dep.found(), 'Neither Ubuntu\'s AppIndicator nor Ayatana AppIndicator found.')
-
+elif enable_appindicator == 'ayatana'
+  appindicator_dep = dependency('ayatana-appindicator3-0.1')
+elif enable_appindicator == 'ubuntu'
+  appindicator_dep = dependency('appindicator3-0.1')
 endif
 
-if enable_appindicator == 'ubuntu'
-  appindicator_dep = dependency('appindicator3-0.1')
+if enable_appindicator == 'no'
+  config_h.set('WITH_APPINDICATOR', false)
+  config_h.set('USE_AYATANA_INDICATORS', false)
+elif enable_appindicator == 'ubuntu'
   dbusmenu_dep = dependency('dbusmenu-gtk3-0.4', version: '>= 16.04.0')
-  config_h.set('WITH_APPINDICATOR', true)
+  config_h.set10('WITH_APPINDICATOR', true)
+  config_h.set10('USE_AYATANA_INDICATORS', false)
 elif enable_appindicator == 'ayatana'
-  config_h.set('USE_AYATANA_INDICATORS', true)
-  appindicator_dep = dependency('ayatana-appindicator3-0.1')
   dbusmenu_dep = dependency('dbusmenu-gtk3-0.4', version: '>= 16.04.0')
-  config_h.set('WITH_APPINDICATOR', true)
+  config_h.set10('WITH_APPINDICATOR', true)
+  config_h.set10('USE_AYATANA_INDICATORS', true)
 else
-  error('Options allowed for -Dappindicator=<str> are: auto, ubuntu, ayatana.')
+  error('Options allowed for -Dappindicator=<str> are: no, yes|auto, ayatana, ubuntu.')
 endif
 
 # ModemManager1 with libmm-glib for WWAN support
@@ -502,5 +500,6 @@ meson.add_install_script(
 output = '\n  Build legacy library libnm-gtk: ' + enable_libnm_gtk.to_string() + '\n'
 output += '  GCR: ' + enable_gcr.to_string() + '\n'
 output += '  LTO: ' + get_option('b_lto').to_string() + '\n'
-output += '  Linker garbage collection: ' + enable_ld_gc.to_string()
+output += '  Linker garbage collection: ' + enable_ld_gc.to_string() + '\n'
+output += '  libappindicator: ' + enable_appindicator
 message(output)
