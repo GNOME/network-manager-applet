@@ -326,7 +326,7 @@ finalize (GObject *object)
 	g_free (priv->hash);
 	g_free (priv->ssid_string);
 
-	g_slist_foreach (priv->dupes, (GFunc) g_free, NULL);
+	g_slist_free_full (priv->dupes, g_free);
 	g_slist_free (priv->dupes);
 
 	G_OBJECT_CLASS (nm_network_menu_item_parent_class)->finalize (object);

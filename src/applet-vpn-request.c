@@ -443,8 +443,7 @@ dispose (GObject *object)
 		}
 	}
 
-	g_slist_foreach (priv->lines, (GFunc) g_free, NULL);
-	g_slist_free (priv->lines);
+	g_slist_free_full (priv->lines, g_free);
 
 done:
 	G_OBJECT_CLASS (applet_vpn_request_parent_class)->dispose (object);

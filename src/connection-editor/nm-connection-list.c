@@ -72,9 +72,7 @@ get_active_connection (GtkTreeView *treeview)
 	if (gtk_tree_model_get_iter (model, &iter, (GtkTreePath *) selected_rows->data))
 		gtk_tree_model_get (model, &iter, COL_CONNECTION, &connection, -1);
 
-	/* free memory */
-	g_list_foreach (selected_rows, (GFunc) gtk_tree_path_free, NULL);
-	g_list_free (selected_rows);
+	g_list_free_full (selected_rows, (GDestroyNotify) gtk_tree_path_free);
 
 	/* gtk_tree_model_get() will have reffed connection, but we don't
 	 * need that since we know the model will continue to hold a ref.
