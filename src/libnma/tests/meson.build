@@ -1,59 +1,31 @@
-deps = [
-  gtk_dep,
-  libnm_dep,
-  libnma_dep
+tests = [
+  'bar-code',
+  'cert-chooser',
+  'mobile-wizard',
+  'run-vpn',
+  'vpn-password-dialog',
+  'wifi-dialog',
+  'wifi-dialog-secrets',
 ]
 
-executable(
-  'cert-chooser',
-  'cert-chooser.c',
-  include_directories: incs,
-  dependencies: deps,
-  c_args: cflags,
-  install: false
-)
+foreach tst : tests
+  executable(
+    tst,
+    tst + '.c',
+    include_directories: incs,
+    dependencies: [ gtk_dep, libnm_dep, libnma_dep ],
+    c_args: cflags,
+    install: false
+  )
 
-executable(
-  'mobile-wizard',
-  'mobile-wizard.c',
-  include_directories: incs,
-  dependencies: deps,
-  c_args: cflags,
-  install: false
-)
-
-executable(
-  'run-vpn',
-  'run-vpn.c',
-  include_directories: incs,
-  dependencies: deps,
-  c_args: cflags,
-  install: false
-)
-
-executable(
-  'vpn-password-dialog',
-  'vpn-password-dialog.c',
-  include_directories: incs,
-  dependencies: deps,
-  c_args: cflags,
-  install: false
-)
-
-executable(
-  'wifi-dialog',
-  'wifi-dialog.c',
-  include_directories: incs,
-  dependencies: deps,
-  c_args: cflags,
-  install: false
-)
-
-executable(
-  'wifi-dialog-secrets',
-  'wifi-dialog-secrets.c',
-  include_directories: incs,
-  dependencies: deps,
-  c_args: cflags,
-  install: false
-)
+  if enable_libnma_gtk4
+    executable(
+      tst + '-gtk4',
+      tst + '.c',
+      include_directories: incs,
+      dependencies: [ gtk4_dep, libnm_dep, libnma_gtk4_dep ],
+      c_args: cflags,
+      install: false
+    )
+  endif
+endforeach

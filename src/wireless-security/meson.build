@@ -57,6 +57,22 @@ libwireless_security_libnm = static_library(
   dependencies: deps
 )
 
+if enable_libnma_gtk4
+  deps = [
+    gtk4_dep,
+    libnm_dep,
+    libutils_libnm_dep
+  ]
+
+  libwireless_security_libnma_gtk4 = static_library(
+    'wireless-security-libnma-gtk4',
+    sources: sources,
+    include_directories: incs,
+    dependencies: deps,
+    c_args: cflags
+  )
+endif
+
 if enable_libnm_gtk
   deps = [
     gtk_dep,
