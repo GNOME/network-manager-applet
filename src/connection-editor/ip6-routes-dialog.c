@@ -196,8 +196,7 @@ route_delete_clicked (GtkButton *button, gpointer user_data)
 	if (gtk_tree_model_get_iter (model, &iter, (GtkTreePath *) selected_rows->data))
 		gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
 
-	g_list_foreach (selected_rows, (GFunc) gtk_tree_path_free, NULL);
-	g_list_free (selected_rows);
+	g_list_free_full (selected_rows, (GDestroyNotify) gtk_tree_path_free);
 
 	num_rows = gtk_tree_model_iter_n_children (model, NULL);
 	if (num_rows && gtk_tree_model_iter_nth_child (model, &iter, NULL, num_rows - 1)) {

@@ -470,8 +470,6 @@ request_data_free (RequestData *req_data)
 		}
 	}
 
-	g_slist_foreach (req_data->lines, (GFunc) g_free, NULL);
-	g_slist_free (req_data->lines);
-
+	g_slist_free_full (req_data->lines, g_free);
 	g_slice_free (RequestData, req_data);
 }

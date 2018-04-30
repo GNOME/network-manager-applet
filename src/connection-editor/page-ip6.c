@@ -589,8 +589,7 @@ addr_delete_clicked (GtkButton *button, gpointer user_data)
 	if (gtk_tree_model_get_iter (model, &iter, (GtkTreePath *) selected_rows->data))
 		gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
 
-	g_list_foreach (selected_rows, (GFunc) gtk_tree_path_free, NULL);
-	g_list_free (selected_rows);
+	g_list_free_full (selected_rows, (GDestroyNotify) gtk_tree_path_free);
 
 	num_rows = gtk_tree_model_iter_n_children (model, NULL);
 	if (num_rows && gtk_tree_model_iter_nth_child (model, &iter, NULL, num_rows - 1)) {
@@ -902,9 +901,9 @@ key_pressed_cb (GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 }
 
 static void
-address_line_info_destroy (AddressLineInfo *info)
+address_line_info_destroy (gpointer data, GClosure *closure)
 {
-	g_slice_free (AddressLineInfo, info);
+	g_slice_free (AddressLineInfo, data);
 }
 
 static void
@@ -955,7 +954,7 @@ cell_editing_started (GtkCellRenderer *cell,
 	g_signal_connect_data (G_OBJECT (editable), "changed",
 	                       (GCallback) cell_changed_cb,
 	                       info,
-	                       (GClosureNotify) address_line_info_destroy, 0);
+	                       address_line_info_destroy, 0);
 
 	/* Set up key pressed handler - need to handle Tab key */
 	g_signal_connect (G_OBJECT (editable), "key-press-event",

@@ -253,8 +253,7 @@ nma_mobile_provider_unref (NMAMobileProvider *provider)
 		g_free (provider->name);
 		g_hash_table_destroy (provider->lcl_names);
 
-		g_slist_foreach (provider->methods, (GFunc) nma_mobile_access_method_unref, NULL);
-		g_slist_free (provider->methods);
+		g_slist_free_full (provider->methods, (GDestroyNotify) nma_mobile_access_method_unref);
 
 		if (provider->mcc_mnc)
 			g_ptr_array_unref (provider->mcc_mnc);

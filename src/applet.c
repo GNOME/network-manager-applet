@@ -703,8 +703,7 @@ applet_notify_server_has_actions (void)
 			break;
 		}
 	}
-	g_list_foreach (server_caps, (GFunc) g_free, NULL);
-	g_list_free (server_caps);
+	g_list_free_full (server_caps, g_free);
 
 	return has_actions;
 }
@@ -1263,8 +1262,10 @@ struct AppletDeviceMenuInfo {
 };
 
 static void
-applet_device_info_destroy (struct AppletDeviceMenuInfo *info)
+applet_device_info_destroy (gpointer data, GClosure *closure)
 {
+	struct AppletDeviceMenuInfo *info = data;
+
 	g_return_if_fail (info != NULL);
 
 	if (info->device)
@@ -1324,7 +1325,7 @@ nma_menu_device_get_menu_item (NMDevice *device,
 		g_signal_connect_data (item, "activate",
 		                       G_CALLBACK (applet_device_disconnect_db),
 		                       info,
-		                       (GClosureNotify) applet_device_info_destroy, 0);
+		                       applet_device_info_destroy, 0);
 		gtk_widget_set_sensitive (item, TRUE);
 		break;
 	}

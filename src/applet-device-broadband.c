@@ -668,8 +668,10 @@ typedef struct {
 } BroadbandMenuItemInfo;
 
 static void
-menu_item_info_destroy (BroadbandMenuItemInfo *info)
+menu_item_info_destroy (gpointer data, GClosure *closure)
 {
+	BroadbandMenuItemInfo *info = data;
+
 	g_object_unref (G_OBJECT (info->device));
 	if (info->connection)
 		g_object_unref (info->connection);
