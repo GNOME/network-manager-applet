@@ -20,7 +20,6 @@ nma_micro_version = version_array[2].to_int()
 nma_gir_version = '1.0'
 nma_gir_prefix = 'NMA'
 
-nma_gir_ns = 'NMA'
 nma_gtk_gir_ns = 'NMGtk'
 
 nma_prefix = get_option('prefix')
@@ -77,10 +76,21 @@ if enable_ld_gc
   common_ldflags += test_ldflags
 endif
 
+enable_libnma_gtk4 = get_option('libnma_gtk4')
+if enable_libnma_gtk4
+  gtk4_ext_dep = dependency('gtk+-4.0', version: '>= 3.94')
+  gtk4_dep = declare_dependency(
+    dependencies: gtk4_ext_dep,
+    compile_args: [
+      '-DGDK_VERSION_MIN_REQUIRED=GDK_VERSION_3_94',
+      '-DGTK_VERSION_MAX_ALLOWED=GTK_VERSION_3_94'
+    ]
+  )
+endif
+
 if nma_debug
   test_cflags = [
     '-Wdeclaration-after-statement',
-    '-Wfloat-equal',
     '-Wformat=2',
     '-Wimplicit-fallthrough',
     '-Winit-self',
@@ -99,6 +109,12 @@ if nma_debug
     '-Wundef',
     '-Wvla',
   ]
+
+  # Disable extra compiler warning until GTK4 doesn't trigger it via graphene
+  # https://github.com/ebassi/graphene/issues/134
+  if not enable_libnma_gtk4 or cc.compiles('#include <gtk/gtk.h>', dependencies: gtk4_ext_dep, args: ['-Werror=float-equal'])
+    test_cflags += '-Wfloat-equal'
+  endif
 
   common_flags += cc.get_supported_arguments(test_cflags)
 endif
@@ -205,6 +221,10 @@ if enable_libnm_gtk
     compile_args: cflags
   )
 endif
+
+# No such thing yet, just same lame duck placeholders.
+# it may actually end up being called differently.
+config_h.set10('WITH_GCR_GTK4', false)
 
 enable_appindicator = get_option('appindicator')
 if enable_appindicator == 'auto' or enable_appindicator == 'yes'
@@ -511,6 +531,7 @@ meson.add_install_script(
 )
 
 output = '\n  Build legacy library libnm-gtk: ' + enable_libnm_gtk.to_string() + '\n'
+output += '  Build EXPERIMENTAL library libnm-gtk4 for use with GTK4: ' + enable_libnma_gtk4.to_string() + '\n'
 output += '  GCR: ' + enable_gcr.to_string() + '\n'
 output += '  LTO: ' + get_option('b_lto').to_string() + '\n'
 output += '  Linker garbage collection: ' + enable_ld_gc.to_string() + '\n'
