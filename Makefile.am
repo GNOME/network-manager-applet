@@ -508,18 +508,16 @@ libnma_c_real = \
 libnma_h_priv_real = \
 	src/libnma/nma-cert-chooser-private.h
 
-if WITH_GCR
-libnma_h_priv_real += \
+libnma_h_priv_gcr = \
 	src/libnma/nma-pkcs11-token-login-dialog.h \
 	src/libnma/nma-pkcs11-cert-chooser-dialog.h \
 	src/libnma/nma-cert-chooser-button.h
 
-libnma_c_real += \
+libnma_c_gcr = \
 	src/libnma/nma-pkcs11-token-login-dialog.c \
 	src/libnma/nma-pkcs11-cert-chooser-dialog.c \
 	src/libnma/nma-cert-chooser-button.c \
 	src/libnma/nma-pkcs11-cert-chooser.c
-endif
 
 src_libnma_libnmadir = $(includedir)/libnma
 
@@ -531,6 +529,12 @@ lib_LTLIBRARIES += src/libnma/libnma.la
 src_libnma_libnma_la_SOURCES = \
 	$(libnma_h_priv_real) \
 	$(libnma_c_real)
+
+if WITH_GCR
+src_libnma_libnma_la_SOURCES += \
+	$(libnma_h_priv_gcr) \
+	$(libnma_c_gcr)
+endif
 
 nodist_src_libnma_libnma_la_SOURCES = \
 	$(libnma_h_priv_gen) \
@@ -580,6 +584,10 @@ src_libnma_NMA_1_0_gir_LIBS = src/libnma/libnma.la
 src_libnma_NMA_1_0_gir_FILES = \
 	$(libnma_h_pub) \
 	$(libnma_c_real)
+if WITH_GCR
+src_libnma_NMA_1_0_gir_FILES += \
+	$(libnma_c_gcr)
+endif
 src_libnma_NMA_1_0_gir_SCANNERFLAGS = --warn-all --identifier-prefix=NMA --symbol-prefix=nma
 INTROSPECTION_GIRS += src/libnma/NMA-1.0.gir
 endif
