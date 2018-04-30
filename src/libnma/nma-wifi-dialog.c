@@ -1097,7 +1097,11 @@ internal_init (NMAWifiDialog *self,
 
 	gtk_window_set_icon_name (GTK_WINDOW (self), icon_name);
 	widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "image1"));
+#if GTK_CHECK_VERSION(3,90,0)
+	gtk_image_set_from_icon_name (GTK_IMAGE (widget), icon_name);
+#else
 	gtk_image_set_from_icon_name (GTK_IMAGE (widget), icon_name, GTK_ICON_SIZE_DIALOG);
+#endif
 
 	gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (self))), 2);
 
