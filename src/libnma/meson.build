@@ -1,5 +1,3 @@
-lib_name = 'libnma'
-
 cert_chooser_headers = files('nma-cert-chooser.h')
 
 cert_chooser_sources = files(
@@ -27,11 +25,9 @@ gir_headers = cert_chooser_headers + files(
   'nma-wifi-dialog.h'
 )
 
-headers = gir_headers + files('nma-cert-chooser-private.h')
-
 install_headers(
   gir_headers,
-  subdir: lib_name
+  subdir: 'libnma'
 )
 
 gir_sources = [version_header] + cert_chooser_sources + files(
@@ -54,7 +50,6 @@ incs = [
 ]
 
 deps = [
-  gtk_dep,
   gudev_dep,
   libnm_dep,
   libutils_libnm_dep,
@@ -73,29 +68,24 @@ cflags = [
 
 symbol_map = join_paths(meson.current_source_dir(), 'libnma.ver')
 
+nma_deps = [ deps, gtk_dep ]
+nma_sources = [ gir_sources, built_sources ]
 if enable_gcr
-  headers += files(
-    'nma-cert-chooser-button.h',
-    'nma-pkcs11-cert-chooser-dialog.h',
-    'nma-pkcs11-token-login-dialog.h'
-  )
-
-  gir_sources += files(
+  nma_sources += files(
     'nma-cert-chooser-button.c',
     'nma-pkcs11-cert-chooser.c',
     'nma-pkcs11-cert-chooser-dialog.c',
     'nma-pkcs11-token-login-dialog.c'
   )
-
-  deps += gcr_dep
+  nma_deps += gcr_dep
 endif
 
 libnma = shared_library(
   'nma',
-  sources: gir_sources + built_sources,
+  sources: nma_sources,
   version: libversion,
   include_directories: incs,
-  dependencies: deps,
+  dependencies: nma_deps,
   c_args: cflags,
   link_args: '-Wl,--version-script,' + symbol_map,
   link_depends: symbol_map,
@@ -109,26 +99,56 @@ libnma_dep = declare_dependency(
   include_directories: libnma_inc
 )
 
+if enable_libnma_gtk4
+  libnma_gtk4 = shared_library(
+    'nma-gtk4',
+    sources: gir_sources + built_sources,
+    version: libversion,
+    include_directories: incs,
+    dependencies: [ deps, gtk4_dep ],
+    c_args: cflags,
+    link_args: '-Wl,--version-script,' + symbol_map,
+    link_depends: symbol_map,
+    link_whole: libwireless_security_libnm,
+    install: true,
+    install_dir: nma_libdir
+  )
+
+  libnma_gtk4_dep = declare_dependency(
+    link_with: libnma_gtk4,
+    include_directories: libnma_inc
+  )
+endif
+
 subdir('tests')
 
 pkg.generate(
   libraries: libnma,
   version: nma_version,
-  name: lib_name,
+  name: 'libnma',
   description: 'NetworkManager UI utilities (libnm version)',
-  filebase: lib_name,
-  subdirs: lib_name,
+  filebase: 'libnma',
+  subdirs: 'libnma',
   requires: 'libnm',
   variables: 'exec_prefix=' + nma_prefix,
   install_dir: join_paths(nma_libdir, 'pkgconfig')
 )
 
-if enable_introspection
-  gir_incs = [
-    'Gtk-3.0',
-    'NM-1.0'
-  ]
+if enable_libnma_gtk4
+  pkg.generate(
+    libraries: libnma_gtk4,
+    version: nma_version,
+    name: 'libnma-gtk4',
+    description: 'NetworkManager UI utilities (gtk4 version)',
+    filebase: 'libnma-gtk4',
+    subdirs: 'libnma',
+    requires: 'libnm',
+    variables: 'exec_prefix=' + nma_prefix,
+    install_dir: join_paths(nma_libdir, 'pkgconfig')
+  )
+endif
 
+if enable_introspection
   gir_dir = join_paths(nma_datadir, 'gir-' + nma_gir_version)
   typelib_dir = join_paths(nma_libdir, 'girepository-' + nma_gir_version)
 
@@ -136,13 +156,29 @@ if enable_introspection
     libnma,
     sources: gir_sources + gir_headers,
     nsversion: nma_gir_version,
-    namespace: nma_gir_ns,
-    includes: gir_incs,
+    namespace: 'NMA',
+    includes: [ 'Gtk-3.0', 'NM-1.0' ],
     identifier_prefix: nma_gir_prefix,
     symbol_prefix: nma_gir_prefix.to_lower(),
-    export_packages: lib_name,
+    export_packages: 'libnma',
     install: true,
     install_dir_gir: gir_dir,
     install_dir_typelib: typelib_dir
   )
+
+  if enable_libnma_gtk4
+    gnome.generate_gir(
+      libnma,
+      sources: gir_sources + gir_headers,
+      nsversion: nma_gir_version,
+      namespace: 'NMA4',
+      includes: [ 'Gtk-4.0', 'NM-1.0' ],
+      identifier_prefix: nma_gir_prefix,
+      symbol_prefix: nma_gir_prefix.to_lower(),
+      export_packages: 'libnma',
+      install: true,
+      install_dir_gir: gir_dir,
+      install_dir_typelib: typelib_dir
+    )
+  endif
 endif
