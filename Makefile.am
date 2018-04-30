@@ -166,7 +166,7 @@ noinst_LTLIBRARIES += src/utils/libutils-libnm.la
 
 src_utils_libutils_libnm_la_CPPFLAGS = \
 	"-I$(srcdir)/shared" \
-	$(GTK_CFLAGS) \
+	$(GTK3_CFLAGS) \
 	$(LIBNM_CFLAGS)
 
 src_utils_libutils_libnm_la_SOURCES = \
@@ -175,7 +175,7 @@ src_utils_libutils_libnm_la_SOURCES = \
 	src/utils/utils.h
 
 src_utils_libutils_libnm_la_LIBADD = \
-	$(GTK_LIBS) \
+	$(GTK3_LIBS) \
 	$(LIBNM_LIBS)
 
 if WITH_LIBNM_GTK
@@ -185,7 +185,7 @@ noinst_LTLIBRARIES += src/utils/libutils-libnm-glib.la
 src_utils_libutils_libnm_glib_la_CPPFLAGS = \
 	-DNETWORKMANAGER_COMPILATION=NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY \
 	"-I$(srcdir)/shared" \
-	$(GTK_CFLAGS) \
+	$(GTK3_CFLAGS) \
 	$(LIBNM_GLIB_CFLAGS)
 
 src_utils_libutils_libnm_glib_la_SOURCES = \
@@ -194,7 +194,7 @@ src_utils_libutils_libnm_glib_la_SOURCES = \
 	src/utils/utils.h
 
 src_utils_libutils_libnm_glib_la_LIBADD = \
-	$(GTK_LIBS) \
+	$(GTK3_LIBS) \
 	$(LIBNM_GLIB_LIBS)
 
 endif
@@ -206,12 +206,12 @@ src_utils_tests_test_utils_SOURCES = src/utils/tests/test-utils.c
 src_utils_tests_test_utils_CPPFLAGS = \
 	"-I$(srcdir)/shared/" \
 	"-I$(srcdir)/src/utils" \
-	$(GTK_CFLAGS) \
+	$(GTK3_CFLAGS) \
 	$(LIBNM_CFLAGS)
 
 src_utils_tests_test_utils_LDADD = \
 	src/utils/libutils-libnm.la \
-	$(GTK_LIBS) \
+	$(GTK3_LIBS) \
 	$(LIBNM_LIBS)
 
 EXTRA_DIST += src/utils/meson.build
@@ -278,12 +278,12 @@ src_wireless_security_libwireless_security_libnm_la_CPPFLAGS = \
 	"-I$(srcdir)/src/utils" \
 	"-I$(srcdir)/src/libnma" \
 	-Isrc/libnma \
-	$(GTK_CFLAGS) \
+	$(GTK3_CFLAGS) \
 	$(LIBNM_CFLAGS)
 
 src_wireless_security_libwireless_security_libnm_la_LIBADD = \
 	src/utils/libutils-libnm.la \
-	$(GTK_LIBS) \
+	$(GTK3_LIBS) \
 	$(LIBNM_LIBS)
 
 $(src_wireless_security_libwireless_security_libnm_la_OBJECTS): $(wireless_security_h_gen)
@@ -299,7 +299,7 @@ nodist_src_wireless_security_libwireless_security_libnm_glib_la_SOURCES = \
 	$(wireless_security_c_gen)
 
 src_wireless_security_libwireless_security_libnm_glib_la_CPPFLAGS = \
-	$(GTK_CFLAGS) \
+	$(GTK3_CFLAGS) \
 	-DNETWORKMANAGER_COMPILATION=NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY \
 	"-I$(srcdir)/shared" \
 	"-I$(srcdir)/src/utils" \
@@ -309,7 +309,7 @@ src_wireless_security_libwireless_security_libnm_glib_la_CPPFLAGS = \
 
 src_wireless_security_libwireless_security_libnm_glib_la_LIBADD = \
 	src/utils/libutils-libnm-glib.la \
-	$(GTK_LIBS) \
+	$(GTK3_LIBS) \
 	$(LIBNM_GLIB_LIBS)
 
 $(src_wireless_security_libwireless_security_libnm_glib_la_OBJECTS): $(wireless_security_h_gen)
@@ -399,13 +399,13 @@ src_libnm_gtk_libnm_gtk_la_CFLAGS = \
 	"-I$(srcdir)/src/libnm-gtk" \
 	"-I$(srcdir)/src/libnma" \
 	-Isrc/libnma \
-	$(GTK_CFLAGS) \
+	$(GTK3_CFLAGS) \
 	$(LIBNM_GLIB_CFLAGS) \
 	$(GUDEV_CFLAGS)
 
 src_libnm_gtk_libnm_gtk_la_LIBADD = \
 	src/wireless-security/libwireless-security-libnm-glib.la \
-	$(GTK_LIBS) \
+	$(GTK3_LIBS) \
 	$(LIBNM_GLIB_LIBS) \
 	$(GUDEV_LIBS)
 
@@ -445,7 +445,7 @@ src_libnm_gtk_tests_test_mobile_providers_CPPFLAGS = \
 	-DTEST_DATA_DIR=\""$(abs_srcdir)/src/libnm-gtk/tests"\" \
 	"-I$(srcdir)/shared" \
 	"-I$(srcdir)/src/libnm-gtk" \
-	$(GTK_CFLAGS) \
+	$(GTK3_CFLAGS) \
 	$(LIBNM_GLIB_CFLAGS)
 
 src_libnm_gtk_tests_test_mobile_providers_LDADD = \
@@ -554,14 +554,14 @@ src_libnma_libnma_la_CFLAGS = \
 	"-I$(srcdir)/src/wireless-security" \
 	"-I$(srcdir)/src/libnma" \
 	-Isrc/libnma \
-	$(GTK_CFLAGS) \
+	$(GTK3_CFLAGS) \
 	$(LIBNM_CFLAGS) \
 	$(GUDEV_CFLAGS) \
 	$(GCR_CFLAGS)
 
 src_libnma_libnma_la_LIBADD = \
 	src/wireless-security/libwireless-security-libnm.la \
-	$(GTK_LIBS) \
+	$(GTK3_LIBS) \
 	$(LIBNM_LIBS) \
 	$(GUDEV_LIBS) \
 	$(GCR_LIBS)
@@ -713,7 +713,7 @@ src_connection_editor_nm_connection_editor_CPPFLAGS = \
 	"-I$(srcdir)/src/wireless-security" \
 	"-I$(srcdir)/src/libnma" \
 	-Isrc/libnma \
-	$(GTK_CFLAGS) \
+	$(GTK3_CFLAGS) \
 	$(LIBNM_CFLAGS) \
 	$(JANSSON_CFLAGS) \
 	$(SELINUX_CFLAGS)
@@ -721,7 +721,7 @@ src_connection_editor_nm_connection_editor_CPPFLAGS = \
 src_connection_editor_nm_connection_editor_LDADD = \
 	src/wireless-security/libwireless-security-libnm.la \
 	src/libnma/libnma.la \
-	$(GTK_LIBS) \
+	$(GTK3_LIBS) \
 	$(LIBNM_LIBS) \
 	$(JANSSON_LIBS) \
 	$(SELINUX_LIBS) \
@@ -838,7 +838,7 @@ src_nm_applet_CPPFLAGS = \
 	"-I$(srcdir)/src/wireless-security" \
 	"-I$(srcdir)/src/libnma" \
 	-Isrc/libnma \
-	$(GTK_CFLAGS) \
+	$(GTK3_CFLAGS) \
 	$(LIBNM_CFLAGS) \
 	$(LIBSECRET_CFLAGS) \
 	$(NOTIFY_CFLAGS) \
@@ -848,7 +848,7 @@ src_nm_applet_CPPFLAGS = \
 src_nm_applet_LDADD = \
 	src/wireless-security/libwireless-security-libnm.la \
 	src/libnma/libnma.la \
-	$(GTK_LIBS) \
+	$(GTK3_LIBS) \
 	$(LIBNM_LIBS) \
 	$(LIBSECRET_LIBS) \
 	$(NOTIFY_LIBS) \
