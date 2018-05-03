@@ -39,6 +39,7 @@ typedef struct {
 	GtkComboBoxText *parent;
 	GtkEntry *interface;
 	GtkLabel *interface_label;
+	GtkToggleButton *claim;
 
 	GtkEntry *username;
 	GtkEntry *password;
@@ -78,6 +79,26 @@ find_unused_interface_name (NMClient *client, char *buf, gsize size)
 }
 
 static void
+claim_toggled (GtkToggleButton *button, gpointer user_data)
+{
+	CEPageDslPrivate *priv = CE_PAGE_DSL_GET_PRIVATE (user_data);
+	gboolean active = gtk_toggle_button_get_active (button);
+	char ifname[IFNAMSIZ];
+	const char *str;
+
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->interface), !active);
+	if (!active) {
+		str = gtk_entry_get_text (priv->interface);
+		if (!str || !str[0]) {
+			find_unused_interface_name (CE_PAGE (user_data)->client, ifname, sizeof (ifname));
+			gtk_entry_set_text (priv->interface, ifname);
+		}
+	}
+
+	ce_page_changed (CE_PAGE (user_data));
+}
+
+static void
 dsl_private_init (CEPageDsl *self)
 {
 	CEPageDslPrivate *priv = CE_PAGE_DSL_GET_PRIVATE (self);
@@ -88,6 +109,7 @@ dsl_private_init (CEPageDsl *self)
 	priv->parent = GTK_COMBO_BOX_TEXT (gtk_builder_get_object (builder, "dsl_parent"));
 	priv->interface = GTK_ENTRY (gtk_builder_get_object (builder, "dsl_interface"));
 	priv->interface_label = GTK_LABEL (gtk_builder_get_object (builder, "dsl_interface_label"));
+	priv->claim = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "dsl_claim_button"));
 	priv->username = GTK_ENTRY (gtk_builder_get_object (builder, "dsl_username"));
 	priv->password = GTK_ENTRY (gtk_builder_get_object (builder, "dsl_password"));
 	priv->service = GTK_ENTRY (gtk_builder_get_object (builder, "dsl_service"));
@@ -100,36 +122,32 @@ populate_ui (CEPageDsl *self, NMConnection *connection)
 	NMSettingPppoe *setting = priv->setting;
 	gs_free char *parent = NULL;
 	const char *str = NULL;
-	char ifname[IFNAMSIZ];
 
 	gtk_widget_set_visible (GTK_WIDGET (priv->interface), parent_supported);
 	gtk_widget_set_visible (GTK_WIDGET (priv->interface_label), parent_supported);
+	gtk_widget_set_visible (GTK_WIDGET (priv->claim), parent_supported);
 
 	if (parent_supported)
 		g_object_get (setting, "parent", &parent, NULL);
 
 	if (parent) {
+		gtk_toggle_button_set_active (priv->claim, FALSE);
 		ce_page_setup_device_combo (CE_PAGE (self), GTK_COMBO_BOX (priv->parent),
 		                            G_TYPE_NONE, parent,
 		                            NULL, NULL);
-
 		str = nm_connection_get_interface_name (CE_PAGE (self)->connection);
 		if (str)
 			gtk_entry_set_text (priv->interface, str);
 	} else {
+		gtk_toggle_button_set_active (priv->claim, TRUE);
 		str = nm_connection_get_interface_name (CE_PAGE (self)->connection);
 		ce_page_setup_device_combo (CE_PAGE (self), GTK_COMBO_BOX (priv->parent),
 		                            G_TYPE_NONE, str,
 		                            NULL, NULL);
+		gtk_entry_set_text (priv->interface, "");
 	}
 
-	if (parent_supported) {
-		str = gtk_entry_get_text (priv->interface);
-		if (!str || !str[0]) {
-			find_unused_interface_name (CE_PAGE (self)->client, ifname, sizeof (ifname));
-			gtk_entry_set_text (priv->interface, ifname);
-		}
-	}
+	claim_toggled (priv->claim, self);
 
 	str = nm_setting_pppoe_get_username (setting);
 	if (str)
@@ -175,6 +193,7 @@ finish_setup (CEPageDsl *self, gpointer unused, GError *error, gpointer user_dat
 	g_signal_connect (priv->username, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->password, "changed", G_CALLBACK (stuff_changed), self);
 	g_signal_connect (priv->service, "changed", G_CALLBACK (stuff_changed), self);
+	g_signal_connect (priv->claim, "toggled", G_CALLBACK (claim_toggled), self);
 
 	g_signal_connect (GTK_WIDGET (gtk_builder_get_object (parent->builder, "dsl_show_password")), "toggled",
 					  G_CALLBACK (show_password), self);
@@ -228,11 +247,13 @@ ui_to_setting (CEPageDsl *self)
 	gs_free char *parent = NULL;
 	NMSettingConnection *s_con;
 	GtkWidget *entry;
+	gboolean claim;
 
 	s_con = nm_connection_get_setting_connection (CE_PAGE (self)->connection);
 	g_return_if_fail (s_con);
+	claim = gtk_toggle_button_get_active (priv->claim);
 
-	if (parent_supported) {
+	if (parent_supported && !claim) {
 		interface = gtk_entry_get_text (priv->interface);
 		g_object_set (s_con,
 		              NM_SETTING_CONNECTION_INTERFACE_NAME,
@@ -258,6 +279,10 @@ ui_to_setting (CEPageDsl *self)
 		g_object_set (s_con,
 		              NM_SETTING_CONNECTION_INTERFACE_NAME,
 		              parent && parent[0] ? parent : NULL,
+		              NULL);
+
+		g_object_set (priv->setting,
+		              "parent", NULL,
 		              NULL);
 	}
 
