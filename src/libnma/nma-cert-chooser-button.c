@@ -64,6 +64,8 @@ is_this_a_slot_nobody_loves (GckSlot *slot)
 	gboolean ret_value = FALSE;
 
 	slot_info = gck_slot_get_info (slot);
+	if (!slot_info)
+		return TRUE;
 
 	/* The p11-kit CA trusts do use their filesystem paths for description. */
 	if (g_str_has_prefix (slot_info->slot_description, "/"))
