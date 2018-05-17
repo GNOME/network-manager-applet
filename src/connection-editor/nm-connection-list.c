@@ -66,7 +66,7 @@ struct _NMConnectionListPrivate {
                                            NM_TYPE_CONNECTION_LIST, \
                                            NMConnectionListPrivate))
 
-G_DEFINE_TYPE_WITH_CODE (NMConnectionList, nm_connection_list, GTK_TYPE_WINDOW,
+G_DEFINE_TYPE_WITH_CODE (NMConnectionList, nm_connection_list, GTK_TYPE_APPLICATION_WINDOW,
                          G_ADD_PRIVATE (NMConnectionList))
 
 #define COL_ID         0
