@@ -761,6 +761,7 @@ EXTRA_DIST += \
 	src/connection-editor/ce-page-wifi-security.ui \
 	src/connection-editor/ce-page-wifi.ui \
 	src/connection-editor/ce-ppp-auth-methods.ui \
+	src/connection-editor/gtk/menus.ui \
 	src/connection-editor/nm-connection-editor.ui \
 	src/connection-editor/nm-connection-list.ui \
 	src/connection-editor/ce.gresource.xml \

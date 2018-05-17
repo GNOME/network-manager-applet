@@ -167,10 +167,26 @@ signal_handler (gpointer user_data)
 }
 
 static void
+quit_activated (GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+	GApplication *application = G_APPLICATION (user_data);
+
+	g_application_quit (application);
+}
+
+static GActionEntry app_entries[] =
+{
+	{ "quit", quit_activated, NULL, NULL, NULL },
+};
+
+static void
 editor_startup (GApplication *application, gpointer user_data)
 {
 	GtkApplication *app = GTK_APPLICATION (application);
 	NMConnectionList *list;
+
+	g_action_map_add_action_entries (G_ACTION_MAP (app), app_entries,
+	                                 G_N_ELEMENTS (app_entries), app);
 
 	list = nm_connection_list_new ();
 	if (!list) {
