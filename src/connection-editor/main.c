@@ -167,6 +167,14 @@ signal_handler (gpointer user_data)
 }
 
 static void
+create_activated (GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+	GApplication *application = G_APPLICATION (user_data);
+
+	handle_arguments (application, NULL, TRUE, FALSE, NULL, NULL, FALSE);
+}
+
+static void
 quit_activated (GSimpleAction *action, GVariant *parameter, gpointer user_data)
 {
 	GApplication *application = G_APPLICATION (user_data);
@@ -176,6 +184,7 @@ quit_activated (GSimpleAction *action, GVariant *parameter, gpointer user_data)
 
 static GActionEntry app_entries[] =
 {
+	{ "create", create_activated, NULL, NULL, NULL },
 	{ "quit", quit_activated, NULL, NULL, NULL },
 };
 
