@@ -633,7 +633,7 @@ new_connection_dialog_full (GtkWindow *parent_window,
 	/* load GUI */
 	gui = gtk_builder_new ();
 	if (!gtk_builder_add_from_resource (gui,
-	                                    "/org/freedesktop/network-manager-applet/ce-new-connection.ui",
+	                                    "/org/gnome/nm_connection_editor/ce-new-connection.ui",
 	                                    &error)) {
 		g_warning ("Couldn't load builder resource: %s", error->message);
 		g_error_free (error);

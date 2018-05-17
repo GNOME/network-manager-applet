@@ -434,10 +434,10 @@ nm_connection_editor_init (NMConnectionEditor *editor)
 	editor->builder = gtk_builder_new ();
 
 	if (!gtk_builder_add_objects_from_resource (editor->builder,
-	                                            "/org/freedesktop/network-manager-applet/nm-connection-editor.ui",
+	                                            "/org/gnome/nm_connection_editor/nm-connection-editor.ui",
 	                                            (char **) objects,
 	                                            &error)) {
-		g_warning ("Couldn't load builder resource " "/org/freedesktop/network-manager-applet/nm-connection-editor.ui: %s", error->message);
+		g_warning ("Couldn't load builder resource " "/org/gnome/nm_connection_editor/nm-connection-editor.ui: %s", error->message);
 		g_error_free (error);
 
 		dialog = gtk_message_dialog_new (NULL, 0,

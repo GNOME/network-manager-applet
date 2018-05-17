@@ -86,7 +86,7 @@ ppp_auth_methods_dialog_new (gboolean refuse_eap,
 
 	builder = gtk_builder_new ();
 
-	if (!gtk_builder_add_from_resource (builder, "/org/freedesktop/network-manager-applet/ce-ppp-auth-methods.ui", &error)) {
+	if (!gtk_builder_add_from_resource (builder, "/org/gnome/nm_connection_editor/ce-ppp-auth-methods.ui", &error)) {
 		g_warning ("Couldn't load builder resource: %s", error->message);
 		g_error_free (error);
 		return NULL;

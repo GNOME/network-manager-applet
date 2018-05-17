@@ -1220,7 +1220,7 @@ ce_page_ip4_new (NMConnectionEditor *editor,
 	                                 connection,
 	                                 parent_window,
 	                                 client,
-	                                 "/org/freedesktop/network-manager-applet/ce-page-ip4.ui",
+	                                 "/org/gnome/nm_connection_editor/ce-page-ip4.ui",
 	                                 "IP4Page",
 	                                 _("IPv4 Settings")));
 	if (!self) {

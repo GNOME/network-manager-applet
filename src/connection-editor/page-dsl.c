@@ -215,7 +215,7 @@ ce_page_dsl_new (NMConnectionEditor *editor,
 	                                 connection,
 	                                 parent_window,
 	                                 client,
-	                                 "/org/freedesktop/network-manager-applet/ce-page-dsl.ui",
+	                                 "/org/gnome/nm_connection_editor/ce-page-dsl.ui",
 	                                 "DslPage",
 	                                 _("DSL/PPPoE")));
 	if (!self) {

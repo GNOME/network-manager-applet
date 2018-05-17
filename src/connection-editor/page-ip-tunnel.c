@@ -171,7 +171,7 @@ ce_page_ip_tunnel_new (NMConnectionEditor *editor,
 	                                       connection,
 	                                       parent_window,
 	                                       client,
-	                                       "/org/freedesktop/network-manager-applet/ce-page-ip-tunnel.ui",
+	                                       "/org/gnome/nm_connection_editor/ce-page-ip-tunnel.ui",
 	                                       "IPTunnelPage",
 	                                       _("IP tunnel")));
 	if (!self) {

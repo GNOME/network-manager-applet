@@ -210,7 +210,7 @@ ce_page_proxy_new (NMConnectionEditor *editor,
 	                                   connection,
 	                                   parent_window,
 	                                   client,
-	                                   "/org/freedesktop/network-manager-applet/ce-page-proxy.ui",
+	                                   "/org/gnome/nm_connection_editor/ce-page-proxy.ui",
 	                                   "ProxyPage",
 	                                   _("Proxy")));
 	if (!self) {

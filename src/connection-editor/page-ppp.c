@@ -274,7 +274,7 @@ ce_page_ppp_new (NMConnectionEditor *editor,
 	                                 connection,
 	                                 parent_window,
 	                                 client,
-	                                 "/org/freedesktop/network-manager-applet/ce-page-ppp.ui",
+	                                 "/org/gnome/nm_connection_editor/ce-page-ppp.ui",
 	                                 "PppPage",
 	                                 _("PPP Settings")));
 	if (!self) {

@@ -589,7 +589,7 @@ ce_page_vlan_new (NMConnectionEditor *editor,
 	                                  connection,
 	                                  parent_window,
 	                                  client,
-	                                  "/org/freedesktop/network-manager-applet/ce-page-vlan.ui",
+	                                  "/org/gnome/nm_connection_editor/ce-page-vlan.ui",
 	                                  "VlanPage",
 	                                  _("VLAN")));
 	if (!self) {
