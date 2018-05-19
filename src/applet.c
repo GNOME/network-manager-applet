@@ -2709,6 +2709,10 @@ applet_update_icon (gpointer user_data)
 		switch (vpn_state) {
 		case NM_VPN_CONNECTION_STATE_ACTIVATED:
 			icon_name = "nm-vpn-active-lock";
+#ifdef WITH_APPINDICATOR
+			if (with_appindicator)
+				icon_name = icon_name_free = g_strdup_printf ("%s-secure", app_indicator_get_icon (applet->app_indicator));
+#endif /* WITH_APPINDICATOR */
 			break;
 		case NM_VPN_CONNECTION_STATE_PREPARE:
 		case NM_VPN_CONNECTION_STATE_NEED_AUTH:
