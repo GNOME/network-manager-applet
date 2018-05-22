@@ -346,7 +346,7 @@ ce_page_ethernet_new (NMConnectionEditor *editor,
 	                                      connection,
 	                                      parent_window,
 	                                      client,
-	                                      "/org/freedesktop/network-manager-applet/ce-page-ethernet.ui",
+	                                      "/org/gnome/nm_connection_editor/ce-page-ethernet.ui",
 	                                      "EthernetPage",
 	                                      _("Ethernet")));
 	if (!self) {

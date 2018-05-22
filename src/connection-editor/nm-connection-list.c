@@ -66,7 +66,7 @@ struct _NMConnectionListPrivate {
                                            NM_TYPE_CONNECTION_LIST, \
                                            NMConnectionListPrivate))
 
-G_DEFINE_TYPE_WITH_CODE (NMConnectionList, nm_connection_list, GTK_TYPE_WINDOW,
+G_DEFINE_TYPE_WITH_CODE (NMConnectionList, nm_connection_list, GTK_TYPE_APPLICATION_WINDOW,
                          G_ADD_PRIVATE (NMConnectionList))
 
 #define COL_ID         0
@@ -545,7 +545,7 @@ nm_connection_list_class_init (NMConnectionListClass *klass)
 
 	/* Initialize the widget template */
         gtk_widget_class_set_template_from_resource (widget_class,
-	                                             "/org/freedesktop/network-manager-applet/nm-connection-list.ui");
+	                                             "/org/gnome/nm_connection_editor/nm-connection-list.ui");
 
         gtk_widget_class_bind_template_child_private (widget_class, NMConnectionList, connection_list);
         gtk_widget_class_bind_template_child_private (widget_class, NMConnectionList, connection_add);

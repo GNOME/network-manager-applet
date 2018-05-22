@@ -37,11 +37,11 @@
 typedef struct _NMConnectionListPrivate NMConnectionListPrivate;
 
 typedef struct {
-	GtkWindow parent;
+	GtkApplicationWindow parent;
 } NMConnectionList;
 
 typedef struct {
-	GtkWindowClass parent_class;
+	GtkApplicationWindowClass parent_class;
 
 	/* Signals */
 	void (*done)  (NMConnectionList *list, gint result);

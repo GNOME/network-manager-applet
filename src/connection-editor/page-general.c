@@ -368,7 +368,7 @@ ce_page_general_new (NMConnectionEditor *editor,
 	                                     connection,
 	                                     parent_window,
 	                                     client,
-	                                     "/org/freedesktop/network-manager-applet/ce-page-general.ui",
+	                                     "/org/gnome/nm_connection_editor/ce-page-general.ui",
 	                                     "GeneralPage",
 	                                     _("General")));
 	if (!self) {

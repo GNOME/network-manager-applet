@@ -185,7 +185,7 @@ ce_page_macsec_new (NMConnectionEditor *editor,
 	                                    connection,
 	                                    parent_window,
 	                                    client,
-	                                    "/org/freedesktop/network-manager-applet/ce-page-macsec.ui",
+	                                    "/org/gnome/nm_connection_editor/ce-page-macsec.ui",
 	                                    "MacsecPage",
 	                                   _("MACsec")));
 	if (!self) {

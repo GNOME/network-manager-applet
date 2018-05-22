@@ -622,7 +622,7 @@ ce_page_dcb_new (NMConnectionEditor *editor,
 	                                 connection,
 	                                 parent_window,
 	                                 client,
-	                                 "/org/freedesktop/network-manager-applet/ce-page-dcb.ui",
+	                                 "/org/gnome/nm_connection_editor/ce-page-dcb.ui",
 	                                 "DcbPage",
 	                                 _("DCB")));
 	if (!self) {

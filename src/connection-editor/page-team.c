@@ -1026,7 +1026,7 @@ ce_page_team_new (NMConnectionEditor *editor,
 	                                  connection,
 	                                  parent_window,
 	                                  client,
-	                                  "/org/freedesktop/network-manager-applet/ce-page-team.ui",
+	                                  "/org/gnome/nm_connection_editor/ce-page-team.ui",
 	                                  "TeamPage",
 	                                  _("Team")));
 	if (!self) {

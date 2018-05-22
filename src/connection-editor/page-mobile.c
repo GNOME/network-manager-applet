@@ -303,7 +303,7 @@ ce_page_mobile_new (NMConnectionEditor *editor,
 	                                    connection,
 	                                    parent_window,
 	                                    client,
-	                                    "/org/freedesktop/network-manager-applet/ce-page-mobile.ui",
+	                                    "/org/gnome/nm_connection_editor/ce-page-mobile.ui",
 	                                    "MobilePage",
 	                                    _("Mobile Broadband")));
 	if (!self) {

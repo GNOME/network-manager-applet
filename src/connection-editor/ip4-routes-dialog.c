@@ -623,7 +623,7 @@ ip4_routes_dialog_new (NMSettingIPConfig *s_ip4, gboolean automatic)
 
 	builder = gtk_builder_new ();
 
-	if (!gtk_builder_add_from_resource (builder, "/org/freedesktop/network-manager-applet/ce-ip4-routes.ui", &error)) {
+	if (!gtk_builder_add_from_resource (builder, "/org/gnome/nm_connection_editor/ce-ip4-routes.ui", &error)) {
 		g_warning ("Couldn't load builder resource: %s", error->message);
 		g_error_free (error);
 		return NULL;
