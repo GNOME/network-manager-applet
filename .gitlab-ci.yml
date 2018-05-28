@@ -1,0 +1,183 @@
+# Quick syntax check:
+# python -c 'import sys, yaml; yaml.dump (yaml.load (sys.stdin), sys.stdout)' <.gitlab-ci.yml
+
+# If things don't seem to work, this can help:
+# https://gitlab.gnome.org/GNOME/network-manager-applet/-/ci/lint
+
+.fedora_minimal: &fedora_minimal
+  before_script:
+    - dnf -y install
+      gcc
+      desktop-file-utils
+      gettext-devel
+      glib2-devel
+      gtk3-devel
+      intltool
+      libgudev1-devel
+      libnotify-devel
+      libsecret-devel
+      NetworkManager-libnm-devel
+      pkgconfig
+      /usr/bin/autopoint
+
+.fedora_full: &fedora_full
+  before_script:
+    - dnf -y install
+      gcc
+      desktop-file-utils
+      gettext-devel
+      glib2-devel
+      gtk3-devel
+      intltool
+      libgudev1-devel
+      libnotify-devel
+      libsecret-devel
+      NetworkManager-libnm-devel
+      pkgconfig
+      /usr/bin/autopoint
+      gcr-devel
+      gobject-introspection-devel redhat-rpm-config
+      gtk-doc
+      iso-codes-devel
+      jansson-devel
+      ModemManager-glib-devel
+      libselinux-devel
+
+.dist: &dist
+  stage: test
+  dependencies:
+    - fedora28_dist
+  variables:
+    GIT_STRATEGY: none
+
+.fedora_meson_minimal: &fedora_meson_minimal
+  <<: *fedora_minimal
+  <<: *dist
+  script:
+    - tar xJf network-manager-applet-*.tar.xz
+    - dnf -y install meson
+    - meson
+      -Dlibnm_gtk=false
+      -Dwwan=false
+      -Dselinux=false
+      -Dteam=false
+      -Dgcr=false
+      -Diso_codes=false
+      -Dld_gc=false
+      -Dgtk_doc=false
+      -Dintrospection=false
+      -Dappindicator=no
+      -Dmore_asserts=no
+      network-manager-applet-*/ build
+    - ninja -v -j build
+    - ninja -v -j build test
+    - ninja -v -j build install
+    - ninja -v -j build uninstall
+
+.fedora_meson_full: &fedora_meson_full
+  <<: *fedora_full
+  <<: *dist
+  script:
+    - dnf -y install meson
+    - tar xJf network-manager-applet-*.tar.xz
+    - meson
+      -Dlibnm_gtk=true
+      -Dwwan=true
+      -Dselinux=true
+      -Dteam=true
+      -Dgcr=true
+      -Diso_codes=true
+      -Dld_gc=true
+      -Dgtk_doc=true
+      -Dintrospection=true
+      -Dappindicator=no
+      -Dmore_asserts=yes
+      network-manager-applet-*/ build
+    - ninja -v -j build
+    - ninja -v -j build test
+    - ninja -v -j build install
+    - ninja -v -j build uninstall
+
+.fedora_autotools_minimal: &fedora_autotools_minimal
+  <<: *fedora_minimal
+  <<: *dist
+  script:
+    - dnf -y install make
+    - tar xJf network-manager-applet-*.tar.xz
+    - cd network-manager-applet-*/
+    - ./configure
+      --disable-silent-rules
+      --with-more-asserts=no
+      --without-libnm-gtk
+      --disable-nls
+      --disable-iso-codes
+      --disable-gtk-doc
+      --disable-introspection
+      --disable-schemas-compile
+      --disable-more-warnings
+      --without-appindicator
+      --without-wwan
+      --without-selinux
+      --without-team
+      --without-gcr
+    - make -j
+    - make -j check
+    - make -j install
+    - make -j uninstall
+
+.fedora_autotools_full: &fedora_autotools_full
+  <<: *fedora_full
+  <<: *dist
+  script:
+    - dnf -y install make
+    - tar xJf network-manager-applet-*.tar.xz
+    - cd network-manager-applet-*/
+    - ./configure
+      --disable-silent-rules
+      --with-more-asserts=yes
+      --without-libnm-gtk
+      --enable-nls
+      --enable-iso-codes
+      --enable-gtk-doc
+      --enable-introspection
+      --enable-schemas-compile
+      --enable-more-warnings
+      --with-wwan
+      --with-selinux
+      --with-team
+      --with-gcr
+    - make -j
+    - make -j check
+    - make -j install
+    - make -j uninstall
+
+fedora28_dist:
+  <<: *fedora_full
+  image: fedora:28
+  stage: build
+  script:
+    - dnf -y install
+      autoconf automake make
+      NetworkManager-devel
+      NetworkManager-glib-devel
+    - sh autogen.sh
+    - make -j distcheck
+  artifacts:
+    paths:
+      - "*.xz"
+
+fedora_meson_minimal:
+  <<: *fedora_meson_minimal
+  image: fedora:latest
+
+fedora_meson_full:
+  <<: *fedora_meson_full
+  image: fedora:latest
+
+fedora_autotools_minimal:
+  <<: *fedora_autotools_minimal
+  image: fedora:latest
+
+fedora_autotools_full:
+  <<: *fedora_autotools_full
+  image: fedora:latest
