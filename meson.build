@@ -1,6 +1,6 @@
 project(
   'network-manager-applet', 'c',
-  version: '1.8.11',
+  version: '1.8.12',
   license: 'GPL2+',
   default_options: [
     'buildtype=debugoptimized',
