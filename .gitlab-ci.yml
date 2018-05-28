@@ -1,53 +1,68 @@
 # ModemManager-glib-devel
 # NetworkManager-glib-devel
 
+# Quick syntax check:
+# python -c 'import sys, yaml; yaml.dump (yaml.load (sys.stdin), sys.stdout)' <.gitlab-ci.yml
+
 # If things don't seem to work, this can help:
 # https://gitlab.gnome.org/GNOME/network-manager-applet/-/ci/lint
 
 .fedora_minimal: &fedora_minimal
-  script:
-    - dnf -y install              \
-      desktop-file-utils          \
-      gettext-devel               \
-      glib2-devel                 \
-      gtk3-devel                  \
-      intltool                    \
-      libgudev1-devel             \
-      libnotify-devel             \
-      libsecret-devel             \
-      NetworkManager-devel        \
-      pkgconfig                   \
+  before_script:
+    - dnf -y install
+      gcc
+      desktop-file-utils
+      gettext-devel
+      glib2-devel
+      gtk3-devel
+      intltool
+      libgudev1-devel
+      libnotify-devel
+      libsecret-devel
+      NetworkManager-devel
+      pkgconfig
       /usr/bin/autopoint
 
 .fedora_full: &fedora_full
-  <<: *fedora_minimal
-  script:
-    - dnf -y install              \
-      gcr-devel                   \
-      gobject-introspection-devel \
-      gtk-doc                     \
-      iso-codes-devel             \
-      jansson-devel               \
-      ModemManager-glib-devel     \
-      NetworkManager-libnm-devel  \
+  before_script:
+    - dnf -y install
+      gcc
+      desktop-file-utils
+      gettext-devel
+      glib2-devel
+      gtk3-devel
+      intltool
+      libgudev1-devel
+      libnotify-devel
+      libsecret-devel
+      NetworkManager-devel
+      pkgconfig
+      /usr/bin/autopoint
+      gcr-devel
+      gobject-introspection-devel
+      gtk-doc
+      iso-codes-devel
+      jansson-devel
+      ModemManager-glib-devel
+      NetworkManager-libnm-devel
       libselinux-devel
 
 .fedora_meson_minimal: &fedora_meson_minimal
   <<: *fedora_minimal
   script:
     - dnf -y install meson
-    - meson                       \
-      -Dlibnm_gtk=no              \
-      -Dwwan=no                   \
-      -Dselinux=no                \
-      -Dteam=no                   \
-      -Dgcr=no                    \
-      -Diso_codes=no              \
-      -Dld_gc=no                  \
-      -Dgtk_doc=no                \
-      -Dintrospection=no          \
-      -Dappindicator=no           \
-      -Dmore_asserts=yes          \
+    - meson
+      -Dlibnm_gtk=no
+      -Dwwan=no
+      -Dselinux=no
+      -Dteam=no
+      -Dgcr=no
+      -Diso_codes=no
+      -Dld_gc=no
+      -Dgtk_doc=no
+      -Dintrospection=no
+      -Dappindicator=no
+      -Dmore_asserts=yes
       build
     - ninja -v -j build test
 
@@ -55,40 +70,40 @@
   <<: *fedora_full
   script:
     - dnf -y install meson
-    - meson                       \
-      -Dlibnm_gtk=yes             \
-      -Dwwan=yes                  \
-      -Dselinux=yes               \
-      -Dteam=yes                  \
-      -Dgcr=yes                   \
-      -Diso_codes=yes             \
-      -Dld_gc=yes                 \
-      -Dgtk_doc=yes               \
-      -Dintrospection=yes         \
-      -Dappindicator=no           \
-      -Dmore_asserts=yes          \
+    - meson
+      -Dlibnm_gtk=yes
+      -Dwwan=yes
+      -Dselinux=yes
+      -Dteam=yes
+      -Dgcr=yes
+      -Diso_codes=yes
+      -Dld_gc=yes
+      -Dgtk_doc=yes
+      -Dintrospection=yes
+      -Dappindicator=no
+      -Dmore_asserts=yes
       build
     - ninja -v -j build test
 
 .fedora_autoconf_minimal: &fedora_autoconf_minimal
   <<: *fedora_minimal
   script:
-    - dnf -y install autoconf automake
-    - sh autogen.sh             \
-      --with-more-asserts=3     \
-      --without-libnm-gtk       \
-      --disable-nls             \
-      --disable-iso-codes       \
-      --disable-gtk-doc         \
-      --disable-introspection   \
-      --disable-schemas-compile \
-      --disable-more-warnings   \
-      --disable-lto             \
-      --disable-ld-gc           \
-      --without-appindicator    \
-      --without-wwan            \
-      --without-selinux         \
-      --without-team            \
+    - dnf -y install autoconf automake make
+    - sh autogen.sh
+      --with-more-asserts=3
+      --without-libnm-gtk
+      --disable-nls
+      --disable-iso-codes
+      --disable-gtk-doc
+      --disable-introspection
+      --disable-schemas-compile
+      --disable-more-warnings
+      --disable-lto
+      --disable-ld-gc
+      --without-appindicator
+      --without-wwan
+      --without-selinux
+      --without-team
       --without-gcr
     - make -j
     - make -j check
@@ -97,34 +112,69 @@
   <<: *fedora_full
   script:
     - dnf -y install autoconf automake
-    - sh autogen.sh             \
-      --with-more-asserts=3     \
-      --without-libnm-gtk       \
-      --enable-nls              \
-      --enable-iso-codes        \
-      --enable-gtk-doc          \
-      --enable-introspection    \
-      --enable-schemas-compile  \
-      --enable-more-warnings    \
-      --enable-lto              \
-      --enable-ld-gc            \
-      --with-wwan               \
-      --with-selinux            \
-      --with-team               \
+    - sh autogen.sh
+      --with-more-asserts=3
+      --without-libnm-gtk
+      --enable-nls
+      --enable-iso-codes
+      --enable-gtk-doc
+      --enable-introspection
+      --enable-schemas-compile
+      --enable-more-warnings
+      --enable-lto
+      --enable-ld-gc
+      --with-wwan
+      --with-selinux
+      --with-team
       --with-gcr
     - make -j
     - make -j check
     - make -j distcheck
 
-fedora_meson_full:
-  <<: *fedora_meson_full
-
-fedora_meson_minimal:
-  <<: *fedora_meson_minimal
-
 fedora_autoconf_full:
   <<: *fedora_autoconf_full
+  stage: build
+  artifacts:
+    paths:
+      - "*.xz"
 
-fedora_autoconf_minimal:
-  <<: *fedora_autoconf_minimal
+#fedora27_meson_full:
+#  image: fedora:27
+#  <<: *fedora_meson_full
+#
+#fedora27_meson_minimal:
+#  image: fedora:27
+#  <<: *fedora_meson_minimal
+#
+#fedora27_autoconf_full:
+#  image: fedora:27
+#  <<: *fedora_autoconf_full
+#
+#fedora27_autoconf_minimal:
+#  image: fedora:27
+#  <<: *fedora_autoconf_minimal
+#
+#fedora28_meson_full:
+#  image: fedora:28
+#  <<: *fedora_meson_full
 
+fedora28_meson_minimal:
+  <<: *fedora_meson_minimal
+  image: fedora:28
+  stage: test
+  dependencies:
+    - fedora_autoconf_full
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - pwd
+    - find
+
+#fedora28_autoconf_full:
+#  image: fedora:28
+#  <<: *fedora_autoconf_full
+#
+#fedora28_autoconf_minimal:
+#  image: fedora:28
+#  <<: *fedora_base
+#  <<: *fedora_autoconf_minimal
