@@ -53,9 +53,6 @@
     - fedora28_dist
   variables:
     GIT_STRATEGY: none
-  artifacts:
-    paths:
-      - "."
 
 .fedora_meson_minimal: &fedora_meson_minimal
   <<: *fedora_minimal
@@ -127,10 +124,10 @@
       --without-selinux
       --without-team
       --without-gcr
-    - "make -j || :"
-    - "make -j check || :"
-    - "make -j install || :"
-    - "make -j uninstall || :"
+    - make -j
+    - make -j check
+    - make -j install
+    - make -j uninstall
 
 .fedora_autotools_full: &fedora_autotools_full
   <<: *fedora_full
