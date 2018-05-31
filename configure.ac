@@ -34,6 +34,16 @@ AC_PROG_CC
 AM_PROG_CC_C_O
 PKG_PROG_PKG_CONFIG
 
+AC_CHECK_PROG([has_file], file, yes, no)
+if test x$has_file = xno ; then
+    AC_MSG_ERROR(["file" utility not found.])
+fi
+
+AC_CHECK_PROG([has_find], find, yes, no)
+if test x$has_find = xno ; then
+    AC_MSG_ERROR(["find" utility not found.])
+fi
+
 dnl Define _GNU_SOURCE for various things like strcasestr()
 AC_USE_SYSTEM_EXTENSIONS
 
