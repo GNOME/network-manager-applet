@@ -46,16 +46,6 @@ typedef struct {
 
 } CEPageMasterPrivate;
 
-enum {
-	CREATE_CONNECTION,
-	CONNECTION_ADDED,
-	CONNECTION_REMOVED,
-
-	LAST_SIGNAL
-};
-
-static guint signals[LAST_SIGNAL] = { 0 };
-
 static void finish_setup (CEPageMaster *self, gpointer unused, GError *error, gpointer user_data);
 
 enum {
@@ -158,8 +148,6 @@ connection_removed (NMClient *client,
 
 	gtk_list_store_remove (GTK_LIST_STORE (priv->connections_model), &iter);
 	ce_page_changed (CE_PAGE (self));
-
-	g_signal_emit (self, signals[CONNECTION_REMOVED], 0, connection);
 }
 
 static void
@@ -312,8 +300,6 @@ connection_added (NMClient *client,
 	                  G_CALLBACK (connection_removed), self);
 	g_signal_connect (connection, NM_CONNECTION_CHANGED,
 	                  G_CALLBACK (connection_changed), self);
-
-	g_signal_emit (self, signals[CONNECTION_ADDED], 0, connection);
 }
 
 static void
@@ -392,8 +378,6 @@ add_connection (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
 	              NM_SETTING_CONNECTION_AUTOCONNECT, TRUE,
 	              NULL);
 	g_free (name);
-
-	g_signal_emit (self, signals[CREATE_CONNECTION], 0, connection);
 
 	editor = nm_connection_editor_new (priv->toplevel,
 	                                   connection,
@@ -675,34 +659,6 @@ ce_page_master_class_init (CEPageMasterClass *master_class)
 
 	parent_class->ce_page_validate_v = ce_page_validate_v;
 	parent_class->last_update = last_update;
-
-	/* Signals */
-	signals[CREATE_CONNECTION] = 
-		g_signal_new ("create-connection",
-		              G_OBJECT_CLASS_TYPE (object_class),
-		              G_SIGNAL_RUN_FIRST,
-		              G_STRUCT_OFFSET (CEPageMasterClass, create_connection),
-		              NULL, NULL, NULL,
-		              G_TYPE_NONE, 1,
-		              NM_TYPE_CONNECTION);
-
-	signals[CONNECTION_ADDED] = 
-		g_signal_new ("connection-added",
-		              G_OBJECT_CLASS_TYPE (object_class),
-		              G_SIGNAL_RUN_FIRST,
-		              G_STRUCT_OFFSET (CEPageMasterClass, connection_added),
-		              NULL, NULL, NULL,
-		              G_TYPE_NONE, 1,
-		              NM_TYPE_CONNECTION);
-
-	signals[CONNECTION_REMOVED] = 
-		g_signal_new ("connection-removed",
-		              G_OBJECT_CLASS_TYPE (object_class),
-		              G_SIGNAL_RUN_FIRST,
-		              G_STRUCT_OFFSET (CEPageMasterClass, connection_removed),
-		              NULL, NULL, NULL,
-		              G_TYPE_NONE, 1,
-		              NM_TYPE_CONNECTION);
 }
 
 gboolean
