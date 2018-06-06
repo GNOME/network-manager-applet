@@ -44,7 +44,6 @@ typedef struct {
 	GtkApplicationWindowClass parent_class;
 
 	/* Signals */
-	void (*done)  (NMConnectionList *list, gint result);
 	void (*editing_done)  (NMConnectionList *list, gint result);
 } NMConnectionListClass;
 
