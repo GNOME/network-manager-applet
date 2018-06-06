@@ -72,6 +72,7 @@ G_DEFINE_TYPE (NMConnectionEditor, nm_connection_editor, G_TYPE_OBJECT)
 
 enum {
 	EDITOR_DONE,
+	NEW_EDITOR,
 	EDITOR_LAST_SIGNAL
 };
 
@@ -544,6 +545,14 @@ nm_connection_editor_class_init (NMConnectionEditorClass *klass)
 		              G_STRUCT_OFFSET (NMConnectionEditorClass, done),
 		              NULL, NULL, NULL,
 		              G_TYPE_NONE, 1, GTK_TYPE_RESPONSE_TYPE);
+
+	editor_signals[NEW_EDITOR] =
+		g_signal_new ("new-editor",
+		              G_OBJECT_CLASS_TYPE (object_class),
+		              G_SIGNAL_RUN_FIRST,
+		              G_STRUCT_OFFSET (NMConnectionEditorClass, new_editor),
+		              NULL, NULL, NULL,
+		              G_TYPE_NONE, 1, G_TYPE_POINTER);
 }
 
 NMConnectionEditor *
@@ -789,6 +798,14 @@ page_initialized (CEPage *page, GError *error, gpointer user_data)
 	recheck_initialization (editor);
 }
 
+static void
+page_new_editor (CEPage *page, NMConnectionEditor *new_editor, gpointer user_data)
+{
+	NMConnectionEditor *self = NM_CONNECTION_EDITOR (user_data);
+
+	g_signal_emit (self, editor_signals[NEW_EDITOR], 0, new_editor);
+}
+
 static void request_secrets (GetSecretsInfo *info);
 
 static void
@@ -899,6 +916,7 @@ add_page (NMConnectionEditor *editor,
 		editor->initializing_pages = g_slist_append (editor->initializing_pages, page);
 		g_signal_connect (page, "changed", G_CALLBACK (page_changed), editor);
 		g_signal_connect (page, "initialized", G_CALLBACK (page_initialized), editor);
+		g_signal_connect (page, "new-editor", G_CALLBACK (page_new_editor), editor);
 	}
 	return !!page;
 }
