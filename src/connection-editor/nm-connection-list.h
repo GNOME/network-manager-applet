@@ -30,6 +30,8 @@
 
 #include <NetworkManager.h>
 
+#include "nm-connection-editor.h"
+
 #define NM_TYPE_CONNECTION_LIST    (nm_connection_list_get_type ())
 #define NM_IS_CONNECTION_LIST(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NM_TYPE_CONNECTION_LIST))
 #define NM_CONNECTION_LIST(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), NM_TYPE_CONNECTION_LIST, NMConnectionList))
@@ -45,6 +47,7 @@ typedef struct {
 
 	/* Signals */
 	void (*editing_done)  (NMConnectionList *list, gint result);
+	void (*new_editor)    (NMConnectionList *list, NMConnectionEditor *editor);
 } NMConnectionListClass;
 
 GType             nm_connection_list_get_type (void);
