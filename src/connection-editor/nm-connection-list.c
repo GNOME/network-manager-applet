@@ -39,6 +39,7 @@ extern gboolean nm_ce_keep_above;
 
 enum {
 	EDITING_DONE,
+	NEW_EDITOR,
 	LIST_LAST_SIGNAL
 };
 
@@ -289,6 +290,14 @@ add_response_cb (NMConnectionEditor *editor, GtkResponseType response, gpointer 
 }
 
 static void
+new_editor_cb (NMConnectionEditor *editor, NMConnectionEditor *new_editor, gpointer user_data)
+{
+	NMConnectionList *list = user_data;
+
+	g_signal_emit (list, list_signals[NEW_EDITOR], 0, new_editor);
+}
+
+static void
 really_add_connection (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
                        NMConnection *connection,
                        gpointer user_data)
@@ -316,6 +325,9 @@ really_add_connection (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
 	}
 
 	g_signal_connect (editor, NM_CONNECTION_EDITOR_DONE, G_CALLBACK (add_response_cb), list);
+	g_signal_connect (editor, NM_CONNECTION_EDITOR_NEW_EDITOR, G_CALLBACK (new_editor_cb), list);
+
+	g_signal_emit (list, list_signals[NEW_EDITOR], 0, editor);
 	nm_connection_editor_run (editor);
 }
 
@@ -375,10 +387,14 @@ edit_connection (NMConnectionList *list, NMConnection *connection)
 	editor = nm_connection_editor_new (GTK_WINDOW (list),
 	                                   NM_CONNECTION (connection),
 	                                   priv->client);
-	if (editor) {
-		g_signal_connect (editor, NM_CONNECTION_EDITOR_DONE, G_CALLBACK (edit_done_cb), list);
-		nm_connection_editor_run (editor);
-	}
+	if (!editor)
+		return;
+
+	g_signal_connect (editor, NM_CONNECTION_EDITOR_DONE, G_CALLBACK (edit_done_cb), list);
+	g_signal_connect (editor, NM_CONNECTION_EDITOR_NEW_EDITOR, G_CALLBACK (new_editor_cb), list);
+
+	g_signal_emit (list, list_signals[NEW_EDITOR], 0, editor);
+	nm_connection_editor_run (editor);
 }
 
 static void
@@ -524,6 +540,13 @@ nm_connection_list_class_init (NMConnectionListClass *klass)
 		              G_STRUCT_OFFSET (NMConnectionListClass, editing_done),
 		              NULL, NULL, NULL,
 		              G_TYPE_NONE, 1, G_TYPE_INT);
+
+	list_signals[NEW_EDITOR] =
+		g_signal_new (NM_CONNECTION_LIST_NEW_EDITOR,
+		              G_OBJECT_CLASS_TYPE (object_class),
+		              G_SIGNAL_RUN_FIRST,
+		              0, NULL, NULL, NULL,
+		              G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	/* Initialize the widget template */
         gtk_widget_class_set_template_from_resource (widget_class,
