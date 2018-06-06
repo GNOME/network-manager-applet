@@ -71,6 +71,7 @@ typedef void (*PageNewConnectionFunc) (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
 
 #define CE_PAGE_CHANGED       "changed"
 #define CE_PAGE_INITIALIZED   "initialized"
+#define CE_PAGE_NEW_EDITOR    "new-editor"
 
 typedef struct {
 	GObject parent;
@@ -151,6 +152,10 @@ char *ce_page_cloned_mac_get (GtkComboBoxText *combo);
 gboolean ce_page_cloned_mac_combo_valid (GtkComboBoxText *combo, int type, const char *property_name, GError **error);
 
 void ce_page_changed (CEPage *self);
+
+NMConnectionEditor *ce_page_new_editor (CEPage *self,
+                                        GtkWindow *parent_window,
+                                        NMConnection *connection);
 
 void ce_spin_automatic_val (GtkSpinButton *spin, int defvalue);
 void ce_spin_default_val (GtkSpinButton *spin, int defvalue);

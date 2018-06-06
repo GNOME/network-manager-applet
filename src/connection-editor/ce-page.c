@@ -42,6 +42,7 @@ enum {
 enum {
 	CHANGED,
 	INITIALIZED,
+	NEW_EDITOR,
 
 	LAST_SIGNAL
 };
@@ -769,6 +770,25 @@ ce_page_changed (CEPage *self)
 	g_signal_emit (self, signals[CHANGED], 0);
 }
 
+NMConnectionEditor *
+ce_page_new_editor (CEPage *self,
+                    GtkWindow *parent_window,
+                    NMConnection *connection)
+{
+	NMConnectionEditor *editor;
+
+	g_return_val_if_fail (CE_IS_PAGE (self), NULL);
+
+	editor = nm_connection_editor_new (parent_window,
+	                                   connection,
+	                                   self->client);
+	if (!editor)
+		return NULL;
+
+	g_signal_emit (self, signals[NEW_EDITOR], 0, editor);
+	return editor;
+}
+
 static void
 get_property (GObject *object, guint prop_id,
               GValue *value, GParamSpec *pspec)
@@ -843,6 +863,13 @@ ce_page_class_init (CEPageClass *page_class)
 
 	signals[INITIALIZED] = 
 		g_signal_new (CE_PAGE_INITIALIZED,
+	                      G_OBJECT_CLASS_TYPE (object_class),
+	                      G_SIGNAL_RUN_FIRST,
+	                      0, NULL, NULL, NULL,
+	                      G_TYPE_NONE, 1, G_TYPE_POINTER);
+
+	signals[NEW_EDITOR] =
+		g_signal_new (CE_PAGE_NEW_EDITOR,
 	                      G_OBJECT_CLASS_TYPE (object_class),
 	                      G_SIGNAL_RUN_FIRST,
 	                      0, NULL, NULL, NULL,
