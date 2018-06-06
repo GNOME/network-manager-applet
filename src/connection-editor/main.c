@@ -37,17 +37,6 @@ gboolean nm_ce_keep_above;
 
 /*************************************************/
 
-static NMConnectionList *
-_get_connection_list (GApplication *application)
-{
-	GtkApplication *app = GTK_APPLICATION (application);
-	GList *windows = gtk_application_get_windows (app);
-
-	/* For now, assume we always have a single application window
-	 * that is the connection list. */
-	return NM_CONNECTION_LIST (windows->data);
-}
-
 typedef struct {
 	gboolean create;
 	NMConnectionList *list;
@@ -87,10 +76,9 @@ handle_arguments (GApplication *application,
                   gboolean create,
                   gboolean show,
                   const char *edit_uuid,
-                  const char *import,
-                  gboolean quit_after)
+                  const char *import)
 {
-	NMConnectionList *list = _get_connection_list (application);
+	NMConnectionList *list = g_object_get_data (G_OBJECT (application), "connection-list");
 	gboolean show_list = TRUE;
 	GType ctype = 0;
 	gs_free char *type_tmp = NULL;
@@ -145,13 +133,6 @@ handle_arguments (GApplication *application,
 		show_list = FALSE;
 	}
 
-	/* If only editing a single connection, exit when done with that connection */
-	if (show_list == FALSE && quit_after == TRUE) {
-		g_signal_connect_swapped (list, "editing-done",
-		                          G_CALLBACK (g_application_quit),
-		                          application);
-	}
-
 	return show_list;
 }
 
@@ -171,7 +152,7 @@ create_activated (GSimpleAction *action, GVariant *parameter, gpointer user_data
 {
 	GApplication *application = G_APPLICATION (user_data);
 
-	handle_arguments (application, NULL, TRUE, FALSE, NULL, NULL, FALSE);
+	handle_arguments (application, NULL, TRUE, FALSE, NULL, NULL);
 }
 
 static void
@@ -189,6 +170,25 @@ static GActionEntry app_entries[] =
 };
 
 static void
+new_editor_cb (NMConnectionList *list, NMConnectionEditor *new_editor, gpointer user_data)
+{
+	GtkApplication *app = GTK_APPLICATION (user_data);
+
+	gtk_application_add_window (app, nm_connection_editor_get_window (new_editor));
+}
+
+static void
+list_visible_cb (NMConnectionList *list, GParamSpec *pspec, gpointer user_data)
+{
+	GtkApplication *app = GTK_APPLICATION (user_data);
+
+	if (gtk_widget_get_visible (GTK_WIDGET (list)))
+		gtk_application_add_window (app, GTK_WINDOW (list));
+	else
+		gtk_application_remove_window (app, GTK_WINDOW (list));
+}
+
+static void
 editor_startup (GApplication *application, gpointer user_data)
 {
 	GtkApplication *app = GTK_APPLICATION (application);
@@ -203,13 +203,17 @@ editor_startup (GApplication *application, gpointer user_data)
 		g_application_quit (application);
 		return;
 	}
-	gtk_application_add_window (app, GTK_WINDOW (list));
+
+	g_object_set_data_full (G_OBJECT (application), "connection-list", g_object_ref (list), g_object_unref);
+	g_signal_connect (list, "new-editor", G_CALLBACK (new_editor_cb), application);
+	g_signal_connect (list, "notify::visible", G_CALLBACK (list_visible_cb), application);
+	g_signal_connect (list, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL);
 }
 
 static void
 editor_activate (GApplication *application, gpointer user_data)
 {
-	NMConnectionList *list = _get_connection_list (application);
+	NMConnectionList *list = g_object_get_data (G_OBJECT (application), "connection-list");
 
 	nm_connection_list_present (list);
 }
@@ -256,7 +260,7 @@ editor_command_line (GApplication *application,
 		type = g_strdup (NM_SETTING_GSM_SETTING_NAME);
 	}
 
-	if (handle_arguments (application, type, create, show, uuid, import, FALSE))
+	if (handle_arguments (application, type, create, show, uuid, import))
 		g_application_activate (application);
 
 	ret = 0;
