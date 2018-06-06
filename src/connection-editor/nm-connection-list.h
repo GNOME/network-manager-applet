@@ -30,9 +30,13 @@
 
 #include <NetworkManager.h>
 
+#include "nm-connection-editor.h"
+
 #define NM_TYPE_CONNECTION_LIST    (nm_connection_list_get_type ())
 #define NM_IS_CONNECTION_LIST(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NM_TYPE_CONNECTION_LIST))
 #define NM_CONNECTION_LIST(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), NM_TYPE_CONNECTION_LIST, NMConnectionList))
+
+#define NM_CONNECTION_LIST_NEW_EDITOR "new-editor"
 
 typedef struct _NMConnectionListPrivate NMConnectionListPrivate;
 
