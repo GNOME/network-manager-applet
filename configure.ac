@@ -8,7 +8,7 @@ m4_define([nma_version],
 
 AC_INIT([nm-applet],
         [nma_version],
-        [https://bugzilla.gnome.org/enter_bug.cgi?product=NetworkManager],
+        [https://gitlab.gnome.org/GNOME/network-manager-applet/issues],
         [network-manager-applet])
 
 AC_CONFIG_HEADERS([config.h])
