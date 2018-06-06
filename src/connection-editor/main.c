@@ -33,6 +33,8 @@
 #include "connection-helpers.h"
 #include "vpn-helpers.h"
 
+#define CONNECTION_LIST_TAG "nm-connection-list"
+
 gboolean nm_ce_keep_above;
 
 /*************************************************/
@@ -78,7 +80,7 @@ handle_arguments (GApplication *application,
                   const char *edit_uuid,
                   const char *import)
 {
-	NMConnectionList *list = g_object_get_data (G_OBJECT (application), "connection-list");
+	NMConnectionList *list = g_object_get_data (G_OBJECT (application), CONNECTION_LIST_TAG);
 	gboolean show_list = TRUE;
 	GType ctype = 0;
 	gs_free char *type_tmp = NULL;
@@ -204,7 +206,7 @@ editor_startup (GApplication *application, gpointer user_data)
 		return;
 	}
 
-	g_object_set_data_full (G_OBJECT (application), "connection-list", g_object_ref (list), g_object_unref);
+	g_object_set_data_full (G_OBJECT (application), CONNECTION_LIST_TAG, g_object_ref (list), g_object_unref);
 	g_signal_connect_object (list, NM_CONNECTION_LIST_NEW_EDITOR, G_CALLBACK (new_editor_cb), application, 0);
 	g_signal_connect_object (list, "notify::visible", G_CALLBACK (list_visible_cb), application, 0);
 	g_signal_connect (list, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL);
@@ -213,7 +215,7 @@ editor_startup (GApplication *application, gpointer user_data)
 static void
 editor_activate (GApplication *application, gpointer user_data)
 {
-	NMConnectionList *list = g_object_get_data (G_OBJECT (application), "connection-list");
+	NMConnectionList *list = g_object_get_data (G_OBJECT (application), CONNECTION_LIST_TAG);
 
 	nm_connection_list_present (list);
 }
