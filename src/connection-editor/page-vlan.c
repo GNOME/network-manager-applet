@@ -242,9 +242,7 @@ edit_parent (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
 	              NULL);
 
 
-	editor = nm_connection_editor_new (priv->toplevel,
-	                                   connection,
-	                                   CE_PAGE (self)->client);
+	editor = ce_page_new_editor (CE_PAGE (self), priv->toplevel, connection);
 	if (!editor)
 		return;
 

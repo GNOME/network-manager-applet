@@ -98,6 +98,7 @@ typedef struct {
 	/* Signals */
 	void        (*changed)     (CEPage *self);
 	void        (*initialized) (CEPage *self, GError *error);
+	void        (*new_editor)  (CEPage *self, NMConnectionEditor *new_editor);
 } CEPageClass;
 
 
@@ -154,6 +155,10 @@ char *ce_page_cloned_mac_get (GtkComboBoxText *combo);
 gboolean ce_page_cloned_mac_combo_valid (GtkComboBoxText *combo, int type, const char *property_name, GError **error);
 
 void ce_page_changed (CEPage *self);
+
+NMConnectionEditor *ce_page_new_editor (CEPage *self,
+                                        GtkWindow *parent_window,
+                                        NMConnection *connection);
 
 void ce_spin_automatic_val (GtkSpinButton *spin, int defvalue);
 void ce_spin_default_val (GtkSpinButton *spin, int defvalue);
