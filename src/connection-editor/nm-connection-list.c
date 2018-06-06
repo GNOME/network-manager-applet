@@ -38,7 +38,6 @@
 extern gboolean nm_ce_keep_above;
 
 enum {
-	LIST_DONE,
 	EDITING_DONE,
 	LIST_LAST_SIGNAL
 };
@@ -449,15 +448,6 @@ selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
 	}
 }
 
-static void
-list_close_cb (GtkDialog *dialog, gpointer user_data)
-{
-	g_signal_emit (NM_CONNECTION_LIST (user_data),
-	               list_signals[LIST_DONE],
-	               0,
-	               GTK_RESPONSE_CLOSE);
-}
-
 static gboolean
 key_press_cb (GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
@@ -527,19 +517,11 @@ nm_connection_list_class_init (NMConnectionListClass *klass)
 	object_class->dispose = dispose;
 
 	/* Signals */
-	list_signals[LIST_DONE] =
-		g_signal_new ("done",
-					  G_OBJECT_CLASS_TYPE (object_class),
-					  G_SIGNAL_RUN_FIRST,
-					  G_STRUCT_OFFSET (NMConnectionListClass, done),
-		              NULL, NULL, NULL,
-					  G_TYPE_NONE, 1, G_TYPE_INT);
-
 	list_signals[EDITING_DONE] =
 		g_signal_new ("editing-done",
 		              G_OBJECT_CLASS_TYPE (object_class),
 		              G_SIGNAL_RUN_FIRST,
-		              G_STRUCT_OFFSET (NMConnectionListClass, done),
+		              G_STRUCT_OFFSET (NMConnectionListClass, editing_done),
 		              NULL, NULL, NULL,
 		              G_TYPE_NONE, 1, G_TYPE_INT);
 
@@ -557,7 +539,6 @@ nm_connection_list_class_init (NMConnectionListClass *klass)
         gtk_widget_class_bind_template_callback (widget_class, add_clicked);
         gtk_widget_class_bind_template_callback (widget_class, do_edit);
         gtk_widget_class_bind_template_callback (widget_class, delete_clicked);
-        gtk_widget_class_bind_template_callback (widget_class, list_close_cb);
         gtk_widget_class_bind_template_callback (widget_class, selection_changed_cb);
         gtk_widget_class_bind_template_callback (widget_class, key_press_cb);
         gtk_widget_class_bind_template_callback (widget_class, start_search);
