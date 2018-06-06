@@ -449,7 +449,7 @@ if enable_gtk_doc
 
   ent_conf = configuration_data()
   ent_conf.set_quoted('PACKAGE', meson.project_name())
-  ent_conf.set_quoted('PACKAGE_BUGREPORT', 'http://bugzilla.gnome.org/enter_bug.cgi?product=NetworkManager')
+  ent_conf.set_quoted('PACKAGE_BUGREPORT', 'https://gitlab.gnome.org/GNOME/network-manager-applet/issues')
   ent_conf.set_quoted('PACKAGE_NAME', nma_name)
   ent_conf.set_quoted('PACKAGE_STRING', '@0@ @1@'.format(nma_name, nma_version))
   ent_conf.set_quoted('PACKAGE_TARNAME', meson.project_name())
