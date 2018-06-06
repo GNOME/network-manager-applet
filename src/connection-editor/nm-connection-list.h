@@ -46,7 +46,6 @@ typedef struct {
 	GtkApplicationWindowClass parent_class;
 
 	/* Signals */
-	void (*editing_done)  (NMConnectionList *list, gint result);
 	void (*new_editor)    (NMConnectionList *list, NMConnectionEditor *editor);
 } NMConnectionListClass;
 

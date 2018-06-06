@@ -38,7 +38,6 @@
 extern gboolean nm_ce_keep_above;
 
 enum {
-	EDITING_DONE,
 	NEW_EDITOR,
 	LIST_LAST_SIGNAL
 };
@@ -286,7 +285,6 @@ add_response_cb (NMConnectionEditor *editor, GtkResponseType response, gpointer 
 		delete_slaves_of_connection (list, nm_connection_editor_get_connection (editor));
 
 	g_object_unref (editor);
-	g_signal_emit (list, list_signals[EDITING_DONE], 0, 0);
 }
 
 static void
@@ -306,10 +304,8 @@ really_add_connection (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
 	NMConnectionListPrivate *priv = NM_CONNECTION_LIST_GET_PRIVATE (list);
 	NMConnectionEditor *editor;
 
-	if (!connection) {
-		g_signal_emit (list, list_signals[EDITING_DONE], 0, 0);
+	if (!connection)
 		return;
-	}
 
 	if (connection_supports_proxy (connection) && !nm_connection_get_setting_proxy (connection))
 		nm_connection_add_setting (connection, nm_setting_proxy_new ());
@@ -319,10 +315,8 @@ really_add_connection (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
 		nm_connection_add_setting (connection, nm_setting_ip6_config_new ());
 
 	editor = nm_connection_editor_new (GTK_WINDOW (list), connection, priv->client);
-	if (!editor) {
-		g_signal_emit (list, list_signals[EDITING_DONE], 0, 0);
+	if (!editor)
 		return;
-	}
 
 	g_signal_connect (editor, "done", G_CALLBACK (add_response_cb), list);
 	g_signal_connect (editor, "new-editor", G_CALLBACK (new_editor_cb), list);
@@ -366,7 +360,6 @@ edit_done_cb (NMConnectionEditor *editor, GtkResponseType response, gpointer use
 	}
 
 	g_object_unref (editor);
-	g_signal_emit (list, list_signals[EDITING_DONE], 0, 0);
 }
 
 static void
@@ -534,14 +527,6 @@ nm_connection_list_class_init (NMConnectionListClass *klass)
 	object_class->dispose = dispose;
 
 	/* Signals */
-	list_signals[EDITING_DONE] =
-		g_signal_new ("editing-done",
-		              G_OBJECT_CLASS_TYPE (object_class),
-		              G_SIGNAL_RUN_FIRST,
-		              G_STRUCT_OFFSET (NMConnectionListClass, editing_done),
-		              NULL, NULL, NULL,
-		              G_TYPE_NONE, 1, G_TYPE_INT);
-
 	list_signals[NEW_EDITOR] =
 		g_signal_new ("new-editor",
 		              G_OBJECT_CLASS_TYPE (object_class),
