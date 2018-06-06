@@ -379,9 +379,7 @@ add_connection (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
 	              NULL);
 	g_free (name);
 
-	editor = nm_connection_editor_new (priv->toplevel,
-	                                   connection,
-	                                   CE_PAGE (self)->client);
+	editor = ce_page_new_editor (CE_PAGE (self), priv->toplevel, connection);
 	if (!editor)
 		return;
 
@@ -444,9 +442,7 @@ edit_clicked (GtkButton *button, gpointer user_data)
 		return;
 	}
 
-	editor = nm_connection_editor_new (priv->toplevel,
-	                                   NM_CONNECTION (connection),
-	                                   CE_PAGE (self)->client);
+	editor = ce_page_new_editor (CE_PAGE (self), priv->toplevel, NM_CONNECTION (connection));
 	if (!editor)
 		return;
 
