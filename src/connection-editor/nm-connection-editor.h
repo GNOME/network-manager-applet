@@ -32,6 +32,8 @@
 #define NM_IS_CONNECTION_EDITOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NM_TYPE_CONNECTION_EDITOR))
 #define NM_CONNECTION_EDITOR(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), NM_TYPE_CONNECTION_EDITOR, NMConnectionEditor))
 
+#define NM_CONNECTION_EDITOR_DONE    "done"
+
 typedef struct GetSecretsInfo GetSecretsInfo;
 
 typedef struct {
