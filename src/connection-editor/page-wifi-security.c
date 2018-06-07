@@ -500,7 +500,7 @@ ce_page_wifi_security_new (NMConnectionEditor *editor,
 
 	nm_connection_editor_check_unsupported_properties (editor, (NMSetting *) s_wsec, known_wsec_props);
 
-	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	g_signal_connect (self, CE_PAGE_INITIALIZED, G_CALLBACK (finish_setup), NULL);
 
 	return CE_PAGE (self);
 }

@@ -120,7 +120,7 @@ ce_page_vpn_new (NMConnectionEditor *editor,
 	}
 	priv->plugin = g_object_ref (priv->plugin);
 
-	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	g_signal_connect (self, CE_PAGE_INITIALIZED, G_CALLBACK (finish_setup), NULL);
 
 	*out_secrets_setting_name = NM_SETTING_VPN_SETTING_NAME;
 

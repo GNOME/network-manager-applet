@@ -1219,7 +1219,7 @@ ce_page_ip6_new (NMConnectionEditor *editor,
 	priv->setting = nm_connection_get_setting_ip6_config (connection);
 	g_assert (priv->setting);
 
-	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	g_signal_connect (self, CE_PAGE_INITIALIZED, G_CALLBACK (finish_setup), NULL);
 
 	return CE_PAGE (self);
 }

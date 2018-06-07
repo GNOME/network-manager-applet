@@ -224,7 +224,7 @@ ce_page_proxy_new (NMConnectionEditor *editor,
 	priv->setting = nm_connection_get_setting_proxy (connection);
 	g_assert (priv->setting);
 
-	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	g_signal_connect (self, CE_PAGE_INITIALIZED, G_CALLBACK (finish_setup), NULL);
 
 	return CE_PAGE (self);
 }

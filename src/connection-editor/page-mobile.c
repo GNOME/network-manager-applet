@@ -326,7 +326,7 @@ ce_page_mobile_new (NMConnectionEditor *editor,
 		return NULL;
 	}
 
-	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	g_signal_connect (self, CE_PAGE_INITIALIZED, G_CALLBACK (finish_setup), NULL);
 
 	return CE_PAGE (self);
 }
