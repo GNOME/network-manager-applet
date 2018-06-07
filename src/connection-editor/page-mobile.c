@@ -250,13 +250,10 @@ apn_filter_cb (GtkEditable *editable,
 }
 
 static void
-finish_setup (CEPageMobile *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageMobile *self, gpointer user_data)
 {
 	CEPage *parent = CE_PAGE (self);
 	CEPageMobilePrivate *priv = CE_PAGE_MOBILE_GET_PRIVATE (self);
-
-	if (error)
-		return;
 
 	if (NM_IS_SETTING_GSM (priv->setting))
 		populate_gsm_ui (self, parent->connection);

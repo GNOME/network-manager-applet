@@ -179,12 +179,9 @@ populate_ui (CEPageProxy *self)
 }
 
 static void
-finish_setup (CEPageProxy *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageProxy *self, gpointer user_data)
 {
 	CEPageProxyPrivate *priv = CE_PAGE_PROXY_GET_PRIVATE (self);
-
-	if (error)
-		return;
 
 	populate_ui (self);
 

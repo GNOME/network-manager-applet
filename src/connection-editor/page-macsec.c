@@ -147,13 +147,10 @@ stuff_changed (GtkEditable *editable, gpointer user_data)
 }
 
 static void
-finish_setup (CEPageMacsec *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageMacsec *self, gpointer user_data)
 {
 	CEPage *parent = CE_PAGE (self);
 	CEPageMacsecPrivate *priv = CE_PAGE_MACSEC_GET_PRIVATE (self);
-
-	if (error)
-		return;
 
 	populate_ui (self, parent->connection);
 

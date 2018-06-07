@@ -998,12 +998,9 @@ add_slave (CEPageMaster *master, NewConnectionResultFunc result_func)
 }
 
 static void
-finish_setup (CEPageTeam *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageTeam *self, gpointer user_data)
 {
 	CEPageTeamPrivate *priv = CE_PAGE_TEAM_GET_PRIVATE (self);
-
-	if (error)
-		return;
 
 	populate_ui (self);
 

@@ -323,13 +323,10 @@ populate_ui (CEPageGeneral *self)
 }
 
 static void
-finish_setup (CEPageGeneral *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageGeneral *self, gpointer user_data)
 {
 	CEPageGeneralPrivate *priv = CE_PAGE_GENERAL_GET_PRIVATE (self);
 	gboolean any_dependent_vpn;
-
-	if (error)
-		return;
 
 	priv->setup_finished = TRUE;
 

@@ -178,13 +178,10 @@ show_password (GtkToggleButton *button, gpointer user_data)
 }
 
 static void
-finish_setup (CEPageDsl *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageDsl *self, gpointer user_data)
 {
 	CEPage *parent = CE_PAGE (self);
 	CEPageDslPrivate *priv = CE_PAGE_DSL_GET_PRIVATE (self);
-
-	if (error)
-		return;
 
 	populate_ui (self, parent->connection);
 

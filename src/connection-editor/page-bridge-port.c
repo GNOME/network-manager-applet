@@ -70,12 +70,9 @@ populate_ui (CEPageBridgePort *self)
 }
 
 static void
-finish_setup (CEPageBridgePort *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageBridgePort *self, gpointer user_data)
 {
 	CEPageBridgePortPrivate *priv = CE_PAGE_BRIDGE_PORT_GET_PRIVATE (self);
-
-	if (error)
-		return;
 
 	populate_ui (self);
 

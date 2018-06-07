@@ -406,12 +406,9 @@ add_slave (CEPageMaster *master, NewConnectionResultFunc result_func)
 }
 
 static void
-finish_setup (CEPageBond *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageBond *self, gpointer user_data)
 {
 	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
-
-	if (error)
-		return;
 
 	populate_ui (self);
 

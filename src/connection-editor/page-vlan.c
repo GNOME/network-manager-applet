@@ -565,11 +565,8 @@ populate_ui (CEPageVlan *self)
 }
 
 static void
-finish_setup (CEPageVlan *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageVlan *self, gpointer user_data)
 {
-	if (error)
-		return;
-
 	populate_ui (self);
 }
 

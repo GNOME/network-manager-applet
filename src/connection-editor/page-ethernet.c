@@ -291,14 +291,11 @@ populate_ui (CEPageEthernet *self)
 }
 
 static void
-finish_setup (CEPageEthernet *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageEthernet *self, gpointer user_data)
 {
 	CEPage *parent = CE_PAGE (self);
 	CEPageEthernetPrivate *priv = CE_PAGE_ETHERNET_GET_PRIVATE (self);
 	GtkWidget *widget;
-
-	if (error)
-		return;
 
 	populate_ui (self);
 

@@ -586,15 +586,12 @@ enable_toggled (GtkToggleButton *button, gpointer user_data)
 }
 
 static void
-finish_setup (CEPageDcb *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageDcb *self, gpointer user_data)
 {
 	CEPage *parent = CE_PAGE (self);
 	CEPageDcbPrivate *priv = CE_PAGE_DCB_GET_PRIVATE (self);
 	NMSettingDcb *s_dcb = nm_connection_get_setting_dcb (parent->connection);
 	guint i;
-
-	if (error)
-		return;
 
 	gtk_toggle_button_set_active (priv->enabled, priv->initial_have_dcb);
 	g_signal_connect (priv->enabled, "toggled", G_CALLBACK (enable_toggled), self);

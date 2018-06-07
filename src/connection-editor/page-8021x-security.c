@@ -62,14 +62,11 @@ enable_toggled (GtkToggleButton *button, gpointer user_data)
 }
 
 static void
-finish_setup (CEPage8021xSecurity *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPage8021xSecurity *self, gpointer user_data)
 {
 	CEPage *parent = CE_PAGE (self);
 	CEPage8021xSecurityPrivate *priv = CE_PAGE_8021X_SECURITY_GET_PRIVATE (self);
 	GtkWidget *parent_container;
-
-	if (error)
-		return;
 
 	priv->security = (WirelessSecurity *) ws_wpa_eap_new (parent->connection, TRUE, FALSE);
 	if (!priv->security) {

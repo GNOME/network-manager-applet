@@ -51,14 +51,11 @@ vpn_plugin_changed_cb (NMVpnEditorPlugin *plugin, CEPageVpn *self)
 }
 
 static void
-finish_setup (CEPageVpn *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageVpn *self, gpointer user_data)
 {
 	CEPage *parent = CE_PAGE (self);
 	CEPageVpnPrivate *priv = CE_PAGE_VPN_GET_PRIVATE (self);
 	GError *local = NULL;
-
-	if (error)
-		return;
 
 	g_return_if_fail (NM_IS_VPN_EDITOR_PLUGIN (priv->plugin));
 
