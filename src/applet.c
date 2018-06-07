@@ -2866,8 +2866,10 @@ get_existing_secrets_cb (NMSecretAgentOld *agent,
 	NMADeviceClass *dclass;
 	GError *error = NULL;
 
-	/* Merge existing secrets into connection; ignore errors */
-	nm_connection_update_secrets (connection, req->setting_name, secrets, NULL);
+	if (secrets)
+		nm_connection_update_secrets (connection, req->setting_name, secrets, NULL);
+	else
+		nm_connection_clear_secrets (connection);
 
 	dclass = get_device_class_from_connection (connection, req->applet);
 	g_assert (dclass);
