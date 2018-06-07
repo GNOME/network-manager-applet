@@ -95,10 +95,6 @@ typedef struct {
 	gboolean    (*ce_page_validate_v) (CEPage *self, NMConnection *connection, GError **error);
 	gboolean    (*last_update)  (CEPage *self, NMConnection *connection, GError **error);
 	gboolean    (*inter_page_change)  (CEPage *self);
-
-	/* Signals */
-	void        (*changed)     (CEPage *self);
-	void        (*initialized) (CEPage *self, GError *error);
 } CEPageClass;
 
 

@@ -838,16 +838,14 @@ ce_page_class_init (CEPageClass *page_class)
 		g_signal_new ("changed",
 	                      G_OBJECT_CLASS_TYPE (object_class),
 	                      G_SIGNAL_RUN_FIRST,
-	                      G_STRUCT_OFFSET (CEPageClass, changed),
-	                      NULL, NULL, NULL,
+	                      0, NULL, NULL, NULL,
 	                      G_TYPE_NONE, 0);
 
 	signals[INITIALIZED] = 
 		g_signal_new (CE_PAGE_INITIALIZED,
 	                      G_OBJECT_CLASS_TYPE (object_class),
 	                      G_SIGNAL_RUN_FIRST,
-	                      G_STRUCT_OFFSET (CEPageClass, initialized),
-	                      NULL, NULL, NULL,
+	                      0, NULL, NULL, NULL,
 	                      G_TYPE_NONE, 1, G_TYPE_POINTER);
 }
 
