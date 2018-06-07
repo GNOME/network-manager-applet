@@ -383,7 +383,7 @@ add_connection (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
 	if (!editor)
 		return;
 
-	g_signal_connect (editor, "done", G_CALLBACK (add_response_cb), self);
+	g_signal_connect (editor, NM_CONNECTION_EDITOR_DONE, G_CALLBACK (add_response_cb), self);
 	nm_connection_editor_run (editor);
 }
 
@@ -446,7 +446,7 @@ edit_clicked (GtkButton *button, gpointer user_data)
 	if (!editor)
 		return;
 
-	g_signal_connect (editor, "done", G_CALLBACK (edit_done_cb), self);
+	g_signal_connect (editor, NM_CONNECTION_EDITOR_DONE, G_CALLBACK (edit_done_cb), self);
 	nm_connection_editor_run (editor);
 }
 

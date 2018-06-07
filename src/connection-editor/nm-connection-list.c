@@ -315,7 +315,7 @@ really_add_connection (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
 		return;
 	}
 
-	g_signal_connect (editor, "done", G_CALLBACK (add_response_cb), list);
+	g_signal_connect (editor, NM_CONNECTION_EDITOR_DONE, G_CALLBACK (add_response_cb), list);
 	nm_connection_editor_run (editor);
 }
 
@@ -376,7 +376,7 @@ edit_connection (NMConnectionList *list, NMConnection *connection)
 	                                   NM_CONNECTION (connection),
 	                                   priv->client);
 	if (editor) {
-		g_signal_connect (editor, "done", G_CALLBACK (edit_done_cb), list);
+		g_signal_connect (editor, NM_CONNECTION_EDITOR_DONE, G_CALLBACK (edit_done_cb), list);
 		nm_connection_editor_run (editor);
 	}
 }
