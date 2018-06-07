@@ -623,11 +623,8 @@ populate_ui (CEPageTeamPort *self)
 }
 
 static void
-finish_setup (CEPageTeamPort *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageTeamPort *self, gpointer user_data)
 {
-	if (error)
-		return;
-
 	populate_ui (self);
 }
 

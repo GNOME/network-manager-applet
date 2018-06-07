@@ -114,12 +114,9 @@ populate_ui (CEPageInfiniband *self)
 }
 
 static void
-finish_setup (CEPageInfiniband *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageInfiniband *self, gpointer user_data)
 {
 	CEPageInfinibandPrivate *priv = CE_PAGE_INFINIBAND_GET_PRIVATE (self);
-
-	if (error)
-		return;
 
 	populate_ui (self);
 

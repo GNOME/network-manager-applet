@@ -89,13 +89,10 @@ stuff_changed (GtkEditable *editable, gpointer user_data)
 }
 
 static void
-finish_setup (CEPageBluetooth *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageBluetooth *self, gpointer user_data)
 {
 	CEPage *parent = CE_PAGE (self);
 	CEPageBluetoothPrivate *priv = CE_PAGE_BLUETOOTH_GET_PRIVATE (self);
-
-	if (error)
-		return;
 
 	populate_ui (self, parent->connection);
 

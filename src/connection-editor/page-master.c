@@ -46,7 +46,7 @@ typedef struct {
 
 } CEPageMasterPrivate;
 
-static void finish_setup (CEPageMaster *self, gpointer unused, GError *error, gpointer user_data);
+static void finish_setup (CEPageMaster *self, gpointer user_data);
 
 enum {
 	COL_CONNECTION,
@@ -515,15 +515,12 @@ populate_ui (CEPageMaster *self)
 }
 
 static void
-finish_setup (CEPageMaster *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageMaster *self, gpointer user_data)
 {
 	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
 	GtkTreeSelection *selection;
 	GtkBuilder *builder;
 	NMSettingConnection *s_con;
-
-	if (error)
-		return;
 
 	builder = CE_PAGE (self)->builder;
 

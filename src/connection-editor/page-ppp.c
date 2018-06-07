@@ -251,10 +251,9 @@ populate_ui (CEPagePpp *self, NMConnection *connection)
 }
 
 static void
-finish_setup (CEPagePpp *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPagePpp *self, gpointer user_data)
 {
-	if (!error)
-		populate_ui (self, CE_PAGE (self)->connection);
+	populate_ui (self, CE_PAGE (self)->connection);
 }
 
 CEPage *

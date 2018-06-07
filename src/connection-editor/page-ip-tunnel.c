@@ -133,13 +133,10 @@ stuff_changed (GtkEditable *editable, gpointer user_data)
 }
 
 static void
-finish_setup (CEPageIPTunnel *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageIPTunnel *self, gpointer user_data)
 {
 	CEPage *parent = CE_PAGE (self);
 	CEPageIPTunnelPrivate *priv = CE_PAGE_IP_TUNNEL_GET_PRIVATE (self);
-
-	if (error)
-		return;
 
 	populate_ui (self, parent->connection);
 

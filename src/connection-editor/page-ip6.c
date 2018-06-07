@@ -1091,16 +1091,13 @@ cell_error_data_func (GtkTreeViewColumn *tree_column,
 }
 
 static void
-finish_setup (CEPageIP6 *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageIP6 *self, gpointer user_data)
 {
 	CEPageIP6Private *priv = CE_PAGE_IP6_GET_PRIVATE (self);
 	GtkTreeSelection *selection;
 	gint offset;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
-
-	if (error)
-		return;
 
 	populate_ui (self);
 

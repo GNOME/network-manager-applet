@@ -659,12 +659,6 @@ ce_page_get_next_available_name (const GPtrArray *connections, const char *forma
 	return cname;
 }
 
-static void
-emit_initialized (CEPage *self, GError *error)
-{
-	g_signal_emit (self, signals[INITIALIZED], 0, error);
-}
-
 void
 ce_page_complete_init (CEPage *self,
                        const char *setting_name,
@@ -674,27 +668,29 @@ ce_page_complete_init (CEPage *self,
 	GError *update_error = NULL;
 	GVariant *setting_dict;
 	char *dbus_err;
-	gboolean ignore_error = FALSE;
 
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (CE_IS_PAGE (self));
 
 	if (error) {
+		/* Ignore missing settings errors */
 		dbus_err = g_dbus_error_get_remote_error (error);
-		ignore_error =    !g_strcmp0 (dbus_err, "org.freedesktop.NetworkManager.Settings.InvalidSetting")
-		               || !g_strcmp0 (dbus_err, "org.freedesktop.NetworkManager.Settings.Connection.SettingNotFound")
-		               || !g_strcmp0 (dbus_err, "org.freedesktop.NetworkManager.AgentManager.NoSecrets");
+		if (   g_strcmp0 (dbus_err, "org.freedesktop.NetworkManager.Settings.InvalidSetting") == 0
+		    || g_strcmp0 (dbus_err, "org.freedesktop.NetworkManager.Settings.Connection.SettingNotFound") == 0
+		    || g_strcmp0 (dbus_err, "org.freedesktop.NetworkManager.AgentManager.NoSecrets") == 0)
+			g_clear_error (&error);
 		g_free (dbus_err);
 	}
 
-	/* Ignore missing settings errors */
-	if (error && !ignore_error) {
-		emit_initialized (self, error);
-		return;
-	} else if (!setting_name || !secrets || g_variant_n_children (secrets) == 0) {
+	if (error) {
+		g_warning ("Couldn't fetch secrets: %s", error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	if (!setting_name || !secrets || g_variant_n_children (secrets) == 0) {
 		/* Success, no secrets */
-		emit_initialized (self, NULL);
-		return;
+		goto out;
 	}
 
 	g_assert (setting_name);
@@ -703,28 +699,22 @@ ce_page_complete_init (CEPage *self,
 	setting_dict = g_variant_lookup_value (secrets, setting_name, NM_VARIANT_TYPE_SETTING);
 	if (!setting_dict) {
 		/* Success, no secrets */
-		emit_initialized (self, NULL);
-		return;
+		goto out;
 	}
 	g_variant_unref (setting_dict);
 
 	/* Update the connection with the new secrets */
-	if (nm_connection_update_secrets (self->connection,
+	if (!nm_connection_update_secrets (self->connection,
 	                                  setting_name,
 	                                  secrets,
 	                                  &update_error)) {
-		/* Success */
-		emit_initialized (self, NULL);
-		return;
+		g_warning ("Couldn't update the secrets: %s", update_error->message);
+		g_error_free (update_error);
+		goto out;
 	}
 
-	if (!update_error) {
-		g_set_error_literal (&update_error, NMA_ERROR, NMA_ERROR_GENERIC,
-		                     _("Failed to update connection secrets due to an unknown error."));
-	}
-
-	emit_initialized (self, update_error);
-	g_clear_error (&update_error);
+out:
+	g_signal_emit (self, signals[INITIALIZED], 0, NULL);
 }
 
 static void
