@@ -52,6 +52,7 @@ static gboolean
 validate (WirelessSecurity *parent, GError **error)
 {
 	GtkWidget *entry;
+	NMSettingSecretFlags secret_flags;
 	const char *text;
 	gboolean ret = TRUE;
 
@@ -67,15 +68,21 @@ validate (WirelessSecurity *parent, GError **error)
 
 	entry = GTK_WIDGET (gtk_builder_get_object (parent->builder, "leap_password_entry"));
 	g_assert (entry);
+
+	secret_flags = nma_utils_menu_to_secret_flags (entry);
 	text = gtk_entry_get_text (GTK_ENTRY (entry));
-	if (!text || !strlen (text)) {
+
+        if (   secret_flags & NM_SETTING_SECRET_FLAG_NOT_SAVED
+            || secret_flags & NM_SETTING_SECRET_FLAG_NOT_REQUIRED
+	    || (text && strlen (text))) {
+		widget_unset_error (entry);
+	} else {
 		widget_set_error (entry);
 		if (ret) {
 			g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("missing leap-password"));
 			ret = FALSE;
 		}
-	} else
-		widget_unset_error (entry);
+	}
 
 	return ret;
 }

@@ -56,6 +56,7 @@ static gboolean
 validate (WirelessSecurity *parent, GError **error)
 {
 	GtkWidget *entry;
+	NMSettingSecretFlags secret_flags;
 	const char *key;
 	gsize len;
 	int i;
@@ -63,15 +64,18 @@ validate (WirelessSecurity *parent, GError **error)
 	entry = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wpa_psk_entry"));
 	g_assert (entry);
 
+	secret_flags = nma_utils_menu_to_secret_flags (entry);
 	key = gtk_entry_get_text (GTK_ENTRY (entry));
 	len = key ? strlen (key) : 0;
-	if ((len < 8) || (len > 64)) {
+
+        if (   secret_flags & NM_SETTING_SECRET_FLAG_NOT_SAVED
+            || secret_flags & NM_SETTING_SECRET_FLAG_NOT_REQUIRED) {
+		/* All good. */
+	} else if ((len < 8) || (len > 64)) {
 		widget_set_error (entry);
 		g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("invalid wpa-psk: invalid key-length %zu. Must be [8,63] bytes or 64 hex digits"), len);
 		return FALSE;
-	}
-
-	if (len == 64) {
+	} else if (len == 64) {
 		/* Hex PSK */
 		for (i = 0; i < len; i++) {
 			if (!isxdigit (key[i])) {
