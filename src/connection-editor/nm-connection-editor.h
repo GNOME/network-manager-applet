@@ -79,9 +79,6 @@ typedef struct {
 
 typedef struct {
 	GObjectClass parent_class;
-
-	/* Signals */
-	void (*done)  (NMConnectionEditor *editor, gint result, GError *error);
 } NMConnectionEditorClass;
 
 typedef enum {
