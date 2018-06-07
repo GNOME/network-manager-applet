@@ -230,7 +230,7 @@ editor_command_line (GApplication *application,
 	GOptionContext *opt_ctx = NULL;
 	GError *error = NULL;
 	gs_free char *type = NULL, *uuid = NULL, *import = NULL;
-	gboolean create = FALSE, show = FALSE, keepabove = FALSE;
+	gboolean create = FALSE, show = FALSE;
 	int ret = 1;
 	GOptionEntry entries[] = {
 		{ "type",   't', 0, G_OPTION_ARG_STRING, &type,   "Type of connection to show or create", NM_SETTING_WIRED_SETTING_NAME },
@@ -238,10 +238,6 @@ editor_command_line (GApplication *application,
 		{ "show",   's', 0, G_OPTION_ARG_NONE,   &show,   "Show a given connection type page", NULL },
 		{ "edit",   'e', 0, G_OPTION_ARG_STRING, &uuid,   "Edit an existing connection with a given UUID", "UUID" },
 		{ "import", 'i', 0, G_OPTION_ARG_STRING, &import, "Import a VPN connection from given file", NULL },
-		/* handled in main but may be passed through here, so we need
-		 * to parse and ignore it
-		 */
-		{ "keep-above", 0, G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, &keepabove, NULL, NULL },
 		{ NULL }
 	};
 
@@ -292,6 +288,7 @@ main (int argc, char *argv[])
 
 	opt_ctx = g_option_context_new (NULL);
 	g_option_context_add_main_entries (opt_ctx, entries, NULL);
+	g_option_context_set_ignore_unknown_options (opt_ctx, TRUE);
 	g_option_context_parse (opt_ctx, &argc, &argv, NULL);
 	g_option_context_free (opt_ctx);
 
