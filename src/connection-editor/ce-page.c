@@ -34,7 +34,6 @@ G_DEFINE_ABSTRACT_TYPE (CEPage, ce_page, G_TYPE_OBJECT)
 enum {
 	PROP_0,
 	PROP_CONNECTION,
-	PROP_INITIALIZED,
 	PROP_PARENT_WINDOW,
 
 	LAST_PROP
@@ -663,7 +662,6 @@ ce_page_get_next_available_name (const GPtrArray *connections, const char *forma
 static void
 emit_initialized (CEPage *self, GError *error)
 {
-	self->initialized = TRUE;
 	g_signal_emit (self, signals[INITIALIZED], 0, error);
 }
 
@@ -773,14 +771,6 @@ ce_page_get_title (CEPage *self)
 	return self->title;
 }
 
-gboolean
-ce_page_get_initialized (CEPage *self)
-{
-	g_return_val_if_fail (CE_IS_PAGE (self), FALSE);
-
-	return self->initialized;
-}
-
 void
 ce_page_changed (CEPage *self)
 {
@@ -798,9 +788,6 @@ get_property (GObject *object, guint prop_id,
 	switch (prop_id) {
 	case PROP_CONNECTION:
 		g_value_set_object (value, self->connection);
-		break;
-	case PROP_INITIALIZED:
-		g_value_set_boolean (value, self->initialized);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -848,14 +835,6 @@ ce_page_class_init (CEPageClass *page_class)
 		                      "Connection",
 		                      NM_TYPE_CONNECTION,
 		                      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
-
-	g_object_class_install_property
-		(object_class, PROP_INITIALIZED,
-		 g_param_spec_boolean (CE_PAGE_INITIALIZED,
-		                       "Initialized",
-		                       "Initialized",
-		                       FALSE,
-		                       G_PARAM_READABLE));
 
 	g_object_class_install_property
 		(object_class, PROP_PARENT_WINDOW,

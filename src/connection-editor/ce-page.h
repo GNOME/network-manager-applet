@@ -67,13 +67,11 @@ typedef void (*PageNewConnectionFunc) (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
 #define CE_PAGE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), CE_TYPE_PAGE, CEPageClass))
 
 #define CE_PAGE_CONNECTION    "connection"
-#define CE_PAGE_INITIALIZED   "initialized"
 #define CE_PAGE_PARENT_WINDOW "parent-window"
 
 typedef struct {
 	GObject parent;
 
-	gboolean initialized;
 	gboolean inter_page_change_running;
 	GtkBuilder *builder;
 	GtkWidget *page;
@@ -164,8 +162,6 @@ void ce_page_complete_init (CEPage *self,
                             const char *setting_name,
                             GVariant *secrets,
                             GError *error);
-
-gboolean ce_page_get_initialized (CEPage *self);
 
 char *ce_page_get_next_available_name (const GPtrArray *connections, const char *format);
 
