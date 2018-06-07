@@ -897,8 +897,8 @@ add_page (NMConnectionEditor *editor,
 		                   GINT_TO_POINTER (g_slist_length (editor->initializing_pages)));
 
 		editor->initializing_pages = g_slist_append (editor->initializing_pages, page);
-		g_signal_connect (page, "changed", G_CALLBACK (page_changed), editor);
-		g_signal_connect (page, "initialized", G_CALLBACK (page_initialized), editor);
+		g_signal_connect (page, CE_PAGE_CHANGED, G_CALLBACK (page_changed), editor);
+		g_signal_connect (page, CE_PAGE_INITIALIZED, G_CALLBACK (page_initialized), editor);
 	}
 	return !!page;
 }

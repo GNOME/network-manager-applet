@@ -604,7 +604,7 @@ ce_page_vlan_new (NMConnectionEditor *editor,
 	}
 	priv->s_hw = nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRED);
 
-	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	g_signal_connect (self, CE_PAGE_INITIALIZED, G_CALLBACK (finish_setup), NULL);
 
 	return CE_PAGE (self);
 }

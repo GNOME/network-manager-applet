@@ -69,6 +69,9 @@ typedef void (*PageNewConnectionFunc) (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
 #define CE_PAGE_CONNECTION    "connection"
 #define CE_PAGE_PARENT_WINDOW "parent-window"
 
+#define CE_PAGE_CHANGED       "changed"
+#define CE_PAGE_INITIALIZED   "initialized"
+
 typedef struct {
 	GObject parent;
 

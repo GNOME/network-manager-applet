@@ -640,7 +640,7 @@ ce_page_dcb_new (NMConnectionEditor *editor,
 	} else
 		priv->options = (NMSettingDcb *) nm_setting_dcb_new ();
 
-	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	g_signal_connect (self, CE_PAGE_INITIALIZED, G_CALLBACK (finish_setup), NULL);
 
 	return CE_PAGE (self);
 }

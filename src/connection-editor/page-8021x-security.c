@@ -130,7 +130,7 @@ ce_page_8021x_security_new (NMConnectionEditor *editor,
 
 	priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
-	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	g_signal_connect (self, CE_PAGE_INITIALIZED, G_CALLBACK (finish_setup), NULL);
 
 	if (priv->initial_have_8021x)
 		*out_secrets_setting_name = NM_SETTING_802_1X_SETTING_NAME;

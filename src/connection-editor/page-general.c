@@ -382,7 +382,7 @@ ce_page_general_new (NMConnectionEditor *editor,
 
 	priv->is_vpn = nm_connection_is_type (connection, NM_SETTING_VPN_SETTING_NAME);
 
-	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	g_signal_connect (self, CE_PAGE_INITIALIZED, G_CALLBACK (finish_setup), NULL);
 
 	return CE_PAGE (self);
 }

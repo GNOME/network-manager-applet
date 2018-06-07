@@ -74,7 +74,7 @@ constructed (GObject *object)
 {
 	CEPageMaster *self = CE_PAGE_MASTER (object);
 
-	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	g_signal_connect (self, CE_PAGE_INITIALIZED, G_CALLBACK (finish_setup), NULL);
 
 	G_OBJECT_CLASS (ce_page_master_parent_class)->constructed (object);
 }
