@@ -299,6 +299,11 @@ keyring_find_secrets_cb (GObject *source,
 		                             "The secrets request was canceled by the user");
 		g_error_free (search_error);
 		goto done;
+	} else if (   (r->flags & NM_SECRET_AGENT_GET_SECRETS_FLAG_ALLOW_INTERACTION)
+	           && g_error_matches (search_error, G_DBUS_ERROR, G_DBUS_ERROR_SERVICE_UNKNOWN)) {
+		/* If the connection always asks for secrets, tolerate
+		 * keyring service not being present. */
+		g_clear_error (&search_error);
 	} else if (search_error) {
 		error = g_error_new (NM_SECRET_AGENT_ERROR,
 		                     NM_SECRET_AGENT_ERROR_FAILED,
