@@ -147,13 +147,10 @@ stuff_changed (GtkEditable *editable, gpointer user_data)
 }
 
 static void
-finish_setup (CEPageMacsec *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageMacsec *self, gpointer user_data)
 {
 	CEPage *parent = CE_PAGE (self);
 	CEPageMacsecPrivate *priv = CE_PAGE_MACSEC_GET_PRIVATE (self);
-
-	if (error)
-		return;
 
 	populate_ui (self, parent->connection);
 
@@ -202,7 +199,7 @@ ce_page_macsec_new (NMConnectionEditor *editor,
 		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
 	}
 
-	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	g_signal_connect (self, CE_PAGE_INITIALIZED, G_CALLBACK (finish_setup), NULL);
 
 	*out_secrets_setting_name = NM_SETTING_MACSEC_SETTING_NAME;
 

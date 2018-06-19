@@ -242,13 +242,11 @@ edit_parent (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
 	              NULL);
 
 
-	editor = nm_connection_editor_new (priv->toplevel,
-	                                   connection,
-	                                   CE_PAGE (self)->client);
+	editor = ce_page_new_editor (CE_PAGE (self), priv->toplevel, connection);
 	if (!editor)
 		return;
 
-	g_signal_connect (editor, "done", G_CALLBACK (edit_parent_cb), self);
+	g_signal_connect (editor, NM_CONNECTION_EDITOR_DONE, G_CALLBACK (edit_parent_cb), self);
 	nm_connection_editor_run (editor);
 }
 
@@ -565,11 +563,8 @@ populate_ui (CEPageVlan *self)
 }
 
 static void
-finish_setup (CEPageVlan *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageVlan *self, gpointer user_data)
 {
-	if (error)
-		return;
-
 	populate_ui (self);
 }
 
@@ -607,7 +602,7 @@ ce_page_vlan_new (NMConnectionEditor *editor,
 	}
 	priv->s_hw = nm_connection_get_setting (connection, NM_TYPE_SETTING_WIRED);
 
-	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	g_signal_connect (self, CE_PAGE_INITIALIZED, G_CALLBACK (finish_setup), NULL);
 
 	return CE_PAGE (self);
 }

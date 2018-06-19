@@ -406,12 +406,9 @@ add_slave (CEPageMaster *master, NewConnectionResultFunc result_func)
 }
 
 static void
-finish_setup (CEPageBond *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageBond *self, gpointer user_data)
 {
 	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
-
-	if (error)
-		return;
 
 	populate_ui (self);
 
@@ -460,7 +457,7 @@ ce_page_bond_new (NMConnectionEditor *editor,
 	}
 	priv->wired = nm_connection_get_setting_wired (connection);
 
-	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	g_signal_connect (self, CE_PAGE_INITIALIZED, G_CALLBACK (finish_setup), NULL);
 
 	return CE_PAGE (self);
 }

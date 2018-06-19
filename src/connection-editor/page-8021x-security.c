@@ -62,14 +62,11 @@ enable_toggled (GtkToggleButton *button, gpointer user_data)
 }
 
 static void
-finish_setup (CEPage8021xSecurity *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPage8021xSecurity *self, gpointer user_data)
 {
 	CEPage *parent = CE_PAGE (self);
 	CEPage8021xSecurityPrivate *priv = CE_PAGE_8021X_SECURITY_GET_PRIVATE (self);
 	GtkWidget *parent_container;
-
-	if (error)
-		return;
 
 	priv->security = (WirelessSecurity *) ws_wpa_eap_new (parent->connection, TRUE, FALSE);
 	if (!priv->security) {
@@ -133,7 +130,7 @@ ce_page_8021x_security_new (NMConnectionEditor *editor,
 
 	priv->group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
-	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	g_signal_connect (self, CE_PAGE_INITIALIZED, G_CALLBACK (finish_setup), NULL);
 
 	if (priv->initial_have_8021x)
 		*out_secrets_setting_name = NM_SETTING_802_1X_SETTING_NAME;

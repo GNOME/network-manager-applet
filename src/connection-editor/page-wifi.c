@@ -396,13 +396,10 @@ populate_ui (CEPageWifi *self)
 }
 
 static void
-finish_setup (CEPageWifi *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageWifi *self, gpointer user_data)
 {
 	CEPage *parent = CE_PAGE (self);
 	GtkWidget *widget;
-
-	if (error)
-		return;
 
 	populate_ui (self);
 
@@ -452,7 +449,7 @@ ce_page_wifi_new (NMConnectionEditor *editor,
 		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
 	}
 
-	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	g_signal_connect (self, CE_PAGE_INITIALIZED, G_CALLBACK (finish_setup), NULL);
 
 	return CE_PAGE (self);
 }

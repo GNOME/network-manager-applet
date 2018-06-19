@@ -1091,16 +1091,13 @@ cell_error_data_func (GtkTreeViewColumn *tree_column,
 }
 
 static void
-finish_setup (CEPageIP6 *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageIP6 *self, gpointer user_data)
 {
 	CEPageIP6Private *priv = CE_PAGE_IP6_GET_PRIVATE (self);
 	GtkTreeSelection *selection;
 	gint offset;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
-
-	if (error)
-		return;
 
 	populate_ui (self);
 
@@ -1222,7 +1219,7 @@ ce_page_ip6_new (NMConnectionEditor *editor,
 	priv->setting = nm_connection_get_setting_ip6_config (connection);
 	g_assert (priv->setting);
 
-	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	g_signal_connect (self, CE_PAGE_INITIALIZED, G_CALLBACK (finish_setup), NULL);
 
 	return CE_PAGE (self);
 }

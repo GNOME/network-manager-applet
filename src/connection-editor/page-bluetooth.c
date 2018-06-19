@@ -89,13 +89,10 @@ stuff_changed (GtkEditable *editable, gpointer user_data)
 }
 
 static void
-finish_setup (CEPageBluetooth *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageBluetooth *self, gpointer user_data)
 {
 	CEPage *parent = CE_PAGE (self);
 	CEPageBluetoothPrivate *priv = CE_PAGE_BLUETOOTH_GET_PRIVATE (self);
-
-	if (error)
-		return;
 
 	populate_ui (self, parent->connection);
 
@@ -135,7 +132,7 @@ ce_page_bluetooth_new (NMConnectionEditor *editor,
 		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
 	}
 
-	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	g_signal_connect (self, CE_PAGE_INITIALIZED, G_CALLBACK (finish_setup), NULL);
 
 	return CE_PAGE (self);
 }

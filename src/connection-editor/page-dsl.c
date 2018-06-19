@@ -178,13 +178,10 @@ show_password (GtkToggleButton *button, gpointer user_data)
 }
 
 static void
-finish_setup (CEPageDsl *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageDsl *self, gpointer user_data)
 {
 	CEPage *parent = CE_PAGE (self);
 	CEPageDslPrivate *priv = CE_PAGE_DSL_GET_PRIVATE (self);
-
-	if (error)
-		return;
 
 	populate_ui (self, parent->connection);
 
@@ -232,7 +229,7 @@ ce_page_dsl_new (NMConnectionEditor *editor,
 		nm_connection_add_setting (connection, NM_SETTING (priv->setting));
 	}
 
-	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	g_signal_connect (self, CE_PAGE_INITIALIZED, G_CALLBACK (finish_setup), NULL);
 
 	*out_secrets_setting_name = NM_SETTING_PPPOE_SETTING_NAME;
 

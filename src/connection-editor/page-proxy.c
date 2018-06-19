@@ -179,12 +179,9 @@ populate_ui (CEPageProxy *self)
 }
 
 static void
-finish_setup (CEPageProxy *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageProxy *self, gpointer user_data)
 {
 	CEPageProxyPrivate *priv = CE_PAGE_PROXY_GET_PRIVATE (self);
-
-	if (error)
-		return;
 
 	populate_ui (self);
 
@@ -227,7 +224,7 @@ ce_page_proxy_new (NMConnectionEditor *editor,
 	priv->setting = nm_connection_get_setting_proxy (connection);
 	g_assert (priv->setting);
 
-	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	g_signal_connect (self, CE_PAGE_INITIALIZED, G_CALLBACK (finish_setup), NULL);
 
 	return CE_PAGE (self);
 }

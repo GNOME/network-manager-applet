@@ -43,7 +43,6 @@ typedef struct {
 	GtkListStore *dependent_vpn_store;
 
 	GtkWidget *autoconnect;
-	GtkWidget *autoconnect_prio_label;
 	GtkSpinButton *autoconnect_prio;
 	GtkWidget *all_checkbutton;
 
@@ -167,7 +166,6 @@ general_private_init (CEPageGeneral *self)
 	priv->dependent_vpn_store = GTK_LIST_STORE (gtk_builder_get_object (builder, "dependent_vpn_model"));
 
 	priv->autoconnect = GTK_WIDGET (gtk_builder_get_object (builder, "connection_autoconnect"));
-	priv->autoconnect_prio_label = GTK_WIDGET (gtk_builder_get_object (builder, "autoconnect_prio_label"));
 	priv->autoconnect_prio = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "autoconnect_prio"));
 	priv->all_checkbutton = GTK_WIDGET (gtk_builder_get_object (builder, "system_checkbutton"));
 	priv->metered_combo = GTK_COMBO_BOX (gtk_builder_get_object (builder, "metered_combo"));
@@ -310,7 +308,6 @@ populate_ui (CEPageGeneral *self)
 	 */
 	if (priv->is_vpn) {
 		gtk_widget_hide (priv->autoconnect);
-		gtk_widget_hide (priv->autoconnect_prio_label);
 		gtk_widget_hide (GTK_WIDGET (priv->autoconnect_prio));
 	}
 
@@ -326,13 +323,10 @@ populate_ui (CEPageGeneral *self)
 }
 
 static void
-finish_setup (CEPageGeneral *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageGeneral *self, gpointer user_data)
 {
 	CEPageGeneralPrivate *priv = CE_PAGE_GENERAL_GET_PRIVATE (self);
 	gboolean any_dependent_vpn;
-
-	if (error)
-		return;
 
 	priv->setup_finished = TRUE;
 
@@ -388,7 +382,7 @@ ce_page_general_new (NMConnectionEditor *editor,
 
 	priv->is_vpn = nm_connection_is_type (connection, NM_SETTING_VPN_SETTING_NAME);
 
-	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	g_signal_connect (self, CE_PAGE_INITIALIZED, G_CALLBACK (finish_setup), NULL);
 
 	return CE_PAGE (self);
 }

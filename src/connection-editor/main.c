@@ -33,20 +33,11 @@
 #include "connection-helpers.h"
 #include "vpn-helpers.h"
 
+#define CONNECTION_LIST_TAG "nm-connection-list"
+
 gboolean nm_ce_keep_above;
 
 /*************************************************/
-
-static NMConnectionList *
-_get_connection_list (GApplication *application)
-{
-	GtkApplication *app = GTK_APPLICATION (application);
-	GList *windows = gtk_application_get_windows (app);
-
-	/* For now, assume we always have a single application window
-	 * that is the connection list. */
-	return NM_CONNECTION_LIST (windows->data);
-}
 
 typedef struct {
 	gboolean create;
@@ -87,10 +78,9 @@ handle_arguments (GApplication *application,
                   gboolean create,
                   gboolean show,
                   const char *edit_uuid,
-                  const char *import,
-                  gboolean quit_after)
+                  const char *import)
 {
-	NMConnectionList *list = _get_connection_list (application);
+	NMConnectionList *list = g_object_get_data (G_OBJECT (application), CONNECTION_LIST_TAG);
 	gboolean show_list = TRUE;
 	GType ctype = 0;
 	gs_free char *type_tmp = NULL;
@@ -145,13 +135,6 @@ handle_arguments (GApplication *application,
 		show_list = FALSE;
 	}
 
-	/* If only editing a single connection, exit when done with that connection */
-	if (show_list == FALSE && quit_after == TRUE) {
-		g_signal_connect_swapped (list, "editing-done",
-		                          G_CALLBACK (g_application_quit),
-		                          application);
-	}
-
 	return show_list;
 }
 
@@ -171,7 +154,7 @@ create_activated (GSimpleAction *action, GVariant *parameter, gpointer user_data
 {
 	GApplication *application = G_APPLICATION (user_data);
 
-	handle_arguments (application, NULL, TRUE, FALSE, NULL, NULL, FALSE);
+	handle_arguments (application, NULL, TRUE, FALSE, NULL, NULL);
 }
 
 static void
@@ -189,6 +172,25 @@ static GActionEntry app_entries[] =
 };
 
 static void
+new_editor_cb (NMConnectionList *list, NMConnectionEditor *new_editor, gpointer user_data)
+{
+	GtkApplication *app = GTK_APPLICATION (user_data);
+
+	gtk_application_add_window (app, nm_connection_editor_get_window (new_editor));
+}
+
+static void
+list_visible_cb (NMConnectionList *list, GParamSpec *pspec, gpointer user_data)
+{
+	GtkApplication *app = GTK_APPLICATION (user_data);
+
+	if (gtk_widget_get_visible (GTK_WIDGET (list)))
+		gtk_application_add_window (app, GTK_WINDOW (list));
+	else
+		gtk_application_remove_window (app, GTK_WINDOW (list));
+}
+
+static void
 editor_startup (GApplication *application, gpointer user_data)
 {
 	GtkApplication *app = GTK_APPLICATION (application);
@@ -203,13 +205,17 @@ editor_startup (GApplication *application, gpointer user_data)
 		g_application_quit (application);
 		return;
 	}
-	gtk_application_add_window (app, GTK_WINDOW (list));
+
+	g_object_set_data_full (G_OBJECT (application), CONNECTION_LIST_TAG, g_object_ref (list), g_object_unref);
+	g_signal_connect_object (list, NM_CONNECTION_LIST_NEW_EDITOR, G_CALLBACK (new_editor_cb), application, 0);
+	g_signal_connect_object (list, "notify::visible", G_CALLBACK (list_visible_cb), application, 0);
+	g_signal_connect (list, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL);
 }
 
 static void
 editor_activate (GApplication *application, gpointer user_data)
 {
-	NMConnectionList *list = _get_connection_list (application);
+	NMConnectionList *list = g_object_get_data (G_OBJECT (application), CONNECTION_LIST_TAG);
 
 	nm_connection_list_present (list);
 }
@@ -224,7 +230,7 @@ editor_command_line (GApplication *application,
 	GOptionContext *opt_ctx = NULL;
 	GError *error = NULL;
 	gs_free char *type = NULL, *uuid = NULL, *import = NULL;
-	gboolean create = FALSE, show = FALSE, keepabove = FALSE;
+	gboolean create = FALSE, show = FALSE;
 	int ret = 1;
 	GOptionEntry entries[] = {
 		{ "type",   't', 0, G_OPTION_ARG_STRING, &type,   "Type of connection to show or create", NM_SETTING_WIRED_SETTING_NAME },
@@ -232,10 +238,6 @@ editor_command_line (GApplication *application,
 		{ "show",   's', 0, G_OPTION_ARG_NONE,   &show,   "Show a given connection type page", NULL },
 		{ "edit",   'e', 0, G_OPTION_ARG_STRING, &uuid,   "Edit an existing connection with a given UUID", "UUID" },
 		{ "import", 'i', 0, G_OPTION_ARG_STRING, &import, "Import a VPN connection from given file", NULL },
-		/* handled in main but may be passed through here, so we need
-		 * to parse and ignore it
-		 */
-		{ "keep-above", 0, G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, &keepabove, NULL, NULL },
 		{ NULL }
 	};
 
@@ -256,7 +258,7 @@ editor_command_line (GApplication *application,
 		type = g_strdup (NM_SETTING_GSM_SETTING_NAME);
 	}
 
-	if (handle_arguments (application, type, create, show, uuid, import, FALSE))
+	if (handle_arguments (application, type, create, show, uuid, import))
 		g_application_activate (application);
 
 	ret = 0;
@@ -286,6 +288,7 @@ main (int argc, char *argv[])
 
 	opt_ctx = g_option_context_new (NULL);
 	g_option_context_add_main_entries (opt_ctx, entries, NULL);
+	g_option_context_set_ignore_unknown_options (opt_ctx, TRUE);
 	g_option_context_parse (opt_ctx, &argc, &argv, NULL);
 	g_option_context_free (opt_ctx);
 

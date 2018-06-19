@@ -67,13 +67,15 @@ typedef void (*PageNewConnectionFunc) (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
 #define CE_PAGE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), CE_TYPE_PAGE, CEPageClass))
 
 #define CE_PAGE_CONNECTION    "connection"
-#define CE_PAGE_INITIALIZED   "initialized"
 #define CE_PAGE_PARENT_WINDOW "parent-window"
+
+#define CE_PAGE_CHANGED       "changed"
+#define CE_PAGE_INITIALIZED   "initialized"
+#define CE_PAGE_NEW_EDITOR    "new-editor"
 
 typedef struct {
 	GObject parent;
 
-	gboolean initialized;
 	gboolean inter_page_change_running;
 	GtkBuilder *builder;
 	GtkWidget *page;
@@ -94,10 +96,6 @@ typedef struct {
 	gboolean    (*ce_page_validate_v) (CEPage *self, NMConnection *connection, GError **error);
 	gboolean    (*last_update)  (CEPage *self, NMConnection *connection, GError **error);
 	gboolean    (*inter_page_change)  (CEPage *self);
-
-	/* Signals */
-	void        (*changed)     (CEPage *self);
-	void        (*initialized) (CEPage *self, GError *error);
 } CEPageClass;
 
 
@@ -155,6 +153,10 @@ gboolean ce_page_cloned_mac_combo_valid (GtkComboBoxText *combo, int type, const
 
 void ce_page_changed (CEPage *self);
 
+NMConnectionEditor *ce_page_new_editor (CEPage *self,
+                                        GtkWindow *parent_window,
+                                        NMConnection *connection);
+
 void ce_spin_automatic_val (GtkSpinButton *spin, int defvalue);
 void ce_spin_default_val (GtkSpinButton *spin, int defvalue);
 
@@ -164,8 +166,6 @@ void ce_page_complete_init (CEPage *self,
                             const char *setting_name,
                             GVariant *secrets,
                             GError *error);
-
-gboolean ce_page_get_initialized (CEPage *self);
 
 char *ce_page_get_next_available_name (const GPtrArray *connections, const char *format);
 

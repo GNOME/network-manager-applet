@@ -38,8 +38,7 @@
 extern gboolean nm_ce_keep_above;
 
 enum {
-	LIST_DONE,
-	EDITING_DONE,
+	NEW_EDITOR,
 	LIST_LAST_SIGNAL
 };
 
@@ -286,7 +285,14 @@ add_response_cb (NMConnectionEditor *editor, GtkResponseType response, gpointer 
 		delete_slaves_of_connection (list, nm_connection_editor_get_connection (editor));
 
 	g_object_unref (editor);
-	g_signal_emit (list, list_signals[EDITING_DONE], 0, 0);
+}
+
+static void
+new_editor_cb (NMConnectionEditor *editor, NMConnectionEditor *new_editor, gpointer user_data)
+{
+	NMConnectionList *list = user_data;
+
+	g_signal_emit (list, list_signals[NEW_EDITOR], 0, new_editor);
 }
 
 static void
@@ -298,10 +304,8 @@ really_add_connection (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
 	NMConnectionListPrivate *priv = NM_CONNECTION_LIST_GET_PRIVATE (list);
 	NMConnectionEditor *editor;
 
-	if (!connection) {
-		g_signal_emit (list, list_signals[EDITING_DONE], 0, 0);
+	if (!connection)
 		return;
-	}
 
 	if (connection_supports_proxy (connection) && !nm_connection_get_setting_proxy (connection))
 		nm_connection_add_setting (connection, nm_setting_proxy_new ());
@@ -311,12 +315,13 @@ really_add_connection (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
 		nm_connection_add_setting (connection, nm_setting_ip6_config_new ());
 
 	editor = nm_connection_editor_new (GTK_WINDOW (list), connection, priv->client);
-	if (!editor) {
-		g_signal_emit (list, list_signals[EDITING_DONE], 0, 0);
+	if (!editor)
 		return;
-	}
 
-	g_signal_connect (editor, "done", G_CALLBACK (add_response_cb), list);
+	g_signal_connect (editor, NM_CONNECTION_EDITOR_DONE, G_CALLBACK (add_response_cb), list);
+	g_signal_connect (editor, NM_CONNECTION_EDITOR_NEW_EDITOR, G_CALLBACK (new_editor_cb), list);
+
+	g_signal_emit (list, list_signals[NEW_EDITOR], 0, editor);
 	nm_connection_editor_run (editor);
 }
 
@@ -355,7 +360,6 @@ edit_done_cb (NMConnectionEditor *editor, GtkResponseType response, gpointer use
 	}
 
 	g_object_unref (editor);
-	g_signal_emit (list, list_signals[EDITING_DONE], 0, 0);
 }
 
 static void
@@ -376,10 +380,14 @@ edit_connection (NMConnectionList *list, NMConnection *connection)
 	editor = nm_connection_editor_new (GTK_WINDOW (list),
 	                                   NM_CONNECTION (connection),
 	                                   priv->client);
-	if (editor) {
-		g_signal_connect (editor, "done", G_CALLBACK (edit_done_cb), list);
-		nm_connection_editor_run (editor);
-	}
+	if (!editor)
+		return;
+
+	g_signal_connect (editor, NM_CONNECTION_EDITOR_DONE, G_CALLBACK (edit_done_cb), list);
+	g_signal_connect (editor, NM_CONNECTION_EDITOR_NEW_EDITOR, G_CALLBACK (new_editor_cb), list);
+
+	g_signal_emit (list, list_signals[NEW_EDITOR], 0, editor);
+	nm_connection_editor_run (editor);
 }
 
 static void
@@ -447,15 +455,6 @@ selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
 		ce_polkit_set_widget_validation_error (priv->connection_del,
 		                                       _("Select a connection to delete"));
 	}
-}
-
-static void
-list_close_cb (GtkDialog *dialog, gpointer user_data)
-{
-	g_signal_emit (NM_CONNECTION_LIST (user_data),
-	               list_signals[LIST_DONE],
-	               0,
-	               GTK_RESPONSE_CLOSE);
 }
 
 static gboolean
@@ -527,21 +526,12 @@ nm_connection_list_class_init (NMConnectionListClass *klass)
 	object_class->dispose = dispose;
 
 	/* Signals */
-	list_signals[LIST_DONE] =
-		g_signal_new ("done",
-					  G_OBJECT_CLASS_TYPE (object_class),
-					  G_SIGNAL_RUN_FIRST,
-					  G_STRUCT_OFFSET (NMConnectionListClass, done),
-		              NULL, NULL, NULL,
-					  G_TYPE_NONE, 1, G_TYPE_INT);
-
-	list_signals[EDITING_DONE] =
-		g_signal_new ("editing-done",
+	list_signals[NEW_EDITOR] =
+		g_signal_new (NM_CONNECTION_LIST_NEW_EDITOR,
 		              G_OBJECT_CLASS_TYPE (object_class),
 		              G_SIGNAL_RUN_FIRST,
-		              G_STRUCT_OFFSET (NMConnectionListClass, done),
-		              NULL, NULL, NULL,
-		              G_TYPE_NONE, 1, G_TYPE_INT);
+		              0, NULL, NULL, NULL,
+		              G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	/* Initialize the widget template */
         gtk_widget_class_set_template_from_resource (widget_class,
@@ -557,7 +547,6 @@ nm_connection_list_class_init (NMConnectionListClass *klass)
         gtk_widget_class_bind_template_callback (widget_class, add_clicked);
         gtk_widget_class_bind_template_callback (widget_class, do_edit);
         gtk_widget_class_bind_template_callback (widget_class, delete_clicked);
-        gtk_widget_class_bind_template_callback (widget_class, list_close_cb);
         gtk_widget_class_bind_template_callback (widget_class, selection_changed_cb);
         gtk_widget_class_bind_template_callback (widget_class, key_press_cb);
         gtk_widget_class_bind_template_callback (widget_class, start_search);

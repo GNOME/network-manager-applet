@@ -292,7 +292,7 @@ security_valid (NMUtilsSecurityType sectype, NM80211Mode mode)
 }
 
 static void
-finish_setup (CEPageWifiSecurity *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPageWifiSecurity *self, gpointer user_data)
 {
 	CEPage *parent = CE_PAGE (self);
 	CEPageWifiSecurityPrivate *priv = CE_PAGE_WIFI_SECURITY_GET_PRIVATE (self);
@@ -307,9 +307,6 @@ finish_setup (CEPageWifiSecurity *self, gpointer unused, GError *error, gpointer
 	int item = 0;
 	GtkComboBox *combo;
 	GtkCellRenderer *renderer;
-
-	if (error)
-		return;
 
 	s_wireless = nm_connection_get_setting_wireless (connection);
 	g_assert (s_wireless);
@@ -503,7 +500,7 @@ ce_page_wifi_security_new (NMConnectionEditor *editor,
 
 	nm_connection_editor_check_unsupported_properties (editor, (NMSetting *) s_wsec, known_wsec_props);
 
-	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	g_signal_connect (self, CE_PAGE_INITIALIZED, G_CALLBACK (finish_setup), NULL);
 
 	return CE_PAGE (self);
 }

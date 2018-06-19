@@ -32,6 +32,9 @@
 #define NM_IS_CONNECTION_EDITOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NM_TYPE_CONNECTION_EDITOR))
 #define NM_CONNECTION_EDITOR(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), NM_TYPE_CONNECTION_EDITOR, NMConnectionEditor))
 
+#define NM_CONNECTION_EDITOR_DONE       "done"
+#define NM_CONNECTION_EDITOR_NEW_EDITOR "new-editor"
+
 typedef struct GetSecretsInfo GetSecretsInfo;
 
 typedef struct {
@@ -77,9 +80,6 @@ typedef struct {
 
 typedef struct {
 	GObjectClass parent_class;
-
-	/* Signals */
-	void (*done)  (NMConnectionEditor *editor, gint result, GError *error);
 } NMConnectionEditorClass;
 
 typedef enum {

@@ -251,10 +251,9 @@ populate_ui (CEPagePpp *self, NMConnection *connection)
 }
 
 static void
-finish_setup (CEPagePpp *self, gpointer unused, GError *error, gpointer user_data)
+finish_setup (CEPagePpp *self, gpointer user_data)
 {
-	if (!error)
-		populate_ui (self, CE_PAGE (self)->connection);
+	populate_ui (self, CE_PAGE (self)->connection);
 }
 
 CEPage *
@@ -297,7 +296,7 @@ ce_page_ppp_new (NMConnectionEditor *editor,
 	g_assert (s_con);
 	priv->connection_id = g_strdup (nm_setting_connection_get_id (s_con));
 
-	g_signal_connect (self, "initialized", G_CALLBACK (finish_setup), NULL);
+	g_signal_connect (self, CE_PAGE_INITIALIZED, G_CALLBACK (finish_setup), NULL);
 
 	*out_secrets_setting_name = NM_SETTING_PPP_SETTING_NAME;
 

@@ -34,7 +34,6 @@ G_DEFINE_ABSTRACT_TYPE (CEPage, ce_page, G_TYPE_OBJECT)
 enum {
 	PROP_0,
 	PROP_CONNECTION,
-	PROP_INITIALIZED,
 	PROP_PARENT_WINDOW,
 
 	LAST_PROP
@@ -43,6 +42,7 @@ enum {
 enum {
 	CHANGED,
 	INITIALIZED,
+	NEW_EDITOR,
 
 	LAST_SIGNAL
 };
@@ -660,13 +660,6 @@ ce_page_get_next_available_name (const GPtrArray *connections, const char *forma
 	return cname;
 }
 
-static void
-emit_initialized (CEPage *self, GError *error)
-{
-	self->initialized = TRUE;
-	g_signal_emit (self, signals[INITIALIZED], 0, error);
-}
-
 void
 ce_page_complete_init (CEPage *self,
                        const char *setting_name,
@@ -676,27 +669,29 @@ ce_page_complete_init (CEPage *self,
 	GError *update_error = NULL;
 	GVariant *setting_dict;
 	char *dbus_err;
-	gboolean ignore_error = FALSE;
 
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (CE_IS_PAGE (self));
 
 	if (error) {
+		/* Ignore missing settings errors */
 		dbus_err = g_dbus_error_get_remote_error (error);
-		ignore_error =    !g_strcmp0 (dbus_err, "org.freedesktop.NetworkManager.Settings.InvalidSetting")
-		               || !g_strcmp0 (dbus_err, "org.freedesktop.NetworkManager.Settings.Connection.SettingNotFound")
-		               || !g_strcmp0 (dbus_err, "org.freedesktop.NetworkManager.AgentManager.NoSecrets");
+		if (   g_strcmp0 (dbus_err, "org.freedesktop.NetworkManager.Settings.InvalidSetting") == 0
+		    || g_strcmp0 (dbus_err, "org.freedesktop.NetworkManager.Settings.Connection.SettingNotFound") == 0
+		    || g_strcmp0 (dbus_err, "org.freedesktop.NetworkManager.AgentManager.NoSecrets") == 0)
+			g_clear_error (&error);
 		g_free (dbus_err);
 	}
 
-	/* Ignore missing settings errors */
-	if (error && !ignore_error) {
-		emit_initialized (self, error);
-		return;
-	} else if (!setting_name || !secrets || g_variant_n_children (secrets) == 0) {
+	if (error) {
+		g_warning ("Couldn't fetch secrets: %s", error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	if (!setting_name || !secrets || g_variant_n_children (secrets) == 0) {
 		/* Success, no secrets */
-		emit_initialized (self, NULL);
-		return;
+		goto out;
 	}
 
 	g_assert (setting_name);
@@ -705,28 +700,22 @@ ce_page_complete_init (CEPage *self,
 	setting_dict = g_variant_lookup_value (secrets, setting_name, NM_VARIANT_TYPE_SETTING);
 	if (!setting_dict) {
 		/* Success, no secrets */
-		emit_initialized (self, NULL);
-		return;
+		goto out;
 	}
 	g_variant_unref (setting_dict);
 
 	/* Update the connection with the new secrets */
-	if (nm_connection_update_secrets (self->connection,
+	if (!nm_connection_update_secrets (self->connection,
 	                                  setting_name,
 	                                  secrets,
 	                                  &update_error)) {
-		/* Success */
-		emit_initialized (self, NULL);
-		return;
+		g_warning ("Couldn't update the secrets: %s", update_error->message);
+		g_error_free (update_error);
+		goto out;
 	}
 
-	if (!update_error) {
-		g_set_error_literal (&update_error, NMA_ERROR, NMA_ERROR_GENERIC,
-		                     _("Failed to update connection secrets due to an unknown error."));
-	}
-
-	emit_initialized (self, update_error);
-	g_clear_error (&update_error);
+out:
+	g_signal_emit (self, signals[INITIALIZED], 0, NULL);
 }
 
 static void
@@ -773,20 +762,31 @@ ce_page_get_title (CEPage *self)
 	return self->title;
 }
 
-gboolean
-ce_page_get_initialized (CEPage *self)
-{
-	g_return_val_if_fail (CE_IS_PAGE (self), FALSE);
-
-	return self->initialized;
-}
-
 void
 ce_page_changed (CEPage *self)
 {
 	g_return_if_fail (CE_IS_PAGE (self));
 
 	g_signal_emit (self, signals[CHANGED], 0);
+}
+
+NMConnectionEditor *
+ce_page_new_editor (CEPage *self,
+                    GtkWindow *parent_window,
+                    NMConnection *connection)
+{
+	NMConnectionEditor *editor;
+
+	g_return_val_if_fail (CE_IS_PAGE (self), NULL);
+
+	editor = nm_connection_editor_new (parent_window,
+	                                   connection,
+	                                   self->client);
+	if (!editor)
+		return NULL;
+
+	g_signal_emit (self, signals[NEW_EDITOR], 0, editor);
+	return editor;
 }
 
 static void
@@ -798,9 +798,6 @@ get_property (GObject *object, guint prop_id,
 	switch (prop_id) {
 	case PROP_CONNECTION:
 		g_value_set_object (value, self->connection);
-		break;
-	case PROP_INITIALIZED:
-		g_value_set_boolean (value, self->initialized);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -850,14 +847,6 @@ ce_page_class_init (CEPageClass *page_class)
 		                      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
 
 	g_object_class_install_property
-		(object_class, PROP_INITIALIZED,
-		 g_param_spec_boolean (CE_PAGE_INITIALIZED,
-		                       "Initialized",
-		                       "Initialized",
-		                       FALSE,
-		                       G_PARAM_READABLE));
-
-	g_object_class_install_property
 		(object_class, PROP_PARENT_WINDOW,
 		 g_param_spec_pointer (CE_PAGE_PARENT_WINDOW,
 		                       "Parent window",
@@ -869,16 +858,21 @@ ce_page_class_init (CEPageClass *page_class)
 		g_signal_new ("changed",
 	                      G_OBJECT_CLASS_TYPE (object_class),
 	                      G_SIGNAL_RUN_FIRST,
-	                      G_STRUCT_OFFSET (CEPageClass, changed),
-	                      NULL, NULL, NULL,
+	                      0, NULL, NULL, NULL,
 	                      G_TYPE_NONE, 0);
 
 	signals[INITIALIZED] = 
-		g_signal_new ("initialized",
+		g_signal_new (CE_PAGE_INITIALIZED,
 	                      G_OBJECT_CLASS_TYPE (object_class),
 	                      G_SIGNAL_RUN_FIRST,
-	                      G_STRUCT_OFFSET (CEPageClass, initialized),
-	                      NULL, NULL, NULL,
+	                      0, NULL, NULL, NULL,
+	                      G_TYPE_NONE, 1, G_TYPE_POINTER);
+
+	signals[NEW_EDITOR] =
+		g_signal_new (CE_PAGE_NEW_EDITOR,
+	                      G_OBJECT_CLASS_TYPE (object_class),
+	                      G_SIGNAL_RUN_FIRST,
+	                      0, NULL, NULL, NULL,
 	                      G_TYPE_NONE, 1, G_TYPE_POINTER);
 }
 
