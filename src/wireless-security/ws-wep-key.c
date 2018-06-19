@@ -94,6 +94,7 @@ static gboolean
 validate (WirelessSecurity *parent, GError **error)
 {
 	WirelessSecurityWEPKey *sec = (WirelessSecurityWEPKey *) parent;
+	NMSettingSecretFlags secret_flags;
 	GtkWidget *entry;
 	const char *key;
 	int i;
@@ -101,14 +102,17 @@ validate (WirelessSecurity *parent, GError **error)
 	entry = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wep_key_entry"));
 	g_assert (entry);
 
+	secret_flags = nma_utils_menu_to_secret_flags (entry);
 	key = gtk_entry_get_text (GTK_ENTRY (entry));
-	if (!key) {
+
+        if (   secret_flags & NM_SETTING_SECRET_FLAG_NOT_SAVED
+            || secret_flags & NM_SETTING_SECRET_FLAG_NOT_REQUIRED) {
+		/* All good. */
+	} else if (!key) {
 		widget_set_error (entry);
 		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("missing wep-key"));
 		return FALSE;
-	}
-
-	if (sec->type == NM_WEP_KEY_TYPE_KEY) {
+	} else if (sec->type == NM_WEP_KEY_TYPE_KEY) {
 		if ((strlen (key) == 10) || (strlen (key) == 26)) {
 			for (i = 0; i < strlen (key); i++) {
 				if (!g_ascii_isxdigit (key[i])) {
