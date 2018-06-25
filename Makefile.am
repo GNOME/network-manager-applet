@@ -979,7 +979,7 @@ desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 gsettings_SCHEMAS = org.gnome.nm-applet.gschema.xml
 @GSETTINGS_RULES@
 
-appdatadir = $(datadir)/appdata
+appdatadir = $(datadir)/metainfo
 appdata_DATA = $(appdata_in_files:.xml.in=.xml)
 appdata_in_files = nm-connection-editor.appdata.xml.in
 @INTLTOOL_XML_RULE@
