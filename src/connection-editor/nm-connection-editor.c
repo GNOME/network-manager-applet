@@ -183,7 +183,7 @@ update_sensitivity (NMConnectionEditor *editor)
 
 #if WITH_SELINUX
 /* This is what the files in ~/.cert would get. */
-static const char certcon[] = "unconfined_u:object_r:home_cert_t:s0";
+#define CERTCON "unconfined_u:object_r:home_cert_t:s0"
 
 static void
 update_relabel_list_filename (GtkListStore *relabel_list, char *filename)
@@ -213,7 +213,7 @@ update_relabel_list_filename (GtkListStore *relabel_list, char *filename)
 		return;
 	}
 
-	if (g_strcmp0 (certcon, tcon) == 0)
+	if (g_strcmp0 (CERTCON, tcon) == 0)
 		return;
 
 	writable = (access (filename, W_OK) == 0);
@@ -304,7 +304,7 @@ relabel_button_clicked_cb (GtkWidget *widget, gpointer user_data)
 			                    2, &filename,
 			                    -1);
 			if (relabel) {
-				if (setfilecon (filename, certcon) == -1) {
+				if (setfilecon (filename, CERTCON) == -1) {
 					int errsv = errno;
 
 					g_warning ("setfilecon: failed for \"%s\" with %s\n", filename, g_strerror (errsv));
