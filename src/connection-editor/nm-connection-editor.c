@@ -189,7 +189,7 @@ static gboolean
 clear_name_if_present (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
 {
 	gchar **filename = data;
-	gchar *existing;
+	gs_free char *existing = NULL;
 
 	gtk_tree_model_get (model, iter, 2, &existing, -1);
 	if (g_strcmp0 (existing, *filename) == 0) {
