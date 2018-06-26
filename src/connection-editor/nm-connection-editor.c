@@ -201,7 +201,7 @@ clear_name_if_present (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter
 }
 
 static void
-update_relabel_list_filename (GtkListStore *store, char *filename)
+update_relabel_list_filename (GtkListStore *relabel_list, char *filename)
 {
 	GtkTreeIter iter;
 	gboolean writable;
@@ -211,7 +211,7 @@ update_relabel_list_filename (GtkListStore *store, char *filename)
 	 * accessing home. It may make sense to tighten it some point. */
 	static const char scon[] = "system_u:system_r:openvpn_t:s0";
 
-	gtk_tree_model_foreach (GTK_TREE_MODEL (store), clear_name_if_present, &filename);
+	gtk_tree_model_foreach (GTK_TREE_MODEL (relabel_list), clear_name_if_present, &filename);
 	if (filename == NULL)
 		return;
 
@@ -227,8 +227,8 @@ update_relabel_list_filename (GtkListStore *store, char *filename)
 	writable = (access (filename, W_OK) == 0);
 
 	if (selinux_check_access (scon, tcon, "file", "open", NULL) == -1) {
-		gtk_list_store_append (store, &iter);
-		gtk_list_store_set (store, &iter,
+		gtk_list_store_append (relabel_list, &iter);
+		gtk_list_store_set (relabel_list, &iter,
 		                    0, writable,
 		                    1, writable,
 		                    2, filename,
@@ -239,7 +239,7 @@ update_relabel_list_filename (GtkListStore *store, char *filename)
 }
 
 static void
-update_relabel_list (GtkWidget *widget, GtkListStore *store)
+update_relabel_list (GtkWidget *widget, GtkListStore *relabel_list)
 {
 	gchar *filename = NULL;
 	NMSetting8021xCKScheme scheme;
@@ -250,19 +250,19 @@ update_relabel_list (GtkWidget *widget, GtkListStore *store)
 	if (NMA_IS_CERT_CHOOSER (widget)) {
 		filename = nma_cert_chooser_get_cert (NMA_CERT_CHOOSER (widget), &scheme);
 		if (filename && scheme == NM_SETTING_802_1X_CK_SCHEME_PATH) {
-			update_relabel_list_filename (store, filename);
+			update_relabel_list_filename (relabel_list, filename);
 			g_free (filename);
 		}
 
 		filename = nma_cert_chooser_get_key (NMA_CERT_CHOOSER (widget), &scheme);
 		if (filename && scheme == NM_SETTING_802_1X_CK_SCHEME_PATH) {
-			update_relabel_list_filename (store, filename);
+			update_relabel_list_filename (relabel_list, filename);
 			g_free (filename);
 		}
 	} else if (GTK_IS_CONTAINER (widget)) {
 		gtk_container_foreach (GTK_CONTAINER (widget),
 		                       (GtkCallback) update_relabel_list,
-		                       store);
+		                       relabel_list);
 	}
 }
 
