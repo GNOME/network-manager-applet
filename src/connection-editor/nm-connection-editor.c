@@ -185,25 +185,11 @@ update_sensitivity (NMConnectionEditor *editor)
 /* This is what the files in ~/.cert would get. */
 static const char certcon[] = "unconfined_u:object_r:home_cert_t:s0";
 
-static gboolean
-clear_name_if_present (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
-{
-	gchar **filename = data;
-	gs_free char *existing = NULL;
-
-	gtk_tree_model_get (model, iter, 2, &existing, -1);
-	if (g_strcmp0 (existing, *filename) == 0) {
-		*filename = NULL;
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
 static void
 update_relabel_list_filename (GtkListStore *relabel_list, char *filename)
 {
 	GtkTreeIter iter;
+	gboolean iter_valid;
 	gboolean writable;
 	char *tcon;
 	/* Any kind of VPN would do. If OpenVPN can't access the files
@@ -211,9 +197,15 @@ update_relabel_list_filename (GtkListStore *relabel_list, char *filename)
 	 * accessing home. It may make sense to tighten it some point. */
 	static const char scon[] = "system_u:system_r:openvpn_t:s0";
 
-	gtk_tree_model_foreach (GTK_TREE_MODEL (relabel_list), clear_name_if_present, &filename);
-	if (filename == NULL)
-		return;
+	for (iter_valid = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (relabel_list), &iter);
+	     iter_valid;
+	     iter_valid = gtk_tree_model_iter_next (GTK_TREE_MODEL (relabel_list), &iter)) {
+		gs_free char *existing = NULL;
+
+		gtk_tree_model_get (GTK_TREE_MODEL (relabel_list), &iter, 2, &existing, -1);
+		if (nm_streq0 (filename, existing))
+			return;
+	}
 
 	if (getfilecon (filename, &tcon) == -1) {
 		/* Don't warn here, just ignore it. Perhaps the file
@@ -292,29 +284,30 @@ relabel_toggled (GtkCellRendererToggle *cell_renderer, gchar *path, gpointer use
 	gtk_list_store_set (editor->relabel_list, &iter, 0, !relabel, -1);
 }
 
-static gboolean
-maybe_relabel (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
-{
-	gboolean relabel;
-	gchar *filename;
-
-	gtk_tree_model_get (model, iter, 0, &relabel, 2, &filename, -1);
-	if (relabel) {
-		if (setfilecon (filename, certcon) == -1)
-			g_warning ("setfilecon: %s\n", g_strerror (errno));
-	}
-
-	g_free (filename);
-	return FALSE;
-}
-
 static void
 relabel_button_clicked_cb (GtkWidget *widget, gpointer user_data)
 {
 	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
+	GtkTreeIter iter;
+	gboolean iter_valid;
 
 	if (gtk_dialog_run (GTK_DIALOG (editor->relabel_dialog)) == GTK_RESPONSE_APPLY) {
-		gtk_tree_model_foreach (GTK_TREE_MODEL (editor->relabel_list), maybe_relabel, NULL);
+		for (iter_valid = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (editor->relabel_list), &iter);
+		     iter_valid;
+		     iter_valid = gtk_tree_model_iter_next (GTK_TREE_MODEL (editor->relabel_list), &iter)) {
+			gboolean relabel;
+			gs_free char *filename = NULL;
+
+			gtk_tree_model_get (GTK_TREE_MODEL (editor->relabel_list),
+			                    &iter,
+			                    0, &relabel,
+			                    2, &filename,
+			                    -1);
+			if (relabel) {
+				if (setfilecon (filename, certcon) == -1)
+					g_warning ("setfilecon: %s\n", g_strerror (errno));
+			}
+		}
 		recheck_relabel (editor);
 	}
 	gtk_widget_hide (editor->relabel_dialog);
