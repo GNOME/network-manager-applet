@@ -304,8 +304,11 @@ relabel_button_clicked_cb (GtkWidget *widget, gpointer user_data)
 			                    2, &filename,
 			                    -1);
 			if (relabel) {
-				if (setfilecon (filename, certcon) == -1)
-					g_warning ("setfilecon: %s\n", g_strerror (errno));
+				if (setfilecon (filename, certcon) == -1) {
+					int errsv = errno;
+
+					g_warning ("setfilecon: failed for \"%s\" with %s\n", filename, g_strerror (errsv));
+				}
 			}
 		}
 		recheck_relabel (editor);
