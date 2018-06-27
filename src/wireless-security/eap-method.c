@@ -391,6 +391,7 @@ eap_method_setup_cert_chooser (NMACertChooser *cert_chooser,
 {
 	NMSetting8021xCKScheme scheme = NM_SETTING_802_1X_CK_SCHEME_UNKNOWN;
 	const char *value = NULL;
+	const char *password = NULL;
 
 
 	if (s_8021x && cert_path_func && cert_uri_func && cert_scheme_func) {
@@ -403,8 +404,9 @@ eap_method_setup_cert_chooser (NMACertChooser *cert_chooser,
 /* Not available in libnm-glib */
 		case NM_SETTING_802_1X_CK_SCHEME_PKCS11:
 			value = cert_uri_func (s_8021x);
-			if (cert_password_func)
-				nma_cert_chooser_set_cert_password (cert_chooser, cert_password_func (s_8021x));
+			password = cert_password_func ? cert_password_func (s_8021x) : NULL;
+			if (password)
+				nma_cert_chooser_set_cert_password (cert_chooser, password);
 			break;
 #endif
 		case NM_SETTING_802_1X_CK_SCHEME_UNKNOWN:
@@ -439,6 +441,7 @@ eap_method_setup_cert_chooser (NMACertChooser *cert_chooser,
 		nma_cert_chooser_set_key (cert_chooser, value, scheme);
 	}
 
-	if (s_8021x && key_password_func)
+	password = s_8021x && key_password_func ? key_password_func (s_8021x) : NULL;
+	if (password)
 		nma_cert_chooser_set_key_password (cert_chooser, key_password_func (s_8021x));
 }
