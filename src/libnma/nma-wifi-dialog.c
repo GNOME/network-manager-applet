@@ -1047,7 +1047,6 @@ internal_init (NMAWifiDialog *self,
 	gboolean security_combo_focus = FALSE;
 
 	gtk_window_set_position (GTK_WINDOW (self), GTK_WIN_POS_CENTER_ALWAYS);
-	gtk_container_set_border_width (GTK_CONTAINER (self), 6);
 	gtk_window_set_default_size (GTK_WINDOW (self), 488, -1);
 	gtk_window_set_resizable (GTK_WINDOW (self), FALSE);
 
