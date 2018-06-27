@@ -33,6 +33,7 @@
 #include "page-ip4.h"
 #include "ip4-routes-dialog.h"
 #include "connection-helpers.h"
+#include "ce-utils.h"
 
 G_DEFINE_TYPE (CEPageIP4, ce_page_ip4, CE_TYPE_PAGE)
 
