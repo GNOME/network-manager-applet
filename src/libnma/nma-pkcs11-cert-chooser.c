@@ -371,11 +371,11 @@ set_title (NMACertChooser *cert_chooser, const gchar *title)
 	nma_cert_chooser_button_set_title (NMA_CERT_CHOOSER_BUTTON (priv->key_button), text);
 	g_free (text);
 
-	text = g_strdup_printf (_("%s private _key:"), title);
+	text = g_strdup_printf (_("%s private _key"), title);
 	gtk_label_set_text_with_mnemonic (GTK_LABEL (priv->key_button_label), text);
 	g_free (text);
 
-	text = g_strdup_printf (_("%s key _password:"), title);
+	text = g_strdup_printf (_("%s key _password"), title);
 	gtk_label_set_text_with_mnemonic (GTK_LABEL (priv->key_password_label), text);
 	g_free (text);
 
@@ -383,11 +383,11 @@ set_title (NMACertChooser *cert_chooser, const gchar *title)
 	nma_cert_chooser_button_set_title (NMA_CERT_CHOOSER_BUTTON (priv->cert_button), text);
 	g_free (text);
 
-	text = g_strdup_printf (_("%s _certificate:"), title);
+	text = g_strdup_printf (_("%s _certificate"), title);
 	gtk_label_set_text_with_mnemonic (GTK_LABEL (priv->cert_button_label), text);
 	g_free (text);
 
-	text = g_strdup_printf (_("%s certificate _password:"), title);
+	text = g_strdup_printf (_("%s certificate _password"), title);
 	gtk_label_set_text_with_mnemonic (GTK_LABEL (priv->cert_password_label), text);
 	g_free (text);
 }
@@ -420,7 +420,7 @@ init (NMACertChooser *cert_chooser)
 
 	gtk_grid_insert_column (GTK_GRID (cert_chooser), 2);
 	gtk_grid_set_row_spacing (GTK_GRID (cert_chooser), 6);
-	gtk_grid_set_column_spacing (GTK_GRID (cert_chooser), 12);
+	gtk_grid_set_column_spacing (GTK_GRID (cert_chooser), 6);
 
 	/* Show password */
 	gtk_grid_insert_row (GTK_GRID (cert_chooser), 0);
@@ -446,7 +446,7 @@ init (NMACertChooser *cert_chooser)
 	                  G_CALLBACK (key_changed_cb), cert_chooser);
 
 	priv->key_button_label = gtk_label_new (NULL);
-	g_object_set (priv->key_button_label, "xalign", (gfloat) 0, NULL);
+	g_object_set (priv->key_button_label, "xalign", (gfloat) 1, NULL);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (priv->key_button_label), priv->key_button);
 	gtk_grid_attach (GTK_GRID (cert_chooser), priv->key_button_label, 0, 0, 1, 1);
 	gtk_widget_set_sensitive (priv->key_button_label, FALSE);
@@ -468,7 +468,7 @@ init (NMACertChooser *cert_chooser)
 	                  G_CALLBACK (key_password_changed_cb), cert_chooser);
 
 	priv->key_password_label = gtk_label_new (NULL);
-	g_object_set (priv->key_password_label, "xalign", (gfloat) 0, NULL);
+	g_object_set (priv->key_password_label, "xalign", (gfloat) 1, NULL);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (priv->key_password_label), priv->key_password);
 	gtk_grid_attach (GTK_GRID (cert_chooser), priv->key_password_label, 0, 1, 1, 1);
 	gtk_widget_set_sensitive (priv->key_password_label, FALSE);
@@ -489,7 +489,7 @@ init (NMACertChooser *cert_chooser)
 	                  G_CALLBACK (cert_changed_cb), cert_chooser);
 
 	priv->cert_button_label = gtk_label_new (NULL);
-	g_object_set (priv->cert_button_label, "xalign", (gfloat) 0, NULL);
+	g_object_set (priv->cert_button_label, "xalign", (gfloat) 1, NULL);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (priv->cert_button_label), priv->cert_button);
 	gtk_grid_attach (GTK_GRID (cert_chooser), priv->cert_button_label, 0, 0, 1, 1);
 	gtk_widget_show (priv->cert_button_label);
@@ -510,7 +510,7 @@ init (NMACertChooser *cert_chooser)
 	                  G_CALLBACK (cert_password_changed_cb), cert_chooser);
 
 	priv->cert_password_label = gtk_label_new (NULL);
-	g_object_set (priv->cert_password_label, "xalign", (gfloat) 0, NULL);
+	g_object_set (priv->cert_password_label, "xalign", (gfloat) 1, NULL);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (priv->cert_password_label), priv->cert_password);
 	gtk_grid_attach (GTK_GRID (cert_chooser), priv->cert_password_label, 0, 1, 1, 1);
 	gtk_widget_set_sensitive (priv->cert_password_label, FALSE);
