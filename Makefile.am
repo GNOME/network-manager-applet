@@ -696,6 +696,8 @@ connection_editor_hc_real = \
 	src/connection-editor/ce-polkit-button.h \
 	src/connection-editor/ce-polkit.c \
 	src/connection-editor/ce-polkit.h \
+	src/connection-editor/ce-utils.c \
+	src/connection-editor/ce-utils.h \
 	src/connection-editor/connection-helpers.c \
 	src/connection-editor/connection-helpers.h
 
