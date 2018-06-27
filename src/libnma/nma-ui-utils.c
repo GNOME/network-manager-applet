@@ -222,14 +222,23 @@ popup_menu_item_info_register (GtkWidget *item,
 static void
 icon_release_cb (GtkEntry *entry,
                  GtkEntryIconPosition position,
+#if !GTK_CHECK_VERSION(3,90,0)
                  GdkEventButton *event,
+#endif
                  gpointer data)
 {
 	GtkMenu *menu = GTK_MENU (data);
+	GdkRectangle icon_area;
+
 	if (position == GTK_ENTRY_ICON_SECONDARY) {
-		gtk_widget_show_all (GTK_WIDGET (data));
+		gtk_widget_show (GTK_WIDGET (data));
 		gtk_menu_popup (menu, NULL, NULL, NULL, NULL,
-		                event->button, event->time);
+#if GTK_CHECK_VERSION(3,90,0)
+		                0, gtk_get_current_event_time()
+#else
+		                event->button, event->time
+#endif
+                                );
 	}
 }
 
