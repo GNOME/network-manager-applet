@@ -218,6 +218,7 @@ nma_cert_chooser_set_cert_password (NMACertChooser *cert_chooser, const gchar *p
 	const NMACertChooserVtable *vtable;
 
 	g_return_if_fail (NMA_IS_CERT_CHOOSER (cert_chooser));
+	g_return_if_fail (password);
 
 	vtable = NMA_CERT_CHOOSER_GET_VTABLE (cert_chooser);
 	if (vtable->set_cert_password)
@@ -346,6 +347,7 @@ void
 nma_cert_chooser_set_key_password (NMACertChooser *cert_chooser, const gchar *password)
 {
 	g_return_if_fail (NMA_IS_CERT_CHOOSER (cert_chooser));
+	g_return_if_fail (password);
 
 	NMA_CERT_CHOOSER_GET_VTABLE (cert_chooser)->set_key_password (cert_chooser, password);
 }
