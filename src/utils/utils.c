@@ -216,7 +216,7 @@ utils_show_error_dialog (const char *title,
 		g_signal_connect (err_dialog, "delete-event", G_CALLBACK (gtk_widget_destroy), NULL);
 		g_signal_connect (err_dialog, "response", G_CALLBACK (gtk_widget_destroy), NULL);
 
-		gtk_widget_show_all (err_dialog);
+		gtk_widget_show (err_dialog);
 		gtk_window_present (GTK_WINDOW (err_dialog));
 	}
 }
