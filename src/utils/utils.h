@@ -79,8 +79,6 @@ void utils_set_cell_background (GtkCellRenderer *cell,
                                 const char *color,
                                 const char *value);
 
-void utils_fake_return_key (GdkEventKey *event);
-
 void widget_set_error   (GtkWidget *widget);
 void widget_unset_error (GtkWidget *widget);
 
