@@ -697,7 +697,9 @@ connection_editor_hc_real = \
 	src/connection-editor/ce-polkit.c \
 	src/connection-editor/ce-polkit.h \
 	src/connection-editor/connection-helpers.c \
-	src/connection-editor/connection-helpers.h
+	src/connection-editor/connection-helpers.h \
+	src/connection-editor/utils.c \
+	src/connection-editor/utils.h
 
 bin_PROGRAMS += src/connection-editor/nm-connection-editor
 
