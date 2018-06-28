@@ -1149,9 +1149,9 @@ internal_init (NMAWifiDialog *self,
 		tmp = g_strdup_printf (_("Passwords or encryption keys are required to access the Wi-Fi network “%s”."),
 		                       esc_ssid ? esc_ssid : "<unknown>");
 		gtk_window_set_title (GTK_WINDOW (self), _("Wi-Fi Network Authentication Required"));
-		label = g_strdup_printf ("<span size=\"larger\" weight=\"bold\">%s</span>\n\n%s",
-		                         _("Authentication required by Wi-Fi network"),
-		                         tmp);
+		label = g_markup_printf_escaped ("<span size=\"larger\" weight=\"bold\">%s</span>\n\n%s",
+		                                 _("Authentication required by Wi-Fi network"),
+		                                 tmp);
 		g_free (esc_ssid);
 		g_free (tmp);
 	} else if (priv->operation == OP_CREATE_ADHOC) {
