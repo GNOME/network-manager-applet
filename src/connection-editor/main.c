@@ -288,6 +288,7 @@ main (int argc, char *argv[])
 
 	opt_ctx = g_option_context_new (NULL);
 	g_option_context_add_main_entries (opt_ctx, entries, NULL);
+	g_option_context_set_help_enabled (opt_ctx, FALSE);
 	g_option_context_set_ignore_unknown_options (opt_ctx, TRUE);
 	g_option_context_parse (opt_ctx, &argc, &argv, NULL);
 	g_option_context_free (opt_ctx);
