@@ -318,7 +318,7 @@ void nma_vpn_password_dialog_set_password_label (NMAVpnPasswordDialog *dialog,
 
 	priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
 
-	gtk_label_set_text (GTK_LABEL (priv->password_label), label);
+	gtk_label_set_text_with_mnemonic (GTK_LABEL (priv->password_label), label);
 }
 
 void nma_vpn_password_dialog_set_password_secondary_label (NMAVpnPasswordDialog *dialog,
@@ -331,7 +331,7 @@ void nma_vpn_password_dialog_set_password_secondary_label (NMAVpnPasswordDialog 
 
 	priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
 
-	gtk_label_set_text (GTK_LABEL (priv->password_label_secondary), label);
+	gtk_label_set_text_with_mnemonic (GTK_LABEL (priv->password_label_secondary), label);
 }
 
 void
@@ -345,6 +345,5 @@ nma_vpn_password_dialog_set_password_ternary_label (NMAVpnPasswordDialog *dialog
 
 	priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
 
-	gtk_label_set_text (GTK_LABEL (priv->password_label_tertiary), label);
+	gtk_label_set_text_with_mnemonic (GTK_LABEL (priv->password_label_tertiary), label);
 }
-
