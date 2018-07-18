@@ -48,7 +48,6 @@
       libselinux-devel
 
 .dist: &dist
-  stage: test
   dependencies:
     - fedora28_dist
   variables:
@@ -173,15 +172,43 @@ fedora28_dist:
 fedora_meson_minimal:
   <<: *fedora_meson_minimal
   image: fedora:latest
+  stage: test
 
 fedora_meson_full:
   <<: *fedora_meson_full
   image: fedora:latest
+  stage: test
 
 fedora_autotools_minimal:
   <<: *fedora_autotools_minimal
   image: fedora:latest
+  stage: test
 
 fedora_autotools_full:
   <<: *fedora_autotools_full
   image: fedora:latest
+  stage: test
+
+# https://network-manager-applet.pages.gitlab.gnome.org/libnma/
+pages:
+  <<: *fedora_full
+  <<: *dist
+  image: fedora:latest
+  stage: deploy
+  script:
+    - dnf -y install make
+    - tar xJf network-manager-applet-*.tar.xz
+    - cd network-manager-applet-*/
+    - ./configure
+      --disable-silent-rules
+      --without-libnm-gtk
+      --enable-gtk-doc
+    - make -j
+    - cd ..
+    - mkdir -p public
+    - mv network-manager-applet-*/html public/libnma
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
