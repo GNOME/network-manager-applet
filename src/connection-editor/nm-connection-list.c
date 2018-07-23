@@ -295,17 +295,24 @@ new_editor_cb (NMConnectionEditor *editor, NMConnectionEditor *new_editor, gpoin
 	g_signal_emit (list, list_signals[NEW_EDITOR], 0, new_editor);
 }
 
+typedef struct {
+	NMConnectionList *list;
+	NMConnectionListCallbackFunc callback;
+	gpointer user_data;
+} ConnectionResultData;
+
 static void
 really_add_connection (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
                        NMConnection *connection,
                        gpointer user_data)
 {
-	NMConnectionList *list = user_data;
+	ConnectionResultData *data = user_data;
+	NMConnectionList *list = data->list;
 	NMConnectionListPrivate *priv = NM_CONNECTION_LIST_GET_PRIVATE (list);
-	NMConnectionEditor *editor;
+	NMConnectionEditor *editor = NULL;
 
 	if (!connection)
-		return;
+		goto out;
 
 	if (connection_supports_proxy (connection) && !nm_connection_get_setting_proxy (connection))
 		nm_connection_add_setting (connection, nm_setting_proxy_new ());
@@ -316,34 +323,49 @@ really_add_connection (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
 
 	editor = nm_connection_editor_new (GTK_WINDOW (list), connection, priv->client);
 	if (!editor)
-		return;
+		goto out;
 
 	g_signal_connect (editor, NM_CONNECTION_EDITOR_DONE, G_CALLBACK (add_response_cb), list);
 	g_signal_connect (editor, NM_CONNECTION_EDITOR_NEW_EDITOR, G_CALLBACK (new_editor_cb), list);
 
 	g_signal_emit (list, list_signals[NEW_EDITOR], 0, editor);
-	nm_connection_editor_run (editor);
+
+out:
+	if (data->callback)
+		data->callback (data->list, data->user_data);
+	g_slice_free (ConnectionResultData, data);
+
+	if (editor)
+		nm_connection_editor_run (editor);
 }
 
 static void
 add_clicked (GtkButton *button, gpointer user_data)
 {
-	nm_connection_list_add (user_data);
+	nm_connection_list_add (user_data, NULL, NULL);
 }
 
 void
-nm_connection_list_add (NMConnectionList *list)
+nm_connection_list_add (NMConnectionList *list,
+                        NMConnectionListCallbackFunc callback,
+                        gpointer user_data)
 {
 	NMConnectionListPrivate *priv;
+	ConnectionResultData *data;
 
 	g_return_if_fail (NM_IS_CONNECTION_LIST (list));
 	priv = NM_CONNECTION_LIST_GET_PRIVATE (list);
+
+	data = g_slice_new0 (ConnectionResultData);
+	data->list = list;
+	data->callback = callback;
+	data->user_data = user_data;
 
 	new_connection_dialog (GTK_WINDOW (list),
 	                       priv->client,
 	                       NULL,
 	                       really_add_connection,
-	                       list);
+	                       data);
 }
 
 static void
@@ -1013,10 +1035,14 @@ void
 nm_connection_list_create (NMConnectionList *list,
                            GType ctype,
                            const char *detail,
-                           const char *import_filename)
+                           const char *import_filename,
+                           NMConnectionListCallbackFunc callback,
+                           gpointer user_data)
 {
 	NMConnectionListPrivate *priv;
 	ConnectionTypeData *types;
+	ConnectionResultData *data;
+	GError *error = NULL;
 	int i;
 
 	g_return_if_fail (NM_IS_CONNECTION_LIST (list));
@@ -1038,14 +1064,25 @@ nm_connection_list_create (NMConnectionList *list,
 			nm_connection_editor_error (NULL, _("Error creating connection"),
 			                            _("Don’t know how to create “%s” connections"), g_type_name (ctype));
 		}
+
+		callback (list, user_data);
 	} else {
 		gs_unref_object NMConnection *connection = NULL;
 
 		if (import_filename) {
-			connection = vpn_connection_from_file (import_filename);
-			if (!connection)
+			connection = vpn_connection_from_file (import_filename, &error);
+			if (!connection) {
+				nm_connection_editor_error (NULL, _("Error importing connection"), error->message);
+				callback (list, user_data);
 				return;
+			}
 		}
+
+		data = g_slice_new0 (ConnectionResultData);
+		data->list = list;
+		data->callback = callback;
+		data->user_data = user_data;
+
 		new_connection_of_type (GTK_WINDOW (list),
 		                        detail,
 		                        NULL,
@@ -1053,7 +1090,7 @@ nm_connection_list_create (NMConnectionList *list,
 		                        priv->client,
 		                        types[i].new_connection_func,
 		                        really_add_connection,
-		                        list);
+		                        data);
 	}
 }
 
