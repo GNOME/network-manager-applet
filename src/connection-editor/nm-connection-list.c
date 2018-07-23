@@ -1042,11 +1042,40 @@ nm_connection_list_create (NMConnectionList *list,
 	NMConnectionListPrivate *priv;
 	ConnectionTypeData *types;
 	ConnectionResultData *data;
-	GError *error = NULL;
+	gs_unref_object NMConnection *connection = NULL;
+	gs_free_error GError *error = NULL;
 	int i;
 
 	g_return_if_fail (NM_IS_CONNECTION_LIST (list));
 	priv = NM_CONNECTION_LIST_GET_PRIVATE (list);
+
+	if (import_filename) {
+		if (ctype == G_TYPE_INVALID) {
+			/* Atempt a VPN import */
+			connection = vpn_connection_from_file (import_filename, NULL);
+			if (connection)
+				ctype = NM_TYPE_SETTING_VPN;
+			else
+				g_set_error (&error, NMA_ERROR, NMA_ERROR_GENERIC, _("Unrecognized connection type"));
+		} else if (ctype == NM_TYPE_SETTING_VPN) {
+			connection = vpn_connection_from_file (import_filename, &error);
+		} else {
+			g_set_error (&error, NMA_ERROR, NMA_ERROR_GENERIC,
+			             _("Don’t know how to import “%s” connections"), g_type_name (ctype));
+		}
+
+		if (!connection) {
+			nm_connection_editor_error (NULL, _("Error importing connection"), error->message);
+			callback (list, user_data);
+			return;
+		}
+	}
+
+	if (ctype == G_TYPE_INVALID) {
+		nm_connection_editor_error (NULL, _("Error creating connection"), _("Connection type not specified."));
+		callback (list, user_data);
+		return;
+	}
 
 	types = get_connection_type_list ();
 	for (i = 0; types[i].name; i++) {
@@ -1066,32 +1095,22 @@ nm_connection_list_create (NMConnectionList *list,
 		}
 
 		callback (list, user_data);
-	} else {
-		gs_unref_object NMConnection *connection = NULL;
-
-		if (import_filename) {
-			connection = vpn_connection_from_file (import_filename, &error);
-			if (!connection) {
-				nm_connection_editor_error (NULL, _("Error importing connection"), error->message);
-				callback (list, user_data);
-				return;
-			}
-		}
-
-		data = g_slice_new0 (ConnectionResultData);
-		data->list = list;
-		data->callback = callback;
-		data->user_data = user_data;
-
-		new_connection_of_type (GTK_WINDOW (list),
-		                        detail,
-		                        NULL,
-		                        connection,
-		                        priv->client,
-		                        types[i].new_connection_func,
-		                        really_add_connection,
-		                        data);
+		return;
 	}
+
+	data = g_slice_new0 (ConnectionResultData);
+	data->list = list;
+	data->callback = callback;
+	data->user_data = user_data;
+
+	new_connection_of_type (GTK_WINDOW (list),
+	                        detail,
+	                        NULL,
+	                        connection,
+	                        priv->client,
+	                        types[i].new_connection_func,
+	                        really_add_connection,
+	                        data);
 }
 
 void
