@@ -48,14 +48,23 @@ typedef struct {
 	GtkApplicationWindowClass parent_class;
 } NMConnectionListClass;
 
+typedef void (*NMConnectionListCallbackFunc) (NMConnectionList *list, gpointer user_data);
+
 GType             nm_connection_list_get_type (void);
 NMConnectionList *nm_connection_list_new (void);
 
 void              nm_connection_list_set_type (NMConnectionList *list, GType ctype);
 
 void              nm_connection_list_present (NMConnectionList *list);
-void              nm_connection_list_create (NMConnectionList *list, GType ctype, const char *detail, const char *import_filename);
+void              nm_connection_list_create (NMConnectionList *list,
+                                             GType ctype,
+                                             const char *detail,
+                                             const char *import_filename,
+                                             NMConnectionListCallbackFunc callback,
+                                             gpointer user_data);
 void              nm_connection_list_edit (NMConnectionList *list, const gchar *uuid);
-void              nm_connection_list_add (NMConnectionList *list);
+void              nm_connection_list_add (NMConnectionList *list,
+                                          NMConnectionListCallbackFunc callback,
+                                          gpointer user_data);
 
 #endif

@@ -39,6 +39,12 @@ gboolean nm_ce_keep_above;
 
 /*************************************************/
 
+static void
+editor_created (NMConnectionList *list, gpointer user_data)
+{
+	g_application_release (G_APPLICATION (user_data));
+}
+
 static gboolean
 handle_arguments (GApplication *application,
                   const char *type,
@@ -80,14 +86,18 @@ handle_arguments (GApplication *application,
 		/* Just show the given connection type page */
 		nm_connection_list_set_type (list, ctype);
 	} else if (create) {
+		g_application_hold (application);
 		if (!ctype)
-			nm_connection_list_add (list);
+			nm_connection_list_add (list, editor_created, application);
 		else
-			nm_connection_list_create (list, ctype, detail, NULL);
+			nm_connection_list_create (list, ctype, detail, NULL,
+			                           editor_created, application);
 		show_list = FALSE;
 	} else if (import) {
 		/* import */
-		nm_connection_list_create (list, ctype, detail, import);
+		g_application_hold (application);
+		nm_connection_list_create (list, ctype, detail, import,
+		                           editor_created, application);
 		show_list = FALSE;
 	} else if (edit_uuid) {
 		/* Show the edit dialog for the given UUID */

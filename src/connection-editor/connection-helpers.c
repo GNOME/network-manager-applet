@@ -175,18 +175,17 @@ no_description:
 }
 
 NMConnection *
-vpn_connection_from_file (const char *filename)
+vpn_connection_from_file (const char *filename, GError **error)
 {
 	NMConnection *connection = NULL;
-	GError *error = NULL;
 	GSList *iter;
 
 	for (iter = vpn_get_plugin_infos (); !connection && iter; iter = iter->next) {
 		NMVpnEditorPlugin *plugin;
 
 		plugin = nm_vpn_plugin_info_get_editor_plugin (iter->data);
-		g_clear_error (&error);
-		connection = nm_vpn_editor_plugin_import (plugin, filename, &error);
+		g_clear_error (error);
+		connection = nm_vpn_editor_plugin_import (plugin, filename, error);
 		if (connection)
 			break;
 	}
@@ -202,32 +201,12 @@ vpn_connection_from_file (const char *filename)
 		if (!service_type || !strlen (service_type)) {
 			g_object_unref (connection);
 			connection = NULL;
-
-			error = g_error_new_literal (NMA_ERROR, NMA_ERROR_GENERIC,
-			                             _("The VPN plugin failed to import the VPN connection correctly\n\nError: no VPN service type."));
+			g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("No VPN service type."));
 		}
 	}
 
-	if (!connection) {
-		GtkWidget *err_dialog;
-		char *bname = g_path_get_basename (filename);
-
-		err_dialog = gtk_message_dialog_new (NULL,
-		                                     GTK_DIALOG_DESTROY_WITH_PARENT,
-		                                     GTK_MESSAGE_ERROR,
-		                                     GTK_BUTTONS_OK,
-		                                     _("Cannot import VPN connection"));
-		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (err_dialog),
-		                                 _("The file “%s” could not be read or does not contain recognized VPN connection information\n\nError: %s."),
-		                                 bname, error ? error->message : _("unknown error"));
-		g_free (bname);
-		g_signal_connect (err_dialog, "delete-event", G_CALLBACK (gtk_widget_destroy), NULL);
-		g_signal_connect (err_dialog, "response", G_CALLBACK (gtk_widget_destroy), NULL);
-		gtk_widget_show_all (err_dialog);
-		gtk_window_present (GTK_WINDOW (err_dialog));
-	}
-
-	g_clear_error (&error);
+	if (!connection)
+		g_prefix_error (error, _("The VPN plugin failed to import the VPN connection correctly: "));
 
 	return connection;
 }
@@ -245,6 +224,8 @@ import_vpn_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 	char *filename = NULL;
 	ImportVpnInfo *info = (ImportVpnInfo *) user_data;
 	NMConnection *connection = NULL;
+	GError *error = NULL;
+	gboolean canceled = TRUE;
 
 	if (response != GTK_RESPONSE_ACCEPT)
 		goto out;
@@ -255,7 +236,8 @@ import_vpn_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 		goto out;
 	}
 
-	connection = vpn_connection_from_file (filename);
+	canceled = FALSE;
+	connection = vpn_connection_from_file (filename, &error);
 	if (connection) {
 		/* Wrap around the actual new function so that the page can complete
 		 * the missing parts, such as UUID or make up the connection name. */
@@ -270,7 +252,13 @@ import_vpn_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 	}
 
 	g_free (filename);
+
 out:
+	if (!connection) {
+		info->result_func (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_CALL,
+		                   connection, canceled, error, info->user_data);
+	}
+
 	gtk_widget_hide (dialog);
 	gtk_widget_destroy (dialog);
 	g_object_unref (info->parent);

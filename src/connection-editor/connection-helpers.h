@@ -87,7 +87,7 @@ gboolean connection_supports_proxy (NMConnection *connection);
 gboolean connection_supports_ip4 (NMConnection *connection);
 gboolean connection_supports_ip6 (NMConnection *connection);
 
-NMConnection *vpn_connection_from_file (const char *filename);
+NMConnection *vpn_connection_from_file (const char *filename, GError **error);
 
 #endif  /* __CONNECTION_HELPERS_H__ */
 
