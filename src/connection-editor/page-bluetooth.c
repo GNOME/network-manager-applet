@@ -274,7 +274,8 @@ out:
 		nma_mobile_wizard_destroy (wizard);
 
 	g_object_unref (info->client);
-	g_object_unref (info->connection);
+	g_clear_object (&info->connection);
+
 	g_free (info);
 }
 
