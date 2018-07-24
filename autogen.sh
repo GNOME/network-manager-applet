@@ -21,5 +21,5 @@ PKG_NAME=nm-applet
 )
 
 if test -z "$NOCONFIGURE"; then
-    "$srcdir/configure" --enable-maintainer-mode "$@"
+    "$srcdir/configure" --enable-maintainer-mode --enable-more-warnings=error "$@"
 fi
