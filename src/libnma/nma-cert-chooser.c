@@ -169,7 +169,7 @@ nma_cert_chooser_set_cert (NMACertChooser *cert_chooser,
  *
  * Gets the real certificate URI from the chooser button along with the scheme.
  *
- * Returns: the certificate URI
+ * Returns: (transfer full) (nullable): the certificate URI
  *
  * Since: 1.8.0
  */
@@ -188,7 +188,7 @@ nma_cert_chooser_get_cert_uri (NMACertChooser *cert_chooser)
  *
  * Gets the real certificate location from the chooser button along with the scheme.
  *
- * Returns: the certificate path
+ * Returns: (transfer full) (nullable): the certificate path
  *
  * Since: 1.8.0
  */
@@ -300,7 +300,7 @@ nma_cert_chooser_set_key (NMACertChooser *cert_chooser,
  *
  * Gets the real key location from the chooser button along with the scheme.
  *
- * Returns: the key path
+ * Returns: (transfer full) (nullable): the key path
  *
  * Since: 1.8.0
  */
@@ -321,7 +321,7 @@ nma_cert_chooser_get_key (NMACertChooser *cert_chooser, NMSetting8021xCKScheme *
  *
  * Gets the real key URI from the chooser button along with the scheme.
  *
- * Returns: the key URI
+ * Returns: (transfer full) (nullable): the key URI
  *
  * Since: 1.8.0
  */
