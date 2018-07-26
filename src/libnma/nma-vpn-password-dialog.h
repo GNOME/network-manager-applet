@@ -27,6 +27,8 @@
 
 #include <gtk/gtk.h>
 
+#include "nma-version.h"
+
 G_BEGIN_DECLS
 
 #define NMA_VPN_TYPE_PASSWORD_DIALOG            (nma_vpn_password_dialog_get_type ())
@@ -51,7 +53,12 @@ GtkWidget* nma_vpn_password_dialog_new           (const char *title,
                                                   const char *message,
                                                   const char *password);
 
-gboolean   nma_vpn_password_dialog_run_and_block (NMAVpnPasswordDialog *dialog);
+gboolean   nma_vpn_password_dialog_run_and_block  (NMAVpnPasswordDialog *dialog);
+
+NMA_AVAILABLE_IN_1_8_16
+gboolean nma_vpn_password_dialog_run_and_print (NMAVpnPasswordDialog *dialog,
+                                                gboolean external_ui_mode,
+                                                gboolean should_ask);
 
 /* Attribute mutators */
 void nma_vpn_password_dialog_set_show_password            (NMAVpnPasswordDialog *dialog,
@@ -61,6 +68,9 @@ void nma_vpn_password_dialog_set_password                 (NMAVpnPasswordDialog 
                                                            const char           *password);
 void nma_vpn_password_dialog_set_password_label           (NMAVpnPasswordDialog *dialog,
                                                            const char           *label);
+NMA_AVAILABLE_IN_1_8_16
+void nma_vpn_password_dialog_set_password_key             (NMAVpnPasswordDialog *dialog,
+                                                           const char           *key);
 
 void nma_vpn_password_dialog_set_show_password_secondary  (NMAVpnPasswordDialog *dialog,
                                                            gboolean              show);
@@ -69,6 +79,9 @@ void nma_vpn_password_dialog_set_password_secondary       (NMAVpnPasswordDialog 
                                                            const char           *password_secondary);
 void nma_vpn_password_dialog_set_password_secondary_label (NMAVpnPasswordDialog *dialog,
                                                            const char           *label);
+NMA_AVAILABLE_IN_1_8_16
+void nma_vpn_password_dialog_set_password_secondary_key   (NMAVpnPasswordDialog *dialog,
+                                                            const char           *key);
 
 void nma_vpn_password_dialog_set_show_password_ternary  (NMAVpnPasswordDialog *dialog,
                                                          gboolean              show);
@@ -77,6 +90,9 @@ void nma_vpn_password_dialog_set_password_ternary       (NMAVpnPasswordDialog *d
                                                          const char           *password_ternary);
 void nma_vpn_password_dialog_set_password_ternary_label (NMAVpnPasswordDialog *dialog,
                                                          const char           *label);
+NMA_AVAILABLE_IN_1_8_16
+void nma_vpn_password_dialog_set_password_tertiary_key  (NMAVpnPasswordDialog *dialog,
+                                                         const char           *key);
 
 /* Attribute accessors */
 const char *nma_vpn_password_dialog_get_password           (NMAVpnPasswordDialog *dialog);
