@@ -2,6 +2,7 @@ sources = files(
   'ce-page.c',
   'ce-polkit-button.c',
   'ce-polkit.c',
+  'ce-utils.c',
   'connection-helpers.c',
   'ip4-routes-dialog.c',
   'ip6-routes-dialog.c',

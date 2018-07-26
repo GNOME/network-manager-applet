@@ -216,7 +216,7 @@ utils_show_error_dialog (const char *title,
 		g_signal_connect (err_dialog, "delete-event", G_CALLBACK (gtk_widget_destroy), NULL);
 		g_signal_connect (err_dialog, "response", G_CALLBACK (gtk_widget_destroy), NULL);
 
-		gtk_widget_show_all (err_dialog);
+		gtk_widget_show (err_dialog);
 		gtk_window_present (GTK_WINDOW (err_dialog));
 	}
 }
@@ -359,22 +359,6 @@ utils_set_cell_background (GtkCellRenderer *cell,
 		}
 	} else
 		g_object_set (G_OBJECT (cell), "cell-background-set", FALSE, NULL);
-}
-
-/* Change key in @event to 'Enter' key. */
-void
-utils_fake_return_key (GdkEventKey *event)
-{
-	GdkKeymapKey *keys = NULL;
-	gint n_keys;
-
-	/* Get hardware keycode for GDK_KEY_Return */
-	if (gdk_keymap_get_entries_for_keyval (gdk_keymap_get_default (), GDK_KEY_Return, &keys, &n_keys)) {
-		event->keyval = GDK_KEY_Return;
-		event->hardware_keycode = keys[0].keycode;
-		event->state = 0;
-	}
-	g_free (keys);
 }
 
 void

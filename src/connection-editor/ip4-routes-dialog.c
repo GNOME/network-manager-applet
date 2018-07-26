@@ -34,6 +34,7 @@
 
 #include "ip4-routes-dialog.h"
 #include "utils.h"
+#include "ce-utils.h"
 
 #define COL_ADDRESS 0
 #define COL_PREFIX  1

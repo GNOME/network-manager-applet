@@ -32,6 +32,7 @@
 
 #include "page-ip6.h"
 #include "ip6-routes-dialog.h"
+#include "ce-utils.h"
 
 G_DEFINE_TYPE (CEPageIP6, ce_page_ip6, CE_TYPE_PAGE)
 

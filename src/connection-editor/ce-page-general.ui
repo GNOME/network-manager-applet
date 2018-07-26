@@ -36,7 +36,10 @@
   <object class="GtkGrid" id="GeneralPage">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="border_width">12</property>
+    <property name="margin_start">12</property>
+    <property name="margin_end">12</property>
+    <property name="margin_top">12</property>
+    <property name="margin_bottom">12</property>
     <property name="row_spacing">6</property>
     <property name="column_spacing">6</property>
     <child>
@@ -100,7 +103,8 @@
       </packing>
     </child>
     <child>
-      <object class="GtkVBox" id="firewall_zone_vbox">
+      <object class="GtkBox" id="firewall_zone_vbox">
+        <property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="hexpand">True</property>

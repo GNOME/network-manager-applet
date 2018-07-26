@@ -4,7 +4,10 @@
   <requires lib="gtk+" version="3.10"/>
   <object class="GtkDialog" id="8021x_dialog">
     <property name="can_focus">False</property>
-    <property name="border_width">5</property>
+    <property name="margin_start">5</property>
+    <property name="margin_end">5</property>
+    <property name="margin_top">5</property>
+    <property name="margin_bottom">5</property>
     <property name="title" translatable="yes">802.1X authentication</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
@@ -63,10 +66,14 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHBox" id="hbox1">
+          <object class="GtkBox" id="hbox1">
+            <property name="orientation">horizontal</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="border_width">5</property>
+            <property name="margin_start">5</property>
+            <property name="margin_end">5</property>
+            <property name="margin_top">5</property>
+            <property name="margin_bottom">5</property>
             <property name="spacing">12</property>
             <child>
               <object class="GtkImage" id="image1">
@@ -83,7 +90,8 @@
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox1">
+              <object class="GtkBox" id="vbox1">
+                <property name="orientation">vertical</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="spacing">6</property>
@@ -106,15 +114,15 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="row_spacing">6</property>
-                    <property name="column_spacing">12</property>
+                    <property name="column_spacing">6</property>
                     <child>
                       <object class="GtkLabel" id="network_name_label">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">_Network name:</property>
+                        <property name="label" translatable="yes">_Network name</property>
                         <property name="use_underline">True</property>
                         <property name="mnemonic_widget">network_name_entry</property>
-                        <property name="xalign">0</property>
+                        <property name="xalign">1</property>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
@@ -135,7 +143,8 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkVBox" id="security_vbox">
+                      <object class="GtkBox" id="security_vbox">
+                        <property name="orientation">vertical</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="hexpand">True</property>

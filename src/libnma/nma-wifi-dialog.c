@@ -432,11 +432,8 @@ connection_combo_init (NMAWifiDialog *self, NMConnection *connection)
 	GtkCellRenderer *renderer;
 	const char *id;
 
-	g_return_val_if_fail (priv->connection == NULL, FALSE);
-
-	/* Clear any old model */
-	if (priv->connection_model)
-		g_object_unref (priv->connection_model);
+	g_clear_object (&priv->connection_model);
+	g_clear_object (&priv->connection);
 
 	/* New model */
 	store = gtk_list_store_new (4, G_TYPE_STRING, G_TYPE_OBJECT, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN);
@@ -1047,7 +1044,6 @@ internal_init (NMAWifiDialog *self,
 	gboolean security_combo_focus = FALSE;
 
 	gtk_window_set_position (GTK_WINDOW (self), GTK_WIN_POS_CENTER_ALWAYS);
-	gtk_container_set_border_width (GTK_CONTAINER (self), 6);
 	gtk_window_set_default_size (GTK_WINDOW (self), 488, -1);
 	gtk_window_set_resizable (GTK_WINDOW (self), FALSE);
 
@@ -1149,9 +1145,9 @@ internal_init (NMAWifiDialog *self,
 		tmp = g_strdup_printf (_("Passwords or encryption keys are required to access the Wi-Fi network “%s”."),
 		                       esc_ssid ? esc_ssid : "<unknown>");
 		gtk_window_set_title (GTK_WINDOW (self), _("Wi-Fi Network Authentication Required"));
-		label = g_strdup_printf ("<span size=\"larger\" weight=\"bold\">%s</span>\n\n%s",
-		                         _("Authentication required by Wi-Fi network"),
-		                         tmp);
+		label = g_markup_printf_escaped ("<span size=\"larger\" weight=\"bold\">%s</span>\n\n%s",
+		                                 _("Authentication required by Wi-Fi network"),
+		                                 tmp);
 		g_free (esc_ssid);
 		g_free (tmp);
 	} else if (priv->operation == OP_CREATE_ADHOC) {

@@ -24,7 +24,10 @@
   </object>
   <object class="GtkDialog" id="new_connection_type_dialog">
     <property name="can_focus">False</property>
-    <property name="border_width">5</property>
+    <property name="margin_start">5</property>
+    <property name="margin_end">5</property>
+    <property name="margin_top">5</property>
+    <property name="margin_bottom">5</property>
     <property name="title"> </property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
@@ -81,10 +84,14 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHBox" id="hbox2">
+          <object class="GtkBox" id="hbox2">
+            <property name="orientation">horizontal</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="border_width">5</property>
+            <property name="margin_start">5</property>
+            <property name="margin_end">5</property>
+            <property name="margin_top">5</property>
+            <property name="margin_bottom">5</property>
             <property name="spacing">12</property>
             <child>
               <object class="GtkImage" id="image2">
@@ -101,7 +108,8 @@
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox3">
+              <object class="GtkBox" id="vbox3">
+                <property name="orientation">vertical</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="spacing">12</property>
@@ -140,7 +148,8 @@ If you are creating a VPN, and the VPN connection you wish to create does not ap
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkVBox" id="new_connection_vbox">
+                  <object class="GtkBox" id="new_connection_vbox">
+                    <property name="orientation">vertical</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="spacing">6</property>

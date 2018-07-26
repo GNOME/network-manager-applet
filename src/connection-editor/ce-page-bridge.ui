@@ -48,7 +48,10 @@
   <object class="GtkGrid" id="BridgePage">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="border_width">12</property>
+    <property name="margin_start">12</property>
+    <property name="margin_end">12</property>
+    <property name="margin_top">12</property>
+    <property name="margin_bottom">12</property>
     <property name="row_spacing">6</property>
     <property name="column_spacing">6</property>
     <child>
@@ -67,7 +70,8 @@
       </packing>
     </child>
     <child>
-      <object class="GtkHBox" id="hbox2">
+      <object class="GtkBox" id="hbox2">
+        <property name="orientation">horizontal</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="spacing">10</property>
@@ -236,7 +240,8 @@
       </packing>
     </child>
     <child>
-      <object class="GtkHBox" id="bridge_forward_delay_box">
+      <object class="GtkBox" id="bridge_forward_delay_box">
+        <property name="orientation">horizontal</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="spacing">4</property>
@@ -277,7 +282,8 @@
       </packing>
     </child>
     <child>
-      <object class="GtkHBox" id="bridge_hello_time_box">
+      <object class="GtkBox" id="bridge_hello_time_box">
+        <property name="orientation">horizontal</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="spacing">4</property>
@@ -341,7 +347,7 @@
         <property name="receives_default">False</property>
         <property name="tooltip_text" translatable="yes">Controls whether Spanning Tree Protocol (STP) is enabled for this bridge</property>
         <property name="use_underline">True</property>
-        <property name="xalign">0</property>
+        <property name="halign">start</property>
         <property name="draw_indicator">True</property>
       </object>
       <packing>
@@ -380,7 +386,8 @@
       </packing>
     </child>
     <child>
-      <object class="GtkHBox" id="bridge_max_age_box">
+      <object class="GtkBox" id="bridge_max_age_box">
+        <property name="orientation">horizontal</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="spacing">4</property>
@@ -435,7 +442,8 @@
       </packing>
     </child>
     <child>
-      <object class="GtkHBox" id="bridge_ageing_time_box">
+      <object class="GtkBox" id="bridge_ageing_time_box">
+        <property name="orientation">horizontal</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="spacing">4</property>
