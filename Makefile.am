@@ -55,6 +55,8 @@ SUBDIRS = \
 	. \
 	po
 
+dflt_cppflags = -std=gnu99
+
 ###############################################################################
 
 icon16dir = $(datadir)/icons/hicolor/16x16/apps
@@ -171,6 +173,7 @@ shared_files = \
 noinst_LTLIBRARIES += src/utils/libutils-libnm.la
 
 src_utils_libutils_libnm_la_CPPFLAGS = \
+	$(dflt_cppflags) \
 	"-I$(srcdir)/shared" \
 	$(GTK3_CFLAGS) \
 	$(LIBNM_CFLAGS)
@@ -189,6 +192,7 @@ if WITH_LIBNM_GTK
 noinst_LTLIBRARIES += src/utils/libutils-libnm-glib.la
 
 src_utils_libutils_libnm_glib_la_CPPFLAGS = \
+	$(dflt_cppflags) \
 	-DNETWORKMANAGER_COMPILATION=NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY \
 	"-I$(srcdir)/shared" \
 	$(GTK3_CFLAGS) \
@@ -210,6 +214,7 @@ check_programs += src/utils/tests/test-utils
 src_utils_tests_test_utils_SOURCES = src/utils/tests/test-utils.c
 
 src_utils_tests_test_utils_CPPFLAGS = \
+	$(dflt_cppflags) \
 	"-I$(srcdir)/shared/" \
 	"-I$(srcdir)/src/utils" \
 	$(GTK3_CFLAGS) \
@@ -280,6 +285,7 @@ nodist_src_wireless_security_libwireless_security_libnm_la_SOURCES = \
 	$(wireless_security_c_gen)
 
 src_wireless_security_libwireless_security_libnm_la_CPPFLAGS = \
+	$(dflt_cppflags) \
 	"-I$(srcdir)/shared" \
 	"-I$(srcdir)/src/utils" \
 	"-I$(srcdir)/src/libnma" \
@@ -305,6 +311,7 @@ nodist_src_wireless_security_libwireless_security_libnm_glib_la_SOURCES = \
 	$(wireless_security_c_gen)
 
 src_wireless_security_libwireless_security_libnm_glib_la_CPPFLAGS = \
+	$(dflt_cppflags) \
 	$(GTK3_CFLAGS) \
 	-DNETWORKMANAGER_COMPILATION=NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY \
 	"-I$(srcdir)/shared" \
@@ -391,6 +398,7 @@ nodist_src_libnm_gtk_libnm_gtk_la_SOURCES = \
 	$(libnm_gtk_c_gen)
 
 src_libnm_gtk_libnm_gtk_la_CFLAGS = \
+	$(dflt_cppflags) \
 	-DNETWORKMANAGER_COMPILATION=NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY \
 	-DICONDIR=\""$(datadir)/icons"\" \
 	-DBINDIR=\""$(bindir)"\" \
@@ -448,6 +456,7 @@ endif
 check_programs += src/libnm-gtk/tests/test-mobile-providers
 
 src_libnm_gtk_tests_test_mobile_providers_CPPFLAGS = \
+	$(dflt_cppflags) \
 	-DTEST_DATA_DIR=\""$(abs_srcdir)/src/libnm-gtk/tests"\" \
 	"-I$(srcdir)/shared" \
 	"-I$(srcdir)/src/libnm-gtk" \
@@ -547,6 +556,7 @@ nodist_src_libnma_libnma_la_SOURCES = \
 	$(libnma_c_gen)
 
 src_libnma_libnma_la_CFLAGS = \
+	$(dflt_cppflags) \
 	-DICONDIR=\""$(datadir)/icons"\" \
 	-DBINDIR=\""$(bindir)"\" \
 	-DSYSCONFDIR=\""$(sysconfdir)"\" \
@@ -710,6 +720,7 @@ nodist_src_connection_editor_nm_connection_editor_SOURCES = \
 	$(connection_editor_c_gen)
 
 src_connection_editor_nm_connection_editor_CPPFLAGS = \
+	$(dflt_cppflags) \
 	-DICONDIR=\""$(datadir)/icons"\" \
 	-DBINDIR=\""$(bindir)"\" \
 	-DSYSCONFDIR=\""$(sysconfdir)"\" \
@@ -835,6 +846,7 @@ nodist_src_nm_applet_SOURCES = \
 	$(nm_applet_c_gen)
 
 src_nm_applet_CPPFLAGS = \
+	$(dflt_cppflags) \
 	-DICONDIR=\""$(datadir)/icons"\" \
 	-DBINDIR=\""$(bindir)"\" \
 	-DSYSCONFDIR=\""$(sysconfdir)"\" \
