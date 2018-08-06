@@ -1042,7 +1042,7 @@ mobile_providers_parse_sync (const gchar *country_codes,
 
 		if (!success) {
 			g_warning ("Could not find the provider data (%s): check your installation\n",
-			           ISO_3166_COUNTRY_CODES);
+			           MOBILE_BROADBAND_PROVIDER_INFO);
 		}
 	}
 
