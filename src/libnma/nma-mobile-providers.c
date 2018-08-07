@@ -1017,6 +1017,12 @@ mobile_providers_parse_sync (const gchar *country_codes,
 		}
 
 		if (!success) {
+			path = g_build_filename (ISO_CODES_PREFIX, "share", ISO_3166_COUNTRY_CODES, NULL);
+			success = read_country_codes (countries, path, cancellable, NULL);
+			g_free (path);
+		}
+
+		if (!success) {
 			g_warning ("Could not find the country codes file (%s): check your installation\n",
 			           ISO_3166_COUNTRY_CODES);
 		}
@@ -1038,6 +1044,10 @@ mobile_providers_parse_sync (const gchar *country_codes,
 			path = g_build_filename (dirs[i], MOBILE_BROADBAND_PROVIDER_INFO, NULL);
 			success = read_service_providers (countries, path, cancellable, NULL);
 			g_free (path);
+		}
+
+		if (!success) {
+			success = read_service_providers (countries, MOBILE_BROADBAND_PROVIDER_INFO_DATABASE, cancellable, NULL);
 		}
 
 		if (!success) {
