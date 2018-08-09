@@ -30,10 +30,6 @@
 
 #include "nm-mobile-providers.h"
 
-#ifndef MOBILE_BROADBAND_PROVIDER_INFO
-#define MOBILE_BROADBAND_PROVIDER_INFO DATADIR"/mobile-broadband-provider-info/serviceproviders.xml"
-#endif
-
 #define ISO_3166_COUNTRY_CODES ISO_CODES_PREFIX"/share/xml/iso-codes/iso_3166.xml"
 #define ISO_CODES_LOCALESDIR ISO_CODES_PREFIX"/share/locale"
 
@@ -990,7 +986,7 @@ mobile_providers_parse_sync (const gchar *country_codes,
 	if (!country_codes)
 		country_codes = ISO_3166_COUNTRY_CODES;
 	if (!service_providers)
-		service_providers = MOBILE_BROADBAND_PROVIDER_INFO;
+		service_providers = MOBILE_BROADBAND_PROVIDER_INFO_DATABASE;
 
 	countries = read_country_codes (country_codes,
 	                                cancellable,
