@@ -137,7 +137,7 @@ if enable_mobile_broadband_provider_info
   mobile_broadband_provider_info_dep = dependency('mobile-broadband-provider-info')
   config_h.set_quoted('MOBILE_BROADBAND_PROVIDER_INFO_DATABASE', mobile_broadband_provider_info_dep.get_pkgconfig_variable('database'))
 else
-  config_h.set_quoted('MOBILE_BROADBAND_PROVIDER_INFO_DATABASE', join_paths(nma_prefix, 'share', 'mobile-broadband-provider-info', 'serviceproviders.xml'))
+  config_h.set_quoted('MOBILE_BROADBAND_PROVIDER_INFO_DATABASE', join_paths(nma_datadir, 'mobile-broadband-provider-info', 'serviceproviders.xml'))
 endif
 
 gio_dep = dependency('gio-2.0', version: '>= 2.38')
