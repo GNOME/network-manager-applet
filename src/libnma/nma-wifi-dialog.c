@@ -1072,12 +1072,11 @@ internal_init (NMAWifiDialog *self,
 	g_object_set (G_OBJECT (widget), "can-default", TRUE, NULL);
 	gtk_widget_grab_default (widget);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "hbox1"));
+	widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "wifi_dialog"));
 	if (!widget) {
 		g_warning ("Couldn't find Wi-Fi_dialog widget.");
 		return FALSE;
 	}
-	gtk_widget_unparent (widget);
 
 	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (self))), widget);
 
