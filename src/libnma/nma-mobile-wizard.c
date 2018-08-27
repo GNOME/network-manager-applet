@@ -765,6 +765,10 @@ add_one_country (gpointer key, gpointer value, gpointer user_data)
 
 	g_assert (key);
 
+	if (   nma_country_info_get_country_code (country_info)
+	    && !nma_country_info_get_providers (country_info))
+		return;
+
 	gtk_tree_store_append (GTK_TREE_STORE (priv->country_store), &country_iter, NULL);
 	gtk_tree_store_set (GTK_TREE_STORE (priv->country_store),
 	                    &country_iter,
