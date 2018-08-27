@@ -383,12 +383,15 @@ nma_country_info_unref (NMACountryInfo *country_info)
  * nma_country_info_get_country_code:
  * @country_info: a #NMACountryInfo
  *
- * Returns: (transfer none): the code of the country.
+ * Returns: (transfer none): the code of the country or %NULL for "Unknown".
  */
 const gchar *
 nma_country_info_get_country_code (NMACountryInfo *country_info)
 {
 	g_return_val_if_fail (country_info != NULL, NULL);
+
+	if (country_info->country_code[0] == '\0')
+		return NULL;
 
 	return country_info->country_code;
 }
@@ -526,8 +529,8 @@ typedef enum {
 typedef struct {
 	GHashTable *table;
 
-	char *current_country;
-	GSList *current_providers;
+	NMACountryInfo *current_country;
+	char *country_code;
 	NMAMobileProvider *current_provider;
 	NMAMobileAccessMethod *current_method;
 
@@ -535,15 +538,18 @@ typedef struct {
 	MobileContextState state;
 } MobileParser;
 
-static void
-provider_list_free (gpointer data)
+static NMACountryInfo *
+lookup_country (GHashTable *table, const char *country_code)
 {
-	GSList *list = (GSList *) data;
+	NMACountryInfo *country_info;
 
-	while (list) {
-		nma_mobile_provider_unref ((NMAMobileProvider *) list->data);
-		list = g_slist_delete_link (list, list);
+	country_info = g_hash_table_lookup (table, country_code);
+	if (!country_info) {
+		g_warning ("%s: adding providers for unknown country '%s'", __func__, country_code);
+		country_info = g_hash_table_lookup (table, "");
 	}
+
+	return country_info;
 }
 
 static void
@@ -568,19 +574,9 @@ parser_toplevel_start (MobileParser *parser,
 	} else if (!strcmp (name, "country")) {
 		for (i = 0; attribute_names && attribute_names[i]; i++) {
 			if (!strcmp (attribute_names[i], "code")) {
-				char *country_code;
-				NMACountryInfo *country_info;
-
-				country_code = g_ascii_strup (attribute_values[i], -1);
-				country_info = g_hash_table_lookup (parser->table, country_code);
-				/* Ensure we have a country provider for this country code */
-				if (!country_info) {
-					g_warning ("%s: adding providers for unknown country '%s'", __func__, country_code);
-					country_info = country_info_new (country_code, NULL);
-					g_hash_table_insert (parser->table, country_code, country_info);
-				}
-				parser->current_country = country_code;
-
+				g_free (parser->country_code);
+				parser->country_code = g_ascii_strup (attribute_values[i], -1);
+				parser->current_country = lookup_country (parser->table, parser->country_code);
 				parser->state = PARSER_COUNTRY;
 				break;
 			}
@@ -723,17 +719,9 @@ parser_country_end (MobileParser *parser,
                     const char *name)
 {
 	if (!strcmp (name, "country")) {
-		NMACountryInfo *country_info;
-
-		country_info = g_hash_table_lookup (parser->table, parser->current_country);
-		g_assert (country_info);
-
-		/* Store providers for this country */
-		country_info->providers = parser->current_providers;
-
-		g_free (parser->current_country);
 		parser->current_country = NULL;
-		parser->current_providers = NULL;
+		g_free (parser->country_code);
+		parser->country_code = NULL;
 		g_free (parser->text_buffer);
 		parser->text_buffer = NULL;
 		parser->state = PARSER_TOPLEVEL;
@@ -747,7 +735,14 @@ parser_provider_end (MobileParser *parser,
 	if (!strcmp (name, "name")) {
 		if (!parser->current_provider->name) {
 			/* Use the first one. */
-			parser->current_provider->name = parser->text_buffer;
+			if (nma_country_info_get_country_code (parser->current_country)) {
+				parser->current_provider->name = parser->text_buffer;
+			} else {
+				parser->current_provider->name = g_strdup_printf ("%s (%s)",
+				                                                  parser->text_buffer,
+				                                                  parser->country_code);
+				g_free (parser->text_buffer);
+			}
 			parser->text_buffer = NULL;
 		}
 	} else if (!strcmp (name, "provider")) {
@@ -756,7 +751,8 @@ parser_provider_end (MobileParser *parser,
 
 		parser->current_provider->methods = g_slist_reverse (parser->current_provider->methods);
 
-		parser->current_providers = g_slist_prepend (parser->current_providers, parser->current_provider);
+		parser->current_country->providers = g_slist_prepend (parser->current_country->providers,
+		                                                      parser->current_provider);
 		parser->current_provider = NULL;
 		g_free (parser->text_buffer);
 		parser->text_buffer = NULL;
@@ -917,7 +913,7 @@ read_service_providers (GHashTable *countries,
 	gsize len = 0;
 
 	memset (&parser, 0, sizeof (MobileParser));
-    parser.table = countries;
+	parser.table = countries;
 
 	channel = g_io_channel_new_file (service_providers, "r", error);
 	if (!channel) {
@@ -968,12 +964,6 @@ read_service_providers (GHashTable *countries,
 		nma_mobile_provider_unref (parser.current_provider);
 	}
 
-	if (parser.current_providers) {
-		g_warning ("pending current providers");
-		provider_list_free (parser.current_providers);
-	}
-
-	g_free (parser.current_country);
 	g_free (parser.text_buffer);
 
 	return (status == G_IO_STATUS_EOF);
@@ -996,6 +986,9 @@ mobile_providers_parse_sync (const gchar *country_codes,
                                            g_str_equal,
                                            g_free,
                                            (GDestroyNotify)nma_country_info_unref);
+
+	g_hash_table_insert (countries, g_strdup (""),
+	                     country_info_new ("", _("My country is not listed")));
 
 	/* Use default paths if none given */
 	if (country_codes) {
