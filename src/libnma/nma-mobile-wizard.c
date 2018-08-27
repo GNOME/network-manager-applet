@@ -92,7 +92,6 @@ typedef struct {
 	GtkWidget *providers_view_radio;
 
 	GtkWidget *provider_unlisted_radio;
-	GtkWidget *provider_unlisted_entry;
 	GtkWidget *provider_unlisted_type_combo;
 
 	gboolean provider_only_cdma;
@@ -103,7 +102,7 @@ typedef struct {
 	GtkTreeStore *plan_store;
 	guint32 plan_focus_id;
 
-	GtkWidget *plan_unlisted_entry;
+	GtkWidget *plan_apn_entry;
 
 	/* Confirm page */
 	GtkWidget *confirm_page;
@@ -140,9 +139,8 @@ assistant_closed (GtkButton *button, gpointer user_data)
 		if (family == NMA_MOBILE_FAMILY_UNKNOWN)
 			family = get_provider_unlisted_type (self);
 
-		wiz_method->provider_name = g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->provider_unlisted_entry)));
 		if (family == NMA_MOBILE_FAMILY_3GPP)
-			wiz_method->gsm_apn = g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->plan_unlisted_entry)));
+			wiz_method->gsm_apn = g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->plan_apn_entry)));
 	} else {
 		gboolean manual = FALSE;
 
@@ -170,7 +168,7 @@ assistant_closed (GtkButton *button, gpointer user_data)
 				}
 			} else {
 				family = NMA_MOBILE_FAMILY_3GPP;
-				wiz_method->gsm_apn = g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->plan_unlisted_entry)));
+				wiz_method->gsm_apn = g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->plan_apn_entry)));
 			}
 		}
 	}
@@ -227,6 +225,7 @@ confirm_prepare (NMAMobileWizard *self)
 	NMAMobileWizardPrivate *priv = NMA_MOBILE_WIZARD_GET_PRIVATE (self);
 	NMAMobileProvider *provider = NULL;
 	NMAMobileAccessMethod *method = NULL;
+	const char *apn = NULL;
 	NMACountryInfo *country_info;
 	gboolean manual = FALSE;
 	GString *str;
@@ -241,10 +240,7 @@ confirm_prepare (NMAMobileWizard *self)
 		g_string_append (str, nma_mobile_provider_get_name (provider));
 		nma_mobile_provider_unref (provider);
 	} else {
-		const char *unlisted_provider;
-
-		unlisted_provider = gtk_entry_get_text (GTK_ENTRY (priv->provider_unlisted_entry));
-		g_string_append (str, unlisted_provider);
+		g_string_append (str, _("Unlisted"));
 	}
 
 	country_info = get_selected_country (self);
@@ -253,11 +249,14 @@ confirm_prepare (NMAMobileWizard *self)
 	nma_country_info_unref (country_info);
 
 	gtk_label_set_text (GTK_LABEL (priv->confirm_provider), str->str);
+	gtk_widget_show (priv->confirm_provider);
 	g_string_free (str, TRUE);
 
-	if (priv->dev_desc)
+	if (priv->dev_desc) {
 		gtk_label_set_text (GTK_LABEL (priv->confirm_device), priv->dev_desc);
-	else {
+		gtk_widget_show (priv->confirm_device_label);
+		gtk_widget_show (priv->confirm_device);
+	} else {
 		gtk_widget_hide (priv->confirm_device_label);
 		gtk_widget_hide (priv->confirm_device);
 	}
@@ -265,27 +264,27 @@ confirm_prepare (NMAMobileWizard *self)
 	if (priv->provider_only_cdma) {
 		gtk_widget_hide (priv->confirm_plan_label);
 		gtk_widget_hide (priv->confirm_plan);
-		gtk_widget_hide (priv->confirm_apn);
 	} else {
-		const char *apn = NULL;
-
 		/* Plan */
 		gtk_widget_show (priv->confirm_plan_label);
 		gtk_widget_show (priv->confirm_plan);
-		gtk_widget_show (priv->confirm_apn);
 
-		if (method) {
+		if (method)
 			gtk_label_set_text (GTK_LABEL (priv->confirm_plan), nma_mobile_access_method_get_name (method));
-			apn = nma_mobile_access_method_get_3gpp_apn (method);
-		} else {
+		else
 			gtk_label_set_text (GTK_LABEL (priv->confirm_plan), _("Unlisted"));
-			apn = gtk_entry_get_text (GTK_ENTRY (priv->plan_unlisted_entry));
-		}
 
+		apn = gtk_entry_get_text (GTK_ENTRY (priv->plan_apn_entry));
+	}
+
+	if (apn) {
 		str = g_string_new (NULL);
 		g_string_append_printf (str, "<span color=\"#999999\">APN: %s</span>", apn);
 		gtk_label_set_markup (GTK_LABEL (priv->confirm_apn), str->str);
 		g_string_free (str, TRUE);
+		gtk_widget_show (priv->confirm_apn);
+	} else {
+		gtk_widget_hide (priv->confirm_apn);
 	}
 }
 
@@ -343,7 +342,7 @@ plan_update_complete (NMAMobileWizard *self)
 	} else {
 		const char *manual_apn;
 
-		manual_apn = gtk_entry_get_text (GTK_ENTRY (priv->plan_unlisted_entry));
+		manual_apn = gtk_entry_get_text (GTK_ENTRY (priv->plan_apn_entry));
 		gtk_assistant_set_page_complete (assistant, priv->plan_page,
 		                                 (manual_apn && strlen (manual_apn)));
 	}
@@ -358,12 +357,12 @@ plan_combo_changed (NMAMobileWizard *self)
 
 	method = get_selected_method (self, &is_manual);
 	if (method) {
-		gtk_entry_set_text (GTK_ENTRY (priv->plan_unlisted_entry), nma_mobile_access_method_get_3gpp_apn (method));
-		gtk_widget_set_sensitive (priv->plan_unlisted_entry, FALSE);
+		gtk_entry_set_text (GTK_ENTRY (priv->plan_apn_entry), nma_mobile_access_method_get_3gpp_apn (method));
+		gtk_widget_set_sensitive (priv->plan_apn_entry, FALSE);
 	} else {
-		gtk_entry_set_text (GTK_ENTRY (priv->plan_unlisted_entry), "");
-		gtk_widget_set_sensitive (priv->plan_unlisted_entry, TRUE);
-		gtk_widget_grab_focus (priv->plan_unlisted_entry);
+		gtk_entry_set_text (GTK_ENTRY (priv->plan_apn_entry), "");
+		gtk_widget_set_sensitive (priv->plan_apn_entry, TRUE);
+		gtk_widget_grab_focus (priv->plan_apn_entry);
 	}
 
 	if (method)
@@ -557,11 +556,7 @@ providers_update_complete (NMAMobileWizard *self)
 		if (provider)
 			nma_mobile_provider_unref (provider);
 	} else {
-		const char *manual_provider;
-
-		manual_provider = gtk_entry_get_text (GTK_ENTRY (priv->provider_unlisted_entry));
-		gtk_assistant_set_page_complete (assistant, priv->providers_page,
-		                                 (manual_provider && strlen (manual_provider)));
+		gtk_assistant_set_page_complete (assistant, priv->providers_page, TRUE);
 	}
 }
 
@@ -577,13 +572,13 @@ focus_providers_view (gpointer user_data)
 }
 
 static gboolean
-focus_provider_unlisted_entry (gpointer user_data)
+focus_provider_unlisted_type_combo (gpointer user_data)
 {
 	NMAMobileWizard *self = user_data;
 	NMAMobileWizardPrivate *priv = NMA_MOBILE_WIZARD_GET_PRIVATE (self);
 
 	priv->providers_focus_id = 0;
-	gtk_widget_grab_focus (priv->provider_unlisted_entry);
+	gtk_widget_grab_focus (priv->provider_unlisted_type_combo);
 	return FALSE;
 }
 
@@ -599,13 +594,11 @@ providers_radio_toggled (GtkToggleButton *button, gpointer user_data)
 		if (!priv->providers_focus_id)
 			priv->providers_focus_id = g_idle_add (focus_providers_view, self);
 		gtk_widget_set_sensitive (priv->providers_view, TRUE);
-		gtk_widget_set_sensitive (priv->provider_unlisted_entry, FALSE);
 		gtk_widget_set_sensitive (priv->provider_unlisted_type_combo, FALSE);
 	} else {
 		if (!priv->providers_focus_id)
-			priv->providers_focus_id = g_idle_add (focus_provider_unlisted_entry, self);
+			priv->providers_focus_id = g_idle_add (focus_provider_unlisted_type_combo, self);
 		gtk_widget_set_sensitive (priv->providers_view, FALSE);
-		gtk_widget_set_sensitive (priv->provider_unlisted_entry, TRUE);
 		gtk_widget_set_sensitive (priv->provider_unlisted_type_combo, TRUE);
 	}
 
@@ -1405,10 +1398,9 @@ nma_mobile_wizard_class_init (NMAMobileWizardClass *klass)
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, providers_view);
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, provider_unlisted_radio);
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, provider_unlisted_type_combo);
-	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, provider_unlisted_entry);
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, plan_page);
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, plan_combo);
-	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, plan_unlisted_entry);
+	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, plan_apn_entry);
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, confirm_page);
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, confirm_provider);
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, confirm_plan_label);
