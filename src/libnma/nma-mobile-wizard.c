@@ -440,8 +440,8 @@ plan_prepare (NMAMobileWizard *self)
 			    && (nma_mobile_access_method_get_family (method) != priv->family))
 				continue;
 
-			gtk_tree_store_append (GTK_TREE_STORE (priv->plan_store), &method_iter, NULL);
-			gtk_tree_store_set (GTK_TREE_STORE (priv->plan_store),
+			gtk_tree_store_append (priv->plan_store, &method_iter, NULL);
+			gtk_tree_store_set (priv->plan_store,
 			                    &method_iter,
 			                    PLAN_COL_NAME,
 			                    nma_mobile_access_method_get_name (method),
@@ -454,12 +454,12 @@ plan_prepare (NMAMobileWizard *self)
 
 		/* Draw the separator */
 		if (count)
-			gtk_tree_store_append (GTK_TREE_STORE (priv->plan_store), &method_iter, NULL);
+			gtk_tree_store_append (priv->plan_store, &method_iter, NULL);
 	}
 
 	/* Add the "My plan is not listed..." item */
-	gtk_tree_store_append (GTK_TREE_STORE (priv->plan_store), &method_iter, NULL);
-	gtk_tree_store_set (GTK_TREE_STORE (priv->plan_store),
+	gtk_tree_store_append (priv->plan_store, &method_iter, NULL);
+	gtk_tree_store_set (priv->plan_store,
 	                    &method_iter,
 	                    PLAN_COL_NAME,
 	                    _("My plan is not listed…"),
@@ -671,8 +671,8 @@ providers_prepare (NMAMobileWizard *self)
 				continue;
 		}
 
-		gtk_tree_store_append (GTK_TREE_STORE (priv->providers_store), &provider_iter, NULL);
-		gtk_tree_store_set (GTK_TREE_STORE (priv->providers_store),
+		gtk_tree_store_append (priv->providers_store, &provider_iter, NULL);
+		gtk_tree_store_set (priv->providers_store,
 		                    &provider_iter,
 		                    PROVIDER_COL_NAME,
 		                    nma_mobile_provider_get_name (provider),
@@ -769,8 +769,8 @@ add_one_country (gpointer key, gpointer value, gpointer user_data)
 	    && !nma_country_info_get_providers (country_info))
 		return;
 
-	gtk_tree_store_append (GTK_TREE_STORE (priv->country_store), &country_iter, NULL);
-	gtk_tree_store_set (GTK_TREE_STORE (priv->country_store),
+	gtk_tree_store_append (priv->country_store, &country_iter, NULL);
+	gtk_tree_store_set (priv->country_store,
 	                    &country_iter,
 	                    COUNTRIES_COL_NAME,
 	                    nma_country_info_get_country_name (country_info),
@@ -998,8 +998,8 @@ __intro_device_added (NMAMobileWizard *self, NMDevice *device, gboolean select_i
 	} else
 		return FALSE;
 
-	gtk_tree_store_append (GTK_TREE_STORE (priv->dev_store), &iter, NULL);
-	gtk_tree_store_set (GTK_TREE_STORE (priv->dev_store),
+	gtk_tree_store_append (priv->dev_store, &iter, NULL);
+	gtk_tree_store_set (priv->dev_store,
 	                    &iter,
 	                    INTRO_COL_NAME, desc,
 	                    INTRO_COL_DEVICE, device,
@@ -1036,7 +1036,7 @@ intro_device_removed_cb (NMClient *client, NMDevice *device, NMAMobileWizard *se
 		                    INTRO_COL_DEVICE, &candidate, -1);
 		if (candidate) {
 			if (candidate == device) {
-				gtk_tree_store_remove (GTK_TREE_STORE (priv->dev_store), &iter);
+				gtk_tree_store_remove (priv->dev_store, &iter);
 				removed = TRUE;
 			}
 			g_object_unref (candidate);
@@ -1198,13 +1198,13 @@ intro_setup (NMAMobileWizard *self)
 		gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (priv->dev_combo), renderer, "text", INTRO_COL_NAME);
 
 		/* Any device */
-		gtk_tree_store_append (GTK_TREE_STORE (priv->dev_store), &iter, NULL);
-		gtk_tree_store_set (GTK_TREE_STORE (priv->dev_store), &iter,
+		gtk_tree_store_append (priv->dev_store, &iter, NULL);
+		gtk_tree_store_set (priv->dev_store, &iter,
 		                    INTRO_COL_NAME, _("Any device"), -1);
 
 		/* Separator */
-		gtk_tree_store_append (GTK_TREE_STORE (priv->dev_store), &iter, NULL);
-		gtk_tree_store_set (GTK_TREE_STORE (priv->dev_store), &iter,
+		gtk_tree_store_append (priv->dev_store, &iter, NULL);
+		gtk_tree_store_set (priv->dev_store, &iter,
 		                    INTRO_COL_SEPARATOR, TRUE, -1);
 
 		intro_add_initial_devices (self);
