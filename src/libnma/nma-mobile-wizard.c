@@ -419,19 +419,30 @@ plan_setup (NMAMobileWizard *self)
 	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (priv->plan_combo), renderer, "text", PLAN_COL_NAME);
 }
 
+static gboolean
+focus_plan_apn_entry (gpointer user_data)
+{
+	NMAMobileWizard *self = user_data;
+	NMAMobileWizardPrivate *priv = NMA_MOBILE_WIZARD_GET_PRIVATE (self);
+
+	priv->plan_focus_id = 0;
+	gtk_widget_grab_focus (priv->plan_apn_entry);
+	return FALSE;
+}
+
 static void
 plan_prepare (NMAMobileWizard *self)
 {
 	NMAMobileWizardPrivate *priv = NMA_MOBILE_WIZARD_GET_PRIVATE (self);
 	NMAMobileProvider *provider;
 	GtkTreeIter method_iter;
+	guint32 count = 0;
 
 	gtk_tree_store_clear (priv->plan_store);
 
 	provider = get_selected_provider (self);
 	if (provider) {
 		GSList *iter;
-		guint32 count = 0;
 
 		for (iter = nma_mobile_provider_get_methods (provider); iter; iter = g_slist_next (iter)) {
 			NMAMobileAccessMethod *method = iter->data;
@@ -466,10 +477,15 @@ plan_prepare (NMAMobileWizard *self)
 	                    PLAN_COL_MANUAL,
 	                    TRUE,
 	                    -1);
-
 	/* Select the first item by default if nothing is yet selected */
 	if (gtk_combo_box_get_active (GTK_COMBO_BOX (priv->plan_combo)) < 0)
 		gtk_combo_box_set_active (GTK_COMBO_BOX (priv->plan_combo), 0);
+
+	gtk_widget_set_sensitive (priv->plan_combo, count > 0);
+	if (count == 0) {
+		if (!priv->plan_focus_id)
+			priv->plan_focus_id = g_idle_add (focus_plan_apn_entry, self);
+	}
 
 	plan_combo_changed (self);
 }
@@ -1216,6 +1232,17 @@ intro_setup (NMAMobileWizard *self)
 /**********************************************************/
 
 static void
+remove_plan_focus_idle (NMAMobileWizard *self)
+{
+	NMAMobileWizardPrivate *priv = NMA_MOBILE_WIZARD_GET_PRIVATE (self);
+
+	if (priv->plan_focus_id) {
+		g_source_remove (priv->plan_focus_id);
+		priv->plan_focus_id = 0;
+	}
+}
+
+static void
 remove_provider_focus_idle (NMAMobileWizard *self)
 {
 	NMAMobileWizardPrivate *priv = NMA_MOBILE_WIZARD_GET_PRIVATE (self);
@@ -1243,6 +1270,8 @@ assistant_prepare (GtkAssistant *assistant, GtkWidget *page, gpointer user_data)
 	NMAMobileWizard *self = user_data;
 	NMAMobileWizardPrivate *priv = NMA_MOBILE_WIZARD_GET_PRIVATE (self);
 
+	if (page != priv->plan_page)
+		remove_plan_focus_idle (self);
 	if (page != priv->providers_page)
 		remove_provider_focus_idle (self);
 	if (page != priv->country_page)
@@ -1346,6 +1375,7 @@ finalize (GObject *object)
 	g_clear_pointer (&priv->dev_desc, g_free);
 	g_clear_object (&priv->client);
 
+	remove_plan_focus_idle (self);
 	remove_provider_focus_idle (self);
 	remove_country_focus_idle (self);
 
