@@ -231,7 +231,6 @@ confirm_prepare (NMAMobileWizard *self)
 	gboolean manual = FALSE;
 	GString *str;
 
-	country_info = get_selected_country (self);
 	provider = get_selected_provider (self);
 	if (provider)
 		method = get_selected_method (self, &manual);
@@ -248,10 +247,11 @@ confirm_prepare (NMAMobileWizard *self)
 		g_string_append (str, unlisted_provider);
 	}
 
-	if (country_info) {
+	country_info = get_selected_country (self);
+	if (nma_country_info_get_country_code (country_info))
 		g_string_append_printf (str, ", %s", nma_country_info_get_country_name (country_info));
-		nma_country_info_unref (country_info);
-	}
+	nma_country_info_unref (country_info);
+
 	gtk_label_set_text (GTK_LABEL (priv->confirm_provider), str->str);
 	g_string_free (str, TRUE);
 
@@ -649,14 +649,6 @@ providers_prepare (NMAMobileWizard *self)
 	gtk_tree_store_clear (priv->providers_store);
 
 	country_info = get_selected_country (self);
-	if (!country_info) {
-		/* Unlisted country */
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->provider_unlisted_radio), TRUE);
-		gtk_widget_set_sensitive (GTK_WIDGET (priv->providers_view_radio), FALSE);
-		goto done;
-	}
-	gtk_widget_set_sensitive (GTK_WIDGET (priv->providers_view_radio), TRUE);
-
 	for (piter = nma_country_info_get_providers (country_info);
 	     piter;
 	     piter = g_slist_next (piter)) {
@@ -688,7 +680,6 @@ providers_prepare (NMAMobileWizard *self)
 		                    provider,
 		                    -1);
 	}
-
 	nma_country_info_unref (country_info);
 
 	gtk_tree_view_set_search_column (GTK_TREE_VIEW (priv->providers_view), PROVIDER_COL_NAME);
@@ -713,7 +704,15 @@ providers_prepare (NMAMobileWizard *self)
 		}
 	}
 
-done:
+	if (gtk_tree_model_iter_n_children (GTK_TREE_MODEL (priv->providers_store), NULL) == 0) {
+		/* No providers to choose from. */
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->provider_unlisted_radio), TRUE);
+		gtk_widget_set_sensitive (GTK_WIDGET (priv->providers_view_radio), FALSE);
+	} else {
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->providers_view_radio), TRUE);
+		gtk_widget_set_sensitive (GTK_WIDGET (priv->providers_view_radio), TRUE);
+	}
+
 	providers_radio_toggled (NULL, self);
 
 	/* Initial completeness state */
@@ -859,10 +858,10 @@ country_sort_func (GtkTreeModel *model,
 	gtk_tree_model_get (model, a, COUNTRIES_COL_NAME, &a_str, COUNTRIES_COL_INFO, &a_country_info, -1);
 	gtk_tree_model_get (model, b, COUNTRIES_COL_NAME, &b_str, COUNTRIES_COL_INFO, &b_country_info, -1);
 
-	if (!a_country_info) {
+	if (!a_country_info || !nma_country_info_get_country_code (a_country_info)) {
 		ret = -1;
 		goto out;
-	} else if (!b_country_info) {
+	} else if (!b_country_info || !nma_country_info_get_country_code (b_country_info)) {
 		ret = 1;
 		goto out;
 	}
@@ -893,7 +892,6 @@ country_setup (NMAMobileWizard *self)
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
 	GtkTreeSelection *selection;
-	GtkTreeIter unlisted_iter;
 
 	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (priv->country_sort),
 	                                      COUNTRIES_COL_NAME, GTK_SORT_ASCENDING);
@@ -911,13 +909,6 @@ country_setup (NMAMobileWizard *self)
 	                                                   NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (priv->country_view), column);
 	gtk_tree_view_column_set_clickable (column, TRUE);
-
-	/* My country is not listed... */
-	gtk_tree_store_append (GTK_TREE_STORE (priv->country_store), &unlisted_iter, NULL);
-	gtk_tree_store_set (GTK_TREE_STORE (priv->country_store), &unlisted_iter,
-	                    COUNTRIES_COL_NAME, _("My country is not listed"),
-	                    COUNTRIES_COL_INFO, NULL,
-	                    -1);
 
 	/* Add the rest of the providers */
 	if (priv->mobile_providers_database) {
