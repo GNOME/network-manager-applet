@@ -103,7 +103,7 @@ typedef struct {
 	GtkTreeStore *plan_store;
 	guint32 plan_focus_id;
 
-	GtkWidget *plan_unlisted_entry;
+	GtkWidget *plan_apn_entry;
 
 	/* Confirm page */
 	GtkWidget *confirm_page;
@@ -142,7 +142,7 @@ assistant_closed (GtkButton *button, gpointer user_data)
 
 		wiz_method->provider_name = g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->provider_unlisted_entry)));
 		if (family == NMA_MOBILE_FAMILY_3GPP)
-			wiz_method->gsm_apn = g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->plan_unlisted_entry)));
+			wiz_method->gsm_apn = g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->plan_apn_entry)));
 	} else {
 		gboolean manual = FALSE;
 
@@ -170,7 +170,7 @@ assistant_closed (GtkButton *button, gpointer user_data)
 				}
 			} else {
 				family = NMA_MOBILE_FAMILY_3GPP;
-				wiz_method->gsm_apn = g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->plan_unlisted_entry)));
+				wiz_method->gsm_apn = g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->plan_apn_entry)));
 			}
 		}
 	}
@@ -279,7 +279,7 @@ confirm_prepare (NMAMobileWizard *self)
 			apn = nma_mobile_access_method_get_3gpp_apn (method);
 		} else {
 			gtk_label_set_text (GTK_LABEL (priv->confirm_plan), _("Unlisted"));
-			apn = gtk_entry_get_text (GTK_ENTRY (priv->plan_unlisted_entry));
+			apn = gtk_entry_get_text (GTK_ENTRY (priv->plan_apn_entry));
 		}
 
 		str = g_string_new (NULL);
@@ -343,7 +343,7 @@ plan_update_complete (NMAMobileWizard *self)
 	} else {
 		const char *manual_apn;
 
-		manual_apn = gtk_entry_get_text (GTK_ENTRY (priv->plan_unlisted_entry));
+		manual_apn = gtk_entry_get_text (GTK_ENTRY (priv->plan_apn_entry));
 		gtk_assistant_set_page_complete (assistant, priv->plan_page,
 		                                 (manual_apn && strlen (manual_apn)));
 	}
@@ -358,12 +358,12 @@ plan_combo_changed (NMAMobileWizard *self)
 
 	method = get_selected_method (self, &is_manual);
 	if (method) {
-		gtk_entry_set_text (GTK_ENTRY (priv->plan_unlisted_entry), nma_mobile_access_method_get_3gpp_apn (method));
-		gtk_widget_set_sensitive (priv->plan_unlisted_entry, FALSE);
+		gtk_entry_set_text (GTK_ENTRY (priv->plan_apn_entry), nma_mobile_access_method_get_3gpp_apn (method));
+		gtk_widget_set_sensitive (priv->plan_apn_entry, FALSE);
 	} else {
-		gtk_entry_set_text (GTK_ENTRY (priv->plan_unlisted_entry), "");
-		gtk_widget_set_sensitive (priv->plan_unlisted_entry, TRUE);
-		gtk_widget_grab_focus (priv->plan_unlisted_entry);
+		gtk_entry_set_text (GTK_ENTRY (priv->plan_apn_entry), "");
+		gtk_widget_set_sensitive (priv->plan_apn_entry, TRUE);
+		gtk_widget_grab_focus (priv->plan_apn_entry);
 	}
 
 	if (method)
@@ -1378,7 +1378,7 @@ nma_mobile_wizard_class_init (NMAMobileWizardClass *klass)
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, provider_unlisted_entry);
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, plan_page);
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, plan_combo);
-	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, plan_unlisted_entry);
+	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, plan_apn_entry);
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, confirm_page);
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, confirm_provider);
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, confirm_plan_label);
