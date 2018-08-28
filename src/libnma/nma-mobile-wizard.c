@@ -139,8 +139,17 @@ assistant_closed (GtkButton *button, gpointer user_data)
 		if (family == NMA_MOBILE_FAMILY_UNKNOWN)
 			family = get_provider_unlisted_type (self);
 
-		if (family == NMA_MOBILE_FAMILY_3GPP)
-			wiz_method->gsm_apn = g_strdup (gtk_entry_get_text (priv->plan_apn_entry));
+		switch (family) {
+		case NMA_MOBILE_FAMILY_3GPP:
+			wiz_method->provider_name = g_strdup (_("GSM"));
+			break;
+		case NMA_MOBILE_FAMILY_CDMA:
+			wiz_method->provider_name = g_strdup (_("CDMA"));
+			break;
+		case NMA_MOBILE_FAMILY_UNKNOWN:
+			g_return_if_reached ();
+			break;
+		}
 	} else {
 		gboolean manual = FALSE;
 
@@ -181,7 +190,7 @@ assistant_closed (GtkButton *button, gpointer user_data)
 		wiz_method->devtype = NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO;
 		break;
 	default:
-		g_assert_not_reached ();
+		g_return_if_reached ();
 		break;
 	}
 
@@ -616,7 +625,7 @@ get_provider_unlisted_type (NMAMobileWizard *self)
 	case 1:
 		return NMA_MOBILE_FAMILY_CDMA;
 	default:
-		return NMA_MOBILE_FAMILY_UNKNOWN;
+		g_return_val_if_reached (NMA_MOBILE_FAMILY_UNKNOWN);
 	}
 }
 
