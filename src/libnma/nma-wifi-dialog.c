@@ -309,6 +309,8 @@ ssid_entry_changed (GtkWidget *entry, gpointer user_data)
 	if (!ssid)
 		goto out;
 
+	g_bytes_unref (ssid);
+
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->sec_combo));
 	if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->sec_combo), &iter))
 		gtk_tree_model_get (model, &iter, S_SEC_COLUMN, &sec, -1);
@@ -1190,6 +1192,7 @@ nma_wifi_dialog_get_connection (NMAWifiDialog *self,
 	if (!priv->connection) {
 		NMSettingConnection *s_con;
 		char *uuid;
+		GBytes *ssid;
 
 		connection = nm_simple_connection_new ();
 
@@ -1203,7 +1206,9 @@ nma_wifi_dialog_get_connection (NMAWifiDialog *self,
 		nm_connection_add_setting (connection, (NMSetting *) s_con);
 
 		s_wireless = (NMSettingWireless *) nm_setting_wireless_new ();
-		g_object_set (s_wireless, NM_SETTING_WIRELESS_SSID, validate_dialog_ssid (self), NULL);
+		ssid = validate_dialog_ssid (self);
+		g_object_set (s_wireless, NM_SETTING_WIRELESS_SSID, ssid, NULL);
+		g_free (ssid);
 
 		if (priv->operation == OP_CREATE_ADHOC) {
 			NMSetting *s_ip4;
