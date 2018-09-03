@@ -124,7 +124,8 @@ ws_dynamic_wep_new (NMConnection *connection,
 	                                    (GCallback) auth_combo_changed_cb,
 	                                    connection,
 	                                    is_editor,
-	                                    secrets_only);
+	                                    secrets_only,
+	                                    NULL);
 	auth_combo_changed_cb (widget, (gpointer) parent);
 
 	return (WirelessSecurityDynamicWEP *) parent;

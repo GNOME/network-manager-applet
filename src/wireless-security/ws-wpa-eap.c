@@ -126,7 +126,8 @@ ws_wpa_eap_new (NMConnection *connection,
 	                                    (GCallback) auth_combo_changed_cb,
 	                                    connection,
 	                                    is_editor,
-	                                    secrets_only);
+	                                    secrets_only,
+	                                    secrets_hints);
 	auth_combo_changed_cb (widget, parent);
 
 	return (WirelessSecurityWPAEAP *) parent;

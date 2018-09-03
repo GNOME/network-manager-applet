@@ -35,6 +35,7 @@ typedef enum {
 	EAP_METHOD_SIMPLE_TYPE_PWD,
 	EAP_METHOD_SIMPLE_TYPE_CHAP,
 	EAP_METHOD_SIMPLE_TYPE_GTC,
+	EAP_METHOD_SIMPLE_TYPE_UNKNOWN,
 
 	/* Boundary value, do not use */
 	EAP_METHOD_SIMPLE_TYPE_LAST
@@ -57,7 +58,8 @@ typedef struct _EAPMethodSimple EAPMethodSimple;
 EAPMethodSimple *eap_method_simple_new (WirelessSecurity *ws_parent,
                                         NMConnection *connection,
                                         EAPMethodSimpleType type,
-                                        EAPMethodSimpleFlags flags);
+                                        EAPMethodSimpleFlags flags,
+                                        const char *const*hints);
 
 #endif /* EAP_METHOD_SIMPLE_H */
 
