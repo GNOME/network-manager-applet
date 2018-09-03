@@ -99,7 +99,8 @@ update_secrets (WirelessSecurity *parent, NMConnection *connection)
 WirelessSecurityWPAEAP *
 ws_wpa_eap_new (NMConnection *connection,
                 gboolean is_editor,
-                gboolean secrets_only)
+                gboolean secrets_only,
+                const char *const*secrets_hints)
 {
 	WirelessSecurity *parent;
 	GtkWidget *widget;

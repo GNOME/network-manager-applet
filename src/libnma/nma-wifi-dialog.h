@@ -53,6 +53,11 @@ GtkWidget *nma_wifi_dialog_new (NMClient *client,
                                 NMAccessPoint *ap,
                                 gboolean secrets_only);
 
+GtkWidget *nma_wifi_dialog_new_for_secrets (NMClient *client,
+                                            NMConnection *connection,
+                                            const char *secrets_setting_name,
+                                            const char *const*secrets_hints);
+
 GtkWidget *nma_wifi_dialog_new_for_hidden (NMClient *client);
 
 GtkWidget *nma_wifi_dialog_new_for_create (NMClient *client);
