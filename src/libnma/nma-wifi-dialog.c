@@ -997,7 +997,14 @@ security_combo_init (NMAWifiDialog *self, gboolean secrets_only,
 	 * will already be populated with secrets.  If no connection was given,
 	 * then we need to get any existing secrets to populate the dialog with.
 	 */
-	setting_name = priv->connection ? nm_connection_need_secrets (priv->connection, NULL) : NULL;
+	if (priv->connection) {
+		if (secrets_setting_name)
+			setting_name = secrets_setting_name;
+		else
+			setting_name = nm_connection_need_secrets (priv->connection, NULL);
+	} else
+		setting_name = NULL;
+
 	if (setting_name && NM_IS_REMOTE_CONNECTION (priv->connection)) {
 		GetSecretsInfo *info;
 
