@@ -75,6 +75,7 @@ finish_setup (CEPageVpn *self, gpointer user_data)
 		return;
 	}
 	g_object_ref_sink (parent->page);
+	gtk_widget_show_all (parent->page);
 }
 
 CEPage *
