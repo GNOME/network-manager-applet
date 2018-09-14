@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: network-manager-applet master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
 "issues\n"
-"POT-Creation-Date: 2018-08-07 15:51+0000\n"
-"PO-Revision-Date: 2018-08-07 23:17+0300\n"
+"POT-Creation-Date: 2018-09-13 19:34+0000\n"
+"PO-Revision-Date: 2018-09-14 17:41+0300\n"
 "Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -237,7 +237,6 @@ msgid "C_onnect"
 msgstr "B_ağlan"
 
 #: ../src/8021x.ui.h:4 ../src/libnma/wifi.ui.h:2
-#| msgid "_Network name:"
 msgid "_Network name"
 msgstr "_Ağ adı"
 
@@ -3103,7 +3102,7 @@ msgstr "MACsec"
 
 #: ../src/connection-editor/connection-helpers.c:124
 #: ../src/connection-editor/connection-helpers.c:386
-#: ../src/connection-editor/page-vpn.c:100
+#: ../src/connection-editor/page-vpn.c:99
 msgid "VPN"
 msgstr "VPN"
 
@@ -3112,10 +3111,6 @@ msgid "No VPN service type."
 msgstr "VPN hizmet türü yok."
 
 #: ../src/connection-editor/connection-helpers.c:209
-#| msgid ""
-#| "The VPN plugin failed to import the VPN connection correctly\n"
-#| "\n"
-#| "Error: no VPN service type."
 msgid "The VPN plugin failed to import the VPN connection correctly: "
 msgstr "VPN eklentisi, VPN bağlantısını düzgün olarak içeri aktaramadı: "
 
@@ -3404,18 +3399,15 @@ msgstr "Seçili bağlantıyı silmek için yetki al"
 
 #: ../src/connection-editor/nm-connection-list.c:1059
 #, c-format
-#| msgid "Unsupported mobile broadband connection type."
 msgid "Unrecognized connection type"
 msgstr "Tanınmayan bağlantı türü"
 
 #: ../src/connection-editor/nm-connection-list.c:1064
 #, c-format
-#| msgid "Don’t know how to create “%s” connections"
 msgid "Don’t know how to import “%s” connections"
 msgstr "“%s” bağlantılarının nasıl içe aktarılacağı bilinmiyor"
 
 #: ../src/connection-editor/nm-connection-list.c:1068
-#| msgid "Error editing connection"
 msgid "Error importing connection"
 msgstr "Bağlantı içe aktarılırken hata oluştu"
 
@@ -3426,7 +3418,6 @@ msgid "Error creating connection"
 msgstr "Bağlantı oluşturulurken hata oluştu"
 
 #: ../src/connection-editor/nm-connection-list.c:1075
-#| msgid "Connection cannot be modified"
 msgid "Connection type not specified."
 msgstr "Bağlantı türü belirtilmedi."
 
@@ -3452,15 +3443,15 @@ msgstr "“%s” UUID ile bağlantı bulunamadı."
 msgid "Add a new connection"
 msgstr "Yeni bağlantı ekle"
 
-#: ../src/connection-editor/page-8021x-security.c:113
+#: ../src/connection-editor/page-8021x-security.c:112
 msgid "802.1X Security"
 msgstr "802.1X Güvenliği"
 
-#: ../src/connection-editor/page-8021x-security.c:115
+#: ../src/connection-editor/page-8021x-security.c:114
 msgid "Could not load 802.1X Security user interface."
 msgstr "802.1X Güvenlik kullanıcı arayüzü yüklenemedi."
 
-#: ../src/connection-editor/page-8021x-security.c:129
+#: ../src/connection-editor/page-8021x-security.c:128
 msgid "Use 802.1_X security for this connection"
 msgstr "Bu bağlantı için 802.1_X güvenliği kullan"
 
@@ -3592,9 +3583,9 @@ msgstr "Ethernet bağlantısı %d"
 #. TRANSLATORS: Default zone set for firewall, when no zone is selected
 #: ../src/connection-editor/page-general.c:55
 #: ../src/libnma/nma-mobile-providers.c:806
-#: ../src/libnm-gtk/nm-mobile-providers.c:805
+#: ../src/libnm-gtk/nm-mobile-providers.c:801
 msgid "Default"
-msgstr "Ön tanımlı"
+msgstr "Öntanımlı"
 
 #: ../src/connection-editor/page-general.c:56
 msgid ""
@@ -3820,13 +3811,13 @@ msgstr ""
 #: ../src/connection-editor/page-mobile.c:569
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr ""
-"Sağlayıcım _GSM-tabanlı teknoloji kullanıyor (i.e. GPRS, EDGE, UMTS, HSDPA)"
+"Sağlayıcım _GSM-tabanlı teknoloji kullanıyor (örn.: GPRS, EDGE, UMTS, HSDPA)"
 
 #. Translators: CDMA has 'D' accelerator key; 'C' collides with 'Cancel' button.
 #. You may need to change it according to your language.
 #: ../src/connection-editor/page-mobile.c:576
 msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
-msgstr "Sağlayıcım C_DMA-tabanlı teknoloji kullanıyor (i.e. 1xRTT, EVDO)"
+msgstr "Sağlayıcım C_DMA-tabanlı teknoloji kullanıyor (örn.: 1xRTT, EVDO)"
 
 #: ../src/connection-editor/page-mobile.c:586 ../src/mb-menu-item.c:50
 #: ../src/mobile-helpers.c:282
@@ -3946,25 +3937,25 @@ msgstr "“%s” (%s) için VPN eklenti hizmeti bulunamadı."
 msgid "unknown failure"
 msgstr "bilinmeyen başarısızlık"
 
-#: ../src/connection-editor/page-vpn.c:102
+#: ../src/connection-editor/page-vpn.c:101
 msgid "Could not load VPN user interface."
 msgstr "VPN kullanıcı arayüzü yüklenemedi."
 
-#: ../src/connection-editor/page-vpn.c:117
+#: ../src/connection-editor/page-vpn.c:116
 #, c-format
 msgid "Could not find VPN plugin for “%s”."
 msgstr "“%s” için VPN eklenti hizmeti bulunamadı."
 
-#: ../src/connection-editor/page-vpn.c:199
+#: ../src/connection-editor/page-vpn.c:198
 #, c-format
 msgid "VPN connection %d"
 msgstr "VPN bağlantısı %d"
 
-#: ../src/connection-editor/page-vpn.c:205
+#: ../src/connection-editor/page-vpn.c:204
 msgid "Choose a VPN Connection Type"
 msgstr "VPN Bağlantı Türü Seç"
 
-#: ../src/connection-editor/page-vpn.c:206
+#: ../src/connection-editor/page-vpn.c:205
 msgid ""
 "Select the type of VPN you wish to use for the new connection. If the type "
 "of VPN connection you wish to create does not appear in the list, you may "
@@ -4134,14 +4125,12 @@ msgstr "%s Sertifikası için anahtar seç"
 #: ../src/libnma/nma-file-cert-chooser.c:250
 #: ../src/libnma/nma-pkcs11-cert-chooser.c:374
 #, c-format
-#| msgid "%s private _key:"
 msgid "%s private _key"
 msgstr "%s özel _anahtarı"
 
 #: ../src/libnma/nma-file-cert-chooser.c:254
 #: ../src/libnma/nma-pkcs11-cert-chooser.c:378
 #, c-format
-#| msgid "%s key _password:"
 msgid "%s key _password"
 msgstr "%s anahtar _parolası"
 
@@ -4153,7 +4142,6 @@ msgstr "%s Sertifikası Seç"
 #: ../src/libnma/nma-file-cert-chooser.c:262
 #: ../src/libnma/nma-pkcs11-cert-chooser.c:386
 #, c-format
-#| msgid "%s _certificate:"
 msgid "%s _certificate"
 msgstr "%s _sertifikası"
 
@@ -4208,8 +4196,8 @@ msgid ""
 "This assistant helps you easily set up a mobile broadband connection to a "
 "cellular (3G) network."
 msgstr ""
-"Bu yardımcı kolayca hücresel ağa (3G) mobil geniş bant bağlantı kurmanıza "
-"yardımcı olacak."
+"Bu yardımcı, bir hücresel ağa (3G) kolayca mobil geniş bant bağlantı "
+"kurmanıza yardımcı olacak."
 
 #: ../src/libnma/nma-mobile-wizard.ui.h:3
 #: ../src/libnm-gtk/nm-mobile-wizard.c:1361
@@ -4392,7 +4380,6 @@ msgstr "%s Sertifikası Seç"
 
 #: ../src/libnma/nma-pkcs11-cert-chooser.c:390
 #, c-format
-#| msgid "%s certificate _password:"
 msgid "%s certificate _password"
 msgstr "%s sertifika _parolası"
 
@@ -4402,7 +4389,7 @@ msgstr "Giriş yaparken hata: "
 
 #: ../src/libnma/nma-pkcs11-cert-chooser-dialog.c:277
 msgid "Error opening a session: "
-msgstr "Oturum açılırken hata:"
+msgstr "Oturum açılırken hata: "
 
 #: ../src/libnma/nma-pkcs11-cert-chooser-dialog.ui.h:1
 msgid "_Unlock token"
@@ -4534,17 +4521,14 @@ msgstr ""
 "girin."
 
 #: ../src/libnma/wifi.ui.h:1
-#| msgid "Wi-Fi _security:"
 msgid "Wi-Fi _security"
 msgstr "Kablosuz _güvenliği"
 
 #: ../src/libnma/wifi.ui.h:3
-#| msgid "C_onnection:"
 msgid "C_onnection"
 msgstr "B_ağlantı"
 
 #: ../src/libnma/wifi.ui.h:4
-#| msgid "Wi-Fi _adapter:"
 msgid "Wi-Fi _adapter"
 msgstr "Kablosuz _bağdaştırıcı"
 
