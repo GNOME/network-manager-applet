@@ -383,8 +383,8 @@ eap_method_simple_new (WirelessSecurity *ws_parent,
 	method->flags = flags;
 	method->type = type;
 	g_assert (type < EAP_METHOD_SIMPLE_TYPE_LAST);
-	g_assert (   (flags & EAP_METHOD_SIMPLE_FLAG_SECRETS_ONLY)
-	          || type != EAP_METHOD_SIMPLE_TYPE_UNKNOWN);
+	g_assert (   type != EAP_METHOD_SIMPLE_TYPE_UNKNOWN
+	          || hints);
 
 	if (hints) {
 		for (; *hints; hints++) {

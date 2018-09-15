@@ -386,7 +386,6 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	EAPMethodFAST *em_fast;
 	EAPMethodTTLS *em_ttls;
 	EAPMethodPEAP *em_peap;
-	EAPMethodSimple *em_hints;
 	const char *default_method = NULL, *ctype = NULL;
 	int active = -1, item = 0;
 	gboolean wired = FALSE;
@@ -501,6 +500,8 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	item++;
 
 	if (secrets_hints) {
+		EAPMethodSimple *em_hints;
+
 		em_hints = eap_method_simple_new (sec, connection, EAP_METHOD_SIMPLE_TYPE_UNKNOWN,
 		                                  simple_flags, secrets_hints);
 		gtk_list_store_append (auth_model, &iter);
@@ -510,6 +511,20 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		                    -1);
 		eap_method_unref (EAP_METHOD (em_hints));
 		active = item;
+		item++;
+	} else if (default_method && !strcmp (default_method, "external")) {
+		EAPMethodSimple *em_extern;
+		const char *empty_hints[] = { NULL };
+
+		em_extern = eap_method_simple_new (sec, connection, EAP_METHOD_SIMPLE_TYPE_UNKNOWN,
+		                                   simple_flags, empty_hints);
+		gtk_list_store_append (auth_model, &iter);
+		gtk_list_store_set (auth_model, &iter,
+		                    AUTH_NAME_COLUMN, _("Externally configured"),
+		                    AUTH_METHOD_COLUMN, em_extern,
+		                    -1);
+		eap_method_unref (EAP_METHOD (em_extern));
+			active = item;
 		item++;
 	}
 
