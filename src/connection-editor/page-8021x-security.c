@@ -88,6 +88,7 @@ finish_setup (CEPage8021xSecurity *self, gpointer user_data)
 
 	gtk_box_pack_start (GTK_BOX (parent->page), GTK_WIDGET (priv->enabled), FALSE, TRUE, 12);
 	gtk_box_pack_start (GTK_BOX (parent->page), priv->security_widget, TRUE, TRUE, 0);
+	gtk_widget_show_all (parent->page);
 }
 
 CEPage *
