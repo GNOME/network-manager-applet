@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
 "issues\n"
-"POT-Creation-Date: 2018-09-13 19:34+0000\n"
+"POT-Creation-Date: 2018-09-19 08:25+0000\n"
 "PO-Revision-Date: 2018-04-26 18:02+0200\n"
 "Last-Translator: Zdeněk Hataš <zdenek.hatas@gmail.com>\n"
 "Language-Team: čeština <gnome-cs-list@gnome.org>\n"
@@ -1685,10 +1685,8 @@ msgid "The interface on which the PPP connection will be established."
 msgstr "Rozhraní, na kterém má být navázáno spojení PPP."
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:12
-#, fuzzy
-#| msgid "P_arent interface"
 msgid "C_laim interface"
-msgstr "Rodičovské rozhr_aní"
+msgstr "Náro_kovat si rozhraní"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:13
 msgid ""
@@ -1697,6 +1695,10 @@ msgid ""
 "option can only be used for Ethernet interfaces. nm-applet is able to "
 "activate the connection only if this option is selected."
 msgstr ""
+"Když je zapnuto, získá připojení výhradní kontrolu na rozhraním a nebude na "
+"něm možné aktivovat žádné další připojení. Poznamenejme, že tuto volbu lze "
+"použít jen pro rozhraní Ethernet. nm-applet je schopen aktivovat připojení, "
+"jen když je tato volba zapnutá."
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:1
 #: ../src/connection-editor/ce-page-general.ui.h:1
@@ -2451,13 +2453,8 @@ msgid "Port _sticky"
 msgstr "Při_družený port"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:15
-#: ../src/connection-editor/ce-page-team.ui.h:82
-msgid ""
-"Validate received ARP packets on active ports. If this is not checked, all "
-"incoming ARP packets will be considered as a good reply."
-msgstr ""
-"Ověřovat přijaté pakety ARP na aktivních portech. Pokud není zaškrtnuto, "
-"budou všechny příchozí pakety ARP brány jako správná odpověď."
+msgid "Do not unselect the port if a better one becomes available."
+msgstr "Nerušit výběr portu, když začne být dostupný jiný lepší"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:16
 msgid "LACP runner options"
@@ -2576,11 +2573,20 @@ msgid "Ignore invalid packets from _active ports"
 msgstr "Ignorovat neplatné pakety z _ativních portů"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:36
+#: ../src/connection-editor/ce-page-team.ui.h:82
+msgid ""
+"Validate received ARP packets on active ports. If this is not checked, all "
+"incoming ARP packets will be considered as a good reply."
+msgstr ""
+"Ověřovat přijaté pakety ARP na aktivních portech. Pokud není zaškrtnuto, "
+"budou všechny příchozí pakety ARP brány jako správná odpověď."
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:37
 #: ../src/connection-editor/ce-page-team.ui.h:83
 msgid "Ignore invalid packets from i_nactive ports"
 msgstr "Ignorovat neplatné pakety z _neativních portů"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:37
+#: ../src/connection-editor/ce-page-team-port.ui.h:38
 #: ../src/connection-editor/ce-page-team.ui.h:84
 msgid ""
 "Validate received ARP packets on inactive ports. If this is not checked, all "
@@ -2589,12 +2595,12 @@ msgstr ""
 "Ověřovat přijaté pakety ARP na neaktivních portech. Pokud není zaškrtnuto, "
 "budou všechny příchozí pakety ARP brány jako správná odpověď."
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:38
+#: ../src/connection-editor/ce-page-team-port.ui.h:39
 #: ../src/connection-editor/ce-page-team.ui.h:85
 msgid "S_end on inactive ports"
 msgstr "Od_esílat na neaktivních portech"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:39
+#: ../src/connection-editor/ce-page-team-port.ui.h:40
 #: ../src/connection-editor/ce-page-team.ui.h:86
 msgid ""
 "By default, ARP requests are sent on active ports only. This option allows "
@@ -2603,51 +2609,51 @@ msgstr ""
 "Ve výchozím nastavení jsou požadavky ARP posílány pouze na aktivní porty. "
 "Tato volba umožní odesílání také na neaktivní porty."
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:40
+#: ../src/connection-editor/ce-page-team-port.ui.h:41
 #: ../src/connection-editor/ce-page-team.ui.h:87
 msgid ""
 "The delay between the link coming up and the runner being notified about it."
 msgstr "Prodleva mezi aktivací linky a informování režimu o této situaci."
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:41
+#: ../src/connection-editor/ce-page-team-port.ui.h:42
 #: ../src/connection-editor/ce-page-team.ui.h:88
 msgid ""
 "The delay between the link going down and the runner being notified about it."
 msgstr "Prodleva mezi deaktivací linky a informování režimu o této situaci."
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:42
+#: ../src/connection-editor/ce-page-team-port.ui.h:43
 #: ../src/connection-editor/ce-page-team.ui.h:89
 msgid "The interval between requests being sent."
 msgstr "Časové rozmezí mezi odesílanými požadavky."
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:43
+#: ../src/connection-editor/ce-page-team-port.ui.h:44
 #: ../src/connection-editor/ce-page-team.ui.h:90
 msgid ""
 "The delay between link watch initialization and the first request being sent."
 msgstr ""
 "Prodleva mezi inicializací sledování linky a odesláním prvního požadavku."
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:44
+#: ../src/connection-editor/ce-page-team-port.ui.h:45
 #: ../src/connection-editor/ce-page-team.ui.h:91
 msgid "The link watcher to be used."
 msgstr "Hlídání spojení, které se má použít"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:45
+#: ../src/connection-editor/ce-page-team-port.ui.h:46
 #: ../src/connection-editor/ce-page-team.ui.h:92
 msgid "Link Watcher"
 msgstr "Hlídání spojení"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:46
+#: ../src/connection-editor/ce-page-team-port.ui.h:47
 #: ../src/connection-editor/ce-page-team.ui.h:93
 msgid "Im_port team configuration from a file…"
 msgstr "_Importovat nastavení týmu ze souboru…"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:47
+#: ../src/connection-editor/ce-page-team-port.ui.h:48
 #: ../src/connection-editor/ce-page-team.ui.h:94
 msgid "Edit _JSON configuration"
 msgstr "Upravit nastavení _JSON"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:48
+#: ../src/connection-editor/ce-page-team-port.ui.h:49
 #: ../src/connection-editor/ce-page-team.ui.h:95
 msgid "Raw Configuration"
 msgstr "Surová konfigurace"
@@ -3091,11 +3097,12 @@ msgstr "VPN"
 
 #: ../src/connection-editor/connection-helpers.c:204
 msgid "No VPN service type."
-msgstr ""
+msgstr "Není žádný typ služby VPN."
 
 #: ../src/connection-editor/connection-helpers.c:209
 msgid "The VPN plugin failed to import the VPN connection correctly: "
-msgstr "Zásuvnému modulu VPN se nepodařilo správně importovat připojení k VPN: "
+msgstr ""
+"Zásuvnému modulu VPN se nepodařilo správně importovat připojení k VPN: "
 
 #: ../src/connection-editor/connection-helpers.c:293
 #: ../src/connection-editor/page-proxy.c:118
@@ -3392,10 +3399,8 @@ msgid "Authenticate to delete the selected connection"
 msgstr "Před smazáním zvoleného připojení musíte být ověřeni"
 
 #: ../src/connection-editor/nm-connection-list.c:1059
-#, fuzzy, c-format
-#| msgid "Unsupported mobile broadband connection type."
 msgid "Unrecognized connection type"
-msgstr "Nepodporovaný typ mobilního širokopásmového připojení."
+msgstr "Nerozpoznaný typ připojení"
 
 #: ../src/connection-editor/nm-connection-list.c:1064
 #, c-format
@@ -3413,10 +3418,8 @@ msgid "Error creating connection"
 msgstr "Chyba při vytváření připojení"
 
 #: ../src/connection-editor/nm-connection-list.c:1075
-#, fuzzy
-#| msgid "Connection cannot be modified"
 msgid "Connection type not specified."
-msgstr "Připojení nemůže být změněno"
+msgstr "Typ připojení není určen"
 
 #: ../src/connection-editor/nm-connection-list.c:1091
 msgid "No VPN plugins are installed."
@@ -4972,32 +4975,3 @@ msgstr ""
 #: ../src/wireless-security/ws-wpa-psk.ui.h:2
 msgid "_Type"
 msgstr "_Typ"
-
-#~ msgid "Failed to update connection secrets due to an unknown error."
-#~ msgstr "Aktualizace připojení selhala kvůli neznámé chybě."
-
-#~ msgid "Cannot import VPN connection"
-#~ msgstr "Nelze importovat připojení k VPN"
-
-#~ msgid ""
-#~ "The file “%s” could not be read or does not contain recognized VPN "
-#~ "connection information\n"
-#~ "\n"
-#~ "Error: %s."
-#~ msgstr ""
-#~ "Soubor „%s“ nelze přečíst nebo neobsahuje rozpoznatelné informace o "
-#~ "připojení k VPN\n"
-#~ "\n"
-#~ "Chyba: %s."
-
-#~ msgid "unknown error"
-#~ msgstr "neznámá chyba"
-
-#~ msgid "Priority:"
-#~ msgstr "Priorita:"
-
-#~ msgid "_Automatically connect to this network when it is available"
-#~ msgstr "_Automaticky připojit do této sítě pokud je k dispozici"
-
-#~ msgid "Connection _priority for auto-activation:"
-#~ msgstr "_Priorita spojení pro automatickou aktivaci:"
