@@ -27,6 +27,8 @@
 
 #include <gtk/gtk.h>
 
+#include "nma-version.h"
+
 G_BEGIN_DECLS
 
 #define NMA_VPN_TYPE_PASSWORD_DIALOG            (nma_vpn_password_dialog_get_type ())
@@ -37,6 +39,8 @@ G_BEGIN_DECLS
 
 typedef struct NMAVpnPasswordDialog        NMAVpnPasswordDialog;
 typedef struct NMAVpnPasswordDialogClass   NMAVpnPasswordDialogClass;
+
+#define NMA_VPN_PASSWORD_DIALOG_NUM_FIELDS       6
 
 struct NMAVpnPasswordDialog {
 	GtkDialog parent;
@@ -84,6 +88,27 @@ const char *nma_vpn_password_dialog_get_password           (NMAVpnPasswordDialog
 const char *nma_vpn_password_dialog_get_password_secondary (NMAVpnPasswordDialog *dialog);
 
 const char *nma_vpn_password_dialog_get_password_ternary (NMAVpnPasswordDialog *dialog);
+
+/* New API */
+NMA_AVAILABLE_IN_1_10
+void        nma_vpn_password_dialog_field_set_visible (NMAVpnPasswordDialog *dialog,
+                                                       guint                 i,
+                                                       gboolean              visible,
+                                                       gboolean              is_password);
+NMA_AVAILABLE_IN_1_10
+void        nma_vpn_password_dialog_field_focus     (NMAVpnPasswordDialog *dialog,
+                                                     guint                 i);
+NMA_AVAILABLE_IN_1_10
+void        nma_vpn_password_dialog_field_set_text (NMAVpnPasswordDialog *dialog,
+                                                    guint                 i,
+                                                    const char           *text);
+NMA_AVAILABLE_IN_1_10
+void        nma_vpn_password_dialog_field_set_label (NMAVpnPasswordDialog *dialog,
+                                                     guint                 i,
+                                                     const char           *label);
+NMA_AVAILABLE_IN_1_10
+const char *nma_vpn_password_dialog_field_get_text (NMAVpnPasswordDialog *dialog,
+                                                    guint                 i);
 
 G_END_DECLS
 
