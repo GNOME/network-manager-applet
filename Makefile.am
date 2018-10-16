@@ -31,6 +31,7 @@ DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-gtk-doc \
 	--enable-introspection \
 	--enable-more-warnings=error \
+	--with-libnm-gtk \
 	--with-wwan \
 	--with-team \
 	--with-gcr
