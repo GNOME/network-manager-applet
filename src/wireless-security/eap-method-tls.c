@@ -472,6 +472,9 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 			ca_not_required = TRUE;
 	}
 
+	if (secrets_only)
+		ca_not_required = TRUE;
+
 	method->client_cert_chooser = nma_cert_chooser_new ("User",
 	                                                    secrets_only ? NMA_CERT_CHOOSER_FLAG_PASSWORDS : 0);
 	gtk_grid_attach (GTK_GRID (widget), method->client_cert_chooser, 0, 4, 2, 1);
