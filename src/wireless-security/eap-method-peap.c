@@ -79,12 +79,12 @@ validate (EAPMethod *parent, GError **error)
 }
 
 static void
-ca_cert_not_required_toggled (GtkWidget *ignored, gpointer user_data)
+ca_cert_not_required_toggled (GtkWidget *button, gpointer user_data)
 {
 	EAPMethodPEAP *method = (EAPMethodPEAP *) user_data;
 
 	gtk_widget_set_sensitive (method->ca_cert_chooser,
-	                          !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (ignored)));
+	                          !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button)));
 }
 
 static void
