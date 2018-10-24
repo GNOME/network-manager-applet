@@ -17,7 +17,7 @@
  * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2017 Red Hat, Inc.
+ * Copyright (C) 2017,2018 Red Hat, Inc.
  */
 
 #include "nm-default.h"
@@ -409,6 +409,21 @@ set_flags (NMACertChooser *cert_chooser, NMACertChooserFlags flags)
 		gtk_widget_hide (priv->cert_button_label);
 		gtk_widget_hide (priv->key_button);
 		gtk_widget_hide (priv->key_button_label);
+
+		/* If these are not sensitive now, the cannot possibly be made
+		 * sensitive and there's no point in showing them. */
+		if (!gtk_widget_get_sensitive (priv->cert_password)) {
+			gtk_widget_hide (priv->cert_password);
+			gtk_widget_hide (priv->cert_password_label);
+		}
+		if (!gtk_widget_get_sensitive (priv->key_password)) {
+			gtk_widget_hide (priv->key_password);
+			gtk_widget_hide (priv->key_password_label);
+		}
+		if (   !gtk_widget_get_visible (priv->cert_password)
+		    && !gtk_widget_get_visible (priv->key_password)) {
+			gtk_widget_hide (priv->show_password);
+		}
 	}
 }
 
@@ -416,7 +431,6 @@ static void
 init (NMACertChooser *cert_chooser)
 {
 	NMAPkcs11CertChooserPrivate *priv = NMA_PKCS11_CERT_CHOOSER_GET_PRIVATE (cert_chooser);
-	GtkWidget *show_password;
 
 	gtk_grid_insert_column (GTK_GRID (cert_chooser), 2);
 	gtk_grid_set_row_spacing (GTK_GRID (cert_chooser), 6);
@@ -424,11 +438,11 @@ init (NMACertChooser *cert_chooser)
 
 	/* Show password */
 	gtk_grid_insert_row (GTK_GRID (cert_chooser), 0);
-	show_password = gtk_check_button_new_with_mnemonic _("Sho_w passwords");
-	gtk_grid_attach (GTK_GRID (cert_chooser), show_password, 1, 2, 1, 1);
-	gtk_widget_show (show_password);
-	gtk_widget_set_no_show_all (show_password, TRUE);
-	g_signal_connect (show_password, "toggled",
+	priv->show_password = gtk_check_button_new_with_mnemonic _("Sho_w passwords");
+	gtk_grid_attach (GTK_GRID (cert_chooser), priv->show_password, 1, 2, 1, 1);
+	gtk_widget_show (priv->show_password);
+	gtk_widget_set_no_show_all (priv->show_password, TRUE);
+	g_signal_connect (priv->show_password, "toggled",
 	                  G_CALLBACK (show_toggled_cb), cert_chooser);
 
 	/* The key chooser */
