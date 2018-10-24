@@ -114,28 +114,16 @@ size_group_clear (GtkSizeGroup *group)
 }
 
 static void
-_set_response_sensitive (NMAWifiDialog *self,
-                         int response_id,
-                         gboolean is_sensitive)
+_set_ok_sensitive (NMAWifiDialog *self, gboolean is_sensitive)
 {
-	switch (response_id) {
-	case GTK_RESPONSE_CANCEL:
-	case GTK_RESPONSE_OK:
-		gtk_dialog_set_response_sensitive (GTK_DIALOG (self), response_id, is_sensitive);
+	NMAWifiDialogPrivate *priv = NMA_WIFI_DIALOG_GET_PRIVATE (self);
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (self), GTK_RESPONSE_OK, is_sensitive);
 
-		if (response_id == GTK_RESPONSE_OK) {
-			NMAWifiDialogPrivate *priv = NMA_WIFI_DIALOG_GET_PRIVATE (self);
-
-			if (priv->ok_response_button) {
-				gtk_widget_set_tooltip_text (priv->ok_response_button,
-				                             is_sensitive
-				                                 ? _("Click to connect")
-				                                 : _("Either a password is missing or the connection is invalid. In the latter case, you have to edit the connection with nm-connection-editor first"));
-			}
-		}
-		break;
-	default:
-		g_return_if_reached ();
+	if (priv->ok_response_button) {
+		gtk_widget_set_tooltip_text (priv->ok_response_button,
+		                             is_sensitive
+		                                 ? _("Click to connect")
+		                                 : _("Either a password is missing or the connection is invalid. In the latter case, you have to edit the connection with nm-connection-editor first"));
 	}
 }
 
@@ -298,7 +286,7 @@ stuff_changed_cb (WirelessSecurity *sec, gpointer user_data)
 	if (priv->secrets_info)
 		valid = FALSE;
 
-	_set_response_sensitive (self, GTK_RESPONSE_OK, valid);
+	_set_ok_sensitive (self, valid);
 }
 
 static void
@@ -340,7 +328,7 @@ out:
 	if (priv->secrets_info)
 		valid = FALSE;
 
-	_set_response_sensitive (self, GTK_RESPONSE_OK, valid);
+	_set_ok_sensitive (self, valid);
 }
 
 static void
@@ -772,7 +760,7 @@ get_secrets_cb (GObject *object,
 		/* Buttons should only be re-enabled if this secrets response is the
 		 * in-progress one.
 		 */
-		_set_response_sensitive (info->self, GTK_RESPONSE_CANCEL, TRUE);
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (info->self), GTK_RESPONSE_CANCEL, TRUE);
 		current_secrets = TRUE;
 	}
 
@@ -786,7 +774,7 @@ get_secrets_cb (GObject *object,
 	}
 
 	if (current_secrets)
-		_set_response_sensitive (info->self, GTK_RESPONSE_OK, TRUE);
+		_set_ok_sensitive (info->self, TRUE);
 
 	/* User might have changed the connection while the secrets call was in
 	 * progress, so don't try to update the wrong connection with the secrets
@@ -1006,8 +994,8 @@ security_combo_init (NMAWifiDialog *self, gboolean secrets_only)
 		/* Desensitize the dialog's buttons while we wait for the secrets
 		 * operation to complete.
 		 */
-		_set_response_sensitive (self, GTK_RESPONSE_OK, FALSE);
-		_set_response_sensitive (self, GTK_RESPONSE_CANCEL, FALSE);
+		_set_ok_sensitive (self, FALSE);
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (self), GTK_RESPONSE_CANCEL, FALSE);
 
 		info = g_malloc0 (sizeof (GetSecretsInfo));
 		info->self = self;
@@ -1096,7 +1084,7 @@ internal_init (NMAWifiDialog *self,
 		priv->network_name_focus = TRUE;
 	}
 
-	_set_response_sensitive (self, GTK_RESPONSE_OK, FALSE);
+	_set_ok_sensitive (self, FALSE);
 
 	if (!device_combo_init (self, specific_device)) {
 		g_warning ("No Wi-Fi devices available.");
