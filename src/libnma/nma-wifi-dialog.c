@@ -1123,7 +1123,7 @@ internal_init (NMAWifiDialog *self,
 		gtk_widget_hide (widget);
 	}
 
-	if (security_combo_focus)
+	if (security_combo_focus && !secrets_only)
 		gtk_widget_grab_focus (priv->sec_combo);
 	else if (priv->network_name_focus) {
 		widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "network_name_entry"));
