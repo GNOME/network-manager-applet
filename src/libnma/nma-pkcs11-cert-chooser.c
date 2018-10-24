@@ -424,7 +424,7 @@ init (NMACertChooser *cert_chooser)
 
 	/* Show password */
 	gtk_grid_insert_row (GTK_GRID (cert_chooser), 0);
-	show_password = gtk_check_button_new_with_mnemonic ("Sho_w passwords");
+	show_password = gtk_check_button_new_with_mnemonic _("Sho_w passwords");
 	gtk_grid_attach (GTK_GRID (cert_chooser), show_password, 1, 2, 1, 1);
 	gtk_widget_show (show_password);
 	gtk_widget_set_no_show_all (show_password, TRUE);
