@@ -46,6 +46,7 @@ typedef struct {
 	GtkWidget *key_password;
 	GtkWidget *cert_button;
 	GtkWidget *cert_password;
+	GtkWidget *show_password;
 } NMAPkcs11CertChooserPrivate;
 
 typedef struct {
