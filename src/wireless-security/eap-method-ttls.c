@@ -479,6 +479,9 @@ eap_method_ttls_new (WirelessSecurity *ws_parent,
 			ca_not_required = TRUE;
 	}
 
+	if (secrets_only)
+		ca_not_required = TRUE;
+
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_ttls_ca_cert_not_required_checkbox"));
 	g_assert (widget);
 	g_signal_connect (G_OBJECT (widget), "toggled",
