@@ -265,7 +265,7 @@ mobile_helper_wizard (NMDeviceModemCapabilities capabilities,
 	                                NULL,
 	                                wizard_capability,
 	                                FALSE,
-									mobile_wizard_done,
+	                                mobile_wizard_done,
 	                                info);
 	if (wizard) {
 		nma_mobile_wizard_present (wizard);

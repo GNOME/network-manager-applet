@@ -67,7 +67,7 @@ typedef struct {
 	gboolean will_connect_after;
 
 	/* Intro page */
-	GtkWidget *dev_combo;
+	GtkComboBox *dev_combo;
 	GtkLabel *provider_name_label;
 	GtkLabel *plan_name_label;
 	GtkLabel *apn_label;
@@ -78,41 +78,40 @@ typedef struct {
 	/* Country page */
 	NMACountryInfo *country;
 	GtkWidget *country_page;
-	GtkWidget *country_view;
+	GtkTreeView *country_view;
 	GtkTreeStore *country_store;
 	GtkTreeModelSort *country_sort;
 	guint32 country_focus_id;
 
 	/* Providers page */
 	GtkWidget *providers_page;
-	GtkWidget *providers_view;
+	GtkTreeView *providers_view;
 	GtkTreeStore *providers_store;
-	GtkTreeModelSort *providers_sort;
+	GtkTreeModel *providers_sort;
 	guint32 providers_focus_id;
-	GtkWidget *providers_view_radio;
+	GtkToggleButton *providers_view_radio;
 
-	GtkWidget *provider_unlisted_radio;
-	GtkWidget *provider_unlisted_entry;
-	GtkWidget *provider_unlisted_type_combo;
+	GtkToggleButton *provider_unlisted_radio;
+	GtkComboBox *provider_unlisted_type_combo;
 
 	gboolean provider_only_cdma;
 
 	/* Plan page */
 	GtkWidget *plan_page;
-	GtkWidget *plan_combo;
+	GtkComboBox *plan_combo;
 	GtkTreeStore *plan_store;
 	guint32 plan_focus_id;
 
-	GtkWidget *plan_unlisted_entry;
+	GtkEntry *plan_apn_entry;
 
 	/* Confirm page */
 	GtkWidget *confirm_page;
-	GtkWidget *confirm_provider;
-	GtkWidget *confirm_plan;
-	GtkWidget *confirm_apn;
-	GtkWidget *confirm_plan_label;
-	GtkWidget *confirm_device;
-	GtkWidget *confirm_device_label;
+	GtkLabel *confirm_provider;
+	GtkLabel *confirm_plan;
+	GtkLabel *confirm_apn;
+	GtkLabel *confirm_plan_label;
+	GtkLabel *confirm_device;
+	GtkLabel *confirm_device_label;
 	GtkWidget *confirm_connect_after_label;
 } NMAMobileWizardPrivate;
 
@@ -140,9 +139,17 @@ assistant_closed (GtkButton *button, gpointer user_data)
 		if (family == NMA_MOBILE_FAMILY_UNKNOWN)
 			family = get_provider_unlisted_type (self);
 
-		wiz_method->provider_name = g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->provider_unlisted_entry)));
-		if (family == NMA_MOBILE_FAMILY_3GPP)
-			wiz_method->gsm_apn = g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->plan_unlisted_entry)));
+		switch (family) {
+		case NMA_MOBILE_FAMILY_3GPP:
+			wiz_method->provider_name = g_strdup (_("GSM"));
+			break;
+		case NMA_MOBILE_FAMILY_CDMA:
+			wiz_method->provider_name = g_strdup (_("CDMA"));
+			break;
+		case NMA_MOBILE_FAMILY_UNKNOWN:
+			g_return_if_reached ();
+			break;
+		}
 	} else {
 		gboolean manual = FALSE;
 
@@ -170,7 +177,7 @@ assistant_closed (GtkButton *button, gpointer user_data)
 				}
 			} else {
 				family = NMA_MOBILE_FAMILY_3GPP;
-				wiz_method->gsm_apn = g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->plan_unlisted_entry)));
+				wiz_method->gsm_apn = g_strdup (gtk_entry_get_text (priv->plan_apn_entry));
 			}
 		}
 	}
@@ -183,7 +190,7 @@ assistant_closed (GtkButton *button, gpointer user_data)
 		wiz_method->devtype = NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO;
 		break;
 	default:
-		g_assert_not_reached ();
+		g_return_if_reached ();
 		break;
 	}
 
@@ -227,11 +234,11 @@ confirm_prepare (NMAMobileWizard *self)
 	NMAMobileWizardPrivate *priv = NMA_MOBILE_WIZARD_GET_PRIVATE (self);
 	NMAMobileProvider *provider = NULL;
 	NMAMobileAccessMethod *method = NULL;
+	const char *apn = NULL;
 	NMACountryInfo *country_info;
 	gboolean manual = FALSE;
 	GString *str;
 
-	country_info = get_selected_country (self);
 	provider = get_selected_provider (self);
 	if (provider)
 		method = get_selected_method (self, &manual);
@@ -242,50 +249,51 @@ confirm_prepare (NMAMobileWizard *self)
 		g_string_append (str, nma_mobile_provider_get_name (provider));
 		nma_mobile_provider_unref (provider);
 	} else {
-		const char *unlisted_provider;
-
-		unlisted_provider = gtk_entry_get_text (GTK_ENTRY (priv->provider_unlisted_entry));
-		g_string_append (str, unlisted_provider);
+		g_string_append (str, _("Unlisted"));
 	}
 
-	if (country_info) {
+	country_info = get_selected_country (self);
+	if (nma_country_info_get_country_code (country_info))
 		g_string_append_printf (str, ", %s", nma_country_info_get_country_name (country_info));
-		nma_country_info_unref (country_info);
-	}
-	gtk_label_set_text (GTK_LABEL (priv->confirm_provider), str->str);
+	nma_country_info_unref (country_info);
+
+	gtk_label_set_text (priv->confirm_provider, str->str);
+	gtk_widget_show (GTK_WIDGET (priv->confirm_provider));
 	g_string_free (str, TRUE);
 
-	if (priv->dev_desc)
-		gtk_label_set_text (GTK_LABEL (priv->confirm_device), priv->dev_desc);
-	else {
-		gtk_widget_hide (priv->confirm_device_label);
-		gtk_widget_hide (priv->confirm_device);
+	if (priv->dev_desc) {
+		gtk_label_set_text (priv->confirm_device, priv->dev_desc);
+		gtk_widget_show (GTK_WIDGET (priv->confirm_device_label));
+		gtk_widget_show (GTK_WIDGET (priv->confirm_device));
+	} else {
+		gtk_widget_hide (GTK_WIDGET (priv->confirm_device_label));
+		gtk_widget_hide (GTK_WIDGET (priv->confirm_device));
 	}
 
 	if (priv->provider_only_cdma) {
-		gtk_widget_hide (priv->confirm_plan_label);
-		gtk_widget_hide (priv->confirm_plan);
-		gtk_widget_hide (priv->confirm_apn);
+		gtk_widget_hide (GTK_WIDGET (priv->confirm_plan_label));
+		gtk_widget_hide (GTK_WIDGET (priv->confirm_plan));
 	} else {
-		const char *apn = NULL;
-
 		/* Plan */
-		gtk_widget_show (priv->confirm_plan_label);
-		gtk_widget_show (priv->confirm_plan);
-		gtk_widget_show (priv->confirm_apn);
+		gtk_widget_show (GTK_WIDGET (priv->confirm_plan_label));
+		gtk_widget_show (GTK_WIDGET (priv->confirm_plan));
 
-		if (method) {
-			gtk_label_set_text (GTK_LABEL (priv->confirm_plan), nma_mobile_access_method_get_name (method));
-			apn = nma_mobile_access_method_get_3gpp_apn (method);
-		} else {
-			gtk_label_set_text (GTK_LABEL (priv->confirm_plan), _("Unlisted"));
-			apn = gtk_entry_get_text (GTK_ENTRY (priv->plan_unlisted_entry));
-		}
+		if (method)
+			gtk_label_set_text (priv->confirm_plan, nma_mobile_access_method_get_name (method));
+		else
+			gtk_label_set_text (priv->confirm_plan, _("Unlisted"));
 
+		apn = gtk_entry_get_text (priv->plan_apn_entry);
+	}
+
+	if (apn) {
 		str = g_string_new (NULL);
 		g_string_append_printf (str, "<span color=\"#999999\">APN: %s</span>", apn);
-		gtk_label_set_markup (GTK_LABEL (priv->confirm_apn), str->str);
+		gtk_label_set_markup (priv->confirm_apn, str->str);
 		g_string_free (str, TRUE);
+		gtk_widget_show (GTK_WIDGET (priv->confirm_apn));
+	} else {
+		gtk_widget_hide (GTK_WIDGET (priv->confirm_apn));
 	}
 }
 
@@ -306,10 +314,10 @@ get_selected_method (NMAMobileWizard *self, gboolean *manual)
 	GtkTreeIter iter;
 	gboolean is_manual = FALSE;
 
-	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->plan_combo), &iter))
+	if (!gtk_combo_box_get_active_iter (priv->plan_combo, &iter))
 		return NULL;
 
-	model = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->plan_combo));
+	model = gtk_combo_box_get_model (priv->plan_combo);
 	if (!model)
 		return NULL;
 
@@ -343,7 +351,7 @@ plan_update_complete (NMAMobileWizard *self)
 	} else {
 		const char *manual_apn;
 
-		manual_apn = gtk_entry_get_text (GTK_ENTRY (priv->plan_unlisted_entry));
+		manual_apn = gtk_entry_get_text (priv->plan_apn_entry);
 		gtk_assistant_set_page_complete (assistant, priv->plan_page,
 		                                 (manual_apn && strlen (manual_apn)));
 	}
@@ -358,12 +366,12 @@ plan_combo_changed (NMAMobileWizard *self)
 
 	method = get_selected_method (self, &is_manual);
 	if (method) {
-		gtk_entry_set_text (GTK_ENTRY (priv->plan_unlisted_entry), nma_mobile_access_method_get_3gpp_apn (method));
-		gtk_widget_set_sensitive (priv->plan_unlisted_entry, FALSE);
+		gtk_entry_set_text (priv->plan_apn_entry, nma_mobile_access_method_get_3gpp_apn (method));
+		gtk_widget_set_sensitive (GTK_WIDGET (priv->plan_apn_entry), FALSE);
 	} else {
-		gtk_entry_set_text (GTK_ENTRY (priv->plan_unlisted_entry), "");
-		gtk_widget_set_sensitive (priv->plan_unlisted_entry, TRUE);
-		gtk_widget_grab_focus (priv->plan_unlisted_entry);
+		gtk_entry_set_text (priv->plan_apn_entry, "");
+		gtk_widget_set_sensitive (GTK_WIDGET (priv->plan_apn_entry), TRUE);
+		gtk_widget_grab_focus (GTK_WIDGET (priv->plan_apn_entry));
 	}
 
 	if (method)
@@ -409,7 +417,7 @@ plan_setup (NMAMobileWizard *self)
 	NMAMobileWizardPrivate *priv = NMA_MOBILE_WIZARD_GET_PRIVATE (self);
 	GtkCellRenderer *renderer;
 
-	gtk_combo_box_set_row_separator_func (GTK_COMBO_BOX (priv->plan_combo),
+	gtk_combo_box_set_row_separator_func (priv->plan_combo,
 	                                      plan_row_separator_func,
 	                                      NULL,
 	                                      NULL);
@@ -419,19 +427,30 @@ plan_setup (NMAMobileWizard *self)
 	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (priv->plan_combo), renderer, "text", PLAN_COL_NAME);
 }
 
+static gboolean
+focus_plan_apn_entry (gpointer user_data)
+{
+	NMAMobileWizard *self = user_data;
+	NMAMobileWizardPrivate *priv = NMA_MOBILE_WIZARD_GET_PRIVATE (self);
+
+	priv->plan_focus_id = 0;
+	gtk_widget_grab_focus (GTK_WIDGET (priv->plan_apn_entry));
+	return FALSE;
+}
+
 static void
 plan_prepare (NMAMobileWizard *self)
 {
 	NMAMobileWizardPrivate *priv = NMA_MOBILE_WIZARD_GET_PRIVATE (self);
 	NMAMobileProvider *provider;
 	GtkTreeIter method_iter;
+	guint32 count = 0;
 
 	gtk_tree_store_clear (priv->plan_store);
 
 	provider = get_selected_provider (self);
 	if (provider) {
 		GSList *iter;
-		guint32 count = 0;
 
 		for (iter = nma_mobile_provider_get_methods (provider); iter; iter = g_slist_next (iter)) {
 			NMAMobileAccessMethod *method = iter->data;
@@ -440,8 +459,8 @@ plan_prepare (NMAMobileWizard *self)
 			    && (nma_mobile_access_method_get_family (method) != priv->family))
 				continue;
 
-			gtk_tree_store_append (GTK_TREE_STORE (priv->plan_store), &method_iter, NULL);
-			gtk_tree_store_set (GTK_TREE_STORE (priv->plan_store),
+			gtk_tree_store_append (priv->plan_store, &method_iter, NULL);
+			gtk_tree_store_set (priv->plan_store,
 			                    &method_iter,
 			                    PLAN_COL_NAME,
 			                    nma_mobile_access_method_get_name (method),
@@ -454,22 +473,27 @@ plan_prepare (NMAMobileWizard *self)
 
 		/* Draw the separator */
 		if (count)
-			gtk_tree_store_append (GTK_TREE_STORE (priv->plan_store), &method_iter, NULL);
+			gtk_tree_store_append (priv->plan_store, &method_iter, NULL);
 	}
 
 	/* Add the "My plan is not listed..." item */
-	gtk_tree_store_append (GTK_TREE_STORE (priv->plan_store), &method_iter, NULL);
-	gtk_tree_store_set (GTK_TREE_STORE (priv->plan_store),
+	gtk_tree_store_append (priv->plan_store, &method_iter, NULL);
+	gtk_tree_store_set (priv->plan_store,
 	                    &method_iter,
 	                    PLAN_COL_NAME,
 	                    _("My plan is not listed…"),
 	                    PLAN_COL_MANUAL,
 	                    TRUE,
 	                    -1);
-
 	/* Select the first item by default if nothing is yet selected */
-	if (gtk_combo_box_get_active (GTK_COMBO_BOX (priv->plan_combo)) < 0)
-		gtk_combo_box_set_active (GTK_COMBO_BOX (priv->plan_combo), 0);
+	if (gtk_combo_box_get_active (priv->plan_combo) < 0)
+		gtk_combo_box_set_active (priv->plan_combo, 0);
+
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->plan_combo), count > 0);
+	if (count == 0) {
+		if (!priv->plan_focus_id)
+			priv->plan_focus_id = g_idle_add (focus_plan_apn_entry, self);
+	}
 
 	plan_combo_changed (self);
 }
@@ -512,10 +536,10 @@ get_selected_provider (NMAMobileWizard *self)
 	GtkTreeIter iter;
 	NMAMobileProvider *provider = NULL;
 
-	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->providers_view_radio)))
+	if (!gtk_toggle_button_get_active (priv->providers_view_radio))
 		return NULL;
 
-	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->providers_view));
+	selection = gtk_tree_view_get_selection (priv->providers_view);
 	g_assert (selection);
 
 	if (!gtk_tree_selection_get_selected (GTK_TREE_SELECTION (selection), &model, &iter))
@@ -532,7 +556,7 @@ providers_update_complete (NMAMobileWizard *self)
 	GtkAssistant *assistant = GTK_ASSISTANT (self);
 	gboolean use_view;
 
-	use_view = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->providers_view_radio));
+	use_view = gtk_toggle_button_get_active (priv->providers_view_radio);
 	if (use_view) {
 		NMAMobileProvider *provider;
 
@@ -541,11 +565,7 @@ providers_update_complete (NMAMobileWizard *self)
 		if (provider)
 			nma_mobile_provider_unref (provider);
 	} else {
-		const char *manual_provider;
-
-		manual_provider = gtk_entry_get_text (GTK_ENTRY (priv->provider_unlisted_entry));
-		gtk_assistant_set_page_complete (assistant, priv->providers_page,
-		                                 (manual_provider && strlen (manual_provider)));
+		gtk_assistant_set_page_complete (assistant, priv->providers_page, TRUE);
 	}
 }
 
@@ -556,18 +576,18 @@ focus_providers_view (gpointer user_data)
 	NMAMobileWizardPrivate *priv = NMA_MOBILE_WIZARD_GET_PRIVATE (self);
 
 	priv->providers_focus_id = 0;
-	gtk_widget_grab_focus (priv->providers_view);
+	gtk_widget_grab_focus (GTK_WIDGET (priv->providers_view));
 	return FALSE;
 }
 
 static gboolean
-focus_provider_unlisted_entry (gpointer user_data)
+focus_provider_unlisted_type_combo (gpointer user_data)
 {
 	NMAMobileWizard *self = user_data;
 	NMAMobileWizardPrivate *priv = NMA_MOBILE_WIZARD_GET_PRIVATE (self);
 
 	priv->providers_focus_id = 0;
-	gtk_widget_grab_focus (priv->provider_unlisted_entry);
+	gtk_widget_grab_focus (GTK_WIDGET (priv->provider_unlisted_type_combo));
 	return FALSE;
 }
 
@@ -578,19 +598,17 @@ providers_radio_toggled (GtkToggleButton *button, gpointer user_data)
 	NMAMobileWizardPrivate *priv = NMA_MOBILE_WIZARD_GET_PRIVATE (self);
 	gboolean use_view;
 
-	use_view = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->providers_view_radio));
+	use_view = gtk_toggle_button_get_active (priv->providers_view_radio);
 	if (use_view) {
 		if (!priv->providers_focus_id)
 			priv->providers_focus_id = g_idle_add (focus_providers_view, self);
-		gtk_widget_set_sensitive (priv->providers_view, TRUE);
-		gtk_widget_set_sensitive (priv->provider_unlisted_entry, FALSE);
-		gtk_widget_set_sensitive (priv->provider_unlisted_type_combo, FALSE);
-	} else {
+		gtk_widget_set_sensitive (GTK_WIDGET (priv->providers_view), TRUE);
+		gtk_widget_set_sensitive (GTK_WIDGET (priv->provider_unlisted_type_combo), FALSE);
+	} else if (priv->family == NMA_MOBILE_FAMILY_UNKNOWN) {
 		if (!priv->providers_focus_id)
-			priv->providers_focus_id = g_idle_add (focus_provider_unlisted_entry, self);
-		gtk_widget_set_sensitive (priv->providers_view, FALSE);
-		gtk_widget_set_sensitive (priv->provider_unlisted_entry, TRUE);
-		gtk_widget_set_sensitive (priv->provider_unlisted_type_combo, TRUE);
+			priv->providers_focus_id = g_idle_add (focus_provider_unlisted_type_combo, self);
+		gtk_widget_set_sensitive (GTK_WIDGET (priv->providers_view), FALSE);
+		gtk_widget_set_sensitive (GTK_WIDGET (priv->provider_unlisted_type_combo), TRUE);
 	}
 
 	providers_update_complete (self);
@@ -601,13 +619,13 @@ get_provider_unlisted_type (NMAMobileWizard *self)
 {
 	NMAMobileWizardPrivate *priv = NMA_MOBILE_WIZARD_GET_PRIVATE (self);
 
-	switch (gtk_combo_box_get_active (GTK_COMBO_BOX (priv->provider_unlisted_type_combo))) {
+	switch (gtk_combo_box_get_active (priv->provider_unlisted_type_combo)) {
 	case 0:
 		return NMA_MOBILE_FAMILY_3GPP;
 	case 1:
 		return NMA_MOBILE_FAMILY_CDMA;
 	default:
-		return NMA_MOBILE_FAMILY_UNKNOWN;
+		g_return_val_if_reached (NMA_MOBILE_FAMILY_UNKNOWN);
 	}
 }
 
@@ -627,15 +645,25 @@ providers_setup (NMAMobileWizard *self)
 	                                                   renderer,
 	                                                   "text", PROVIDER_COL_NAME,
 	                                                   NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW (priv->providers_view), column);
+	gtk_tree_view_append_column (priv->providers_view, column);
 	gtk_tree_view_column_set_clickable (column, TRUE);
 
-	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->providers_view));
+	selection = gtk_tree_view_get_selection (priv->providers_view);
 	g_assert (selection);
 
-	/* Only show the CDMA/GSM combo if we don't know the device type */
-	if (priv->family != NMA_MOBILE_FAMILY_UNKNOWN)
-		gtk_widget_hide (priv->provider_unlisted_type_combo);
+	switch (priv->family) {
+	case NMA_MOBILE_FAMILY_3GPP:
+		gtk_combo_box_set_active (priv->provider_unlisted_type_combo, 0);
+		gtk_widget_set_sensitive (GTK_WIDGET (priv->provider_unlisted_type_combo), FALSE);
+		break;
+	case NMA_MOBILE_FAMILY_CDMA:
+		gtk_combo_box_set_active (priv->provider_unlisted_type_combo, 1);
+		gtk_widget_set_sensitive (GTK_WIDGET (priv->provider_unlisted_type_combo), FALSE);
+		break;
+	case NMA_MOBILE_FAMILY_UNKNOWN:
+		gtk_widget_set_sensitive (GTK_WIDGET (priv->provider_unlisted_type_combo), TRUE);
+		break;
+	}
 }
 
 static void
@@ -649,14 +677,6 @@ providers_prepare (NMAMobileWizard *self)
 	gtk_tree_store_clear (priv->providers_store);
 
 	country_info = get_selected_country (self);
-	if (!country_info) {
-		/* Unlisted country */
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->provider_unlisted_radio), TRUE);
-		gtk_widget_set_sensitive (GTK_WIDGET (priv->providers_view_radio), FALSE);
-		goto done;
-	}
-	gtk_widget_set_sensitive (GTK_WIDGET (priv->providers_view_radio), TRUE);
-
 	for (piter = nma_country_info_get_providers (country_info);
 	     piter;
 	     piter = g_slist_next (piter)) {
@@ -679,8 +699,8 @@ providers_prepare (NMAMobileWizard *self)
 				continue;
 		}
 
-		gtk_tree_store_append (GTK_TREE_STORE (priv->providers_store), &provider_iter, NULL);
-		gtk_tree_store_set (GTK_TREE_STORE (priv->providers_store),
+		gtk_tree_store_append (priv->providers_store, &provider_iter, NULL);
+		gtk_tree_store_set (priv->providers_store,
 		                    &provider_iter,
 		                    PROVIDER_COL_NAME,
 		                    nma_mobile_provider_get_name (provider),
@@ -688,24 +708,23 @@ providers_prepare (NMAMobileWizard *self)
 		                    provider,
 		                    -1);
 	}
-
 	nma_country_info_unref (country_info);
 
-	gtk_tree_view_set_search_column (GTK_TREE_VIEW (priv->providers_view), PROVIDER_COL_NAME);
-	gtk_tree_view_set_search_equal_func (GTK_TREE_VIEW (priv->providers_view),
+	gtk_tree_view_set_search_column (priv->providers_view, PROVIDER_COL_NAME);
+	gtk_tree_view_set_search_equal_func (priv->providers_view,
 	                                     providers_search_func, self, NULL);
 
 	/* If no row has focus yet, focus the first row so that the user can start
 	 * incremental search without clicking.
 	 */
-	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->providers_view));
+	selection = gtk_tree_view_get_selection (priv->providers_view);
 	g_assert (selection);
 	if (!gtk_tree_selection_count_selected_rows (selection)) {
 		GtkTreeIter first_iter;
 		GtkTreePath *first_path;
 
-		if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (priv->providers_sort), &first_iter)) {
-			first_path = gtk_tree_model_get_path (GTK_TREE_MODEL (priv->providers_sort), &first_iter);
+		if (gtk_tree_model_get_iter_first (priv->providers_sort, &first_iter)) {
+			first_path = gtk_tree_model_get_path (priv->providers_sort, &first_iter);
 			if (first_path) {
 				gtk_tree_selection_select_path (selection, first_path);
 				gtk_tree_path_free (first_path);
@@ -713,17 +732,19 @@ providers_prepare (NMAMobileWizard *self)
 		}
 	}
 
-done:
+	if (gtk_tree_model_iter_n_children (GTK_TREE_MODEL (priv->providers_store), NULL) == 0) {
+		/* No providers to choose from. */
+		gtk_toggle_button_set_active (priv->provider_unlisted_radio, TRUE);
+		gtk_widget_set_sensitive (GTK_WIDGET (priv->providers_view_radio), FALSE);
+	} else {
+		gtk_toggle_button_set_active (priv->providers_view_radio, TRUE);
+		gtk_widget_set_sensitive (GTK_WIDGET (priv->providers_view_radio), TRUE);
+	}
+
 	providers_radio_toggled (NULL, self);
 
 	/* Initial completeness state */
 	providers_update_complete (self);
-
-	/* If there's already a selected device, hide the GSM/CDMA radios */
-	if (priv->family != NMA_MOBILE_FAMILY_UNKNOWN)
-		gtk_widget_hide (priv->provider_unlisted_type_combo);
-	else
-		gtk_widget_show (priv->provider_unlisted_type_combo);
 }
 
 /**********************************************************/
@@ -766,8 +787,12 @@ add_one_country (gpointer key, gpointer value, gpointer user_data)
 
 	g_assert (key);
 
-	gtk_tree_store_append (GTK_TREE_STORE (priv->country_store), &country_iter, NULL);
-	gtk_tree_store_set (GTK_TREE_STORE (priv->country_store),
+	if (   nma_country_info_get_country_code (country_info)
+	    && !nma_country_info_get_providers (country_info))
+		return;
+
+	gtk_tree_store_append (priv->country_store, &country_iter, NULL);
+	gtk_tree_store_set (priv->country_store,
 	                    &country_iter,
 	                    COUNTRIES_COL_NAME,
 	                    nma_country_info_get_country_name (country_info),
@@ -789,12 +814,12 @@ add_one_country (gpointer key, gpointer value, gpointer user_data)
 	if (country_view_path) {
 		GtkTreeSelection *selection;
 
-		gtk_tree_view_expand_row (GTK_TREE_VIEW (priv->country_view), country_view_path, TRUE);
+		gtk_tree_view_expand_row (priv->country_view, country_view_path, TRUE);
 
-		selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->country_view));
+		selection = gtk_tree_view_get_selection (priv->country_view);
 		g_assert (selection);
 		gtk_tree_selection_select_path (selection, country_view_path);
-		gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (priv->country_view),
+		gtk_tree_view_scroll_to_cell (priv->country_view,
 		                              country_view_path, NULL, TRUE, 0, 0);
 		gtk_tree_path_free (country_view_path);
 	}
@@ -810,7 +835,7 @@ get_selected_country (NMAMobileWizard *self)
 	GtkTreeIter iter;
 	NMACountryInfo *country_info = NULL;
 
-	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->country_view));
+	selection = gtk_tree_view_get_selection (priv->country_view);
 	g_assert (selection);
 
 	if (!gtk_tree_selection_get_selected (GTK_TREE_SELECTION (selection), &model, &iter))
@@ -826,7 +851,7 @@ country_update_complete (NMAMobileWizard *self)
 	NMAMobileWizardPrivate *priv = NMA_MOBILE_WIZARD_GET_PRIVATE (self);
 	GtkTreeSelection *selection;
 
-	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->country_view));
+	selection = gtk_tree_view_get_selection (priv->country_view);
 	g_assert (selection);
 
 	gtk_assistant_set_page_complete (GTK_ASSISTANT (self),
@@ -859,10 +884,10 @@ country_sort_func (GtkTreeModel *model,
 	gtk_tree_model_get (model, a, COUNTRIES_COL_NAME, &a_str, COUNTRIES_COL_INFO, &a_country_info, -1);
 	gtk_tree_model_get (model, b, COUNTRIES_COL_NAME, &b_str, COUNTRIES_COL_INFO, &b_country_info, -1);
 
-	if (!a_country_info) {
+	if (!a_country_info || !nma_country_info_get_country_code (a_country_info)) {
 		ret = -1;
 		goto out;
-	} else if (!b_country_info) {
+	} else if (!b_country_info || !nma_country_info_get_country_code (b_country_info)) {
 		ret = 1;
 		goto out;
 	}
@@ -893,7 +918,6 @@ country_setup (NMAMobileWizard *self)
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
 	GtkTreeSelection *selection;
-	GtkTreeIter unlisted_iter;
 
 	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (priv->country_sort),
 	                                      COUNTRIES_COL_NAME, GTK_SORT_ASCENDING);
@@ -909,15 +933,8 @@ country_setup (NMAMobileWizard *self)
 	                                                   renderer,
 	                                                   "text", COUNTRIES_COL_NAME,
 	                                                   NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW (priv->country_view), column);
+	gtk_tree_view_append_column (priv->country_view, column);
 	gtk_tree_view_column_set_clickable (column, TRUE);
-
-	/* My country is not listed... */
-	gtk_tree_store_append (GTK_TREE_STORE (priv->country_store), &unlisted_iter, NULL);
-	gtk_tree_store_set (GTK_TREE_STORE (priv->country_store), &unlisted_iter,
-	                    COUNTRIES_COL_NAME, _("My country is not listed"),
-	                    COUNTRIES_COL_INFO, NULL,
-	                    -1);
 
 	/* Add the rest of the providers */
 	if (priv->mobile_providers_database) {
@@ -930,7 +947,7 @@ country_setup (NMAMobileWizard *self)
 	/* If no row has focus yet, focus the first row so that the user can start
 	 * incremental search without clicking.
 	 */
-	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->country_view));
+	selection = gtk_tree_view_get_selection (priv->country_view);
 	g_assert (selection);
 	if (!gtk_tree_selection_count_selected_rows (selection)) {
 		GtkTreeIter first_iter;
@@ -956,7 +973,7 @@ focus_country_view (gpointer user_data)
 	NMAMobileWizardPrivate *priv = NMA_MOBILE_WIZARD_GET_PRIVATE (self);
 
 	priv->country_focus_id = 0;
-	gtk_widget_grab_focus (priv->country_view);
+	gtk_widget_grab_focus (GTK_WIDGET (priv->country_view));
 	return FALSE;
 }
 
@@ -965,8 +982,8 @@ country_prepare (NMAMobileWizard *self)
 {
 	NMAMobileWizardPrivate *priv = NMA_MOBILE_WIZARD_GET_PRIVATE (self);
 
-	gtk_tree_view_set_search_column (GTK_TREE_VIEW (priv->country_view), COUNTRIES_COL_NAME);
-	gtk_tree_view_set_search_equal_func (GTK_TREE_VIEW (priv->country_view), country_search_func, self, NULL);
+	gtk_tree_view_set_search_column (priv->country_view, COUNTRIES_COL_NAME);
+	gtk_tree_view_set_search_equal_func (priv->country_view, country_search_func, self, NULL);
 
 	if (!priv->country_focus_id)
 		priv->country_focus_id = g_idle_add (focus_country_view, self);
@@ -1003,8 +1020,8 @@ __intro_device_added (NMAMobileWizard *self, NMDevice *device, gboolean select_i
 	} else
 		return FALSE;
 
-	gtk_tree_store_append (GTK_TREE_STORE (priv->dev_store), &iter, NULL);
-	gtk_tree_store_set (GTK_TREE_STORE (priv->dev_store),
+	gtk_tree_store_append (priv->dev_store, &iter, NULL);
+	gtk_tree_store_set (priv->dev_store,
 	                    &iter,
 	                    INTRO_COL_NAME, desc,
 	                    INTRO_COL_DEVICE, device,
@@ -1012,9 +1029,9 @@ __intro_device_added (NMAMobileWizard *self, NMDevice *device, gboolean select_i
 
 	/* Select the device just added */
 	if (select_it)
-		gtk_combo_box_set_active_iter (GTK_COMBO_BOX (priv->dev_combo), &iter);
+		gtk_combo_box_set_active_iter (priv->dev_combo, &iter);
 
-	gtk_widget_set_sensitive (priv->dev_combo, TRUE);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->dev_combo), TRUE);
 	return TRUE;
 }
 
@@ -1041,7 +1058,7 @@ intro_device_removed_cb (NMClient *client, NMDevice *device, NMAMobileWizard *se
 		                    INTRO_COL_DEVICE, &candidate, -1);
 		if (candidate) {
 			if (candidate == device) {
-				gtk_tree_store_remove (GTK_TREE_STORE (priv->dev_store), &iter);
+				gtk_tree_store_remove (priv->dev_store, &iter);
 				removed = TRUE;
 			}
 			g_object_unref (candidate);
@@ -1049,7 +1066,7 @@ intro_device_removed_cb (NMClient *client, NMDevice *device, NMAMobileWizard *se
 	} while (!removed && gtk_tree_model_iter_next (GTK_TREE_MODEL (priv->dev_store), &iter));
 
 	/* There's already a selected device item; nothing more to do */
-	if (gtk_combo_box_get_active (GTK_COMBO_BOX (priv->dev_combo)) > 1)
+	if (gtk_combo_box_get_active (priv->dev_combo) > 1)
 		return;
 
 	/* If there are no more devices, select the "Any" item and disable the
@@ -1072,10 +1089,10 @@ intro_device_removed_cb (NMClient *client, NMDevice *device, NMAMobileWizard *se
 
 	if (have_device) {
 		/* Iter should point to the last device item in the combo */
-		gtk_combo_box_set_active_iter (GTK_COMBO_BOX (priv->dev_combo), &iter);
+		gtk_combo_box_set_active_iter (priv->dev_combo, &iter);
 	} else {
-		gtk_combo_box_set_active (GTK_COMBO_BOX (priv->dev_combo), 0);
-		gtk_widget_set_sensitive (priv->dev_combo, FALSE);
+		gtk_combo_box_set_active (priv->dev_combo, 0);
+		gtk_widget_set_sensitive (GTK_WIDGET (priv->dev_combo), FALSE);
 	}
 }
 
@@ -1098,8 +1115,8 @@ intro_add_initial_devices (NMAMobileWizard *self)
 	/* Otherwise the "Any device" item */
 	if (!selected_first) {
 		/* Select the first device item by default */
-		gtk_combo_box_set_active (GTK_COMBO_BOX (priv->dev_combo), 0);
-		gtk_widget_set_sensitive (priv->dev_combo, FALSE);
+		gtk_combo_box_set_active (priv->dev_combo, 0);
+		gtk_widget_set_sensitive (GTK_WIDGET (priv->dev_combo), FALSE);
 	}
 }
 
@@ -1111,8 +1128,8 @@ intro_remove_all_devices (NMAMobileWizard *self)
 	gtk_tree_store_clear (priv->dev_store);
 
 	/* Select the "Any device" item */
-	gtk_combo_box_set_active (GTK_COMBO_BOX (priv->dev_combo), 0);
-	gtk_widget_set_sensitive (priv->dev_combo, FALSE);
+	gtk_combo_box_set_active (priv->dev_combo, 0);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->dev_combo), FALSE);
 }
 
 static void
@@ -1143,7 +1160,7 @@ intro_combo_changed (NMAMobileWizard *self)
 	g_free (priv->dev_desc);
 	priv->dev_desc = NULL;
 
-	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->dev_combo), &iter))
+	if (!gtk_combo_box_get_active_iter (priv->dev_combo, &iter))
 		return;
 
 	gtk_tree_model_get (GTK_TREE_MODEL (priv->dev_store), &iter,
@@ -1195,7 +1212,7 @@ intro_setup (NMAMobileWizard *self)
 			                  G_CALLBACK (intro_manager_running_cb), self);
 		}
 
-		gtk_combo_box_set_row_separator_func (GTK_COMBO_BOX (priv->dev_combo),
+		gtk_combo_box_set_row_separator_func (priv->dev_combo,
 		                                      intro_row_separator_func, NULL, NULL);
 
 		renderer = gtk_cell_renderer_text_new ();
@@ -1203,13 +1220,13 @@ intro_setup (NMAMobileWizard *self)
 		gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (priv->dev_combo), renderer, "text", INTRO_COL_NAME);
 
 		/* Any device */
-		gtk_tree_store_append (GTK_TREE_STORE (priv->dev_store), &iter, NULL);
-		gtk_tree_store_set (GTK_TREE_STORE (priv->dev_store), &iter,
+		gtk_tree_store_append (priv->dev_store, &iter, NULL);
+		gtk_tree_store_set (priv->dev_store, &iter,
 		                    INTRO_COL_NAME, _("Any device"), -1);
 
 		/* Separator */
-		gtk_tree_store_append (GTK_TREE_STORE (priv->dev_store), &iter, NULL);
-		gtk_tree_store_set (GTK_TREE_STORE (priv->dev_store), &iter,
+		gtk_tree_store_append (priv->dev_store, &iter, NULL);
+		gtk_tree_store_set (priv->dev_store, &iter,
 		                    INTRO_COL_SEPARATOR, TRUE, -1);
 
 		intro_add_initial_devices (self);
@@ -1219,6 +1236,17 @@ intro_setup (NMAMobileWizard *self)
 /**********************************************************/
 /* General assistant stuff */
 /**********************************************************/
+
+static void
+remove_plan_focus_idle (NMAMobileWizard *self)
+{
+	NMAMobileWizardPrivate *priv = NMA_MOBILE_WIZARD_GET_PRIVATE (self);
+
+	if (priv->plan_focus_id) {
+		g_source_remove (priv->plan_focus_id);
+		priv->plan_focus_id = 0;
+	}
+}
 
 static void
 remove_provider_focus_idle (NMAMobileWizard *self)
@@ -1248,6 +1276,8 @@ assistant_prepare (GtkAssistant *assistant, GtkWidget *page, gpointer user_data)
 	NMAMobileWizard *self = user_data;
 	NMAMobileWizardPrivate *priv = NMA_MOBILE_WIZARD_GET_PRIVATE (self);
 
+	if (page != priv->plan_page)
+		remove_plan_focus_idle (self);
 	if (page != priv->providers_page)
 		remove_provider_focus_idle (self);
 	if (page != priv->country_page)
@@ -1275,7 +1305,7 @@ forward_func (gint current_page, gpointer user_data)
 		/* If the provider is unlisted, we can skip ahead of the user's
 		 * access technology is CDMA.
 		 */
-		if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->provider_unlisted_radio))) {
+		if (gtk_toggle_button_get_active (priv->provider_unlisted_radio)) {
 			if (family == NMA_MOBILE_FAMILY_UNKNOWN)
 				family = get_provider_unlisted_type (self);
 		} else {
@@ -1351,6 +1381,7 @@ finalize (GObject *object)
 	g_clear_pointer (&priv->dev_desc, g_free);
 	g_clear_object (&priv->client);
 
+	remove_plan_focus_idle (self);
 	remove_provider_focus_idle (self);
 	remove_country_focus_idle (self);
 
@@ -1380,10 +1411,9 @@ nma_mobile_wizard_class_init (NMAMobileWizardClass *klass)
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, providers_view);
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, provider_unlisted_radio);
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, provider_unlisted_type_combo);
-	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, provider_unlisted_entry);
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, plan_page);
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, plan_combo);
-	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, plan_unlisted_entry);
+	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, plan_apn_entry);
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, confirm_page);
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, confirm_provider);
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, confirm_plan_label);

@@ -286,7 +286,7 @@
         </child>
         <child>
           <object class="GtkRadioButton" id="provider_unlisted_radio">
-            <property name="label" translatable="yes">I can’t find my provider and I wish to enter it _manually:</property>
+            <property name="label" translatable="yes">I can’t find my provider and I wish to set up the connection _manually:</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
@@ -301,55 +301,15 @@
           </packing>
         </child>
         <child>
-          <object class="GtkGrid">
+          <object class="GtkComboBoxText" id="provider_unlisted_type_combo">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="margin_start">25</property>
-            <property name="row_spacing">12</property>
-            <property name="column_spacing">12</property>
-            <child>
-              <object class="GtkComboBoxText" id="provider_unlisted_type_combo">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="active">0</property>
-                <items>
-                  <item id="0" translatable="yes">My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)</item>
-                  <item id="1" translatable="yes">My provider uses CDMA technology (1xRTT, EVDO)</item>
-                </items>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Provider:</property>
-                <property name="mnemonic_widget">provider_unlisted_type_combo</property>
-                <property name="xalign">1</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkEntry" id="provider_unlisted_entry">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="width_chars">40</property>
-                <signal name="changed" handler="providers_update_complete" swapped="yes"/>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">0</property>
-              </packing>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
+            <property name="active">0</property>
+            <items>
+              <item id="0" translatable="yes">My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)</item>
+              <item id="1" translatable="yes">My provider uses CDMA technology (1xRTT, EVDO)</item>
+            </items>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -414,7 +374,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkEntry" id="plan_unlisted_entry">
+          <object class="GtkEntry" id="plan_apn_entry">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="max_length">64</property>
