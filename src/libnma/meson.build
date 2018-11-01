@@ -36,6 +36,7 @@ install_headers(
 
 gir_sources = [version_header] + cert_chooser_sources + files(
   'init.c',
+  'nma-bar-code.c',
   'nma-mobile-providers.c',
   'nma-mobile-wizard.c',
   'nma-ui-utils.c',
