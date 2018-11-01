@@ -721,6 +721,23 @@ src_libnma_tests_cert_chooser_LDADD = \
 	$(LIBNM_LIBS) \
 	src/libnma/libnma.la
 
+check_PROGRAMS_norun += src/libnma/tests/bar-code
+
+src_libnma_tests_bar_code_CPPFLAGS = \
+	$(dflt_cppflags) \
+	$(GLIB_CFLAGS) \
+	$(GTK3_CFLAGS) \
+	$(LIBNM_CFLAGS) \
+	"-I$(srcdir)/shared/" \
+	"-I$(srcdir)/src/libnma" \
+	-Isrc/libnma
+
+src_libnma_tests_bar_code_LDADD = \
+	$(GLIB_LIBS) \
+	$(GTK3_LIBS) \
+	$(LIBNM_LIBS) \
+	src/libnma/libnma.la
+
 EXTRA_DIST += \
 	src/libnma/nma-version.h.in \
 	src/libnma/libnma.pc.in \
