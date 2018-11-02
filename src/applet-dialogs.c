@@ -528,24 +528,20 @@ info_dialog_add_page (GtkNotebook *notebook,
 	row++;
 
 	/* Hardware address */
-	str = NULL;
-	if (NM_IS_DEVICE_ETHERNET (device))
-		str = g_strdup (nm_device_ethernet_get_hw_address (NM_DEVICE_ETHERNET (device)));
-	else if (NM_IS_DEVICE_WIFI (device))
-		str = g_strdup (nm_device_wifi_get_hw_address (NM_DEVICE_WIFI (device)));
+	str = g_strdup (nm_device_get_hw_address (device));
 
-	desc_widget = create_info_label (_("Hardware Address:"), FALSE);
-	desc_object = gtk_widget_get_accessible (desc_widget);
-	data_widget = create_info_label (str, TRUE);
-	data_object = gtk_widget_get_accessible (data_widget);
-	atk_object_add_relationship (desc_object, ATK_RELATION_LABEL_FOR, data_object);
+	if (str) {
+		desc_widget = create_info_label (_("Hardware Address:"), FALSE);
+		desc_object = gtk_widget_get_accessible (desc_widget);
+		data_widget = create_info_label (str, TRUE);
+		data_object = gtk_widget_get_accessible (data_widget);
+		atk_object_add_relationship (desc_object, ATK_RELATION_LABEL_FOR, data_object);
 
-	gtk_grid_attach (grid, desc_widget,
-	                 0, row, 1, 1);
-	gtk_grid_attach (grid, data_widget,
-	                 1, row, 1, 1);
-	g_free (str);
-	row++;
+		gtk_grid_attach (grid, desc_widget, 0, row, 1, 1);
+		gtk_grid_attach (grid, data_widget, 1, row, 1, 1);
+		g_free (str);
+		row++;
+	}
 
 	/* Driver */
 	desc_widget = create_info_label (_("Driver:"), FALSE);
