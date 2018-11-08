@@ -512,6 +512,7 @@ libnma_h_pub = \
 	src/libnma/nma-vpn-password-dialog.h \
 	src/libnma/nma-ui-utils.h \
 	src/libnma/nma-cert-chooser.h \
+	src/libnma/nma-bar-code-widget.h \
 	src/libnma/nma-bar-code.h
 
 libnma_c_real = \
@@ -523,6 +524,7 @@ libnma_c_real = \
 	src/libnma/init.c \
 	src/libnma/nma-cert-chooser.c \
 	src/libnma/nma-file-cert-chooser.c \
+	src/libnma/nma-bar-code-widget.c \
 	src/libnma/nma-bar-code.c
 
 libnma_h_priv_real = \
@@ -721,6 +723,7 @@ EXTRA_DIST += \
 	src/libnma/libnma.ver \
 	src/libnma/wifi.ui \
 	src/libnma/nma-mobile-wizard.ui \
+	src/libnma/nma-bar-code-widget.ui \
 	src/libnma/nma-pkcs11-token-login-dialog.ui \
 	src/libnma/nma-pkcs11-cert-chooser-dialog.ui \
 	src/libnma/nma-vpn-password-dialog.ui \
