@@ -129,7 +129,7 @@ get_connection_for_active_path (NMApplet *applet, const char *active_path)
 }
 
 static GtkWidget *
-create_info_label (const char *text, gboolean selectable)
+create_info_label (const char *text)
 {
 	GtkWidget *label;
 
@@ -355,7 +355,7 @@ display_ip4_info (NMIPAddress *def_addr, const GPtrArray *addresses, GtkGrid *gr
 
 	/* Address */
 	addr = def_addr ? nm_ip_address_get_address (def_addr) : C_("Address", "Unknown");
-	desc_widget = create_info_label (_("IP Address:"), FALSE);
+	desc_widget = create_info_label (_("IP Address:"));
 	desc_object = gtk_widget_get_accessible (desc_widget);
 	data_widget = create_info_value (addr);
 	data_object = gtk_widget_get_accessible (data_widget);
@@ -377,7 +377,7 @@ display_ip4_info (NMIPAddress *def_addr, const GPtrArray *addresses, GtkGrid *gr
 	}
 
 	str = def_addr ? ip4_address_as_string (bcast) : g_strdup (C_("Address", "Unknown"));
-	desc_widget = create_info_label (_("Broadcast Address:"), FALSE);
+	desc_widget = create_info_label (_("Broadcast Address:"));
 	desc_object = gtk_widget_get_accessible (desc_widget);
 	data_widget = create_info_value (str);
 	data_object = gtk_widget_get_accessible (data_widget);
@@ -390,7 +390,7 @@ display_ip4_info (NMIPAddress *def_addr, const GPtrArray *addresses, GtkGrid *gr
 
 	/* Prefix */
 	str = def_addr ? ip4_address_as_string (netmask) : g_strdup (C_("Subnet Mask", "Unknown"));
-	desc_widget = create_info_label (_("Subnet Mask:"), FALSE);
+	desc_widget = create_info_label (_("Subnet Mask:"));
 	desc_object = gtk_widget_get_accessible (desc_widget);
 	data_widget = create_info_value (str);
 	data_object = gtk_widget_get_accessible (data_widget);
@@ -428,7 +428,7 @@ display_ip6_info (NMIPAddress *def6_addr,
 	                       nm_ip_address_get_address (def6_addr),
 	                       nm_ip_address_get_prefix (def6_addr));
 
-	desc_widget = create_info_label (_("IP Address:"), FALSE);
+	desc_widget = create_info_label (_("IP Address:"));
 	desc_object = gtk_widget_get_accessible (desc_widget);
 	data_widget = create_info_value (str);
 	data_object = gtk_widget_get_accessible (data_widget);
@@ -456,7 +456,7 @@ display_dns_info (const char * const *dns, GtkGrid *grid, int *row)
 	int i;
 
 	for (i = 0; dns && dns[i] && i < 3; i++) {
-		desc_widget = create_info_label (_(label[i]), FALSE);
+		desc_widget = create_info_label (_(label[i]));
 		desc_object = gtk_widget_get_accessible (desc_widget);
 		data_widget = create_info_value (dns[i]);
 		data_object = gtk_widget_get_accessible (data_widget);
@@ -524,7 +524,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 	gtk_grid_attach (grid, create_info_group_label (_("General"), FALSE), 0, row, 2, 1);
 	row++;
 
-	desc_widget = create_info_label (_("Interface:"), FALSE);
+	desc_widget = create_info_label (_("Interface:"));
 	desc_object = gtk_widget_get_accessible (desc_widget);
 	data_widget = create_info_value (str);
 	data_object = gtk_widget_get_accessible (data_widget);
@@ -539,7 +539,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 	str = g_strdup (nm_device_get_hw_address (device));
 
 	if (str) {
-		desc_widget = create_info_label (_("Hardware Address:"), FALSE);
+		desc_widget = create_info_label (_("Hardware Address:"));
 		desc_object = gtk_widget_get_accessible (desc_widget);
 		data_widget = create_info_value (str);
 		data_object = gtk_widget_get_accessible (data_widget);
@@ -552,7 +552,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 	}
 
 	/* Driver */
-	desc_widget = create_info_label (_("Driver:"), FALSE);
+	desc_widget = create_info_label (_("Driver:"));
 	desc_object = gtk_widget_get_accessible (desc_widget);
 	data_widget = create_info_value (nm_device_get_driver (device));
 	data_object = gtk_widget_get_accessible (data_widget);
@@ -585,7 +585,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 	gtk_label_set_text (GTK_LABEL(speed_label), str ? str : C_("Speed", "Unknown"));
 	g_free (str);
 
-	desc_widget = create_info_label (_("Speed:"), FALSE);
+	desc_widget = create_info_label (_("Speed:"));
 	desc_object = gtk_widget_get_accessible (desc_widget);
 	data_object = gtk_widget_get_accessible (speed_label);
 	atk_object_add_relationship (desc_object, ATK_RELATION_LABEL_FOR, data_object);
@@ -598,7 +598,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 	if (show_security) {
 		sec_label = create_info_label_security (connection);
 		if (sec_label) {
-			desc_widget = create_info_label (_("Security:"), FALSE);
+			desc_widget = create_info_label (_("Security:"));
 			desc_object = gtk_widget_get_accessible (desc_widget);
 			data_object = gtk_widget_get_accessible (sec_label);
 			atk_object_add_relationship (desc_object, ATK_RELATION_LABEL_FOR, data_object);
@@ -635,7 +635,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 
 	/* Gateway */
 	if (gateway && *gateway) {
-		desc_widget = create_info_label (_("Default Route:"), FALSE);
+		desc_widget = create_info_label (_("Default Route:"));
 		desc_object = gtk_widget_get_accessible (desc_widget);
 		data_widget = create_info_value (gateway);
 		data_object = gtk_widget_get_accessible (data_widget);
@@ -681,7 +681,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 
 	/* Gateway */
 	if (gateway && *gateway) {
-		desc_widget = create_info_label (_("Default Route:"), FALSE);
+		desc_widget = create_info_label (_("Default Route:"));
 		desc_object = gtk_widget_get_accessible (desc_widget);
 		data_widget = create_info_value (gateway);
 		data_object = gtk_widget_get_accessible (data_widget);
@@ -806,25 +806,25 @@ info_dialog_add_page_for_vpn (GtkNotebook *notebook,
 	row++;
 
 	str = get_vpn_connection_type (connection);
-	gtk_grid_attach (grid, create_info_label (_("VPN Type:"), FALSE), 0, row, 1, 1);
-	gtk_grid_attach (grid, create_info_label (str, TRUE), 1, row, 1, 1);
+	gtk_grid_attach (grid, create_info_label (_("VPN Type:")), 0, row, 1, 1);
+	gtk_grid_attach (grid, create_info_value (str), 1, row, 1, 1);
 	g_free (str);
 	row++;
 
-	gtk_grid_attach (grid, create_info_label (_("VPN Gateway:"), FALSE), 0, row, 1, 1);
-	gtk_grid_attach (grid, create_info_label (get_vpn_data_item (connection, VPN_DATA_ITEM_GATEWAY), TRUE), 1, row, 1, 1);
+	gtk_grid_attach (grid, create_info_label (_("VPN Gateway:")), 0, row, 1, 1);
+	gtk_grid_attach (grid, create_info_value (get_vpn_data_item (connection, VPN_DATA_ITEM_GATEWAY)), 1, row, 1, 1);
 	row++;
 
-	gtk_grid_attach (grid, create_info_label (_("VPN Username:"), FALSE), 0, row, 1, 1);
-	gtk_grid_attach (grid, create_info_label (get_vpn_data_item (connection, VPN_DATA_ITEM_USERNAME), TRUE), 1, row, 1, 1);
+	gtk_grid_attach (grid, create_info_label (_("VPN Username:")), 0, row, 1, 1);
+	gtk_grid_attach (grid, create_info_value (get_vpn_data_item (connection, VPN_DATA_ITEM_USERNAME)), 1, row, 1, 1);
 	row++;
 
-	gtk_grid_attach (grid, create_info_label (_("VPN Banner:"), FALSE), 0, row, 1, 1);
-	gtk_grid_attach (grid, create_info_label (nm_vpn_connection_get_banner (NM_VPN_CONNECTION (active)), TRUE), 1, row, 1, 1);
+	gtk_grid_attach (grid, create_info_label (_("VPN Banner:")), 0, row, 1, 1);
+	gtk_grid_attach (grid, create_info_value (nm_vpn_connection_get_banner (NM_VPN_CONNECTION (active))), 1, row, 1, 1);
 	row++;
 
-	gtk_grid_attach (grid, create_info_label (_("Base Connection:"), FALSE), 0, row, 1, 1);
-	gtk_grid_attach (grid, create_info_label (parent_con ? nm_connection_get_id (parent_con) : _("Unknown"), TRUE), 1, row, 1, 1);
+	gtk_grid_attach (grid, create_info_label (_("Base Connection:")), 0, row, 1, 1);
+	gtk_grid_attach (grid, create_info_value (parent_con ? nm_connection_get_id (parent_con) : _("Unknown")), 1, row, 1, 1);
 	row++;
 
 	/* Empty line */
