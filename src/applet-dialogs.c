@@ -452,7 +452,7 @@ display_dns_info (const char * const *dns, GtkGrid *grid, int *row)
 {
 	GtkWidget *desc_widget, *data_widget = NULL;
 	AtkObject *desc_object, *data_object = NULL;
-	char *label[] = { "Primary DNS", "Secondary DNS", "Tertiary DNS" };
+	char *label[] = { N_("Primary DNS"), N_("Secondary DNS"), N_("Tertiary DNS") };
 	int i;
 
 	for (i = 0; dns && dns[i] && i < 3; i++) {
