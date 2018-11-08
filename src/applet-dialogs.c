@@ -504,7 +504,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 		str = g_strdup_printf (_("Ethernet (%s)"), iface);
 		show_security = TRUE;
 	} else if (NM_IS_DEVICE_WIFI (device)) {
-		str = g_strdup_printf (_("802.11 WiFi (%s)"), iface);
+		str = g_strdup_printf (_("802.11 Wi-Fi (%s)"), iface);
 		show_security = TRUE;
 	} else if (NM_IS_DEVICE_MODEM (device)) {
 		NMDeviceModemCapabilities caps;
