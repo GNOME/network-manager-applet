@@ -363,7 +363,7 @@ get_ssid_utf8 (NMAccessPoint *ap)
 /* List known trojan networks that should never be shown to the user */
 static const char *blacklisted_ssids[] = {
 	/* http://www.npr.org/templates/story/story.php?storyId=130451369 */
-	"Free Public WiFi",
+	"Free Public Wi-Fi",
 	NULL
 };
 
@@ -383,7 +383,7 @@ clamp_ap_to_bssid (NMAccessPoint *ap, NMSettingWireless *s_wifi)
 	/* For a certain list of known ESSIDs which are commonly preset by ISPs
 	 * and manufacturers and often unchanged by users, lock the connection
 	 * to the BSSID so that we don't try to auto-connect to your grandma's
-	 * neighbor's WiFi.
+	 * neighbor's Wi-Fi.
 	 */
 
 	str_bssid = nm_access_point_get_bssid (ap);
