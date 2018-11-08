@@ -30,6 +30,7 @@
 
 #include "applet-dialogs.h"
 #include "utils.h"
+#include "nma-bar-code-widget.h"
 
 
 static void
@@ -453,6 +454,33 @@ display_dns_info (const char * const *dns, GtkGrid *grid, int *row)
 }
 
 static void
+_got_wsec_secrets (GObject *source_object, GAsyncResult *res, gpointer user_data)
+{
+	NMRemoteConnection *connection = NM_REMOTE_CONNECTION (source_object);
+	gs_unref_object GtkWidget *data_widget = GTK_WIDGET (user_data);
+	gs_unref_variant GVariant *secrets = NULL;
+	NMSettingWirelessSecurity *s_wsec;
+
+	secrets = nm_remote_connection_get_secrets_finish (connection, res, NULL);
+	if (!secrets)
+		return;
+
+	if (!nm_connection_update_secrets (NM_CONNECTION (connection),
+	                                   NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
+	                                   secrets,
+	                                   NULL)) {
+		return;
+	}
+
+	s_wsec = nm_connection_get_setting_wireless_security (NM_CONNECTION (connection));
+	if (!s_wsec)
+		return;
+
+	gtk_label_set_text (GTK_LABEL (data_widget),
+	                    nm_setting_wireless_security_get_psk (s_wsec));
+}
+
+static void
 info_dialog_add_page (GtkNotebook *notebook,
                       NMConnection *connection,
                       NMDevice *device)
@@ -468,11 +496,15 @@ info_dialog_add_page (GtkNotebook *notebook,
 	NMIPAddress *def_addr = NULL;
 	NMIPAddress *def6_addr = NULL;
 	const char *gateway;
-	NMSettingIPConfig *s_ip6;
+	NMSettingIPConfig *s_ip;
 	int row = 0;
 	GtkWidget* speed_label, *sec_label, *desc_widget, *data_widget = NULL;
 	GPtrArray *addresses;
 	gboolean show_security = FALSE;
+	gboolean is_hotspot = FALSE;
+	NMSettingWireless *s_wireless;
+	GBytes *ssid = NULL;
+	gs_free char *ssid_utf8 = NULL;
 	AtkObject *desc_object, *data_object = NULL;
 
 	grid = GTK_GRID (gtk_grid_new ());
@@ -599,6 +631,13 @@ info_dialog_add_page (GtkNotebook *notebook,
 	row++;
 
 	/*--- IPv4 ---*/
+	s_ip = nm_connection_get_setting_ip4_config (connection);
+	if (s_ip) {
+		method = nm_setting_ip_config_get_method (s_ip);
+		if (strcmp (method, NM_SETTING_IP4_CONFIG_METHOD_SHARED) == 0)
+			is_hotspot = TRUE;
+	}
+
 	gtk_grid_attach (grid, create_info_group_label (_("IPv4"), FALSE), 0, row, 2, 1);
 	row++;
 
@@ -638,9 +677,12 @@ info_dialog_add_page (GtkNotebook *notebook,
 	row++;
 
 	/*--- IPv6 ---*/
-	s_ip6 = nm_connection_get_setting_ip6_config (connection);
-	if (s_ip6)
-		 method = nm_setting_ip_config_get_method (s_ip6);
+	s_ip = nm_connection_get_setting_ip6_config (connection);
+	if (s_ip) {
+		method = nm_setting_ip_config_get_method (s_ip);
+		if (strcmp (method, NM_SETTING_IP6_CONFIG_METHOD_SHARED) == 0)
+			is_hotspot = TRUE;
+	}
 
 	if (method && strcmp (method, NM_SETTING_IP6_CONFIG_METHOD_IGNORE) != 0) {
 		gtk_grid_attach (grid, create_info_group_label (_("IPv6"), FALSE), 0, row, 2, 1);
@@ -678,6 +720,51 @@ info_dialog_add_page (GtkNotebook *notebook,
 	/* DNS */
 	dns6 = def6_addr ? nm_ip_config_get_nameservers (ip6_config) : NULL;
 	display_dns_info (dns6, grid, &row);
+
+	/* Wi-Fi */
+	if (!NM_IS_DEVICE_WIFI (device))
+		is_hotspot = FALSE;
+	if (is_hotspot) {
+		gtk_grid_attach (grid, gtk_label_new (""), 0, row, 2, 1);
+		row++;
+		gtk_grid_attach (grid, create_info_group_label (_("Hotspot"), FALSE), 0, row, 2, 1);
+		row++;
+
+		s_wireless = nm_connection_get_setting_wireless (connection);
+		ssid = nm_setting_wireless_get_ssid (s_wireless);
+		ssid_utf8 = nm_utils_ssid_to_utf8 (g_bytes_get_data (ssid, NULL), g_bytes_get_size (ssid));
+
+		desc_widget = create_info_label (_("Network"));
+		desc_object = gtk_widget_get_accessible (desc_widget);
+		data_widget = create_info_value (ssid_utf8);
+		data_object = gtk_widget_get_accessible (data_widget);
+		atk_object_add_relationship (desc_object, ATK_RELATION_LABEL_FOR, data_object);
+
+		gtk_grid_attach (grid, desc_widget, 0, row, 1, 1);
+		gtk_grid_attach (grid, data_widget, 1, row, 1, 1);
+		row++;
+
+		if (nm_connection_get_setting_wireless_security (connection)) {
+			desc_widget = create_info_label (_("Password"));
+			desc_object = gtk_widget_get_accessible (desc_widget);
+			data_widget = create_info_value ("\xe2\x80\x94" /* em dash */);
+			data_object = gtk_widget_get_accessible (data_widget);
+			atk_object_add_relationship (desc_object, ATK_RELATION_LABEL_FOR, data_object);
+
+			gtk_grid_attach (grid, desc_widget, 0, row, 1, 1);
+			gtk_grid_attach (grid, data_widget, 1, row, 1, 1);
+			row++;
+
+			nm_remote_connection_get_secrets_async (NM_REMOTE_CONNECTION (connection),
+		                                                NM_SETTING_WIRELESS_SECURITY_SETTING_NAME,
+		                                                NULL,
+		                                                _got_wsec_secrets,
+		                                                g_object_ref (data_widget));
+		}
+
+		gtk_grid_attach (grid, nma_bar_code_widget_new (connection), 0, row, 2, 1);
+		row++;
+	}
 
 	desc_widget = NULL;
 	desc_object = NULL;
