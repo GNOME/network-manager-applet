@@ -652,34 +652,30 @@ info_dialog_add_page (GtkNotebook *notebook,
 	row++;
 
 	/*--- IPv6 ---*/
-	gtk_grid_attach (grid, create_info_group_label (_("IPv6"), FALSE),
-	                 0, row, 1, 1);
-	row++;
-
 	s_ip6 = nm_connection_get_setting_ip6_config (connection);
 	if (s_ip6)
 		 method = nm_setting_ip_config_get_method (s_ip6);
 
-	if (!method || !strcmp (method, NM_SETTING_IP6_CONFIG_METHOD_IGNORE)) {
-		gtk_grid_attach (grid, create_info_label (_("Ignored"), FALSE),
+	if (method && strcmp (method, NM_SETTING_IP6_CONFIG_METHOD_IGNORE) != 0) {
+		gtk_grid_attach (grid, create_info_group_label (_("IPv6"), FALSE),
 		                 0, row, 1, 1);
 		row++;
-	}
 
-	addresses = NULL;
-	ip6_config = nm_device_get_ip6_config (device);
-	if (ip6_config) {
-		addresses = nm_ip_config_get_addresses (ip6_config);
-		gateway = nm_ip_config_get_gateway (ip6_config);
-	} else {
 		addresses = NULL;
-		gateway = NULL;
+		ip6_config = nm_device_get_ip6_config (device);
+		if (ip6_config) {
+			addresses = nm_ip_config_get_addresses (ip6_config);
+			gateway = nm_ip_config_get_gateway (ip6_config);
+		} else {
+			addresses = NULL;
+			gateway = NULL;
+		}
+
+		if (addresses && addresses->len > 0)
+			def6_addr = (NMIPAddress *) g_ptr_array_index (addresses, 0);
+
+		display_ip6_info (def6_addr, addresses, method, grid, &row);
 	}
-
-	if (addresses && addresses->len > 0)
-		def6_addr = (NMIPAddress *) g_ptr_array_index (addresses, 0);
-
-	display_ip6_info (def6_addr, addresses, method, grid, &row);
 
 	/* Gateway */
 	if (gateway && *gateway) {
@@ -867,19 +863,15 @@ info_dialog_add_page_for_vpn (GtkNotebook *notebook,
 	/*--- IPv6 ---*/
 	ip6_config = nm_active_connection_get_ip6_config (active);
 	if (ip6_config) {
-		gtk_grid_attach (grid, create_info_group_label (_("IPv6"), FALSE),
-		                 0, row, 1, 1);
-		row++;
-
 		s_ip6 = nm_connection_get_setting_ip6_config (connection);
 		if (s_ip6)
 			 method = nm_setting_ip_config_get_method (s_ip6);
+	}
 
-		if (!method || !strcmp (method, NM_SETTING_IP6_CONFIG_METHOD_IGNORE)) {
-			gtk_grid_attach (grid, create_info_label (_("Ignored"), FALSE),
-			                 0, row, 1, 1);
-			row++;
-		}
+	if (method && strcmp (method, NM_SETTING_IP6_CONFIG_METHOD_IGNORE) != 0) {
+		gtk_grid_attach (grid, create_info_group_label (_("IPv6"), FALSE),
+		                 0, row, 1, 1);
+		row++;
 
 		addresses = nm_ip_config_get_addresses (ip6_config);
 		if (addresses && addresses->len > 0)
