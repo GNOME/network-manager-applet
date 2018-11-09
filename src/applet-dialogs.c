@@ -261,22 +261,6 @@ create_info_label_security (NMConnection *connection)
 	return w;
 }
 
-static GtkWidget *
-create_info_notebook_label (NMConnection *connection, gboolean is_default)
-{
-	GtkWidget *label;
-	char *str;
-
-	if (is_default) {
-		str = g_strdup_printf (_("%s (default)"), nm_connection_get_id (connection));
-		label = gtk_label_new (str);
-		g_free (str);
-	} else
-		label = gtk_label_new (nm_connection_get_id (connection));
-
-	return label;
-}
-
 typedef struct {
 	NMDevice *device;
 	GtkWidget *label;
@@ -471,7 +455,6 @@ display_dns_info (const char * const *dns, GtkGrid *grid, int *row)
 static void
 info_dialog_add_page (GtkNotebook *notebook,
                       NMConnection *connection,
-                      gboolean is_default,
                       NMDevice *device)
 {
 	GtkGrid *grid;
@@ -702,7 +685,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 	data_object = NULL;
 
 	gtk_notebook_append_page (notebook, GTK_WIDGET (grid),
-	                          create_info_notebook_label (connection, is_default));
+	                          gtk_label_new (nm_connection_get_id (connection)));
 
 	gtk_widget_show_all (GTK_WIDGET (grid));
 }
@@ -794,7 +777,6 @@ info_dialog_add_page_for_vpn (GtkNotebook *notebook,
 	GPtrArray *addresses;
 	NMSettingIPConfig *s_ip6;
 	const char *method = NULL;
-	gboolean is_default = nm_active_connection_get_default (active);
 
 	grid = GTK_GRID (gtk_grid_new ());
 	gtk_grid_set_column_spacing (grid, 12);
@@ -875,7 +857,7 @@ info_dialog_add_page_for_vpn (GtkNotebook *notebook,
 	}
 
 	gtk_notebook_append_page (notebook, GTK_WIDGET (grid),
-	                          create_info_notebook_label (connection, is_default));
+	                          gtk_label_new (nm_connection_get_id (connection)));
 
 	gtk_widget_show_all (GTK_WIDGET (grid));
 }
@@ -1015,7 +997,6 @@ info_dialog_update (NMApplet *applet)
 		} else if (devices && devices->len > 0) {
 				info_dialog_add_page (notebook,
 				                      connection,
-				                      nm_active_connection_get_default (active_connection),
 				                      g_ptr_array_index (devices, 0));
 		} else {
 			g_warning ("Active connection %s had no devices and was not a VPN!",
