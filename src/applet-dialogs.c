@@ -477,7 +477,7 @@ info_dialog_add_page (GtkNotebook *notebook,
 	const char *gateway;
 	NMSettingIPConfig *s_ip6;
 	int row = 0;
-	GtkWidget* speed_label, *sec_label = NULL, *desc_widget, *data_widget = NULL;
+	GtkWidget* speed_label, *sec_label, *desc_widget, *data_widget = NULL;
 	GPtrArray *addresses;
 	gboolean show_security = FALSE;
 	AtkObject *desc_object, *data_object = NULL;
@@ -590,6 +590,23 @@ info_dialog_add_page (GtkNotebook *notebook,
 	                 1, row, 1, 1);
 	row++;
 
+	/* Security */
+	if (show_security) {
+		sec_label = create_info_label_security (connection);
+		if (sec_label) {
+			desc_widget = create_info_label (_("Security:"), FALSE);
+			desc_object = gtk_widget_get_accessible (desc_widget);
+			data_object = gtk_widget_get_accessible (sec_label);
+			atk_object_add_relationship (desc_object, ATK_RELATION_LABEL_FOR, data_object);
+
+			gtk_grid_attach (grid, desc_widget,
+			                 0, row, 1, 1);
+			gtk_grid_attach (grid, sec_label,
+			                 1, row, 1, 1);
+			row++;
+		}
+	}
+
 	/* Empty line */
 	gtk_grid_attach (grid, gtk_label_new (""), 0, row, 2, 1);
 	row++;
@@ -680,28 +697,6 @@ info_dialog_add_page (GtkNotebook *notebook,
 	/* DNS */
 	dns6 = def6_addr ? nm_ip_config_get_nameservers (ip6_config) : NULL;
 	display_dns_info (dns6, grid, &row);
-
-	/* Security */
-	if (show_security)
-		sec_label = create_info_label_security (connection);
-	if (sec_label) {
-		gtk_grid_attach (grid, gtk_label_new (""), 0, row, 2, 1);
-		row++;
-		gtk_grid_attach (grid, create_info_group_label (_("Security"), FALSE),
-				 0, row, 1, 1);
-		row++;
-
-		desc_widget = create_info_label (_("Key Management:"), FALSE);
-		desc_object = gtk_widget_get_accessible (desc_widget);
-		data_object = gtk_widget_get_accessible (sec_label);
-		atk_object_add_relationship (desc_object, ATK_RELATION_LABEL_FOR, data_object);
-
-		gtk_grid_attach (grid, desc_widget,
-		                 0, row, 1, 1);
-		gtk_grid_attach (grid, sec_label,
-		                 1, row, 1, 1);
-		row++;
-	}
 
 	desc_widget = NULL;
 	desc_object = NULL;
