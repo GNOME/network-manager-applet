@@ -880,11 +880,102 @@ info_dialog_add_page_for_vpn (GtkNotebook *notebook,
 	gtk_widget_show_all (GTK_WIDGET (grid));
 }
 
+
+static void
+_add_to_ptr_array (gpointer data, gpointer user_data)
+{
+	GPtrArray *array = user_data;
+	g_ptr_array_add (array, data);
+}
+
+#ifndef NM_REMOTE_CONNECTION_FLAGS
+/*
+ * NetworkManager < 1.12 compatibility.
+ * If you look outside and see flying cars, remove this.
+ */
+typedef enum {
+        NM_SETTINGS_CONNECTION_FLAG_NM_GENERATED = 2,
+} NMSettingsConnectionFlags;
+
+static NMSettingsConnectionFlags
+nm_remote_connection_get_flags (NMRemoteConnection *connection)
+{
+	NMSettingsConnectionFlags flags;
+
+	if (!g_object_class_find_property (G_OBJECT_GET_CLASS (connection), "flags"))
+		return 0;
+
+	g_object_get (connection, "flags", &flags, NULL);
+	return flags;
+}
+#else
+#define nm_remote_connection_get_flags(conn) \
+	NM_LIBNM_COMPAT_UNDEPRECATE (nm_remote_connection_get_flags (conn))
+#endif
+
+static int
+_compare_active_connections (gconstpointer a, gconstpointer b)
+{
+	NMActiveConnection *ac_a = NM_ACTIVE_CONNECTION(*(NMActiveConnection **)a);
+	NMActiveConnection *ac_b = NM_ACTIVE_CONNECTION(*(NMActiveConnection **)b);
+	NMRemoteConnection *con_a = nm_active_connection_get_connection (ac_a);
+	NMRemoteConnection *con_b = nm_active_connection_get_connection (ac_b);
+	NMSettingIPConfig *s_ip;
+	int cmp = 0;
+
+	if (con_a && nm_remote_connection_get_visible (con_a))
+		cmp--;
+	if (con_b && nm_remote_connection_get_visible (con_b))
+		cmp++;
+	if (cmp || !con_a || !con_b)
+		return cmp;
+
+	s_ip = nm_connection_get_setting_ip6_config (NM_CONNECTION (con_a));
+	if (s_ip && strcmp (nm_setting_ip_config_get_method (s_ip), NM_SETTING_IP6_CONFIG_METHOD_SHARED) == 0)
+		cmp--;
+	s_ip = nm_connection_get_setting_ip6_config (NM_CONNECTION (con_b));
+	if (s_ip && strcmp (nm_setting_ip_config_get_method (s_ip), NM_SETTING_IP6_CONFIG_METHOD_SHARED) == 0)
+		cmp++;
+	if (cmp)
+		return cmp;
+
+	s_ip = nm_connection_get_setting_ip4_config (NM_CONNECTION (con_a));
+	if (s_ip && strcmp (nm_setting_ip_config_get_method (s_ip), NM_SETTING_IP4_CONFIG_METHOD_SHARED) == 0)
+		cmp--;
+	s_ip = nm_connection_get_setting_ip4_config (NM_CONNECTION (con_b));
+	if (s_ip && strcmp (nm_setting_ip_config_get_method (s_ip), NM_SETTING_IP4_CONFIG_METHOD_SHARED) == 0)
+		cmp++;
+	if (cmp)
+		return cmp;
+
+	if (nm_active_connection_get_default (ac_a))
+		cmp--;
+	if (nm_active_connection_get_default (ac_b))
+		cmp++;
+	if (cmp)
+		return cmp;
+
+	if (nm_active_connection_get_default6 (ac_a))
+		cmp--;
+	if (nm_active_connection_get_default6 (ac_b))
+		cmp++;
+	if (cmp)
+		return cmp;
+
+	if (nm_remote_connection_get_flags (con_a) & NM_SETTINGS_CONNECTION_FLAG_NM_GENERATED)
+		cmp++;
+	if (nm_remote_connection_get_flags (con_b) & NM_SETTINGS_CONNECTION_FLAG_NM_GENERATED)
+		cmp--;
+
+	return cmp;
+}
+
 static GtkWidget *
 info_dialog_update (NMApplet *applet)
 {
 	GtkNotebook *notebook;
 	const GPtrArray *connections;
+	gs_unref_ptrarray GPtrArray *sorted_connections = NULL;
 	int i;
 	int pages = 0;
 
@@ -896,8 +987,13 @@ info_dialog_update (NMApplet *applet)
 
 	/* Add new pages */
 	connections = nm_client_get_active_connections (applet->nm_client);
-	for (i = 0; connections && (i < connections->len); i++) {
-		NMActiveConnection *active_connection = g_ptr_array_index (connections, i);
+
+	sorted_connections = g_ptr_array_new_full (connections->len, NULL);
+	g_ptr_array_foreach ((GPtrArray *)connections, _add_to_ptr_array, sorted_connections);
+	g_ptr_array_sort (sorted_connections, _compare_active_connections);
+
+	for (i = 0; sorted_connections && (i < sorted_connections->len); i++) {
+		NMActiveConnection *active_connection = g_ptr_array_index (sorted_connections, i);
 		NMConnection *connection;
 		const GPtrArray *devices;
 
