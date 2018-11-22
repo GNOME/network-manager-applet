@@ -23,8 +23,8 @@ msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
 "issues\n"
-"POT-Creation-Date: 2018-09-19 08:25+0000\n"
-"PO-Revision-Date: 2018-10-05 11:01-0200\n"
+"POT-Creation-Date: 2018-10-26 09:52+0000\n"
+"PO-Revision-Date: 2018-11-22 07:07-0200\n"
 "Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
@@ -1691,6 +1691,7 @@ msgid "_Service"
 msgstr "_Serviço"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:5
+#: ../src/libnma/nma-file-cert-chooser.c:347
 #: ../src/wireless-security/eap-method-leap.ui.h:3
 #: ../src/wireless-security/eap-method-simple.ui.h:3
 #: ../src/wireless-security/ws-leap.ui.h:3
@@ -2357,6 +2358,7 @@ msgid "Allow _roaming if home network is not available"
 msgstr "Permitir _roaming se a rede doméstica não estiver disponível"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:11
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:427
 msgid "Sho_w passwords"
 msgstr "_Mostrar senhas"
 
@@ -3156,7 +3158,7 @@ msgstr "MACsec"
 
 #: ../src/connection-editor/connection-helpers.c:124
 #: ../src/connection-editor/connection-helpers.c:386
-#: ../src/connection-editor/page-vpn.c:99
+#: ../src/connection-editor/page-vpn.c:100
 msgid "VPN"
 msgstr "VPN"
 
@@ -3510,15 +3512,15 @@ msgstr "Não é possível localizar a conexão com UUID “%s”"
 msgid "Add a new connection"
 msgstr "Adicionar uma nova conexão"
 
-#: ../src/connection-editor/page-8021x-security.c:112
+#: ../src/connection-editor/page-8021x-security.c:113
 msgid "802.1X Security"
 msgstr "Segurança 802.1X"
 
-#: ../src/connection-editor/page-8021x-security.c:114
+#: ../src/connection-editor/page-8021x-security.c:115
 msgid "Could not load 802.1X Security user interface."
 msgstr "Não foi possível carregar a interface gráfica de segurança 802.1X."
 
-#: ../src/connection-editor/page-8021x-security.c:128
+#: ../src/connection-editor/page-8021x-security.c:129
 msgid "Use 802.1_X security for this connection"
 msgstr "Usar protocolo de segurança 802.1_X para esta conexão"
 
@@ -3650,7 +3652,7 @@ msgstr "Conexão Ethernet %d"
 
 #. TRANSLATORS: Default zone set for firewall, when no zone is selected
 #: ../src/connection-editor/page-general.c:55
-#: ../src/libnma/nma-mobile-providers.c:806
+#: ../src/libnma/nma-mobile-providers.c:802
 #: ../src/libnm-gtk/nm-mobile-providers.c:801
 msgid "Default"
 msgstr "Padrão"
@@ -3886,12 +3888,14 @@ msgstr "Meu provedor usa tecnologia _GSM (ex.: 3G, GPRS, EDGE, UMTS, HSDPA)"
 msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr "Meu provedor usa tecnologias baseadas em C_DMA (ex.: 1xRTT, EVDO)"
 
-#: ../src/connection-editor/page-mobile.c:586 ../src/mb-menu-item.c:50
+#: ../src/connection-editor/page-mobile.c:586
+#: ../src/libnma/nma-mobile-wizard.c:147 ../src/mb-menu-item.c:50
 #: ../src/mobile-helpers.c:282
 msgid "CDMA"
 msgstr "CDMA"
 
-#: ../src/connection-editor/page-mobile.c:589 ../src/mb-menu-item.c:54
+#: ../src/connection-editor/page-mobile.c:589
+#: ../src/libnma/nma-mobile-wizard.c:144 ../src/mb-menu-item.c:54
 #: ../src/mobile-helpers.c:280
 msgid "GSM"
 msgstr "GSM"
@@ -4004,25 +4008,25 @@ msgstr "Não foi possível carregar o editor do plug-in de VPN para “%s” (%s
 msgid "unknown failure"
 msgstr "falha desconhecida"
 
-#: ../src/connection-editor/page-vpn.c:101
+#: ../src/connection-editor/page-vpn.c:102
 msgid "Could not load VPN user interface."
 msgstr "Não foi possível carregar a interface gráfica para VPN."
 
-#: ../src/connection-editor/page-vpn.c:116
+#: ../src/connection-editor/page-vpn.c:117
 #, c-format
 msgid "Could not find VPN plugin for “%s”."
 msgstr "Não foi possível localizar o plug-in de VPN para “%s”."
 
-#: ../src/connection-editor/page-vpn.c:198
+#: ../src/connection-editor/page-vpn.c:199
 #, c-format
 msgid "VPN connection %d"
 msgstr "Conexão VPN %d"
 
-#: ../src/connection-editor/page-vpn.c:204
+#: ../src/connection-editor/page-vpn.c:205
 msgid "Choose a VPN Connection Type"
 msgstr "Escolha o tipo de conexão VPN"
 
-#: ../src/connection-editor/page-vpn.c:205
+#: ../src/connection-editor/page-vpn.c:206
 msgid ""
 "Select the type of VPN you wish to use for the new connection. If the type "
 "of VPN connection you wish to create does not appear in the list, you may "
@@ -4212,42 +4216,42 @@ msgstr "Escolha o certificado de %s"
 msgid "%s _certificate"
 msgstr "_Certificado de %s"
 
-#: ../src/libnma/nma-mobile-wizard.c:281
-#: ../src/libnm-gtk/nm-mobile-wizard.c:326
-msgid "Unlisted"
-msgstr "Não listado"
-
-#: ../src/libnma/nma-mobile-wizard.c:465
-#: ../src/libnm-gtk/nm-mobile-wizard.c:558
-msgid "My plan is not listed…"
-msgstr "Meu plano não está listado…"
-
-#: ../src/libnma/nma-mobile-wizard.c:626
-#: ../src/libnm-gtk/nm-mobile-wizard.c:724
-msgid "Provider"
-msgstr "Provedor"
-
-#: ../src/libnma/nma-mobile-wizard.c:908
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1067
-msgid "Country or region"
-msgstr "Países ou regiões"
-
-#: ../src/libnma/nma-mobile-wizard.c:918
+#: ../src/libnma/nma-mobile-providers.c:991
 #: ../src/libnm-gtk/nm-mobile-wizard.c:1077
 msgid "My country is not listed"
 msgstr "Meu país não está listado"
 
-#: ../src/libnma/nma-mobile-wizard.c:999
+#: ../src/libnma/nma-mobile-wizard.c:252 ../src/libnma/nma-mobile-wizard.c:284
+#: ../src/libnm-gtk/nm-mobile-wizard.c:326
+msgid "Unlisted"
+msgstr "Não listado"
+
+#: ../src/libnma/nma-mobile-wizard.c:484
+#: ../src/libnm-gtk/nm-mobile-wizard.c:558
+msgid "My plan is not listed…"
+msgstr "Meu plano não está listado…"
+
+#: ../src/libnma/nma-mobile-wizard.c:644
+#: ../src/libnm-gtk/nm-mobile-wizard.c:724
+msgid "Provider"
+msgstr "Provedor"
+
+#: ../src/libnma/nma-mobile-wizard.c:932
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1067
+msgid "Country or region"
+msgstr "Países ou regiões"
+
+#: ../src/libnma/nma-mobile-wizard.c:1016
 #: ../src/libnm-gtk/nm-mobile-wizard.c:1184
 msgid "Installed GSM device"
 msgstr "Dispositivo GSM instalado"
 
-#: ../src/libnma/nma-mobile-wizard.c:1002
+#: ../src/libnma/nma-mobile-wizard.c:1019
 #: ../src/libnm-gtk/nm-mobile-wizard.c:1187
 msgid "Installed CDMA device"
 msgstr "Dispositivo CDMA instalado"
 
-#: ../src/libnma/nma-mobile-wizard.c:1208
+#: ../src/libnma/nma-mobile-wizard.c:1225
 #: ../src/libnm-gtk/nm-mobile-wizard.c:1428
 msgid "Any device"
 msgstr "Qualquer dispositivo"
@@ -4313,9 +4317,9 @@ msgid "Select your provider from a _list:"
 msgstr "Escolha seu provedor a partir de uma _lista:"
 
 #: ../src/libnma/nma-mobile-wizard.ui.h:12
-#: ../src/libnm-gtk/nm-mobile-wizard.c:749
-msgid "I can’t find my provider and I wish to enter it _manually:"
-msgstr "Não localizei _meu provedor e quero digitá-lo manualmente:"
+#| msgid "I can’t find my provider and I wish to enter it _manually:"
+msgid "I can’t find my provider and I wish to set up the connection _manually:"
+msgstr "Não localizei _meu provedor e quero configurar a conexão manualmente:"
 
 #: ../src/libnma/nma-mobile-wizard.ui.h:13
 #: ../src/libnm-gtk/nm-mobile-wizard.c:779
@@ -4328,26 +4332,21 @@ msgid "My provider uses CDMA technology (1xRTT, EVDO)"
 msgstr "Meu provedor usa tecnologia CDMA (1xRTT, EVDO)"
 
 #: ../src/libnma/nma-mobile-wizard.ui.h:15
-#: ../src/libnm-gtk/nm-mobile-wizard.c:762
-msgid "Provider:"
-msgstr "Provedor:"
-
-#: ../src/libnma/nma-mobile-wizard.ui.h:16
 #: ../src/libnm-gtk/nm-mobile-wizard.c:792
 msgid "Choose your Provider"
 msgstr "Escolha seu provedor"
 
-#: ../src/libnma/nma-mobile-wizard.ui.h:17
+#: ../src/libnma/nma-mobile-wizard.ui.h:16
 #: ../src/libnm-gtk/nm-mobile-wizard.c:457
 msgid "_Select your plan:"
 msgstr "_Escolha seu plano:"
 
-#: ../src/libnma/nma-mobile-wizard.ui.h:18
+#: ../src/libnma/nma-mobile-wizard.ui.h:17
 #: ../src/libnm-gtk/nm-mobile-wizard.c:481
 msgid "Selected plan _APN (Access Point Name):"
 msgstr "_APN (Nome do ponto de acesso) do plano escolhido:"
 
-#: ../src/libnma/nma-mobile-wizard.ui.h:19
+#: ../src/libnma/nma-mobile-wizard.ui.h:18
 #: ../src/libnm-gtk/nm-mobile-wizard.c:501
 msgid ""
 "Warning: Selecting an incorrect plan may result in billing issues for your "
@@ -4361,36 +4360,36 @@ msgstr ""
 "Se você não sabe ao certo qual o seu plano, pergunte ao seu provedor pelo "
 "APN do seu plano."
 
-#: ../src/libnma/nma-mobile-wizard.ui.h:22
+#: ../src/libnma/nma-mobile-wizard.ui.h:21
 #: ../src/libnm-gtk/nm-mobile-wizard.c:509
 msgid "Choose your Billing Plan"
 msgstr "Escolha seu plano"
 
-#: ../src/libnma/nma-mobile-wizard.ui.h:23
+#: ../src/libnma/nma-mobile-wizard.ui.h:22
 #: ../src/libnm-gtk/nm-mobile-wizard.c:199
 msgid ""
 "Your mobile broadband connection is configured with the following settings:"
 msgstr "Sua conexão de banda larga móvel está configurada da seguinte maneira:"
 
 #. Device
-#: ../src/libnma/nma-mobile-wizard.ui.h:24
+#: ../src/libnma/nma-mobile-wizard.ui.h:23
 #: ../src/libnm-gtk/nm-mobile-wizard.c:206
 msgid "Your Device:"
 msgstr "Seu dispositivo:"
 
 #. Provider
-#: ../src/libnma/nma-mobile-wizard.ui.h:25
+#: ../src/libnma/nma-mobile-wizard.ui.h:24
 #: ../src/libnm-gtk/nm-mobile-wizard.c:217
 msgid "Your Provider:"
 msgstr "Seu provedor:"
 
 #. Plan and APN
-#: ../src/libnma/nma-mobile-wizard.ui.h:26
+#: ../src/libnma/nma-mobile-wizard.ui.h:25
 #: ../src/libnm-gtk/nm-mobile-wizard.c:228
 msgid "Your Plan:"
 msgstr "Seu plano:"
 
-#: ../src/libnma/nma-mobile-wizard.ui.h:27
+#: ../src/libnma/nma-mobile-wizard.ui.h:26
 #: ../src/libnm-gtk/nm-mobile-wizard.c:249
 msgid ""
 "A connection will now be made to your mobile broadband provider using the "
@@ -4405,7 +4404,7 @@ msgstr ""
 "configurações da rede de banda larga móvel, escolha “Conexões de rede” de "
 "Sistema → Preferências."
 
-#: ../src/libnma/nma-mobile-wizard.ui.h:28
+#: ../src/libnma/nma-mobile-wizard.ui.h:27
 #: ../src/libnm-gtk/nm-mobile-wizard.c:262
 msgid "Confirm Mobile Broadband Settings"
 msgstr "Confirmação das configurações de banda larga móvel"
@@ -4602,6 +4601,14 @@ msgstr "Co_nexão"
 #: ../src/libnma/wifi.ui.h:4
 msgid "Wi-Fi _adapter"
 msgstr "_Adaptador Wi-Fi"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:749
+msgid "I can’t find my provider and I wish to enter it _manually:"
+msgstr "Não localizei _meu provedor e quero digitá-lo manualmente:"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:762
+msgid "Provider:"
+msgstr "Provedor:"
 
 #: ../src/libnm-gtk/nm-ui-utils.c:302 ../src/libnm-gtk/nm-ui-utils.c:369
 msgid "Wired"
