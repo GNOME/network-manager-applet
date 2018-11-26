@@ -983,7 +983,7 @@ security_combo_init (NMAWifiDialog *self, gboolean secrets_only)
 	    || nm_utils_security_valid (NMU_SEC_WPA2_ENTERPRISE, dev_caps, !!priv->ap, is_adhoc, ap_flags, ap_wpa, ap_rsn)) {
 		WirelessSecurityWPAEAP *ws_wpa_eap;
 
-		ws_wpa_eap = ws_wpa_eap_new (priv->connection, FALSE, secrets_only);
+		ws_wpa_eap = ws_wpa_eap_new (priv->connection, FALSE, secrets_only, NULL);
 		if (ws_wpa_eap) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_eap), sec_model,
 			                   &iter, _("WPA & WPA2 Enterprise"));

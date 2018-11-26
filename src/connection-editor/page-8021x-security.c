@@ -68,7 +68,7 @@ finish_setup (CEPage8021xSecurity *self, gpointer user_data)
 	CEPage8021xSecurityPrivate *priv = CE_PAGE_8021X_SECURITY_GET_PRIVATE (self);
 	GtkWidget *parent_container;
 
-	priv->security = (WirelessSecurity *) ws_wpa_eap_new (parent->connection, TRUE, FALSE);
+	priv->security = (WirelessSecurity *) ws_wpa_eap_new (parent->connection, TRUE, FALSE, NULL);
 	if (!priv->security) {
 		g_warning ("Could not load 802.1X user interface.");
 		return;

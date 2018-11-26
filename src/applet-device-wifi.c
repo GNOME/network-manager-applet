@@ -1643,7 +1643,10 @@ wifi_get_secrets (SecretsRequest *req, GError **error)
 
 	g_return_val_if_fail (!info->dialog, FALSE);
 
-	info->dialog = nma_wifi_dialog_new (req->applet->nm_client, req->connection, NULL, NULL, TRUE);
+	info->dialog = nma_wifi_dialog_new_for_secrets (req->applet->nm_client,
+	                                                req->connection,
+	                                                req->setting_name,
+	                                                (const char *const*) req->hints);
 	if (info->dialog) {
 		applet_secrets_request_set_free_func (req, free_wifi_info);
 		g_signal_connect (info->dialog, "response",

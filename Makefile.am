@@ -662,6 +662,23 @@ src_libnma_tests_wifi_dialog_LDADD = \
 	$(LIBNM_LIBS) \
 	src/libnma/libnma.la
 
+check_PROGRAMS_norun += src/libnma/tests/wifi-dialog-secrets
+
+src_libnma_tests_wifi_dialog_secrets_CPPFLAGS = \
+	$(dflt_cppflags) \
+	$(GLIB_CFLAGS) \
+	$(GTK3_CFLAGS) \
+	$(LIBNM_CFLAGS) \
+	"-I$(srcdir)/shared/" \
+	"-I$(srcdir)/src/libnma" \
+	-Isrc/libnma
+
+src_libnma_tests_wifi_dialog_secrets_LDADD = \
+	$(GLIB_LIBS) \
+	$(GTK3_LIBS) \
+	$(LIBNM_LIBS) \
+	src/libnma/libnma.la
+
 check_PROGRAMS_norun += src/libnma/tests/run-vpn
 
 src_libnma_tests_run_vpn_CPPFLAGS = \

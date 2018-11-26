@@ -39,3 +39,12 @@ executable(
   c_args: cflags,
   install: false
 )
+
+executable(
+  'wifi-dialog-secrets',
+  'wifi-dialog-secrets.c',
+  include_directories: incs,
+  dependencies: deps,
+  c_args: cflags,
+  install: false
+)

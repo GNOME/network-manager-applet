@@ -261,7 +261,8 @@ inner_auth_combo_init (EAPMethodFAST *method,
 	em_gtc = eap_method_simple_new (method->sec_parent,
 	                                connection,
 	                                EAP_METHOD_SIMPLE_TYPE_GTC,
-	                                simple_flags);
+	                                simple_flags,
+	                                NULL);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    I_NAME_COLUMN, _("GTC"),
@@ -276,7 +277,8 @@ inner_auth_combo_init (EAPMethodFAST *method,
 	em_mschap_v2 = eap_method_simple_new (method->sec_parent,
 	                                      connection,
 	                                      EAP_METHOD_SIMPLE_TYPE_MSCHAP_V2,
-	                                      simple_flags);
+	                                      simple_flags,
+	                                      NULL);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    I_NAME_COLUMN, _("MSCHAPv2"),

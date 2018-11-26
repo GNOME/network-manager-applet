@@ -411,7 +411,7 @@ finish_setup (CEPageWifiSecurity *self, gpointer user_data)
 	if (security_valid (NMU_SEC_WPA_ENTERPRISE, mode) || security_valid (NMU_SEC_WPA2_ENTERPRISE, mode)) {
 		WirelessSecurityWPAEAP *ws_wpa_eap;
 
-		ws_wpa_eap = ws_wpa_eap_new (connection, TRUE, FALSE);
+		ws_wpa_eap = ws_wpa_eap_new (connection, TRUE, FALSE, NULL);
 		if (ws_wpa_eap) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_eap), sec_model,
 			                   &iter, _("WPA & WPA2 Enterprise"), FALSE, FALSE);

@@ -373,7 +373,8 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
                            GCallback auth_combo_changed_cb,
                            NMConnection *connection,
                            gboolean is_editor,
-                           gboolean secrets_only)
+                           gboolean secrets_only,
+                           const char *const*secrets_hints)
 {
 	GtkWidget *combo, *widget;
 	GtkListStore *auth_model;
@@ -418,7 +419,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		simple_flags |= EAP_METHOD_SIMPLE_FLAG_SECRETS_ONLY;
 
 	if (wired) {
-		em_md5 = eap_method_simple_new (sec, connection, EAP_METHOD_SIMPLE_TYPE_MD5, simple_flags);
+		em_md5 = eap_method_simple_new (sec, connection, EAP_METHOD_SIMPLE_TYPE_MD5, simple_flags, NULL);
 		gtk_list_store_append (auth_model, &iter);
 		gtk_list_store_set (auth_model, &iter,
 			                AUTH_NAME_COLUMN, _("MD5"),
@@ -454,7 +455,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		item++;
 	}
 
-	em_pwd = eap_method_simple_new (sec, connection, EAP_METHOD_SIMPLE_TYPE_PWD, simple_flags);
+	em_pwd = eap_method_simple_new (sec, connection, EAP_METHOD_SIMPLE_TYPE_PWD, simple_flags, NULL);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
 	                    AUTH_NAME_COLUMN, _("PWD"),
@@ -497,6 +498,35 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	if (default_method && (active < 0) && !strcmp (default_method, "peap"))
 		active = item;
 	item++;
+
+	if (secrets_hints) {
+		EAPMethodSimple *em_hints;
+
+		em_hints = eap_method_simple_new (sec, connection, EAP_METHOD_SIMPLE_TYPE_UNKNOWN,
+		                                  simple_flags, secrets_hints);
+		gtk_list_store_append (auth_model, &iter);
+		gtk_list_store_set (auth_model, &iter,
+		                    AUTH_NAME_COLUMN, "Unknown",
+		                    AUTH_METHOD_COLUMN, em_hints,
+		                    -1);
+		eap_method_unref (EAP_METHOD (em_hints));
+		active = item;
+		item++;
+	} else if (default_method && !strcmp (default_method, "external")) {
+		EAPMethodSimple *em_extern;
+		const char *empty_hints[] = { NULL };
+
+		em_extern = eap_method_simple_new (sec, connection, EAP_METHOD_SIMPLE_TYPE_UNKNOWN,
+		                                   simple_flags, empty_hints);
+		gtk_list_store_append (auth_model, &iter);
+		gtk_list_store_set (auth_model, &iter,
+		                    AUTH_NAME_COLUMN, _("Externally configured"),
+		                    AUTH_METHOD_COLUMN, em_extern,
+		                    -1);
+		eap_method_unref (EAP_METHOD (em_extern));
+			active = item;
+		item++;
+	}
 
 	combo = GTK_WIDGET (gtk_builder_get_object (sec->builder, combo_name));
 	g_assert (combo);
