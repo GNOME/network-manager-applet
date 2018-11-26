@@ -78,12 +78,12 @@ validate (EAPMethod *parent, GError **error)
 }
 
 static void
-ca_cert_not_required_toggled (GtkWidget *ignored, gpointer user_data)
+ca_cert_not_required_toggled (GtkWidget *button, gpointer user_data)
 {
 	EAPMethodTLS *method = (EAPMethodTLS *) user_data;
 
 	gtk_widget_set_sensitive (method->ca_cert_chooser,
-	                          !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (ignored)));
+	                          !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button)));
 }
 
 static void
@@ -471,6 +471,9 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 		else
 			ca_not_required = TRUE;
 	}
+
+	if (secrets_only)
+		ca_not_required = TRUE;
 
 	method->client_cert_chooser = nma_cert_chooser_new ("User",
 	                                                    secrets_only ? NMA_CERT_CHOOSER_FLAG_PASSWORDS : 0);

@@ -79,12 +79,12 @@ validate (EAPMethod *parent, GError **error)
 }
 
 static void
-ca_cert_not_required_toggled (GtkWidget *ignored, gpointer user_data)
+ca_cert_not_required_toggled (GtkWidget *button, gpointer user_data)
 {
 	EAPMethodPEAP *method = (EAPMethodPEAP *) user_data;
 
 	gtk_widget_set_sensitive (method->ca_cert_chooser,
-	                          !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (ignored)));
+	                          !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button)));
 }
 
 static void
@@ -428,6 +428,9 @@ eap_method_peap_new (WirelessSecurity *ws_parent,
 		else
 			ca_not_required = TRUE;
 	}
+
+	if (secrets_only)
+		ca_not_required = TRUE;
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_ca_cert_not_required_checkbox"));
 	g_assert (widget);
