@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: NetworkManager HEAD\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
 "issues\n"
-"POT-Creation-Date: 2018-10-26 09:52+0000\n"
-"PO-Revision-Date: 2018-11-25 18:56+0200\n"
+"POT-Creation-Date: 2018-12-06 09:38+0000\n"
+"PO-Revision-Date: 2018-12-08 14:39+0200\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -34,9 +34,9 @@ msgid "Manage your network connections"
 msgstr "Tvarkyti tinklo ryšius"
 
 #: ../nm-connection-editor.desktop.in.h:1
-#: ../src/connection-editor/nm-connection-list.ui.h:1
-msgid "Network Connections"
-msgstr "Tinklo ryšiai"
+#| msgid "Raw Configuration"
+msgid "Advanced Network Configuration"
+msgstr "Sudėtingesnė tinklo konfigūracija"
 
 #: ../nm-connection-editor.desktop.in.h:2
 msgid "Manage and change your network connection settings"
@@ -222,19 +222,18 @@ msgstr "802.1X tapatybės nustatymas"
 #: ../src/connection-editor/vpn-helpers.c:212 ../src/gsm-unlock.ui.h:1
 #: ../src/libnma/nma-pkcs11-token-login-dialog.ui.h:1
 #: ../src/libnma/nma-vpn-password-dialog.ui.h:1
-#: ../src/libnma/nma-wifi-dialog.c:1062
+#: ../src/libnma/nma-wifi-dialog.c:1097
 #: ../src/libnm-gtk/nm-vpn-password-dialog.c:209
 #: ../src/libnm-gtk/nm-wifi-dialog.c:1067 ../src/mobile-helpers.c:465
 msgid "_Cancel"
 msgstr "_Atsisakyti"
 
-#: ../src/8021x.ui.h:3 ../src/libnma/nma-wifi-dialog.c:1068
+#: ../src/8021x.ui.h:3 ../src/libnma/nma-wifi-dialog.c:1103
 #: ../src/libnm-gtk/nm-wifi-dialog.c:1073
 msgid "C_onnect"
 msgstr "Prisi_jungti"
 
 #: ../src/8021x.ui.h:4 ../src/libnma/wifi.ui.h:2
-#| msgid "_Network name:"
 msgid "_Network name"
 msgstr "_Tinklo pavadinimas"
 
@@ -808,8 +807,8 @@ msgid "Error displaying connection information:"
 msgstr "Klaida rodant ryšio informaciją:"
 
 #: ../src/applet-dialogs.c:73 ../src/connection-editor/page-wifi-security.c:378
-#: ../src/libnma/nma-wifi-dialog.c:946 ../src/libnm-gtk/nm-wifi-dialog.c:948
-#: ../src/wireless-security/wireless-security.c:448
+#: ../src/libnma/nma-wifi-dialog.c:968 ../src/libnm-gtk/nm-wifi-dialog.c:948
+#: ../src/wireless-security/wireless-security.c:449
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -1705,7 +1704,6 @@ msgid "The interface on which the PPP connection will be established."
 msgstr "Sąsaja, kurioje bus sukurtas PPP ryšys."
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:12
-#| msgid "P_arent interface"
 msgid "C_laim interface"
 msgstr "_Užimti sąsają"
 
@@ -2322,7 +2320,7 @@ msgid "Allow _roaming if home network is not available"
 msgstr "Naudoti _tarptinklinį ryšį, jei neprieinamas namų tinklas"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:11
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:427
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:441
 msgid "Sho_w passwords"
 msgstr "R_odyti slaptažodžius"
 
@@ -3127,10 +3125,6 @@ msgid "No VPN service type."
 msgstr "Nėra VPN tarnybos tipo."
 
 #: ../src/connection-editor/connection-helpers.c:209
-#| msgid ""
-#| "The VPN plugin failed to import the VPN connection correctly\n"
-#| "\n"
-#| "Error: no VPN service type."
 msgid "The VPN plugin failed to import the VPN connection correctly: "
 msgstr "VPN įskiepiui nepavyko tinkamai importuoti VPN ryšio:"
 
@@ -3181,7 +3175,6 @@ msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Ar tikrai norite ištrinti ryšį %s?"
 
 #: ../src/connection-editor/gtk/menus.ui.h:1
-#| msgid "_VPN Connections"
 msgid "_New Connection"
 msgstr "_Naujas ryšys"
 
@@ -3428,18 +3421,15 @@ msgstr "Norint pašalinti pasirinktą ryšį, reikia nustatyti tapatybę"
 
 #: ../src/connection-editor/nm-connection-list.c:1059
 #, c-format
-#| msgid "Unsupported mobile broadband connection type."
 msgid "Unrecognized connection type"
 msgstr "Neatpažintas ryšio tipas"
 
 #: ../src/connection-editor/nm-connection-list.c:1064
 #, c-format
-#| msgid "Don’t know how to create “%s” connections"
 msgid "Don’t know how to import “%s” connections"
 msgstr "Nežinoma, kaip importuoti „%s“ ryšius"
 
 #: ../src/connection-editor/nm-connection-list.c:1068
-#| msgid "Error editing connection"
 msgid "Error importing connection"
 msgstr "Klaida importuojant ryšį"
 
@@ -3450,7 +3440,6 @@ msgid "Error creating connection"
 msgstr "Klaida kuriant ryšį"
 
 #: ../src/connection-editor/nm-connection-list.c:1075
-#| msgid "Connection cannot be modified"
 msgid "Connection type not specified."
 msgstr "Nenurodytas ryšio tipas"
 
@@ -3471,6 +3460,10 @@ msgstr "Klaida taisant ryšio nustatymus"
 #, c-format
 msgid "Did not find a connection with UUID “%s”"
 msgstr "Nepavyko rasti ryšio, kurio UUID „%s“"
+
+#: ../src/connection-editor/nm-connection-list.ui.h:1
+msgid "Network Connections"
+msgstr "Tinklo ryšiai"
 
 #: ../src/connection-editor/nm-connection-list.ui.h:2
 msgid "Add a new connection"
@@ -3865,24 +3858,24 @@ msgid "GSM"
 msgstr "GSM"
 
 #: ../src/connection-editor/page-ppp.c:130
-#: ../src/wireless-security/eap-method-ttls.c:287
+#: ../src/wireless-security/eap-method-ttls.c:288
 msgid "PAP"
 msgstr "PAP"
 
 #: ../src/connection-editor/page-ppp.c:131
-#: ../src/wireless-security/eap-method-ttls.c:349
+#: ../src/wireless-security/eap-method-ttls.c:354
 msgid "CHAP"
 msgstr "CHAP"
 
 #: ../src/connection-editor/page-ppp.c:132
-#: ../src/wireless-security/eap-method-fast.c:282
-#: ../src/wireless-security/eap-method-peap.c:299
-#: ../src/wireless-security/eap-method-ttls.c:317
+#: ../src/wireless-security/eap-method-fast.c:284
+#: ../src/wireless-security/eap-method-peap.c:300
+#: ../src/wireless-security/eap-method-ttls.c:320
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
 #: ../src/connection-editor/page-ppp.c:133
-#: ../src/wireless-security/eap-method-ttls.c:302
+#: ../src/wireless-security/eap-method-ttls.c:304
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
@@ -4040,12 +4033,12 @@ msgid "Wi-Fi connection %d"
 msgstr "Belaidis ryšys %d"
 
 #: ../src/connection-editor/page-wifi-security.c:355
-#: ../src/libnma/nma-wifi-dialog.c:920 ../src/libnm-gtk/nm-wifi-dialog.c:922
+#: ../src/libnma/nma-wifi-dialog.c:942 ../src/libnm-gtk/nm-wifi-dialog.c:922
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "WEP 40/128 bitų raktas (šešioliktainis arba ASCII)"
 
 #: ../src/connection-editor/page-wifi-security.c:365
-#: ../src/libnma/nma-wifi-dialog.c:929 ../src/libnm-gtk/nm-wifi-dialog.c:931
+#: ../src/libnma/nma-wifi-dialog.c:951 ../src/libnm-gtk/nm-wifi-dialog.c:931
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128 bitų slaptafrazė"
 
@@ -4054,12 +4047,12 @@ msgid "Dynamic WEP (802.1X)"
 msgstr "Dinaminis WEP (802.1X)"
 
 #: ../src/connection-editor/page-wifi-security.c:404
-#: ../src/libnma/nma-wifi-dialog.c:973 ../src/libnm-gtk/nm-wifi-dialog.c:975
+#: ../src/libnma/nma-wifi-dialog.c:995 ../src/libnm-gtk/nm-wifi-dialog.c:975
 msgid "WPA & WPA2 Personal"
 msgstr "WPA ir WPA2 asmeninis"
 
 #: ../src/connection-editor/page-wifi-security.c:417
-#: ../src/libnma/nma-wifi-dialog.c:987 ../src/libnm-gtk/nm-wifi-dialog.c:989
+#: ../src/libnma/nma-wifi-dialog.c:1013 ../src/libnm-gtk/nm-wifi-dialog.c:989
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA ir WPA2 industrinis"
 
@@ -4157,14 +4150,12 @@ msgstr "Pasirinkite raktą, skirtą %s liudijimui"
 #: ../src/libnma/nma-file-cert-chooser.c:250
 #: ../src/libnma/nma-pkcs11-cert-chooser.c:374
 #, c-format
-#| msgid "%s private _key:"
 msgid "%s private _key"
 msgstr "%s privatusis ra_ktas"
 
 #: ../src/libnma/nma-file-cert-chooser.c:254
 #: ../src/libnma/nma-pkcs11-cert-chooser.c:378
 #, c-format
-#| msgid "%s key _password:"
 msgid "%s key _password"
 msgstr "%s rakto sla_ptažodis"
 
@@ -4176,7 +4167,6 @@ msgstr "Pasirinkite %s liudijimą"
 #: ../src/libnma/nma-file-cert-chooser.c:262
 #: ../src/libnma/nma-pkcs11-cert-chooser.c:386
 #, c-format
-#| msgid "%s _certificate:"
 msgid "%s _certificate"
 msgstr "%s _liudijimas"
 
@@ -4282,7 +4272,6 @@ msgid "Select your provider from a _list:"
 msgstr "Pasirinkite savo tiekėją iš _sąrašo:"
 
 #: ../src/libnma/nma-mobile-wizard.ui.h:12
-#| msgid "I can’t find my provider and I wish to enter it _manually:"
 msgid "I can’t find my provider and I wish to set up the connection _manually:"
 msgstr "Nerandu savo tiekėjo ir noriu nurodyti jį _rankiniu būdu:"
 
@@ -4415,7 +4404,6 @@ msgstr "Pasirinkite %s liudijimą"
 
 #: ../src/libnma/nma-pkcs11-cert-chooser.c:390
 #, c-format
-#| msgid "%s certificate _password:"
 msgid "%s certificate _password"
 msgstr "%s liudijimo sla_ptažodis"
 
@@ -4484,36 +4472,28 @@ msgstr "_Antrinis slaptažodis:"
 msgid "_Password:"
 msgstr "_Slaptažodis:"
 
-#: ../src/libnma/nma-wifi-dialog.c:132 ../src/libnm-gtk/nm-wifi-dialog.c:141
+#: ../src/libnma/nma-wifi-dialog.c:126 ../src/libnm-gtk/nm-wifi-dialog.c:141
 msgid "Click to connect"
 msgstr "Spustelėkite, norėdami prisijungti"
 
-#: ../src/libnma/nma-wifi-dialog.c:133 ../src/libnm-gtk/nm-wifi-dialog.c:142
-msgid ""
-"Either a password is missing or the connection is invalid. In the latter "
-"case, you have to edit the connection with nm-connection-editor first"
-msgstr ""
-"Trūksta slaptažodžio arba ryšys yra netinkamas. Pastaruoju atveju reikia "
-"pirma paredaguoti ryšį naudojant nm-connection-editor"
-
-#: ../src/libnma/nma-wifi-dialog.c:465 ../src/libnm-gtk/nm-wifi-dialog.c:465
+#: ../src/libnma/nma-wifi-dialog.c:457 ../src/libnm-gtk/nm-wifi-dialog.c:465
 msgid "New…"
 msgstr "Naujas…"
 
-#: ../src/libnma/nma-wifi-dialog.c:903 ../src/libnm-gtk/nm-wifi-dialog.c:905
+#: ../src/libnma/nma-wifi-dialog.c:925 ../src/libnm-gtk/nm-wifi-dialog.c:905
 msgctxt "Wifi/wired security"
 msgid "None"
 msgstr "Nėra"
 
-#: ../src/libnma/nma-wifi-dialog.c:959 ../src/libnm-gtk/nm-wifi-dialog.c:961
+#: ../src/libnma/nma-wifi-dialog.c:981 ../src/libnm-gtk/nm-wifi-dialog.c:961
 msgid "Dynamic WEP (802.1x)"
 msgstr "Dinaminis WEP (802.1X)"
 
-#: ../src/libnma/nma-wifi-dialog.c:1066 ../src/libnm-gtk/nm-wifi-dialog.c:1071
+#: ../src/libnma/nma-wifi-dialog.c:1101 ../src/libnm-gtk/nm-wifi-dialog.c:1071
 msgid "C_reate"
 msgstr "Suku_rti"
 
-#: ../src/libnma/nma-wifi-dialog.c:1145 ../src/libnm-gtk/nm-wifi-dialog.c:1150
+#: ../src/libnma/nma-wifi-dialog.c:1179 ../src/libnm-gtk/nm-wifi-dialog.c:1150
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the Wi-Fi network “%s”."
@@ -4521,35 +4501,35 @@ msgstr ""
 "Norint gauti prieigą prie belaidžio tinklo „%s“ reikalingi slaptažodžiai ar "
 "šifravimo raktai."
 
-#: ../src/libnma/nma-wifi-dialog.c:1147 ../src/libnm-gtk/nm-wifi-dialog.c:1152
+#: ../src/libnma/nma-wifi-dialog.c:1181 ../src/libnm-gtk/nm-wifi-dialog.c:1152
 msgid "Wi-Fi Network Authentication Required"
 msgstr "Reikia nustatyti jūsų tapatybę belaidžiame tinkle"
 
-#: ../src/libnma/nma-wifi-dialog.c:1149 ../src/libnm-gtk/nm-wifi-dialog.c:1154
+#: ../src/libnma/nma-wifi-dialog.c:1183 ../src/libnm-gtk/nm-wifi-dialog.c:1154
 msgid "Authentication required by Wi-Fi network"
 msgstr "Belaidis tinklas prašo nustatyti jūsų tapatybę"
 
-#: ../src/libnma/nma-wifi-dialog.c:1154 ../src/libnm-gtk/nm-wifi-dialog.c:1159
+#: ../src/libnma/nma-wifi-dialog.c:1188 ../src/libnm-gtk/nm-wifi-dialog.c:1159
 msgid "Create New Wi-Fi Network"
 msgstr "Sukurti naują belaidį tinklą"
 
-#: ../src/libnma/nma-wifi-dialog.c:1156 ../src/libnm-gtk/nm-wifi-dialog.c:1161
+#: ../src/libnma/nma-wifi-dialog.c:1190 ../src/libnm-gtk/nm-wifi-dialog.c:1161
 msgid "New Wi-Fi network"
 msgstr "Naujas belaidis tinklas"
 
-#: ../src/libnma/nma-wifi-dialog.c:1157 ../src/libnm-gtk/nm-wifi-dialog.c:1162
+#: ../src/libnma/nma-wifi-dialog.c:1191 ../src/libnm-gtk/nm-wifi-dialog.c:1162
 msgid "Enter a name for the Wi-Fi network you wish to create."
 msgstr "Įveskite pageidaujamo sukurti belaidžio tinklo pavadinimą."
 
-#: ../src/libnma/nma-wifi-dialog.c:1159 ../src/libnm-gtk/nm-wifi-dialog.c:1164
+#: ../src/libnma/nma-wifi-dialog.c:1193 ../src/libnm-gtk/nm-wifi-dialog.c:1164
 msgid "Connect to Hidden Wi-Fi Network"
 msgstr "Prisijungti prie paslėpto belaidžio tinklo"
 
-#: ../src/libnma/nma-wifi-dialog.c:1161 ../src/libnm-gtk/nm-wifi-dialog.c:1166
+#: ../src/libnma/nma-wifi-dialog.c:1195 ../src/libnm-gtk/nm-wifi-dialog.c:1166
 msgid "Hidden Wi-Fi network"
 msgstr "Paslėptas belaidis tinklas"
 
-#: ../src/libnma/nma-wifi-dialog.c:1162 ../src/libnm-gtk/nm-wifi-dialog.c:1167
+#: ../src/libnma/nma-wifi-dialog.c:1196 ../src/libnm-gtk/nm-wifi-dialog.c:1167
 msgid ""
 "Enter the name and security details of the hidden Wi-Fi network you wish to "
 "connect to."
@@ -4558,17 +4538,14 @@ msgstr ""
 "saugos informaciją."
 
 #: ../src/libnma/wifi.ui.h:1
-#| msgid "Wi-Fi _security:"
 msgid "Wi-Fi _security"
 msgstr "Belaidžio ryšio _sauga"
 
 #: ../src/libnma/wifi.ui.h:3
-#| msgid "C_onnection:"
 msgid "C_onnection"
 msgstr "_Ryšys"
 
 #: ../src/libnma/wifi.ui.h:4
-#| msgid "Wi-Fi _adapter:"
 msgid "Wi-Fi _adapter"
 msgstr "Belaidis _adapteris"
 
@@ -4611,6 +4588,14 @@ msgstr "USB"
 msgctxt "long device name"
 msgid "%s %s"
 msgstr "%s %s"
+
+#: ../src/libnm-gtk/nm-wifi-dialog.c:142
+msgid ""
+"Either a password is missing or the connection is invalid. In the latter "
+"case, you have to edit the connection with nm-connection-editor first"
+msgstr ""
+"Trūksta slaptažodžio arba ryšys yra netinkamas. Pastaruoju atveju reikia "
+"pirma paredaguoti ryšį naudojant nm-connection-editor"
 
 #: ../src/libnm-gtk/wifi.ui.h:1
 msgid "Wi-Fi _security:"
@@ -4781,21 +4766,21 @@ msgstr "pasirinkto LĮ liudijimo failo nėra"
 msgid "missing EAP-FAST PAC file"
 msgstr "trūksta EAP-FAST PAC failo"
 
-#: ../src/wireless-security/eap-method-fast.c:267
-#: ../src/wireless-security/eap-method-peap.c:329
-#: ../src/wireless-security/eap-method-ttls.c:379
+#: ../src/wireless-security/eap-method-fast.c:268
+#: ../src/wireless-security/eap-method-peap.c:332
+#: ../src/wireless-security/eap-method-ttls.c:386
 msgid "GTC"
 msgstr "GTC"
 
-#: ../src/wireless-security/eap-method-fast.c:405
+#: ../src/wireless-security/eap-method-fast.c:407
 msgid "Choose a PAC file"
 msgstr "Pasirinkite PAC failą"
 
-#: ../src/wireless-security/eap-method-fast.c:412
+#: ../src/wireless-security/eap-method-fast.c:414
 msgid "PAC files (*.pac)"
 msgstr "PAC failai (*.pac)"
 
-#: ../src/wireless-security/eap-method-fast.c:416
+#: ../src/wireless-security/eap-method-fast.c:418
 msgid "All files"
 msgstr "Visi failai"
 
@@ -4839,9 +4824,9 @@ msgstr "trūksta EAP-LEAP naudotojo vardo"
 msgid "missing EAP-LEAP password"
 msgstr "trūksta EAP-LEAP slaptažodžio"
 
-#: ../src/wireless-security/eap-method-peap.c:314
-#: ../src/wireless-security/eap-method-ttls.c:364
-#: ../src/wireless-security/wireless-security.c:424
+#: ../src/wireless-security/eap-method-peap.c:316
+#: ../src/wireless-security/eap-method-ttls.c:370
+#: ../src/wireless-security/wireless-security.c:425
 msgid "MD5"
 msgstr "MD5"
 
@@ -4875,13 +4860,27 @@ msgstr "Serverio liudijimo pavadinimo priesaga."
 msgid "_Domain"
 msgstr "_Sritis"
 
-#: ../src/wireless-security/eap-method-simple.c:75
+#: ../src/wireless-security/eap-method-simple.c:90
 msgid "missing EAP username"
 msgstr "trūksta EAP naudotojo vardo"
 
-#: ../src/wireless-security/eap-method-simple.c:88
+#: ../src/wireless-security/eap-method-simple.c:106
 msgid "missing EAP password"
 msgstr "trūksta EAP slaptažodžio"
+
+#: ../src/wireless-security/eap-method-simple.c:120
+msgid "missing EAP client Private Key passphrase"
+msgstr "trūksta EAP kliento privataus rakto slaptafrazės"
+
+#: ../src/wireless-security/eap-method-simple.ui.h:4
+#| msgid "WEP 128-bit Passphrase"
+msgid "P_rivate Key Passphrase"
+msgstr "P_rivataus rakto slaptafrazė"
+
+#: ../src/wireless-security/eap-method-simple.ui.h:5
+#| msgid "Sh_ow passwords"
+msgid "Sh_ow passphrase"
+msgstr "R_odyti slaptafrazę"
 
 #: ../src/wireless-security/eap-method-tls.c:64
 msgid "missing EAP-TLS identity"
@@ -4907,7 +4906,7 @@ msgstr "pasirinkto rakto failo nėra"
 msgid "I_dentity"
 msgstr "_Tapatybė"
 
-#: ../src/wireless-security/eap-method-ttls.c:333
+#: ../src/wireless-security/eap-method-ttls.c:337
 msgid "MSCHAPv2 (no EAP)"
 msgstr "MSCHAPv2 (be EAP)"
 
@@ -4915,25 +4914,29 @@ msgstr "MSCHAPv2 (be EAP)"
 msgid "Unknown error validating 802.1X security"
 msgstr "Nežinoma klaida tikrinant 802.1X saugumą"
 
-#: ../src/wireless-security/wireless-security.c:436
+#: ../src/wireless-security/wireless-security.c:437
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:460
+#: ../src/wireless-security/wireless-security.c:461
 msgid "PWD"
 msgstr "PWD"
 
-#: ../src/wireless-security/wireless-security.c:471
+#: ../src/wireless-security/wireless-security.c:472
 msgid "FAST"
 msgstr "FAST"
 
-#: ../src/wireless-security/wireless-security.c:482
+#: ../src/wireless-security/wireless-security.c:483
 msgid "Tunneled TLS"
 msgstr "Tuneliuojamas TLS"
 
-#: ../src/wireless-security/wireless-security.c:493
+#: ../src/wireless-security/wireless-security.c:494
 msgid "Protected EAP (PEAP)"
 msgstr "Apsaugotas EAP (PEAP)"
+
+#: ../src/wireless-security/wireless-security.c:523
+msgid "Externally configured"
+msgstr "Sukonfigūruota išorėje"
 
 #: ../src/wireless-security/ws-dynamic-wep.ui.h:1
 #: ../src/wireless-security/ws-wep-key.ui.h:6
