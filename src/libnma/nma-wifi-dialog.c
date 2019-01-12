@@ -542,11 +542,14 @@ connection_combo_init (NMAWifiDialog *self)
 	                                      NULL);
 
 	gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 0);
-	g_signal_connect (G_OBJECT (widget), "changed",
-	                  G_CALLBACK (connection_combo_changed), self);
+
+	g_signal_handlers_disconnect_by_func (widget, connection_combo_changed, self);
 	if (priv->specific_connection || !num_added) {
 		gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (priv->builder, "connection_label")));
 		gtk_widget_hide (widget);
+	} else {
+		g_signal_connect (widget, "changed",
+		                  G_CALLBACK (connection_combo_changed), self);
 	}
 	if (gtk_tree_model_get_iter_first (priv->connection_model, &tree_iter))
 		gtk_tree_model_get (priv->connection_model, &tree_iter, C_CON_COLUMN, &priv->connection, -1);
