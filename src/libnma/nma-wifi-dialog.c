@@ -48,6 +48,7 @@ typedef struct {
 
 	GtkBuilder *builder;
 
+	NMConnection *specific_connection;
 	NMConnection *connection;
 	NMDevice *device;
 	NMAccessPoint *ap;
@@ -413,7 +414,7 @@ alphabetize_connections (NMConnection *a, NMConnection *b)
 }
 
 static gboolean
-connection_combo_init (NMAWifiDialog *self, NMConnection *connection)
+connection_combo_init (NMAWifiDialog *self)
 {
 	NMAWifiDialogPrivate *priv = NMA_WIFI_DIALOG_GET_PRIVATE (self);
 	GtkListStore *store;
@@ -431,8 +432,8 @@ connection_combo_init (NMAWifiDialog *self, NMConnection *connection)
 	store = gtk_list_store_new (4, G_TYPE_STRING, G_TYPE_OBJECT, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN);
 	priv->connection_model = GTK_TREE_MODEL (store);
 
-	if (connection) {
-		s_con = nm_connection_get_setting_connection (connection);
+	if (priv->specific_connection) {
+		s_con = nm_connection_get_setting_connection (priv->specific_connection);
 		g_assert (s_con);
 		id = nm_setting_connection_get_id (s_con);
 		if (id == NULL) {
@@ -446,7 +447,7 @@ connection_combo_init (NMAWifiDialog *self, NMConnection *connection)
 		gtk_list_store_append (store, &tree_iter);
 		gtk_list_store_set (store, &tree_iter,
 		                    C_NAME_COLUMN, id,
-		                    C_CON_COLUMN, connection, -1);
+		                    C_CON_COLUMN, priv->specific_connection, -1);
 	} else {
 		GSList *to_add = NULL, *iter;
 		const GPtrArray *connections;
@@ -543,7 +544,7 @@ connection_combo_init (NMAWifiDialog *self, NMConnection *connection)
 	gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 0);
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  G_CALLBACK (connection_combo_changed), self);
-	if (connection || !num_added) {
+	if (priv->specific_connection || !num_added) {
 		gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (priv->builder, "connection_label")));
 		gtk_widget_hide (widget);
 	}
@@ -571,7 +572,7 @@ device_combo_changed (GtkWidget *combo,
 	g_object_unref (priv->device);
 	gtk_tree_model_get (model, &iter, D_DEV_COLUMN, &priv->device, -1);
 
-	if (!connection_combo_init (self, NULL)) {
+	if (!connection_combo_init (self)) {
 		g_warning ("Couldn't change connection combo box.");
 		return;
 	}
@@ -1088,6 +1089,9 @@ internal_init (NMAWifiDialog *self,
 	else
 		icon_name = "network-wireless";
 
+	if (specific_connection)
+		priv->specific_connection = g_object_ref (specific_connection);
+
 	gtk_window_set_icon_name (GTK_WINDOW (self), icon_name);
 	widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "image1"));
 	gtk_image_set_from_icon_name (GTK_IMAGE (widget), icon_name, GTK_ICON_SIZE_DIALOG);
@@ -1138,7 +1142,7 @@ internal_init (NMAWifiDialog *self,
 		return FALSE;
 	}
 
-	if (!connection_combo_init (self, specific_connection)) {
+	if (!connection_combo_init (self)) {
 		g_warning ("Couldn't set up connection combo box.");
 		return FALSE;
 	}
@@ -1512,6 +1516,7 @@ dispose (GObject *object)
 
 	g_clear_object (&priv->group);
 
+	g_clear_object (&priv->specific_connection);
 	g_clear_object (&priv->connection);
 
 	g_clear_object (&priv->device);
