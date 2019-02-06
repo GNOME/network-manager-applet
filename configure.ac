@@ -137,7 +137,7 @@ if test "$with_libnm_gtk" == yes; then
 			 :,
 			 [AC_MSG_FAILURE([$LIBNM_GLIB_PKG_ERRORS
 
-Configure withhout --with-libnm-gtk if you do not need the legacy library])])
+Configure without --with-libnm-gtk if you do not need the legacy library])])
 	LIBNM_GLIB_CFLAGS="$LIBNM_GLIB_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_38"
 	LIBNM_GLIB_CFLAGS="$LIBNM_GLIB_CFLAGS -DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_38"
 	LIBNM_GLIB_CFLAGS="$LIBNM_GLIB_CFLAGS -DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_4"
