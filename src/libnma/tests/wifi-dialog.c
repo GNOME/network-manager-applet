@@ -20,7 +20,11 @@ main (int argc, char *argv[])
 	GError *error = NULL;
 	gs_unref_bytes GBytes *ssid = g_bytes_new_static ("<Maj Vaj Faj>", 13);
 
+#if GTK_CHECK_VERSION(3,90,0)
+	gtk_init ();
+#else
 	gtk_init (&argc, &argv);
+#endif
 
 	client = nm_client_new (NULL, NULL);
 	connection = nm_simple_connection_new ();

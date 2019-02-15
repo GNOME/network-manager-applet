@@ -106,10 +106,14 @@ main (int argc, char *argv[])
 	nm_connection_add_setting (connection,
 	                           nm_setting_wireless_new ());
 
-        gtk_init (&argc, &argv);
+#if GTK_CHECK_VERSION(3,90,0)
+	gtk_init ();
+#else
+	gtk_init (&argc, &argv);
+#endif
 
-        w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-        gtk_widget_show (w);
+	w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_widget_show (w);
 	gtk_window_set_default_size (GTK_WINDOW (w), 800, 680);
 	g_signal_connect (w, "delete-event", G_CALLBACK (delete), NULL);
 
