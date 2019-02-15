@@ -371,17 +371,23 @@ static void
 set_title (NMACertChooser *cert_chooser, const gchar *title)
 {
 	NMAPkcs11CertChooserPrivate *priv = NMA_PKCS11_CERT_CHOOSER_GET_PRIVATE (cert_chooser);
+	gs_free gchar *mnemonic_escaped = NULL;
 	gchar *text;
+	char **split;
+
+	split = g_strsplit (title, "_", -1);
+	mnemonic_escaped = g_strjoinv("__", split);
+	g_strfreev (split);
 
 	text = g_strdup_printf (_("Choose a key for %s Certificate"), title);
 	nma_cert_chooser_button_set_title (NMA_CERT_CHOOSER_BUTTON (priv->key_button), text);
 	g_free (text);
 
-	text = g_strdup_printf (_("%s private _key"), title);
+	text = g_strdup_printf (_("%s private _key"), mnemonic_escaped);
 	gtk_label_set_text_with_mnemonic (GTK_LABEL (priv->key_button_label), text);
 	g_free (text);
 
-	text = g_strdup_printf (_("%s key _password"), title);
+	text = g_strdup_printf (_("%s key _password"), mnemonic_escaped);
 	gtk_label_set_text_with_mnemonic (GTK_LABEL (priv->key_password_label), text);
 	g_free (text);
 
@@ -389,11 +395,11 @@ set_title (NMACertChooser *cert_chooser, const gchar *title)
 	nma_cert_chooser_button_set_title (NMA_CERT_CHOOSER_BUTTON (priv->cert_button), text);
 	g_free (text);
 
-	text = g_strdup_printf (_("%s _certificate"), title);
+	text = g_strdup_printf (_("%s _certificate"), mnemonic_escaped);
 	gtk_label_set_text_with_mnemonic (GTK_LABEL (priv->cert_button_label), text);
 	g_free (text);
 
-	text = g_strdup_printf (_("%s certificate _password"), title);
+	text = g_strdup_printf (_("%s certificate _password"), mnemonic_escaped);
 	gtk_label_set_text_with_mnemonic (GTK_LABEL (priv->cert_password_label), text);
 	g_free (text);
 }
