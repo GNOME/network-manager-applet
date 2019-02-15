@@ -107,9 +107,6 @@ endif
 add_project_arguments(common_flags, language: 'c')
 add_project_link_arguments(common_ldflags, language: 'c')
 
-ldflag = '-Wl,--version-script'
-have_version_script = host_machine.system().contains('linux') and cc.has_argument(ldflag)
-
 linker_script_ver = join_paths(meson.source_root(), 'linker-script-binary.ver')
 
 # Check for iso-codes for country names translation

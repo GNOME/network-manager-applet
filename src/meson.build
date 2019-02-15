@@ -88,11 +88,6 @@ cflags = [
   '-DG_LOG_DOMAIN="@0@"'.format(nma_name)
 ]
 
-ldflags = []
-if have_version_script
-  ldflags += '-Wl,--version-script,@0@'.format(linker_script_ver)
-endif
-
 if enable_appindicator == 'ayatana' or enable_appindicator == 'ubuntu'
   deps += [
     appindicator_dep,
@@ -112,7 +107,7 @@ executable(
   include_directories: incs,
   dependencies: deps,
   c_args: cflags,
-  link_args: ldflags,
+  link_args: '-Wl,--version-script,@0@'.format(linker_script_ver),
   link_depends: linker_script_ver,
   link_whole: libwireless_security_libnm,
   install: true,
