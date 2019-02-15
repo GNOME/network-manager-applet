@@ -19,7 +19,11 @@ main (int argc, char *argv[])
 {
 	NMAMobileWizard *wizard;
 
+#if GTK_CHECK_VERSION(3,90,0)
+	gtk_init ();
+#else
 	gtk_init (&argc, &argv);
+#endif
 
 	wizard = nma_mobile_wizard_new (NULL, NULL, NM_DEVICE_MODEM_CAPABILITY_NONE, TRUE, wizard_cb, NULL);
 
