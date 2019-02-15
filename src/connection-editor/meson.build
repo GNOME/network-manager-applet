@@ -98,11 +98,6 @@ cflags = [
   '-DICONDIR="@0@"'.format(nma_icondir)
 ]
 
-ldflags = []
-if have_version_script
-  ldflags += '-Wl,--version-script,@0@'.format(linker_script_ver)
-endif
-
 if enable_selinux
   deps += libselinux_dep
 endif
@@ -117,7 +112,7 @@ executable(
   include_directories: incs,
   dependencies: deps,
   c_args: cflags,
-  link_args: ldflags,
+  link_args: '-Wl,--version-script,@0@'.format(linker_script_ver),
   link_depends: linker_script_ver,
   link_whole: libwireless_security_libnm,
   install: true,
