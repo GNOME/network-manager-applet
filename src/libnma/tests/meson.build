@@ -5,6 +5,15 @@ deps = [
 ]
 
 executable(
+  'cert-chooser',
+  'cert-chooser.c',
+  include_directories: incs,
+  dependencies: deps,
+  c_args: cflags,
+  install: false
+)
+
+executable(
   'mobile-wizard',
   'mobile-wizard.c',
   include_directories: incs,
