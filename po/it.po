@@ -1,6 +1,6 @@
 # Italian translation for network-manager-Applet
 # Copyright (C) 2004-2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017 the NetworkManager-Applet Copyright Holder
-# Copyright (C) 2018 the NetworkManager-Applet Copyright Holder
+# Copyright (C) 2018, 2019 the NetworkManager-Applet Copyright Holder
 # This file is distributed under the same license as the NetworkManager-Applet package.
 #
 # Note:
@@ -11,15 +11,15 @@
 #
 # Francesco Marletta <francesco.marletta@tiscali.it>, 2004, 2005, 2006, 2007, 2008, 2009, 2010.
 # Gianvito Cavasoli <gianvito@gmx.it>, 2011.
-# Milo Casagrande <milo@milo.name>, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018.
+# Milo Casagrande <milo@milo.name>, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019.
 # lrintel <lrintel@redhat.com>, 2017. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
 "issues\n"
-"POT-Creation-Date: 2018-08-27 12:19+0000\n"
-"PO-Revision-Date: 2018-08-27 14:59+0200\n"
+"POT-Creation-Date: 2018-12-06 09:38+0000\n"
+"PO-Revision-Date: 2019-02-14 11:26+0100\n"
 "Last-Translator: Milo Casagrande <milo@milo.name>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -28,7 +28,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "X-Launchpad-Export-Date: 2012-03-09 08:20+0000\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: ../nm-applet.desktop.in.h:1 ../src/applet.c:3198
 msgid "Network"
@@ -39,9 +39,8 @@ msgid "Manage your network connections"
 msgstr "Gestisce le connessioni di rete"
 
 #: ../nm-connection-editor.desktop.in.h:1
-#: ../src/connection-editor/nm-connection-list.ui.h:1
-msgid "Network Connections"
-msgstr "Connessioni di rete"
+msgid "Advanced Network Configuration"
+msgstr "Configurazione di rete avanzata"
 
 #: ../nm-connection-editor.desktop.in.h:2
 msgid "Manage and change your network connection settings"
@@ -229,13 +228,13 @@ msgstr "Autenticazione 802.1X"
 #: ../src/connection-editor/vpn-helpers.c:212 ../src/gsm-unlock.ui.h:1
 #: ../src/libnma/nma-pkcs11-token-login-dialog.ui.h:1
 #: ../src/libnma/nma-vpn-password-dialog.ui.h:1
-#: ../src/libnma/nma-wifi-dialog.c:1062
+#: ../src/libnma/nma-wifi-dialog.c:1097
 #: ../src/libnm-gtk/nm-vpn-password-dialog.c:209
 #: ../src/libnm-gtk/nm-wifi-dialog.c:1067 ../src/mobile-helpers.c:465
 msgid "_Cancel"
 msgstr "A_nnulla"
 
-#: ../src/8021x.ui.h:3 ../src/libnma/nma-wifi-dialog.c:1068
+#: ../src/8021x.ui.h:3 ../src/libnma/nma-wifi-dialog.c:1103
 #: ../src/libnm-gtk/nm-wifi-dialog.c:1073
 msgid "C_onnect"
 msgstr "C_onnetti"
@@ -825,8 +824,8 @@ msgid "Error displaying connection information:"
 msgstr "Errore nel visualizzare le informazioni di connessione:"
 
 #: ../src/applet-dialogs.c:73 ../src/connection-editor/page-wifi-security.c:378
-#: ../src/libnma/nma-wifi-dialog.c:946 ../src/libnm-gtk/nm-wifi-dialog.c:948
-#: ../src/wireless-security/wireless-security.c:448
+#: ../src/libnma/nma-wifi-dialog.c:968 ../src/libnm-gtk/nm-wifi-dialog.c:948
+#: ../src/wireless-security/wireless-security.c:449
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -1689,6 +1688,7 @@ msgid "_Service"
 msgstr "_Servizio"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:5
+#: ../src/libnma/nma-file-cert-chooser.c:347
 #: ../src/wireless-security/eap-method-leap.ui.h:3
 #: ../src/wireless-security/eap-method-simple.ui.h:3
 #: ../src/wireless-security/ws-leap.ui.h:3
@@ -2347,6 +2347,7 @@ msgid "Allow _roaming if home network is not available"
 msgstr "Abilitare il _roaming se la propria rete non è disponibile"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:11
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:441
 msgid "Sho_w passwords"
 msgstr "Mo_stra le password"
 
@@ -2504,14 +2505,8 @@ msgid "Port _sticky"
 msgstr "Porta _fissa"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:15
-#: ../src/connection-editor/ce-page-team.ui.h:82
-msgid ""
-"Validate received ARP packets on active ports. If this is not checked, all "
-"incoming ARP packets will be considered as a good reply."
-msgstr ""
-"Convalida i pacchetti ARP ricevuti sulle porte attive; se non viene "
-"selezionato, tutti i pacchetti ARP in arrivo sono considerati come risposte "
-"valide"
+msgid "Do not unselect the port if a better one becomes available."
+msgstr "Non de-seleziona la porta se una migliore è disponibile"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:16
 msgid "LACP runner options"
@@ -2632,11 +2627,21 @@ msgid "Ignore invalid packets from _active ports"
 msgstr "I_gnorare pacchetti non validi dalle porte attive"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:36
+#: ../src/connection-editor/ce-page-team.ui.h:82
+msgid ""
+"Validate received ARP packets on active ports. If this is not checked, all "
+"incoming ARP packets will be considered as a good reply."
+msgstr ""
+"Convalida i pacchetti ARP ricevuti sulle porte attive; se non viene "
+"selezionato, tutti i pacchetti ARP in arrivo sono considerati come risposte "
+"valide"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:37
 #: ../src/connection-editor/ce-page-team.ui.h:83
 msgid "Ignore invalid packets from i_nactive ports"
 msgstr "Ign_orare pacchetti non validi dalle porte inattive"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:37
+#: ../src/connection-editor/ce-page-team-port.ui.h:38
 #: ../src/connection-editor/ce-page-team.ui.h:84
 msgid ""
 "Validate received ARP packets on inactive ports. If this is not checked, all "
@@ -2646,12 +2651,12 @@ msgstr ""
 "selezionato, tutti i pacchetti ARP in arrivo sono considerati come risposte "
 "valide"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:38
+#: ../src/connection-editor/ce-page-team-port.ui.h:39
 #: ../src/connection-editor/ce-page-team.ui.h:85
 msgid "S_end on inactive ports"
 msgstr "In_viare su porte inattive"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:39
+#: ../src/connection-editor/ce-page-team-port.ui.h:40
 #: ../src/connection-editor/ce-page-team.ui.h:86
 msgid ""
 "By default, ARP requests are sent on active ports only. This option allows "
@@ -2660,7 +2665,7 @@ msgstr ""
 "Le richieste ARP sono inviate solo sulle porte attive, questa opzione "
 "consente di inviarle anche su quelle inattive"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:40
+#: ../src/connection-editor/ce-page-team-port.ui.h:41
 #: ../src/connection-editor/ce-page-team.ui.h:87
 msgid ""
 "The delay between the link coming up and the runner being notified about it."
@@ -2668,7 +2673,7 @@ msgstr ""
 "Il ritardo tra quando il collegamento è attivo e la notifica inviata "
 "all'esecutore"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:41
+#: ../src/connection-editor/ce-page-team-port.ui.h:42
 #: ../src/connection-editor/ce-page-team.ui.h:88
 msgid ""
 "The delay between the link going down and the runner being notified about it."
@@ -2676,12 +2681,12 @@ msgstr ""
 "Il ritardo tra quando il collegamento è interrotto e la notifica inviata "
 "all'esecutore "
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:42
+#: ../src/connection-editor/ce-page-team-port.ui.h:43
 #: ../src/connection-editor/ce-page-team.ui.h:89
 msgid "The interval between requests being sent."
 msgstr "L'intervallo tra le richieste da inviare"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:43
+#: ../src/connection-editor/ce-page-team-port.ui.h:44
 #: ../src/connection-editor/ce-page-team.ui.h:90
 msgid ""
 "The delay between link watch initialization and the first request being sent."
@@ -2689,27 +2694,27 @@ msgstr ""
 "Il ritardo tra l'inizializzazione del controllo del collegamento e la prima "
 "richiesta inviata"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:44
+#: ../src/connection-editor/ce-page-team-port.ui.h:45
 #: ../src/connection-editor/ce-page-team.ui.h:91
 msgid "The link watcher to be used."
 msgstr "Il controllo del collegamento da usare"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:45
+#: ../src/connection-editor/ce-page-team-port.ui.h:46
 #: ../src/connection-editor/ce-page-team.ui.h:92
 msgid "Link Watcher"
 msgstr "Controllo collegamento"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:46
+#: ../src/connection-editor/ce-page-team-port.ui.h:47
 #: ../src/connection-editor/ce-page-team.ui.h:93
 msgid "Im_port team configuration from a file…"
 msgstr "_Importa configurazione team da file…"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:47
+#: ../src/connection-editor/ce-page-team-port.ui.h:48
 #: ../src/connection-editor/ce-page-team.ui.h:94
 msgid "Edit _JSON configuration"
 msgstr "Modifica configurazione _JSON"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:48
+#: ../src/connection-editor/ce-page-team-port.ui.h:49
 #: ../src/connection-editor/ce-page-team.ui.h:95
 msgid "Raw Configuration"
 msgstr "Configurazione non elaborata"
@@ -3147,7 +3152,7 @@ msgstr "MACsec"
 
 #: ../src/connection-editor/connection-helpers.c:124
 #: ../src/connection-editor/connection-helpers.c:386
-#: ../src/connection-editor/page-vpn.c:99
+#: ../src/connection-editor/page-vpn.c:100
 msgid "VPN"
 msgstr "VPN"
 
@@ -3492,19 +3497,23 @@ msgstr "Errore nel modificare la connessione"
 msgid "Did not find a connection with UUID “%s”"
 msgstr "Impossibile trovare una connessione con UUID «%s»"
 
+#: ../src/connection-editor/nm-connection-list.ui.h:1
+msgid "Network Connections"
+msgstr "Connessioni di rete"
+
 #: ../src/connection-editor/nm-connection-list.ui.h:2
 msgid "Add a new connection"
 msgstr "Aggiunge una nuova connessione"
 
-#: ../src/connection-editor/page-8021x-security.c:112
+#: ../src/connection-editor/page-8021x-security.c:113
 msgid "802.1X Security"
 msgstr "Sicurezza 802.1X"
 
-#: ../src/connection-editor/page-8021x-security.c:114
+#: ../src/connection-editor/page-8021x-security.c:115
 msgid "Could not load 802.1X Security user interface."
 msgstr "Impossibile caricare l'interfaccia utente per la sicurezza 802.1X."
 
-#: ../src/connection-editor/page-8021x-security.c:128
+#: ../src/connection-editor/page-8021x-security.c:129
 msgid "Use 802.1_X security for this connection"
 msgstr "Usare la sicurezza 802.1_X per questa connessione"
 
@@ -3637,7 +3646,7 @@ msgstr "Connessione Ethernet %d"
 
 #. TRANSLATORS: Default zone set for firewall, when no zone is selected
 #: ../src/connection-editor/page-general.c:55
-#: ../src/libnma/nma-mobile-providers.c:806
+#: ../src/libnma/nma-mobile-providers.c:802
 #: ../src/libnm-gtk/nm-mobile-providers.c:801
 msgid "Default"
 msgstr "Predefinita"
@@ -3876,35 +3885,37 @@ msgstr ""
 msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr "L'operatore usa una tecnologia di tipo C_DMA (es. 1xRTT, EVDO)"
 
-#: ../src/connection-editor/page-mobile.c:586 ../src/mb-menu-item.c:50
+#: ../src/connection-editor/page-mobile.c:586
+#: ../src/libnma/nma-mobile-wizard.c:147 ../src/mb-menu-item.c:50
 #: ../src/mobile-helpers.c:282
 msgid "CDMA"
 msgstr "CDMA"
 
-#: ../src/connection-editor/page-mobile.c:589 ../src/mb-menu-item.c:54
+#: ../src/connection-editor/page-mobile.c:589
+#: ../src/libnma/nma-mobile-wizard.c:144 ../src/mb-menu-item.c:54
 #: ../src/mobile-helpers.c:280
 msgid "GSM"
 msgstr "GSM"
 
 #: ../src/connection-editor/page-ppp.c:130
-#: ../src/wireless-security/eap-method-ttls.c:287
+#: ../src/wireless-security/eap-method-ttls.c:288
 msgid "PAP"
 msgstr "PAP"
 
 #: ../src/connection-editor/page-ppp.c:131
-#: ../src/wireless-security/eap-method-ttls.c:349
+#: ../src/wireless-security/eap-method-ttls.c:354
 msgid "CHAP"
 msgstr "CHAP"
 
 #: ../src/connection-editor/page-ppp.c:132
-#: ../src/wireless-security/eap-method-fast.c:282
-#: ../src/wireless-security/eap-method-peap.c:299
-#: ../src/wireless-security/eap-method-ttls.c:317
+#: ../src/wireless-security/eap-method-fast.c:284
+#: ../src/wireless-security/eap-method-peap.c:300
+#: ../src/wireless-security/eap-method-ttls.c:320
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
 #: ../src/connection-editor/page-ppp.c:133
-#: ../src/wireless-security/eap-method-ttls.c:302
+#: ../src/wireless-security/eap-method-ttls.c:304
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
@@ -3994,25 +4005,25 @@ msgstr "Impossibile caricare l'editor del plugin VPN per «%s» (%s)."
 msgid "unknown failure"
 msgstr "errore sconosciuto"
 
-#: ../src/connection-editor/page-vpn.c:101
+#: ../src/connection-editor/page-vpn.c:102
 msgid "Could not load VPN user interface."
 msgstr "Impossibile caricare l'interfaccia utente per VPN."
 
-#: ../src/connection-editor/page-vpn.c:116
+#: ../src/connection-editor/page-vpn.c:117
 #, c-format
 msgid "Could not find VPN plugin for “%s”."
 msgstr "Impossibile trovare il plugin VPN per «%s»."
 
-#: ../src/connection-editor/page-vpn.c:198
+#: ../src/connection-editor/page-vpn.c:199
 #, c-format
 msgid "VPN connection %d"
 msgstr "Connessione VPN %d"
 
-#: ../src/connection-editor/page-vpn.c:204
+#: ../src/connection-editor/page-vpn.c:205
 msgid "Choose a VPN Connection Type"
 msgstr "Scegliere il tipo di connessione VPN"
 
-#: ../src/connection-editor/page-vpn.c:205
+#: ../src/connection-editor/page-vpn.c:206
 msgid ""
 "Select the type of VPN you wish to use for the new connection. If the type "
 "of VPN connection you wish to create does not appear in the list, you may "
@@ -4064,14 +4075,14 @@ msgid "Wi-Fi connection %d"
 msgstr "Connessione Wi-Fi %d"
 
 #: ../src/connection-editor/page-wifi-security.c:355
-#: ../src/libnma/nma-wifi-dialog.c:920 ../src/libnm-gtk/nm-wifi-dialog.c:922
+#: ../src/libnma/nma-wifi-dialog.c:942 ../src/libnm-gtk/nm-wifi-dialog.c:922
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "Chiave WEP a 40/128 bit (Hex o ASCII)"
 
 #: ../src/connection-editor/page-wifi-security.c:365
-#: ../src/libnma/nma-wifi-dialog.c:929 ../src/libnm-gtk/nm-wifi-dialog.c:931
+#: ../src/libnma/nma-wifi-dialog.c:951 ../src/libnm-gtk/nm-wifi-dialog.c:931
 msgid "WEP 128-bit Passphrase"
-msgstr "Frase di accesso WEP a 128 bit"
+msgstr "Passphrase WEP a 128 bit"
 
 #: ../src/connection-editor/page-wifi-security.c:391
 msgid "Dynamic WEP (802.1X)"
@@ -4085,12 +4096,12 @@ msgstr "WEP dinamico (802.1X)"
 # chiave condivisa mentre i WPA(2)-Enterprise utilizzeranno un server
 # di autenticazione.
 #: ../src/connection-editor/page-wifi-security.c:404
-#: ../src/libnma/nma-wifi-dialog.c:973 ../src/libnm-gtk/nm-wifi-dialog.c:975
+#: ../src/libnma/nma-wifi-dialog.c:995 ../src/libnm-gtk/nm-wifi-dialog.c:975
 msgid "WPA & WPA2 Personal"
 msgstr "WPA e WPA2 Personal"
 
 #: ../src/connection-editor/page-wifi-security.c:417
-#: ../src/libnma/nma-wifi-dialog.c:987 ../src/libnm-gtk/nm-wifi-dialog.c:989
+#: ../src/libnma/nma-wifi-dialog.c:1013 ../src/libnm-gtk/nm-wifi-dialog.c:989
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA e WPA2 Enterprise"
 
@@ -4211,42 +4222,42 @@ msgstr "Scelta certificato %s"
 msgid "%s _certificate"
 msgstr "_Certificato %s"
 
-#: ../src/libnma/nma-mobile-wizard.c:281
-#: ../src/libnm-gtk/nm-mobile-wizard.c:326
-msgid "Unlisted"
-msgstr "Non elencato"
-
-#: ../src/libnma/nma-mobile-wizard.c:465
-#: ../src/libnm-gtk/nm-mobile-wizard.c:558
-msgid "My plan is not listed…"
-msgstr "Piano tariffario non presente…"
-
-#: ../src/libnma/nma-mobile-wizard.c:626
-#: ../src/libnm-gtk/nm-mobile-wizard.c:724
-msgid "Provider"
-msgstr "Operatore"
-
-#: ../src/libnma/nma-mobile-wizard.c:908
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1067
-msgid "Country or region"
-msgstr "Nazione o regione"
-
-#: ../src/libnma/nma-mobile-wizard.c:918
+#: ../src/libnma/nma-mobile-providers.c:991
 #: ../src/libnm-gtk/nm-mobile-wizard.c:1077
 msgid "My country is not listed"
 msgstr "Nazione non presente in elenco"
 
-#: ../src/libnma/nma-mobile-wizard.c:999
+#: ../src/libnma/nma-mobile-wizard.c:252 ../src/libnma/nma-mobile-wizard.c:284
+#: ../src/libnm-gtk/nm-mobile-wizard.c:326
+msgid "Unlisted"
+msgstr "Non elencato"
+
+#: ../src/libnma/nma-mobile-wizard.c:484
+#: ../src/libnm-gtk/nm-mobile-wizard.c:558
+msgid "My plan is not listed…"
+msgstr "Piano tariffario non presente…"
+
+#: ../src/libnma/nma-mobile-wizard.c:644
+#: ../src/libnm-gtk/nm-mobile-wizard.c:724
+msgid "Provider"
+msgstr "Operatore"
+
+#: ../src/libnma/nma-mobile-wizard.c:932
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1067
+msgid "Country or region"
+msgstr "Nazione o regione"
+
+#: ../src/libnma/nma-mobile-wizard.c:1016
 #: ../src/libnm-gtk/nm-mobile-wizard.c:1184
 msgid "Installed GSM device"
 msgstr "Dispositivo GSM installato"
 
-#: ../src/libnma/nma-mobile-wizard.c:1002
+#: ../src/libnma/nma-mobile-wizard.c:1019
 #: ../src/libnm-gtk/nm-mobile-wizard.c:1187
 msgid "Installed CDMA device"
 msgstr "Dispositivo CDMA installato"
 
-#: ../src/libnma/nma-mobile-wizard.c:1208
+#: ../src/libnma/nma-mobile-wizard.c:1225
 #: ../src/libnm-gtk/nm-mobile-wizard.c:1428
 msgid "Any device"
 msgstr "Qualsiasi dispositivo"
@@ -4313,8 +4324,7 @@ msgid "Select your provider from a _list:"
 msgstr "Selezionare il proprio operatore da un e_lenco:"
 
 #: ../src/libnma/nma-mobile-wizard.ui.h:12
-#: ../src/libnm-gtk/nm-mobile-wizard.c:749
-msgid "I can’t find my provider and I wish to enter it _manually:"
+msgid "I can’t find my provider and I wish to set up the connection _manually:"
 msgstr "Operatore non presente, inserirlo _manualmente:"
 
 #: ../src/libnma/nma-mobile-wizard.ui.h:13
@@ -4328,26 +4338,21 @@ msgid "My provider uses CDMA technology (1xRTT, EVDO)"
 msgstr "L'operatore usa una tecnologia CDMA (1xRTT, EVDO)"
 
 #: ../src/libnma/nma-mobile-wizard.ui.h:15
-#: ../src/libnm-gtk/nm-mobile-wizard.c:762
-msgid "Provider:"
-msgstr "Operatore:"
-
-#: ../src/libnma/nma-mobile-wizard.ui.h:16
 #: ../src/libnm-gtk/nm-mobile-wizard.c:792
 msgid "Choose your Provider"
 msgstr "Scegliere il proprio operatore"
 
-#: ../src/libnma/nma-mobile-wizard.ui.h:17
+#: ../src/libnma/nma-mobile-wizard.ui.h:16
 #: ../src/libnm-gtk/nm-mobile-wizard.c:457
 msgid "_Select your plan:"
 msgstr "_Selezionare il proprio piano:"
 
-#: ../src/libnma/nma-mobile-wizard.ui.h:18
+#: ../src/libnma/nma-mobile-wizard.ui.h:17
 #: ../src/libnm-gtk/nm-mobile-wizard.c:481
 msgid "Selected plan _APN (Access Point Name):"
 msgstr "_APN (Nome Punto d'Accesso) del piano selezionato:"
 
-#: ../src/libnma/nma-mobile-wizard.ui.h:19
+#: ../src/libnma/nma-mobile-wizard.ui.h:18
 #: ../src/libnm-gtk/nm-mobile-wizard.c:501
 msgid ""
 "Warning: Selecting an incorrect plan may result in billing issues for your "
@@ -4361,12 +4366,12 @@ msgstr ""
 "Se non si è sicuri del piano utilizzato, chiedere il piano del proprio APN "
 "all'operatore."
 
-#: ../src/libnma/nma-mobile-wizard.ui.h:22
+#: ../src/libnma/nma-mobile-wizard.ui.h:21
 #: ../src/libnm-gtk/nm-mobile-wizard.c:509
 msgid "Choose your Billing Plan"
 msgstr "Scegliere il proprio piano tariffario"
 
-#: ../src/libnma/nma-mobile-wizard.ui.h:23
+#: ../src/libnma/nma-mobile-wizard.ui.h:22
 #: ../src/libnm-gtk/nm-mobile-wizard.c:199
 msgid ""
 "Your mobile broadband connection is configured with the following settings:"
@@ -4375,25 +4380,25 @@ msgstr ""
 "impostazioni:"
 
 #. Device
-#: ../src/libnma/nma-mobile-wizard.ui.h:24
+#: ../src/libnma/nma-mobile-wizard.ui.h:23
 #: ../src/libnm-gtk/nm-mobile-wizard.c:206
 msgid "Your Device:"
 msgstr "Dispositivo:"
 
 # [NdT] qui si parla di rete mobile
 #. Provider
-#: ../src/libnma/nma-mobile-wizard.ui.h:25
+#: ../src/libnma/nma-mobile-wizard.ui.h:24
 #: ../src/libnm-gtk/nm-mobile-wizard.c:217
 msgid "Your Provider:"
 msgstr "Operatore di accesso:"
 
 #. Plan and APN
-#: ../src/libnma/nma-mobile-wizard.ui.h:26
+#: ../src/libnma/nma-mobile-wizard.ui.h:25
 #: ../src/libnm-gtk/nm-mobile-wizard.c:228
 msgid "Your Plan:"
 msgstr "Piano tariffario:"
 
-#: ../src/libnma/nma-mobile-wizard.ui.h:27
+#: ../src/libnma/nma-mobile-wizard.ui.h:26
 #: ../src/libnm-gtk/nm-mobile-wizard.c:249
 msgid ""
 "A connection will now be made to your mobile broadband provider using the "
@@ -4408,7 +4413,7 @@ msgstr ""
 "impostazioni. Per modificare le impostazioni della connessione a banda larga "
 "mobile, scegliere «Connessioni di rete» dal menù Sistema → Preferenze."
 
-#: ../src/libnma/nma-mobile-wizard.ui.h:28
+#: ../src/libnma/nma-mobile-wizard.ui.h:27
 #: ../src/libnm-gtk/nm-mobile-wizard.c:262
 msgid "Confirm Mobile Broadband Settings"
 msgstr "Confermare le impostazioni a banda larga mobile"
@@ -4522,40 +4527,31 @@ msgstr "_Password secondaria:"
 msgid "_Password:"
 msgstr "_Password:"
 
-#: ../src/libnma/nma-wifi-dialog.c:132 ../src/libnm-gtk/nm-wifi-dialog.c:141
+#: ../src/libnma/nma-wifi-dialog.c:126 ../src/libnm-gtk/nm-wifi-dialog.c:141
 msgid "Click to connect"
 msgstr "Fare clic per connettersi"
 
-#: ../src/libnma/nma-wifi-dialog.c:133 ../src/libnm-gtk/nm-wifi-dialog.c:142
-msgid ""
-"Either a password is missing or the connection is invalid. In the latter "
-"case, you have to edit the connection with nm-connection-editor first"
-msgstr ""
-"Potrebbe mancare la password o la connessione potrebbe non essere valida. "
-"Nel caso la connessione non fosse valida, modificarla con nm-connection-"
-"editor."
-
-#: ../src/libnma/nma-wifi-dialog.c:465 ../src/libnm-gtk/nm-wifi-dialog.c:465
+#: ../src/libnma/nma-wifi-dialog.c:457 ../src/libnm-gtk/nm-wifi-dialog.c:465
 msgid "New…"
 msgstr "Nuova…"
 
-#: ../src/libnma/nma-wifi-dialog.c:903 ../src/libnm-gtk/nm-wifi-dialog.c:905
+#: ../src/libnma/nma-wifi-dialog.c:925 ../src/libnm-gtk/nm-wifi-dialog.c:905
 msgctxt "Wifi/wired security"
 msgid "None"
 msgstr "Nessuna"
 
-#: ../src/libnma/nma-wifi-dialog.c:959 ../src/libnm-gtk/nm-wifi-dialog.c:961
+#: ../src/libnma/nma-wifi-dialog.c:981 ../src/libnm-gtk/nm-wifi-dialog.c:961
 msgid "Dynamic WEP (802.1x)"
 msgstr "WEP dinamico (802.1x)"
 
-#: ../src/libnma/nma-wifi-dialog.c:1066 ../src/libnm-gtk/nm-wifi-dialog.c:1071
+#: ../src/libnma/nma-wifi-dialog.c:1101 ../src/libnm-gtk/nm-wifi-dialog.c:1071
 msgid "C_reate"
 msgstr "C_rea"
 
 # [NdT] lo so che nell'originale c'è il plurale...
 #       ma di password o chiave per una data rete
 #       ce ne può essere al più una no?
-#: ../src/libnma/nma-wifi-dialog.c:1145 ../src/libnm-gtk/nm-wifi-dialog.c:1150
+#: ../src/libnma/nma-wifi-dialog.c:1179 ../src/libnm-gtk/nm-wifi-dialog.c:1150
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the Wi-Fi network “%s”."
@@ -4564,37 +4560,37 @@ msgstr ""
 "cifratura."
 
 # [NdT] è il titolo della finestra
-#: ../src/libnma/nma-wifi-dialog.c:1147 ../src/libnm-gtk/nm-wifi-dialog.c:1152
+#: ../src/libnma/nma-wifi-dialog.c:1181 ../src/libnm-gtk/nm-wifi-dialog.c:1152
 msgid "Wi-Fi Network Authentication Required"
 msgstr "Richiesta autenticazione rete Wi-Fi"
 
-#: ../src/libnma/nma-wifi-dialog.c:1149 ../src/libnm-gtk/nm-wifi-dialog.c:1154
+#: ../src/libnma/nma-wifi-dialog.c:1183 ../src/libnm-gtk/nm-wifi-dialog.c:1154
 msgid "Authentication required by Wi-Fi network"
 msgstr "La rete Wi-Fi richiede autenticazione"
 
-#: ../src/libnma/nma-wifi-dialog.c:1154 ../src/libnm-gtk/nm-wifi-dialog.c:1159
+#: ../src/libnma/nma-wifi-dialog.c:1188 ../src/libnm-gtk/nm-wifi-dialog.c:1159
 msgid "Create New Wi-Fi Network"
 msgstr "Crea nuova rete Wi-fi"
 
 # [NdT] è il titolo della finestra
-#: ../src/libnma/nma-wifi-dialog.c:1156 ../src/libnm-gtk/nm-wifi-dialog.c:1161
+#: ../src/libnma/nma-wifi-dialog.c:1190 ../src/libnm-gtk/nm-wifi-dialog.c:1161
 msgid "New Wi-Fi network"
 msgstr "Nuova rete Wi-Fi"
 
-#: ../src/libnma/nma-wifi-dialog.c:1157 ../src/libnm-gtk/nm-wifi-dialog.c:1162
+#: ../src/libnma/nma-wifi-dialog.c:1191 ../src/libnm-gtk/nm-wifi-dialog.c:1162
 msgid "Enter a name for the Wi-Fi network you wish to create."
 msgstr "Inserire un nome per la rete Wi-Fi da creare."
 
-#: ../src/libnma/nma-wifi-dialog.c:1159 ../src/libnm-gtk/nm-wifi-dialog.c:1164
+#: ../src/libnma/nma-wifi-dialog.c:1193 ../src/libnm-gtk/nm-wifi-dialog.c:1164
 msgid "Connect to Hidden Wi-Fi Network"
 msgstr "Connetti a rete Wi-Fi nascosta"
 
 # [NdT] è il titolo della finestra
-#: ../src/libnma/nma-wifi-dialog.c:1161 ../src/libnm-gtk/nm-wifi-dialog.c:1166
+#: ../src/libnma/nma-wifi-dialog.c:1195 ../src/libnm-gtk/nm-wifi-dialog.c:1166
 msgid "Hidden Wi-Fi network"
 msgstr "Rete Wi-Fi nascosta"
 
-#: ../src/libnma/nma-wifi-dialog.c:1162 ../src/libnm-gtk/nm-wifi-dialog.c:1167
+#: ../src/libnma/nma-wifi-dialog.c:1196 ../src/libnm-gtk/nm-wifi-dialog.c:1167
 msgid ""
 "Enter the name and security details of the hidden Wi-Fi network you wish to "
 "connect to."
@@ -4613,6 +4609,14 @@ msgstr "Co_nnessione"
 #: ../src/libnma/wifi.ui.h:4
 msgid "Wi-Fi _adapter"
 msgstr "_Adattatore Wi-Fi"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:749
+msgid "I can’t find my provider and I wish to enter it _manually:"
+msgstr "Operatore non presente, inserirlo _manualmente:"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:762
+msgid "Provider:"
+msgstr "Operatore:"
 
 #: ../src/libnm-gtk/nm-ui-utils.c:302 ../src/libnm-gtk/nm-ui-utils.c:369
 msgid "Wired"
@@ -4645,6 +4649,15 @@ msgstr "USB"
 msgctxt "long device name"
 msgid "%s %s"
 msgstr "%2$s (%1$s)"
+
+#: ../src/libnm-gtk/nm-wifi-dialog.c:142
+msgid ""
+"Either a password is missing or the connection is invalid. In the latter "
+"case, you have to edit the connection with nm-connection-editor first"
+msgstr ""
+"Potrebbe mancare la password o la connessione potrebbe non essere valida. "
+"Nel caso la connessione non fosse valida, modificarla con nm-connection-"
+"editor."
 
 #: ../src/libnm-gtk/wifi.ui.h:1
 msgid "Wi-Fi _security:"
@@ -4816,22 +4829,22 @@ msgstr "il file di certificato CA selezionato non esiste"
 msgid "missing EAP-FAST PAC file"
 msgstr "manca il file PAC EAP-FAST"
 
-#: ../src/wireless-security/eap-method-fast.c:267
-#: ../src/wireless-security/eap-method-peap.c:329
-#: ../src/wireless-security/eap-method-ttls.c:379
+#: ../src/wireless-security/eap-method-fast.c:268
+#: ../src/wireless-security/eap-method-peap.c:332
+#: ../src/wireless-security/eap-method-ttls.c:386
 msgid "GTC"
 msgstr "GTC"
 
 # (ndt) titolo finestra
-#: ../src/wireless-security/eap-method-fast.c:405
+#: ../src/wireless-security/eap-method-fast.c:407
 msgid "Choose a PAC file"
 msgstr "Scelta file PAC"
 
-#: ../src/wireless-security/eap-method-fast.c:412
+#: ../src/wireless-security/eap-method-fast.c:414
 msgid "PAC files (*.pac)"
 msgstr "File PAC (*.pac)"
 
-#: ../src/wireless-security/eap-method-fast.c:416
+#: ../src/wireless-security/eap-method-fast.c:418
 msgid "All files"
 msgstr "Tutti i file"
 
@@ -4875,9 +4888,9 @@ msgstr "manca il nome utente EAP-LEAP"
 msgid "missing EAP-LEAP password"
 msgstr "manca la password EAP-LEAP"
 
-#: ../src/wireless-security/eap-method-peap.c:314
-#: ../src/wireless-security/eap-method-ttls.c:364
-#: ../src/wireless-security/wireless-security.c:424
+#: ../src/wireless-security/eap-method-peap.c:316
+#: ../src/wireless-security/eap-method-ttls.c:370
+#: ../src/wireless-security/wireless-security.c:425
 msgid "MD5"
 msgstr "MD5"
 
@@ -4911,13 +4924,25 @@ msgstr "Suffisso del nome del certificato del server"
 msgid "_Domain"
 msgstr "_Dominio"
 
-#: ../src/wireless-security/eap-method-simple.c:75
+#: ../src/wireless-security/eap-method-simple.c:90
 msgid "missing EAP username"
 msgstr "manca il nome utente EAP"
 
-#: ../src/wireless-security/eap-method-simple.c:88
+#: ../src/wireless-security/eap-method-simple.c:106
 msgid "missing EAP password"
 msgstr "manca la password EAP"
+
+#: ../src/wireless-security/eap-method-simple.c:120
+msgid "missing EAP client Private Key passphrase"
+msgstr "manca la passphrase della chiave privata EAP"
+
+#: ../src/wireless-security/eap-method-simple.ui.h:4
+msgid "P_rivate Key Passphrase"
+msgstr "Passp_hrase chiave privata"
+
+#: ../src/wireless-security/eap-method-simple.ui.h:5
+msgid "Sh_ow passphrase"
+msgstr "Mo_stra passphrase"
 
 #: ../src/wireless-security/eap-method-tls.c:64
 msgid "missing EAP-TLS identity"
@@ -4943,7 +4968,7 @@ msgstr "il file chiave selezionato non esiste"
 msgid "I_dentity"
 msgstr "I_dentità"
 
-#: ../src/wireless-security/eap-method-ttls.c:333
+#: ../src/wireless-security/eap-method-ttls.c:337
 msgid "MSCHAPv2 (no EAP)"
 msgstr "MSCHAPv2 (no EAP)"
 
@@ -4951,25 +4976,29 @@ msgstr "MSCHAPv2 (no EAP)"
 msgid "Unknown error validating 802.1X security"
 msgstr "Errore sconosciuto nel validare la sicurezza 802.1X"
 
-#: ../src/wireless-security/wireless-security.c:436
+#: ../src/wireless-security/wireless-security.c:437
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:460
+#: ../src/wireless-security/wireless-security.c:461
 msgid "PWD"
 msgstr "PWD"
 
-#: ../src/wireless-security/wireless-security.c:471
+#: ../src/wireless-security/wireless-security.c:472
 msgid "FAST"
 msgstr "FAST"
 
-#: ../src/wireless-security/wireless-security.c:482
+#: ../src/wireless-security/wireless-security.c:483
 msgid "Tunneled TLS"
 msgstr "TLS via tunnel"
 
-#: ../src/wireless-security/wireless-security.c:493
+#: ../src/wireless-security/wireless-security.c:494
 msgid "Protected EAP (PEAP)"
 msgstr "EAP Protetto (PEAP)"
+
+#: ../src/wireless-security/wireless-security.c:523
+msgid "Externally configured"
+msgstr "Configurato esternamente"
 
 #: ../src/wireless-security/ws-dynamic-wep.ui.h:1
 #: ../src/wireless-security/ws-wep-key.ui.h:6
