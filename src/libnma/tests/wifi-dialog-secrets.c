@@ -67,7 +67,11 @@ main (int argc, char *argv[])
 		NULL
 	};
 
+#if GTK_CHECK_VERSION(3,90,0)
+	gtk_init ();
+#else
 	gtk_init (&argc, &argv);
+#endif
 
 	client = nm_client_new (NULL, NULL);
 	connection = nm_simple_connection_new ();

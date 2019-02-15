@@ -26,7 +26,11 @@ main (int argc, char *argv[])
 {
 	GtkWidget *widget;
 
+#if GTK_CHECK_VERSION(3,90,0)
+	gtk_init ();
+#else
 	gtk_init (&argc, &argv);
+#endif
 
 	widget = nma_vpn_password_dialog_new ("Title", "Message", "Password");
 

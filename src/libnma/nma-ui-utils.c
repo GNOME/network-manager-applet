@@ -228,7 +228,7 @@ icon_release_cb (GtkEntry *entry,
                  gpointer data)
 {
 	GtkMenu *menu = GTK_MENU (data);
-	GdkRectangle icon_area;
+	//GdkRectangle icon_area;
 
 	if (position == GTK_ENTRY_ICON_SECONDARY) {
 		gtk_widget_show (GTK_WIDGET (data));
