@@ -65,6 +65,9 @@ set_key_uri (NMACertChooser *cert_chooser, const gchar *uri)
 	gtk_widget_set_sensitive (priv->key_button_label, TRUE);
 	gtk_widget_set_sensitive (priv->key_password, TRUE);
 	gtk_widget_set_sensitive (priv->key_password_label, TRUE);
+	gtk_widget_show (priv->key_password);
+	gtk_widget_show (priv->key_password_label);
+	gtk_widget_show (priv->show_password);
 	nma_cert_chooser_button_set_uri (NMA_CERT_CHOOSER_BUTTON (priv->key_button), uri);
 }
 
@@ -109,6 +112,9 @@ set_cert_uri (NMACertChooser *cert_chooser, const gchar *uri)
 	} else if (g_str_has_prefix (uri, NM_SETTING_802_1X_CERT_SCHEME_PREFIX_PKCS11)) {
 		gtk_widget_set_sensitive (priv->cert_password, TRUE);
 		gtk_widget_set_sensitive (priv->cert_password_label, TRUE);
+		gtk_widget_show (priv->cert_password);
+		gtk_widget_show (priv->cert_password_label);
+		gtk_widget_show (priv->show_password);
 	} else {
 		g_warning ("The certificate '%s' uses an unknown scheme\n", uri);
 		return;
@@ -410,8 +416,9 @@ set_flags (NMACertChooser *cert_chooser, NMACertChooserFlags flags)
 		gtk_widget_hide (priv->key_button);
 		gtk_widget_hide (priv->key_button_label);
 
-		/* If these are not sensitive now, the cannot possibly be made
-		 * sensitive and there's no point in showing them. */
+		/* With FLAG_PASSWORDS the user can't pick a different key or a
+		 * certificate, to there's point in showing inactive password
+		 * inputs. */
 		if (!gtk_widget_get_sensitive (priv->cert_password)) {
 			gtk_widget_hide (priv->cert_password);
 			gtk_widget_hide (priv->cert_password_label);
