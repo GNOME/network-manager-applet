@@ -6,7 +6,7 @@ project(
     'buildtype=debugoptimized',
     'c_std=gnu99'
   ],
-  meson_version: '>= 0.43.0'
+  meson_version: '>= 0.46.0'
 )
 
 nma_name = 'nm-applet'
@@ -70,9 +70,8 @@ if enable_ld_gc
 
   test_ldflags = ['-Wl,--gc-sections']
 
-  foreach cflag: test_cflags + test_ldflags
-    assert(cc.has_argument(cflag), 'Unused symbol eviction requested but not supported. Use -Dld_gc=false to build without it.')
-  endforeach
+  assert(cc.has_multi_arguments(test_cflags), 'Unused symbol eviction requested but not supported. Use -Dld_gc=false to build without it.')
+  assert(cc.has_multi_link_arguments(test_ldflags), 'Unused symbol eviction requested but not supported. Use -Dld_gc=false to build without it.')
 
   common_flags += test_cflags
   common_ldflags += test_ldflags
