@@ -147,7 +147,7 @@ libsecret_dep = dependency('libsecret-1', version: '>= 0.18')
 m_dep = cc.find_library('m')
 
 # Check for gtk+
-gtk_req_version = '>= 3.4'
+gtk_req_version = '>= 3.10'
 
 gtk_dep = declare_dependency(
   dependencies: dependency('gtk+-3.0', version: gtk_req_version),
