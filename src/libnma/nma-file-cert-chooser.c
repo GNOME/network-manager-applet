@@ -32,6 +32,12 @@
 
 #define NMA_FILE_CERT_CHOOSER_GET_PRIVATE(self) (&(_NM_GET_PRIVATE (self, NMACertChooser, NMA_IS_CERT_CHOOSER)->_sub.file))
 
+#if GTK_CHECK_VERSION(3,90,0)
+#define gtk3_widget_set_no_show_all(widget, show)
+#else
+#define gtk3_widget_set_no_show_all(widget, show) gtk_widget_set_no_show_all (widget, show);
+#endif
+
 static void
 set_key_password (NMACertChooser *cert_chooser, const gchar *password)
 {
@@ -307,7 +313,7 @@ init (NMACertChooser *cert_chooser)
 	gtk_widget_set_hexpand (priv->key_button, TRUE);
 	gtk_widget_set_sensitive (priv->key_button, FALSE);
 	gtk_widget_show (priv->key_button);
-	gtk_widget_set_no_show_all (priv->key_button, TRUE);
+	gtk3_widget_set_no_show_all (priv->key_button, TRUE);
 
 	g_signal_connect (priv->key_button, "selection-changed",
 	                  G_CALLBACK (key_changed_cb), cert_chooser);
@@ -318,7 +324,7 @@ init (NMACertChooser *cert_chooser)
 	gtk_grid_attach (GTK_GRID (cert_chooser), priv->key_button_label, 0, 0, 1, 1);
 	gtk_widget_set_sensitive (priv->key_button_label, FALSE);
 	gtk_widget_show (priv->key_button_label);
-	gtk_widget_set_no_show_all (priv->key_button_label, TRUE);
+	gtk3_widget_set_no_show_all (priv->key_button_label, TRUE);
 
 	/* The key password entry */
 	gtk_grid_insert_row (GTK_GRID (cert_chooser), 1);
@@ -329,7 +335,7 @@ init (NMACertChooser *cert_chooser)
 	gtk_widget_set_hexpand (priv->key_password, TRUE);
 	gtk_widget_set_sensitive (priv->key_password, FALSE);
 	gtk_widget_show (priv->key_password);
-	gtk_widget_set_no_show_all (priv->key_password, TRUE);
+	gtk3_widget_set_no_show_all (priv->key_password, TRUE);
 
 	g_signal_connect (priv->key_password, "changed",
 	                  G_CALLBACK (key_password_changed_cb), cert_chooser);
@@ -340,14 +346,14 @@ init (NMACertChooser *cert_chooser)
 	gtk_grid_attach (GTK_GRID (cert_chooser), priv->key_password_label, 0, 1, 1, 1);
 	gtk_widget_set_sensitive (priv->key_password_label, FALSE);
 	gtk_widget_show (priv->key_password_label);
-	gtk_widget_set_no_show_all (priv->key_password_label, TRUE);
+	gtk3_widget_set_no_show_all (priv->key_password_label, TRUE);
 
 	/* Show password */
 	gtk_grid_insert_row (GTK_GRID (cert_chooser), 2);
 	priv->show_password = gtk_check_button_new_with_mnemonic _("Sho_w password");
 	gtk_grid_attach (GTK_GRID (cert_chooser), priv->show_password, 1, 2, 1, 1);
 	gtk_widget_show (priv->show_password);
-	gtk_widget_set_no_show_all (priv->show_password, TRUE);
+	gtk3_widget_set_no_show_all (priv->show_password, TRUE);
 	g_signal_connect (priv->show_password, "toggled",
 	                  G_CALLBACK (show_toggled_cb), cert_chooser);
 
@@ -363,7 +369,7 @@ init (NMACertChooser *cert_chooser)
 	gtk_grid_attach (GTK_GRID (cert_chooser), priv->cert_button, 1, 0, 1, 1);
 	gtk_widget_set_hexpand (priv->cert_button, TRUE);
 	gtk_widget_show (priv->cert_button);
-	gtk_widget_set_no_show_all (priv->cert_button, TRUE);
+	gtk3_widget_set_no_show_all (priv->cert_button, TRUE);
 
 	/* For some reason, GTK+ calls set_current_filter (..., NULL) from
 	 * gtkfilechooserdefault.c::show_and_select_files_finished_loading() on our
@@ -381,7 +387,7 @@ init (NMACertChooser *cert_chooser)
 	gtk_label_set_mnemonic_widget (GTK_LABEL (priv->cert_button_label), priv->cert_button);
 	gtk_grid_attach (GTK_GRID (cert_chooser), priv->cert_button_label, 0, 0, 1, 1);
 	gtk_widget_show (priv->cert_button_label);
-	gtk_widget_set_no_show_all (priv->cert_button_label, TRUE);
+	gtk3_widget_set_no_show_all (priv->cert_button_label, TRUE);
 }
 
 const NMACertChooserVtable nma_cert_chooser_vtable_file = {
