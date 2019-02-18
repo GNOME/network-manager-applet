@@ -6,7 +6,7 @@ project(
     'buildtype=debugoptimized',
     'c_std=gnu99'
   ],
-  meson_version: '>= 0.43.0'
+  meson_version: '>= 0.46.0'
 )
 
 nma_name = 'nm-applet'
@@ -70,9 +70,8 @@ if enable_ld_gc
 
   test_ldflags = ['-Wl,--gc-sections']
 
-  foreach cflag: test_cflags + test_ldflags
-    assert(cc.has_argument(cflag), 'Unused symbol eviction requested but not supported. Use -Dld_gc=false to build without it.')
-  endforeach
+  assert(cc.has_multi_arguments(test_cflags), 'Unused symbol eviction requested but not supported. Use -Dld_gc=false to build without it.')
+  assert(cc.has_multi_link_arguments(test_ldflags), 'Unused symbol eviction requested but not supported. Use -Dld_gc=false to build without it.')
 
   common_flags += test_cflags
   common_ldflags += test_ldflags
@@ -106,9 +105,6 @@ endif
 
 add_project_arguments(common_flags, language: 'c')
 add_project_link_arguments(common_ldflags, language: 'c')
-
-ldflag = '-Wl,--version-script'
-have_version_script = host_machine.system().contains('linux') and cc.has_argument(ldflag)
 
 linker_script_ver = join_paths(meson.source_root(), 'linker-script-binary.ver')
 
@@ -147,13 +143,13 @@ libsecret_dep = dependency('libsecret-1', version: '>= 0.18')
 m_dep = cc.find_library('m')
 
 # Check for gtk+
-gtk_req_version = '>= 3.4'
+gtk_req_version = '>= 3.10'
 
 gtk_dep = declare_dependency(
   dependencies: dependency('gtk+-3.0', version: gtk_req_version),
   compile_args: [
-    '-DGDK_VERSION_MIN_REQUIRED=GDK_VERSION_3_4',
-    '-DGTK_VERSION_MAX_ALLOWED=GTK_VERSION_3_4'
+    '-DGDK_VERSION_MIN_REQUIRED=GDK_VERSION_3_10',
+    '-DGDK_VERSION_MAX_ALLOWED=GDK_VERSION_3_10'
   ]
 )
 

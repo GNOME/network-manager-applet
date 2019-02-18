@@ -63,11 +63,6 @@ cflags = [
 
 symbol_map = join_paths(meson.current_source_dir(), 'libnm-gtk.ver')
 
-ldflags = []
-if have_version_script
-  ldflags += '-Wl,--version-script,' + symbol_map
-endif
-
 libnm_gtk = shared_library(
   'nm-gtk',
   sources: sources,
@@ -75,7 +70,7 @@ libnm_gtk = shared_library(
   include_directories: incs,
   dependencies: deps,
   c_args: cflags,
-  link_args: ldflags,
+  link_args: '-Wl,--version-script,' + symbol_map,
   link_depends: symbol_map,
   link_whole: libwireless_security_libnm_glib,
   install: true,

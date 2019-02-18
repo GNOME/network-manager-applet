@@ -163,7 +163,7 @@ fi
 PKG_CHECK_MODULES(NOTIFY, [libnotify >= 0.4.3])
 
 PKG_CHECK_MODULES(GTK3, gtk+-3.0 >= 3.10)
-GTK3_CFLAGS="$GTK3_CFLAGS -DGDK_VERSION_MIN_REQUIRED=GDK_VERSION_3_4 -DGTK_VERSION_MAX_ALLOWED=GTK_VERSION_3_4"
+GTK3_CFLAGS="$GTK3_CFLAGS -DGDK_VERSION_MIN_REQUIRED=GDK_VERSION_3_10 -DGDK_VERSION_MAX_ALLOWED=GDK_VERSION_3_10"
 
 AC_ARG_WITH([appindicator],
             AS_HELP_STRING([--with-appindicator=no|yes|auto|ayatana|ubuntu], [Build with lib(ayatana-)appindicator support in addition to xembed systray support.]),
