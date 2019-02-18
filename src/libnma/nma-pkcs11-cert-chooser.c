@@ -65,6 +65,9 @@ set_key_uri (NMACertChooser *cert_chooser, const gchar *uri)
 	gtk_widget_set_sensitive (priv->key_button_label, TRUE);
 	gtk_widget_set_sensitive (priv->key_password, TRUE);
 	gtk_widget_set_sensitive (priv->key_password_label, TRUE);
+	gtk_widget_show (priv->key_password);
+	gtk_widget_show (priv->key_password_label);
+	gtk_widget_show (priv->show_password);
 	nma_cert_chooser_button_set_uri (NMA_CERT_CHOOSER_BUTTON (priv->key_button), uri);
 }
 
@@ -109,6 +112,9 @@ set_cert_uri (NMACertChooser *cert_chooser, const gchar *uri)
 	} else if (g_str_has_prefix (uri, NM_SETTING_802_1X_CERT_SCHEME_PREFIX_PKCS11)) {
 		gtk_widget_set_sensitive (priv->cert_password, TRUE);
 		gtk_widget_set_sensitive (priv->cert_password_label, TRUE);
+		gtk_widget_show (priv->cert_password);
+		gtk_widget_show (priv->cert_password_label);
+		gtk_widget_show (priv->show_password);
 	} else {
 		g_warning ("The certificate '%s' uses an unknown scheme\n", uri);
 		return;
@@ -365,17 +371,23 @@ static void
 set_title (NMACertChooser *cert_chooser, const gchar *title)
 {
 	NMAPkcs11CertChooserPrivate *priv = NMA_PKCS11_CERT_CHOOSER_GET_PRIVATE (cert_chooser);
+	gs_free gchar *mnemonic_escaped = NULL;
 	gchar *text;
+	char **split;
+
+	split = g_strsplit (title, "_", -1);
+	mnemonic_escaped = g_strjoinv("__", split);
+	g_strfreev (split);
 
 	text = g_strdup_printf (_("Choose a key for %s Certificate"), title);
 	nma_cert_chooser_button_set_title (NMA_CERT_CHOOSER_BUTTON (priv->key_button), text);
 	g_free (text);
 
-	text = g_strdup_printf (_("%s private _key"), title);
+	text = g_strdup_printf (_("%s private _key"), mnemonic_escaped);
 	gtk_label_set_text_with_mnemonic (GTK_LABEL (priv->key_button_label), text);
 	g_free (text);
 
-	text = g_strdup_printf (_("%s key _password"), title);
+	text = g_strdup_printf (_("%s key _password"), mnemonic_escaped);
 	gtk_label_set_text_with_mnemonic (GTK_LABEL (priv->key_password_label), text);
 	g_free (text);
 
@@ -383,11 +395,11 @@ set_title (NMACertChooser *cert_chooser, const gchar *title)
 	nma_cert_chooser_button_set_title (NMA_CERT_CHOOSER_BUTTON (priv->cert_button), text);
 	g_free (text);
 
-	text = g_strdup_printf (_("%s _certificate"), title);
+	text = g_strdup_printf (_("%s _certificate"), mnemonic_escaped);
 	gtk_label_set_text_with_mnemonic (GTK_LABEL (priv->cert_button_label), text);
 	g_free (text);
 
-	text = g_strdup_printf (_("%s certificate _password"), title);
+	text = g_strdup_printf (_("%s certificate _password"), mnemonic_escaped);
 	gtk_label_set_text_with_mnemonic (GTK_LABEL (priv->cert_password_label), text);
 	g_free (text);
 }
@@ -410,8 +422,9 @@ set_flags (NMACertChooser *cert_chooser, NMACertChooserFlags flags)
 		gtk_widget_hide (priv->key_button);
 		gtk_widget_hide (priv->key_button_label);
 
-		/* If these are not sensitive now, the cannot possibly be made
-		 * sensitive and there's no point in showing them. */
+		/* With FLAG_PASSWORDS the user can't pick a different key or a
+		 * certificate, so there's no point in showing inactive password
+		 * inputs. */
 		if (!gtk_widget_get_sensitive (priv->cert_password)) {
 			gtk_widget_hide (priv->cert_password);
 			gtk_widget_hide (priv->cert_password_label);
