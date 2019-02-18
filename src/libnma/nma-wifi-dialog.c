@@ -1260,7 +1260,7 @@ nma_wifi_dialog_get_connection (NMAWifiDialog *self,
 		s_wireless = (NMSettingWireless *) nm_setting_wireless_new ();
 		ssid = validate_dialog_ssid (self);
 		g_object_set (s_wireless, NM_SETTING_WIRELESS_SSID, ssid, NULL);
-		g_free (ssid);
+		g_bytes_unref (ssid);
 
 		if (priv->operation == OP_CREATE_ADHOC) {
 			NMSetting *s_ip4;
