@@ -318,10 +318,19 @@ utils_override_bg_color (GtkWidget *widget, GdkRGBA *rgba)
 	if (rgba) {
 		css = g_strdup_printf ("* { background-color: %s; background-image: none; }",
 		                       gdk_rgba_to_string (rgba));
+#if GTK_CHECK_VERSION(3,90,0)
+		gtk_css_provider_load_from_data (provider, css, -1);
+#else
 		gtk_css_provider_load_from_data (provider, css, -1, NULL);
+#endif
 		g_free (css);
-	} else
+	} else {
+#if GTK_CHECK_VERSION(3,90,0)
+		gtk_css_provider_load_from_data (provider, "", -1);
+#else
 		gtk_css_provider_load_from_data (provider, "", -1, NULL);
+#endif
+	}
 }
 
 void
