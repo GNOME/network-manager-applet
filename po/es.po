@@ -1332,7 +1332,7 @@ msgstr "_Tiempo de saludo"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:9
 msgid "STP forwarding delay, in seconds"
-msgstr ""
+msgstr "Retraso de reenvío STP, en segundos"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:10
 msgid "s"
@@ -1352,6 +1352,10 @@ msgid ""
 "snooping was automatically disabled due to hash collisions, the system may "
 "refuse to enable the feature until the collisions are resolved."
 msgstr ""
+"Controla si la indagación IGMP está habilitada para este puente. Tenga en "
+"cuenta que si la indagación se deshabilitó automáticamente debido a "
+"colisiones hash, el sistema puede rechazar la función hasta que se resuelvan "
+"las colisiones."
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:14
 msgid "Enable _STP (Spanning Tree Protocol)"
@@ -1369,6 +1373,8 @@ msgid ""
 "STP priority for this bridge. Lower values are “better”; the lowest priority "
 "bridge will be elected the root bridge."
 msgstr ""
+"Prioridad STP para este puente. Los valores más bajos son \"mejores\"; El "
+"puente de menor prioridad será elegido como el puente raíz."
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:17
 msgid "_Max age"
@@ -1376,7 +1382,7 @@ msgstr "Edad _máxima"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:18
 msgid "STP maximum message age, in seconds"
-msgstr ""
+msgstr "STP edad máxima del mensaje, en segundos"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:19
 msgid "_Aging time"
@@ -1385,6 +1391,7 @@ msgstr "_Tiempo de de caducidad"
 #: ../src/connection-editor/ce-page-bridge.ui.h:20
 msgid "The Ethernet MAC address aging time, in seconds"
 msgstr ""
+"El tiempo de envejecimiento de la dirección MAC de Ethernet, en segundos"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:21
 msgid "Group _forward mask"
@@ -1397,6 +1404,10 @@ msgid ""
 "can’t have bits 0, 1 or 2 set because they are used for STP, MAC pause "
 "frames and LACP."
 msgstr ""
+"Una máscara de 16 bits, cada una correspondiente a una dirección de grupo en "
+"el rango de 01: 80: C2: 00: 00: 00 a 01: 80: C2: 00: 00: 0F que debe "
+"reenviarse. La máscara no puede tener establecidos los bits 0, 1 o 2 porque "
+"se utilizan para STP, marcos de pausa MAC y LACP."
 
 #: ../src/connection-editor/ce-page.c:78 ../src/connection-editor/ce-page.c:112
 msgid "automatic"
@@ -1658,6 +1669,9 @@ msgid ""
 "Only initiate sessions with access concentrators that provide the specified "
 "service. For most providers this should be left blank."
 msgstr ""
+"Solo inicie sesiones con concentradores de acceso que brinden el servicio "
+"especificado. Para la mayoría de los proveedores, esto debe dejarse en "
+"blanco."
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:4
 msgid "_Service"
@@ -1699,7 +1713,7 @@ msgstr "Un nombre aleatorio para asignar a la nueva interfaz PPP creada."
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:11
 msgid "The interface on which the PPP connection will be established."
-msgstr ""
+msgstr "La interfaz en la que se establecerá la conexión PPP."
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:12
 msgid "C_laim interface"
@@ -2210,16 +2224,20 @@ msgid ""
 "The parent interface name or parent connection UUID from which this MACSEC "
 "interface should be created."
 msgstr ""
+"El nombre de la interfaz principal o el UUID de la conexión principal a "
+"partir del cual se debe crear esta interfaz MACSEC."
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:10
 msgid ""
 "The parent interface name or parent connection UUID from which this MACsec "
 "interface should be created"
 msgstr ""
+"El nombre de la interfaz principal o el UUID de la conexión principal a "
+"partir del cual se debe crear esta interfaz MACsec"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:11
 msgid " The pre-shared Connectivity-association Key Name"
-msgstr ""
+msgstr " El nombre de clave de asociación de conectividad pre-compartido"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:12
 msgid "The pre-shared Connectivity Association Key"
@@ -2231,6 +2249,9 @@ msgid ""
 "Agreement) is obtained. For the EAP mode, fill the parameters in the 802.1X "
 "security page"
 msgstr ""
+"Especifica cómo se obtiene la CAK (clave de asociación de conectividad) para "
+"MKA (acuerdo de clave MACsec). Para el modo EAP, complete los parámetros en "
+"la página de seguridad 802.1X"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:14
 msgid "CKN"
@@ -2270,7 +2291,7 @@ msgstr "Indica si se debe cifrar el tráfico transmitido"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:24
 msgid "The port component of the SCI (Secure Channel Identifier)"
-msgstr ""
+msgstr "El componente de puerto del SCI (Identificador seguro de canal)"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:1
 #: ../src/connection-editor/ce-page-team.ui.h:26
@@ -3317,6 +3338,8 @@ msgid ""
 "The following files are not labelled for use with certificate "
 "authentication. Do you wish to adjust the labels?"
 msgstr ""
+"Los siguientes archivos no están etiquetados para su uso con la "
+"autenticación de certificados. ¿Desea ajustar las etiquetas?"
 
 #: ../src/connection-editor/nm-connection-editor.ui.h:9
 msgid "Relabel"

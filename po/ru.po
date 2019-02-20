@@ -1614,6 +1614,7 @@ msgstr "ID группы"
 #: ../src/connection-editor/ce-page-dcb.ui.h:33
 msgid "Enter the priority group ID for each User Priority."
 msgstr ""
+"Введите идентификатор группы приоритетов для каждого приоритета пользователя."
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:35
 #, no-c-format
@@ -1621,11 +1622,15 @@ msgid ""
 "Enter the allowed link bandwidth percent each Priority Group may use. The "
 "sum of all groups must total 100%."
 msgstr ""
+"Введите процент разрешенной полосы пропускания, который может использовать "
+"каждая Приоритетная группа. Сумма всех групп должна составлять 100%."
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:36
 msgid ""
 "Enter the percentage of priority group bandwidth each user priority may use."
 msgstr ""
+"Введите процент полосы пропускания приоритетной группы, которую может "
+"использовать каждый пользовательский приоритет."
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:37
 msgid "Enable or disable strict bandwidth for each user priority."
@@ -1635,7 +1640,7 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:38
 msgid "Enter the traffic class for each user priority."
-msgstr ""
+msgstr "Введите класс трафика для каждого приоритета пользователя."
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:1
 #: ../src/connection-editor/ce-page-mobile.ui.h:3
@@ -1648,12 +1653,15 @@ msgstr "_Имя пользователя"
 #: ../src/connection-editor/ce-page-dsl.ui.h:2
 msgid "Username used to authenticate with the PPPoE service."
 msgstr ""
+"Имя пользователя, используемое для аутентификации с помощью службы PPPoE."
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:3
 msgid ""
 "Only initiate sessions with access concentrators that provide the specified "
 "service. For most providers this should be left blank."
 msgstr ""
+"Только инициировать сеансы с концентраторами доступа, которые предоставляют "
+"указанную услугу. Для большинства поставщиков это должно быть пустым."
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:4
 msgid "_Service"
@@ -1691,11 +1699,11 @@ msgstr "_Родительский интерфейс"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:10
 msgid "An arbitrary name to assign to the newly created PPP interface."
-msgstr ""
+msgstr "Произвольное имя для назначения только что созданному PPP-интерфейсу."
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:11
 msgid "The interface on which the PPP connection will be established."
-msgstr ""
+msgstr "Интерфейс, на котором будет установлено соединение PPP."
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:12
 msgid "C_laim interface"
@@ -1833,6 +1841,8 @@ msgstr "_Пароль пробуждения по локальной сети"
 msgid ""
 "Wake-on-LAN password (an Ethernet MAC). It is only valid for magic packets."
 msgstr ""
+"Пароль Wake-on-LAN (Ethernet MAC). Он действителен только для магических "
+"пакетов."
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:30
 msgid "Lin_k negotiation"
@@ -1844,6 +1854,10 @@ msgid ""
 "will be forced without checking the device compatibility. If unsure, leave "
 "here “Ignore” or pick “Automatic”."
 msgstr ""
+"Согласование ссылок устройства. Если выбрано «Manual», значения «Speed» и "
+"«Duplex» будут принудительно отключены, не проверяя совместимость "
+"устройства. Если вы не уверены, оставьте здесь «Игнорировать» или выберите "
+"«Автоматически»."
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:32
 msgid "_Speed"
@@ -1855,6 +1869,10 @@ msgid ""
 "“Automatic” options are not selected. Before specifying a speed value be "
 "sure your device supports it."
 msgstr ""
+"Значение скорости для статического согласования ссылок, которое требуется "
+"только тогда, когда параметры «Игнорировать» и «Автоматически» не выбраны. "
+"Прежде чем указывать значение скорости, убедитесь, что ваше устройство "
+"поддерживает его."
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:34
 msgid "Duple_x"
@@ -1866,6 +1884,10 @@ msgid ""
 "“Automatic” options are not selected. Before specifying a duplex mode be "
 "sure your device supports it."
 msgstr ""
+"Дуплексное значение для статического согласования ссылок, которое требуется "
+"только тогда, когда параметры «Игнорировать» и «Автоматически» не выбраны. "
+"Прежде чем указывать дуплексный режим, убедитесь, что ваше устройство "
+"поддерживает его."
 
 #: ../src/connection-editor/ce-page-general.ui.h:2
 msgid "Yes"
@@ -1909,6 +1931,9 @@ msgid ""
 "numbers are preferred when selecting profiles for automatic activation. "
 "Default value is 0."
 msgstr ""
+"Приоритет подключения для автоматической активации. Соединения с более "
+"высокими номерами предпочтительнее при выборе профилей для автоматической "
+"активации. Значение по умолчанию - 0."
 
 #: ../src/connection-editor/ce-page.h:109
 msgid ""
@@ -2183,27 +2208,31 @@ msgstr "Строгий"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:7
 msgid "The name of the MACsec device."
-msgstr ""
+msgstr "Имя устройства MACsec."
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:9
 msgid ""
 "The parent interface name or parent connection UUID from which this MACSEC "
 "interface should be created."
 msgstr ""
+"Имя родительского интерфейса или UUID родительского соединения, из которого "
+"должен быть создан этот интерфейс MACSEC."
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:10
 msgid ""
 "The parent interface name or parent connection UUID from which this MACsec "
 "interface should be created"
 msgstr ""
+"Имя родительского интерфейса или UUID родительского соединения, из которого "
+"должен быть создан этот интерфейс MACsec"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:11
 msgid " The pre-shared Connectivity-association Key Name"
-msgstr ""
+msgstr " Предварительно разделенное имя ключа подключения"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:12
 msgid "The pre-shared Connectivity Association Key"
-msgstr ""
+msgstr "Предварительно разделенный ключ ассоциации подключения"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:13
 msgid ""
@@ -2211,6 +2240,9 @@ msgid ""
 "Agreement) is obtained. For the EAP mode, fill the parameters in the 802.1X "
 "security page"
 msgstr ""
+"Определяет, как получить CAK (ключ ассоциации подключения) для MKA "
+"(соглашение о ключах MACsec). Для режима EAP заполните параметры на странице "
+"безопасности 802.1X"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:14
 msgid "CKN"
@@ -2238,7 +2270,7 @@ msgstr "Порт SCI"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:21
 msgid "Specifies the validation mode for incoming frames"
-msgstr ""
+msgstr "Определяет режим проверки для входящих кадров"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:22
 msgid "Encrypt"
@@ -2246,11 +2278,11 @@ msgstr "Зашифровать"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:23
 msgid "Whether the transmitted traffic must be encrypted"
-msgstr ""
+msgstr "Необходимо ли шифровать передаваемый трафик"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:24
 msgid "The port component of the SCI (Secure Channel Identifier)"
-msgstr ""
+msgstr "Компонент порта SCI (Secure Channel Identifier)"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:1
 #: ../src/connection-editor/ce-page-team.ui.h:26
@@ -2350,6 +2382,8 @@ msgstr "Только для браузера"
 #: ../src/connection-editor/ce-page-proxy.ui.h:4
 msgid "Use this proxy configuration for only browser clients/schemes."
 msgstr ""
+"Используйте эту конфигурацию прокси-сервера только для клиентов или схем "
+"браузера."
 
 #: ../src/connection-editor/ce-page-proxy.ui.h:5
 msgid "PAC URL"
@@ -2361,7 +2395,7 @@ msgstr "Скрипт PAC"
 
 #: ../src/connection-editor/ce-page-proxy.ui.h:7
 msgid "URL from where the PAC script is to be obtained."
-msgstr ""
+msgstr "URL, с которого должен быть получен сценарий PAC."
 
 #: ../src/connection-editor/ce-page-proxy.ui.h:8
 msgid "Import script from a file…"
@@ -2410,14 +2444,16 @@ msgid ""
 "Number of bursts of unsolicited NAs and gratuitous ARP packets sent after "
 "port is enabled or disabled."
 msgstr ""
+"Количество всплесков незапрашиваемых НС и безвозмездных пакетов ARP, "
+"отправленных после того, как порт включен или отключен."
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:9
 msgid "ID of queue which this port should be mapped to."
-msgstr ""
+msgstr "ID очереди, к которой должен быть привязан этот порт."
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:10
 msgid "Active-Backup runner options"
-msgstr ""
+msgstr "Параметры резервного копирования Active-Backup"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:11
 msgid "_Port priority"
@@ -2429,14 +2465,16 @@ msgid ""
 "Value is positive number in milliseconds. Specifies an interval between "
 "bursts of notify-peer packets."
 msgstr ""
+"Значение - положительное число в миллисекундах. Задает интервал между "
+"пакетами пакетов уведомлений-одноранговых узлов."
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:13
 msgid "Port priority. The higher number means higher priority."
-msgstr ""
+msgstr "Приоритет порта. Чем выше число, тем выше приоритет."
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:14
 msgid "Port _sticky"
-msgstr ""
+msgstr "Port _sticky"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:15
 msgid "Do not unselect the port if a better one becomes available."
@@ -2444,7 +2482,7 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:16
 msgid "LACP runner options"
-msgstr ""
+msgstr "Варианты бегунов LACP"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:17
 msgid "_LACP port priority"
@@ -2460,12 +2498,16 @@ msgid ""
 "Number of bursts of multicast group rejoin requests sent after port is "
 "enabled or disabled."
 msgstr ""
+"Количество всплесков повторных запросов групповой группы, отправленных после "
+"того, как порт включен или отключен."
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:20
 msgid ""
 "Port priority according to LACP standard. The lower number means higher "
 "priority."
 msgstr ""
+"Приоритет порта в соответствии со стандартом LACP. Более низкое значение "
+"означает более высокий приоритет."
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:21
 #: ../src/connection-editor/ce-page-team.ui.h:45
@@ -2473,12 +2515,16 @@ msgid ""
 "Value is positive number in milliseconds. Specifies an interval between "
 "bursts of multicast group rejoin requests."
 msgstr ""
+"Значение - положительное число в миллисекундах. Задает интервал между "
+"очередями запросов повторного набора групповой адресации."
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:22
 msgid ""
 "Port key according to LACP standard. It is only possible to aggregate ports "
 "with the same key."
 msgstr ""
+"Порт в соответствии со стандартом LACP. Только объединить порты с одним и "
+"тем же ключом."
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:24
 #: ../src/connection-editor/ce-page-team.ui.h:70
@@ -2526,6 +2572,8 @@ msgid ""
 "Maximum number of missed replies. If this number is exceeded, link is "
 "reported as down."
 msgstr ""
+"Максимальное количество пропущенных ответов. Если это число превышено, "
+"ссылка отображается как вниз."
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:33
 #: ../src/connection-editor/ce-page-team.ui.h:79
@@ -2533,6 +2581,8 @@ msgid ""
 "Hostname to be converted to IP address which will be filled into ARP request "
 "as source address."
 msgstr ""
+"Имя хоста, которое должно быть преобразовано в IP-адрес, который будет "
+"заполнен в ARP-запрос в качестве исходного адреса."
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:34
 #: ../src/connection-editor/ce-page-team.ui.h:80
@@ -2540,11 +2590,13 @@ msgid ""
 "Hostname to be converted to IP address which will be filled into request as "
 "destination address."
 msgstr ""
+"Имя хоста для преобразования в IP-адрес, который будет заполняться в "
+"качестве адреса назначения."
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:35
 #: ../src/connection-editor/ce-page-team.ui.h:81
 msgid "Ignore invalid packets from _active ports"
-msgstr ""
+msgstr "Игнорировать недействительные пакеты из _active портов"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:36
 #: ../src/connection-editor/ce-page-team.ui.h:82
@@ -2552,11 +2604,13 @@ msgid ""
 "Validate received ARP packets on active ports. If this is not checked, all "
 "incoming ARP packets will be considered as a good reply."
 msgstr ""
+"Проверять полученные ARP-пакеты на активных портах. Если это не проверено, "
+"все входящие пакеты ARP будут считаться хорошим ответом."
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:37
 #: ../src/connection-editor/ce-page-team.ui.h:83
 msgid "Ignore invalid packets from i_nactive ports"
-msgstr ""
+msgstr "Игнорировать недопустимые пакеты из i_nactive портов"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:38
 #: ../src/connection-editor/ce-page-team.ui.h:84
@@ -2564,11 +2618,13 @@ msgid ""
 "Validate received ARP packets on inactive ports. If this is not checked, all "
 "incoming ARP packets will be considered as a good reply."
 msgstr ""
+"Проверять полученные ARP-пакеты на неактивных портах. Если это не проверено, "
+"все входящие пакеты ARP будут считаться хорошим ответом."
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:39
 #: ../src/connection-editor/ce-page-team.ui.h:85
 msgid "S_end on inactive ports"
-msgstr ""
+msgstr "S_end на неактивных портах"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:40
 #: ../src/connection-editor/ce-page-team.ui.h:86
@@ -2576,39 +2632,41 @@ msgid ""
 "By default, ARP requests are sent on active ports only. This option allows "
 "sending even on inactive ports."
 msgstr ""
+"По умолчанию запросы ARP отправляются только на активные порты. Этот "
+"параметр позволяет отправлять даже на неактивные порты."
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:41
 #: ../src/connection-editor/ce-page-team.ui.h:87
 msgid ""
 "The delay between the link coming up and the runner being notified about it."
-msgstr ""
+msgstr "Задержка между ссылкой и бегуном уведомляется об этом."
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:42
 #: ../src/connection-editor/ce-page-team.ui.h:88
 msgid ""
 "The delay between the link going down and the runner being notified about it."
-msgstr ""
+msgstr "Задержка между передачей ссылки и уведомлением о ней."
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:43
 #: ../src/connection-editor/ce-page-team.ui.h:89
 msgid "The interval between requests being sent."
-msgstr ""
+msgstr "Интервал между отправленными запросами."
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:44
 #: ../src/connection-editor/ce-page-team.ui.h:90
 msgid ""
 "The delay between link watch initialization and the first request being sent."
-msgstr ""
+msgstr "Задержка между инициализацией часов связи и отправкой первого запроса."
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:45
 #: ../src/connection-editor/ce-page-team.ui.h:91
 msgid "The link watcher to be used."
-msgstr ""
+msgstr "Наблюдатель канала, который будет использоваться."
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:46
 #: ../src/connection-editor/ce-page-team.ui.h:92
 msgid "Link Watcher"
-msgstr ""
+msgstr "Ссылка Watcher"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:47
 #: ../src/connection-editor/ce-page-team.ui.h:93
@@ -2623,7 +2681,7 @@ msgstr "Редактировать _конфигурацию JSON"
 #: ../src/connection-editor/ce-page-team-port.ui.h:49
 #: ../src/connection-editor/ce-page-team.ui.h:95
 msgid "Raw Configuration"
-msgstr ""
+msgstr "Необработанная конфигурация"
 
 #: ../src/connection-editor/ce-page-team.ui.h:1
 msgid "Highest priority"
@@ -2639,7 +2697,7 @@ msgstr "Полоса пропускания"
 
 #: ../src/connection-editor/ce-page-team.ui.h:4
 msgid "Highest number of ports"
-msgstr ""
+msgstr "Наибольшее количество портов"
 
 #: ../src/connection-editor/ce-page-team.ui.h:5
 msgid "Port priority"
@@ -2732,6 +2790,8 @@ msgid ""
 "Desired hardware address of new team device. Usual MAC address format is "
 "accepted."
 msgstr ""
+"Желаемый аппаратный адрес нового командного устройства. Обычный формат MAC-"
+"адреса принимается."
 
 #: ../src/connection-editor/ce-page-team.ui.h:49
 msgid "_Runner"
@@ -2743,27 +2803,32 @@ msgstr "_Политика аппаратных адресов"
 
 #: ../src/connection-editor/ce-page-team.ui.h:51
 msgid "Name of runner to be used."
-msgstr ""
+msgstr "Имя используемого бегуна."
 
 #: ../src/connection-editor/ce-page-team.ui.h:52
 msgid ""
 "This defines the policy of how hardware addresses of team device and port "
 "devices should be set during the team lifetime."
 msgstr ""
+"Это определяет политику того, как аппаратные адреса командного устройства и "
+"портовых устройств должны быть установлены в течение всего жизненного цикла "
+"команды."
 
 #: ../src/connection-editor/ce-page-team.ui.h:53
 msgid "Send LACPDU frames _periodically"
-msgstr ""
+msgstr "Отправлять кадры LACPDU _периодически"
 
 #: ../src/connection-editor/ce-page-team.ui.h:54
 msgid ""
 "If checked, LACPDU frames are sent along the configured links periodically. "
 "If not, it acts as “speak when spoken to”."
 msgstr ""
+"Если отмечено, кадры LACPDU периодически отправляются по настроенным "
+"ссылкам. Если нет, он действует как «говорить, когда говорят»."
 
 #: ../src/connection-editor/ce-page-team.ui.h:55
 msgid "Send a LACPDU frame _every second"
-msgstr ""
+msgstr "Отправить рамку LACPDU"
 
 #: ../src/connection-editor/ce-page-team.ui.h:56
 msgid ""
@@ -2771,6 +2836,10 @@ msgid ""
 "LACPDU packets. If checked, packets will be sent once per second. Otherwise "
 "they will be sent every 30 seconds."
 msgstr ""
+"Параметр указывает скорость, с которой наш партнер по связям запрашивается "
+"передать пакеты LACPDU. Если флажок установлен, пакеты будут отправляться "
+"один раз в секунду. В противном случае они будут отправляться каждые 30 "
+"секунд."
 
 #: ../src/connection-editor/ce-page-team.ui.h:57
 msgid "_System priority"
@@ -2786,35 +2855,42 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page-team.ui.h:60
 msgid "System priority, value can be 0 – 65535."
-msgstr ""
+msgstr "Системный приоритет, значение может быть 0 - 65535."
 
 #: ../src/connection-editor/ce-page-team.ui.h:61
 msgid ""
 "Specifies the minimum number of ports that must be active before asserting "
 "carrier in the master interface, value can be 1 – 255."
 msgstr ""
+"Указывает минимальное количество портов, которые должны быть активны, до "
+"того, как заявить несущую в главном интерфейсе, значение может быть 1 - 255."
 
 #: ../src/connection-editor/ce-page-team.ui.h:62
 msgid "This selects the policy of how the aggregators will be selected."
-msgstr ""
+msgstr "Это выбирает политику выбора агрегаторов."
 
 #: ../src/connection-editor/ce-page-team.ui.h:63
 msgid ""
 "List of fragment types (strings) which should be used for packet Tx hash "
 "computation."
 msgstr ""
+"Список типов фрагментов (строк), которые должны использоваться для пакетного "
+"вычисления хеша Tx."
 
 #: ../src/connection-editor/ce-page-team.ui.h:64
 msgid "_Fields for transmission hash"
-msgstr ""
+msgstr "_Fields для передачи хэш"
 
 #: ../src/connection-editor/ce-page-team.ui.h:65
 msgid "In tenths of a second. Periodic interval between rebalancing."
 msgstr ""
+"В десятые доли секунды. Периодический интервал между перебалансировкой."
 
 #: ../src/connection-editor/ce-page-team.ui.h:66
 msgid "Name of active Tx balancer. Active Tx balancing is disabled by default."
 msgstr ""
+"Название активного балансира Tx. Активная балансировка Tx по умолчанию "
+"отключена."
 
 #: ../src/connection-editor/ce-page-team.ui.h:67
 msgid "Transmission _balancing interval"
@@ -2826,7 +2902,7 @@ msgstr "Б_алансировщик Transmission"
 
 #: ../src/connection-editor/ce-page-team.ui.h:69
 msgid "Runner"
-msgstr ""
+msgstr "полоз"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:1
 msgid "_Parent interface"
@@ -2858,7 +2934,7 @@ msgstr "_GVRP"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:10
 msgid "_Loose binding"
-msgstr ""
+msgstr "_Новое связывание"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:11
 msgid "M_VRP"
@@ -3203,6 +3279,8 @@ msgid ""
 "Warning: the connection contains some properties not supported by the "
 "editor. They will be cleared upon save."
 msgstr ""
+"Предупреждение: соединение содержит некоторые свойства, не поддерживаемые "
+"редактором. Они будут очищены после спасения."
 
 #: ../src/connection-editor/nm-connection-editor.c:762
 msgid "Error initializing editor"
@@ -3245,6 +3323,8 @@ msgid ""
 "The following files are not labelled for use with certificate "
 "authentication. Do you wish to adjust the labels?"
 msgstr ""
+"Следующие файлы не помечены для использования с аутентификацией сертификата. "
+"Вы хотите настроить ярлыки?"
 
 #: ../src/connection-editor/nm-connection-editor.ui.h:9
 msgid "Relabel"
@@ -3306,15 +3386,15 @@ msgstr[2] "%d лет назад"
 
 #: ../src/connection-editor/nm-connection-list.c:473
 msgid "Connection cannot be deleted"
-msgstr ""
+msgstr "Соединение нельзя удалить"
 
 #: ../src/connection-editor/nm-connection-list.c:476
 msgid "Select a connection to edit"
-msgstr ""
+msgstr "Выберите соединение для редактирования"
 
 #: ../src/connection-editor/nm-connection-list.c:478
 msgid "Select a connection to delete"
-msgstr ""
+msgstr "Выберите соединение для удаления"
 
 #: ../src/connection-editor/nm-connection-list.c:794
 #: ../src/libnma/nma-pkcs11-cert-chooser-dialog.ui.h:2
