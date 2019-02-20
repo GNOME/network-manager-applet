@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-16 16:50+0200\n"
+"POT-Creation-Date: 2019-02-20 18:18+0100\n"
 "PO-Revision-Date: 2018-01-30 12:06+0000\n"
 "Last-Translator: amoewaki <amoewaki@redhat.com>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -29,7 +29,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Zanata 4.3.2\n"
 
-#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3191
+#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3198
 msgid "Network"
 msgstr "ネットワーク"
 
@@ -38,9 +38,9 @@ msgid "Manage your network connections"
 msgstr "ネットワーク接続を管理"
 
 #: ../nm-connection-editor.desktop.in.h:1
-#: ../src/connection-editor/nm-connection-list.ui.h:1
-msgid "Network Connections"
-msgstr "ネットワーク接続"
+#, fuzzy
+msgid "Advanced Network Configuration"
+msgstr "Raw 設定"
 
 #: ../nm-connection-editor.desktop.in.h:2
 msgid "Manage and change your network connection settings"
@@ -212,30 +212,31 @@ msgstr "802.1X の認証"
 #: ../src/connection-editor/ce-new-connection.ui.h:1
 #: ../src/connection-editor/ce-page-dcb.ui.h:17
 #: ../src/connection-editor/ce-ppp-auth-methods.ui.h:1
-#: ../src/connection-editor/connection-helpers.c:308
-#: ../src/connection-editor/connection-helpers.c:771
+#: ../src/connection-editor/connection-helpers.c:296
+#: ../src/connection-editor/connection-helpers.c:759
 #: ../src/connection-editor/nm-connection-editor.ui.h:5
-#: ../src/connection-editor/page-bluetooth.c:309
-#: ../src/connection-editor/page-mobile.c:543
+#: ../src/connection-editor/page-bluetooth.c:307
+#: ../src/connection-editor/page-mobile.c:540
 #: ../src/connection-editor/page-proxy.c:121
 #: ../src/connection-editor/page-team.c:344
 #: ../src/connection-editor/page-team-port.c:206
 #: ../src/connection-editor/vpn-helpers.c:212 ../src/gsm-unlock.ui.h:1
 #: ../src/libnma/nma-pkcs11-token-login-dialog.ui.h:1
-#: ../src/libnma/nma-vpn-password-dialog.c:209
-#: ../src/libnma/nma-wifi-dialog.c:1066
+#: ../src/libnma/nma-vpn-password-dialog.ui.h:1
+#: ../src/libnma/nma-wifi-dialog.c:1104
 #: ../src/libnm-gtk/nm-vpn-password-dialog.c:209
 #: ../src/libnm-gtk/nm-wifi-dialog.c:1067 ../src/mobile-helpers.c:465
 msgid "_Cancel"
 msgstr "取り消し(_C)"
 
-#: ../src/8021x.ui.h:3 ../src/libnma/nma-wifi-dialog.c:1072
+#: ../src/8021x.ui.h:3 ../src/libnma/nma-wifi-dialog.c:1110
 #: ../src/libnm-gtk/nm-wifi-dialog.c:1073
 msgid "C_onnect"
 msgstr "接続(_O)"
 
-#: ../src/8021x.ui.h:4 ../src/libnma/wifi.ui.h:2 ../src/libnm-gtk/wifi.ui.h:2
-msgid "_Network name:"
+#: ../src/8021x.ui.h:4 ../src/libnma/wifi.ui.h:2
+#, fuzzy
+msgid "_Network name"
 msgstr "ネットワーク名(_N):"
 
 #: ../src/ap-menu-item.c:82
@@ -272,11 +273,11 @@ msgstr "切断失敗"
 msgid "Connection activation failed"
 msgstr "接続のアクティベートに失敗しました"
 
-#: ../src/applet.c:809 ../src/applet-device-wifi.c:1127
+#: ../src/applet.c:808 ../src/applet-device-wifi.c:1127
 msgid "Don’t show this message again"
 msgstr "このメッセージを今後表示しない"
 
-#: ../src/applet.c:899
+#: ../src/applet.c:898
 #, c-format
 msgid ""
 "\n"
@@ -286,7 +287,7 @@ msgstr ""
 "\n"
 "ネットワーク接続が中断されたため、VPN 接続 '%s' は切断されました。"
 
-#: ../src/applet.c:901
+#: ../src/applet.c:900
 #, c-format
 msgid ""
 "\n"
@@ -296,7 +297,7 @@ msgstr ""
 "\n"
 "ネットワーク接続が中断されたため、VPN 接続 '%s' は失敗しました。"
 
-#: ../src/applet.c:903
+#: ../src/applet.c:902
 #, c-format
 msgid ""
 "\n"
@@ -305,7 +306,7 @@ msgstr ""
 "\n"
 "VPN サービスが予期せずに停止したため、VPN 接続 '%s' は失敗しました。"
 
-#: ../src/applet.c:905
+#: ../src/applet.c:904
 #, c-format
 msgid ""
 "\n"
@@ -315,7 +316,7 @@ msgstr ""
 "\n"
 "VPN サービスが無効な設定を返したため、VPN 接続 '%s'は失敗しました。"
 
-#: ../src/applet.c:907
+#: ../src/applet.c:906
 #, c-format
 msgid ""
 "\n"
@@ -324,7 +325,7 @@ msgstr ""
 "\n"
 "接続試行がタイムアウトしたため、VPN 接続 '%s' は失敗しました。"
 
-#: ../src/applet.c:909
+#: ../src/applet.c:908
 #, c-format
 msgid ""
 "\n"
@@ -333,7 +334,7 @@ msgstr ""
 "\n"
 "VPN サービスが時間内に開始しなかったため、VPN 接続 '%s' は失敗しました。"
 
-#: ../src/applet.c:911
+#: ../src/applet.c:910
 #, c-format
 msgid ""
 "\n"
@@ -342,7 +343,7 @@ msgstr ""
 "\n"
 "VPN サービスが開始に失敗したため、VPN 接続 '%s' は失敗しました。"
 
-#: ../src/applet.c:913
+#: ../src/applet.c:912
 #, c-format
 msgid ""
 "\n"
@@ -351,7 +352,7 @@ msgstr ""
 "\n"
 "有効な VPN シークレットがないため、VPN 接続 '%s' は失敗しました。"
 
-#: ../src/applet.c:915
+#: ../src/applet.c:914
 #, c-format
 msgid ""
 "\n"
@@ -360,7 +361,7 @@ msgstr ""
 "\n"
 "VPN シークレットが無効なため、VPN 接続 '%s' は失敗しました。"
 
-#: ../src/applet.c:920
+#: ../src/applet.c:919
 #, c-format
 msgid ""
 "\n"
@@ -369,7 +370,7 @@ msgstr ""
 "\n"
 "VPN 接続 '%s' は失敗しました。"
 
-#: ../src/applet.c:947
+#: ../src/applet.c:946
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -380,19 +381,19 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: ../src/applet.c:949
+#: ../src/applet.c:948
 msgid "VPN connection has been successfully established.\n"
 msgstr "VPN 接続の確立に成功しました。\n"
 
-#: ../src/applet.c:951
+#: ../src/applet.c:950
 msgid "VPN Login Message"
 msgstr "VPN ログインメッセージ"
 
-#: ../src/applet.c:959 ../src/applet.c:999
+#: ../src/applet.c:958 ../src/applet.c:998
 msgid "VPN Connection Failed"
 msgstr "VPN 接続は失敗しました"
 
-#: ../src/applet.c:1003
+#: ../src/applet.c:1002
 #, c-format
 msgid ""
 "\n"
@@ -405,7 +406,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1006
+#: ../src/applet.c:1005
 #, c-format
 msgid ""
 "\n"
@@ -418,144 +419,144 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1295
+#: ../src/applet.c:1296
 msgid "device not ready (firmware missing)"
 msgstr "デバイスの準備ができていません (ファームウェア未検出)"
 
-#: ../src/applet.c:1297
+#: ../src/applet.c:1298
 msgid "device not ready"
 msgstr "デバイスの準備ができていません"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet.c:1307 ../src/applet-device-ethernet.c:109
+#: ../src/applet.c:1308 ../src/applet-device-ethernet.c:109
 msgid "disconnected"
 msgstr "切断されています"
 
-#: ../src/applet.c:1323
+#: ../src/applet.c:1324
 msgid "Disconnect"
 msgstr "切断する"
 
-#: ../src/applet.c:1337
+#: ../src/applet.c:1338
 msgid "device not managed"
 msgstr "デバイスは管理されていません"
 
-#: ../src/applet.c:1410
+#: ../src/applet.c:1411
 msgid "No network devices available"
 msgstr "ネットワークデバイスがありません"
 
-#: ../src/applet.c:1464
+#: ../src/applet.c:1465
 msgid "_VPN Connections"
 msgstr "VPN 接続(_V)"
 
-#: ../src/applet.c:1508
+#: ../src/applet.c:1509
 msgid "_Configure VPN…"
 msgstr "VPN を設定(_C)..."
 
-#: ../src/applet.c:1511
+#: ../src/applet.c:1512
 msgid "_Add a VPN connection…"
 msgstr "VPN 接続を追加(_A)"
 
-#: ../src/applet.c:1617
+#: ../src/applet.c:1618
 msgid "NetworkManager is not running…"
 msgstr "NetworkManager は実行されていません..."
 
-#: ../src/applet.c:1622 ../src/applet.c:2687
+#: ../src/applet.c:1623 ../src/applet.c:2688
 msgid "Networking disabled"
 msgstr "ネットワークは無効になっています"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1832
+#: ../src/applet.c:1833
 msgid "Enable _Networking"
 msgstr "ネットワークを有効にする(_N)"
 
 #. 'Enable Wi-Fi' item
-#: ../src/applet.c:1841
+#: ../src/applet.c:1842
 msgid "Enable _Wi-Fi"
 msgstr "Wi-Fi を有効にする(_W)"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:1850
+#: ../src/applet.c:1851
 msgid "Enable _Mobile Broadband"
 msgstr "モバイルブロードバンドを有効にする(_M)"
 
 #. Toggle notifications item
-#: ../src/applet.c:1862
+#: ../src/applet.c:1863
 msgid "Enable N_otifications"
 msgstr "通知を有効にする(_O)"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1874
+#: ../src/applet.c:1875
 msgid "Connection _Information"
 msgstr "接続情報(_I)"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1882
+#: ../src/applet.c:1883
 msgid "Edit Connections…"
 msgstr "接続を編集する..."
 
-#: ../src/applet.c:1896
+#: ../src/applet.c:1897
 msgid "_About"
 msgstr "このアプリケーションについて(_A)"
 
-#: ../src/applet.c:2207
+#: ../src/applet.c:2208
 #, c-format
 msgid "You are now connected to “%s”."
 msgstr "現在'%s' に接続しています。"
 
-#: ../src/applet.c:2247
+#: ../src/applet.c:2248
 msgid "Disconnected"
 msgstr "切断されました"
 
-#: ../src/applet.c:2248
+#: ../src/applet.c:2249
 msgid "The network connection has been disconnected."
 msgstr "ネットワーク接続が切断されました。"
 
-#: ../src/applet.c:2550
+#: ../src/applet.c:2551
 #, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "ネットワーク接続 '%s' を準備中..."
 
-#: ../src/applet.c:2553
+#: ../src/applet.c:2554
 #, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "ネットワーク接続 '%s' にはユーザー認証が必要です..."
 
-#: ../src/applet.c:2556 ../src/applet-device-bt.c:125
+#: ../src/applet.c:2557 ../src/applet-device-bt.c:125
 #: ../src/mobile-helpers.c:607
 #, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "'%s' のネットワークアドレスを要求しています..."
 
-#: ../src/applet.c:2559
+#: ../src/applet.c:2560
 #, c-format
 msgid "Network connection “%s” active"
 msgstr "ネットワーク接続 '%s' はアクティブです。"
 
-#: ../src/applet.c:2632
+#: ../src/applet.c:2633
 #, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "VPN 接続 '%s' を開始しています..."
 
-#: ../src/applet.c:2635
+#: ../src/applet.c:2636
 #, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "VPN 接続 '%s' にはユーザー認証が必要です..."
 
-#: ../src/applet.c:2638
+#: ../src/applet.c:2639
 #, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "'%s' の VPN アドレスを要求しています..."
 
-#: ../src/applet.c:2641
+#: ../src/applet.c:2642
 #, c-format
 msgid "VPN connection active"
 msgstr "VPN 接続はアクティブです"
 
-#: ../src/applet.c:2691
+#: ../src/applet.c:2692
 msgid "No network connection"
 msgstr "ネットワーク接続がありません"
 
-#: ../src/applet.c:3292
+#: ../src/applet.c:3299
 msgid "NetworkManager Applet"
 msgstr "NetworkManager アプレット"
 
@@ -572,46 +573,46 @@ msgstr "PIN が違います。プロバイダーに連絡してください。"
 msgid "Sending unlock code…"
 msgstr "ロック解除コードを送信中..."
 
-#: ../src/applet-device-broadband.c:737 ../src/applet-dialogs.c:507
+#: ../src/applet-device-broadband.c:739 ../src/applet-dialogs.c:507
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "モバイルブロードバンド (%s)"
 
-#: ../src/applet-device-broadband.c:739
+#: ../src/applet-device-broadband.c:741
 #: ../src/connection-editor/connection-helpers.c:108
-#: ../src/connection-editor/page-mobile.c:308
+#: ../src/connection-editor/page-mobile.c:305
 #: ../src/libnm-gtk/nm-ui-utils.c:329
 msgid "Mobile Broadband"
 msgstr "モバイルブロードバンド"
 
-#: ../src/applet-device-broadband.c:792 ../src/applet-device-bt.c:75
+#: ../src/applet-device-broadband.c:794 ../src/applet-device-bt.c:75
 #: ../src/applet-device-ethernet.c:117 ../src/applet-device-wifi.c:907
 msgid "Available"
 msgstr "利用可能"
 
 #. Default connection item
-#: ../src/applet-device-broadband.c:805
+#: ../src/applet-device-broadband.c:807
 msgid "New Mobile Broadband connection…"
 msgstr "新規のモバイルブロードバンド接続…"
 
-#: ../src/applet-device-broadband.c:819 ../src/applet-device-bt.c:87
+#: ../src/applet-device-broadband.c:821 ../src/applet-device-bt.c:87
 #: ../src/applet-device-ethernet.c:132 ../src/applet-device-wifi.c:1309
 msgid "Connection Established"
 msgstr "接続を確立しました"
 
-#: ../src/applet-device-broadband.c:820
+#: ../src/applet-device-broadband.c:822
 msgid "You are now connected to the Mobile Broadband network."
 msgstr "現在、モバイルブロードバンドネットワークに接続しています。"
 
-#: ../src/applet-device-broadband.c:960 ../src/applet-device-broadband.c:966
+#: ../src/applet-device-broadband.c:962 ../src/applet-device-broadband.c:968
 msgid "Mobile Broadband network."
 msgstr "モバイルブロードバンドネットワーク"
 
-#: ../src/applet-device-broadband.c:961
+#: ../src/applet-device-broadband.c:963
 msgid "You are now registered on the home network."
 msgstr "ホームネットワークに接続しました。"
 
-#: ../src/applet-device-broadband.c:967
+#: ../src/applet-device-broadband.c:969
 msgid "You are now registered on a roaming network."
 msgstr "ローミングネットワークに接続しました。"
 
@@ -699,9 +700,9 @@ msgstr "DSL 認証"
 #: ../src/connection-editor/ce-ip6-routes.ui.h:2
 #: ../src/connection-editor/ce-page-dcb.ui.h:18
 #: ../src/connection-editor/ce-ppp-auth-methods.ui.h:2
-#: ../src/connection-editor/page-bluetooth.c:311
-#: ../src/connection-editor/page-mobile.c:545
-#: ../src/libnma/nma-vpn-password-dialog.c:210
+#: ../src/connection-editor/page-bluetooth.c:309
+#: ../src/connection-editor/page-mobile.c:542
+#: ../src/libnma/nma-vpn-password-dialog.ui.h:2
 #: ../src/libnm-gtk/nm-vpn-password-dialog.c:210 ../src/mobile-helpers.c:466
 msgid "_OK"
 msgstr "OK(_O)"
@@ -804,9 +805,9 @@ msgstr "接続のアクティベートに失敗しました"
 msgid "Error displaying connection information:"
 msgstr "接続情報の表示中にエラーが起きました:"
 
-#: ../src/applet-dialogs.c:73 ../src/connection-editor/page-wifi-security.c:381
-#: ../src/libnma/nma-wifi-dialog.c:949 ../src/libnm-gtk/nm-wifi-dialog.c:948
-#: ../src/wireless-security/wireless-security.c:448
+#: ../src/applet-dialogs.c:73 ../src/connection-editor/page-wifi-security.c:378
+#: ../src/libnma/nma-wifi-dialog.c:972 ../src/libnm-gtk/nm-wifi-dialog.c:948
+#: ../src/wireless-security/wireless-security.c:449
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -829,7 +830,7 @@ msgid "WEP"
 msgstr "WEP"
 
 #: ../src/applet-dialogs.c:235 ../src/applet-dialogs.c:244
-#: ../src/connection-editor/page-wifi-security.c:332
+#: ../src/connection-editor/page-wifi-security.c:329
 msgctxt "Wi-Fi/Ethernet security"
 msgid "None"
 msgstr "なし"
@@ -1099,7 +1100,7 @@ msgstr ""
 
 #: ../src/connection-editor/ce-ip4-routes.ui.h:3
 #: ../src/connection-editor/ce-ip6-routes.ui.h:3
-#: ../src/connection-editor/ce-page.h:114
+#: ../src/connection-editor/ce-page.h:112
 msgid ""
 "IP addresses identify your computer on the network. Click the “Add” button "
 "to add an IP address."
@@ -1125,7 +1126,7 @@ msgstr "追加(_A)"
 #: ../src/connection-editor/ce-page-ip4.ui.h:8
 #: ../src/connection-editor/ce-page-ip6.ui.h:13
 #: ../src/connection-editor/ce-page-team.ui.h:15
-#: ../src/connection-editor/connection-helpers.c:772
+#: ../src/connection-editor/connection-helpers.c:760
 #: ../src/connection-editor/nm-connection-list.ui.h:4
 msgid "_Delete"
 msgstr "削除(_D)"
@@ -1208,12 +1209,14 @@ msgid "ARP"
 msgstr "ARP"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:10
-msgid "Bonded _connections:"
+#, fuzzy
+msgid "Bonded _connections"
 msgstr "Bond 接続(_C):"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:11
 #: ../src/connection-editor/ce-page-wifi.ui.h:18
-msgid "M_ode:"
+#, fuzzy
+msgid "M_ode"
 msgstr "モード(_O):"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:13
@@ -1224,7 +1227,8 @@ msgid "_Edit"
 msgstr "編集(_E)"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:15
-msgid "Monitoring _frequency:"
+#, fuzzy
+msgid "Monitoring _frequency"
 msgstr "監視周期(_F):"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:16
@@ -1234,15 +1238,18 @@ msgstr "ms"
 #: ../src/connection-editor/ce-page-bond.ui.h:17
 #: ../src/connection-editor/ce-page-bridge.ui.h:6
 #: ../src/connection-editor/ce-page-team.ui.h:16
-msgid "_Interface name:"
+#, fuzzy
+msgid "_Interface name"
 msgstr "インターフェース名(_I):"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:18
-msgid "_Link Monitoring:"
+#, fuzzy
+msgid "_Link Monitoring"
 msgstr "リンク監視(_L)"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:19
-msgid "ARP _targets:"
+#, fuzzy
+msgid "ARP _targets"
 msgstr "ARP 対象(_T):"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:20
@@ -1254,15 +1261,18 @@ msgstr ""
 "のリスト。"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:21
-msgid "Link _up delay:"
+#, fuzzy
+msgid "Link _up delay"
 msgstr "接続遅延(_U):"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:22
-msgid "Link _down delay:"
+#, fuzzy
+msgid "Link _down delay"
 msgstr "接断遅延(_D):"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:23
-msgid "_Primary:"
+#, fuzzy
+msgid "_Primary"
 msgstr "プライマリー(_P):"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:24
@@ -1279,7 +1289,8 @@ msgstr ""
 #: ../src/connection-editor/ce-page-team.ui.h:17
 #: ../src/connection-editor/ce-page-vlan.ui.h:4
 #: ../src/connection-editor/ce-page-wifi.ui.h:8
-msgid "_MTU:"
+#, fuzzy
+msgid "_MTU"
 msgstr "MTU(_M):"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:26
@@ -1292,28 +1303,34 @@ msgid "bytes"
 msgstr "バイト"
 
 #: ../src/connection-editor/ce-page-bridge-port.ui.h:1
-msgid "Path _cost:"
+#, fuzzy
+msgid "Path _cost"
 msgstr "経路のコスト(_C):"
 
 #: ../src/connection-editor/ce-page-bridge-port.ui.h:2
 #: ../src/connection-editor/ce-page-bridge.ui.h:5
-msgid "_Priority:"
+#, fuzzy
+msgid "_Priority"
 msgstr "優先度(_P):"
 
 #: ../src/connection-editor/ce-page-bridge-port.ui.h:3
-msgid "_Hairpin mode:"
+#, fuzzy
+msgid "_Hairpin mode"
 msgstr "ヘアピンモード(_H):"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:1
-msgid "Bridged _connections:"
+#, fuzzy
+msgid "Bridged _connections"
 msgstr "ブリッジ接続(_C):"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:7
-msgid "_Forward delay:"
+#, fuzzy
+msgid "_Forward delay"
 msgstr "転送遅延(_F):"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:8
-msgid "_Hello time:"
+#, fuzzy
+msgid "_Hello time"
 msgstr "Hello タイム(_H):"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:9
@@ -1362,7 +1379,8 @@ msgstr ""
 "が一番低いブリッジが root ブリッジに選択されます。"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:17
-msgid "_Max age:"
+#, fuzzy
+msgid "_Max age"
 msgstr "最大エイジ(_M):"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:18
@@ -1370,7 +1388,8 @@ msgid "STP maximum message age, in seconds"
 msgstr "STP メッセージの最大エイジ (秒単位)"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:19
-msgid "_Aging time:"
+#, fuzzy
+msgid "_Aging time"
 msgstr "エージング時間(_A):"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:20
@@ -1378,7 +1397,8 @@ msgid "The Ethernet MAC address aging time, in seconds"
 msgstr "イーサネット MAC アドレスのエージングタイム (秒単位)"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:21
-msgid "Group _forward mask:"
+#, fuzzy
+msgid "Group _forward mask"
 msgstr "グループの転送マスク(_F):"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:22
@@ -1487,10 +1507,6 @@ msgstr "デバイス"
 msgid "invalid %s (%s) "
 msgstr "無効な %s (%s) "
 
-#: ../src/connection-editor/ce-page.c:725
-msgid "Failed to update connection secrets due to an unknown error."
-msgstr "不明なエラーのため、接続シークレットを更新できませんでした。"
-
 #: ../src/connection-editor/ce-page-dcb.ui.h:1
 msgid "_Use Data Center Bridging (DCB) for this connection"
 msgstr "この接続に Data Center Bridging (DCB) を使用する(_U)"
@@ -1556,66 +1572,75 @@ msgid "Enable or disable priority pause transmission for each User Priority."
 msgstr "各ユーザー優先度の優先ポーズ転送を、有効もしくは無効にしてください。"
 
 #: ../src/connection-editor/ce-page-dcb.ui.h:20
-msgid "Priority:"
-msgstr "優先度:"
-
-#: ../src/connection-editor/ce-page-dcb.ui.h:21
-msgid "0:"
+#, fuzzy
+msgid "0"
 msgstr "0:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:22
-msgid "1:"
+#: ../src/connection-editor/ce-page-dcb.ui.h:21
+#, fuzzy
+msgid "1"
 msgstr "1:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:23
-msgid "2:"
+#: ../src/connection-editor/ce-page-dcb.ui.h:22
+#, fuzzy
+msgid "2"
 msgstr "2:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:24
-msgid "3:"
+#: ../src/connection-editor/ce-page-dcb.ui.h:23
+#, fuzzy
+msgid "3"
 msgstr "3:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:25
-msgid "4:"
+#: ../src/connection-editor/ce-page-dcb.ui.h:24
+#, fuzzy
+msgid "4"
 msgstr "4:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:26
-msgid "5:"
+#: ../src/connection-editor/ce-page-dcb.ui.h:25
+#, fuzzy
+msgid "5"
 msgstr "5:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:27
-msgid "6:"
+#: ../src/connection-editor/ce-page-dcb.ui.h:26
+#, fuzzy
+msgid "6"
 msgstr "6:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:28
-msgid "7:"
+#: ../src/connection-editor/ce-page-dcb.ui.h:27
+#, fuzzy
+msgid "7"
 msgstr "7:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:29
-msgid "Traffic Class:"
+#: ../src/connection-editor/ce-page-dcb.ui.h:28
+#, fuzzy
+msgid "Traffic Class"
 msgstr "トラフィッククラス:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:30
-msgid "Strict Bandwidth:"
+#: ../src/connection-editor/ce-page-dcb.ui.h:29
+#, fuzzy
+msgid "Strict Bandwidth"
 msgstr "厳密な帯域幅:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:31
-msgid "Priority Bandwidth:"
+#: ../src/connection-editor/ce-page-dcb.ui.h:30
+#, fuzzy
+msgid "Priority Bandwidth"
 msgstr "優先帯域幅:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:32
-msgid "Group Bandwidth:"
+#: ../src/connection-editor/ce-page-dcb.ui.h:31
+#, fuzzy
+msgid "Group Bandwidth"
 msgstr "グループ帯域幅:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:33
-msgid "Group ID:"
+#: ../src/connection-editor/ce-page-dcb.ui.h:32
+#, fuzzy
+msgid "Group ID"
 msgstr "グループ ID:"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:34
+#: ../src/connection-editor/ce-page-dcb.ui.h:33
 msgid "Enter the priority group ID for each User Priority."
 msgstr "各ユーザー優先度に優先グループ ID を入力してください。"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:36
+#: ../src/connection-editor/ce-page-dcb.ui.h:35
 #, no-c-format
 msgid ""
 "Enter the allowed link bandwidth percent each Priority Group may use. The "
@@ -1624,18 +1649,18 @@ msgstr ""
 "優先グループが使用する利用可能なリンク帯域幅のパーセンテージを入力してくださ"
 "い。各グループの合計を 100% にする必要があります。"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:37
+#: ../src/connection-editor/ce-page-dcb.ui.h:36
 msgid ""
 "Enter the percentage of priority group bandwidth each user priority may use."
 msgstr ""
 "ユーザー優先度が使用可能な、優先グループ 帯域幅のパーセンテージを入力してくだ"
 "さい。"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:38
+#: ../src/connection-editor/ce-page-dcb.ui.h:37
 msgid "Enable or disable strict bandwidth for each user priority."
 msgstr "ユーザー優先度の正確な帯域幅を有効または無効にしてください。"
 
-#: ../src/connection-editor/ce-page-dcb.ui.h:39
+#: ../src/connection-editor/ce-page-dcb.ui.h:38
 msgid "Enter the traffic class for each user priority."
 msgstr "各ユーザー優先度にトラフィッククラスを入力してください。"
 
@@ -1644,7 +1669,8 @@ msgstr "各ユーザー優先度にトラフィッククラスを入力してく
 #: ../src/wireless-security/eap-method-leap.ui.h:1
 #: ../src/wireless-security/eap-method-simple.ui.h:1
 #: ../src/wireless-security/ws-leap.ui.h:1
-msgid "_Username:"
+#, fuzzy
+msgid "_Username"
 msgstr "ユーザー名(_U):"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:2
@@ -1660,10 +1686,12 @@ msgstr ""
 "す。多くのプロバイダーでは、これを空白にする必要があります。"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:4
-msgid "_Service:"
+#, fuzzy
+msgid "_Service"
 msgstr "サービス(_S):"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:5
+#: ../src/libnma/nma-file-cert-chooser.c:347
 #: ../src/wireless-security/eap-method-leap.ui.h:3
 #: ../src/wireless-security/eap-method-simple.ui.h:3
 #: ../src/wireless-security/ws-leap.ui.h:3
@@ -1677,21 +1705,22 @@ msgstr "PPPoE サービスでの認証に使用されるパスワード。"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:7
 #: ../src/connection-editor/ce-page-mobile.ui.h:4
-#: ../src/libnma/nma-vpn-password-dialog.c:97
-#: ../src/libnm-gtk/nm-vpn-password-dialog.c:97
 #: ../src/wireless-security/eap-method-leap.ui.h:2
 #: ../src/wireless-security/eap-method-simple.ui.h:2
 #: ../src/wireless-security/ws-leap.ui.h:2
 #: ../src/wireless-security/ws-wpa-psk.ui.h:1
-msgid "_Password:"
+#, fuzzy
+msgid "_Password"
 msgstr "パスワード(_P):"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:8
-msgid "PPP _interface:"
+#, fuzzy
+msgid "PPP _interface"
 msgstr "PPP インスタンス(_I):"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:9
-msgid "P_arent interface:"
+#, fuzzy
+msgid "P_arent interface"
 msgstr "親インスタンス(_A):"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:10
@@ -1702,13 +1731,27 @@ msgstr "新規作成された PPP インターフェースに割り当てる任�
 msgid "The interface on which the PPP connection will be established."
 msgstr "PPP 接続が確立されるインターフェース。"
 
+#: ../src/connection-editor/ce-page-dsl.ui.h:12
+#, fuzzy
+msgid "C_laim interface"
+msgstr "親インスタンス(_A):"
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:13
+msgid ""
+"If selected, the connection will take exclusive control of the interface and "
+"it won’t be possible to activate another connection on it. Note that the "
+"option can only be used for Ethernet interfaces. nm-applet is able to "
+"activate the connection only if this option is selected."
+msgstr ""
+
 #: ../src/connection-editor/ce-page-ethernet.ui.h:1
+#: ../src/connection-editor/ce-page-general.ui.h:1
 #: ../src/connection-editor/ce-page-ip4.ui.h:1
 #: ../src/connection-editor/ce-page-ip6.ui.h:1
 #: ../src/connection-editor/ce-page-proxy.ui.h:2
 #: ../src/connection-editor/ce-page-wifi.ui.h:1
-#: ../src/connection-editor/page-ip4.c:131
-#: ../src/connection-editor/page-ip6.c:142
+#: ../src/connection-editor/page-ip4.c:132
+#: ../src/connection-editor/page-ip6.c:143
 #: ../src/wireless-security/eap-method-peap.ui.h:1
 msgid "Automatic"
 msgstr "自動"
@@ -1754,35 +1797,39 @@ msgid "Full"
 msgstr "すべて"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:12
-#: ../src/connection-editor/page-ip6.c:155
+#: ../src/connection-editor/page-ip6.c:156
 msgid "Ignore"
 msgstr "無視する"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:13
 #: ../src/connection-editor/ce-page-ip4.ui.h:3
 #: ../src/connection-editor/ce-page-ip6.ui.h:3
-#: ../src/connection-editor/page-ip4.c:168
-#: ../src/connection-editor/page-ip6.c:191
+#: ../src/connection-editor/page-ip4.c:169
+#: ../src/connection-editor/page-ip6.c:192
 msgid "Manual"
 msgstr "手動"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:14
-msgid "_Port:"
+#, fuzzy
+msgid "_Port"
 msgstr "ポート(_P):"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:15
 #: ../src/connection-editor/ce-page-infiniband.ui.h:6
 #: ../src/connection-editor/ce-page-wifi.ui.h:9
-msgid "_Device:"
+#, fuzzy
+msgid "_Device"
 msgstr "デバイス(_D):"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:16
 #: ../src/connection-editor/ce-page-wifi.ui.h:10
-msgid "C_loned MAC address:"
+#, fuzzy
+msgid "C_loned MAC address"
 msgstr "クローンした MAC アドレス(_L):"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:19
-msgid "Wake on LAN:"
+#, fuzzy
+msgid "Wake on LAN"
 msgstr "Wake on LAN:"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:20
@@ -1818,7 +1865,8 @@ msgid "Ma_gic"
 msgstr "Magic(_G)"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:28
-msgid "_Wake on LAN password:"
+#, fuzzy
+msgid "_Wake on LAN password"
 msgstr "Wake on LAN パスワード(_W):"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:29
@@ -1827,7 +1875,8 @@ msgid ""
 msgstr "Wake-on-LAN パスワード (Ethernet MAC)。magic packet にのみ有効です。"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:30
-msgid "Lin_k negotiation:"
+#, fuzzy
+msgid "Lin_k negotiation"
 msgstr "リンクネゴシエーション(_K):"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:31
@@ -1841,7 +1890,8 @@ msgstr ""
 "にしておくか「自動」を選択してください。"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:32
-msgid "_Speed:"
+#, fuzzy
+msgid "_Speed"
 msgstr "スピード(_S):"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:33
@@ -1855,7 +1905,8 @@ msgstr ""
 "ポートしていることを確認してください。"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:34
-msgid "Duple_x:"
+#, fuzzy
+msgid "Duple_x"
 msgstr "二重(_X):"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:35
@@ -1868,23 +1919,48 @@ msgstr ""
 "していない場合にのみ必要になります。二重モードを指定する前に、デバイスがサ"
 "ポートしていることを確認してください。"
 
-#: ../src/connection-editor/ce-page-general.ui.h:1
-msgid "Automatically connect to _VPN when using this connection"
-msgstr "この接続を使用したときは自動的に VPN に接続する(_V)"
-
 #: ../src/connection-editor/ce-page-general.ui.h:2
+msgid "Yes"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-general.ui.h:3
+#, fuzzy
+msgid "No"
+msgstr "なし"
+
+#: ../src/connection-editor/ce-page-general.ui.h:4
 msgid "All _users may connect to this network"
 msgstr "全ユーザーがこのネットワークに接続可能とする(_U)"
 
-#: ../src/connection-editor/ce-page-general.ui.h:3
-msgid "_Automatically connect to this network when it is available"
-msgstr "この接続が利用可能になったときに自動的に接続する(_A)"
-
-#: ../src/connection-editor/ce-page-general.ui.h:4
-msgid "Connection _priority for auto-activation:"
-msgstr "自動アクティベーションの接続優先度(_P)"
-
 #: ../src/connection-editor/ce-page-general.ui.h:5
+#, fuzzy
+msgid "Automatically connect to _VPN"
+msgstr "この接続を使用したときは自動的に VPN に接続する(_V)"
+
+#: ../src/connection-editor/ce-page-general.ui.h:6
+#, fuzzy
+msgid "Firewall _zone"
+msgstr "ファイアウォールゾーン(_Z):"
+
+#: ../src/connection-editor/ce-page-general.ui.h:7
+#, fuzzy
+msgid "_Metered connection"
+msgstr "チーム接続(_T):"
+
+#: ../src/connection-editor/ce-page-general.ui.h:8
+msgid ""
+"NetworkManager indicates to applications whether the connection is metered "
+"and therefore data usage should be restricted. Select which value (“Yes” or "
+"“No”) to indicate to applications, or “Automatic” to use a default value "
+"based on the connection type and other heuristics."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-general.ui.h:9
+#, fuzzy
+msgid "Connect _automatically with priority"
+msgstr "自動取得したルートを無視する(_N)"
+
+#: ../src/connection-editor/ce-page-general.ui.h:10
 msgid ""
 "Connection priority for automatic activation. Connections with higher "
 "numbers are preferred when selecting profiles for automatic activation. "
@@ -1893,11 +1969,7 @@ msgstr ""
 "自動アクティベーションの接続優先度。自動アクティベーションのプロファイル選択"
 "時に、より大きい数字の接続が優先されます。デフォルト値は 0 です。"
 
-#: ../src/connection-editor/ce-page-general.ui.h:6
-msgid "Firewall _zone:"
-msgstr "ファイアウォールゾーン(_Z):"
-
-#: ../src/connection-editor/ce-page.h:111
+#: ../src/connection-editor/ce-page.h:109
 msgid ""
 "IP addresses identify your computer on the network. Click the “Add” button "
 "to add static IP address to be configured in addition to the automatic ones."
@@ -1905,7 +1977,7 @@ msgstr ""
 "IP アドレスはネットワーク上のコンピューターを指定します。「追加」ボタンを押し"
 "て、自動設定とは別に設定される静的 IP アドレスを追加します。"
 
-#: ../src/connection-editor/ce-page.h:116
+#: ../src/connection-editor/ce-page.h:114
 msgid ""
 "The IP address identify your computer on the network and determines the "
 "address range distributed to other computers. Click the “Add” button to add "
@@ -1916,15 +1988,15 @@ msgstr ""
 "するアドレス範囲を決定します。「追加」ボタンを押して IP アドレスを追加しま"
 "す。アドレスが提供されないと、範囲は自動的に決定します。"
 
-#: ../src/connection-editor/ce-page.h:121
+#: ../src/connection-editor/ce-page.h:119
 msgid "Additional static addresses"
 msgstr "その他の静的アドレス"
 
-#: ../src/connection-editor/ce-page.h:122
+#: ../src/connection-editor/ce-page.h:120
 msgid "Addresses"
 msgstr "アドレス"
 
-#: ../src/connection-editor/ce-page.h:123
+#: ../src/connection-editor/ce-page.h:121
 msgid "Address (optional)"
 msgstr "アドレス (オプション)"
 
@@ -1939,7 +2011,8 @@ msgid "Connected"
 msgstr "コネクション型"
 
 #: ../src/connection-editor/ce-page-infiniband.ui.h:5
-msgid "_Transport mode:"
+#, fuzzy
+msgid "_Transport mode"
 msgstr "転送モード(_T):"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:1
@@ -1980,37 +2053,45 @@ msgstr "VTI6"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:10
 #: ../src/connection-editor/ce-page-macsec.ui.h:6
-msgid "Device name:"
+#, fuzzy
+msgid "Device name"
 msgstr "デバイス名:"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:11
 #: ../src/connection-editor/ce-page-macsec.ui.h:8
-msgid "Parent device:"
+#, fuzzy
+msgid "Parent device"
 msgstr "親デバイス:"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:12
 #: ../src/connection-editor/ce-page-macsec.ui.h:16
-msgid "Mode:"
+#, fuzzy
+msgid "Mode"
 msgstr "モード:"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:13
-msgid "Local IP:"
+#, fuzzy
+msgid "Local IP"
 msgstr "ローカル IP:"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:14
-msgid "Remote IP:"
+#, fuzzy
+msgid "Remote IP"
 msgstr "リモート IP:"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:15
-msgid "Input key:"
+#, fuzzy
+msgid "Input key"
 msgstr "入力キー:"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:16
-msgid "Output key:"
+#, fuzzy
+msgid "Output key"
 msgstr "出力キー:"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:17
-msgid "MTU:"
+#, fuzzy
+msgid "MTU"
 msgstr "MTU:"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:2
@@ -2025,14 +2106,15 @@ msgstr "リンクローカル"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:5
 #: ../src/connection-editor/ce-page-ip6.ui.h:5
-#: ../src/connection-editor/page-ip4.c:188
-#: ../src/connection-editor/page-ip6.c:211
+#: ../src/connection-editor/page-ip4.c:189
+#: ../src/connection-editor/page-ip6.c:212
 msgid "Shared to other computers"
 msgstr "他のコンピューターへ共有"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:6
 #: ../src/connection-editor/ce-page-ip6.ui.h:11
-msgid "_Method:"
+#, fuzzy
+msgid "_Method"
 msgstr "方式(_M):"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:9
@@ -2055,21 +2137,24 @@ msgstr ""
 "使います。"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:11
-msgid "D_HCP client ID:"
+#, fuzzy
+msgid "D_HCP client ID"
 msgstr "DHCP クライアント ID(_H):"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:12
 #: ../src/connection-editor/ce-page-ip6.ui.h:15
-#: ../src/connection-editor/page-ip4.c:372
-#: ../src/connection-editor/page-ip6.c:346
-msgid "S_earch domains:"
+#: ../src/connection-editor/page-ip4.c:373
+#: ../src/connection-editor/page-ip6.c:347
+#, fuzzy
+msgid "S_earch domains"
 msgstr "ドメインを検索(_E):"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:13
 #: ../src/connection-editor/ce-page-ip6.ui.h:16
-#: ../src/connection-editor/page-ip4.c:363
-#: ../src/connection-editor/page-ip6.c:337
-msgid "DNS ser_vers:"
+#: ../src/connection-editor/page-ip4.c:364
+#: ../src/connection-editor/page-ip6.c:338
+#, fuzzy
+msgid "DNS ser_vers"
 msgstr "DNS サーバー(_V):"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:14
@@ -2099,7 +2184,7 @@ msgstr "ルート(_R)…"
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:6
 #: ../src/connection-editor/ce-page-macsec.ui.h:3
-#: ../src/connection-editor/page-ip4.c:198
+#: ../src/connection-editor/page-ip4.c:199
 msgid "Disabled"
 msgstr "無効"
 
@@ -2130,11 +2215,13 @@ msgstr ""
 "ンクローカルアドレスは、接続中のインターフェースに自動的にスコープされます。"
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:18
-msgid "IPv6 _privacy extensions:"
+#, fuzzy
+msgid "IPv6 _privacy extensions"
 msgstr "IPv6 のプライバシー拡張(_P):"
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:19
-msgid "IPv6 address _generation mode:"
+#, fuzzy
+msgid "IPv6 address _generation mode"
 msgstr "IPv6 アドレス生成モード(_G):"
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:20
@@ -2203,27 +2290,33 @@ msgstr ""
 "モードでは、802.1X セキュリティーページにパラメーターを追加します。"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:14
-msgid "CKN:"
+#, fuzzy
+msgid "CKN"
 msgstr "CKN:"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:15
-msgid "CAK:"
+#, fuzzy
+msgid "CAK"
 msgstr "CAK:"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:17
-msgid "Keys:"
+#, fuzzy
+msgid "Keys"
 msgstr "キー:"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:18
-msgid "Parameters:"
+#, fuzzy
+msgid "Parameters"
 msgstr "パラメーター:"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:19
-msgid "Validation:"
+#, fuzzy
+msgid "Validation"
 msgstr "検証:"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:20
-msgid "SCI port:"
+#, fuzzy
+msgid "SCI port"
 msgstr "SCI ポート:"
 
 #: ../src/connection-editor/ce-page-macsec.ui.h:21
@@ -2248,7 +2341,8 @@ msgid "Basic"
 msgstr "基本"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:2
-msgid "Nu_mber:"
+#, fuzzy
+msgid "Nu_mber"
 msgstr "番号(_M):"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:5
@@ -2256,11 +2350,13 @@ msgid "Advanced"
 msgstr "高度"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:6
-msgid "_APN:"
+#, fuzzy
+msgid "_APN"
 msgstr "APN(_A):"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:7
-msgid "N_etwork ID:"
+#, fuzzy
+msgid "N_etwork ID"
 msgstr "ネットワーク ID(_E):"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:8
@@ -2268,7 +2364,8 @@ msgid "Change…"
 msgstr "変更..."
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:9
-msgid "P_IN:"
+#, fuzzy
+msgid "P_IN"
 msgstr "PIN 番号(_I):"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:10
@@ -2276,6 +2373,7 @@ msgid "Allow _roaming if home network is not available"
 msgstr "ホームネットワークが利用できない場合にローミングを許可(_R)"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:11
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:454
 msgid "Sho_w passwords"
 msgstr "パスワードを表示(_W)"
 
@@ -2284,7 +2382,8 @@ msgid "Authentication"
 msgstr "認証"
 
 #: ../src/connection-editor/ce-page-ppp.ui.h:2
-msgid "Allowed methods:"
+#, fuzzy
+msgid "Allowed methods"
 msgstr "利用可能な認証方法:"
 
 # "auth_methods_button"ボタンのラベル
@@ -2343,11 +2442,13 @@ msgstr ""
 "このプロキシ設定を、ブラウザーのクライアント/スキームにのみ使用します。"
 
 #: ../src/connection-editor/ce-page-proxy.ui.h:5
-msgid "PAC URL:"
+#, fuzzy
+msgid "PAC URL"
 msgstr "PAC URL:"
 
 #: ../src/connection-editor/ce-page-proxy.ui.h:6
-msgid "PAC script:"
+#, fuzzy
+msgid "PAC script"
 msgstr "PAC スクリプト:"
 
 #: ../src/connection-editor/ce-page-proxy.ui.h:7
@@ -2359,7 +2460,8 @@ msgid "Import script from a file…"
 msgstr "ファイルからスクリプトをインポート..."
 
 #: ../src/connection-editor/ce-page-proxy.ui.h:9
-msgid "Method:"
+#, fuzzy
+msgid "Method"
 msgstr "方式:"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:1
@@ -2392,7 +2494,8 @@ msgid "Team Advanced Options"
 msgstr "チームの高度なオプション"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:7
-msgid "_Queue ID:"
+#, fuzzy
+msgid "_Queue ID"
 msgstr "キュー ID(_ID):"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:8
@@ -2413,7 +2516,8 @@ msgid "Active-Backup runner options"
 msgstr "Active-Backup ランナーオプション"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:11
-msgid "_Port priority:"
+#, fuzzy
+msgid "_Port priority"
 msgstr "ポート優先度(_P):"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:12
@@ -2433,24 +2537,21 @@ msgid "Port _sticky"
 msgstr "ポート付箋(_S)"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:15
-#: ../src/connection-editor/ce-page-team.ui.h:82
-msgid ""
-"Validate received ARP packets on active ports. If this is not checked, all "
-"incoming ARP packets will be considered as a good reply."
+msgid "Do not unselect the port if a better one becomes available."
 msgstr ""
-"アクティブなポートで受信した ARP パケットを検証します。これを確認しないと、着"
-"信 ARP パケットがすべて正常な返信とみなされます。"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:16
 msgid "LACP runner options"
 msgstr "LACP ランナーオプション"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:17
-msgid "_LACP port priority:"
+#, fuzzy
+msgid "_LACP port priority"
 msgstr "LACP ポート優先度(_L):"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:18
-msgid "LACP port _key:"
+#, fuzzy
+msgid "LACP port _key"
 msgstr "LACP ポートキー(_K):"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:19
@@ -2486,42 +2587,50 @@ msgstr "LACP 標準に準拠したポートキー。同じキーのポートだ�
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:24
 #: ../src/connection-editor/ce-page-team.ui.h:70
-msgid "_Link watcher:"
+#, fuzzy
+msgid "_Link watcher"
 msgstr "リンクウォッチャー(_L):"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:25
 #: ../src/connection-editor/ce-page-team.ui.h:71
-msgid "_Up delay:"
+#, fuzzy
+msgid "_Up delay"
 msgstr "アップ遅延(_U):"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:26
 #: ../src/connection-editor/ce-page-team.ui.h:72
-msgid "_Down delay:"
+#, fuzzy
+msgid "_Down delay"
 msgstr "ダウン遅延(_D):"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:27
 #: ../src/connection-editor/ce-page-team.ui.h:73
-msgid "Send _interval:"
+#, fuzzy
+msgid "Send _interval"
 msgstr "送信間隔(_I):"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:28
 #: ../src/connection-editor/ce-page-team.ui.h:74
-msgid "Delay _before first send:"
+#, fuzzy
+msgid "Delay _before first send"
 msgstr "初回送信までの遅延(_B):"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:29
 #: ../src/connection-editor/ce-page-team.ui.h:75
-msgid "_Maximum missed replies:"
+#, fuzzy
+msgid "_Maximum missed replies"
 msgstr "不在着信となった返信の最大数(_M):"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:30
 #: ../src/connection-editor/ce-page-team.ui.h:76
-msgid "_Source host:"
+#, fuzzy
+msgid "_Source host"
 msgstr "ソースホスト(_S):"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:31
 #: ../src/connection-editor/ce-page-team.ui.h:77
-msgid "_Target host:"
+#, fuzzy
+msgid "_Target host"
 msgstr "ターゲットホスト(_T):"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:32
@@ -2557,11 +2666,20 @@ msgid "Ignore invalid packets from _active ports"
 msgstr "アクティブなポートからの無効なパケットを無視(_A)"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:36
+#: ../src/connection-editor/ce-page-team.ui.h:82
+msgid ""
+"Validate received ARP packets on active ports. If this is not checked, all "
+"incoming ARP packets will be considered as a good reply."
+msgstr ""
+"アクティブなポートで受信した ARP パケットを検証します。これを確認しないと、着"
+"信 ARP パケットがすべて正常な返信とみなされます。"
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:37
 #: ../src/connection-editor/ce-page-team.ui.h:83
 msgid "Ignore invalid packets from i_nactive ports"
 msgstr "アクティブでないポートからの無効なパケットを無視(_N)"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:37
+#: ../src/connection-editor/ce-page-team-port.ui.h:38
 #: ../src/connection-editor/ce-page-team.ui.h:84
 msgid ""
 "Validate received ARP packets on inactive ports. If this is not checked, all "
@@ -2570,12 +2688,12 @@ msgstr ""
 "アクティブでないポートで受信した ARP パケットを検証します。これを確認しない"
 "と、着信 ARP パケットはすべて正常な返信とみなされます。"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:38
+#: ../src/connection-editor/ce-page-team-port.ui.h:39
 #: ../src/connection-editor/ce-page-team.ui.h:85
 msgid "S_end on inactive ports"
 msgstr "アクティブでないポートで送信(_E)"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:39
+#: ../src/connection-editor/ce-page-team-port.ui.h:40
 #: ../src/connection-editor/ce-page-team.ui.h:86
 msgid ""
 "By default, ARP requests are sent on active ports only. This option allows "
@@ -2584,50 +2702,51 @@ msgstr ""
 "デフォルトでは、ARP リクエストはアクティブなポートでのみ送信されます。このオ"
 "プションを使用すると、アクティブでないポートでも送信されるようになります。"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:40
+#: ../src/connection-editor/ce-page-team-port.ui.h:41
 #: ../src/connection-editor/ce-page-team.ui.h:87
 msgid ""
 "The delay between the link coming up and the runner being notified about it."
 msgstr "リンクがアップになってからランナーが通知されるまでの遅延。"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:41
+#: ../src/connection-editor/ce-page-team-port.ui.h:42
 #: ../src/connection-editor/ce-page-team.ui.h:88
 msgid ""
 "The delay between the link going down and the runner being notified about it."
 msgstr "リンクがダウンになってからランナーが通知されるまでの遅延。"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:42
+#: ../src/connection-editor/ce-page-team-port.ui.h:43
 #: ../src/connection-editor/ce-page-team.ui.h:89
 msgid "The interval between requests being sent."
 msgstr "リクエストの送信間隔。"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:43
+#: ../src/connection-editor/ce-page-team-port.ui.h:44
 #: ../src/connection-editor/ce-page-team.ui.h:90
 msgid ""
 "The delay between link watch initialization and the first request being sent."
 msgstr "リンクウォッチの初期化から初回リクエスト送信までの遅延。"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:44
+#: ../src/connection-editor/ce-page-team-port.ui.h:45
 #: ../src/connection-editor/ce-page-team.ui.h:91
 msgid "The link watcher to be used."
 msgstr "使用するリンクウォッチャー。"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:45
+#: ../src/connection-editor/ce-page-team-port.ui.h:46
 #: ../src/connection-editor/ce-page-team.ui.h:92
 msgid "Link Watcher"
 msgstr "リンクウォッチャー"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:46
+#: ../src/connection-editor/ce-page-team-port.ui.h:47
 #: ../src/connection-editor/ce-page-team.ui.h:93
 msgid "Im_port team configuration from a file…"
 msgstr "ファイルからチーム設定をインポートする(_P)..."
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:47
+#: ../src/connection-editor/ce-page-team-port.ui.h:48
 #: ../src/connection-editor/ce-page-team.ui.h:94
-msgid "Edit _JSON configuration:"
+#, fuzzy
+msgid "Edit _JSON configuration"
 msgstr "JSON 設定の編集(_J):"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:48
+#: ../src/connection-editor/ce-page-team-port.ui.h:49
 #: ../src/connection-editor/ce-page-team.ui.h:95
 msgid "Raw Configuration"
 msgstr "Raw 設定"
@@ -2665,7 +2784,8 @@ msgid "From active to team device"
 msgstr "アクティブからチームデバイスへ"
 
 #: ../src/connection-editor/ce-page-team.ui.h:12
-msgid "_Teamed connections:"
+#, fuzzy
+msgid "_Teamed connections"
 msgstr "チーム接続(_T):"
 
 #: ../src/connection-editor/ce-page-team.ui.h:23
@@ -2678,14 +2798,14 @@ msgstr "LACP"
 
 #: ../src/connection-editor/ce-page-team.ui.h:27
 #: ../src/connection-editor/connection-helpers.c:105
-#: ../src/connection-editor/page-ethernet.c:351
+#: ../src/connection-editor/page-ethernet.c:348
 #: ../src/libnm-gtk/nm-ui-utils.c:321
 msgid "Ethernet"
 msgstr "Ethernet"
 
 #: ../src/connection-editor/ce-page-team.ui.h:28
 #: ../src/connection-editor/connection-helpers.c:120
-#: ../src/connection-editor/page-vlan.c:594 ../src/libnm-gtk/nm-ui-utils.c:339
+#: ../src/connection-editor/page-vlan.c:589 ../src/libnm-gtk/nm-ui-utils.c:339
 #: ../src/libnm-gtk/nm-ui-utils.c:583
 msgid "VLAN"
 msgstr "VLAN"
@@ -2715,23 +2835,28 @@ msgid "Any L4 protocol"
 msgstr "すべての L4 プロトコル"
 
 #: ../src/connection-editor/ce-page-team.ui.h:38
-msgid "_Peer notification count:"
+#, fuzzy
+msgid "_Peer notification count"
 msgstr "ピア通知数(_P):"
 
 #: ../src/connection-editor/ce-page-team.ui.h:39
-msgid "Peer _notification interval:"
+#, fuzzy
+msgid "Peer _notification interval"
 msgstr "ピア通知間隔(_N):"
 
 #: ../src/connection-editor/ce-page-team.ui.h:40
-msgid "_Multicast rejoin count:"
+#, fuzzy
+msgid "_Multicast rejoin count"
 msgstr "マルチキャスト再参加数(_M):"
 
 #: ../src/connection-editor/ce-page-team.ui.h:41
-msgid "Multicast _rejoin interval:"
+#, fuzzy
+msgid "Multicast _rejoin interval"
 msgstr "マルチキャスト再参加間隔(_R):"
 
 #: ../src/connection-editor/ce-page-team.ui.h:46
-msgid "_Hardware Address:"
+#, fuzzy
+msgid "_Hardware Address"
 msgstr "ハードウェアアドレス(_H):"
 
 #: ../src/connection-editor/ce-page-team.ui.h:47
@@ -2743,11 +2868,13 @@ msgstr ""
 "す。"
 
 #: ../src/connection-editor/ce-page-team.ui.h:49
-msgid "_Runner:"
+#, fuzzy
+msgid "_Runner"
 msgstr "ランナー(_R):"
 
 #: ../src/connection-editor/ce-page-team.ui.h:50
-msgid "_Hardware address policy:"
+#, fuzzy
+msgid "_Hardware address policy"
 msgstr "ハードウェアアドレスポリシー(_H):"
 
 #: ../src/connection-editor/ce-page-team.ui.h:51
@@ -2789,15 +2916,18 @@ msgstr ""
 "入れない場合は、30 秒ごとに送信されます。"
 
 #: ../src/connection-editor/ce-page-team.ui.h:57
-msgid "_System priority:"
+#, fuzzy
+msgid "_System priority"
 msgstr "システム優先度(_S):"
 
 #: ../src/connection-editor/ce-page-team.ui.h:58
-msgid "_Minimum ports:"
+#, fuzzy
+msgid "_Minimum ports"
 msgstr "最小ポート数(_M):"
 
 #: ../src/connection-editor/ce-page-team.ui.h:59
-msgid "_Aggregator selection policy:"
+#, fuzzy
+msgid "_Aggregator selection policy"
 msgstr "アグリゲーター選択ポリシー(_A):"
 
 #: ../src/connection-editor/ce-page-team.ui.h:60
@@ -2838,11 +2968,13 @@ msgstr ""
 "効になっています。"
 
 #: ../src/connection-editor/ce-page-team.ui.h:67
-msgid "Transmission _balancing interval:"
+#, fuzzy
+msgid "Transmission _balancing interval"
 msgstr "転送バランシングの間隔(_B):"
 
 #: ../src/connection-editor/ce-page-team.ui.h:68
-msgid "_Transmission balancer:"
+#, fuzzy
+msgid "_Transmission balancer"
 msgstr "転送バランサー(_T):"
 
 #: ../src/connection-editor/ce-page-team.ui.h:69
@@ -2850,23 +2982,28 @@ msgid "Runner"
 msgstr "ランナー"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:1
-msgid "_Parent interface:"
+#, fuzzy
+msgid "_Parent interface"
 msgstr "親インターフェース(_P):"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:2
-msgid "VLAN inter_face name:"
+#, fuzzy
+msgid "VLAN inter_face name"
 msgstr "VLAN インターフェース名(_F):"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:3
-msgid "Cloned MAC _address:"
+#, fuzzy
+msgid "Cloned MAC _address"
 msgstr "クローンの MAC アドレス(_A):"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:6
-msgid "VLAN _id:"
+#, fuzzy
+msgid "VLAN _id"
 msgstr "VLAN ID(_I):"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:7
-msgid "Flags:"
+#, fuzzy
+msgid "Flags"
 msgstr "フラグ"
 
 #: ../src/connection-editor/ce-page-vlan.ui.h:8
@@ -2896,7 +3033,8 @@ msgid "\"vlan\" + number"
 msgstr "\"vlan\" + 番号"
 
 #: ../src/connection-editor/ce-page-wifi-security.ui.h:1
-msgid "S_ecurity:"
+#, fuzzy
+msgid "S_ecurity"
 msgstr "セキュリティー(_E):"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:2
@@ -2924,7 +3062,8 @@ msgid "mW"
 msgstr "mW"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:12
-msgid "Transmission po_wer:"
+#, fuzzy
+msgid "Transmission po_wer"
 msgstr "送信パワー(_W):"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:13
@@ -2932,23 +3071,28 @@ msgid "Mb/s"
 msgstr "Mb/s"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:14
-msgid "_Rate:"
+#, fuzzy
+msgid "_Rate"
 msgstr "レート(_R):"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:15
-msgid "_BSSID:"
+#, fuzzy
+msgid "_BSSID"
 msgstr "BSSID(_B):"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:16
-msgid "C_hannel:"
+#, fuzzy
+msgid "C_hannel"
 msgstr "チャンネル(_H):"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:17
-msgid "Ban_d:"
+#, fuzzy
+msgid "Ban_d"
 msgstr "バンド(_D):"
 
 #: ../src/connection-editor/ce-page-wifi.ui.h:19
-msgid "SS_ID:"
+#, fuzzy
+msgid "SS_ID"
 msgstr "SSID(_I):"
 
 #: ../src/connection-editor/ce-polkit.c:63
@@ -3013,154 +3157,145 @@ msgstr ""
 "が失敗する場合は、認証方法を一部無効にしてみてください。"
 
 #: ../src/connection-editor/connection-helpers.c:106
-#: ../src/connection-editor/page-wifi.c:440 ../src/libnm-gtk/nm-ui-utils.c:323
+#: ../src/connection-editor/page-wifi.c:437 ../src/libnm-gtk/nm-ui-utils.c:323
 msgid "Wi-Fi"
 msgstr "Wi-Fi"
 
 #: ../src/connection-editor/connection-helpers.c:114
-#: ../src/connection-editor/page-bluetooth.c:123
+#: ../src/connection-editor/page-bluetooth.c:120
 #: ../src/libnm-gtk/nm-ui-utils.c:325
 msgid "Bluetooth"
 msgstr "Bluetooth"
 
 #: ../src/connection-editor/connection-helpers.c:115
-#: ../src/connection-editor/page-dsl.c:201
+#: ../src/connection-editor/page-dsl.c:217
 msgid "DSL/PPPoE"
 msgstr "DSL/PPPoE"
 
 #: ../src/connection-editor/connection-helpers.c:116
-#: ../src/connection-editor/page-infiniband.c:148
+#: ../src/connection-editor/page-infiniband.c:145
 #: ../src/libnm-gtk/nm-ui-utils.c:331
 msgid "InfiniBand"
 msgstr "InfiniBand"
 
 #: ../src/connection-editor/connection-helpers.c:117
-#: ../src/connection-editor/page-bond.c:446 ../src/libnm-gtk/nm-ui-utils.c:333
+#: ../src/connection-editor/page-bond.c:443 ../src/libnm-gtk/nm-ui-utils.c:333
 #: ../src/libnm-gtk/nm-ui-utils.c:577
 msgid "Bond"
 msgstr "Bond"
 
 #: ../src/connection-editor/connection-helpers.c:118
-#: ../src/connection-editor/page-team.c:1031 ../src/libnm-gtk/nm-ui-utils.c:335
+#: ../src/connection-editor/page-team.c:1028 ../src/libnm-gtk/nm-ui-utils.c:335
 #: ../src/libnm-gtk/nm-ui-utils.c:579
 msgid "Team"
 msgstr "Team"
 
 #: ../src/connection-editor/connection-helpers.c:119
-#: ../src/connection-editor/page-bridge.c:233
+#: ../src/connection-editor/page-bridge.c:230
 #: ../src/libnm-gtk/nm-ui-utils.c:337 ../src/libnm-gtk/nm-ui-utils.c:581
 msgid "Bridge"
 msgstr "ブリッジ"
 
 #: ../src/connection-editor/connection-helpers.c:121
-#: ../src/connection-editor/page-ip-tunnel.c:176
+#: ../src/connection-editor/page-ip-tunnel.c:173
 msgid "IP tunnel"
 msgstr "IP トンネル"
 
 #: ../src/connection-editor/connection-helpers.c:122
-#: ../src/connection-editor/page-macsec.c:190
+#: ../src/connection-editor/page-macsec.c:187
 msgid "MACsec"
 msgstr "MACsec"
 
 #: ../src/connection-editor/connection-helpers.c:124
-#: ../src/connection-editor/connection-helpers.c:398
-#: ../src/connection-editor/page-vpn.c:103
+#: ../src/connection-editor/connection-helpers.c:386
+#: ../src/connection-editor/page-vpn.c:100
 msgid "VPN"
 msgstr "VPN"
 
-#: ../src/connection-editor/connection-helpers.c:207
-msgid ""
-"The VPN plugin failed to import the VPN connection correctly\n"
-"\n"
-"Error: no VPN service type."
+#: ../src/connection-editor/connection-helpers.c:204
+msgid "No VPN service type."
+msgstr ""
+
+#: ../src/connection-editor/connection-helpers.c:209
+#, fuzzy
+msgid "The VPN plugin failed to import the VPN connection correctly: "
 msgstr ""
 "VPN プラグインは、VPN 接続の正常なインポートに失敗しました\n"
 "\n"
 "エラー: VPN サービスタイプがありません。"
 
-#: ../src/connection-editor/connection-helpers.c:219
-msgid "Cannot import VPN connection"
-msgstr "VPN 接続をインポートできません"
-
-#: ../src/connection-editor/connection-helpers.c:221
-#, c-format
-msgid ""
-"The file “%s” could not be read or does not contain recognized VPN "
-"connection information\n"
-"\n"
-"Error: %s."
-msgstr ""
-"ファイル '%s' が読み込めなかったか、認識される VPN 接続情報がありません\n"
-"\n"
-"エラー: %s"
-
-#: ../src/connection-editor/connection-helpers.c:222
-msgid "unknown error"
-msgstr "不明なエラー"
-
-#: ../src/connection-editor/connection-helpers.c:305
+#: ../src/connection-editor/connection-helpers.c:293
 #: ../src/connection-editor/page-proxy.c:118
 #: ../src/connection-editor/page-team.c:341
 #: ../src/connection-editor/page-team-port.c:203
 msgid "Select file to import"
 msgstr "インポートするファイルを選択する"
 
-#: ../src/connection-editor/connection-helpers.c:309
+#: ../src/connection-editor/connection-helpers.c:297
 #: ../src/connection-editor/page-proxy.c:122
 #: ../src/connection-editor/page-team.c:345
 #: ../src/connection-editor/page-team-port.c:207
 msgid "_Open"
 msgstr "開く(_O)"
 
-#: ../src/connection-editor/connection-helpers.c:340
+#: ../src/connection-editor/connection-helpers.c:328
 msgid "Hardware"
 msgstr "ハードウェア"
 
-#: ../src/connection-editor/connection-helpers.c:367
+#: ../src/connection-editor/connection-helpers.c:355
 msgid "Virtual"
 msgstr "仮想"
 
-#: ../src/connection-editor/connection-helpers.c:516
-#: ../src/connection-editor/connection-helpers.c:518
+#: ../src/connection-editor/connection-helpers.c:504
+#: ../src/connection-editor/connection-helpers.c:506
 msgid "Import a saved VPN configuration…"
 msgstr "保存した VPN 設定をインポートする..."
 
-#: ../src/connection-editor/connection-helpers.c:548
+#: ../src/connection-editor/connection-helpers.c:536
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
 msgstr ""
 "接続エディターのダイアログは、不明なエラーのため初期化できませんでした。"
 
-#: ../src/connection-editor/connection-helpers.c:557
+#: ../src/connection-editor/connection-helpers.c:545
 msgid "Could not create new connection"
 msgstr "新しい接続を作成できませんでした"
 
-#: ../src/connection-editor/connection-helpers.c:720
+#: ../src/connection-editor/connection-helpers.c:708
 msgid "Connection delete failed"
 msgstr "接続の削除に失敗しました"
 
-#: ../src/connection-editor/connection-helpers.c:768
+#: ../src/connection-editor/connection-helpers.c:756
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "接続 %s を削除してもよろしいですか?"
 
+#: ../src/connection-editor/gtk/menus.ui.h:1
+#, fuzzy
+msgid "_New Connection"
+msgstr "VPN 接続(_V)"
+
+#: ../src/connection-editor/gtk/menus.ui.h:2
+msgid "_Quit"
+msgstr ""
+
 #: ../src/connection-editor/ip4-routes-dialog.c:697
 #: ../src/connection-editor/ip6-routes-dialog.c:718
-#: ../src/connection-editor/page-ip4.c:1136
-#: ../src/connection-editor/page-ip6.c:1118
+#: ../src/connection-editor/page-ip4.c:1133
+#: ../src/connection-editor/page-ip6.c:1115
 msgid "Address"
 msgstr "アドレス"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:716
-#: ../src/connection-editor/page-ip4.c:1155
+#: ../src/connection-editor/page-ip4.c:1152
 msgid "Netmask"
 msgstr "ネットマスク"
 
 #: ../src/connection-editor/ip4-routes-dialog.c:735
 #: ../src/connection-editor/ip6-routes-dialog.c:756
-#: ../src/connection-editor/page-ip4.c:1174
-#: ../src/connection-editor/page-ip6.c:1156
+#: ../src/connection-editor/page-ip4.c:1171
+#: ../src/connection-editor/page-ip6.c:1153
 msgid "Gateway"
 msgstr "ゲートウェイ"
 
@@ -3170,38 +3305,38 @@ msgid "Metric"
 msgstr "メトリック"
 
 #: ../src/connection-editor/ip6-routes-dialog.c:737
-#: ../src/connection-editor/page-ip6.c:1137
+#: ../src/connection-editor/page-ip6.c:1134
 msgid "Prefix"
 msgstr "プレフィックス"
 
-#: ../src/connection-editor/nm-connection-editor.c:109
+#: ../src/connection-editor/nm-connection-editor.c:110
 #, c-format
 msgid "Editing %s"
 msgstr "%s の編集"
 
-#: ../src/connection-editor/nm-connection-editor.c:113
+#: ../src/connection-editor/nm-connection-editor.c:114
 msgid "Editing un-named connection"
 msgstr "無名の接続を編集"
 
-#: ../src/connection-editor/nm-connection-editor.c:133
+#: ../src/connection-editor/nm-connection-editor.c:134
 msgid "Missing connection name"
 msgstr "接続名がみつかりません"
 
-#: ../src/connection-editor/nm-connection-editor.c:349
+#: ../src/connection-editor/nm-connection-editor.c:350
 msgid "Editor initializing…"
 msgstr "エディターの初期化中..."
 
-#: ../src/connection-editor/nm-connection-editor.c:356
-#: ../src/connection-editor/nm-connection-list.c:443
+#: ../src/connection-editor/nm-connection-editor.c:357
+#: ../src/connection-editor/nm-connection-list.c:471
 msgid "Connection cannot be modified"
 msgstr "接続を変更できません"
 
-#: ../src/connection-editor/nm-connection-editor.c:371
+#: ../src/connection-editor/nm-connection-editor.c:372
 #, c-format
 msgid "Invalid setting %s: %s"
 msgstr "無効な設定 %s: %s"
 
-#: ../src/connection-editor/nm-connection-editor.c:447
+#: ../src/connection-editor/nm-connection-editor.c:448
 msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
@@ -3209,33 +3344,33 @@ msgstr ""
 "接続エディターは、必要なリソースをいくつか見つけられませんでした (.ui ファイ"
 "ルが見つかりませんでした)。"
 
-#: ../src/connection-editor/nm-connection-editor.c:574
+#: ../src/connection-editor/nm-connection-editor.c:581
 #: ../src/connection-editor/vpn-helpers.c:213
 msgid "_Save"
 msgstr "保存(_S)"
 
-#: ../src/connection-editor/nm-connection-editor.c:575
+#: ../src/connection-editor/nm-connection-editor.c:582
 msgid "Save any changes made to this connection."
 msgstr "この接続に対する変更をすべて保存します。"
 
-#: ../src/connection-editor/nm-connection-editor.c:576
+#: ../src/connection-editor/nm-connection-editor.c:583
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "このマシンのすべてのユーザーに対して、この接続を保存するために認証する。"
 
-#: ../src/connection-editor/nm-connection-editor.c:592
+#: ../src/connection-editor/nm-connection-editor.c:599
 msgid "Could not create connection"
 msgstr "新しい接続を作成できませんでした"
 
-#: ../src/connection-editor/nm-connection-editor.c:592
+#: ../src/connection-editor/nm-connection-editor.c:599
 msgid "Could not edit connection"
 msgstr "接続を編集できませんでした"
 
-#: ../src/connection-editor/nm-connection-editor.c:594
+#: ../src/connection-editor/nm-connection-editor.c:601
 msgid "Unknown error creating connection editor dialog."
 msgstr "接続エディターダイアログの作成中に不明なエラーです。"
 
-#: ../src/connection-editor/nm-connection-editor.c:735
+#: ../src/connection-editor/nm-connection-editor.c:742
 msgid ""
 "Warning: the connection contains some properties not supported by the "
 "editor. They will be cleared upon save."
@@ -3243,11 +3378,11 @@ msgstr ""
 "警告: この接続には、エディターがサポートしていないプロパティーが含まれていま"
 "す。保存後するとこれらは消去されます。"
 
-#: ../src/connection-editor/nm-connection-editor.c:755
+#: ../src/connection-editor/nm-connection-editor.c:762
 msgid "Error initializing editor"
 msgstr "エディターの初期化中にエラーです"
 
-#: ../src/connection-editor/nm-connection-editor.c:1153
+#: ../src/connection-editor/nm-connection-editor.c:1169
 msgid "Connection add failed"
 msgstr "接続の追加に失敗しました"
 
@@ -3264,7 +3399,8 @@ msgstr ""
 "す。"
 
 #: ../src/connection-editor/nm-connection-editor.ui.h:3
-msgid "Connection _name:"
+#, fuzzy
+msgid "Connection _name"
 msgstr "接続名(_N):"
 
 #: ../src/connection-editor/nm-connection-editor.ui.h:4
@@ -3295,119 +3431,144 @@ msgstr "再ラベル付け"
 msgid "Filename"
 msgstr "ファイル名"
 
-#: ../src/connection-editor/nm-connection-list.c:151
+#: ../src/connection-editor/nm-connection-list.c:148
 msgid "never"
 msgstr "未接続"
 
-#: ../src/connection-editor/nm-connection-list.c:162
-#: ../src/connection-editor/nm-connection-list.c:173
+#: ../src/connection-editor/nm-connection-list.c:159
+#: ../src/connection-editor/nm-connection-list.c:170
 msgid "now"
 msgstr "接続中"
 
 #. less than an hour ago
-#: ../src/connection-editor/nm-connection-list.c:180
+#: ../src/connection-editor/nm-connection-list.c:177
 #, c-format
 msgid "%d minute ago"
 msgid_plural "%d minutes ago"
 msgstr[0] "%d 分前"
 
-#: ../src/connection-editor/nm-connection-list.c:184
+#: ../src/connection-editor/nm-connection-list.c:181
 #, c-format
 msgid "%d hour ago"
 msgid_plural "%d hours ago"
 msgstr[0] "%d 時間前"
 
-#: ../src/connection-editor/nm-connection-list.c:196
+#: ../src/connection-editor/nm-connection-list.c:193
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "%d 日前"
 
-#: ../src/connection-editor/nm-connection-list.c:202
+#: ../src/connection-editor/nm-connection-list.c:199
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
 msgstr[0] "%d ヶ月前"
 
-#: ../src/connection-editor/nm-connection-list.c:206
+#: ../src/connection-editor/nm-connection-list.c:203
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
 msgstr[0] "%d 年前"
 
-#: ../src/connection-editor/nm-connection-list.c:445
+#: ../src/connection-editor/nm-connection-list.c:473
 msgid "Connection cannot be deleted"
 msgstr "接続を削除できません"
 
-#: ../src/connection-editor/nm-connection-list.c:448
+#: ../src/connection-editor/nm-connection-list.c:476
 msgid "Select a connection to edit"
 msgstr "編集する接続を選択"
 
-#: ../src/connection-editor/nm-connection-list.c:450
+#: ../src/connection-editor/nm-connection-list.c:478
 msgid "Select a connection to delete"
 msgstr "削除する接続を選択"
 
-#: ../src/connection-editor/nm-connection-list.c:785
+#: ../src/connection-editor/nm-connection-list.c:794
 #: ../src/libnma/nma-pkcs11-cert-chooser-dialog.ui.h:2
 msgid "Name"
 msgstr "名前"
 
-#: ../src/connection-editor/nm-connection-list.c:798
+#: ../src/connection-editor/nm-connection-list.c:807
 msgid "Last Used"
 msgstr "前回の使用"
 
-#: ../src/connection-editor/nm-connection-list.c:836
+#: ../src/connection-editor/nm-connection-list.c:845
 msgid "Edit the selected connection"
 msgstr "選択した接続を編集する"
 
-#: ../src/connection-editor/nm-connection-list.c:837
+#: ../src/connection-editor/nm-connection-list.c:846
 msgid "Authenticate to edit the selected connection"
 msgstr "選択した接続の編集を認証する"
 
-#: ../src/connection-editor/nm-connection-list.c:842
+#: ../src/connection-editor/nm-connection-list.c:851
 msgid "Delete the selected connection"
 msgstr "選択した接続を削除する"
 
-#: ../src/connection-editor/nm-connection-list.c:843
+#: ../src/connection-editor/nm-connection-list.c:852
 msgid "Authenticate to delete the selected connection"
 msgstr "選択した接続の削除を認証する"
 
-#: ../src/connection-editor/nm-connection-list.c:1048
-#: ../src/connection-editor/nm-connection-list.c:1051
+#: ../src/connection-editor/nm-connection-list.c:1059
+#, fuzzy, c-format
+msgid "Unrecognized connection type"
+msgstr "サポートされていないモバイルブロードバンドの接続タイプ。"
+
+#: ../src/connection-editor/nm-connection-list.c:1064
+#, fuzzy, c-format
+msgid "Don’t know how to import “%s” connections"
+msgstr "接続 '%s' の作成方法がわかりません"
+
+#: ../src/connection-editor/nm-connection-list.c:1068
+#, fuzzy
+msgid "Error importing connection"
+msgstr "接続の編集エラー"
+
+#: ../src/connection-editor/nm-connection-list.c:1075
+#: ../src/connection-editor/nm-connection-list.c:1090
+#: ../src/connection-editor/nm-connection-list.c:1093
 msgid "Error creating connection"
 msgstr "接続の作成中にエラー"
 
-#: ../src/connection-editor/nm-connection-list.c:1049
+#: ../src/connection-editor/nm-connection-list.c:1075
+#, fuzzy
+msgid "Connection type not specified."
+msgstr "接続を変更できません"
+
+#: ../src/connection-editor/nm-connection-list.c:1091
 msgid "No VPN plugins are installed."
 msgstr "VPN プラグインがインストールされていません"
 
-#: ../src/connection-editor/nm-connection-list.c:1052
+#: ../src/connection-editor/nm-connection-list.c:1094
 #, c-format
 msgid "Don’t know how to create “%s” connections"
 msgstr "接続 '%s' の作成方法がわかりません"
 
-#: ../src/connection-editor/nm-connection-list.c:1085
+#: ../src/connection-editor/nm-connection-list.c:1128
 msgid "Error editing connection"
 msgstr "接続の編集エラー"
 
-#: ../src/connection-editor/nm-connection-list.c:1086
+#: ../src/connection-editor/nm-connection-list.c:1129
 #, c-format
 msgid "Did not find a connection with UUID “%s”"
 msgstr "UUID '%s' の接続が見つかりませんでした"
+
+#: ../src/connection-editor/nm-connection-list.ui.h:1
+msgid "Network Connections"
+msgstr "ネットワーク接続"
 
 #: ../src/connection-editor/nm-connection-list.ui.h:2
 msgid "Add a new connection"
 msgstr "新規接続を追加"
 
-#: ../src/connection-editor/page-8021x-security.c:116
+#: ../src/connection-editor/page-8021x-security.c:113
 msgid "802.1X Security"
 msgstr "802.1X セキュリティー"
 
-#: ../src/connection-editor/page-8021x-security.c:118
+#: ../src/connection-editor/page-8021x-security.c:115
 msgid "Could not load 802.1X Security user interface."
 msgstr "802.1X セキュリティーユーザーインターフェースを読み込めません。"
 
-#: ../src/connection-editor/page-8021x-security.c:132
+#: ../src/connection-editor/page-8021x-security.c:129
 msgid "Use 802.1_X security for this connection"
 msgstr "この接続に 802.1X セキュリティーを使用する(_X)"
 
@@ -3415,54 +3576,54 @@ msgstr "この接続に 802.1X セキュリティーを使用する(_X)"
 msgid "MAC address of the Bluetooth device. Example: 00:11:22:33:44:55"
 msgstr "Bluetooth デバイスの MAC アドレス。例: 00:11:22:33:44:55"
 
-#: ../src/connection-editor/page-bluetooth.c:125
+#: ../src/connection-editor/page-bluetooth.c:122
 msgid "Could not load Bluetooth user interface."
 msgstr "Bluetooth  ユーザーインターフェースを読み込めませんでした。"
 
-#: ../src/connection-editor/page-bluetooth.c:173
+#: ../src/connection-editor/page-bluetooth.c:170
 #, c-format
 msgid "invalid Bluetooth device (%s)"
 msgstr "無効な Bluetooth デバイス (%s)"
 
-#: ../src/connection-editor/page-bluetooth.c:256
+#: ../src/connection-editor/page-bluetooth.c:253
 #, c-format
 msgid "Bluetooth connection %d"
 msgstr "Bluetooth 接続 %d"
 
-#: ../src/connection-editor/page-bluetooth.c:306
+#: ../src/connection-editor/page-bluetooth.c:304
 msgid "Bluetooth Type"
 msgstr "Bluetooth タイプ"
 
-#: ../src/connection-editor/page-bluetooth.c:324
+#: ../src/connection-editor/page-bluetooth.c:322
 msgid "Select the type of the Bluetooth connection profile."
 msgstr "Bluetooth 接続プロファイルのタイプを選択します。"
 
-#: ../src/connection-editor/page-bluetooth.c:329
+#: ../src/connection-editor/page-bluetooth.c:327
 msgid "_Personal Area Network"
 msgstr "パーソナルエリアネットワーク(_P)"
 
-#: ../src/connection-editor/page-bluetooth.c:334
+#: ../src/connection-editor/page-bluetooth.c:332
 msgid "_Dial-Up Network"
 msgstr "ダイヤルアップネットワーク(_D)"
 
-#: ../src/connection-editor/page-bond.c:449
+#: ../src/connection-editor/page-bond.c:446
 msgid "Could not load bond user interface."
 msgstr "bond ユーザーインターフェースを読み込めません。"
 
-#: ../src/connection-editor/page-bond.c:568
+#: ../src/connection-editor/page-bond.c:565
 msgid "primary"
 msgstr "プライマリー"
 
-#: ../src/connection-editor/page-bond.c:623
+#: ../src/connection-editor/page-bond.c:620
 #, c-format
 msgid "Bond connection %d"
 msgstr "ボンド接続 %d"
 
-#: ../src/connection-editor/page-bridge.c:236
+#: ../src/connection-editor/page-bridge.c:233
 msgid "Could not load bridge user interface."
 msgstr "ブリッジユーザーインターフェースを読み込めません。"
 
-#: ../src/connection-editor/page-bridge.c:352
+#: ../src/connection-editor/page-bridge.c:349
 #, c-format
 msgid "Bridge connection %d"
 msgstr "ブリッジ接続 %d"
@@ -3470,31 +3631,31 @@ msgstr "ブリッジ接続 %d"
 #. Translators: a "Bridge Port" is a network
 #. * device that is part of a bridge.
 #.
-#: ../src/connection-editor/page-bridge-port.c:108
+#: ../src/connection-editor/page-bridge-port.c:105
 msgid "Bridge Port"
 msgstr "ブリッジポート"
 
-#: ../src/connection-editor/page-bridge-port.c:110
+#: ../src/connection-editor/page-bridge-port.c:107
 msgid "Could not load bridge port user interface."
 msgstr "ブリッジポートのユーザーインターフェースを読み込めません。"
 
-#: ../src/connection-editor/page-dcb.c:622
+#: ../src/connection-editor/page-dcb.c:624
 msgid "DCB"
 msgstr "DCB"
 
-#: ../src/connection-editor/page-dcb.c:624
+#: ../src/connection-editor/page-dcb.c:626
 msgid "Could not load DCB user interface."
 msgstr "DCB ユーザーインターフェースをロードできませんでした。"
 
-#: ../src/connection-editor/page-dsl.c:203
+#: ../src/connection-editor/page-dsl.c:219
 msgid "Could not load DSL user interface."
 msgstr "DSL ユーザーインターフェースをロードできませんでした。"
 
-#: ../src/connection-editor/page-dsl.c:298
+#: ../src/connection-editor/page-dsl.c:320
 msgid "missing parent interface"
 msgstr "不明の親インターフェース"
 
-#: ../src/connection-editor/page-dsl.c:343
+#: ../src/connection-editor/page-dsl.c:365
 #, c-format
 msgid "DSL connection %d"
 msgstr "DSL 接続 %d"
@@ -3513,37 +3674,37 @@ msgstr ""
 msgid "ignored"
 msgstr "無視"
 
-#: ../src/connection-editor/page-ethernet.c:353
+#: ../src/connection-editor/page-ethernet.c:350
 msgid "Could not load ethernet user interface."
 msgstr "Ethernet のユーザーインターフェースを読み込めません。"
 
-#: ../src/connection-editor/page-ethernet.c:515
+#: ../src/connection-editor/page-ethernet.c:512
 msgid "Ethernet device"
 msgstr "Ethernet デバイス"
 
-#: ../src/connection-editor/page-ethernet.c:519
-#: ../src/connection-editor/page-vlan.c:742
-#: ../src/connection-editor/page-wifi.c:574
+#: ../src/connection-editor/page-ethernet.c:516
+#: ../src/connection-editor/page-vlan.c:737
+#: ../src/connection-editor/page-wifi.c:571
 msgid "cloned MAC"
 msgstr "クローン MAC"
 
-#: ../src/connection-editor/page-ethernet.c:523
+#: ../src/connection-editor/page-ethernet.c:520
 msgid "Wake-on-LAN password"
 msgstr "Wake-on-LAN パスワード"
 
-#: ../src/connection-editor/page-ethernet.c:563
+#: ../src/connection-editor/page-ethernet.c:560
 #, c-format
 msgid "Ethernet connection %d"
 msgstr "Ethernet 接続 %d"
 
 #. TRANSLATORS: Default zone set for firewall, when no zone is selected
-#: ../src/connection-editor/page-general.c:54
-#: ../src/libnma/nma-mobile-providers.c:817
-#: ../src/libnm-gtk/nm-mobile-providers.c:806
+#: ../src/connection-editor/page-general.c:55
+#: ../src/libnma/nma-mobile-providers.c:802
+#: ../src/libnm-gtk/nm-mobile-providers.c:801
 msgid "Default"
 msgstr "デフォルト"
 
-#: ../src/connection-editor/page-general.c:55
+#: ../src/connection-editor/page-general.c:56
 msgid ""
 "The zone defines the trust level of the connection. Default is not a regular "
 "zone, selecting it results in the use of the default zone set in the "
@@ -3569,74 +3730,76 @@ msgstr ""
 "“ib0”、“80:00:00:48:fe:80:00:00:00:00:00:00:00:02:c9:03:00:00:0f:65”、“ib0 "
 "(80:00:00:48:fe:80:00:00:00:00:00:00:00:02:c9:03:00:00:0f:65)”"
 
-#: ../src/connection-editor/page-infiniband.c:151
+#: ../src/connection-editor/page-infiniband.c:148
 msgid "Could not load InfiniBand user interface."
 msgstr "InfiniBand ユーザーインターフェースを読み込めません。"
 
-#: ../src/connection-editor/page-infiniband.c:214
+#: ../src/connection-editor/page-infiniband.c:211
 msgid "infiniband device"
 msgstr "infiniband デバイス"
 
-#: ../src/connection-editor/page-infiniband.c:254
+#: ../src/connection-editor/page-infiniband.c:251
 #, c-format
 msgid "InfiniBand connection %d"
 msgstr "InfiniBand 接続 %d"
 
-#: ../src/connection-editor/page-ip-tunnel.c:178
+#: ../src/connection-editor/page-ip-tunnel.c:175
 msgid "Could not load IP tunnel user interface."
 msgstr "IP トンネルユーザーインターフェースを読み込めません。"
 
-#: ../src/connection-editor/page-ip-tunnel.c:292
+#: ../src/connection-editor/page-ip-tunnel.c:289
 #, c-format
 msgid "IP tunnel connection %d"
 msgstr "IP トンネル接続 %d"
 
-#: ../src/connection-editor/page-ip4.c:127
-#: ../src/connection-editor/page-ip6.c:136
+#: ../src/connection-editor/page-ip4.c:128
+#: ../src/connection-editor/page-ip6.c:137
 msgid "Automatic (VPN)"
 msgstr "自動 (VPN)"
 
-#: ../src/connection-editor/page-ip4.c:128
-#: ../src/connection-editor/page-ip6.c:137
+#: ../src/connection-editor/page-ip4.c:129
+#: ../src/connection-editor/page-ip6.c:138
 msgid "Automatic (VPN) addresses only"
 msgstr "自動 (VPN) アドレス専用"
 
-#: ../src/connection-editor/page-ip4.c:132
-#: ../src/connection-editor/page-ip6.c:143
+#: ../src/connection-editor/page-ip4.c:133
+#: ../src/connection-editor/page-ip6.c:144
 msgid "Automatic, addresses only"
 msgstr "自動、アドレスのみ"
 
-#: ../src/connection-editor/page-ip4.c:134
-#: ../src/connection-editor/page-ip6.c:139
+#: ../src/connection-editor/page-ip4.c:135
+#: ../src/connection-editor/page-ip6.c:140
 msgid "Automatic (PPPoE)"
 msgstr "自動 (PPPoE)"
 
-#: ../src/connection-editor/page-ip4.c:135
-#: ../src/connection-editor/page-ip6.c:140
+#: ../src/connection-editor/page-ip4.c:136
+#: ../src/connection-editor/page-ip6.c:141
 msgid "Automatic (PPPoE) addresses only"
 msgstr "自動 (PPPoE) アドレス専用"
 
-#: ../src/connection-editor/page-ip4.c:137
+#: ../src/connection-editor/page-ip4.c:138
 msgid "Automatic (DHCP)"
 msgstr "自動 (DHCP)"
 
-#: ../src/connection-editor/page-ip4.c:138
+#: ../src/connection-editor/page-ip4.c:139
 msgid "Automatic (DHCP) addresses only"
 msgstr "自動 (DHCP) アドレス専用"
 
-#: ../src/connection-editor/page-ip4.c:181
-#: ../src/connection-editor/page-ip6.c:204
+#: ../src/connection-editor/page-ip4.c:182
+#: ../src/connection-editor/page-ip6.c:205
 msgid "Link-Local Only"
 msgstr "ローカルへのリンク専用"
 
-#: ../src/connection-editor/page-ip4.c:361
-#: ../src/connection-editor/page-ip6.c:335
-msgid "Additional DNS ser_vers:"
+#: ../src/connection-editor/page-ip4.c:362
+#: ../src/connection-editor/page-ip6.c:336
+#, fuzzy
+msgid "Additional DNS ser_vers"
 msgstr "追加の DNS サーバー(_V):"
 
-#: ../src/connection-editor/page-ip4.c:370
-#: ../src/connection-editor/page-ip6.c:344
-msgid "Additional s_earch domains:"
+#: ../src/connection-editor/page-ip4.c:371
+#: ../src/connection-editor/page-ip6.c:345
+#, fuzzy
+msgid "Additional s_earch domains"
 msgstr "追加の検索ドメイン(_E):"
 
 #: ../src/connection-editor/page-ip4.c:1033
@@ -3644,35 +3807,35 @@ msgstr "追加の検索ドメイン(_E):"
 msgid "Editing IPv4 routes for %s"
 msgstr "%s 用の IPv4 ルートを編集"
 
-#: ../src/connection-editor/page-ip4.c:1226
+#: ../src/connection-editor/page-ip4.c:1223
 msgid "IPv4 Settings"
 msgstr "IPv4 設定"
 
-#: ../src/connection-editor/page-ip4.c:1228
+#: ../src/connection-editor/page-ip4.c:1225
 msgid "Could not load IPv4 user interface."
 msgstr "IPv4 ユーザーインターフェースを読み込めません。"
 
-#: ../src/connection-editor/page-ip4.c:1321
+#: ../src/connection-editor/page-ip4.c:1318
 #, c-format
 msgid "IPv4 address “%s” invalid"
 msgstr "IPv4 アドレス '%s' が無効"
 
-#: ../src/connection-editor/page-ip4.c:1329
+#: ../src/connection-editor/page-ip4.c:1326
 #, c-format
 msgid "IPv4 address netmask “%s” invalid"
 msgstr "IPv4 アドレスネットマスク '%s' が無効"
 
-#: ../src/connection-editor/page-ip4.c:1338
+#: ../src/connection-editor/page-ip4.c:1335
 #, c-format
 msgid "IPv4 gateway “%s” invalid"
 msgstr "IPv4 ゲートウェイ '%s' が無効"
 
-#: ../src/connection-editor/page-ip4.c:1381
+#: ../src/connection-editor/page-ip4.c:1378
 #, c-format
 msgid "IPv4 DNS server “%s” invalid"
 msgstr "IPv4 DNS サーバー '%s' が無効"
 
-#: ../src/connection-editor/page-ip6.c:179
+#: ../src/connection-editor/page-ip6.c:180
 msgid "Automatic, DHCP only"
 msgstr "自動、DHCP のみ"
 
@@ -3681,54 +3844,54 @@ msgstr "自動、DHCP のみ"
 msgid "Editing IPv6 routes for %s"
 msgstr "%s 用の IPv6 ルートを編集"
 
-#: ../src/connection-editor/page-ip6.c:1208
+#: ../src/connection-editor/page-ip6.c:1205
 msgid "IPv6 Settings"
 msgstr "IPv6 設定"
 
-#: ../src/connection-editor/page-ip6.c:1210
+#: ../src/connection-editor/page-ip6.c:1207
 msgid "Could not load IPv6 user interface."
 msgstr "IPv6 ユーザーインターフェースを読み込めません。"
 
-#: ../src/connection-editor/page-ip6.c:1302
+#: ../src/connection-editor/page-ip6.c:1299
 #, c-format
 msgid "IPv6 address “%s” invalid"
 msgstr "IPv6 アドレス '%s' が無効"
 
-#: ../src/connection-editor/page-ip6.c:1310
+#: ../src/connection-editor/page-ip6.c:1307
 #, c-format
 msgid "IPv6 prefix “%s” invalid"
 msgstr "IPv6 プレフィックス “%s” が無効"
 
-#: ../src/connection-editor/page-ip6.c:1319
+#: ../src/connection-editor/page-ip6.c:1316
 #, c-format
 msgid "IPv6 gateway “%s” invalid"
 msgstr "IPv6 ゲートウェイ '%s' が無効"
 
-#: ../src/connection-editor/page-ip6.c:1361
+#: ../src/connection-editor/page-ip6.c:1358
 #, c-format
 msgid "IPv6 DNS server “%s” invalid"
 msgstr "IPv6 DNS サーバー '%s' が無効"
 
-#: ../src/connection-editor/page-macsec.c:192
+#: ../src/connection-editor/page-macsec.c:189
 msgid "Could not load MACsec user interface."
 msgstr "MACsec ユーザーインターフェースを読み込めませんでした。"
 
-#: ../src/connection-editor/page-macsec.c:331
+#: ../src/connection-editor/page-macsec.c:328
 #, c-format
 msgid "MACSEC connection %d"
 msgstr "MACSEC 接続 %d"
 
-#: ../src/connection-editor/page-master.c:247
-#: ../src/connection-editor/page-master.c:258
+#: ../src/connection-editor/page-master.c:235
+#: ../src/connection-editor/page-master.c:246
 msgid "Duplicate slaves"
 msgstr "重複するスレーブ"
 
-#: ../src/connection-editor/page-master.c:248
+#: ../src/connection-editor/page-master.c:236
 #, c-format
 msgid "Slaves “%s” and “%s” both apply to device “%s”"
 msgstr "スレーブ '%s' と '%s' は、両方ともデバイス '%s' へ適用されます。"
 
-#: ../src/connection-editor/page-master.c:259
+#: ../src/connection-editor/page-master.c:247
 #, c-format
 msgid ""
 "Slaves “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
@@ -3737,25 +3900,25 @@ msgstr ""
 "スレーブ '%s' と '%s' は、それぞれ同じ物理デバイスの異なる仮想ポート ('%s' "
 "と '%s') へ適用されます。"
 
-#: ../src/connection-editor/page-master.c:385
+#: ../src/connection-editor/page-master.c:371
 #, c-format
 msgid "%s slave %d"
 msgstr "%s スレーブ %d"
 
-#: ../src/connection-editor/page-mobile.c:310
+#: ../src/connection-editor/page-mobile.c:307
 msgid "Could not load mobile broadband user interface."
 msgstr "モバイルブロードバンドのユーザーインターフェースを読み込めません。"
 
-#: ../src/connection-editor/page-mobile.c:327
+#: ../src/connection-editor/page-mobile.c:324
 msgid "Unsupported mobile broadband connection type."
 msgstr "サポートされていないモバイルブロードバンドの接続タイプ。"
 
 #. Fall back to just asking for GSM vs. CDMA
-#: ../src/connection-editor/page-mobile.c:540
+#: ../src/connection-editor/page-mobile.c:537
 msgid "Select Mobile Broadband Provider Type"
 msgstr "モバイルブロードバンドプロバイダーのタイプを選択"
 
-#: ../src/connection-editor/page-mobile.c:567
+#: ../src/connection-editor/page-mobile.c:564
 msgid ""
 "Select the technology your mobile broadband provider uses. If you are "
 "unsure, ask your provider."
@@ -3763,7 +3926,7 @@ msgstr ""
 "モバイルブロードバンドのプロバイダーが使用する技術を選択してください。不明な"
 "場合は、プロバイダーにお尋ねください。"
 
-#: ../src/connection-editor/page-mobile.c:572
+#: ../src/connection-editor/page-mobile.c:569
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr ""
 "私のプロバイダーは GSM ベースの技術 (例えば、 GPRS, EDGE, UMTS, HSDPA) を使用"
@@ -3771,40 +3934,42 @@ msgstr ""
 
 #. Translators: CDMA has 'D' accelerator key; 'C' collides with 'Cancel' button.
 #. You may need to change it according to your language.
-#: ../src/connection-editor/page-mobile.c:579
+#: ../src/connection-editor/page-mobile.c:576
 msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr ""
 "私のプロバイダーは CDMA ベースの技術 (例えば、1xRTT, EVDO)を使用します(_D)"
 
-#: ../src/connection-editor/page-mobile.c:589 ../src/mb-menu-item.c:50
+#: ../src/connection-editor/page-mobile.c:586
+#: ../src/libnma/nma-mobile-wizard.c:147 ../src/mb-menu-item.c:50
 #: ../src/mobile-helpers.c:282
 msgid "CDMA"
 msgstr "CDMA"
 
-#: ../src/connection-editor/page-mobile.c:592 ../src/mb-menu-item.c:54
+#: ../src/connection-editor/page-mobile.c:589
+#: ../src/libnma/nma-mobile-wizard.c:144 ../src/mb-menu-item.c:54
 #: ../src/mobile-helpers.c:280
 msgid "GSM"
 msgstr "GSM"
 
 #: ../src/connection-editor/page-ppp.c:130
-#: ../src/wireless-security/eap-method-ttls.c:287
+#: ../src/wireless-security/eap-method-ttls.c:288
 msgid "PAP"
 msgstr "PAP"
 
 #: ../src/connection-editor/page-ppp.c:131
-#: ../src/wireless-security/eap-method-ttls.c:349
+#: ../src/wireless-security/eap-method-ttls.c:354
 msgid "CHAP"
 msgstr "CHAP"
 
 #: ../src/connection-editor/page-ppp.c:132
-#: ../src/wireless-security/eap-method-fast.c:282
-#: ../src/wireless-security/eap-method-peap.c:299
-#: ../src/wireless-security/eap-method-ttls.c:317
+#: ../src/wireless-security/eap-method-fast.c:284
+#: ../src/wireless-security/eap-method-peap.c:300
+#: ../src/wireless-security/eap-method-ttls.c:320
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
 #: ../src/connection-editor/page-ppp.c:133
-#: ../src/wireless-security/eap-method-ttls.c:302
+#: ../src/wireless-security/eap-method-ttls.c:304
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
@@ -3818,19 +3983,19 @@ msgstr "なし"
 msgid "Editing PPP authentication methods for %s"
 msgstr "%s 用の PPP 認証方法を編集"
 
-#: ../src/connection-editor/page-ppp.c:279
+#: ../src/connection-editor/page-ppp.c:278
 msgid "PPP Settings"
 msgstr "PPP の設定"
 
-#: ../src/connection-editor/page-ppp.c:281
+#: ../src/connection-editor/page-ppp.c:280
 msgid "Could not load PPP user interface."
 msgstr "PPP ユーザーインターフェースを読み込めません。"
 
-#: ../src/connection-editor/page-proxy.c:215
+#: ../src/connection-editor/page-proxy.c:212
 msgid "Proxy"
 msgstr "プロキシー"
 
-#: ../src/connection-editor/page-proxy.c:217
+#: ../src/connection-editor/page-proxy.c:214
 msgid "Could not load proxy user interface."
 msgstr "プロキシーユーザーインターフェースを読み込めません。"
 
@@ -3839,11 +4004,11 @@ msgstr "プロキシーユーザーインターフェースを読み込めませ
 msgid "Error: file doesn’t contain a valid JSON configuration"
 msgstr "エラー: ファイルに有効な JSON 設定がありません。"
 
-#: ../src/connection-editor/page-team.c:1034
+#: ../src/connection-editor/page-team.c:1031
 msgid "Could not load team user interface."
 msgstr "チームユーザーインターフェースを読み込めません。"
 
-#: ../src/connection-editor/page-team.c:1131
+#: ../src/connection-editor/page-team.c:1128
 #, c-format
 msgid "Team connection %d"
 msgstr "チーム接続 %d"
@@ -3851,68 +4016,68 @@ msgstr "チーム接続 %d"
 #. Translators: a "Team Port" is a network
 #. * device that is part of a team.
 #.
-#: ../src/connection-editor/page-team-port.c:655
+#: ../src/connection-editor/page-team-port.c:652
 msgid "Team Port"
 msgstr "チームポート"
 
-#: ../src/connection-editor/page-team-port.c:657
+#: ../src/connection-editor/page-team-port.c:654
 msgid "Could not load team port user interface."
 msgstr "チームポートのユーザーインターフェースを読み込めません。"
 
 #. Translators: the first %s is a device name (eg, "em1"), the
 #. * second is a connection name (eg, "Auto Ethernet").
 #.
-#: ../src/connection-editor/page-vlan.c:415
+#: ../src/connection-editor/page-vlan.c:413
 #, c-format
 msgid "%s (via “%s”)"
 msgstr "%s ('%s' 経由)"
 
-#: ../src/connection-editor/page-vlan.c:427
+#: ../src/connection-editor/page-vlan.c:425
 #, c-format
 msgid "New connection…"
 msgstr "新規接続…"
 
-#: ../src/connection-editor/page-vlan.c:596
+#: ../src/connection-editor/page-vlan.c:591
 msgid "Could not load vlan user interface."
 msgstr "vlan ユーザーインターフェースを読み込めません。"
 
-#: ../src/connection-editor/page-vlan.c:735
+#: ../src/connection-editor/page-vlan.c:730
 msgid "vlan parent"
 msgstr "vlan 親"
 
-#: ../src/connection-editor/page-vlan.c:803
+#: ../src/connection-editor/page-vlan.c:798
 #, c-format
 msgid "VLAN connection %d"
 msgstr "VLAN 接続 %d"
 
-#: ../src/connection-editor/page-vpn.c:67
+#: ../src/connection-editor/page-vpn.c:64
 #, c-format
 msgid "Could not load editor VPN plugin for “%s” (%s)."
 msgstr "'%s' 用のエディター VPN プラグイン (%s) が見つかりませんでした。"
 
-#: ../src/connection-editor/page-vpn.c:68
+#: ../src/connection-editor/page-vpn.c:65
 msgid "unknown failure"
 msgstr "原因不明"
 
-#: ../src/connection-editor/page-vpn.c:105
+#: ../src/connection-editor/page-vpn.c:102
 msgid "Could not load VPN user interface."
 msgstr "VPN ユーザーインターフェースを読み込めません。"
 
-#: ../src/connection-editor/page-vpn.c:120
+#: ../src/connection-editor/page-vpn.c:117
 #, c-format
 msgid "Could not find VPN plugin for “%s”."
 msgstr "'%s' 用の VPN プラグインが見つかりませんでした。"
 
-#: ../src/connection-editor/page-vpn.c:202
+#: ../src/connection-editor/page-vpn.c:199
 #, c-format
 msgid "VPN connection %d"
 msgstr "VPN 接続 %d"
 
-#: ../src/connection-editor/page-vpn.c:208
+#: ../src/connection-editor/page-vpn.c:205
 msgid "Choose a VPN Connection Type"
 msgstr "VPN 接続の種類を選んでください"
 
-#: ../src/connection-editor/page-vpn.c:209
+#: ../src/connection-editor/page-vpn.c:206
 msgid ""
 "Select the type of VPN you wish to use for the new connection. If the type "
 "of VPN connection you wish to create does not appear in the list, you may "
@@ -3945,68 +4110,68 @@ msgstr ""
 msgid "%u (%u MHz)"
 msgstr "%u (%u MHz)"
 
-#: ../src/connection-editor/page-wifi.c:442
+#: ../src/connection-editor/page-wifi.c:439
 msgid "Could not load Wi-Fi user interface."
 msgstr "Wi-Fi ユーザーインターフェースをロードできませんでした。"
 
-#: ../src/connection-editor/page-wifi.c:564
+#: ../src/connection-editor/page-wifi.c:561
 msgid "bssid"
 msgstr "bssid"
 
-#: ../src/connection-editor/page-wifi.c:570
+#: ../src/connection-editor/page-wifi.c:567
 msgid "Wi-Fi device"
 msgstr "Wi-Fi デバイス"
 
-#: ../src/connection-editor/page-wifi.c:617
+#: ../src/connection-editor/page-wifi.c:614
 #, c-format
 msgid "Wi-Fi connection %d"
 msgstr "Wi-Fi 接続 %d"
 
-#: ../src/connection-editor/page-wifi-security.c:358
-#: ../src/libnma/nma-wifi-dialog.c:923 ../src/libnm-gtk/nm-wifi-dialog.c:922
+#: ../src/connection-editor/page-wifi-security.c:355
+#: ../src/libnma/nma-wifi-dialog.c:946 ../src/libnm-gtk/nm-wifi-dialog.c:922
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "WEP 40/128-bit キー (HEX または ASCII)"
 
-#: ../src/connection-editor/page-wifi-security.c:368
-#: ../src/libnma/nma-wifi-dialog.c:932 ../src/libnm-gtk/nm-wifi-dialog.c:931
+#: ../src/connection-editor/page-wifi-security.c:365
+#: ../src/libnma/nma-wifi-dialog.c:955 ../src/libnm-gtk/nm-wifi-dialog.c:931
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128-bit パスフレーズ"
 
-#: ../src/connection-editor/page-wifi-security.c:394
+#: ../src/connection-editor/page-wifi-security.c:391
 msgid "Dynamic WEP (802.1X)"
 msgstr "動的 WEP (802.1X)"
 
-#: ../src/connection-editor/page-wifi-security.c:407
-#: ../src/libnma/nma-wifi-dialog.c:976 ../src/libnm-gtk/nm-wifi-dialog.c:975
+#: ../src/connection-editor/page-wifi-security.c:404
+#: ../src/libnma/nma-wifi-dialog.c:999 ../src/libnm-gtk/nm-wifi-dialog.c:975
 msgid "WPA & WPA2 Personal"
 msgstr "WPA & WPA2 Personal"
 
 # そういう仕様の名前なので訳すべきでない。
-#: ../src/connection-editor/page-wifi-security.c:420
-#: ../src/libnma/nma-wifi-dialog.c:990 ../src/libnm-gtk/nm-wifi-dialog.c:989
+#: ../src/connection-editor/page-wifi-security.c:417
+#: ../src/libnma/nma-wifi-dialog.c:1017 ../src/libnm-gtk/nm-wifi-dialog.c:989
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA & WPA2 Enterprise"
 
-#: ../src/connection-editor/page-wifi-security.c:463
+#: ../src/connection-editor/page-wifi-security.c:460
 msgid "Could not load Wi-Fi security user interface; missing Wi-Fi setting."
 msgstr ""
 "Wi-Fi セキュリティーユーザーインターフェースを読み込めません。Wi-Fi 設定があ"
 "りません。"
 
-#: ../src/connection-editor/page-wifi-security.c:474
+#: ../src/connection-editor/page-wifi-security.c:471
 msgid "Wi-Fi Security"
 msgstr "Wi-Fi セキュリティー"
 
-#: ../src/connection-editor/page-wifi-security.c:476
+#: ../src/connection-editor/page-wifi-security.c:473
 msgid "Could not load Wi-Fi security user interface."
 msgstr "Wi-Fi セキュリティーユーザーインターフェースを読み込めません。"
 
-#: ../src/connection-editor/page-wifi-security.c:560
+#: ../src/connection-editor/page-wifi-security.c:557
 #, c-format
 msgid "missing SSID"
 msgstr "不明な SSID"
 
-#: ../src/connection-editor/page-wifi-security.c:566
+#: ../src/connection-editor/page-wifi-security.c:563
 #, c-format
 msgid "Security not compatible with Ad-Hoc mode"
 msgstr "Ad-Hoc モードとのセキュリティーの互換性がありません"
@@ -4065,31 +4230,31 @@ msgid "Active Network Connections"
 msgstr "有効なネットワーク接続"
 
 #: ../src/libnma/nma-file-cert-chooser.c:108
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:146
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:152
 msgid "No certificate set"
 msgstr "証明書セットがありません"
 
 #: ../src/libnma/nma-file-cert-chooser.c:126
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:170
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:176
 msgid "No key set"
 msgstr "キーセットがありません"
 
 #: ../src/libnma/nma-file-cert-chooser.c:246
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:370
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:382
 #, c-format
 msgid "Choose a key for %s Certificate"
 msgstr "%s 証明書のキーを選択する"
 
 #: ../src/libnma/nma-file-cert-chooser.c:250
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:374
-#, c-format
-msgid "%s private _key:"
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:386
+#, fuzzy, c-format
+msgid "%s private _key"
 msgstr "%s プライベートキー(_K):"
 
 #: ../src/libnma/nma-file-cert-chooser.c:254
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:378
-#, c-format
-msgid "%s key _password:"
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:390
+#, fuzzy, c-format
+msgid "%s key _password"
 msgstr "%s キーパスワード(_P):"
 
 #: ../src/libnma/nma-file-cert-chooser.c:258
@@ -4098,70 +4263,141 @@ msgid "Choose %s Certificate"
 msgstr "%s 証明書を選択する"
 
 #: ../src/libnma/nma-file-cert-chooser.c:262
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:386
-#, c-format
-msgid "%s _certificate:"
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:398
+#, fuzzy, c-format
+msgid "%s _certificate"
 msgstr "%s 証明書(_C):"
 
-#: ../src/libnma/nma-mobile-wizard.c:198
-#: ../src/libnm-gtk/nm-mobile-wizard.c:199
-msgid ""
-"Your mobile broadband connection is configured with the following settings:"
-msgstr "ご使用のモバイルブロードバンド接続は、以下のように設定されています。"
+#: ../src/libnma/nma-mobile-providers.c:991
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1077
+msgid "My country is not listed"
+msgstr "私の国は一覧に有りません"
 
-#. Device
-#: ../src/libnma/nma-mobile-wizard.c:205
-#: ../src/libnm-gtk/nm-mobile-wizard.c:206
-msgid "Your Device:"
-msgstr "使用デバイス:"
-
-#. Provider
-#: ../src/libnma/nma-mobile-wizard.c:216
-#: ../src/libnm-gtk/nm-mobile-wizard.c:217
-msgid "Your Provider:"
-msgstr "使用プロバイダー:"
-
-#. Plan and APN
-#: ../src/libnma/nma-mobile-wizard.c:227
-#: ../src/libnm-gtk/nm-mobile-wizard.c:228
-msgid "Your Plan:"
-msgstr "使用プラン:"
-
-#: ../src/libnma/nma-mobile-wizard.c:248
-#: ../src/libnm-gtk/nm-mobile-wizard.c:249
-msgid ""
-"A connection will now be made to your mobile broadband provider using the "
-"settings you selected. If the connection fails or you cannot access network "
-"resources, double-check your settings. To modify your mobile broadband "
-"connection settings, choose “Network Connections” from the System → "
-"Preferences menu."
-msgstr ""
-"選択した設定でモバイルブロードバンドプロバイダーに接続されます。接続が失敗し"
-"たり、ネットワークリソースにアクセスできない場合は、設定をダブルクリックして"
-"ください。モバイルブロードバンド設定を変更するには、システム → 設定メニューか"
-"ら「ネットワーク接続」を選択します。"
-
-#: ../src/libnma/nma-mobile-wizard.c:261
-#: ../src/libnm-gtk/nm-mobile-wizard.c:262
-msgid "Confirm Mobile Broadband Settings"
-msgstr "モバイルブロードバンドセッティングを確定する"
-
-#: ../src/libnma/nma-mobile-wizard.c:325
+#: ../src/libnma/nma-mobile-wizard.c:252 ../src/libnma/nma-mobile-wizard.c:284
 #: ../src/libnm-gtk/nm-mobile-wizard.c:326
 msgid "Unlisted"
 msgstr "一覧に無い"
 
-#: ../src/libnma/nma-mobile-wizard.c:456
+#: ../src/libnma/nma-mobile-wizard.c:484
+#: ../src/libnm-gtk/nm-mobile-wizard.c:558
+msgid "My plan is not listed…"
+msgstr "プランが一覧にありません..."
+
+#: ../src/libnma/nma-mobile-wizard.c:644
+#: ../src/libnm-gtk/nm-mobile-wizard.c:724
+msgid "Provider"
+msgstr "プロバイダー"
+
+#: ../src/libnma/nma-mobile-wizard.c:932
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1067
+msgid "Country or region"
+msgstr "国や地域"
+
+#: ../src/libnma/nma-mobile-wizard.c:1016
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1184
+msgid "Installed GSM device"
+msgstr "GSM デバイスがインストールされています"
+
+#: ../src/libnma/nma-mobile-wizard.c:1019
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1187
+msgid "Installed CDMA device"
+msgstr "CDMA デバイスがインストールされています"
+
+#: ../src/libnma/nma-mobile-wizard.c:1225
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1428
+msgid "Any device"
+msgstr "すべてのデバイス"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:1
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1614
+msgid "New Mobile Broadband Connection"
+msgstr "新規のモバイルブロードバンド接続"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:2
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1355
+msgid ""
+"This assistant helps you easily set up a mobile broadband connection to a "
+"cellular (3G) network."
+msgstr ""
+"このアシスタントを使用すると、携帯 (3G) ネットワークへのモバイルブロードバン"
+"ド接続が簡単にできます。"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:3
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1361
+msgid "You will need the following information:"
+msgstr "以下の情報が必要です:"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:4
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1372
+msgid "Your broadband provider’s name"
+msgstr "使用するブロードバンドプロバイダー名"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:5
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1378
+msgid "Your broadband billing plan name"
+msgstr "使用するブロードバンド請求書プラン名"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:6
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1384
+msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
+msgstr "(一部のケースで) ブロードバンド請求書プラン APN (Access Point Name)"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:7
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1413
+msgid "Create a connection for _this mobile broadband device:"
+msgstr "このモバイルブロードバンドデバイス用の接続を作成(_T):"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:8
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1441
+msgid "Set up a Mobile Broadband Connection"
+msgstr "モバイルブロードバンド接続のセットアップ"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:9
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1054
+msgid "Country or Region List:"
+msgstr "国や地域の一覧:"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:10
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1127
+msgid "Choose your Provider’s Country or Region"
+msgstr "プロバイダーの国や地域を選択"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:11
+#: ../src/libnm-gtk/nm-mobile-wizard.c:711
+msgid "Select your provider from a _list:"
+msgstr "プロバイダーを一覧から選択(_L):"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:12
+#, fuzzy
+msgid "I can’t find my provider and I wish to set up the connection _manually:"
+msgstr "プロバイダーが見つからないので手動で入力します(_M):"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:13
+#: ../src/libnm-gtk/nm-mobile-wizard.c:779
+msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
+msgstr "私のプロバイダーは GSM 技術 (GPRS, EDGE, UMTS, HSPA) を使用します"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:14
+#: ../src/libnm-gtk/nm-mobile-wizard.c:781
+msgid "My provider uses CDMA technology (1xRTT, EVDO)"
+msgstr "私のプロバイダーは CDMA 技術 (1xRTT, EVDO) を使用します"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:15
+#: ../src/libnm-gtk/nm-mobile-wizard.c:792
+msgid "Choose your Provider"
+msgstr "使用プロバイダーを選択"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:16
 #: ../src/libnm-gtk/nm-mobile-wizard.c:457
 msgid "_Select your plan:"
 msgstr "使用プランの選択(_S):"
 
-#: ../src/libnma/nma-mobile-wizard.c:480
+#: ../src/libnma/nma-mobile-wizard.ui.h:17
 #: ../src/libnm-gtk/nm-mobile-wizard.c:481
 msgid "Selected plan _APN (Access Point Name):"
 msgstr "選択した APN (Access Point Name)(_A):"
 
-#: ../src/libnma/nma-mobile-wizard.c:500
+#: ../src/libnma/nma-mobile-wizard.ui.h:18
 #: ../src/libnm-gtk/nm-mobile-wizard.c:501
 msgid ""
 "Warning: Selecting an incorrect plan may result in billing issues for your "
@@ -4175,171 +4411,95 @@ msgstr ""
 "ご自分のプランが分からない場合は、そのプランの APN についてプロバイダーにお尋"
 "ねください。"
 
-#: ../src/libnma/nma-mobile-wizard.c:508
+#: ../src/libnma/nma-mobile-wizard.ui.h:21
 #: ../src/libnm-gtk/nm-mobile-wizard.c:509
 msgid "Choose your Billing Plan"
 msgstr "使用する請求書プランを選択"
 
-#: ../src/libnma/nma-mobile-wizard.c:557
-#: ../src/libnm-gtk/nm-mobile-wizard.c:558
-msgid "My plan is not listed…"
-msgstr "プランが一覧にありません..."
-
-#: ../src/libnma/nma-mobile-wizard.c:710
-#: ../src/libnm-gtk/nm-mobile-wizard.c:711
-msgid "Select your provider from a _list:"
-msgstr "プロバイダーを一覧から選択(_L):"
-
-#: ../src/libnma/nma-mobile-wizard.c:723
-#: ../src/libnm-gtk/nm-mobile-wizard.c:724
-msgid "Provider"
-msgstr "プロバイダー"
-
-#: ../src/libnma/nma-mobile-wizard.c:748
-#: ../src/libnm-gtk/nm-mobile-wizard.c:749
-msgid "I can’t find my provider and I wish to enter it _manually:"
-msgstr "プロバイダーが見つからないので手動で入力します(_M):"
-
-#: ../src/libnma/nma-mobile-wizard.c:761
-#: ../src/libnm-gtk/nm-mobile-wizard.c:762
-msgid "Provider:"
-msgstr "プロバイダー:"
-
-#: ../src/libnma/nma-mobile-wizard.c:778
-#: ../src/libnm-gtk/nm-mobile-wizard.c:779
-msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
-msgstr "私のプロバイダーは GSM 技術 (GPRS, EDGE, UMTS, HSPA) を使用します"
-
-#: ../src/libnma/nma-mobile-wizard.c:780
-#: ../src/libnm-gtk/nm-mobile-wizard.c:781
-msgid "My provider uses CDMA technology (1xRTT, EVDO)"
-msgstr "私のプロバイダーは CDMA 技術 (1xRTT, EVDO) を使用します"
-
-#: ../src/libnma/nma-mobile-wizard.c:791
-#: ../src/libnm-gtk/nm-mobile-wizard.c:792
-msgid "Choose your Provider"
-msgstr "使用プロバイダーを選択"
-
-#: ../src/libnma/nma-mobile-wizard.c:1053
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1054
-msgid "Country or Region List:"
-msgstr "国や地域の一覧:"
-
-#: ../src/libnma/nma-mobile-wizard.c:1066
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1067
-msgid "Country or region"
-msgstr "国や地域"
-
-#: ../src/libnma/nma-mobile-wizard.c:1076
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1077
-msgid "My country is not listed"
-msgstr "私の国は一覧に有りません"
-
-#: ../src/libnma/nma-mobile-wizard.c:1126
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1127
-msgid "Choose your Provider’s Country or Region"
-msgstr "プロバイダーの国や地域を選択"
-
-#: ../src/libnma/nma-mobile-wizard.c:1183
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1184
-msgid "Installed GSM device"
-msgstr "GSM デバイスがインストールされています"
-
-#: ../src/libnma/nma-mobile-wizard.c:1186
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1187
-msgid "Installed CDMA device"
-msgstr "CDMA デバイスがインストールされています"
-
-#: ../src/libnma/nma-mobile-wizard.c:1354
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1355
+#: ../src/libnma/nma-mobile-wizard.ui.h:22
+#: ../src/libnm-gtk/nm-mobile-wizard.c:199
 msgid ""
-"This assistant helps you easily set up a mobile broadband connection to a "
-"cellular (3G) network."
+"Your mobile broadband connection is configured with the following settings:"
+msgstr "ご使用のモバイルブロードバンド接続は、以下のように設定されています。"
+
+#. Device
+#: ../src/libnma/nma-mobile-wizard.ui.h:23
+#: ../src/libnm-gtk/nm-mobile-wizard.c:206
+msgid "Your Device:"
+msgstr "使用デバイス:"
+
+#. Provider
+#: ../src/libnma/nma-mobile-wizard.ui.h:24
+#: ../src/libnm-gtk/nm-mobile-wizard.c:217
+msgid "Your Provider:"
+msgstr "使用プロバイダー:"
+
+#. Plan and APN
+#: ../src/libnma/nma-mobile-wizard.ui.h:25
+#: ../src/libnm-gtk/nm-mobile-wizard.c:228
+msgid "Your Plan:"
+msgstr "使用プラン:"
+
+#: ../src/libnma/nma-mobile-wizard.ui.h:26
+#: ../src/libnm-gtk/nm-mobile-wizard.c:249
+msgid ""
+"A connection will now be made to your mobile broadband provider using the "
+"settings you selected. If the connection fails or you cannot access network "
+"resources, double-check your settings. To modify your mobile broadband "
+"connection settings, choose “Network Connections” from the System → "
+"Preferences menu."
 msgstr ""
-"このアシスタントを使用すると、携帯 (3G) ネットワークへのモバイルブロードバン"
-"ド接続が簡単にできます。"
+"選択した設定でモバイルブロードバンドプロバイダーに接続されます。接続が失敗し"
+"たり、ネットワークリソースにアクセスできない場合は、設定をダブルクリックして"
+"ください。モバイルブロードバンド設定を変更するには、システム → 設定メニューか"
+"ら「ネットワーク接続」を選択します。"
 
-#: ../src/libnma/nma-mobile-wizard.c:1360
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1361
-msgid "You will need the following information:"
-msgstr "以下の情報が必要です:"
+#: ../src/libnma/nma-mobile-wizard.ui.h:27
+#: ../src/libnm-gtk/nm-mobile-wizard.c:262
+msgid "Confirm Mobile Broadband Settings"
+msgstr "モバイルブロードバンドセッティングを確定する"
 
-#: ../src/libnma/nma-mobile-wizard.c:1371
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1372
-msgid "Your broadband provider’s name"
-msgstr "使用するブロードバンドプロバイダー名"
-
-#: ../src/libnma/nma-mobile-wizard.c:1377
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1378
-msgid "Your broadband billing plan name"
-msgstr "使用するブロードバンド請求書プラン名"
-
-#: ../src/libnma/nma-mobile-wizard.c:1383
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1384
-msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
-msgstr "(一部のケースで) ブロードバンド請求書プラン APN (Access Point Name)"
-
-#: ../src/libnma/nma-mobile-wizard.c:1412
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1413
-msgid "Create a connection for _this mobile broadband device:"
-msgstr "このモバイルブロードバンドデバイス用の接続を作成(_T):"
-
-#: ../src/libnma/nma-mobile-wizard.c:1427
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1428
-msgid "Any device"
-msgstr "すべてのデバイス"
-
-#: ../src/libnma/nma-mobile-wizard.c:1440
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1441
-msgid "Set up a Mobile Broadband Connection"
-msgstr "モバイルブロードバンド接続のセットアップ"
-
-#: ../src/libnma/nma-mobile-wizard.c:1620
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1614
-msgid "New Mobile Broadband Connection"
-msgstr "新規のモバイルブロードバンド接続"
-
-#: ../src/libnma/nma-cert-chooser-button.c:165
+#: ../src/libnma/nma-cert-chooser-button.c:167
 msgid "(None)"
 msgstr "(なし)"
 
-#: ../src/libnma/nma-cert-chooser-button.c:173
+#: ../src/libnma/nma-cert-chooser-button.c:175
 #, c-format
 msgid "Key in %s"
 msgstr "%s 内のキー"
 
-#: ../src/libnma/nma-cert-chooser-button.c:174
+#: ../src/libnma/nma-cert-chooser-button.c:176
 #, c-format
 msgid "Certificate in %s"
 msgstr "%s 内の 証明書"
 
-#: ../src/libnma/nma-cert-chooser-button.c:193
+#: ../src/libnma/nma-cert-chooser-button.c:195
 #: ../src/libnma/nma-pkcs11-cert-chooser-dialog.c:183
 msgid "(Unknown)"
 msgstr "(不明)"
 
-#: ../src/libnma/nma-cert-chooser-button.c:215
-#: ../src/libnma/nma-cert-chooser-button.c:245
+#: ../src/libnma/nma-cert-chooser-button.c:217
+#: ../src/libnma/nma-cert-chooser-button.c:247
 msgid "Select"
 msgstr "選択"
 
-#: ../src/libnma/nma-cert-chooser-button.c:216
-#: ../src/libnma/nma-cert-chooser-button.c:246
+#: ../src/libnma/nma-cert-chooser-button.c:218
+#: ../src/libnma/nma-cert-chooser-button.c:248
 msgid "Cancel"
 msgstr "キャンセル"
 
-#: ../src/libnma/nma-cert-chooser-button.c:472
+#: ../src/libnma/nma-cert-chooser-button.c:474
 msgid "Select from file…"
 msgstr "ファイルから選択…"
 
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:382
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:394
 #, c-format
 msgid "Choose a %s Certificate"
 msgstr "%s  証明書を選択する"
 
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:390
-#, c-format
-msgid "%s certificate _password:"
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:402
+#, fuzzy, c-format
+msgid "%s certificate _password"
 msgstr "%s 証明書のパスワード(_P):"
 
 #: ../src/libnma/nma-pkcs11-cert-chooser-dialog.c:255
@@ -4387,51 +4547,48 @@ msgstr "毎回このパスワードを要求する"
 msgid "The password is not required"
 msgstr "パスワードは不要です"
 
-#: ../src/libnma/nma-vpn-password-dialog.c:99
-#: ../src/libnm-gtk/nm-vpn-password-dialog.c:99
-msgid "_Secondary Password:"
-msgstr "セカンダリーパスワード(_S):"
-
-#: ../src/libnma/nma-vpn-password-dialog.c:102
-#: ../src/libnm-gtk/nm-vpn-password-dialog.c:102
-msgid "_Tertiary Password:"
-msgstr "第 3 のパスワード(_T):"
-
-#: ../src/libnma/nma-vpn-password-dialog.c:238
+#: ../src/libnma/nma-vpn-password-dialog.ui.h:3
 #: ../src/libnm-gtk/nm-vpn-password-dialog.c:238
 msgid "Sh_ow passwords"
 msgstr "パスワードを表示(_O)"
 
-#: ../src/libnma/nma-wifi-dialog.c:132 ../src/libnm-gtk/nm-wifi-dialog.c:141
+#: ../src/libnma/nma-vpn-password-dialog.ui.h:4
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:102
+msgid "_Tertiary Password:"
+msgstr "第 3 のパスワード(_T):"
+
+#: ../src/libnma/nma-vpn-password-dialog.ui.h:5
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:99
+msgid "_Secondary Password:"
+msgstr "セカンダリーパスワード(_S):"
+
+#: ../src/libnma/nma-vpn-password-dialog.ui.h:6
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:97
+msgid "_Password:"
+msgstr "パスワード(_P):"
+
+#: ../src/libnma/nma-wifi-dialog.c:127 ../src/libnm-gtk/nm-wifi-dialog.c:141
 msgid "Click to connect"
 msgstr "クリックして接続する"
 
-#: ../src/libnma/nma-wifi-dialog.c:133 ../src/libnm-gtk/nm-wifi-dialog.c:142
-msgid ""
-"Either a password is missing or the connection is invalid. In the latter "
-"case, you have to edit the connection with nm-connection-editor first"
-msgstr ""
-"パスワードが見つからない、もしくは接続が無効です。無効の場合は、まず nm-"
-"connection-editor で接続を編集する必要があります。"
-
-#: ../src/libnma/nma-wifi-dialog.c:468 ../src/libnm-gtk/nm-wifi-dialog.c:465
+#: ../src/libnma/nma-wifi-dialog.c:458 ../src/libnm-gtk/nm-wifi-dialog.c:465
 msgid "New…"
 msgstr "新規…"
 
-#: ../src/libnma/nma-wifi-dialog.c:906 ../src/libnm-gtk/nm-wifi-dialog.c:905
+#: ../src/libnma/nma-wifi-dialog.c:929 ../src/libnm-gtk/nm-wifi-dialog.c:905
 msgctxt "Wifi/wired security"
 msgid "None"
 msgstr "なし"
 
-#: ../src/libnma/nma-wifi-dialog.c:962 ../src/libnm-gtk/nm-wifi-dialog.c:961
+#: ../src/libnma/nma-wifi-dialog.c:985 ../src/libnm-gtk/nm-wifi-dialog.c:961
 msgid "Dynamic WEP (802.1x)"
 msgstr "動的 WEP (802.1X)"
 
-#: ../src/libnma/nma-wifi-dialog.c:1070 ../src/libnm-gtk/nm-wifi-dialog.c:1071
+#: ../src/libnma/nma-wifi-dialog.c:1108 ../src/libnm-gtk/nm-wifi-dialog.c:1071
 msgid "C_reate"
 msgstr "作成(_R)"
 
-#: ../src/libnma/nma-wifi-dialog.c:1149 ../src/libnm-gtk/nm-wifi-dialog.c:1150
+#: ../src/libnma/nma-wifi-dialog.c:1186 ../src/libnm-gtk/nm-wifi-dialog.c:1150
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the Wi-Fi network “%s”."
@@ -4439,52 +4596,63 @@ msgstr ""
 "Wi-Fi ネットワーク '%s' にアクセスするには、パスワードか暗号化キーが必要で"
 "す。"
 
-#: ../src/libnma/nma-wifi-dialog.c:1151 ../src/libnm-gtk/nm-wifi-dialog.c:1152
+#: ../src/libnma/nma-wifi-dialog.c:1188 ../src/libnm-gtk/nm-wifi-dialog.c:1152
 msgid "Wi-Fi Network Authentication Required"
 msgstr "Wi-Fi ネットワークの認証が必要です"
 
-#: ../src/libnma/nma-wifi-dialog.c:1153 ../src/libnm-gtk/nm-wifi-dialog.c:1154
+#: ../src/libnma/nma-wifi-dialog.c:1190 ../src/libnm-gtk/nm-wifi-dialog.c:1154
 msgid "Authentication required by Wi-Fi network"
 msgstr "Wi-Fi ネットワークでは認証が要求されます"
 
-#: ../src/libnma/nma-wifi-dialog.c:1158 ../src/libnm-gtk/nm-wifi-dialog.c:1159
+#: ../src/libnma/nma-wifi-dialog.c:1195 ../src/libnm-gtk/nm-wifi-dialog.c:1159
 msgid "Create New Wi-Fi Network"
 msgstr "新しい Wi-Fi ネットワークを作成"
 
-#: ../src/libnma/nma-wifi-dialog.c:1160 ../src/libnm-gtk/nm-wifi-dialog.c:1161
+#: ../src/libnma/nma-wifi-dialog.c:1197 ../src/libnm-gtk/nm-wifi-dialog.c:1161
 msgid "New Wi-Fi network"
 msgstr "新規 Wi-Fi ネットワーク"
 
-#: ../src/libnma/nma-wifi-dialog.c:1161 ../src/libnm-gtk/nm-wifi-dialog.c:1162
+#: ../src/libnma/nma-wifi-dialog.c:1198 ../src/libnm-gtk/nm-wifi-dialog.c:1162
 msgid "Enter a name for the Wi-Fi network you wish to create."
 msgstr "作成する Wi-Fi ネットワークの名前を入力してください。"
 
-#: ../src/libnma/nma-wifi-dialog.c:1163 ../src/libnm-gtk/nm-wifi-dialog.c:1164
+#: ../src/libnma/nma-wifi-dialog.c:1200 ../src/libnm-gtk/nm-wifi-dialog.c:1164
 msgid "Connect to Hidden Wi-Fi Network"
 msgstr "非表示 Wi-Fi ネットワークに接続する"
 
-#: ../src/libnma/nma-wifi-dialog.c:1165 ../src/libnm-gtk/nm-wifi-dialog.c:1166
+#: ../src/libnma/nma-wifi-dialog.c:1202 ../src/libnm-gtk/nm-wifi-dialog.c:1166
 msgid "Hidden Wi-Fi network"
 msgstr "非表示 Wi-Fi ネットワーク"
 
-#: ../src/libnma/nma-wifi-dialog.c:1166 ../src/libnm-gtk/nm-wifi-dialog.c:1167
+#: ../src/libnma/nma-wifi-dialog.c:1203 ../src/libnm-gtk/nm-wifi-dialog.c:1167
 msgid ""
 "Enter the name and security details of the hidden Wi-Fi network you wish to "
 "connect to."
 msgstr ""
 "接続する Wi-Fi ネットワークの名前とセキュリティー詳細を入力してください。"
 
-#: ../src/libnma/wifi.ui.h:1 ../src/libnm-gtk/wifi.ui.h:1
-msgid "Wi-Fi _security:"
+#: ../src/libnma/wifi.ui.h:1
+#, fuzzy
+msgid "Wi-Fi _security"
 msgstr "Wi-Fi セキュリティー(_S):"
 
-#: ../src/libnma/wifi.ui.h:3 ../src/libnm-gtk/wifi.ui.h:3
-msgid "C_onnection:"
+#: ../src/libnma/wifi.ui.h:3
+#, fuzzy
+msgid "C_onnection"
 msgstr "接続(_O):"
 
-#: ../src/libnma/wifi.ui.h:4 ../src/libnm-gtk/wifi.ui.h:4
-msgid "Wi-Fi _adapter:"
+#: ../src/libnma/wifi.ui.h:4
+#, fuzzy
+msgid "Wi-Fi _adapter"
 msgstr "Wi-Fi アダプター(_A):"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:749
+msgid "I can’t find my provider and I wish to enter it _manually:"
+msgstr "プロバイダーが見つからないので手動で入力します(_M):"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:762
+msgid "Provider:"
+msgstr "プロバイダー:"
 
 #: ../src/libnm-gtk/nm-ui-utils.c:302 ../src/libnm-gtk/nm-ui-utils.c:369
 msgid "Wired"
@@ -4517,6 +4685,30 @@ msgstr "USB"
 msgctxt "long device name"
 msgid "%s %s"
 msgstr "%s %s"
+
+#: ../src/libnm-gtk/nm-wifi-dialog.c:142
+msgid ""
+"Either a password is missing or the connection is invalid. In the latter "
+"case, you have to edit the connection with nm-connection-editor first"
+msgstr ""
+"パスワードが見つからない、もしくは接続が無効です。無効の場合は、まず nm-"
+"connection-editor で接続を編集する必要があります。"
+
+#: ../src/libnm-gtk/wifi.ui.h:1
+msgid "Wi-Fi _security:"
+msgstr "Wi-Fi セキュリティー(_S):"
+
+#: ../src/libnm-gtk/wifi.ui.h:2
+msgid "_Network name:"
+msgstr "ネットワーク名(_N):"
+
+#: ../src/libnm-gtk/wifi.ui.h:3
+msgid "C_onnection:"
+msgstr "接続(_O):"
+
+#: ../src/libnm-gtk/wifi.ui.h:4
+msgid "Wi-Fi _adapter:"
+msgstr "Wi-Fi アダプター(_A):"
 
 #: ../src/main.c:42
 msgid "Usage:"
@@ -4648,11 +4840,11 @@ msgstr "ローミング"
 msgid "%s connection"
 msgstr "%s 接続"
 
-#: ../src/utils/utils.c:565
+#: ../src/utils/utils.c:549
 msgid "PEM certificates (*.pem, *.crt, *.cer)"
 msgstr "PEM 証明書 (*.pem、*.crt、*.cer)"
 
-#: ../src/utils/utils.c:577
+#: ../src/utils/utils.c:561
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "DER か、PEM、 PKCS#12 のプライベートキー (*.der, *.pem, *.p12, *.key)"
 
@@ -4672,21 +4864,21 @@ msgstr "選択された CA 証明書ファイルは存在しません"
 msgid "missing EAP-FAST PAC file"
 msgstr "EAP-FAST PAC ファイルがありません"
 
-#: ../src/wireless-security/eap-method-fast.c:267
-#: ../src/wireless-security/eap-method-peap.c:329
-#: ../src/wireless-security/eap-method-ttls.c:379
+#: ../src/wireless-security/eap-method-fast.c:268
+#: ../src/wireless-security/eap-method-peap.c:332
+#: ../src/wireless-security/eap-method-ttls.c:386
 msgid "GTC"
 msgstr "GTC"
 
-#: ../src/wireless-security/eap-method-fast.c:405
+#: ../src/wireless-security/eap-method-fast.c:407
 msgid "Choose a PAC file"
 msgstr "PAC ファイルを選択"
 
-#: ../src/wireless-security/eap-method-fast.c:412
+#: ../src/wireless-security/eap-method-fast.c:414
 msgid "PAC files (*.pac)"
 msgstr "PAC ファイル (*.pac)"
 
-#: ../src/wireless-security/eap-method-fast.c:416
+#: ../src/wireless-security/eap-method-fast.c:418
 msgid "All files"
 msgstr "すべてのファイル"
 
@@ -4705,17 +4897,20 @@ msgstr "両方"
 #: ../src/wireless-security/eap-method-fast.ui.h:4
 #: ../src/wireless-security/eap-method-peap.ui.h:4
 #: ../src/wireless-security/eap-method-ttls.ui.h:3
-msgid "Anony_mous identity:"
+#, fuzzy
+msgid "Anony_mous identity"
 msgstr "匿名の識別子(_M):"
 
 #: ../src/wireless-security/eap-method-fast.ui.h:5
-msgid "PAC _file:"
+#, fuzzy
+msgid "PAC _file"
 msgstr "PAC ファイル(_F):"
 
 #: ../src/wireless-security/eap-method-fast.ui.h:6
 #: ../src/wireless-security/eap-method-peap.ui.h:7
 #: ../src/wireless-security/eap-method-ttls.ui.h:1
-msgid "_Inner authentication:"
+#, fuzzy
+msgid "_Inner authentication"
 msgstr "内部認証(_I):"
 
 # see http://www.cisco.com/cisco/web/support/JP/100/1005/1005630_eapfast-wlc-rad-config.html#PAC
@@ -4731,9 +4926,9 @@ msgstr "EAP-LEAP ユーザー名がありません"
 msgid "missing EAP-LEAP password"
 msgstr "EAP-LEAP パスワードがありません"
 
-#: ../src/wireless-security/eap-method-peap.c:314
-#: ../src/wireless-security/eap-method-ttls.c:364
-#: ../src/wireless-security/wireless-security.c:424
+#: ../src/wireless-security/eap-method-peap.c:316
+#: ../src/wireless-security/eap-method-ttls.c:370
+#: ../src/wireless-security/wireless-security.c:425
 msgid "MD5"
 msgstr "MD5"
 
@@ -4752,7 +4947,8 @@ msgid "No CA certificate is _required"
 msgstr "CA 証明書は必要ありません(_R)"
 
 #: ../src/wireless-security/eap-method-peap.ui.h:6
-msgid "PEAP _version:"
+#, fuzzy
+msgid "PEAP _version"
 msgstr "PEAP バージョン(_V):"
 
 #: ../src/wireless-security/eap-method-peap.ui.h:8
@@ -4764,16 +4960,31 @@ msgstr "サーバー証明書名のサフィックス"
 #: ../src/wireless-security/eap-method-peap.ui.h:9
 #: ../src/wireless-security/eap-method-tls.ui.h:4
 #: ../src/wireless-security/eap-method-ttls.ui.h:5
-msgid "_Domain:"
+#, fuzzy
+msgid "_Domain"
 msgstr "ドメイン(_D):"
 
-#: ../src/wireless-security/eap-method-simple.c:75
+#: ../src/wireless-security/eap-method-simple.c:90
 msgid "missing EAP username"
 msgstr "EAP ユーザー名がありません"
 
-#: ../src/wireless-security/eap-method-simple.c:88
+#: ../src/wireless-security/eap-method-simple.c:106
 msgid "missing EAP password"
 msgstr "EAP パスワードがありません"
+
+#: ../src/wireless-security/eap-method-simple.c:120
+msgid "missing EAP client Private Key passphrase"
+msgstr ""
+
+#: ../src/wireless-security/eap-method-simple.ui.h:4
+#, fuzzy
+msgid "P_rivate Key Passphrase"
+msgstr "WEP 128-bit パスフレーズ"
+
+#: ../src/wireless-security/eap-method-simple.ui.h:5
+#, fuzzy
+msgid "Sh_ow passphrase"
+msgstr "パスワードを表示(_O)"
 
 #: ../src/wireless-security/eap-method-tls.c:64
 msgid "missing EAP-TLS identity"
@@ -4798,10 +5009,11 @@ msgstr "選択されたキーファイルは存在しません"
 # とりあえずこのように訳しておくが "Identity" のままの方が適切かもしれない。
 # (WPA-EAP Identity 認証方式: ユーザ ID とパスワードの組で認証)
 #: ../src/wireless-security/eap-method-tls.ui.h:1
-msgid "I_dentity:"
+#, fuzzy
+msgid "I_dentity"
 msgstr "アイデンティティー(_D):"
 
-#: ../src/wireless-security/eap-method-ttls.c:333
+#: ../src/wireless-security/eap-method-ttls.c:337
 msgid "MSCHAPv2 (no EAP)"
 msgstr "MSCHAPv2 (非 EAP)"
 
@@ -4809,56 +5021,61 @@ msgstr "MSCHAPv2 (非 EAP)"
 msgid "Unknown error validating 802.1X security"
 msgstr "802.1X セキュリティーの検証中に原因不明のエラー"
 
-#: ../src/wireless-security/wireless-security.c:436
+#: ../src/wireless-security/wireless-security.c:437
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:460
+#: ../src/wireless-security/wireless-security.c:461
 msgid "PWD"
 msgstr "PWD"
 
-#: ../src/wireless-security/wireless-security.c:471
+#: ../src/wireless-security/wireless-security.c:472
 msgid "FAST"
 msgstr "FAST"
 
-#: ../src/wireless-security/wireless-security.c:482
+#: ../src/wireless-security/wireless-security.c:483
 msgid "Tunneled TLS"
 msgstr "トンネル化 TLS"
 
-#: ../src/wireless-security/wireless-security.c:493
+#: ../src/wireless-security/wireless-security.c:494
 msgid "Protected EAP (PEAP)"
 msgstr "保護つき EAP (PEAP)"
+
+#: ../src/wireless-security/wireless-security.c:523
+msgid "Externally configured"
+msgstr ""
 
 #: ../src/wireless-security/ws-dynamic-wep.ui.h:1
 #: ../src/wireless-security/ws-wep-key.ui.h:6
 #: ../src/wireless-security/ws-wpa-eap.ui.h:1
-msgid "Au_thentication:"
+#, fuzzy
+msgid "Au_thentication"
 msgstr "認証(_T):"
 
-#: ../src/wireless-security/ws-leap.c:63
+#: ../src/wireless-security/ws-leap.c:64
 msgid "missing leap-username"
 msgstr "leap-username が見つかりません"
 
-#: ../src/wireless-security/ws-leap.c:74
+#: ../src/wireless-security/ws-leap.c:82
 msgid "missing leap-password"
 msgstr "leap-password が見つかりません"
 
-#: ../src/wireless-security/ws-wep-key.c:107
+#: ../src/wireless-security/ws-wep-key.c:113
 msgid "missing wep-key"
 msgstr "wep-key が見つかりません"
 
-#: ../src/wireless-security/ws-wep-key.c:116
+#: ../src/wireless-security/ws-wep-key.c:120
 #, c-format
 msgid "invalid wep-key: key with a length of %zu must contain only hex-digits"
 msgstr "無効な wep-key: %zu の長さのキーには、16 進数しか使用できません"
 
-#: ../src/wireless-security/ws-wep-key.c:124
+#: ../src/wireless-security/ws-wep-key.c:128
 #, c-format
 msgid ""
 "invalid wep-key: key with a length of %zu must contain only ascii characters"
 msgstr "無効な wep-key: %zu の長さのキーには、ascii 文字しか使用できません"
 
-#: ../src/wireless-security/ws-wep-key.c:130
+#: ../src/wireless-security/ws-wep-key.c:134
 #, c-format
 msgid ""
 "invalid wep-key: wrong key length %zu. A key must be either of length 5/13 "
@@ -4867,11 +5084,11 @@ msgstr ""
 "無効な wep-key: キーの長さ %zu が正しくありません。キーの長さは 5/13 (ascii) "
 "か 10/26 (hex) にする必要があります"
 
-#: ../src/wireless-security/ws-wep-key.c:137
+#: ../src/wireless-security/ws-wep-key.c:141
 msgid "invalid wep-key: passphrase must be non-empty"
 msgstr "無効な wep-key: パスフレーズを空白にすることはできません"
 
-#: ../src/wireless-security/ws-wep-key.c:139
+#: ../src/wireless-security/ws-wep-key.c:143
 msgid "invalid wep-key: passphrase must be shorter than 64 characters"
 msgstr "無効な wep-key: パスフレーズは 64 文字未満にする必要があります。"
 
@@ -4888,7 +5105,8 @@ msgid "1 (Default)"
 msgstr "1 (デフォルト)"
 
 #: ../src/wireless-security/ws-wep-key.ui.h:4
-msgid "_Key:"
+#, fuzzy
+msgid "_Key"
 msgstr "キー(_K):"
 
 #: ../src/wireless-security/ws-wep-key.ui.h:5
@@ -4896,10 +5114,11 @@ msgid "Sho_w key"
 msgstr "キーを表示(_W)"
 
 #: ../src/wireless-security/ws-wep-key.ui.h:7
-msgid "WEP inde_x:"
+#, fuzzy
+msgid "WEP inde_x"
 msgstr "WEP インデックス(_X):"
 
-#: ../src/wireless-security/ws-wpa-psk.c:70
+#: ../src/wireless-security/ws-wpa-psk.c:76
 #, c-format
 msgid ""
 "invalid wpa-psk: invalid key-length %zu. Must be [8,63] bytes or 64 hex "
@@ -4908,10 +5127,39 @@ msgstr ""
 "無効な wpa-psk: キーの長さ %zu が無効です。[8,63] バイトもしくは 16 進数で "
 "64 桁にする必要があります"
 
-#: ../src/wireless-security/ws-wpa-psk.c:79
+#: ../src/wireless-security/ws-wpa-psk.c:83
 msgid "invalid wpa-psk: cannot interpret key with 64 bytes as hex"
 msgstr "無効な wpa-psk: 16 進数の 64 バイトでキーを解釈できません"
 
 #: ../src/wireless-security/ws-wpa-psk.ui.h:2
-msgid "_Type:"
+#, fuzzy
+msgid "_Type"
 msgstr "タイプ(_T):"
+
+#~ msgid "Failed to update connection secrets due to an unknown error."
+#~ msgstr "不明なエラーのため、接続シークレットを更新できませんでした。"
+
+#~ msgid "Priority:"
+#~ msgstr "優先度:"
+
+#~ msgid "_Automatically connect to this network when it is available"
+#~ msgstr "この接続が利用可能になったときに自動的に接続する(_A)"
+
+#~ msgid "Connection _priority for auto-activation:"
+#~ msgstr "自動アクティベーションの接続優先度(_P)"
+
+#~ msgid "Cannot import VPN connection"
+#~ msgstr "VPN 接続をインポートできません"
+
+#~ msgid ""
+#~ "The file “%s” could not be read or does not contain recognized VPN "
+#~ "connection information\n"
+#~ "\n"
+#~ "Error: %s."
+#~ msgstr ""
+#~ "ファイル '%s' が読み込めなかったか、認識される VPN 接続情報がありません\n"
+#~ "\n"
+#~ "エラー: %s"
+
+#~ msgid "unknown error"
+#~ msgstr "不明なエラー"
