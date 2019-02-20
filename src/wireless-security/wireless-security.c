@@ -499,7 +499,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		active = item;
 	item++;
 
-	if (secrets_hints) {
+	if (secrets_hints && secrets_hints[0]) {
 		EAPMethodSimple *em_hints;
 
 		em_hints = eap_method_simple_new (sec, connection, EAP_METHOD_SIMPLE_TYPE_UNKNOWN,
