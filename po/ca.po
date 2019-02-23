@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: NetworkManager\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
 "issues\n"
-"POT-Creation-Date: 2018-06-21 14:54+0000\n"
+"POT-Creation-Date: 2018-12-06 09:38+0000\n"
 "PO-Revision-Date: 2018-06-24 20:41+0100\n"
 "Last-Translator: Carles Ferrando Garcia <carles.ferrando@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
@@ -35,9 +35,8 @@ msgid "Manage your network connections"
 msgstr "Gestioneu les connexions de xarxa"
 
 #: ../nm-connection-editor.desktop.in.h:1
-#: ../src/connection-editor/nm-connection-list.ui.h:1
-msgid "Network Connections"
-msgstr "Connexions de xarxa"
+msgid "Advanced Network Configuration"
+msgstr "Configuració de xarxa avançada"
 
 #: ../nm-connection-editor.desktop.in.h:2
 msgid "Manage and change your network connection settings"
@@ -215,10 +214,10 @@ msgstr "Autenticació 802.1X"
 #: ../src/connection-editor/ce-new-connection.ui.h:1
 #: ../src/connection-editor/ce-page-dcb.ui.h:17
 #: ../src/connection-editor/ce-ppp-auth-methods.ui.h:1
-#: ../src/connection-editor/connection-helpers.c:308
-#: ../src/connection-editor/connection-helpers.c:771
+#: ../src/connection-editor/connection-helpers.c:296
+#: ../src/connection-editor/connection-helpers.c:759
 #: ../src/connection-editor/nm-connection-editor.ui.h:5
-#: ../src/connection-editor/page-bluetooth.c:306
+#: ../src/connection-editor/page-bluetooth.c:307
 #: ../src/connection-editor/page-mobile.c:540
 #: ../src/connection-editor/page-proxy.c:121
 #: ../src/connection-editor/page-team.c:344
@@ -226,20 +225,20 @@ msgstr "Autenticació 802.1X"
 #: ../src/connection-editor/vpn-helpers.c:212 ../src/gsm-unlock.ui.h:1
 #: ../src/libnma/nma-pkcs11-token-login-dialog.ui.h:1
 #: ../src/libnma/nma-vpn-password-dialog.ui.h:1
-#: ../src/libnma/nma-wifi-dialog.c:1066
+#: ../src/libnma/nma-wifi-dialog.c:1097
 #: ../src/libnm-gtk/nm-vpn-password-dialog.c:209
 #: ../src/libnm-gtk/nm-wifi-dialog.c:1067 ../src/mobile-helpers.c:465
 msgid "_Cancel"
 msgstr "_Cancel·la"
 
-#: ../src/8021x.ui.h:3 ../src/libnma/nma-wifi-dialog.c:1072
+#: ../src/8021x.ui.h:3 ../src/libnma/nma-wifi-dialog.c:1103
 #: ../src/libnm-gtk/nm-wifi-dialog.c:1073
 msgid "C_onnect"
 msgstr "C_onnecta"
 
-#: ../src/8021x.ui.h:4 ../src/libnma/wifi.ui.h:2 ../src/libnm-gtk/wifi.ui.h:2
-msgid "_Network name:"
-msgstr "Nom de _xarxa:"
+#: ../src/8021x.ui.h:4 ../src/libnma/wifi.ui.h:2
+msgid "_Network name"
+msgstr "Nom de _xarxa"
 
 #: ../src/ap-menu-item.c:82
 msgid "ad-hoc"
@@ -713,7 +712,7 @@ msgstr "Autenticació DSL"
 #: ../src/connection-editor/ce-ip6-routes.ui.h:2
 #: ../src/connection-editor/ce-page-dcb.ui.h:18
 #: ../src/connection-editor/ce-ppp-auth-methods.ui.h:2
-#: ../src/connection-editor/page-bluetooth.c:308
+#: ../src/connection-editor/page-bluetooth.c:309
 #: ../src/connection-editor/page-mobile.c:542
 #: ../src/libnma/nma-vpn-password-dialog.ui.h:2
 #: ../src/libnm-gtk/nm-vpn-password-dialog.c:210 ../src/mobile-helpers.c:466
@@ -820,8 +819,8 @@ msgid "Error displaying connection information:"
 msgstr "S'ha produït un error en mostrar la informació de la connexió:"
 
 #: ../src/applet-dialogs.c:73 ../src/connection-editor/page-wifi-security.c:378
-#: ../src/libnma/nma-wifi-dialog.c:949 ../src/libnm-gtk/nm-wifi-dialog.c:948
-#: ../src/wireless-security/wireless-security.c:448
+#: ../src/libnma/nma-wifi-dialog.c:968 ../src/libnm-gtk/nm-wifi-dialog.c:948
+#: ../src/wireless-security/wireless-security.c:449
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -1143,7 +1142,7 @@ msgstr "_Afegeix"
 #: ../src/connection-editor/ce-page-ip4.ui.h:8
 #: ../src/connection-editor/ce-page-ip6.ui.h:13
 #: ../src/connection-editor/ce-page-team.ui.h:15
-#: ../src/connection-editor/connection-helpers.c:772
+#: ../src/connection-editor/connection-helpers.c:760
 #: ../src/connection-editor/nm-connection-list.ui.h:4
 msgid "_Delete"
 msgstr "_Suprimeix"
@@ -1681,6 +1680,7 @@ msgid "_Service"
 msgstr "_Servei"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:5
+#: ../src/libnma/nma-file-cert-chooser.c:347
 #: ../src/wireless-security/eap-method-leap.ui.h:3
 #: ../src/wireless-security/eap-method-simple.ui.h:3
 #: ../src/wireless-security/ws-leap.ui.h:3
@@ -1739,8 +1739,8 @@ msgstr ""
 #: ../src/connection-editor/ce-page-ip6.ui.h:1
 #: ../src/connection-editor/ce-page-proxy.ui.h:2
 #: ../src/connection-editor/ce-page-wifi.ui.h:1
-#: ../src/connection-editor/page-ip4.c:131
-#: ../src/connection-editor/page-ip6.c:142
+#: ../src/connection-editor/page-ip4.c:132
+#: ../src/connection-editor/page-ip6.c:143
 #: ../src/wireless-security/eap-method-peap.ui.h:1
 msgid "Automatic"
 msgstr "Automàtic"
@@ -1786,15 +1786,15 @@ msgid "Full"
 msgstr "Complet"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:12
-#: ../src/connection-editor/page-ip6.c:155
+#: ../src/connection-editor/page-ip6.c:156
 msgid "Ignore"
 msgstr "Ignora"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:13
 #: ../src/connection-editor/ce-page-ip4.ui.h:3
 #: ../src/connection-editor/ce-page-ip6.ui.h:3
-#: ../src/connection-editor/page-ip4.c:168
-#: ../src/connection-editor/page-ip6.c:191
+#: ../src/connection-editor/page-ip4.c:169
+#: ../src/connection-editor/page-ip6.c:192
 msgid "Manual"
 msgstr "Manual"
 
@@ -2084,8 +2084,8 @@ msgstr "Connexió local"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:5
 #: ../src/connection-editor/ce-page-ip6.ui.h:5
-#: ../src/connection-editor/page-ip4.c:188
-#: ../src/connection-editor/page-ip6.c:211
+#: ../src/connection-editor/page-ip4.c:189
+#: ../src/connection-editor/page-ip6.c:212
 msgid "Shared to other computers"
 msgstr "Compartit a altres ordinadors"
 
@@ -2119,15 +2119,15 @@ msgstr "Identificador del client de D_HCP"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:12
 #: ../src/connection-editor/ce-page-ip6.ui.h:15
-#: ../src/connection-editor/page-ip4.c:372
-#: ../src/connection-editor/page-ip6.c:346
+#: ../src/connection-editor/page-ip4.c:373
+#: ../src/connection-editor/page-ip6.c:347
 msgid "S_earch domains"
 msgstr "_Dominis de cerca"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:13
 #: ../src/connection-editor/ce-page-ip6.ui.h:16
-#: ../src/connection-editor/page-ip4.c:363
-#: ../src/connection-editor/page-ip6.c:337
+#: ../src/connection-editor/page-ip4.c:364
+#: ../src/connection-editor/page-ip6.c:338
 msgid "DNS ser_vers"
 msgstr "Servidors _DNS"
 
@@ -2159,7 +2159,7 @@ msgstr "_Rutes..."
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:6
 #: ../src/connection-editor/ce-page-macsec.ui.h:3
-#: ../src/connection-editor/page-ip4.c:198
+#: ../src/connection-editor/page-ip4.c:199
 msgid "Disabled"
 msgstr "Inhabilitada"
 
@@ -2339,6 +2339,7 @@ msgid "Allow _roaming if home network is not available"
 msgstr "Permet la _itinerància si la xarxa domèstica no està disponible"
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:11
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:441
 msgid "Sho_w passwords"
 msgstr "Mo_stra les contrasenyes"
 
@@ -2498,13 +2499,8 @@ msgid "Port _sticky"
 msgstr "Port _fixat"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:15
-#: ../src/connection-editor/ce-page-team.ui.h:82
-msgid ""
-"Validate received ARP packets on active ports. If this is not checked, all "
-"incoming ARP packets will be considered as a good reply."
-msgstr ""
-"Valida els paquets ARP rebuts usant els ports actius. Si no es marca això, "
-"tots els paquets ARP entrants es consideraran una resposta bona."
+msgid "Do not unselect the port if a better one becomes available."
+msgstr "No desselecioneu el port si un millor esdevé disponible."
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:16
 msgid "LACP runner options"
@@ -2625,11 +2621,20 @@ msgid "Ignore invalid packets from _active ports"
 msgstr "Ignora els paquets no vàlids dels ports _actius"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:36
+#: ../src/connection-editor/ce-page-team.ui.h:82
+msgid ""
+"Validate received ARP packets on active ports. If this is not checked, all "
+"incoming ARP packets will be considered as a good reply."
+msgstr ""
+"Valida els paquets ARP rebuts usant els ports actius. Si no es marca això, "
+"tots els paquets ARP entrants es consideraran una resposta bona."
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:37
 #: ../src/connection-editor/ce-page-team.ui.h:83
 msgid "Ignore invalid packets from i_nactive ports"
 msgstr "Ignora els paquets no vàlids dels ports i_nactius"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:37
+#: ../src/connection-editor/ce-page-team-port.ui.h:38
 #: ../src/connection-editor/ce-page-team.ui.h:84
 msgid ""
 "Validate received ARP packets on inactive ports. If this is not checked, all "
@@ -2638,12 +2643,12 @@ msgstr ""
 "Valida els paquets ARP rebuts usant els ports inactius. Si no es marca això, "
 "tots els paquets ARP entrants es consideraran com una resposta bona."
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:38
+#: ../src/connection-editor/ce-page-team-port.ui.h:39
 #: ../src/connection-editor/ce-page-team.ui.h:85
 msgid "S_end on inactive ports"
 msgstr "_Envia usant els ports inactius"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:39
+#: ../src/connection-editor/ce-page-team-port.ui.h:40
 #: ../src/connection-editor/ce-page-team.ui.h:86
 msgid ""
 "By default, ARP requests are sent on active ports only. This option allows "
@@ -2652,26 +2657,26 @@ msgstr ""
 "Per defecte, les demandes ARP s'envien usant els ports actius solament. "
 "Aquesta opció permet l'enviament fins i tot usant els ports inactius."
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:40
+#: ../src/connection-editor/ce-page-team-port.ui.h:41
 #: ../src/connection-editor/ce-page-team.ui.h:87
 msgid ""
 "The delay between the link coming up and the runner being notified about it."
 msgstr ""
 "El retard entre l'aixecament de l'enllaç i la notificació d'això al runner."
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:41
+#: ../src/connection-editor/ce-page-team-port.ui.h:42
 #: ../src/connection-editor/ce-page-team.ui.h:88
 msgid ""
 "The delay between the link going down and the runner being notified about it."
 msgstr ""
 "El retard entre la caiguda de l'enllaç i la notificació d'això al runner."
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:42
+#: ../src/connection-editor/ce-page-team-port.ui.h:43
 #: ../src/connection-editor/ce-page-team.ui.h:89
 msgid "The interval between requests being sent."
 msgstr "L'interval entre enviaments de demandes."
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:43
+#: ../src/connection-editor/ce-page-team-port.ui.h:44
 #: ../src/connection-editor/ce-page-team.ui.h:90
 msgid ""
 "The delay between link watch initialization and the first request being sent."
@@ -2679,27 +2684,27 @@ msgstr ""
 "El retard entre la inicialització del monitor d'enllaços i l'enviament de la "
 "primera demanda."
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:44
+#: ../src/connection-editor/ce-page-team-port.ui.h:45
 #: ../src/connection-editor/ce-page-team.ui.h:91
 msgid "The link watcher to be used."
 msgstr "El monitor d'enllaços a usar."
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:45
+#: ../src/connection-editor/ce-page-team-port.ui.h:46
 #: ../src/connection-editor/ce-page-team.ui.h:92
 msgid "Link Watcher"
 msgstr "Monitor d'enllaços"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:46
+#: ../src/connection-editor/ce-page-team-port.ui.h:47
 #: ../src/connection-editor/ce-page-team.ui.h:93
 msgid "Im_port team configuration from a file…"
 msgstr "Im_porta una configuració en equip des d'un fitxer…"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:47
+#: ../src/connection-editor/ce-page-team-port.ui.h:48
 #: ../src/connection-editor/ce-page-team.ui.h:94
 msgid "Edit _JSON configuration"
 msgstr "Edita la configuració _JSON"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:48
+#: ../src/connection-editor/ce-page-team-port.ui.h:49
 #: ../src/connection-editor/ce-page-team.ui.h:95
 msgid "Raw Configuration"
 msgstr "Configuració crua"
@@ -2908,8 +2913,7 @@ msgstr "En dècims de segon. Intervals periòdics entre rebalancejos."
 #: ../src/connection-editor/ce-page-team.ui.h:66
 msgid "Name of active Tx balancer. Active Tx balancing is disabled by default."
 msgstr ""
-"Nom del balanceig Tx actiu. El balanceig Tx actiu es deshabilita per "
-"defecte."
+"Nom del balanceig Tx actiu. El balanceig Tx actiu es deshabilita per defecte."
 
 #: ../src/connection-editor/ce-page-team.ui.h:67
 msgid "Transmission _balancing interval"
@@ -3134,70 +3138,47 @@ msgid "MACsec"
 msgstr "MACsec"
 
 #: ../src/connection-editor/connection-helpers.c:124
-#: ../src/connection-editor/connection-helpers.c:398
+#: ../src/connection-editor/connection-helpers.c:386
 #: ../src/connection-editor/page-vpn.c:100
 msgid "VPN"
 msgstr "VPN"
 
-#: ../src/connection-editor/connection-helpers.c:207
-msgid ""
-"The VPN plugin failed to import the VPN connection correctly\n"
-"\n"
-"Error: no VPN service type."
-msgstr ""
-"El connector VPN no ha pogut importar la connexió VPN correctament\n"
-"\n"
-"Error: no hi ha cap tipus de servei VPN."
+#: ../src/connection-editor/connection-helpers.c:204
+msgid "No VPN service type."
+msgstr "Sense tipus de servei VPN."
 
-#: ../src/connection-editor/connection-helpers.c:219
-msgid "Cannot import VPN connection"
-msgstr "No es pot importar la connexió VPN"
+#: ../src/connection-editor/connection-helpers.c:209
+msgid "The VPN plugin failed to import the VPN connection correctly: "
+msgstr "El connector VPN no ha pogut importar la connexió VPN correctament: "
 
-#: ../src/connection-editor/connection-helpers.c:221
-#, c-format
-msgid ""
-"The file “%s” could not be read or does not contain recognized VPN "
-"connection information\n"
-"\n"
-"Error: %s."
-msgstr ""
-"No s'ha pogut llegir el fitxer «%s» o bé no conté cap informació de connexió "
-"VPN que es pugui reconèixer\n"
-"\n"
-"Error: %s."
-
-#: ../src/connection-editor/connection-helpers.c:222
-msgid "unknown error"
-msgstr "error desconegut"
-
-#: ../src/connection-editor/connection-helpers.c:305
+#: ../src/connection-editor/connection-helpers.c:293
 #: ../src/connection-editor/page-proxy.c:118
 #: ../src/connection-editor/page-team.c:341
 #: ../src/connection-editor/page-team-port.c:203
 msgid "Select file to import"
 msgstr "Seleccioneu el fitxer a importar"
 
-#: ../src/connection-editor/connection-helpers.c:309
+#: ../src/connection-editor/connection-helpers.c:297
 #: ../src/connection-editor/page-proxy.c:122
 #: ../src/connection-editor/page-team.c:345
 #: ../src/connection-editor/page-team-port.c:207
 msgid "_Open"
 msgstr "_Obre"
 
-#: ../src/connection-editor/connection-helpers.c:340
+#: ../src/connection-editor/connection-helpers.c:328
 msgid "Hardware"
 msgstr "Maquinari"
 
-#: ../src/connection-editor/connection-helpers.c:367
+#: ../src/connection-editor/connection-helpers.c:355
 msgid "Virtual"
 msgstr "Virtual"
 
-#: ../src/connection-editor/connection-helpers.c:516
-#: ../src/connection-editor/connection-helpers.c:518
+#: ../src/connection-editor/connection-helpers.c:504
+#: ../src/connection-editor/connection-helpers.c:506
 msgid "Import a saved VPN configuration…"
 msgstr "Importa una configuració VPN…"
 
-#: ../src/connection-editor/connection-helpers.c:548
+#: ../src/connection-editor/connection-helpers.c:536
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
@@ -3205,15 +3186,15 @@ msgstr ""
 "No s'ha pogut inicialitzar el diàleg d'edició de les connexions a causa d'un "
 "error desconegut."
 
-#: ../src/connection-editor/connection-helpers.c:557
+#: ../src/connection-editor/connection-helpers.c:545
 msgid "Could not create new connection"
 msgstr "No s'ha pogut crear la connexió nova"
 
-#: ../src/connection-editor/connection-helpers.c:720
+#: ../src/connection-editor/connection-helpers.c:708
 msgid "Connection delete failed"
 msgstr "No s'ha pogut suprimir la connexió"
 
-#: ../src/connection-editor/connection-helpers.c:768
+#: ../src/connection-editor/connection-helpers.c:756
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Segur que voleu suprimir la connexió %s?"
@@ -3226,32 +3207,32 @@ msgstr "Connexió _nova"
 msgid "_Quit"
 msgstr "_Surt"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:696
-#: ../src/connection-editor/ip6-routes-dialog.c:717
-#: ../src/connection-editor/page-ip4.c:1132
-#: ../src/connection-editor/page-ip6.c:1114
+#: ../src/connection-editor/ip4-routes-dialog.c:697
+#: ../src/connection-editor/ip6-routes-dialog.c:718
+#: ../src/connection-editor/page-ip4.c:1133
+#: ../src/connection-editor/page-ip6.c:1115
 msgid "Address"
 msgstr "Adreça"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:715
-#: ../src/connection-editor/page-ip4.c:1151
+#: ../src/connection-editor/ip4-routes-dialog.c:716
+#: ../src/connection-editor/page-ip4.c:1152
 msgid "Netmask"
 msgstr "Màscara de xarxa"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:734
-#: ../src/connection-editor/ip6-routes-dialog.c:755
-#: ../src/connection-editor/page-ip4.c:1170
-#: ../src/connection-editor/page-ip6.c:1152
+#: ../src/connection-editor/ip4-routes-dialog.c:735
+#: ../src/connection-editor/ip6-routes-dialog.c:756
+#: ../src/connection-editor/page-ip4.c:1171
+#: ../src/connection-editor/page-ip6.c:1153
 msgid "Gateway"
 msgstr "Passarel·la"
 
-#: ../src/connection-editor/ip4-routes-dialog.c:753
-#: ../src/connection-editor/ip6-routes-dialog.c:774
+#: ../src/connection-editor/ip4-routes-dialog.c:754
+#: ../src/connection-editor/ip6-routes-dialog.c:775
 msgid "Metric"
 msgstr "Mètrica"
 
-#: ../src/connection-editor/ip6-routes-dialog.c:736
-#: ../src/connection-editor/page-ip6.c:1133
+#: ../src/connection-editor/ip6-routes-dialog.c:737
+#: ../src/connection-editor/page-ip6.c:1134
 msgid "Prefix"
 msgstr "Prefix"
 
@@ -3273,7 +3254,7 @@ msgid "Editor initializing…"
 msgstr "S'està inicialitzant l'editor…"
 
 #: ../src/connection-editor/nm-connection-editor.c:357
-#: ../src/connection-editor/nm-connection-list.c:449
+#: ../src/connection-editor/nm-connection-list.c:471
 msgid "Connection cannot be modified"
 msgstr "No s'ha pogut modificar la connexió"
 
@@ -3423,65 +3404,88 @@ msgid_plural "%d years ago"
 msgstr[0] "fa %d any"
 msgstr[1] "fa %d anys"
 
-#: ../src/connection-editor/nm-connection-list.c:451
+#: ../src/connection-editor/nm-connection-list.c:473
 msgid "Connection cannot be deleted"
 msgstr "No s'ha pogut eliminar la connexió"
 
-#: ../src/connection-editor/nm-connection-list.c:454
+#: ../src/connection-editor/nm-connection-list.c:476
 msgid "Select a connection to edit"
 msgstr "Selecciona una connexió per a editar"
 
-#: ../src/connection-editor/nm-connection-list.c:456
+#: ../src/connection-editor/nm-connection-list.c:478
 msgid "Select a connection to delete"
 msgstr "Selecciona una connexió per a eliminar"
 
-#: ../src/connection-editor/nm-connection-list.c:772
+#: ../src/connection-editor/nm-connection-list.c:794
 #: ../src/libnma/nma-pkcs11-cert-chooser-dialog.ui.h:2
 msgid "Name"
 msgstr "Nom"
 
-#: ../src/connection-editor/nm-connection-list.c:785
+#: ../src/connection-editor/nm-connection-list.c:807
 msgid "Last Used"
 msgstr "Utilitzada per última vegada"
 
-#: ../src/connection-editor/nm-connection-list.c:823
+#: ../src/connection-editor/nm-connection-list.c:845
 msgid "Edit the selected connection"
 msgstr "Edita la connexió seleccionada"
 
-#: ../src/connection-editor/nm-connection-list.c:824
+#: ../src/connection-editor/nm-connection-list.c:846
 msgid "Authenticate to edit the selected connection"
 msgstr "Autentiqueu-vos per editar la connexió seleccionada"
 
-#: ../src/connection-editor/nm-connection-list.c:829
+#: ../src/connection-editor/nm-connection-list.c:851
 msgid "Delete the selected connection"
 msgstr "Suprimeix la connexió seleccionada"
 
-#: ../src/connection-editor/nm-connection-list.c:830
+#: ../src/connection-editor/nm-connection-list.c:852
 msgid "Authenticate to delete the selected connection"
 msgstr "Autentiqueu-vos per suprimir la connexió seleccionada"
 
-#: ../src/connection-editor/nm-connection-list.c:1035
-#: ../src/connection-editor/nm-connection-list.c:1038
+#: ../src/connection-editor/nm-connection-list.c:1059
+#, c-format
+msgid "Unrecognized connection type"
+msgstr "Tipus de connexió desconegut"
+
+#: ../src/connection-editor/nm-connection-list.c:1064
+#, c-format
+msgid "Don’t know how to import “%s” connections"
+msgstr "Es desconeix com importar connexions «%s»"
+
+#: ../src/connection-editor/nm-connection-list.c:1068
+msgid "Error importing connection"
+msgstr "S'ha produït un error en importar la connexió"
+
+#: ../src/connection-editor/nm-connection-list.c:1075
+#: ../src/connection-editor/nm-connection-list.c:1090
+#: ../src/connection-editor/nm-connection-list.c:1093
 msgid "Error creating connection"
 msgstr "S'ha produït un error en crear la connexió"
 
-#: ../src/connection-editor/nm-connection-list.c:1036
+#: ../src/connection-editor/nm-connection-list.c:1075
+msgid "Connection type not specified."
+msgstr "No s'ha especificat el tipus de connexió"
+
+#: ../src/connection-editor/nm-connection-list.c:1091
 msgid "No VPN plugins are installed."
 msgstr "No hi ha cap connector VPN instal·lat."
 
-#: ../src/connection-editor/nm-connection-list.c:1039
+#: ../src/connection-editor/nm-connection-list.c:1094
 #, c-format
 msgid "Don’t know how to create “%s” connections"
 msgstr "Es desconeix com crear connexions «%s»"
 
-#: ../src/connection-editor/nm-connection-list.c:1072
+#: ../src/connection-editor/nm-connection-list.c:1128
 msgid "Error editing connection"
 msgstr "S'ha produït un error en editar la connexió"
 
-#: ../src/connection-editor/nm-connection-list.c:1073
+#: ../src/connection-editor/nm-connection-list.c:1129
 #, c-format
 msgid "Did not find a connection with UUID “%s”"
 msgstr "No s'ha pogut trobar cap connexió amb UUID «%s»"
+
+#: ../src/connection-editor/nm-connection-list.ui.h:1
+msgid "Network Connections"
+msgstr "Connexions de xarxa"
 
 #: ../src/connection-editor/nm-connection-list.ui.h:2
 msgid "Add a new connection"
@@ -3518,19 +3522,19 @@ msgstr "dispositiu Bluetooth no vàlid (%s)"
 msgid "Bluetooth connection %d"
 msgstr "Connexió Bluetooth %d"
 
-#: ../src/connection-editor/page-bluetooth.c:303
+#: ../src/connection-editor/page-bluetooth.c:304
 msgid "Bluetooth Type"
 msgstr "Tipus de Bluetooth"
 
-#: ../src/connection-editor/page-bluetooth.c:321
+#: ../src/connection-editor/page-bluetooth.c:322
 msgid "Select the type of the Bluetooth connection profile."
 msgstr "Selecciona el tipus del perfil de connexió Bluetooth."
 
-#: ../src/connection-editor/page-bluetooth.c:326
+#: ../src/connection-editor/page-bluetooth.c:327
 msgid "_Personal Area Network"
 msgstr "Xarxa d'àrea _personal"
 
-#: ../src/connection-editor/page-bluetooth.c:331
+#: ../src/connection-editor/page-bluetooth.c:332
 msgid "_Dial-Up Network"
 msgstr "Xarxa _de connexió telefònica"
 
@@ -3629,8 +3633,8 @@ msgstr "Connexió de xarxa amb fil %d"
 
 #. TRANSLATORS: Default zone set for firewall, when no zone is selected
 #: ../src/connection-editor/page-general.c:55
-#: ../src/libnma/nma-mobile-providers.c:806
-#: ../src/libnm-gtk/nm-mobile-providers.c:805
+#: ../src/libnma/nma-mobile-providers.c:802
+#: ../src/libnm-gtk/nm-mobile-providers.c:801
 msgid "Default"
 msgstr "Per defecte"
 
@@ -3683,121 +3687,121 @@ msgstr "No s'ha pogut carregar la interfície d'usuari de túnel IP."
 msgid "IP tunnel connection %d"
 msgstr "Connexió de túnel IP %d"
 
-#: ../src/connection-editor/page-ip4.c:127
-#: ../src/connection-editor/page-ip6.c:136
+#: ../src/connection-editor/page-ip4.c:128
+#: ../src/connection-editor/page-ip6.c:137
 msgid "Automatic (VPN)"
 msgstr "Automàtic (VPN)"
 
-#: ../src/connection-editor/page-ip4.c:128
-#: ../src/connection-editor/page-ip6.c:137
+#: ../src/connection-editor/page-ip4.c:129
+#: ../src/connection-editor/page-ip6.c:138
 msgid "Automatic (VPN) addresses only"
 msgstr "Només adreces (VPN) automàtiques"
 
-#: ../src/connection-editor/page-ip4.c:132
-#: ../src/connection-editor/page-ip6.c:143
+#: ../src/connection-editor/page-ip4.c:133
+#: ../src/connection-editor/page-ip6.c:144
 msgid "Automatic, addresses only"
 msgstr "Automàtic, només adreces"
 
-#: ../src/connection-editor/page-ip4.c:134
-#: ../src/connection-editor/page-ip6.c:139
+#: ../src/connection-editor/page-ip4.c:135
+#: ../src/connection-editor/page-ip6.c:140
 msgid "Automatic (PPPoE)"
 msgstr "Automàtic (PPPoE)"
 
-#: ../src/connection-editor/page-ip4.c:135
-#: ../src/connection-editor/page-ip6.c:140
+#: ../src/connection-editor/page-ip4.c:136
+#: ../src/connection-editor/page-ip6.c:141
 msgid "Automatic (PPPoE) addresses only"
 msgstr "Només adreces (PPPoE) automàtiques"
 
-#: ../src/connection-editor/page-ip4.c:137
+#: ../src/connection-editor/page-ip4.c:138
 msgid "Automatic (DHCP)"
 msgstr "Automàtic (DHCP)"
 
-#: ../src/connection-editor/page-ip4.c:138
+#: ../src/connection-editor/page-ip4.c:139
 msgid "Automatic (DHCP) addresses only"
 msgstr "Només adreces (DHCP) automàtiques"
 
 # http://en.wikipedia.org/wiki/Link-local_address (dpm)
-#: ../src/connection-editor/page-ip4.c:181
-#: ../src/connection-editor/page-ip6.c:204
+#: ../src/connection-editor/page-ip4.c:182
+#: ../src/connection-editor/page-ip6.c:205
 msgid "Link-Local Only"
 msgstr "Només adreces de connexió local"
 
-#: ../src/connection-editor/page-ip4.c:361
-#: ../src/connection-editor/page-ip6.c:335
+#: ../src/connection-editor/page-ip4.c:362
+#: ../src/connection-editor/page-ip6.c:336
 msgid "Additional DNS ser_vers"
 msgstr "Servidors _DNS addicionals"
 
-#: ../src/connection-editor/page-ip4.c:370
-#: ../src/connection-editor/page-ip6.c:344
+#: ../src/connection-editor/page-ip4.c:371
+#: ../src/connection-editor/page-ip6.c:345
 msgid "Additional s_earch domains"
 msgstr "Dominis de _cerca addicionals"
 
-#: ../src/connection-editor/page-ip4.c:1032
+#: ../src/connection-editor/page-ip4.c:1033
 #, c-format
 msgid "Editing IPv4 routes for %s"
 msgstr "Edició de les rutes IPv4 per a %s"
 
-#: ../src/connection-editor/page-ip4.c:1222
+#: ../src/connection-editor/page-ip4.c:1223
 msgid "IPv4 Settings"
 msgstr "Paràmetres IPv4"
 
-#: ../src/connection-editor/page-ip4.c:1224
+#: ../src/connection-editor/page-ip4.c:1225
 msgid "Could not load IPv4 user interface."
 msgstr "No s'ha pogut carregar la interfície d'usuari per a la connexió IPv4."
 
-#: ../src/connection-editor/page-ip4.c:1317
+#: ../src/connection-editor/page-ip4.c:1318
 #, c-format
 msgid "IPv4 address “%s” invalid"
 msgstr "Adreça IPv4 «%s» no vàlida"
 
-#: ../src/connection-editor/page-ip4.c:1325
+#: ../src/connection-editor/page-ip4.c:1326
 #, c-format
 msgid "IPv4 address netmask “%s” invalid"
 msgstr "Adreça IPv4 no vàlida de la màscara de xarxa «%s»"
 
-#: ../src/connection-editor/page-ip4.c:1334
+#: ../src/connection-editor/page-ip4.c:1335
 #, c-format
 msgid "IPv4 gateway “%s” invalid"
 msgstr "Passarel·la IPv4 «%s» no vàlida"
 
-#: ../src/connection-editor/page-ip4.c:1377
+#: ../src/connection-editor/page-ip4.c:1378
 #, c-format
 msgid "IPv4 DNS server “%s” invalid"
 msgstr "Servidor DNS IPv4 DNS «%s» no vàlid"
 
-#: ../src/connection-editor/page-ip6.c:179
+#: ../src/connection-editor/page-ip6.c:180
 msgid "Automatic, DHCP only"
 msgstr "Automàtic, només DHCP"
 
-#: ../src/connection-editor/page-ip6.c:1015
+#: ../src/connection-editor/page-ip6.c:1016
 #, c-format
 msgid "Editing IPv6 routes for %s"
 msgstr "Edició de les rutes IPv6 per a %s"
 
-#: ../src/connection-editor/page-ip6.c:1204
+#: ../src/connection-editor/page-ip6.c:1205
 msgid "IPv6 Settings"
 msgstr "Paràmetres IPv6"
 
-#: ../src/connection-editor/page-ip6.c:1206
+#: ../src/connection-editor/page-ip6.c:1207
 msgid "Could not load IPv6 user interface."
 msgstr "No s'ha pogut carregar la interfície d'usuari per a la connexió IPv6."
 
-#: ../src/connection-editor/page-ip6.c:1298
+#: ../src/connection-editor/page-ip6.c:1299
 #, c-format
 msgid "IPv6 address “%s” invalid"
 msgstr "Adreça IPv6 «%s» no vàlida"
 
-#: ../src/connection-editor/page-ip6.c:1306
+#: ../src/connection-editor/page-ip6.c:1307
 #, c-format
 msgid "IPv6 prefix “%s” invalid"
 msgstr "Prefix IPv6 «%s» no vàlid"
 
-#: ../src/connection-editor/page-ip6.c:1315
+#: ../src/connection-editor/page-ip6.c:1316
 #, c-format
 msgid "IPv6 gateway “%s” invalid"
 msgstr "Passarel·la IPv6 «%s» no vàlida"
 
-#: ../src/connection-editor/page-ip6.c:1357
+#: ../src/connection-editor/page-ip6.c:1358
 #, c-format
 msgid "IPv6 DNS server “%s” invalid"
 msgstr "Servidor DNS IPv6 «%s» no vàlid"
@@ -3871,35 +3875,37 @@ msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr ""
 "El meu proveïdor utilitza tecnologia basada en C_DMA (és a dir, 1xRTT, EVDO)"
 
-#: ../src/connection-editor/page-mobile.c:586 ../src/mb-menu-item.c:50
+#: ../src/connection-editor/page-mobile.c:586
+#: ../src/libnma/nma-mobile-wizard.c:147 ../src/mb-menu-item.c:50
 #: ../src/mobile-helpers.c:282
 msgid "CDMA"
 msgstr "CDMA"
 
-#: ../src/connection-editor/page-mobile.c:589 ../src/mb-menu-item.c:54
+#: ../src/connection-editor/page-mobile.c:589
+#: ../src/libnma/nma-mobile-wizard.c:144 ../src/mb-menu-item.c:54
 #: ../src/mobile-helpers.c:280
 msgid "GSM"
 msgstr "GSM"
 
 #: ../src/connection-editor/page-ppp.c:130
-#: ../src/wireless-security/eap-method-ttls.c:287
+#: ../src/wireless-security/eap-method-ttls.c:288
 msgid "PAP"
 msgstr "PAP"
 
 #: ../src/connection-editor/page-ppp.c:131
-#: ../src/wireless-security/eap-method-ttls.c:349
+#: ../src/wireless-security/eap-method-ttls.c:354
 msgid "CHAP"
 msgstr "CHAP"
 
 #: ../src/connection-editor/page-ppp.c:132
-#: ../src/wireless-security/eap-method-fast.c:282
-#: ../src/wireless-security/eap-method-peap.c:299
-#: ../src/wireless-security/eap-method-ttls.c:317
+#: ../src/wireless-security/eap-method-fast.c:284
+#: ../src/wireless-security/eap-method-peap.c:300
+#: ../src/wireless-security/eap-method-ttls.c:320
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
 #: ../src/connection-editor/page-ppp.c:133
-#: ../src/wireless-security/eap-method-ttls.c:302
+#: ../src/wireless-security/eap-method-ttls.c:304
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
@@ -4060,12 +4066,12 @@ msgid "Wi-Fi connection %d"
 msgstr "Connexió de xarxa sense fil %d"
 
 #: ../src/connection-editor/page-wifi-security.c:355
-#: ../src/libnma/nma-wifi-dialog.c:923 ../src/libnm-gtk/nm-wifi-dialog.c:922
+#: ../src/libnma/nma-wifi-dialog.c:942 ../src/libnm-gtk/nm-wifi-dialog.c:922
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "Clau WEP de 40/128 bits (Hex o ASCII)"
 
 #: ../src/connection-editor/page-wifi-security.c:365
-#: ../src/libnma/nma-wifi-dialog.c:932 ../src/libnm-gtk/nm-wifi-dialog.c:931
+#: ../src/libnma/nma-wifi-dialog.c:951 ../src/libnm-gtk/nm-wifi-dialog.c:931
 msgid "WEP 128-bit Passphrase"
 msgstr "Contrasenya WEP de 128 bits"
 
@@ -4074,12 +4080,12 @@ msgid "Dynamic WEP (802.1X)"
 msgstr "WEP dinàmic 802.1X"
 
 #: ../src/connection-editor/page-wifi-security.c:404
-#: ../src/libnma/nma-wifi-dialog.c:976 ../src/libnm-gtk/nm-wifi-dialog.c:975
+#: ../src/libnma/nma-wifi-dialog.c:995 ../src/libnm-gtk/nm-wifi-dialog.c:975
 msgid "WPA & WPA2 Personal"
 msgstr "WPA i WPA2 Personal"
 
 #: ../src/connection-editor/page-wifi-security.c:417
-#: ../src/libnma/nma-wifi-dialog.c:990 ../src/libnm-gtk/nm-wifi-dialog.c:989
+#: ../src/libnma/nma-wifi-dialog.c:1013 ../src/libnm-gtk/nm-wifi-dialog.c:989
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA i WPA2 Enterprise"
 
@@ -4180,15 +4186,15 @@ msgstr "Trieu una clau per al vostre certificat %s"
 
 #: ../src/libnma/nma-file-cert-chooser.c:250
 #: ../src/libnma/nma-pkcs11-cert-chooser.c:374
-#, c-format
-msgid "%s private _key:"
-msgstr "Clau _privada %s:"
+#,  c-format
+msgid "%s private _key"
+msgstr "Clau _privada %s"
 
 #: ../src/libnma/nma-file-cert-chooser.c:254
 #: ../src/libnma/nma-pkcs11-cert-chooser.c:378
 #, c-format
-msgid "%s key _password:"
-msgstr "Contrasenya de la clau _privada %s:"
+msgid "%s key _password"
+msgstr "Contrasenya de la clau _privada %s"
 
 #: ../src/libnma/nma-file-cert-chooser.c:258
 #, c-format
@@ -4198,45 +4204,45 @@ msgstr "Trieu el vostre certificat %s"
 #: ../src/libnma/nma-file-cert-chooser.c:262
 #: ../src/libnma/nma-pkcs11-cert-chooser.c:386
 #, c-format
-msgid "%s _certificate:"
-msgstr "_Certificat %s:"
+msgid "%s _certificate"
+msgstr "_Certificat %s"
 
-#: ../src/libnma/nma-mobile-wizard.c:281
-#: ../src/libnm-gtk/nm-mobile-wizard.c:326
-msgid "Unlisted"
-msgstr "No és a la llista"
-
-#: ../src/libnma/nma-mobile-wizard.c:465
-#: ../src/libnm-gtk/nm-mobile-wizard.c:558
-msgid "My plan is not listed…"
-msgstr "El meu pla no és a la llista…"
-
-#: ../src/libnma/nma-mobile-wizard.c:626
-#: ../src/libnm-gtk/nm-mobile-wizard.c:724
-msgid "Provider"
-msgstr "Proveïdor"
-
-#: ../src/libnma/nma-mobile-wizard.c:908
-#: ../src/libnm-gtk/nm-mobile-wizard.c:1067
-msgid "Country or region"
-msgstr "País o regió"
-
-#: ../src/libnma/nma-mobile-wizard.c:918
+#: ../src/libnma/nma-mobile-providers.c:991
 #: ../src/libnm-gtk/nm-mobile-wizard.c:1077
 msgid "My country is not listed"
 msgstr "El meu país no és a la llista"
 
-#: ../src/libnma/nma-mobile-wizard.c:999
+#: ../src/libnma/nma-mobile-wizard.c:252 ../src/libnma/nma-mobile-wizard.c:284
+#: ../src/libnm-gtk/nm-mobile-wizard.c:326
+msgid "Unlisted"
+msgstr "No és a la llista"
+
+#: ../src/libnma/nma-mobile-wizard.c:484
+#: ../src/libnm-gtk/nm-mobile-wizard.c:558
+msgid "My plan is not listed…"
+msgstr "El meu pla no és a la llista…"
+
+#: ../src/libnma/nma-mobile-wizard.c:644
+#: ../src/libnm-gtk/nm-mobile-wizard.c:724
+msgid "Provider"
+msgstr "Proveïdor"
+
+#: ../src/libnma/nma-mobile-wizard.c:932
+#: ../src/libnm-gtk/nm-mobile-wizard.c:1067
+msgid "Country or region"
+msgstr "País o regió"
+
+#: ../src/libnma/nma-mobile-wizard.c:1016
 #: ../src/libnm-gtk/nm-mobile-wizard.c:1184
 msgid "Installed GSM device"
 msgstr "Dispositiu GSM instal·lat"
 
-#: ../src/libnma/nma-mobile-wizard.c:1002
+#: ../src/libnma/nma-mobile-wizard.c:1019
 #: ../src/libnm-gtk/nm-mobile-wizard.c:1187
 msgid "Installed CDMA device"
 msgstr "Dispositiu CDMA instal·lat"
 
-#: ../src/libnma/nma-mobile-wizard.c:1208
+#: ../src/libnma/nma-mobile-wizard.c:1225
 #: ../src/libnm-gtk/nm-mobile-wizard.c:1428
 msgid "Any device"
 msgstr "Qualsevol dispositiu"
@@ -4303,9 +4309,8 @@ msgid "Select your provider from a _list:"
 msgstr "Seleccioneu el proveïdor des d'una _llista:"
 
 #: ../src/libnma/nma-mobile-wizard.ui.h:12
-#: ../src/libnm-gtk/nm-mobile-wizard.c:749
-msgid "I can’t find my provider and I wish to enter it _manually:"
-msgstr "No hi ha el proveïdor i vull introduir-lo _manualment:"
+msgid "I can’t find my provider and I wish to set up the connection _manually:"
+msgstr "No hi ha el proveïdor i vull configurar la connexió _manualment:"
 
 #: ../src/libnma/nma-mobile-wizard.ui.h:13
 #: ../src/libnm-gtk/nm-mobile-wizard.c:779
@@ -4318,26 +4323,21 @@ msgid "My provider uses CDMA technology (1xRTT, EVDO)"
 msgstr "El proveïdor utilitza tecnologia CDMA (1xRTT, EVDO)"
 
 #: ../src/libnma/nma-mobile-wizard.ui.h:15
-#: ../src/libnm-gtk/nm-mobile-wizard.c:762
-msgid "Provider:"
-msgstr "Proveïdor:"
-
-#: ../src/libnma/nma-mobile-wizard.ui.h:16
 #: ../src/libnm-gtk/nm-mobile-wizard.c:792
 msgid "Choose your Provider"
 msgstr "Trieu el proveïdor"
 
-#: ../src/libnma/nma-mobile-wizard.ui.h:17
+#: ../src/libnma/nma-mobile-wizard.ui.h:16
 #: ../src/libnm-gtk/nm-mobile-wizard.c:457
 msgid "_Select your plan:"
 msgstr "_Seleccioneu el vostre pla:"
 
-#: ../src/libnma/nma-mobile-wizard.ui.h:18
+#: ../src/libnma/nma-mobile-wizard.ui.h:17
 #: ../src/libnm-gtk/nm-mobile-wizard.c:481
 msgid "Selected plan _APN (Access Point Name):"
 msgstr "_APN (Access Point Name - nom del punt d'accés) del pla seleccionat:"
 
-#: ../src/libnma/nma-mobile-wizard.ui.h:19
+#: ../src/libnma/nma-mobile-wizard.ui.h:18
 #: ../src/libnm-gtk/nm-mobile-wizard.c:501
 msgid ""
 "Warning: Selecting an incorrect plan may result in billing issues for your "
@@ -4351,12 +4351,12 @@ msgstr ""
 "Si no esteu segur de quin és el vostre pla, demaneu al proveïdor que us "
 "n'indiqui l'APN («Access Point Name», nom del punt d'accés)."
 
-#: ../src/libnma/nma-mobile-wizard.ui.h:22
+#: ../src/libnma/nma-mobile-wizard.ui.h:21
 #: ../src/libnm-gtk/nm-mobile-wizard.c:509
 msgid "Choose your Billing Plan"
 msgstr "Seleccioneu el pla de facturació"
 
-#: ../src/libnma/nma-mobile-wizard.ui.h:23
+#: ../src/libnma/nma-mobile-wizard.ui.h:22
 #: ../src/libnm-gtk/nm-mobile-wizard.c:199
 msgid ""
 "Your mobile broadband connection is configured with the following settings:"
@@ -4365,24 +4365,24 @@ msgstr ""
 "següents:"
 
 #. Device
-#: ../src/libnma/nma-mobile-wizard.ui.h:24
+#: ../src/libnma/nma-mobile-wizard.ui.h:23
 #: ../src/libnm-gtk/nm-mobile-wizard.c:206
 msgid "Your Device:"
 msgstr "El dispositiu:"
 
 #. Provider
-#: ../src/libnma/nma-mobile-wizard.ui.h:25
+#: ../src/libnma/nma-mobile-wizard.ui.h:24
 #: ../src/libnm-gtk/nm-mobile-wizard.c:217
 msgid "Your Provider:"
 msgstr "El proveïdor:"
 
 #. Plan and APN
-#: ../src/libnma/nma-mobile-wizard.ui.h:26
+#: ../src/libnma/nma-mobile-wizard.ui.h:25
 #: ../src/libnm-gtk/nm-mobile-wizard.c:228
 msgid "Your Plan:"
 msgstr "El pla:"
 
-#: ../src/libnma/nma-mobile-wizard.ui.h:27
+#: ../src/libnma/nma-mobile-wizard.ui.h:26
 #: ../src/libnm-gtk/nm-mobile-wizard.c:249
 msgid ""
 "A connection will now be made to your mobile broadband provider using the "
@@ -4397,7 +4397,7 @@ msgstr ""
 "voleu modificar els paràmetres de la connexió de banda ampla mòbil, trieu "
 "l'entrada «Connexions de xarxa» del menú Sistema → Preferències."
 
-#: ../src/libnma/nma-mobile-wizard.ui.h:28
+#: ../src/libnma/nma-mobile-wizard.ui.h:27
 #: ../src/libnm-gtk/nm-mobile-wizard.c:262
 msgid "Confirm Mobile Broadband Settings"
 msgstr "Confirmeu els paràmetres de la banda ampla mòbil"
@@ -4442,8 +4442,8 @@ msgstr "Trieu el certificat %s"
 
 #: ../src/libnma/nma-pkcs11-cert-chooser.c:390
 #, c-format
-msgid "%s certificate _password:"
-msgstr "_Contrasenya del certificat %s:"
+msgid "%s certificate _password"
+msgstr "_Contrasenya del certificat %s"
 
 #: ../src/libnma/nma-pkcs11-cert-chooser-dialog.c:255
 msgid "Error logging in: "
@@ -4510,36 +4510,28 @@ msgstr "Contrasenya _secundària:"
 msgid "_Password:"
 msgstr "_Contrasenya:"
 
-#: ../src/libnma/nma-wifi-dialog.c:132 ../src/libnm-gtk/nm-wifi-dialog.c:141
+#: ../src/libnma/nma-wifi-dialog.c:126 ../src/libnm-gtk/nm-wifi-dialog.c:141
 msgid "Click to connect"
 msgstr "Cliqueu per connectar"
 
-#: ../src/libnma/nma-wifi-dialog.c:133 ../src/libnm-gtk/nm-wifi-dialog.c:142
-msgid ""
-"Either a password is missing or the connection is invalid. In the latter "
-"case, you have to edit the connection with nm-connection-editor first"
-msgstr ""
-"O bé falta la contrasenya o la connexió no és vàlida. En el segon cas heu "
-"d'editar primer la connexió amb el nm-connection-editor"
-
-#: ../src/libnma/nma-wifi-dialog.c:468 ../src/libnm-gtk/nm-wifi-dialog.c:465
+#: ../src/libnma/nma-wifi-dialog.c:457 ../src/libnm-gtk/nm-wifi-dialog.c:465
 msgid "New…"
 msgstr "Nou…"
 
-#: ../src/libnma/nma-wifi-dialog.c:906 ../src/libnm-gtk/nm-wifi-dialog.c:905
+#: ../src/libnma/nma-wifi-dialog.c:925 ../src/libnm-gtk/nm-wifi-dialog.c:905
 msgctxt "Wifi/wired security"
 msgid "None"
 msgstr "Cap"
 
-#: ../src/libnma/nma-wifi-dialog.c:962 ../src/libnm-gtk/nm-wifi-dialog.c:961
+#: ../src/libnma/nma-wifi-dialog.c:981 ../src/libnm-gtk/nm-wifi-dialog.c:961
 msgid "Dynamic WEP (802.1x)"
 msgstr "WEP dinàmic (802.1X)"
 
-#: ../src/libnma/nma-wifi-dialog.c:1070 ../src/libnm-gtk/nm-wifi-dialog.c:1071
+#: ../src/libnma/nma-wifi-dialog.c:1101 ../src/libnm-gtk/nm-wifi-dialog.c:1071
 msgid "C_reate"
 msgstr "C_rea"
 
-#: ../src/libnma/nma-wifi-dialog.c:1149 ../src/libnm-gtk/nm-wifi-dialog.c:1150
+#: ../src/libnma/nma-wifi-dialog.c:1179 ../src/libnm-gtk/nm-wifi-dialog.c:1150
 #, c-format
 msgid ""
 "Passwords or encryption keys are required to access the Wi-Fi network “%s”."
@@ -4547,35 +4539,35 @@ msgstr ""
 "Cal una contrasenya o claus d'encriptació per accedir a la xarxa sense fil "
 "«%s»."
 
-#: ../src/libnma/nma-wifi-dialog.c:1151 ../src/libnm-gtk/nm-wifi-dialog.c:1152
+#: ../src/libnma/nma-wifi-dialog.c:1181 ../src/libnm-gtk/nm-wifi-dialog.c:1152
 msgid "Wi-Fi Network Authentication Required"
 msgstr "Cal autenticació per a la xarxa sense fil"
 
-#: ../src/libnma/nma-wifi-dialog.c:1153 ../src/libnm-gtk/nm-wifi-dialog.c:1154
+#: ../src/libnma/nma-wifi-dialog.c:1183 ../src/libnm-gtk/nm-wifi-dialog.c:1154
 msgid "Authentication required by Wi-Fi network"
 msgstr "Cal autenticació per a la xarxa sense fil"
 
-#: ../src/libnma/nma-wifi-dialog.c:1158 ../src/libnm-gtk/nm-wifi-dialog.c:1159
+#: ../src/libnma/nma-wifi-dialog.c:1188 ../src/libnm-gtk/nm-wifi-dialog.c:1159
 msgid "Create New Wi-Fi Network"
 msgstr "Crea una xarxa sense fil nova"
 
-#: ../src/libnma/nma-wifi-dialog.c:1160 ../src/libnm-gtk/nm-wifi-dialog.c:1161
+#: ../src/libnma/nma-wifi-dialog.c:1190 ../src/libnm-gtk/nm-wifi-dialog.c:1161
 msgid "New Wi-Fi network"
 msgstr "Xarxa sense fil nova"
 
-#: ../src/libnma/nma-wifi-dialog.c:1161 ../src/libnm-gtk/nm-wifi-dialog.c:1162
+#: ../src/libnma/nma-wifi-dialog.c:1191 ../src/libnm-gtk/nm-wifi-dialog.c:1162
 msgid "Enter a name for the Wi-Fi network you wish to create."
 msgstr "Introduïu el nom de la xarxa sense fil que voleu crear."
 
-#: ../src/libnma/nma-wifi-dialog.c:1163 ../src/libnm-gtk/nm-wifi-dialog.c:1164
+#: ../src/libnma/nma-wifi-dialog.c:1193 ../src/libnm-gtk/nm-wifi-dialog.c:1164
 msgid "Connect to Hidden Wi-Fi Network"
 msgstr "Connecta't a la xarxa sense fil oculta"
 
-#: ../src/libnma/nma-wifi-dialog.c:1165 ../src/libnm-gtk/nm-wifi-dialog.c:1166
+#: ../src/libnma/nma-wifi-dialog.c:1195 ../src/libnm-gtk/nm-wifi-dialog.c:1166
 msgid "Hidden Wi-Fi network"
 msgstr "Xarxa sense fil oculta"
 
-#: ../src/libnma/nma-wifi-dialog.c:1166 ../src/libnm-gtk/nm-wifi-dialog.c:1167
+#: ../src/libnma/nma-wifi-dialog.c:1196 ../src/libnm-gtk/nm-wifi-dialog.c:1167
 msgid ""
 "Enter the name and security details of the hidden Wi-Fi network you wish to "
 "connect to."
@@ -4583,17 +4575,25 @@ msgstr ""
 "Introduïu el nom i els paràmetres de seguretat de la xarxa sense fil oculta "
 "a la qual us vulgueu connectar."
 
-#: ../src/libnma/wifi.ui.h:1 ../src/libnm-gtk/wifi.ui.h:1
-msgid "Wi-Fi _security:"
-msgstr "Seguretat de la _xarxa sense fil:"
+#: ../src/libnma/wifi.ui.h:1
+msgid "Wi-Fi _security"
+msgstr "Seguretat de la _xarxa sense fil"
 
-#: ../src/libnma/wifi.ui.h:3 ../src/libnm-gtk/wifi.ui.h:3
-msgid "C_onnection:"
-msgstr "Co_nnexió:"
+#: ../src/libnma/wifi.ui.h:3
+msgid "C_onnection"
+msgstr "Co_nnexió"
 
-#: ../src/libnma/wifi.ui.h:4 ../src/libnm-gtk/wifi.ui.h:4
-msgid "Wi-Fi _adapter:"
-msgstr "_Adaptador sense fil:"
+#: ../src/libnma/wifi.ui.h:4
+msgid "Wi-Fi _adapter"
+msgstr "_Adaptador sense fil"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:749
+msgid "I can’t find my provider and I wish to enter it _manually:"
+msgstr "No hi ha el proveïdor i vull introduir-lo _manualment:"
+
+#: ../src/libnm-gtk/nm-mobile-wizard.c:762
+msgid "Provider:"
+msgstr "Proveïdor:"
 
 #: ../src/libnm-gtk/nm-ui-utils.c:302 ../src/libnm-gtk/nm-ui-utils.c:369
 msgid "Wired"
@@ -4626,6 +4626,30 @@ msgstr "USB"
 msgctxt "long device name"
 msgid "%s %s"
 msgstr "%s %s"
+
+#: ../src/libnm-gtk/nm-wifi-dialog.c:142
+msgid ""
+"Either a password is missing or the connection is invalid. In the latter "
+"case, you have to edit the connection with nm-connection-editor first"
+msgstr ""
+"O bé falta la contrasenya o la connexió no és vàlida. En el segon cas heu "
+"d'editar primer la connexió amb el nm-connection-editor"
+
+#: ../src/libnm-gtk/wifi.ui.h:1
+msgid "Wi-Fi _security:"
+msgstr "Seguretat de la _xarxa sense fil:"
+
+#: ../src/libnm-gtk/wifi.ui.h:2
+msgid "_Network name:"
+msgstr "Nom de _xarxa:"
+
+#: ../src/libnm-gtk/wifi.ui.h:3
+msgid "C_onnection:"
+msgstr "Co_nnexió:"
+
+#: ../src/libnm-gtk/wifi.ui.h:4
+msgid "Wi-Fi _adapter:"
+msgstr "_Adaptador sense fil:"
 
 #: ../src/main.c:42
 msgid "Usage:"
@@ -4757,11 +4781,11 @@ msgstr "itinerància"
 msgid "%s connection"
 msgstr "connexió de %s"
 
-#: ../src/utils/utils.c:565
+#: ../src/utils/utils.c:549
 msgid "PEM certificates (*.pem, *.crt, *.cer)"
 msgstr "Certificats PEM (*.pem, *.crt, *.cer)"
 
-#: ../src/utils/utils.c:577
+#: ../src/utils/utils.c:561
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "Claus privades DER, PEM o PKCS#12 (*.der, *.pem, *.p12, *.key)"
 
@@ -4781,21 +4805,21 @@ msgstr "els fitxers de certificat CA no existeix"
 msgid "missing EAP-FAST PAC file"
 msgstr "falta el fitxer EAP-FAST PAC"
 
-#: ../src/wireless-security/eap-method-fast.c:267
-#: ../src/wireless-security/eap-method-peap.c:329
-#: ../src/wireless-security/eap-method-ttls.c:379
+#: ../src/wireless-security/eap-method-fast.c:268
+#: ../src/wireless-security/eap-method-peap.c:332
+#: ../src/wireless-security/eap-method-ttls.c:386
 msgid "GTC"
 msgstr "GTC"
 
-#: ../src/wireless-security/eap-method-fast.c:405
+#: ../src/wireless-security/eap-method-fast.c:407
 msgid "Choose a PAC file"
 msgstr "Seleccioneu un fitxer PAC"
 
-#: ../src/wireless-security/eap-method-fast.c:412
+#: ../src/wireless-security/eap-method-fast.c:414
 msgid "PAC files (*.pac)"
 msgstr "Fitxers PAC (*.pac)"
 
-#: ../src/wireless-security/eap-method-fast.c:416
+#: ../src/wireless-security/eap-method-fast.c:418
 msgid "All files"
 msgstr "Tots els fitxers"
 
@@ -4840,9 +4864,9 @@ msgstr "falta el nom d'usuari EAP-LEAP"
 msgid "missing EAP-LEAP password"
 msgstr "falta la contrasenya EAP-LEAP"
 
-#: ../src/wireless-security/eap-method-peap.c:314
-#: ../src/wireless-security/eap-method-ttls.c:364
-#: ../src/wireless-security/wireless-security.c:424
+#: ../src/wireless-security/eap-method-peap.c:316
+#: ../src/wireless-security/eap-method-ttls.c:370
+#: ../src/wireless-security/wireless-security.c:425
 msgid "MD5"
 msgstr "MD5"
 
@@ -4876,13 +4900,25 @@ msgstr "Suffix del nom del certificat del servidor."
 msgid "_Domain"
 msgstr "_Domini"
 
-#: ../src/wireless-security/eap-method-simple.c:75
+#: ../src/wireless-security/eap-method-simple.c:90
 msgid "missing EAP username"
 msgstr "falta el nom d'usuari EAP"
 
-#: ../src/wireless-security/eap-method-simple.c:88
+#: ../src/wireless-security/eap-method-simple.c:106
 msgid "missing EAP password"
 msgstr "falta la clau EAP"
+
+#: ../src/wireless-security/eap-method-simple.c:120
+msgid "missing EAP client Private Key passphrase"
+msgstr "manca la contrasenya de la clau privada del client EAP"
+
+#: ../src/wireless-security/eap-method-simple.ui.h:4
+msgid "P_rivate Key Passphrase"
+msgstr "Contrasenya de la clau privada"
+
+#: ../src/wireless-security/eap-method-simple.ui.h:5
+msgid "Sh_ow passphrase"
+msgstr "M_ostra la contrasenya"
 
 #: ../src/wireless-security/eap-method-tls.c:64
 msgid "missing EAP-TLS identity"
@@ -4908,7 +4944,7 @@ msgstr "el fitxer de la clau seleccionada no existeix"
 msgid "I_dentity"
 msgstr "I_dentitat"
 
-#: ../src/wireless-security/eap-method-ttls.c:333
+#: ../src/wireless-security/eap-method-ttls.c:337
 msgid "MSCHAPv2 (no EAP)"
 msgstr "MSCHAPv2 (sense EAP)"
 
@@ -4916,25 +4952,29 @@ msgstr "MSCHAPv2 (sense EAP)"
 msgid "Unknown error validating 802.1X security"
 msgstr "error desconegut quan s'estava validant la seguretat 802.1X"
 
-#: ../src/wireless-security/wireless-security.c:436
+#: ../src/wireless-security/wireless-security.c:437
 msgid "TLS"
 msgstr "TLS"
 
-#: ../src/wireless-security/wireless-security.c:460
+#: ../src/wireless-security/wireless-security.c:461
 msgid "PWD"
 msgstr "PWD"
 
-#: ../src/wireless-security/wireless-security.c:471
+#: ../src/wireless-security/wireless-security.c:472
 msgid "FAST"
 msgstr "FAST"
 
-#: ../src/wireless-security/wireless-security.c:482
+#: ../src/wireless-security/wireless-security.c:483
 msgid "Tunneled TLS"
 msgstr "TLS per túnel"
 
-#: ../src/wireless-security/wireless-security.c:493
+#: ../src/wireless-security/wireless-security.c:494
 msgid "Protected EAP (PEAP)"
 msgstr "EAP protegit (PEAP)"
+
+#: ../src/wireless-security/wireless-security.c:523
+msgid "Externally configured"
+msgstr "Configurat externament"
 
 #: ../src/wireless-security/ws-dynamic-wep.ui.h:1
 #: ../src/wireless-security/ws-wep-key.ui.h:6
@@ -5030,6 +5070,23 @@ msgstr ""
 #: ../src/wireless-security/ws-wpa-psk.ui.h:2
 msgid "_Type"
 msgstr "_Tipus"
+
+#~ msgid "Cannot import VPN connection"
+#~ msgstr "No es pot importar la connexió VPN"
+
+#~ msgid ""
+#~ "The file “%s” could not be read or does not contain recognized VPN "
+#~ "connection information\n"
+#~ "\n"
+#~ "Error: %s."
+#~ msgstr ""
+#~ "No s'ha pogut llegir el fitxer «%s» o bé no conté cap informació de "
+#~ "connexió VPN que es pugui reconèixer\n"
+#~ "\n"
+#~ "Error: %s."
+
+#~ msgid "unknown error"
+#~ msgstr "error desconegut"
 
 #~ msgid "Failed to update connection secrets due to an unknown error."
 #~ msgstr ""
