@@ -359,10 +359,9 @@ pkg = import('pkgconfig')
 
 po_dir = join_paths(meson.source_root(), 'po')
 
-intltool_merge = find_program('intltool-merge')
-intltool_cache = join_paths(po_dir, '.intltool-merge-cache')
-intltool_desktop_cmd = [intltool_merge, '-d', '-u', '-c', intltool_cache, po_dir, '@INPUT@', '@OUTPUT@']
-intltool_xml_cmd = [intltool_merge, '-x', '-u', '-c', intltool_cache, po_dir, '@INPUT@', '@OUTPUT@']
+msgfmt = find_program('msgfmt')
+msgfmt_desktop_cmd = [msgfmt, '--desktop', '--template', '@INPUT@', '-d', po_dir, '-o', '@OUTPUT@']
+msgfmt_xml_cmd = [msgfmt, '--xml', '--template', '@INPUT@', '-d', po_dir, '-o', '@OUTPUT@']
 
 top_inc = include_directories('.')
 
@@ -381,7 +380,7 @@ custom_target(
   desktop,
   input: desktop + '.in',
   output: desktop,
-  command: intltool_desktop_cmd,
+  command: msgfmt_desktop_cmd,
   install: true,
   install_dir: nma_appdir
   #install_dir: [
@@ -396,7 +395,7 @@ custom_target(
   desktop,
   input: desktop + '.in',
   output: desktop,
-  command: intltool_desktop_cmd,
+  command: msgfmt_desktop_cmd,
   install: true,
   install_dir: nma_appdir
 )
@@ -407,7 +406,7 @@ custom_target(
   appdata,
   input: appdata + '.in',
   output: appdata,
-  command: intltool_xml_cmd,
+  command: msgfmt_xml_cmd,
   install: true,
   install_dir: join_paths(nma_datadir, 'metainfo')
 )
