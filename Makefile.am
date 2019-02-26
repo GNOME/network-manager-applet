@@ -1070,9 +1070,6 @@ TESTS += $(check_programs)
 EXTRA_DIST += \
 	linker-script-binary.ver \
 	CONTRIBUTING \
-	intltool-extract.in \
-	intltool-merge.in \
-	intltool-update.in \
 	Makefile.glib \
 	autogen.sh \
 	meson.build \
@@ -1088,13 +1085,18 @@ autostartdir = $(sysconfdir)/xdg/autostart
 autostart_in_files = nm-applet.desktop.in
 autostart_DATA = $(autostart_in_files:.desktop.in=.desktop)
 
+nm-applet.desktop: nm-applet.desktop.in
+	$(AM_V_GEN)$(MSGFMT) --desktop --template $< -d $(top_srcdir)/po -o $@
+
 applicationsdir = $(datadir)/applications
 applications_DATA = $(autostart_DATA)
 
 desktopdir = $(datadir)/applications
 desktop_in_files = nm-connection-editor.desktop.in
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
-@INTLTOOL_DESKTOP_RULE@
+
+nm-connection-editor.desktop: nm-connection-editor.desktop.in
+	$(AM_V_GEN)$(MSGFMT) --desktop --template $< -d $(top_srcdir)/po -o $@
 
 gsettings_SCHEMAS = org.gnome.nm-applet.gschema.xml
 @GSETTINGS_RULES@
@@ -1102,7 +1104,9 @@ gsettings_SCHEMAS = org.gnome.nm-applet.gschema.xml
 appdatadir = $(datadir)/metainfo
 appdata_DATA = $(appdata_in_files:.xml.in=.xml)
 appdata_in_files = nm-connection-editor.appdata.xml.in
-@INTLTOOL_XML_RULE@
+
+nm-connection-editor.appdata.xml: nm-connection-editor.appdata.xml.in
+	$(AM_V_GEN)$(MSGFMT) --xml --template $< -d $(top_srcdir)/po -o $@
 
 convertdir=$(datadir)/GConf/gsettings
 convert_DATA=nm-applet.convert
@@ -1121,8 +1125,3 @@ CLEANFILES += \
 	$(desktop_DATA) \
 	$(appdata_DATA) \
 	$(BUILT_SOURCES)
-
-DISTCLEANFILES += \
-	intltool-extract \
-	intltool-merge \
-	intltool-update

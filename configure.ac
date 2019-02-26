@@ -61,12 +61,12 @@ AC_TYPE_PID_T
 dnl
 dnl translation support
 dnl
-IT_PROG_INTLTOOL([0.50.1])
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.18])
 
 GETTEXT_PACKAGE=nm-applet
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package])
-AM_GLIB_GNU_GETTEXT
 
 # Check for iso-codes for country names translation
 AC_MSG_CHECKING([whether to disable iso-codes at build-time])
