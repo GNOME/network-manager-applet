@@ -192,6 +192,57 @@ fedora_autotools_full:
   image: fedora:latest
   stage: test
 
+centos7:
+  <<: *dist
+  before_script:
+    - yum -y install
+      file
+      findutils
+      gcc
+      desktop-file-utils
+      gettext-devel
+      glib2-devel
+      gtk3-devel
+      intltool
+      libgudev1-devel
+      libnotify-devel
+      libsecret-devel
+      NetworkManager-libnm-devel
+      pkgconfig
+      /usr/bin/autopoint
+      gcr-devel
+      gobject-introspection-devel redhat-rpm-config
+      gtk-doc
+      iso-codes-devel
+      mobile-broadband-provider-info-devel
+      jansson-devel
+      ModemManager-glib-devel
+      libselinux-devel
+      make
+  script:
+    - tar xJf network-manager-applet-*.tar.xz
+    - cd network-manager-applet-*/
+    - ./configure
+      --disable-silent-rules
+      --with-more-asserts=yes
+      --enable-nls
+      --enable-iso-codes
+      --enable-mobile-broadband-provider-info
+      --enable-gtk-doc
+      --enable-introspection
+      --enable-schemas-compile
+      --enable-more-warnings
+      --with-wwan
+      --with-selinux
+      --with-team
+      --with-gcr
+    - make -j
+    - make -j check
+    - make -j install
+    - make -j uninstall
+  image: centos:7
+  stage: test
+
 # https://network-manager-applet.pages.gitlab.gnome.org/libnma/
 pages:
   <<: *fedora_full
