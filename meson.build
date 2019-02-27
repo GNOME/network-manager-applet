@@ -359,10 +359,6 @@ pkg = import('pkgconfig')
 
 po_dir = join_paths(meson.source_root(), 'po')
 
-msgfmt = find_program('msgfmt')
-msgfmt_desktop_cmd = [msgfmt, '--desktop', '--template', '@INPUT@', '-d', po_dir, '-o', '@OUTPUT@']
-msgfmt_xml_cmd = [msgfmt, '--xml', '--template', '@INPUT@', '-d', po_dir, '-o', '@OUTPUT@']
-
 top_inc = include_directories('.')
 
 subdir('po')
@@ -371,45 +367,57 @@ subdir('shared')
 subdir('src')
 subdir('man')
 
-desktop = 'nm-applet.desktop'
+i18n = import('i18n')
 
 # FIXME: The same target can not be copied into two directories.
 #        There is a workaround in meson_post_install.py until proper solution arises:
 #        https://groups.google.com/forum/#!topic/mesonbuild/3iIoYPrN4P0
-custom_target(
-  desktop,
-  input: desktop + '.in',
-  output: desktop,
-  command: msgfmt_desktop_cmd,
-  install: true,
-  install_dir: nma_appdir
-  #install_dir: [
-  #  nma_appdir,
-  #  nma_autostartdir
-  #]
-)
+desktop_files = [
+  'nm-applet',
+  'nm-connection-editor',
+]
 
-desktop = 'nm-connection-editor.desktop'
+desktop_file_validate = find_program('desktop-file-validate', required: false)
 
-custom_target(
-  desktop,
-  input: desktop + '.in',
-  output: desktop,
-  command: msgfmt_desktop_cmd,
-  install: true,
-  install_dir: nma_appdir
-)
+foreach desktop: desktop_files
+  i18n.merge_file(
+    desktop + '-desktop',
+    input: desktop + '.desktop.in',
+    output: desktop + '.desktop',
+    install: true,
+    install_dir: nma_appdir,
+    po_dir: po_dir,
+    type: 'desktop',
+  )
+
+  if desktop_file_validate.found()
+    test('validate-' + desktop + '-desktop',
+      desktop_file_validate,
+      args: desktop + '.desktop',
+      workdir: meson.current_build_dir(),
+    )
+  endif
+endforeach
 
 appdata = 'nm-connection-editor.appdata.xml'
 
-custom_target(
-  appdata,
+i18n.merge_file(
+  'desktop',
   input: appdata + '.in',
   output: appdata,
-  command: msgfmt_xml_cmd,
   install: true,
-  install_dir: join_paths(nma_datadir, 'metainfo')
+  install_dir: join_paths(nma_datadir, 'metainfo'),
+  po_dir: po_dir,
 )
+
+appstream_util = find_program('appstream-util', required: false)
+if appstream_util.found()
+  test('validate-appdata',
+    appstream_util,
+    args: ['validate', '--nonet', appdata],
+    workdir: meson.current_build_dir(),
+  )
+endif
 
 schema_conf = configuration_data()
 schema_conf.set('GETTEXT_PACKAGE', nma_name)
