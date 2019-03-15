@@ -930,7 +930,7 @@ country_setup (NMAMobileWizard *self)
 	                                 NULL);
 
 	renderer = gtk_cell_renderer_text_new ();
-	column = gtk_tree_view_column_new_with_attributes (_("Country or region"),
+	column = gtk_tree_view_column_new_with_attributes (NULL,
 	                                                   renderer,
 	                                                   "text", COUNTRIES_COL_NAME,
 	                                                   NULL);
