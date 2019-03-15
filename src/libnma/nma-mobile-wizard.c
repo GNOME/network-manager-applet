@@ -570,6 +570,18 @@ providers_update_complete (NMAMobileWizard *self)
 	}
 }
 
+static void
+providers_update_continue (NMAMobileWizard *self)
+{
+	NMAMobileWizardPrivate *priv = NMA_MOBILE_WIZARD_GET_PRIVATE (self);
+
+	gtk_assistant_set_page_complete (GTK_ASSISTANT (self),
+	                                 priv->providers_page,
+	                                 TRUE);
+
+	gtk_assistant_next_page (GTK_ASSISTANT (self));
+}
+
 static gboolean
 focus_providers_view (gpointer user_data)
 {
@@ -1441,6 +1453,7 @@ nma_mobile_wizard_class_init (NMAMobileWizardClass *klass)
 	gtk_widget_class_bind_template_callback (widget_class, country_update_continue);
 	gtk_widget_class_bind_template_callback (widget_class, providers_radio_toggled);
 	gtk_widget_class_bind_template_callback (widget_class, providers_update_complete);
+	gtk_widget_class_bind_template_callback (widget_class, providers_update_continue);
 	gtk_widget_class_bind_template_callback (widget_class, plan_combo_changed);
 	gtk_widget_class_bind_template_callback (widget_class, plan_update_complete);
 	gtk_widget_class_bind_template_callback (widget_class, apn_filter_cb);
