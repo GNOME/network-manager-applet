@@ -72,6 +72,8 @@ int main (int argc, char *argv[])
 
 	bindtextdomain (GETTEXT_PACKAGE, NMALOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+	if (!with_appindicator)
+		gdk_set_allowed_backends ("x11,*");
 	gtk_init (&argc, &argv);
 	textdomain (GETTEXT_PACKAGE);
 
