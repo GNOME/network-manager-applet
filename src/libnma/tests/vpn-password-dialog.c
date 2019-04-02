@@ -33,11 +33,10 @@ main (int argc, char *argv[])
 	nma_vpn_password_dialog_set_password (NMA_VPN_PASSWORD_DIALOG (widget), "Password One");
 	nma_vpn_password_dialog_set_password_label (NMA_VPN_PASSWORD_DIALOG (widget), "First _Label");
 
-	nma_vpn_password_dialog_set_password_secondary (NMA_VPN_PASSWORD_DIALOG (widget), "Password Two");
+	nma_vpn_password_dialog_set_password_secondary (NMA_VPN_PASSWORD_DIALOG (widget), "");
 	nma_vpn_password_dialog_set_password_secondary_label (NMA_VPN_PASSWORD_DIALOG (widget), "_Second Label");
 	nma_vpn_password_dialog_set_show_password_secondary (NMA_VPN_PASSWORD_DIALOG (widget), TRUE);
 
-	nma_vpn_password_dialog_set_password_ternary (NMA_VPN_PASSWORD_DIALOG (widget), "Password Three");
 	nma_vpn_password_dialog_set_password_ternary_label (NMA_VPN_PASSWORD_DIALOG (widget), "_Third Label");
 	nma_vpn_password_dialog_set_show_password_ternary (NMA_VPN_PASSWORD_DIALOG (widget), TRUE);
 
