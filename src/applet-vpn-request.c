@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2004 - 2017 Red Hat, Inc.
+ * Copyright 2004 - 2019 Red Hat, Inc.
  */
 
 #include "nm-default.h"
@@ -44,12 +44,11 @@ typedef struct {
 	guint watch_id;
 	GPid pid;
 
-	GSList *lines;
-	int child_stdin;
 	int child_stdout;
-	int num_newlines;
+	GString *child_response;
 	GIOChannel *channel;
 	guint channel_eventid;
+	GVariantBuilder secrets_builder;
 } RequestData;
 
 typedef struct {
@@ -60,6 +59,7 @@ typedef struct {
 /*****************************************************************************/
 
 static void request_data_free (RequestData *req_data);
+static void complete_request (VpnSecretsInfo *info);
 
 /*****************************************************************************/
 
@@ -72,81 +72,104 @@ applet_vpn_request_get_secrets_size (void)
 /*****************************************************************************/
 
 static void
-child_finished_cb (GPid pid, gint status, gpointer user_data)
+complete_request (VpnSecretsInfo *info)
 {
-	SecretsRequest *req = user_data;
-	VpnSecretsInfo *info = (VpnSecretsInfo *) req;
+	SecretsRequest *req = (SecretsRequest *) info;
 	RequestData *req_data = info->req_data;
-	gs_free_error GError *error = NULL;
+	GVariantBuilder settings_builder, vpn_builder;
 	gs_unref_variant GVariant *settings = NULL;
-	GVariantBuilder settings_builder, vpn_builder, secrets_builder;
 
-	if (status == 0) {
-		GSList *iter;
+	g_variant_builder_init (&settings_builder, NM_VARIANT_TYPE_CONNECTION);
+	g_variant_builder_init (&vpn_builder, NM_VARIANT_TYPE_SETTING);
 
-		g_variant_builder_init (&settings_builder, NM_VARIANT_TYPE_CONNECTION);
-		g_variant_builder_init (&vpn_builder, NM_VARIANT_TYPE_SETTING);
-		g_variant_builder_init (&secrets_builder, G_VARIANT_TYPE ("a{ss}"));
+	g_variant_builder_add (&vpn_builder, "{sv}",
+	                       NM_SETTING_VPN_SECRETS,
+	                       g_variant_builder_end (&req_data->secrets_builder));
+	g_variant_builder_add (&settings_builder, "{sa{sv}}",
+	                       NM_SETTING_VPN_SETTING_NAME,
+	                       &vpn_builder);
+	settings = g_variant_builder_end (&settings_builder);
 
-		/* The length of 'lines' must be divisible by 2 since it must contain
-		 * key:secret pairs with the key on one line and the associated secret
-		 * on the next line.
-		 */
-		for (iter = req_data->lines; iter; iter = g_slist_next (iter)) {
-			if (!iter->next)
-				break;
-			g_variant_builder_add (&secrets_builder, "{ss}", iter->data, iter->next->data);
-			iter = iter->next;
-		}
-
-		g_variant_builder_add (&vpn_builder, "{sv}",
-		                       NM_SETTING_VPN_SECRETS,
-		                       g_variant_builder_end (&secrets_builder));
-		g_variant_builder_add (&settings_builder, "{sa{sv}}",
-		                       NM_SETTING_VPN_SETTING_NAME,
-		                       &vpn_builder);
-		settings = g_variant_builder_end (&settings_builder);
-	} else {
-		error = g_error_new (NM_SECRET_AGENT_ERROR,
-		                     NM_SECRET_AGENT_ERROR_USER_CANCELED,
-		                     "%s.%d (%s): canceled", __FILE__, __LINE__, __func__);
-	}
-
-	/* Complete the secrets request */
-	applet_secrets_request_complete (req, settings, error);
+	applet_secrets_request_complete (req, settings, NULL);
 	applet_secrets_request_free (req);
 }
 
-/*****************************************************************************/
+static void
+process_child_response (VpnSecretsInfo *info)
+{
+	RequestData *req_data = info->req_data;
+	gs_free_error GError *error = NULL;
+	char **lines = g_strsplit (req_data->child_response->str, "\n", -1);
+	int i;
+
+	for (i = 0; lines[i] && *(lines[i]); i += 2) {
+		if (lines[i + 1] == NULL)
+			break;
+		g_variant_builder_add (&req_data->secrets_builder, "{ss}", lines[i], lines[i + 1]);
+	}
+
+	g_strfreev (lines);
+	complete_request (info);
+}
+
+static void
+child_finished_cb (GPid pid, int status, gpointer user_data)
+{
+	VpnSecretsInfo *info = user_data;
+	SecretsRequest *req = (SecretsRequest *) info;
+	RequestData *req_data = info->req_data;
+	gs_free_error GError *error = NULL;
+
+	req_data->pid = 0;
+	req_data->watch_id = 0;
+
+	if (status) {
+		error = g_error_new (NM_SECRET_AGENT_ERROR,
+		                     NM_SECRET_AGENT_ERROR_USER_CANCELED,
+		                     "%s.%d (%s): canceled", __FILE__, __LINE__, __func__);
+
+		applet_secrets_request_complete (req, NULL, error);
+		applet_secrets_request_free (req);
+	} else if (req_data->channel_eventid == 0) {
+		/* We now have both the child response and its exit status. Process it. */
+		process_child_response (info);
+	}
+}
 
 static gboolean
 child_stdout_data_cb (GIOChannel *source, GIOCondition condition, gpointer user_data)
 {
-	VpnSecretsInfo *info = user_data;
+	SecretsRequest *req = user_data;
+	VpnSecretsInfo *info = (VpnSecretsInfo *) req;
 	RequestData *req_data = info->req_data;
-	char *str;
-	int len;
+	GIOStatus status;
+	char buf[4096];
+	size_t bytes_read;
+	gs_free_error GError *error = NULL;
 
-	if (!(condition & G_IO_IN))
-		return TRUE;
-
-	if (g_io_channel_read_line (source, &str, NULL, NULL, NULL) == G_IO_STATUS_NORMAL) {
-		len = strlen (str);
-		if (len == 1 && str[0] == '\n') {
-			/* on second line with a newline newline */
-			if (++req_data->num_newlines == 2) {
-				const char *buf = "QUIT\n\n";
-
-				/* terminate the child */
-				if (write (req_data->child_stdin, buf, strlen (buf)) == -1)
-					return TRUE;
-			}
-		} else if (len > 0) {
-			/* remove terminating newline */
-			str[len - 1] = '\0';
-			req_data->lines = g_slist_append (req_data->lines, str);
+	status = g_io_channel_read_chars (source, buf, sizeof (buf)-1, &bytes_read, &error);
+	switch (status) {
+	case G_IO_STATUS_ERROR:
+		req_data->channel_eventid = 0;
+		applet_secrets_request_complete (req, NULL, error);
+		applet_secrets_request_free (req);
+		return FALSE;
+	case G_IO_STATUS_EOF:
+		req_data->channel_eventid = 0;
+		if (req_data->pid == 0) {
+			/* We now have both the childe respons and
+			 * its exit status. Process it. */
+			process_child_response (info);
 		}
+		return FALSE;
+	case G_IO_STATUS_NORMAL:
+		g_string_append_len (req_data->child_response, buf, bytes_read);
+		break;
+	default:
+		/* What just happened... */
+		g_return_val_if_reached (FALSE);
 	}
+
 	return TRUE;
 }
 
@@ -218,7 +241,7 @@ connection_to_data (NMConnection *connection,
 	}
 	nm_clear_g_free (&keys);
 
-	g_string_append (buf, "DONE\n\n");
+	g_string_append (buf, "DONE\n\nQUIT\n\n");
 	NM_SET_OUT (out_length, buf->len);
 	return g_string_free (buf, FALSE);
 }
@@ -301,7 +324,7 @@ auth_dialog_spawn (const char *con_id,
 	g_return_val_if_fail (out_stdout, FALSE);
 
 	hints_len = NM_PTRARRAY_LEN (hints);
-	argv = g_new (const char *, 10 + (2 * hints_len));
+	argv = g_new (const char *, 11 + (2 * hints_len));
 	i = 0;
 	argv[i++] = auth_dialog;
 	argv[i++] = "-u";
@@ -371,6 +394,7 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 	const char *service_type;
 	const char *auth_dialog;
 	gs_unref_object NMVpnPluginInfo *plugin = NULL;
+	int child_stdin;
 
 	applet_secrets_request_set_free_func (req, free_vpn_secrets_info);
 
@@ -404,6 +428,8 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 	}
 	req_data = info->req_data;
 
+	g_variant_builder_init (&req_data->secrets_builder, G_VARIANT_TYPE ("a{ss}"));
+
 	if (!auth_dialog_spawn (nm_setting_connection_get_id (s_con),
 	                        nm_setting_connection_get_uuid (s_con),
 	                        (const char *const*) req->hints,
@@ -412,7 +438,7 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 	                        nm_vpn_plugin_info_supports_hints (plugin),
 	                        req->flags,
 	                        &req_data->pid,
-	                        &req_data->child_stdin,
+	                        &child_stdin,
 	                        &req_data->child_stdout,
 	                        error))
 		return FALSE;
@@ -422,11 +448,20 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 
 	/* listen to what child has to say */
 	req_data->channel = g_io_channel_unix_new (req_data->child_stdout);
-	req_data->channel_eventid = g_io_add_watch (req_data->channel, G_IO_IN, child_stdout_data_cb, info);
+	req_data->child_response = g_string_sized_new (4096);
+	req_data->channel_eventid = g_io_add_watch (req_data->channel,
+	                                            G_IO_IN  | G_IO_ERR | G_IO_HUP | G_IO_NVAL,
+	                                            child_stdout_data_cb,
+	                                            info);
+
+	if (!connection_to_fd (req->connection, child_stdin, error))
+		return FALSE;
+	close (child_stdin);
+
 	g_io_channel_set_encoding (req_data->channel, NULL, NULL);
 
 	/* Dump parts of the connection to the child */
-	return connection_to_fd (req->connection, req_data->child_stdin, error);
+	return TRUE;
 }
 
 /*****************************************************************************/
@@ -470,6 +505,9 @@ request_data_free (RequestData *req_data)
 		}
 	}
 
-	g_slist_free_full (req_data->lines, g_free);
+	if (req_data->child_response)
+		g_string_free (req_data->child_response, TRUE);
+
+	g_variant_builder_clear (&req_data->secrets_builder);
 	g_slice_free (RequestData, req_data);
 }
