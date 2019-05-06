@@ -511,7 +511,9 @@ libnma_h_pub = \
 	src/libnma/nma-mobile-providers.h \
 	src/libnma/nma-vpn-password-dialog.h \
 	src/libnma/nma-ui-utils.h \
-	src/libnma/nma-cert-chooser.h
+	src/libnma/nma-cert-chooser.h \
+	src/libnma/nma-bar-code-widget.h \
+	src/libnma/nma-bar-code.h
 
 libnma_c_real = \
 	src/libnma/nma-wifi-dialog.c \
@@ -521,7 +523,13 @@ libnma_c_real = \
 	src/libnma/nma-ui-utils.c \
 	src/libnma/init.c \
 	src/libnma/nma-cert-chooser.c \
-	src/libnma/nma-file-cert-chooser.c
+	src/libnma/nma-file-cert-chooser.c \
+	src/libnma/nma-bar-code-widget.c \
+	src/libnma/nma-bar-code.c
+
+EXTRA_DIST += \
+	src/libnma/qrcodegen.c \
+	src/libnma/qrcodegen.h
 
 libnma_h_priv_real = \
 	src/libnma/nma-cert-chooser-private.h
@@ -713,12 +721,30 @@ src_libnma_tests_cert_chooser_LDADD = \
 	$(LIBNM_LIBS) \
 	src/libnma/libnma.la
 
+check_PROGRAMS_norun += src/libnma/tests/bar-code
+
+src_libnma_tests_bar_code_CPPFLAGS = \
+	$(dflt_cppflags) \
+	$(GLIB_CFLAGS) \
+	$(GTK3_CFLAGS) \
+	$(LIBNM_CFLAGS) \
+	"-I$(srcdir)/shared/" \
+	"-I$(srcdir)/src/libnma" \
+	-Isrc/libnma
+
+src_libnma_tests_bar_code_LDADD = \
+	$(GLIB_LIBS) \
+	$(GTK3_LIBS) \
+	$(LIBNM_LIBS) \
+	src/libnma/libnma.la
+
 EXTRA_DIST += \
 	src/libnma/nma-version.h.in \
 	src/libnma/libnma.pc.in \
 	src/libnma/libnma.ver \
 	src/libnma/wifi.ui \
 	src/libnma/nma-mobile-wizard.ui \
+	src/libnma/nma-bar-code-widget.ui \
 	src/libnma/nma-pkcs11-token-login-dialog.ui \
 	src/libnma/nma-pkcs11-cert-chooser-dialog.ui \
 	src/libnma/nma-vpn-password-dialog.ui \
