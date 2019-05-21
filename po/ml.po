@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet.master.ml\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-10 12:44+0200\n"
+"POT-Creation-Date: 2019-05-21 09:57+0200\n"
 "PO-Revision-Date: 2013-04-21 23:43+0530\n"
 "Last-Translator: Balasankar C <c.balasankar@gmail.com>\n"
 "Language-Team: Swatantra Malayalam Computing\n"
@@ -21,7 +21,7 @@ msgstr ""
 "X-Generator: Virtaal 0.7.1\n"
 "X-Project-Style: gnome\n"
 
-#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3175
+#: ../nm-applet.desktop.in.h:1 ../src/applet.c:3191
 msgid "Network"
 msgstr "ശൃംഖല"
 
@@ -30,7 +30,7 @@ msgid "Manage your network connections"
 msgstr "നിങ്ങളുടെ ശൃംഖല ബന്ധങ്ങള്‍ കൈകാര്യം ചെയ്യുക"
 
 #: ../nm-connection-editor.desktop.in.h:1
-#: ../src/connection-editor/nm-connection-editor.ui.h:1
+#: ../src/connection-editor/nm-connection-list.ui.h:1
 msgid "Network Connections"
 msgstr "ശൃംഖല ബന്ധങ്ങള്‍"
 
@@ -154,55 +154,68 @@ msgstr ""
 msgid "The NetworkManager Developers"
 msgstr "NetworkManager ലഘുപ്രയോഗം"
 
-#: ../shared/nm-utils/nm-shared-utils.c:185
+#: ../shared/nm-utils/nm-shared-utils.c:477
 #, c-format
 msgid "object class '%s' has no property named '%s'"
 msgstr ""
 
-#: ../shared/nm-utils/nm-shared-utils.c:192
+#: ../shared/nm-utils/nm-shared-utils.c:484
 #, c-format
 msgid "property '%s' of object class '%s' is not writable"
 msgstr ""
 
-#: ../shared/nm-utils/nm-shared-utils.c:199
+#: ../shared/nm-utils/nm-shared-utils.c:491
 #, c-format
 msgid ""
 "construct property \"%s\" for object '%s' can't be set after construction"
 msgstr ""
 
-#: ../shared/nm-utils/nm-shared-utils.c:207
+#: ../shared/nm-utils/nm-shared-utils.c:499
 #, c-format
 msgid "'%s::%s' is not a valid property name; '%s' is not a GObject subtype"
 msgstr ""
 
-#: ../shared/nm-utils/nm-shared-utils.c:216
+#: ../shared/nm-utils/nm-shared-utils.c:508
 #, c-format
 msgid "unable to set property '%s' of type '%s' from value of type '%s'"
 msgstr ""
 
-#: ../shared/nm-utils/nm-shared-utils.c:227
+#: ../shared/nm-utils/nm-shared-utils.c:519
 #, c-format
 msgid ""
 "value \"%s\" of type '%s' is invalid or out of range for property '%s' of "
 "type '%s'"
 msgstr ""
 
-#. ***************************************************************************
 #: ../src/8021x.ui.h:1 ../src/ethernet-dialog.c:99
 msgid "802.1X authentication"
 msgstr "802.1X ആധികാരികത"
 
-#: ../src/8021x.ui.h:2 ../src/connection-editor/ce-ip4-routes.ui.h:1
+#: ../src/8021x.ui.h:2 ../src/applet-device-ethernet.c:349
+#: ../src/applet-dialogs.c:1059 ../src/connection-editor/ce-ip4-routes.ui.h:1
 #: ../src/connection-editor/ce-ip6-routes.ui.h:1
 #: ../src/connection-editor/ce-new-connection.ui.h:1
 #: ../src/connection-editor/ce-page-dcb.ui.h:17
 #: ../src/connection-editor/ce-ppp-auth-methods.ui.h:1
-#: ../src/connection-editor/nm-connection-editor.ui.h:8
-#: ../src/gsm-unlock.ui.h:1 ../src/libnma/nma-pkcs11-token-login-dialog.ui.h:1
+#: ../src/connection-editor/connection-helpers.c:308
+#: ../src/connection-editor/connection-helpers.c:771
+#: ../src/connection-editor/nm-connection-editor.ui.h:5
+#: ../src/connection-editor/page-bluetooth.c:311
+#: ../src/connection-editor/page-mobile.c:543
+#: ../src/connection-editor/page-proxy.c:121
+#: ../src/connection-editor/page-team.c:344
+#: ../src/connection-editor/page-team-port.c:206
+#: ../src/connection-editor/vpn-helpers.c:212 ../src/gsm-unlock.ui.h:1
+#: ../src/libnma/nma-pkcs11-token-login-dialog.ui.h:1
+#: ../src/libnma/nma-vpn-password-dialog.c:209
+#: ../src/libnma/nma-wifi-dialog.c:1066
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:209
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1067 ../src/mobile-helpers.c:465
 msgid "_Cancel"
 msgstr ""
 
-#: ../src/8021x.ui.h:3
+#: ../src/8021x.ui.h:3 ../src/libnma/nma-wifi-dialog.c:1072
+#: ../src/libnm-gtk/nm-wifi-dialog.c:1073
 msgid "C_onnect"
 msgstr "_കണക്ട് ചെയ്യുക"
 
@@ -219,38 +232,38 @@ msgstr "അഡ്-ഹോക്"
 msgid "secure."
 msgstr ""
 
-#: ../src/applet.c:381
+#: ../src/applet.c:392
 msgid "Failed to add/activate connection"
 msgstr "ഒരു ബന്ധം ചേര്‍ക്കാന്‍/സജീവമാക്കാന്‍ സാധിച്ചില്ല"
 
-#: ../src/applet.c:383 ../src/applet.c:437 ../src/applet.c:472
-#: ../src/applet-device-wifi.c:1387 ../src/applet-device-wifi.c:1410
+#: ../src/applet.c:394 ../src/applet.c:448 ../src/applet.c:483
+#: ../src/applet-device-wifi.c:1388 ../src/applet-device-wifi.c:1411
 msgid "Unknown error"
 msgstr "അറിയാത്ത ഏതോ പ്രശ്നം"
 
-#: ../src/applet.c:386 ../src/applet.c:475 ../src/applet-device-wifi.c:539
-#: ../src/applet-device-wifi.c:1390 ../src/applet-device-wifi.c:1413
+#: ../src/applet.c:397 ../src/applet.c:486 ../src/applet-device-wifi.c:539
+#: ../src/applet-device-wifi.c:1391 ../src/applet-device-wifi.c:1414
 msgid "Connection failure"
 msgstr "ബന്ധമായില്ല"
 
-#: ../src/applet.c:435
+#: ../src/applet.c:446
 msgid "Device disconnect failed"
 msgstr "ഉപകരണം വേര്‍പ്പെടുത്താന്‍ സാധിച്ചില്ല"
 
-#: ../src/applet.c:440
+#: ../src/applet.c:451
 msgid "Disconnect failure"
 msgstr "വേര്‍പ്പെടുത്താന്‍ സാധിച്ചില്ല"
 
-#: ../src/applet.c:470
+#: ../src/applet.c:481
 msgid "Connection activation failed"
 msgstr "ബന്ധം സജീവമാക്കാന്‍ സാധിച്ചില്ല"
 
-#: ../src/applet.c:793 ../src/applet-device-wifi.c:1126
+#: ../src/applet.c:809 ../src/applet-device-wifi.c:1127
 #, fuzzy
 msgid "Don’t show this message again"
 msgstr "ഈ സന്ദേശം ഇനി കാണിക്കരുതു്"
 
-#: ../src/applet.c:883
+#: ../src/applet.c:899
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -260,7 +273,7 @@ msgstr ""
 "\n"
 "വിപിഎന്‍ കണക്ഷനില്‍ തടസ്സം നേരിട്ടതിനാല്‍ വിപിഎന്‍ ബന്ധം '%s' വിഛേദിക്കപ്പെട്ടു."
 
-#: ../src/applet.c:885
+#: ../src/applet.c:901
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -270,7 +283,7 @@ msgstr ""
 "\n"
 "ശൃംഖല കണക്ഷനില്‍ തടസ്സം നേരിട്ടതിനാല്‍ വിപിഎന്‍ ബന്ധം '%s' പരാജയപ്പെട്ടു."
 
-#: ../src/applet.c:887
+#: ../src/applet.c:903
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -279,7 +292,7 @@ msgstr ""
 "\n"
 "വിപിഎന്‍ സര്‍വീസ് അപ്രതീക്ഷിതമായി നിലച്ചതിനാല്‍ വിപിഎന്‍ ബന്ധം '%s' പരാജയപ്പെട്ടു."
 
-#: ../src/applet.c:889
+#: ../src/applet.c:905
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -289,7 +302,7 @@ msgstr ""
 "\n"
 "വിപിഎന്‍ സേവനം തെറ്റായ ക്രമീകരമാണെന്നറിയിച്ചതിനാല്‍ വിപിഎന്‍ ബന്ധം '%s' പരാജയപ്പെട്ടു."
 
-#: ../src/applet.c:891
+#: ../src/applet.c:907
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -298,7 +311,7 @@ msgstr ""
 "\n"
 "ബന്ധപ്പെടാനനുവദിച്ച സമയം കഴിഞ്ഞുപോയതിനാല്‍ വിപിഎന്‍ ബന്ധം '%s' പരാജയപ്പെട്ടു."
 
-#: ../src/applet.c:893
+#: ../src/applet.c:909
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -308,7 +321,7 @@ msgstr ""
 "വിപിഎന്‍ സേവനം ശരിയായ സമയത്തു് ആരംഭിക്കുവാന്‍ സാധ്യമാകാത്തതിനാല്‍ വിപിഎന്‍ ബന്ധം '%s' "
 "പരാജയപ്പെട്ടു."
 
-#: ../src/applet.c:895
+#: ../src/applet.c:911
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -317,7 +330,7 @@ msgstr ""
 "\n"
 "വിപിഎന്‍ സേവനം ആരംഭിക്കുന്നതിലുള്ള തടസ്സം കാരണം വിപിഎന്‍ ബന്ധം '%s' പരാജയപ്പെട്ടു."
 
-#: ../src/applet.c:897
+#: ../src/applet.c:913
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -326,7 +339,7 @@ msgstr ""
 "\n"
 "സാധുവായ വിപിഎന്‍ രഹസ്യങ്ങള്‍ ലഭ്യമല്ലാത്തതിനാല്‍ വിപിഎന്‍ ബന്ധം '%s' പരാജയപ്പെട്ടു."
 
-#: ../src/applet.c:899
+#: ../src/applet.c:915
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -335,7 +348,7 @@ msgstr ""
 "\n"
 "അസാധുവായ വിപിഎന്‍ രഹസ്യങ്ങള്‍ കാരണം വിപിഎന്‍ ബന്ധം '%s' പരാജയപ്പെട്ടു."
 
-#: ../src/applet.c:904
+#: ../src/applet.c:920
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -344,7 +357,7 @@ msgstr ""
 "\n"
 "വിപിഎന്‍ ബന്ധം '%s' പരാജയപ്പെട്ടു."
 
-#: ../src/applet.c:931
+#: ../src/applet.c:947
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -355,19 +368,19 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: ../src/applet.c:933
+#: ../src/applet.c:949
 msgid "VPN connection has been successfully established.\n"
 msgstr "വിപിഎന്‍ കണക്ഷന്‍ വിജയകരമായി സ്ഥാപിച്ചിരിയ്ക്കുന്നു.\n"
 
-#: ../src/applet.c:935
+#: ../src/applet.c:951
 msgid "VPN Login Message"
 msgstr "വിപിഎന്‍ ലോഗിന്‍ സന്ദേശം"
 
-#: ../src/applet.c:943 ../src/applet.c:983
+#: ../src/applet.c:959 ../src/applet.c:999
 msgid "VPN Connection Failed"
 msgstr "വിപിഎന്‍ ബന്ധം പരാജയപ്പെട്ടു"
 
-#: ../src/applet.c:987
+#: ../src/applet.c:1003
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -380,7 +393,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:990
+#: ../src/applet.c:1006
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -393,150 +406,150 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/applet.c:1279
+#: ../src/applet.c:1295
 msgid "device not ready (firmware missing)"
 msgstr "ഉപകരണം തയ്യാറല്ല (ഫേംവെയര്‍ ഇല്ല)"
 
-#: ../src/applet.c:1281
+#: ../src/applet.c:1297
 msgid "device not ready"
 msgstr "ഉപകരണം തയ്യാറല്ല"
 
 #. Notify user of unmanaged or unavailable device
-#: ../src/applet.c:1291 ../src/applet-device-ethernet.c:109
+#: ../src/applet.c:1307 ../src/applet-device-ethernet.c:109
 msgid "disconnected"
 msgstr "ബന്ധം വിഛേദിച്ചിരിയ്ക്കുന്നു"
 
-#: ../src/applet.c:1307
+#: ../src/applet.c:1323
 msgid "Disconnect"
 msgstr "ബന്ധം വിഛേദിക്കുക"
 
-#: ../src/applet.c:1321
+#: ../src/applet.c:1337
 msgid "device not managed"
 msgstr "ഉപകരണം കൈകാര്യം ചെയ്യാത്തതാണു്"
 
-#: ../src/applet.c:1394
+#: ../src/applet.c:1410
 msgid "No network devices available"
 msgstr "ശൃംഖല ഉപകരണങ്ങളൊന്നും ലഭ്യമല്ല"
 
-#: ../src/applet.c:1448
+#: ../src/applet.c:1464
 msgid "_VPN Connections"
 msgstr "_വിപിഎന്‍ ബന്ധങ്ങള്‍"
 
-#: ../src/applet.c:1492
+#: ../src/applet.c:1508
 #, fuzzy
 msgid "_Configure VPN…"
 msgstr "വിപി_എന്‍ ക്രമീകരിക്കുക..."
 
-#: ../src/applet.c:1495
+#: ../src/applet.c:1511
 #, fuzzy
 msgid "_Add a VPN connection…"
 msgstr "_വിപിഎന്‍ ബന്ധങ്ങള്‍"
 
-#: ../src/applet.c:1601
+#: ../src/applet.c:1617
 #, fuzzy
 msgid "NetworkManager is not running…"
 msgstr "NetworkManager പ്രവര്‍ത്തനത്തിലില്ല..."
 
-#: ../src/applet.c:1606 ../src/applet.c:2671
+#: ../src/applet.c:1622 ../src/applet.c:2687
 msgid "Networking disabled"
 msgstr "ശൃംഖല ബന്ധം പ്രവര്‍ത്ത രഹിതമാക്കിയിരിക്കുന്നു"
 
 #. 'Enable Networking' item
-#: ../src/applet.c:1816
+#: ../src/applet.c:1832
 msgid "Enable _Networking"
 msgstr "_ശൃംഖല ബന്ധം സജ്ജമാക്കുക"
 
 #. 'Enable Wi-Fi' item
-#: ../src/applet.c:1825
+#: ../src/applet.c:1841
 msgid "Enable _Wi-Fi"
 msgstr "_വയര്‍ലെസ് സജ്ജമാക്കുക"
 
 #. 'Enable Mobile Broadband' item
-#: ../src/applet.c:1834
+#: ../src/applet.c:1850
 msgid "Enable _Mobile Broadband"
 msgstr "_മൊബൈല്‍ ബ്രോഡ്ബാന്‍ഡ് സജ്ജമാക്കുക"
 
 #. Toggle notifications item
-#: ../src/applet.c:1846
+#: ../src/applet.c:1862
 msgid "Enable N_otifications"
 msgstr "അറിയിപ്പു_കള്‍ പ്രവര്‍ത്തന സജ്ജമാക്കുക"
 
 #. 'Connection Information' item
-#: ../src/applet.c:1858
+#: ../src/applet.c:1874
 msgid "Connection _Information"
 msgstr "ബന്ധ _വിവരം"
 
 #. 'Edit Connections...' item
-#: ../src/applet.c:1866
+#: ../src/applet.c:1882
 #, fuzzy
 msgid "Edit Connections…"
 msgstr "ബന്ധങ്ങള്‍ ചിട്ടപ്പെടുത്തുക..."
 
-#: ../src/applet.c:1880
+#: ../src/applet.c:1896
 msgid "_About"
 msgstr "_അണിയറ വിശേഷം"
 
-#: ../src/applet.c:2191
+#: ../src/applet.c:2207
 #, fuzzy, c-format
 msgid "You are now connected to “%s”."
 msgstr "നിങ്ങള്‍ ഇപ്പോള്‍ '%s'-മായി ബന്ധപ്പെട്ടിരിക്കുന്നു."
 
-#: ../src/applet.c:2231
+#: ../src/applet.c:2247
 msgid "Disconnected"
 msgstr "ബന്ധംവിഛേദിച്ചിരിക്കുന്നു"
 
-#: ../src/applet.c:2232
+#: ../src/applet.c:2248
 msgid "The network connection has been disconnected."
 msgstr "ശൃംഖല ബന്ധം വിഛേദിച്ചിരിക്കുന്നു."
 
-#: ../src/applet.c:2534
+#: ../src/applet.c:2550
 #, fuzzy, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "ശൃംഖല ബന്ധം '%s'-നായി തയ്യാറെടുക്കുന്നു..."
 
-#: ../src/applet.c:2537
+#: ../src/applet.c:2553
 #, fuzzy, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr ""
 "ശൃംഖല ബന്ധം '%s' ഉപയോക്താവിനോടു് ആധികാരികത ഉറപ്പാക്കുന്നതിനായി ആവശ്യപ്പെട്ടിരിക്കുന്നു..."
 
-#: ../src/applet.c:2540 ../src/applet-device-bt.c:125
-#: ../src/mobile-helpers.c:608
+#: ../src/applet.c:2556 ../src/applet-device-bt.c:125
+#: ../src/mobile-helpers.c:607
 #, fuzzy, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "'%s'-നു് ഒരു ശൃംഖല വിലാസത്തിനായി ആവശ്യപ്പെടുന്നു..."
 
-#: ../src/applet.c:2543
+#: ../src/applet.c:2559
 #, fuzzy, c-format
 msgid "Network connection “%s” active"
 msgstr "ശൃംഖല ബന്ധം '%s' സജീവമാണു്"
 
-#: ../src/applet.c:2616
+#: ../src/applet.c:2632
 #, fuzzy, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "വിപിഎന്‍ ബന്ധം '%s' ആരംഭിക്കുന്നു..."
 
-#: ../src/applet.c:2619
+#: ../src/applet.c:2635
 #, fuzzy, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr ""
 "വിപിഎന്‍ ബന്ധം '%s' ഉപയോക്താവിനോടു് ആധികാരികത ഉറപ്പാക്കുന്നതിനായി ആവശ്യപ്പെട്ടിരിക്കുന്നു..."
 
-#: ../src/applet.c:2622
+#: ../src/applet.c:2638
 #, fuzzy, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "'%s'-നായി ഒരു വിപിഎന്‍ വിലാസം ആവശ്യപ്പെടുന്നു..."
 
-#: ../src/applet.c:2625
+#: ../src/applet.c:2641
 #, fuzzy, c-format
 msgid "VPN connection active"
 msgstr "വിപിഎന്‍ ബന്ധം '%s' സജീവമാണു്"
 
-#: ../src/applet.c:2675
+#: ../src/applet.c:2691
 msgid "No network connection"
 msgstr "ശൃംഖല ബന്ധം ലഭ്യമല്ല"
 
-#: ../src/applet.c:3276
+#: ../src/applet.c:3292
 msgid "NetworkManager Applet"
 msgstr "NetworkManager ലഘുപ്രയോഗം"
 
@@ -554,47 +567,47 @@ msgstr "തെറ്റായ പിന്‍ കോഡ്; ദയവായി �
 msgid "Sending unlock code…"
 msgstr "പൂട്ട് തുറക്കേണ്ട കോഡ് അയയ്ക്കുന്നു..."
 
-#: ../src/applet-device-broadband.c:736 ../src/applet-dialogs.c:506
+#: ../src/applet-device-broadband.c:737 ../src/applet-dialogs.c:507
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "മൊബൈല്‍ ബ്രോഡ്ബാന്‍ഡ് (%s)"
 
-#: ../src/applet-device-broadband.c:738
-#: ../src/connection-editor/connection-helpers.c:107
+#: ../src/applet-device-broadband.c:739
+#: ../src/connection-editor/connection-helpers.c:108
 #: ../src/connection-editor/page-mobile.c:308
 #: ../src/libnm-gtk/nm-ui-utils.c:329
 msgid "Mobile Broadband"
 msgstr "മൊബൈല്‍ ബ്രോഡ്ബാന്‍ഡ്"
 
-#: ../src/applet-device-broadband.c:790 ../src/applet-device-bt.c:75
-#: ../src/applet-device-ethernet.c:117 ../src/applet-device-wifi.c:906
+#: ../src/applet-device-broadband.c:792 ../src/applet-device-bt.c:75
+#: ../src/applet-device-ethernet.c:117 ../src/applet-device-wifi.c:907
 msgid "Available"
 msgstr "ലഭ്യമായവ"
 
 #. Default connection item
-#: ../src/applet-device-broadband.c:803
+#: ../src/applet-device-broadband.c:805
 #, fuzzy
 msgid "New Mobile Broadband connection…"
 msgstr "പുതിയ മൊബൈല്‍ ബ്രോഡ്ബാന്‍ഡ് കണക്ഷന്‍"
 
-#: ../src/applet-device-broadband.c:817 ../src/applet-device-bt.c:87
-#: ../src/applet-device-ethernet.c:132 ../src/applet-device-wifi.c:1308
+#: ../src/applet-device-broadband.c:819 ../src/applet-device-bt.c:87
+#: ../src/applet-device-ethernet.c:132 ../src/applet-device-wifi.c:1309
 msgid "Connection Established"
 msgstr "ബന്ധം സ്ഥാപിച്ചു"
 
-#: ../src/applet-device-broadband.c:818
+#: ../src/applet-device-broadband.c:820
 msgid "You are now connected to the Mobile Broadband network."
 msgstr "നിങ്ങള്‍ ഇപ്പോള്‍ മൊബെല്‍ ബ്രോഡ്ബാന്‍ഡ് ശൃംഖലയുമായി ബന്ധപ്പെട്ടിരിയ്ക്കുന്നു."
 
-#: ../src/applet-device-broadband.c:958 ../src/applet-device-broadband.c:964
+#: ../src/applet-device-broadband.c:960 ../src/applet-device-broadband.c:966
 msgid "Mobile Broadband network."
 msgstr "മൊബൈല്‍ ബ്രോഡ്ബാന്‍ഡ് ശൃംഖല."
 
-#: ../src/applet-device-broadband.c:959
+#: ../src/applet-device-broadband.c:961
 msgid "You are now registered on the home network."
 msgstr "നിങ്ങള്‍ ഇപ്പോള്‍ വീട്ടിലെ ശൃംഖലയുമായി ബന്ധപ്പെട്ടിരിയ്ക്കുന്നു."
 
-#: ../src/applet-device-broadband.c:965
+#: ../src/applet-device-broadband.c:967
 msgid "You are now registered on a roaming network."
 msgstr "നിങ്ങള്‍ ഇപ്പോള്‍ പുറത്തൊരു ശൃംഖലയുമായി ബന്ധപ്പെട്ടിരിയ്ക്കുന്നു."
 
@@ -602,24 +615,24 @@ msgstr "നിങ്ങള്‍ ഇപ്പോള്‍ പുറത്തൊ�
 msgid "You are now connected to the mobile broadband network."
 msgstr "നിങ്ങള്‍ ഇപ്പോള്‍ മൊബെല്‍ ബ്രോഡ്ബാന്‍ഡ് ശൃംഖലയുമായി ബന്ധപ്പെട്ടിരിയ്ക്കുന്നു."
 
-#: ../src/applet-device-bt.c:116 ../src/mobile-helpers.c:599
+#: ../src/applet-device-bt.c:116 ../src/mobile-helpers.c:598
 #, fuzzy, c-format
 msgid "Preparing mobile broadband connection “%s”…"
 msgstr "മൊബൈല്‍ ബ്രോഡ്ബാന്‍ഡ് ബന്ധം '%s'-നായി തയ്യാറാകുന്നു..."
 
-#: ../src/applet-device-bt.c:119 ../src/mobile-helpers.c:602
+#: ../src/applet-device-bt.c:119 ../src/mobile-helpers.c:601
 #, fuzzy, c-format
 msgid "Configuring mobile broadband connection “%s”…"
 msgstr "മൊബൈല്‍ ബ്രോഡ്ബാന്‍ഡ് ബന്ധം '%s' ക്രമീകരിക്കുന്നു..."
 
-#: ../src/applet-device-bt.c:122 ../src/mobile-helpers.c:605
+#: ../src/applet-device-bt.c:122 ../src/mobile-helpers.c:604
 #, fuzzy, c-format
 msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr ""
 "മൊബൈല്‍ ബ്രോഡ്ബാന്‍ഡ് ബന്ധം '%s' ഉപയോക്താവിനോടു് ആധികാരികത ഉറപ്പാക്കുന്നതിനായി "
 "ആവശ്യപ്പെട്ടിരിക്കുന്നു..."
 
-#: ../src/applet-device-bt.c:129 ../src/mobile-helpers.c:627
+#: ../src/applet-device-bt.c:129 ../src/mobile-helpers.c:626
 #, fuzzy, c-format
 msgid "Mobile broadband connection “%s” active"
 msgstr "മൊബൈല്‍ ബ്രോഡ്ബാന്‍ഡ് ബന്ധം '%s' സജീവമാണു്"
@@ -680,6 +693,18 @@ msgstr "എഥര്‍നെറ്റ് ശൃംഖല ബന്ധം '%s' �
 msgid "DSL authentication"
 msgstr "ഡിഎസ്എല്‍ ആധികാരികത ഉറപ്പാക്കല്‍"
 
+#: ../src/applet-device-ethernet.c:350 ../src/applet-dialogs.c:1060
+#: ../src/connection-editor/ce-ip4-routes.ui.h:2
+#: ../src/connection-editor/ce-ip6-routes.ui.h:2
+#: ../src/connection-editor/ce-page-dcb.ui.h:18
+#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:2
+#: ../src/connection-editor/page-bluetooth.c:313
+#: ../src/connection-editor/page-mobile.c:545
+#: ../src/libnma/nma-vpn-password-dialog.c:210
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:210 ../src/mobile-helpers.c:466
+msgid "_OK"
+msgstr ""
+
 #: ../src/applet-device-wifi.c:225
 #, fuzzy
 msgid "_Connect to Hidden Wi-Fi Network…"
@@ -694,7 +719,7 @@ msgstr "പുതിയ വയര്‍ലെസ് ശൃംഖല ഉണ്ട
 msgid "(none)"
 msgstr "(ഒന്നുമില്ല)"
 
-#: ../src/applet-device-wifi.c:536 ../src/applet-device-wifi.c:1408
+#: ../src/applet-device-wifi.c:536 ../src/applet-device-wifi.c:1409
 msgid "Failed to add new connection"
 msgstr "പുതിയ ബന്ധം ചേര്‍ക്കാനായില്ല"
 
@@ -702,79 +727,79 @@ msgstr "പുതിയ ബന്ധം ചേര്‍ക്കാനായി�
 msgid "Insufficient privileges."
 msgstr ""
 
-#: ../src/applet-device-wifi.c:838
+#: ../src/applet-device-wifi.c:839
 #, c-format
 msgid "Wi-Fi Networks (%s)"
 msgstr "വയര്‍ലെസ് ശൃംഖലകള്‍ (%s)"
 
-#: ../src/applet-device-wifi.c:840
+#: ../src/applet-device-wifi.c:841
 #, c-format
 msgid "Wi-Fi Network (%s)"
 msgstr "വയര്‍ലെസ് ശൃംഖല (%s)"
 
-#: ../src/applet-device-wifi.c:842
+#: ../src/applet-device-wifi.c:843
 msgid "Wi-Fi Network"
 msgid_plural "Wi-Fi Networks"
 msgstr[0] "വയര്‍ലെസ് ശൃംഖല"
 msgstr[1] "വയര്‍ലെസ് ശൃംഖലകള്‍"
 
-#: ../src/applet-device-wifi.c:871
+#: ../src/applet-device-wifi.c:872
 msgid "Wi-Fi is disabled"
 msgstr "വയര്‍ലസ്സ് പ്രവര്‍ത്തനരഹിതമാക്കിയിരിയ്ക്കുന്നു"
 
-#: ../src/applet-device-wifi.c:872
+#: ../src/applet-device-wifi.c:873
 msgid "Wi-Fi is disabled by hardware switch"
 msgstr "ഹാര്‍ഡ്‌​വെയര്‍ സ്വിച്ച് ഉപയോഗിച്ച് വയര്‍ലെസ്സ് പ്രവര്‍ത്തന രഹിതമാക്കിയിരിക്കുന്നു"
 
-#: ../src/applet-device-wifi.c:933
+#: ../src/applet-device-wifi.c:934
 msgid "More networks"
 msgstr "കൂടുതല്‍ ശൃംഖലകള്‍"
 
-#: ../src/applet-device-wifi.c:1122
+#: ../src/applet-device-wifi.c:1123
 msgid "Wi-Fi Networks Available"
 msgstr "ലഭ്യമായ വയര്‍ലെസ് ശൃംഖലകള്‍"
 
-#: ../src/applet-device-wifi.c:1123
+#: ../src/applet-device-wifi.c:1124
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "ശൃംഖലകളുടെ പട്ടികയുപയോഗിച്ചു് ഒരു വയര്‍ലെസ് ശൃംഖലയുമായി ബന്ധപ്പെടുക"
 
-#: ../src/applet-device-wifi.c:1307
+#: ../src/applet-device-wifi.c:1308
 #, fuzzy, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "നിങ്ങള്‍ ഇപ്പോള്‍ വയര്‍ലെസ് ശൃംഖല '%s'-മായി ബന്ധപ്പെട്ടിരിയ്ക്കുന്നു."
 
-#: ../src/applet-device-wifi.c:1342
+#: ../src/applet-device-wifi.c:1343
 #, fuzzy, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "വയര്‍ഡ് ശൃംഖല ബന്ധം '%s' തയ്യാറാകുന്നു..."
 
-#: ../src/applet-device-wifi.c:1345
+#: ../src/applet-device-wifi.c:1346
 #, fuzzy, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "വയര്‍ലെസ് ശൃംഖല ബന്ധം '%s' ക്രമീകരിക്കുന്നു..."
 
-#: ../src/applet-device-wifi.c:1348
+#: ../src/applet-device-wifi.c:1349
 #, fuzzy, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr ""
 "വയര്‍ലെസ് ബന്ധം '%s' ഉപയോക്താവിനോടു് ആധികാരികത ഉറപ്പാക്കുന്നതിനായി ആവശ്യപ്പെട്ടിരിക്കുന്നു..."
 
-#: ../src/applet-device-wifi.c:1351
+#: ../src/applet-device-wifi.c:1352
 #, fuzzy, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "'%s'-നുള്ള ഒരു വയര്‍ലെസ് ശൃംഖല വിലാസത്തിനായി ആവശ്യപ്പെടുന്നു..."
 
-#: ../src/applet-device-wifi.c:1362
+#: ../src/applet-device-wifi.c:1363
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "വയര്‍ലെസ് ശൃംഖല ബന്ധം '%s' സജീവമാണു്: %s (%d%%)"
 
-#: ../src/applet-device-wifi.c:1366
+#: ../src/applet-device-wifi.c:1367
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "വയര്‍ലെസ് ശൃംഖല ബന്ധം '%s' സജീവമാണു്"
 
-#: ../src/applet-device-wifi.c:1385
+#: ../src/applet-device-wifi.c:1386
 msgid "Failed to activate connection"
 msgstr "ബന്ധം സജീവമാക്കുന്നതില്‍ പരാജയപ്പെട്ടു"
 
@@ -782,194 +807,198 @@ msgstr "ബന്ധം സജീവമാക്കുന്നതില്‍ �
 msgid "Error displaying connection information:"
 msgstr "ബന്ധം സംബന്ധിച്ചുള്ള വിവരം കാണിക്കുന്നതില്‍ പിശക്"
 
-#: ../src/applet-dialogs.c:72 ../src/connection-editor/page-wifi-security.c:379
+#: ../src/applet-dialogs.c:73 ../src/connection-editor/page-wifi-security.c:381
 #: ../src/libnma/nma-wifi-dialog.c:949 ../src/libnm-gtk/nm-wifi-dialog.c:948
 #: ../src/wireless-security/wireless-security.c:448
 msgid "LEAP"
 msgstr "എല്‍ഇഎപി"
 
-#: ../src/applet-dialogs.c:74
+#: ../src/applet-dialogs.c:75
 msgid "Dynamic WEP"
 msgstr "ഡൈനമിക് ഡബ്ലിയുഇപി"
 
-#: ../src/applet-dialogs.c:76 ../src/applet-dialogs.c:228
-#: ../src/applet-dialogs.c:230
+#: ../src/applet-dialogs.c:77 ../src/applet-dialogs.c:229
+#: ../src/applet-dialogs.c:231
 msgid "WPA/WPA2"
 msgstr "ഡബ്ലിയുപിഎ/ഡബ്ലിയുപിഎ2"
 
 #. Create the expander
-#: ../src/applet-dialogs.c:151
+#: ../src/applet-dialogs.c:152
 #, fuzzy
 msgid "More addresses"
 msgstr "വിലാസങ്ങള്‍"
 
-#: ../src/applet-dialogs.c:226
+#: ../src/applet-dialogs.c:227
 msgid "WEP"
 msgstr "ഡബ്ലിയുഇപി"
 
-#: ../src/applet-dialogs.c:234 ../src/applet-dialogs.c:243
-#: ../src/connection-editor/page-wifi-security.c:330
+#: ../src/applet-dialogs.c:235 ../src/applet-dialogs.c:244
+#: ../src/connection-editor/page-wifi-security.c:332
 msgctxt "Wi-Fi/Ethernet security"
 msgid "None"
 msgstr "ഒന്നുമില്ല"
 
-#: ../src/applet-dialogs.c:260
+#: ../src/applet-dialogs.c:261
 #, c-format
 msgid "%s (default)"
 msgstr "%s (സഹജം)"
 
-#: ../src/applet-dialogs.c:329 ../src/applet-dialogs.c:580
+#: ../src/applet-dialogs.c:330 ../src/applet-dialogs.c:581
 #, c-format
 msgid "%u Mb/s"
 msgstr "%u Mb/s"
 
-#: ../src/applet-dialogs.c:331 ../src/applet-dialogs.c:582
+#: ../src/applet-dialogs.c:332 ../src/applet-dialogs.c:583
 msgctxt "Speed"
 msgid "Unknown"
 msgstr "അറിയില്ല"
 
 #. Address
-#: ../src/applet-dialogs.c:346 ../src/applet-dialogs.c:368
+#: ../src/applet-dialogs.c:347 ../src/applet-dialogs.c:369
 msgctxt "Address"
 msgid "Unknown"
 msgstr "അറിയില്ല"
 
-#: ../src/applet-dialogs.c:347 ../src/applet-dialogs.c:420
+#: ../src/applet-dialogs.c:348 ../src/applet-dialogs.c:421
 msgid "IP Address:"
 msgstr "ഐപി വിലാസം:"
 
-#: ../src/applet-dialogs.c:369
+#: ../src/applet-dialogs.c:370
 msgid "Broadcast Address:"
 msgstr "ബ്രോഡ്കാസ്റ്റ് വിലാസം:"
 
 #. Prefix
-#: ../src/applet-dialogs.c:381
+#: ../src/applet-dialogs.c:382
 msgctxt "Subnet Mask"
 msgid "Unknown"
 msgstr "അറിയില്ല"
 
-#: ../src/applet-dialogs.c:382
+#: ../src/applet-dialogs.c:383
 msgid "Subnet Mask:"
 msgstr "സബ്‌നെറ്റ് മാസ്ക്:"
 
-#: ../src/applet-dialogs.c:492
+#: ../src/applet-dialogs.c:493
 #, c-format
 msgid "Ethernet (%s)"
 msgstr "ഇതര്‍നെറ്റ് (%s)"
 
-#: ../src/applet-dialogs.c:495
+#: ../src/applet-dialogs.c:496
 #, c-format
 msgid "802.11 WiFi (%s)"
 msgstr "802.11 വൈഫൈ (%s)"
 
-#: ../src/applet-dialogs.c:502
+#: ../src/applet-dialogs.c:503
 #, c-format
 msgid "GSM (%s)"
 msgstr "ജിഎസ്എം (%s)"
 
-#: ../src/applet-dialogs.c:504
+#: ../src/applet-dialogs.c:505
 #, c-format
 msgid "CDMA (%s)"
 msgstr "സിഡിഎംഎ (%s)"
 
 #. --- General ---
-#: ../src/applet-dialogs.c:512 ../src/applet-dialogs.c:810
+#: ../src/applet-dialogs.c:513 ../src/applet-dialogs.c:811
 #: ../src/connection-editor/ce-page-team-port.ui.h:23
 #: ../src/connection-editor/ce-page-team.ui.h:48
 #: ../src/connection-editor/page-general.c:367
 msgid "General"
 msgstr "പൊതുവായ"
 
-#: ../src/applet-dialogs.c:516
+#: ../src/applet-dialogs.c:517
 msgid "Interface:"
 msgstr "വിനിമയതലം:"
 
-#: ../src/applet-dialogs.c:536
+#: ../src/applet-dialogs.c:537
 msgid "Hardware Address:"
 msgstr "ഹാര്‍ഡ്‌വെയര്‍ വിലാസം:"
 
 #. Driver
-#: ../src/applet-dialogs.c:550
+#: ../src/applet-dialogs.c:551
 msgid "Driver:"
 msgstr "ഡ്രൈവര്‍:"
 
-#: ../src/applet-dialogs.c:585
+#: ../src/applet-dialogs.c:586
 msgid "Speed:"
 msgstr "വേഗത:"
 
-#: ../src/applet-dialogs.c:600
+#: ../src/applet-dialogs.c:601
 msgid "Security:"
 msgstr "സുരക്ഷ:"
 
 #. --- IPv4 ---
-#: ../src/applet-dialogs.c:618 ../src/applet-dialogs.c:851
+#: ../src/applet-dialogs.c:619 ../src/applet-dialogs.c:852
 #: ../src/connection-editor/ce-page-team.ui.h:29
 msgid "IPv4"
 msgstr "IPv4"
 
-#: ../src/applet-dialogs.c:638 ../src/applet-dialogs.c:689
+#: ../src/applet-dialogs.c:639 ../src/applet-dialogs.c:690
 msgid "Default Route:"
 msgstr "സഹജമായ റൂട്ട്:"
 
 #. --- IPv6 ---
-#: ../src/applet-dialogs.c:658 ../src/applet-dialogs.c:873
+#: ../src/applet-dialogs.c:659 ../src/applet-dialogs.c:874
 #: ../src/connection-editor/ce-page-team.ui.h:30
 msgid "IPv6"
 msgstr "IPv6"
 
-#: ../src/applet-dialogs.c:667 ../src/applet-dialogs.c:882
+#: ../src/applet-dialogs.c:668 ../src/applet-dialogs.c:883
 msgid "Ignored"
 msgstr "അവഗണിക്കപ്പെട്ടവ"
 
-#: ../src/applet-dialogs.c:815
+#: ../src/applet-dialogs.c:816
 msgid "VPN Type:"
 msgstr "വിപിഎന്‍ തരം:"
 
-#: ../src/applet-dialogs.c:822
+#: ../src/applet-dialogs.c:823
 msgid "VPN Gateway:"
 msgstr "വിപിഎന്‍ ഗേറ്റ്‌വേ:"
 
-#: ../src/applet-dialogs.c:828
+#: ../src/applet-dialogs.c:829
 msgid "VPN Username:"
 msgstr "വിപിഎന്‍ ഉപയോക്തൃനാമം:"
 
-#: ../src/applet-dialogs.c:834
+#: ../src/applet-dialogs.c:835
 msgid "VPN Banner:"
 msgstr "വിപിഎന്‍ ബാനര്‍:"
 
-#: ../src/applet-dialogs.c:840
+#: ../src/applet-dialogs.c:841
 msgid "Base Connection:"
 msgstr "അടിസ്ഥാന ബന്ധം:"
 
-#: ../src/applet-dialogs.c:842 ../src/libnm-gtk/nm-ui-utils.c:343
+#: ../src/applet-dialogs.c:843 ../src/libnm-gtk/nm-ui-utils.c:343
 msgid "Unknown"
 msgstr "അപരിചിതം"
 
 #. Shouldn't really happen but ...
-#: ../src/applet-dialogs.c:957
+#: ../src/applet-dialogs.c:958
 msgid "No valid active connections found!"
 msgstr "സാധുവായ സജീവ ബന്ധങ്ങളൊന്നും കണ്ടില്ല!"
 
-#: ../src/applet-dialogs.c:985
+#: ../src/applet-dialogs.c:1007
 #, fuzzy
 msgid ""
-"Copyright © 2004-2014 Red Hat, Inc.\n"
+"Copyright © 2004-2017 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc.\n"
 "and many other community contributors and translators"
 msgstr ""
 "പകര്‍പ്പവകാശം © 2004-2008 റെഡ് ഹാറ്റ്, ഇന്‍ക്.\n"
 "പകര്‍പ്പവകാശം © 2005-2008 നോവല്‍, ഇന്‍ക്."
 
-#: ../src/applet-dialogs.c:988
+#: ../src/applet-dialogs.c:1010
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr "നിങ്ങളുടെ ശൃംഖല ഉപകരണങ്ങളും ബന്ധങ്ങളും കൈകാര്യം ചെയ്യുന്നതിനായുള്ള അറിയിപ്പിനുള്ള സ്ഥലം."
 
-#: ../src/applet-dialogs.c:990
+#: ../src/applet-dialogs.c:1012
 msgid "NetworkManager Website"
 msgstr "NetworkManager വെബ്സൈറ്റ്"
 
-#: ../src/applet-dialogs.c:1001
+#: ../src/applet-dialogs.c:1016
+msgid "translator-credits"
+msgstr ""
+
+#: ../src/applet-dialogs.c:1026
 msgid ""
 "The NetworkManager Applet could not find some required resources (the .ui "
 "file was not found)."
@@ -977,33 +1006,33 @@ msgstr ""
 "ആവശ്യമുള്ള ചില ഉറവിടങ്ങള്‍ ലഭ്യമാക്കുവാന്‍ NetworkManager ആപ്ലെറ്റിനു് സാധ്യമായില്ല (.uiഫയല്‍ "
 "ലഭ്യമായില്ല)"
 
-#: ../src/applet-dialogs.c:1006
+#: ../src/applet-dialogs.c:1031
 msgid "Missing resources"
 msgstr "ലഭ്യമല്ലാത്ത റിസോഴ്സുകള്‍"
 
-#: ../src/applet-dialogs.c:1031
+#: ../src/applet-dialogs.c:1057
 msgid "Mobile broadband network password"
 msgstr "മൊബൈല്‍ ബ്രോഡ്ബാന്‍ഡ് നെറ്റ്‌വര്‍ക്കിനുള്ള അടയാളവാക്ക്"
 
-#: ../src/applet-dialogs.c:1040
+#: ../src/applet-dialogs.c:1066
 #, fuzzy, c-format
 msgid "A password is required to connect to “%s”."
 msgstr "'%s'-ലേക്കു് ബന്ധപ്പെടുന്നതിനായി ഒരു അടയാളവാക്ക് ആവശ്യമുണ്ടു്."
 
-#: ../src/applet-dialogs.c:1055
+#: ../src/applet-dialogs.c:1081
 msgid "Password:"
 msgstr "അടയാളവാക്ക്:"
 
-#: ../src/applet-dialogs.c:1337
+#: ../src/applet-dialogs.c:1363
 msgid "SIM PIN unlock required"
 msgstr "സിം പിന്‍ കൊടുത്തു് തുറക്കണം"
 
-#: ../src/applet-dialogs.c:1338
+#: ../src/applet-dialogs.c:1364
 msgid "SIM PIN Unlock Required"
 msgstr "സിം പിന്‍ കൊടുത്തു് തുറക്കണം"
 
 #. FIXME: some warning about # of times you can enter incorrect PIN
-#: ../src/applet-dialogs.c:1340
+#: ../src/applet-dialogs.c:1366
 #, fuzzy, c-format
 msgid ""
 "The mobile broadband device “%s” requires a SIM PIN code before it can be "
@@ -1011,25 +1040,25 @@ msgid ""
 msgstr "മൊബൈല്‍ ബ്രോഡ്ബാന്‍ഡ് ഉപകരണം '%s' ഉപയോഗിക്കുന്നതിനു് മുമ്പ് ഒരു സിം പിന്‍ കോഡ് ആവശ്യമുണ്ടു്."
 
 #. Translators: PIN code entry label
-#: ../src/applet-dialogs.c:1342
+#: ../src/applet-dialogs.c:1368
 msgid "PIN code:"
 msgstr "പിന്‍ കോഡ്:"
 
 #. Translators: Show/obscure PIN checkbox label
-#: ../src/applet-dialogs.c:1346
+#: ../src/applet-dialogs.c:1372
 msgid "Show PIN code"
 msgstr "പിന്‍ കോഡ് കാണിയ്ക്കുക"
 
-#: ../src/applet-dialogs.c:1348
+#: ../src/applet-dialogs.c:1374
 msgid "SIM PUK unlock required"
 msgstr "സിം പിയുകെ കൊടുത്തു് തുറക്കണം"
 
-#: ../src/applet-dialogs.c:1349
+#: ../src/applet-dialogs.c:1375
 msgid "SIM PUK Unlock Required"
 msgstr "സിം പിയുകെ കൊടുത്തു് തുറക്കണം"
 
 #. FIXME: some warning about # of times you can enter incorrect PUK
-#: ../src/applet-dialogs.c:1351
+#: ../src/applet-dialogs.c:1377
 #, fuzzy, c-format
 msgid ""
 "The mobile broadband device “%s” requires a SIM PUK code before it can be "
@@ -1037,31 +1066,24 @@ msgid ""
 msgstr "മൊബൈല്‍ ബ്രോഡ്ബാന്‍ഡ് ഉപകരണം '%s' ഉപയോഗിക്കുന്നതിനു് മുമ്പ് ഒരു സിം പിയുകെ കോഡ് ആവശ്യമുണ്ടു്."
 
 #. Translators: PUK code entry label
-#: ../src/applet-dialogs.c:1353
+#: ../src/applet-dialogs.c:1379
 msgid "PUK code:"
 msgstr "പിയുകെ കോഡ്:"
 
 #. Translators: New PIN entry label
-#: ../src/applet-dialogs.c:1356
+#: ../src/applet-dialogs.c:1382
 msgid "New PIN code:"
 msgstr "പുതിയ പിന്‍ കോഡ്:"
 
 #. Translators: New PIN verification entry label
-#: ../src/applet-dialogs.c:1358
+#: ../src/applet-dialogs.c:1384
 msgid "Re-enter new PIN code:"
 msgstr "പുതിയ പിന്‍ കോഡ് വീണ്ടും നല്‍കുക:"
 
 #. Translators: Show/obscure PIN/PUK checkbox label
-#: ../src/applet-dialogs.c:1363
+#: ../src/applet-dialogs.c:1389
 msgid "Show PIN/PUK codes"
 msgstr "പിന്‍/പിഒകെ കോഡുകള്‍ കാണിയ്ക്കുക"
-
-#: ../src/connection-editor/ce-ip4-routes.ui.h:2
-#: ../src/connection-editor/ce-ip6-routes.ui.h:2
-#: ../src/connection-editor/ce-page-dcb.ui.h:18
-#: ../src/connection-editor/ce-ppp-auth-methods.ui.h:2
-msgid "_OK"
-msgstr ""
 
 #: ../src/connection-editor/ce-ip4-routes.ui.h:3
 #: ../src/connection-editor/ce-ip6-routes.ui.h:3
@@ -1079,21 +1101,21 @@ msgstr ""
 #: ../src/connection-editor/ce-page-bond.ui.h:12
 #: ../src/connection-editor/ce-page-bridge.ui.h:2
 #: ../src/connection-editor/ce-page-ip4.ui.h:7
-#: ../src/connection-editor/ce-page-ip6.ui.h:10
+#: ../src/connection-editor/ce-page-ip6.ui.h:12
 #: ../src/connection-editor/ce-page-team.ui.h:13
-#: ../src/connection-editor/nm-connection-editor.ui.h:3
+#: ../src/connection-editor/nm-connection-list.ui.h:3
 msgid "_Add"
 msgstr ""
 
-#. Delete
 #: ../src/connection-editor/ce-ip4-routes.ui.h:5
 #: ../src/connection-editor/ce-ip6-routes.ui.h:5
 #: ../src/connection-editor/ce-page-bond.ui.h:14
 #: ../src/connection-editor/ce-page-bridge.ui.h:4
 #: ../src/connection-editor/ce-page-ip4.ui.h:8
-#: ../src/connection-editor/ce-page-ip6.ui.h:11
+#: ../src/connection-editor/ce-page-ip6.ui.h:13
 #: ../src/connection-editor/ce-page-team.ui.h:15
-#: ../src/connection-editor/nm-connection-list.c:711
+#: ../src/connection-editor/connection-helpers.c:772
+#: ../src/connection-editor/nm-connection-list.ui.h:4
 msgid "_Delete"
 msgstr "_നീക്കം ചെയ്യുക"
 
@@ -1183,11 +1205,10 @@ msgstr "ബോണ്ടട് _ബന്ധങ്ങള്‍:"
 msgid "M_ode:"
 msgstr "_മോഡ്:"
 
-#. Edit
 #: ../src/connection-editor/ce-page-bond.ui.h:13
 #: ../src/connection-editor/ce-page-bridge.ui.h:3
 #: ../src/connection-editor/ce-page-team.ui.h:14
-#: ../src/connection-editor/nm-connection-list.c:695
+#: ../src/connection-editor/nm-connection-list.ui.h:5
 msgid "_Edit"
 msgstr "_ചിട്ട"
 
@@ -1241,7 +1262,7 @@ msgstr ""
 
 #: ../src/connection-editor/ce-page-bond.ui.h:25
 #: ../src/connection-editor/ce-page-ethernet.ui.h:17
-#: ../src/connection-editor/ce-page-infiniband.ui.h:4
+#: ../src/connection-editor/ce-page-infiniband.ui.h:8
 #: ../src/connection-editor/ce-page-team.ui.h:17
 #: ../src/connection-editor/ce-page-vlan.ui.h:4
 #: ../src/connection-editor/ce-page-wifi.ui.h:8
@@ -1250,7 +1271,7 @@ msgstr "_എംടിയു:"
 
 #: ../src/connection-editor/ce-page-bond.ui.h:26
 #: ../src/connection-editor/ce-page-ethernet.ui.h:18
-#: ../src/connection-editor/ce-page-infiniband.ui.h:3
+#: ../src/connection-editor/ce-page-infiniband.ui.h:7
 #: ../src/connection-editor/ce-page-team.ui.h:18
 #: ../src/connection-editor/ce-page-vlan.ui.h:5
 #: ../src/connection-editor/ce-page-wifi.ui.h:7
@@ -1283,25 +1304,71 @@ msgid "_Hello time:"
 msgstr "_ഹലോ സമയം:"
 
 #: ../src/connection-editor/ce-page-bridge.ui.h:9
+msgid "STP forwarding delay, in seconds"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:10
 msgid "s"
 msgstr "സെക്കന്റ്"
 
-#: ../src/connection-editor/ce-page-bridge.ui.h:10
+#: ../src/connection-editor/ce-page-bridge.ui.h:11
+msgid "STP hello time, in seconds"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:12
 #, fuzzy
 msgid "Enable I_GMP snooping"
 msgstr "_ശൃംഖല ബന്ധം സജ്ജമാക്കുക"
 
-#: ../src/connection-editor/ce-page-bridge.ui.h:11
+#: ../src/connection-editor/ce-page-bridge.ui.h:13
+msgid ""
+"Controls whether IGMP snooping is enabled for this bridge. Note that if "
+"snooping was automatically disabled due to hash collisions, the system may "
+"refuse to enable the feature until the collisions are resolved."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:14
 msgid "Enable _STP (Spanning Tree Protocol)"
 msgstr "_STP സജ്ജമാക്കുക (സ്പാനിംഗ് ട്രീ നിയമം)"
 
-#: ../src/connection-editor/ce-page-bridge.ui.h:12
+#: ../src/connection-editor/ce-page-bridge.ui.h:15
+msgid ""
+"Controls whether Spanning Tree Protocol (STP) is enabled for this bridge"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:16
+msgid ""
+"STP priority for this bridge. Lower values are “better”; the lowest priority "
+"bridge will be elected the root bridge."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:17
 msgid "_Max age:"
 msgstr "_പരമാവധി വയസ്സ്:"
 
-#: ../src/connection-editor/ce-page-bridge.ui.h:13
+#: ../src/connection-editor/ce-page-bridge.ui.h:18
+msgid "STP maximum message age, in seconds"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:19
 msgid "_Aging time:"
 msgstr "_വയസ്സാകുന്ന സമയം:"
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:20
+msgid "The Ethernet MAC address aging time, in seconds"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:21
+msgid "Group _forward mask:"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-bridge.ui.h:22
+msgid ""
+"A mask of 16 bits, each corresponding to a group address in the range from "
+"01:80:C2:00:00:00 to 01:80:C2:00:00:0F that must be forwarded. The mask "
+"can’t have bits 0, 1 or 2 set because they are used for STP, MAC pause "
+"frames and LACP."
+msgstr ""
 
 #: ../src/connection-editor/ce-page.c:78 ../src/connection-editor/ce-page.c:112
 msgid "automatic"
@@ -1569,10 +1636,20 @@ msgid "_Username:"
 msgstr "_ഉപയോക്താവിന്റെ പേരു്:"
 
 #: ../src/connection-editor/ce-page-dsl.ui.h:2
+msgid "Username used to authenticate with the PPPoE service."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:3
+msgid ""
+"Only initiate sessions with access concentrators that provide the specified "
+"service. For most providers this should be left blank."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:4
 msgid "_Service:"
 msgstr "_സേവനം:"
 
-#: ../src/connection-editor/ce-page-dsl.ui.h:3
+#: ../src/connection-editor/ce-page-dsl.ui.h:5
 #: ../src/wireless-security/eap-method-leap.ui.h:3
 #: ../src/wireless-security/eap-method-simple.ui.h:3
 #: ../src/wireless-security/ws-leap.ui.h:3
@@ -1580,7 +1657,11 @@ msgstr "_സേവനം:"
 msgid "Sho_w password"
 msgstr "അടയാളവാക്ക് കാ_ണിക്കുക"
 
-#: ../src/connection-editor/ce-page-dsl.ui.h:4
+#: ../src/connection-editor/ce-page-dsl.ui.h:6
+msgid "Password used to authenticate with the PPPoE service."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:7
 #: ../src/connection-editor/ce-page-mobile.ui.h:4
 #: ../src/libnma/nma-vpn-password-dialog.c:97
 #: ../src/libnm-gtk/nm-vpn-password-dialog.c:97
@@ -1591,13 +1672,31 @@ msgstr "അടയാളവാക്ക് കാ_ണിക്കുക"
 msgid "_Password:"
 msgstr "_അടയാളവാക്ക്:"
 
+#: ../src/connection-editor/ce-page-dsl.ui.h:8
+#, fuzzy
+msgid "PPP _interface:"
+msgstr "_പാരന്‍റ്റ് ഇന്റെര്‍ഫേസ്:"
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:9
+#, fuzzy
+msgid "P_arent interface:"
+msgstr "_പാരന്‍റ്റ് ഇന്റെര്‍ഫേസ്:"
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:10
+msgid "An arbitrary name to assign to the newly created PPP interface."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-dsl.ui.h:11
+msgid "The interface on which the PPP connection will be established."
+msgstr ""
+
 #: ../src/connection-editor/ce-page-ethernet.ui.h:1
 #: ../src/connection-editor/ce-page-ip4.ui.h:1
 #: ../src/connection-editor/ce-page-ip6.ui.h:1
-#: ../src/connection-editor/ce-page-proxy.ui.h:3
+#: ../src/connection-editor/ce-page-proxy.ui.h:2
 #: ../src/connection-editor/ce-page-wifi.ui.h:1
 #: ../src/connection-editor/page-ip4.c:131
-#: ../src/connection-editor/page-ip6.c:136
+#: ../src/connection-editor/page-ip6.c:142
 #: ../src/wireless-security/eap-method-peap.ui.h:1
 msgid "Automatic"
 msgstr "സ്വയം"
@@ -1643,7 +1742,7 @@ msgid "Full"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:12
-#: ../src/connection-editor/page-ip6.c:149
+#: ../src/connection-editor/page-ip6.c:155
 msgid "Ignore"
 msgstr "അവഗണിക്കുക"
 
@@ -1651,7 +1750,7 @@ msgstr "അവഗണിക്കുക"
 #: ../src/connection-editor/ce-page-ip4.ui.h:3
 #: ../src/connection-editor/ce-page-ip6.ui.h:3
 #: ../src/connection-editor/page-ip4.c:168
-#: ../src/connection-editor/page-ip6.c:185
+#: ../src/connection-editor/page-ip6.c:191
 msgid "Manual"
 msgstr "നിങ്ങള്‍ നല്‍കിയ"
 
@@ -1660,7 +1759,7 @@ msgid "_Port:"
 msgstr "_പോര്‍ട്ട്:"
 
 #: ../src/connection-editor/ce-page-ethernet.ui.h:15
-#: ../src/connection-editor/ce-page-infiniband.ui.h:2
+#: ../src/connection-editor/ce-page-infiniband.ui.h:6
 #: ../src/connection-editor/ce-page-wifi.ui.h:9
 #, fuzzy
 msgid "_Device:"
@@ -1812,19 +1911,19 @@ msgstr "വിലാസങ്ങള്‍"
 msgid "Address (optional)"
 msgstr ""
 
-#: ../src/connection-editor/ce-page-infiniband.ui.h:1
-msgid "_Transport mode:"
-msgstr "_ട്രാന്‍സ്പോര്‍ട്ട് രീതി:"
-
 #. IP-over-InfiniBand "datagram mode"
-#: ../src/connection-editor/ce-page-infiniband.ui.h:6
+#: ../src/connection-editor/ce-page-infiniband.ui.h:2
 msgid "Datagram"
 msgstr "ഡാറ്റാഗ്രാം"
 
 #. IP-over-InfiniBand "connected mode"
-#: ../src/connection-editor/ce-page-infiniband.ui.h:8
+#: ../src/connection-editor/ce-page-infiniband.ui.h:4
 msgid "Connected"
 msgstr "ബന്ധപ്പെട്ടിരിക്കുന്നു"
+
+#: ../src/connection-editor/ce-page-infiniband.ui.h:5
+msgid "_Transport mode:"
+msgstr "_ട്രാന്‍സ്പോര്‍ട്ട് രീതി:"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:1
 msgid "IPIP"
@@ -1863,39 +1962,42 @@ msgid "VTI6"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:10
+#: ../src/connection-editor/ce-page-macsec.ui.h:6
 #, fuzzy
-msgid "Device name"
+msgid "Device name:"
 msgstr "ഉപകരണത്തിന്റെ പേര് + സംഖ്യ"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:11
+#: ../src/connection-editor/ce-page-macsec.ui.h:8
 #, fuzzy
-msgid "Parent device"
+msgid "Parent device:"
 msgstr "ഈഥര്‍നെറ്റ്"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:12
+#: ../src/connection-editor/ce-page-macsec.ui.h:16
 #, fuzzy
-msgid "Mode"
-msgstr "രീതി(_M):"
+msgid "Mode:"
+msgstr "_മോഡ്:"
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:13
-msgid "Local IP"
+msgid "Local IP:"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:14
-msgid "Remote IP"
+msgid "Remote IP:"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:15
-msgid "Input key"
+msgid "Input key:"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:16
-msgid "Output key"
+msgid "Output key:"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-ip-tunnel.ui.h:17
 #, fuzzy
-msgid "MTU"
+msgid "MTU:"
 msgstr "_എംടിയു:"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:2
@@ -1911,12 +2013,12 @@ msgstr "ലിങ്ക്-ലോക്കല്‍"
 #: ../src/connection-editor/ce-page-ip4.ui.h:5
 #: ../src/connection-editor/ce-page-ip6.ui.h:5
 #: ../src/connection-editor/page-ip4.c:188
-#: ../src/connection-editor/page-ip6.c:205
+#: ../src/connection-editor/page-ip6.c:211
 msgid "Shared to other computers"
 msgstr "മറ്റു് കമ്പ്യൂട്ടറുകളുമായി പങ്കിടുന്നു"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:6
-#: ../src/connection-editor/ce-page-ip6.ui.h:9
+#: ../src/connection-editor/ce-page-ip6.ui.h:11
 msgid "_Method:"
 msgstr "_രീതി:"
 
@@ -1932,7 +2034,7 @@ msgstr ""
 "ഇവിടെ നല്‍കുക."
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:10
-#: ../src/connection-editor/ce-page-ip6.ui.h:12
+#: ../src/connection-editor/ce-page-ip6.ui.h:14
 msgid ""
 "Domains used when resolving host names. Use commas to separate multiple "
 "domains."
@@ -1945,16 +2047,16 @@ msgid "D_HCP client ID:"
 msgstr "D_HCP ക്ലയന്റ് ID:"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:12
-#: ../src/connection-editor/ce-page-ip6.ui.h:13
+#: ../src/connection-editor/ce-page-ip6.ui.h:15
 #: ../src/connection-editor/page-ip4.c:372
-#: ../src/connection-editor/page-ip6.c:335
+#: ../src/connection-editor/page-ip6.c:346
 msgid "S_earch domains:"
 msgstr "_തിരയേണ്ട ഡൊമെയിനുകള്‍:"
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:13
-#: ../src/connection-editor/ce-page-ip6.ui.h:14
+#: ../src/connection-editor/ce-page-ip6.ui.h:16
 #: ../src/connection-editor/page-ip4.c:363
-#: ../src/connection-editor/page-ip6.c:326
+#: ../src/connection-editor/page-ip6.c:337
 msgid "DNS ser_vers:"
 msgstr "_ഡിഎന്‍എസ് സെര്‍വറുകള്‍:"
 
@@ -1979,11 +2081,12 @@ msgstr ""
 "വിജയിക്കുകയും ചെയ്താല്‍ ബന്ധം പൂര്‍ത്തിയാക്കുവാന്‍ അനുവദിക്കുന്നു."
 
 #: ../src/connection-editor/ce-page-ip4.ui.h:17
-#: ../src/connection-editor/ce-page-ip6.ui.h:19
+#: ../src/connection-editor/ce-page-ip6.ui.h:22
 msgid "_Routes…"
 msgstr "_റൂട്ടുകള്‍…"
 
 #: ../src/connection-editor/ce-page-ip6.ui.h:6
+#: ../src/connection-editor/ce-page-macsec.ui.h:3
 #: ../src/connection-editor/page-ip4.c:198
 msgid "Disabled"
 msgstr "പ്രവര്‍ത്തന രഹിതം"
@@ -1996,7 +2099,16 @@ msgstr ""
 msgid "Enabled (prefer temporary address)"
 msgstr ""
 
-#: ../src/connection-editor/ce-page-ip6.ui.h:15
+#: ../src/connection-editor/ce-page-ip6.ui.h:9
+msgid "EUI64"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-ip6.ui.h:10
+#, fuzzy
+msgid "Stable privacy"
+msgstr "_വയര്‍ലെസ് സജ്ജമാക്കുക"
+
+#: ../src/connection-editor/ce-page-ip6.ui.h:17
 #, fuzzy
 msgid ""
 "IP addresses of domain name servers used to resolve host names. Use commas "
@@ -2006,21 +2118,115 @@ msgstr ""
 "ഹോസ്റ്റ് നാമങ്ങള്‍ റിസോള്‍വ് ചെയ്യുവാന്‍ ഉപയോഗിക്കുന്ന ഡൊമെയിന്‍ നെയിം സെര്‍വറുകളുടെ ഐപി വിലാസങ്ങള്‍. "
 "ഡൊമെയിന്‍ നെയിം സെര്‍വര്‍ വിലാസങ്ങള്‍ തമ്മില്‍ കോമാ ഉപയോഗിച്ചു് വേര്‍തിരിക്കുക."
 
-#: ../src/connection-editor/ce-page-ip6.ui.h:16
+#: ../src/connection-editor/ce-page-ip6.ui.h:18
 msgid "IPv6 _privacy extensions:"
 msgstr ""
 
-#: ../src/connection-editor/ce-page-ip6.ui.h:17
+#: ../src/connection-editor/ce-page-ip6.ui.h:19
+msgid "IPv6 address _generation mode:"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-ip6.ui.h:20
 msgid "Require IPv_6 addressing for this connection to complete"
 msgstr "ഈ ബന്ധം പൂര്‍ത്തിയാക്കുന്നതിനായി IPv_6 അഡ്രസിങ് ആവശ്യമുണ്ടു്"
 
-#: ../src/connection-editor/ce-page-ip6.ui.h:18
+#: ../src/connection-editor/ce-page-ip6.ui.h:21
 msgid ""
 "When connecting to IPv4-capable networks, allows the connection to complete "
 "if IPv6 configuration fails but IPv4 configuration succeeds."
 msgstr ""
 "IPv4-നുള്ള ശൃംഖലകളുമായി ബന്ധപ്പെടുമ്പോള്‍, IPv6 ക്രമീകരണം പരാജയപ്പെടുകയും IPv4 ക്രമീകരണം "
 "വിജയിക്കുകയും ചെയ്താല്‍ ബന്ധം പൂര്‍ത്തിയാക്കുവാന്‍ അനുവദിക്കുന്നു."
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:1
+msgid "PSK"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:2
+#: ../src/connection-editor/page-ppp.c:129
+msgid "EAP"
+msgstr "EAP"
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:4
+msgid "Check"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:5
+#, fuzzy
+msgid "Strict"
+msgstr "മെട്രിക്"
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:7
+msgid "The name of the MACsec device."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:9
+msgid ""
+"The parent interface name or parent connection UUID from which this MACSEC "
+"interface should be created."
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:10
+msgid ""
+"The parent interface name or parent connection UUID from which this MACsec "
+"interface should be created"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:11
+msgid " The pre-shared Connectivity-association Key Name"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:12
+msgid "The pre-shared Connectivity Association Key"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:13
+msgid ""
+"Specifies how the CAK (Connectivity Association Key) for MKA (MACsec Key "
+"Agreement) is obtained. For the EAP mode, fill the parameters in the 802.1X "
+"security page"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:14
+msgid "CKN:"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:15
+msgid "CAK:"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:17
+msgid "Keys:"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:18
+msgid "Parameters:"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:19
+msgid "Validation:"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:20
+#, fuzzy
+msgid "SCI port:"
+msgstr "_ഇംപോര്‍ട്ട് ചെയ്യുക"
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:21
+msgid "Specifies the validation mode for incoming frames"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:22
+msgid "Encrypt"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:23
+msgid "Whether the transmitted traffic must be encrypted"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-macsec.ui.h:24
+msgid "The port component of the SCI (Secure Channel Identifier)"
+msgstr ""
 
 #: ../src/connection-editor/ce-page-mobile.ui.h:1
 #: ../src/connection-editor/ce-page-team.ui.h:26
@@ -2109,26 +2315,25 @@ msgid "Send PPP _echo packets"
 msgstr "PPP _എക്കോ പാക്കറ്റുകള്‍ അയയ്ക്കുക"
 
 #: ../src/connection-editor/ce-page-proxy.ui.h:1
-#, fuzzy
-msgid "Method:"
-msgstr "_രീതി:"
-
-#: ../src/connection-editor/ce-page-proxy.ui.h:2
 #: ../src/connection-editor/ce-page-team.ui.h:25
 #, fuzzy
 msgid "None"
 msgstr "ഒന്നുമില്ല"
 
-#: ../src/connection-editor/ce-page-proxy.ui.h:4
+#: ../src/connection-editor/ce-page-proxy.ui.h:3
 msgid "For browser only"
 msgstr ""
 
-#: ../src/connection-editor/ce-page-proxy.ui.h:5
+#: ../src/connection-editor/ce-page-proxy.ui.h:4
 msgid "Use this proxy configuration for only browser clients/schemes."
 msgstr ""
 
-#: ../src/connection-editor/ce-page-proxy.ui.h:6
+#: ../src/connection-editor/ce-page-proxy.ui.h:5
 msgid "PAC URL:"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-proxy.ui.h:6
+msgid "PAC script:"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-proxy.ui.h:7
@@ -2136,13 +2341,14 @@ msgid "URL from where the PAC script is to be obtained."
 msgstr ""
 
 #: ../src/connection-editor/ce-page-proxy.ui.h:8
-msgid "PAC script:"
-msgstr ""
-
-#: ../src/connection-editor/ce-page-proxy.ui.h:9
 #, fuzzy
 msgid "Import script from a file…"
 msgstr "സൂക്ഷിച്ച വിപിഎന്‍ ക്രമീകരണങ്ങള്‍ ഇറക്കുമതി ചെയ്യുക..."
+
+#: ../src/connection-editor/ce-page-proxy.ui.h:9
+#, fuzzy
+msgid "Method:"
+msgstr "_രീതി:"
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:1
 #: ../src/connection-editor/ce-page-team.ui.h:19
@@ -2191,74 +2397,74 @@ msgid "ID of queue which this port should be mapped to."
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:10
+msgid "Active-Backup runner options"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:11
 #, fuzzy
 msgid "_Port priority:"
 msgstr "_മുന്‍ഗണന: "
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:11
-msgid "Port _sticky"
-msgstr ""
-
 #: ../src/connection-editor/ce-page-team-port.ui.h:12
-#: ../src/connection-editor/ce-page-team.ui.h:82
-msgid ""
-"Validate received ARP packets on active ports. If this is not checked, all "
-"incoming ARP packets will be considered as a good reply."
-msgstr ""
-
-#: ../src/connection-editor/ce-page-team-port.ui.h:13
 #: ../src/connection-editor/ce-page-team.ui.h:44
 msgid ""
 "Value is positive number in milliseconds. Specifies an interval between "
 "bursts of notify-peer packets."
 msgstr ""
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:14
+#: ../src/connection-editor/ce-page-team-port.ui.h:13
 msgid "Port priority. The higher number means higher priority."
 msgstr ""
 
+#: ../src/connection-editor/ce-page-team-port.ui.h:14
+msgid "Port _sticky"
+msgstr ""
+
 #: ../src/connection-editor/ce-page-team-port.ui.h:15
-msgid "Active-Backup runner options"
+#: ../src/connection-editor/ce-page-team.ui.h:82
+msgid ""
+"Validate received ARP packets on active ports. If this is not checked, all "
+"incoming ARP packets will be considered as a good reply."
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:16
+msgid "LACP runner options"
+msgstr ""
+
+#: ../src/connection-editor/ce-page-team-port.ui.h:17
 #, fuzzy
 msgid "_LACP port priority:"
 msgstr "_മുന്‍ഗണന: "
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:17
+#: ../src/connection-editor/ce-page-team-port.ui.h:18
 #, fuzzy
 msgid "LACP port _key:"
 msgstr "സ്വകാര്യ _കീ:"
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:18
+#: ../src/connection-editor/ce-page-team-port.ui.h:19
 #: ../src/connection-editor/ce-page-team.ui.h:43
 msgid ""
 "Number of bursts of multicast group rejoin requests sent after port is "
 "enabled or disabled."
 msgstr ""
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:19
+#: ../src/connection-editor/ce-page-team-port.ui.h:20
 msgid ""
 "Port priority according to LACP standard. The lower number means higher "
 "priority."
 msgstr ""
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:20
+#: ../src/connection-editor/ce-page-team-port.ui.h:21
 #: ../src/connection-editor/ce-page-team.ui.h:45
 msgid ""
 "Value is positive number in milliseconds. Specifies an interval between "
 "bursts of multicast group rejoin requests."
 msgstr ""
 
-#: ../src/connection-editor/ce-page-team-port.ui.h:21
+#: ../src/connection-editor/ce-page-team-port.ui.h:22
 msgid ""
 "Port key according to LACP standard. It is only possible to aggregate ports "
 "with the same key."
-msgstr ""
-
-#: ../src/connection-editor/ce-page-team-port.ui.h:22
-msgid "LACP runner options"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team-port.ui.h:24
@@ -2453,14 +2659,14 @@ msgid "LACP"
 msgstr ""
 
 #: ../src/connection-editor/ce-page-team.ui.h:27
-#: ../src/connection-editor/connection-helpers.c:104
+#: ../src/connection-editor/connection-helpers.c:105
 #: ../src/connection-editor/page-ethernet.c:351
 #: ../src/libnm-gtk/nm-ui-utils.c:321
 msgid "Ethernet"
 msgstr "ഈഥര്‍നെറ്റ്"
 
 #: ../src/connection-editor/ce-page-team.ui.h:28
-#: ../src/connection-editor/connection-helpers.c:119
+#: ../src/connection-editor/connection-helpers.c:120
 #: ../src/connection-editor/page-vlan.c:594 ../src/libnm-gtk/nm-ui-utils.c:339
 #: ../src/libnm-gtk/nm-ui-utils.c:583
 msgid "VLAN"
@@ -2722,6 +2928,7 @@ msgstr "_ബാന്‍ഡ്:"
 msgid "SS_ID:"
 msgstr "എസ്എസ്_ഐഡി:"
 
+#: ../src/connection-editor/ce-polkit.c:63
 #: ../src/connection-editor/ce-polkit-button.c:74
 msgid "No polkit authorization to perform the action"
 msgstr ""
@@ -2780,58 +2987,63 @@ msgstr ""
 "പിന്തുണയ്ക്കുന്നു. ബന്ധങ്ങള്‍ പരാജയപ്പെട്ടാല്‍, ചില മാര്‍ഗ്ഗങ്ങള്‍ക്കുള്ള പിന്തുണ പ്രവര്‍ത്ത രഹിതമാക്കി "
 "വീണ്ടും ശ്രമിക്കുക."
 
-#: ../src/connection-editor/connection-helpers.c:105
+#: ../src/connection-editor/connection-helpers.c:106
 #: ../src/connection-editor/page-wifi.c:440 ../src/libnm-gtk/nm-ui-utils.c:323
 msgid "Wi-Fi"
 msgstr "വയര്‍ലസ്സ്"
 
-#: ../src/connection-editor/connection-helpers.c:113
+#: ../src/connection-editor/connection-helpers.c:114
 #: ../src/connection-editor/page-bluetooth.c:123
 #: ../src/libnm-gtk/nm-ui-utils.c:325
 msgid "Bluetooth"
 msgstr "ബ്ലൂടൂത്ത്"
 
-#: ../src/connection-editor/connection-helpers.c:114
-#: ../src/connection-editor/page-dsl.c:127
-msgid "DSL"
-msgstr "DSL"
-
 #: ../src/connection-editor/connection-helpers.c:115
+#: ../src/connection-editor/page-dsl.c:201
+msgid "DSL/PPPoE"
+msgstr ""
+
+#: ../src/connection-editor/connection-helpers.c:116
 #: ../src/connection-editor/page-infiniband.c:148
 #: ../src/libnm-gtk/nm-ui-utils.c:331
 msgid "InfiniBand"
 msgstr "ഇന്‍ഫിനിബാന്‍ഡ്"
 
-#: ../src/connection-editor/connection-helpers.c:116
+#: ../src/connection-editor/connection-helpers.c:117
 #: ../src/connection-editor/page-bond.c:446 ../src/libnm-gtk/nm-ui-utils.c:333
 #: ../src/libnm-gtk/nm-ui-utils.c:577
 msgid "Bond"
 msgstr "ബോണ്ട്"
 
-#: ../src/connection-editor/connection-helpers.c:117
-#: ../src/connection-editor/page-team.c:1153 ../src/libnm-gtk/nm-ui-utils.c:335
+#: ../src/connection-editor/connection-helpers.c:118
+#: ../src/connection-editor/page-team.c:1031 ../src/libnm-gtk/nm-ui-utils.c:335
 #: ../src/libnm-gtk/nm-ui-utils.c:579
 msgid "Team"
 msgstr ""
 
-#: ../src/connection-editor/connection-helpers.c:118
-#: ../src/connection-editor/page-bridge.c:212
+#: ../src/connection-editor/connection-helpers.c:119
+#: ../src/connection-editor/page-bridge.c:233
 #: ../src/libnm-gtk/nm-ui-utils.c:337 ../src/libnm-gtk/nm-ui-utils.c:581
 msgid "Bridge"
 msgstr "ബ്രിഡ്ജ്"
 
-#: ../src/connection-editor/connection-helpers.c:120
+#: ../src/connection-editor/connection-helpers.c:121
 #: ../src/connection-editor/page-ip-tunnel.c:176
 msgid "IP tunnel"
 msgstr ""
 
 #: ../src/connection-editor/connection-helpers.c:122
-#: ../src/connection-editor/connection-helpers.c:396
+#: ../src/connection-editor/page-macsec.c:190
+msgid "MACsec"
+msgstr ""
+
+#: ../src/connection-editor/connection-helpers.c:124
+#: ../src/connection-editor/connection-helpers.c:398
 #: ../src/connection-editor/page-vpn.c:96
 msgid "VPN"
 msgstr "VPN"
 
-#: ../src/connection-editor/connection-helpers.c:205
+#: ../src/connection-editor/connection-helpers.c:207
 msgid ""
 "The VPN plugin failed to import the VPN connection correctly\n"
 "\n"
@@ -2841,11 +3053,11 @@ msgstr ""
 "\n"
 "പിശക്: വിപിഎന്‍ സര്‍വീസ് തരം ലഭ്യമല്ല."
 
-#: ../src/connection-editor/connection-helpers.c:217
+#: ../src/connection-editor/connection-helpers.c:219
 msgid "Cannot import VPN connection"
 msgstr "വിപിഎന്‍ ബന്ധം ഇംപോര്‍ട്ട് ചെയ്യുവാന്‍ സാധ്യമല്ല"
 
-#: ../src/connection-editor/connection-helpers.c:219
+#: ../src/connection-editor/connection-helpers.c:221
 #, fuzzy, c-format
 msgid ""
 "The file “%s” could not be read or does not contain recognized VPN "
@@ -2857,47 +3069,54 @@ msgstr ""
 "\n"
 "പിശക്: %s."
 
-#: ../src/connection-editor/connection-helpers.c:220
+#: ../src/connection-editor/connection-helpers.c:222
 #, fuzzy
 msgid "unknown error"
 msgstr "അറിയാത്ത ഏതോ പ്രശ്നം"
 
-#: ../src/connection-editor/connection-helpers.c:303
+#: ../src/connection-editor/connection-helpers.c:305
 #: ../src/connection-editor/page-proxy.c:118
 #: ../src/connection-editor/page-team.c:341
 #: ../src/connection-editor/page-team-port.c:203
 msgid "Select file to import"
 msgstr "ഇംപോര്‍ട്ട് ചെയ്യുന്നതിനുള്ള ഫയല്‍ തെരഞ്ഞെടുക്കുക"
 
-#: ../src/connection-editor/connection-helpers.c:338
+#: ../src/connection-editor/connection-helpers.c:309
+#: ../src/connection-editor/page-proxy.c:122
+#: ../src/connection-editor/page-team.c:345
+#: ../src/connection-editor/page-team-port.c:207
+msgid "_Open"
+msgstr ""
+
+#: ../src/connection-editor/connection-helpers.c:340
 msgid "Hardware"
 msgstr "ഹാര്‍ഡ്‌വെയര്‍"
 
-#: ../src/connection-editor/connection-helpers.c:365
+#: ../src/connection-editor/connection-helpers.c:367
 msgid "Virtual"
 msgstr "വിര്‍ച്ച്വല്‍"
 
-#: ../src/connection-editor/connection-helpers.c:514
 #: ../src/connection-editor/connection-helpers.c:516
+#: ../src/connection-editor/connection-helpers.c:518
 #, fuzzy
 msgid "Import a saved VPN configuration…"
 msgstr "സൂക്ഷിച്ച വിപിഎന്‍ ക്രമീകരണങ്ങള്‍ ഇറക്കുമതി ചെയ്യുക..."
 
-#: ../src/connection-editor/connection-helpers.c:546
+#: ../src/connection-editor/connection-helpers.c:548
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
 msgstr "അപരിചിതമായ പിശക് കാരണം ബന്ധംഎഡിറ്റര്‍ ഡയലോഗ് ആരംഭിക്കുവാന്‍ സാധിച്ചില്ല."
 
-#: ../src/connection-editor/connection-helpers.c:555
+#: ../src/connection-editor/connection-helpers.c:557
 msgid "Could not create new connection"
 msgstr "പുതിയ ബന്ധം ഉണ്ടാക്കുവാന്‍ സാധ്യമായില്ല"
 
-#: ../src/connection-editor/connection-helpers.c:718
+#: ../src/connection-editor/connection-helpers.c:720
 msgid "Connection delete failed"
 msgstr "ബന്ധം നീക്കം ചെയ്യുന്നതില്‍ പരാജയം"
 
-#: ../src/connection-editor/connection-helpers.c:766
+#: ../src/connection-editor/connection-helpers.c:768
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "നിങ്ങള്‍ക്കു് %s ബന്ധം വെട്ടിനീക്കണം എന്നുറപ്പാണോ?"
@@ -2905,7 +3124,7 @@ msgstr "നിങ്ങള്‍ക്കു് %s ബന്ധം വെട്�
 #: ../src/connection-editor/ip4-routes-dialog.c:697
 #: ../src/connection-editor/ip6-routes-dialog.c:718
 #: ../src/connection-editor/page-ip4.c:1136
-#: ../src/connection-editor/page-ip6.c:1095
+#: ../src/connection-editor/page-ip6.c:1118
 msgid "Address"
 msgstr "വിലാസം"
 
@@ -2917,7 +3136,7 @@ msgstr "നെറ്റ്‌മാസ്ക്"
 #: ../src/connection-editor/ip4-routes-dialog.c:735
 #: ../src/connection-editor/ip6-routes-dialog.c:756
 #: ../src/connection-editor/page-ip4.c:1174
-#: ../src/connection-editor/page-ip6.c:1133
+#: ../src/connection-editor/page-ip6.c:1156
 msgid "Gateway"
 msgstr "ഗേറ്റ്‌വേ"
 
@@ -2927,96 +3146,93 @@ msgid "Metric"
 msgstr "മെട്രിക്"
 
 #: ../src/connection-editor/ip6-routes-dialog.c:737
-#: ../src/connection-editor/page-ip6.c:1114
+#: ../src/connection-editor/page-ip6.c:1137
 msgid "Prefix"
 msgstr "പ്രീഫിക്സ്"
 
-#: ../src/connection-editor/nm-connection-editor.c:108
+#: ../src/connection-editor/nm-connection-editor.c:109
 #, c-format
 msgid "Editing %s"
 msgstr "%s ചിട്ടപ്പെടുത്തുന്നു"
 
-#: ../src/connection-editor/nm-connection-editor.c:112
+#: ../src/connection-editor/nm-connection-editor.c:113
 msgid "Editing un-named connection"
 msgstr "പേരില്ലാത്ത ബന്ധം ചിട്ടപ്പെടുത്തുന്നു"
 
-#: ../src/connection-editor/nm-connection-editor.c:132
+#: ../src/connection-editor/nm-connection-editor.c:133
 #, fuzzy
 msgid "Missing connection name"
 msgstr "കണക്ഷന്റെ _പേരു്:"
 
-#: ../src/connection-editor/nm-connection-editor.c:352
+#: ../src/connection-editor/nm-connection-editor.c:353
 #, fuzzy
 msgid "Editor initializing…"
 msgstr "എഡിറ്റര്‍ ആരംഭിക്കുന്നതില്‍ പിശക്."
 
-#: ../src/connection-editor/nm-connection-editor.c:359
-#: ../src/connection-editor/nm-connection-list.c:408
+#: ../src/connection-editor/nm-connection-editor.c:360
+#: ../src/connection-editor/nm-connection-list.c:443
 #, fuzzy
 msgid "Connection cannot be modified"
 msgstr "ബന്ധം ചേര്‍ക്കുന്നതില്‍ പരാജയം"
 
-#: ../src/connection-editor/nm-connection-editor.c:374
+#: ../src/connection-editor/nm-connection-editor.c:375
 #, c-format
 msgid "Invalid setting %s: %s"
 msgstr ""
 
-#: ../src/connection-editor/nm-connection-editor.c:450
+#: ../src/connection-editor/nm-connection-editor.c:451
 msgid ""
 "The connection editor could not find some required resources (the .ui file "
 "was not found)."
 msgstr ""
 "ആവശ്യമുള്ള ചില ഉറവിടങ്ങള്‍ ലഭ്യമാക്കുവാന്‍ ബന്ധം എഡിറ്ററിനു് സാധ്യമായില്ല (.ui ഫയല്‍ ലഭ്യമായില്ല)"
 
-#: ../src/connection-editor/nm-connection-editor.c:577
+#: ../src/connection-editor/nm-connection-editor.c:578
+#: ../src/connection-editor/vpn-helpers.c:213
 msgid "_Save"
 msgstr "_സൂക്ഷിക്കുക"
 
-#: ../src/connection-editor/nm-connection-editor.c:578
+#: ../src/connection-editor/nm-connection-editor.c:579
 msgid "Save any changes made to this connection."
 msgstr "ഈ കണക്ഷന്‍ വരുത്തിയിരിയ്ക്കുന്ന ഏതു് മാറ്റങ്ങളും സൂക്ഷിയ്ക്കുക."
 
-#: ../src/connection-editor/nm-connection-editor.c:579
+#: ../src/connection-editor/nm-connection-editor.c:580
 msgid "Authenticate to save this connection for all users of this machine."
 msgstr ""
 "ഈ സിസ്റ്റത്തിലുള്ള എല്ലാ ഉപയോക്താക്കള്‍ക്കും ഉപയോഗിയ്ക്കാവുന്ന രീതിയില്‍ ഈ ബന്ധം സൂക്ഷിക്കുന്നതിനായി "
 "ആധികാരികത നല്‍കുക."
 
-#: ../src/connection-editor/nm-connection-editor.c:595
+#: ../src/connection-editor/nm-connection-editor.c:596
 msgid "Could not create connection"
 msgstr "ബന്ധം ഉണ്ടാക്കുവാന്‍ സാധ്യമായില്ല"
 
-#: ../src/connection-editor/nm-connection-editor.c:595
+#: ../src/connection-editor/nm-connection-editor.c:596
 msgid "Could not edit connection"
 msgstr "ബന്ധം ചിട്ടപ്പെടുത്തുവാന്‍ സാധ്യമായില്ല"
 
-#: ../src/connection-editor/nm-connection-editor.c:597
+#: ../src/connection-editor/nm-connection-editor.c:598
 msgid "Unknown error creating connection editor dialog."
 msgstr "ബന്ധ എഡിറ്റര്‍ ജാലകം ഉണ്ടാക്കുന്നതില്‍ അറിയാത്ത പിഴവ്."
 
-#: ../src/connection-editor/nm-connection-editor.c:738
+#: ../src/connection-editor/nm-connection-editor.c:739
 msgid ""
 "Warning: the connection contains some properties not supported by the "
 "editor. They will be cleared upon save."
 msgstr ""
 
-#: ../src/connection-editor/nm-connection-editor.c:758
+#: ../src/connection-editor/nm-connection-editor.c:759
 msgid "Error initializing editor"
 msgstr "എഡിറ്റര്‍ ആരംഭിക്കുന്നതില്‍ പിശക്."
 
-#: ../src/connection-editor/nm-connection-editor.c:1142
+#: ../src/connection-editor/nm-connection-editor.c:1157
 msgid "Connection add failed"
 msgstr "ബന്ധം ചേര്‍ക്കുന്നതില്‍ പരാജയം"
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:2 ../src/info.ui.h:2
-msgid "_Close"
-msgstr ""
-
-#: ../src/connection-editor/nm-connection-editor.ui.h:4
+#: ../src/connection-editor/nm-connection-editor.ui.h:1
 msgid "Fix"
 msgstr ""
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:5
+#: ../src/connection-editor/nm-connection-editor.ui.h:2
 #, fuzzy
 msgid ""
 "Security labels may prevent some files from being used with certificate "
@@ -3025,139 +3241,159 @@ msgstr ""
 "ഇഎപി ആധികാരികത ഉറപ്പാക്കലിലുള്ള സിഎ സര്‍ട്ടിഫിക്കേറ്റുകളെപ്പറ്റിയുള്ള മുന്നറിയിപ്പുകള്‍ പ്രവര്‍ത്തന "
 "രഹിതമാക്കുന്നതിനായി ഇതു് true ആയി സജ്ജമാക്കുക."
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:6
+#: ../src/connection-editor/nm-connection-editor.ui.h:3
 msgid "Connection _name:"
 msgstr "കണക്ഷന്റെ _പേരു്:"
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:7
+#: ../src/connection-editor/nm-connection-editor.ui.h:4
 #, fuzzy
 msgid "_Export…"
 msgstr "_കയറ്റുമതി..."
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:9
+#: ../src/connection-editor/nm-connection-editor.ui.h:6
 msgid "File Relabel"
 msgstr ""
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:10
+#: ../src/connection-editor/nm-connection-editor.ui.h:7
 msgid "_Relabel"
 msgstr ""
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:11
+#: ../src/connection-editor/nm-connection-editor.ui.h:8
 msgid ""
 "The following files are not labelled for use with certificate "
 "authentication. Do you wish to adjust the labels?"
 msgstr ""
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:12
+#: ../src/connection-editor/nm-connection-editor.ui.h:9
 msgid "Relabel"
 msgstr ""
 
-#: ../src/connection-editor/nm-connection-editor.ui.h:13
+#: ../src/connection-editor/nm-connection-editor.ui.h:10
 msgid "Filename"
 msgstr ""
 
-#: ../src/connection-editor/nm-connection-list.c:127
+#: ../src/connection-editor/nm-connection-list.c:151
 msgid "never"
 msgstr "ഒരിക്കലും"
 
-#: ../src/connection-editor/nm-connection-list.c:138
-#: ../src/connection-editor/nm-connection-list.c:149
+#: ../src/connection-editor/nm-connection-list.c:162
+#: ../src/connection-editor/nm-connection-list.c:173
 msgid "now"
 msgstr "ഉടന്‍"
 
 #. less than an hour ago
-#: ../src/connection-editor/nm-connection-list.c:156
+#: ../src/connection-editor/nm-connection-list.c:180
 #, c-format
 msgid "%d minute ago"
 msgid_plural "%d minutes ago"
 msgstr[0] "%d മിനിറ്റ് മുമ്പു്"
 msgstr[1] "%d മിനിറ്റുകള്‍ മുമ്പു്"
 
-#: ../src/connection-editor/nm-connection-list.c:160
+#: ../src/connection-editor/nm-connection-list.c:184
 #, c-format
 msgid "%d hour ago"
 msgid_plural "%d hours ago"
 msgstr[0] "%d മണിക്കൂര്‍ മുമ്പു്"
 msgstr[1] "%d മണിക്കൂറുകള്‍ മുമ്പു്"
 
-#: ../src/connection-editor/nm-connection-list.c:172
+#: ../src/connection-editor/nm-connection-list.c:196
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "%d ദിവസം മുമ്പു്"
 msgstr[1] "%d ദിവസങ്ങള്‍ മുമ്പു്"
 
-#: ../src/connection-editor/nm-connection-list.c:178
+#: ../src/connection-editor/nm-connection-list.c:202
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
 msgstr[0] "%d മാസം മുമ്പു്"
 msgstr[1] "%d മാസങ്ങള്‍ മുമ്പു്"
 
-#: ../src/connection-editor/nm-connection-list.c:182
+#: ../src/connection-editor/nm-connection-list.c:206
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
 msgstr[0] "%d വര്‍ഷം മുമ്പു്"
 msgstr[1] "%d വര്‍ഷങ്ങള്‍ മുമ്പു്"
 
-#: ../src/connection-editor/nm-connection-list.c:635
+#: ../src/connection-editor/nm-connection-list.c:445
+#, fuzzy
+msgid "Connection cannot be deleted"
+msgstr "ബന്ധം ചേര്‍ക്കുന്നതില്‍ പരാജയം"
+
+#: ../src/connection-editor/nm-connection-list.c:448
+#, fuzzy
+msgid "Select a connection to edit"
+msgstr "DSL ബന്ധം%d"
+
+#: ../src/connection-editor/nm-connection-list.c:450
+#, fuzzy
+msgid "Select a connection to delete"
+msgstr "DSL ബന്ധം%d"
+
+#: ../src/connection-editor/nm-connection-list.c:785
 #: ../src/libnma/nma-pkcs11-cert-chooser-dialog.ui.h:2
 msgid "Name"
 msgstr "പേര്"
 
-#: ../src/connection-editor/nm-connection-list.c:648
+#: ../src/connection-editor/nm-connection-list.c:798
 msgid "Last Used"
 msgstr "ഏറ്റവും ഒടുവില്‍ ഉപയോഗിച്ചതു്"
 
-#: ../src/connection-editor/nm-connection-list.c:696
+#: ../src/connection-editor/nm-connection-list.c:836
 msgid "Edit the selected connection"
 msgstr "തെരഞ്ഞെടുത്ത ബന്ധം ചിട്ടപ്പെടുത്തുക."
 
-#: ../src/connection-editor/nm-connection-list.c:697
+#: ../src/connection-editor/nm-connection-list.c:837
 msgid "Authenticate to edit the selected connection"
 msgstr "തെരഞ്ഞെടുത്ത ബന്ധം ചിട്ടപ്പെടുത്തുന്നതിനു് മുമ്പ് ആധികാരികത ഉറപ്പാക്കുക."
 
-#: ../src/connection-editor/nm-connection-list.c:712
+#: ../src/connection-editor/nm-connection-list.c:842
 msgid "Delete the selected connection"
 msgstr "തെരഞ്ഞെടുത്ത ബന്ധം നീക്കം ചെയ്യുക."
 
-#: ../src/connection-editor/nm-connection-list.c:713
+#: ../src/connection-editor/nm-connection-list.c:843
 msgid "Authenticate to delete the selected connection"
 msgstr "തെരഞ്ഞെടുത്ത ബന്ധംഇല്ലാതാക്കുന്നതിനായി ആധികാരികത ഉറപ്പാക്കുക"
 
-#: ../src/connection-editor/nm-connection-list.c:935
-#: ../src/connection-editor/nm-connection-list.c:938
+#: ../src/connection-editor/nm-connection-list.c:1048
+#: ../src/connection-editor/nm-connection-list.c:1051
 msgid "Error creating connection"
 msgstr "ബന്ധം സൃഷ്ടിയ്ക്കുമ്പോള്‍ തെറ്റു്"
 
-#: ../src/connection-editor/nm-connection-list.c:936
+#: ../src/connection-editor/nm-connection-list.c:1049
 msgid "No VPN plugins are installed."
 msgstr ""
 
-#: ../src/connection-editor/nm-connection-list.c:939
+#: ../src/connection-editor/nm-connection-list.c:1052
 #, fuzzy, c-format
 msgid "Don’t know how to create “%s” connections"
 msgstr "എങ്ങനെ '%s' കണക്ഷനുകള്‍ തയ്യാറാക്കണമെന്നറിയില്ല"
 
-#: ../src/connection-editor/nm-connection-list.c:970
+#: ../src/connection-editor/nm-connection-list.c:1085
 msgid "Error editing connection"
 msgstr "ബന്ധം ചിട്ടപ്പെടുത്തുന്നതില്‍ പിശക്"
 
-#: ../src/connection-editor/nm-connection-list.c:971
+#: ../src/connection-editor/nm-connection-list.c:1086
 #, fuzzy, c-format
 msgid "Did not find a connection with UUID “%s”"
 msgstr "UUID '%s'-മായുള്ളൊരു കണക്ഷന്‍ ലഭ്യമായില്ല"
 
-#: ../src/connection-editor/page-8021x-security.c:109
+#: ../src/connection-editor/nm-connection-list.ui.h:2
+#, fuzzy
+msgid "Add a new connection"
+msgstr "_വിപിഎന്‍ ബന്ധങ്ങള്‍"
+
+#: ../src/connection-editor/page-8021x-security.c:116
 msgid "802.1X Security"
 msgstr "802.1X സുരക്ഷ"
 
-#: ../src/connection-editor/page-8021x-security.c:111
+#: ../src/connection-editor/page-8021x-security.c:118
 msgid "Could not load 802.1X Security user interface."
 msgstr "802.1X സെക്യൂരിറ്റി യൂസര്‍ ഇന്റര്‍ഫെയിസ് ലഭ്യമാക്കുവാന്‍ സാധ്യമായില്ല."
 
-#: ../src/connection-editor/page-8021x-security.c:125
+#: ../src/connection-editor/page-8021x-security.c:132
 msgid "Use 802.1_X security for this connection"
 msgstr "ഈ കണക്ഷനുവേണ്ടി 802.1_X സുരക്ഷ ഉപയോഗിക്കുക"
 
@@ -3213,11 +3449,11 @@ msgstr "പ്രാഥമിക ഡിഎന്‍എസ്:"
 msgid "Bond connection %d"
 msgstr "ബോണ്ട് ബന്ധം %d"
 
-#: ../src/connection-editor/page-bridge.c:215
+#: ../src/connection-editor/page-bridge.c:236
 msgid "Could not load bridge user interface."
 msgstr "ബ്രിഡ്ജ് യൂസര്‍ ഇന്റര്‍ഫെയിസ് ലഭ്യമാക്കുവാന്‍ സാധ്യമായില്ല."
 
-#: ../src/connection-editor/page-bridge.c:317
+#: ../src/connection-editor/page-bridge.c:352
 #, c-format
 msgid "Bridge connection %d"
 msgstr "ബ്രിഡ്ജ് ബന്ധം %d"
@@ -3242,11 +3478,16 @@ msgstr ""
 msgid "Could not load DCB user interface."
 msgstr "DSL യൂസര്‍ ഇന്റര്‍ഫെയിസ് ലഭ്യമാക്കുവാന്‍ സാധ്യമായില്ല."
 
-#: ../src/connection-editor/page-dsl.c:129
+#: ../src/connection-editor/page-dsl.c:203
 msgid "Could not load DSL user interface."
 msgstr "DSL യൂസര്‍ ഇന്റര്‍ഫെയിസ് ലഭ്യമാക്കുവാന്‍ സാധ്യമായില്ല."
 
-#: ../src/connection-editor/page-dsl.c:219
+#: ../src/connection-editor/page-dsl.c:298
+#, fuzzy
+msgid "missing parent interface"
+msgstr "_പാരന്‍റ്റ് ഇന്റെര്‍ഫേസ്:"
+
+#: ../src/connection-editor/page-dsl.c:343
 #, c-format
 msgid "DSL connection %d"
 msgstr "DSL ബന്ധം%d"
@@ -3346,27 +3587,27 @@ msgid "IP tunnel connection %d"
 msgstr "ഈഥര്‍നെറ്റ് ബന്ധം %d"
 
 #: ../src/connection-editor/page-ip4.c:127
-#: ../src/connection-editor/page-ip6.c:130
+#: ../src/connection-editor/page-ip6.c:136
 msgid "Automatic (VPN)"
 msgstr "ഓട്ടോമാറ്റിക് (VPN)"
 
 #: ../src/connection-editor/page-ip4.c:128
-#: ../src/connection-editor/page-ip6.c:131
+#: ../src/connection-editor/page-ip6.c:137
 msgid "Automatic (VPN) addresses only"
 msgstr "ഓട്ടോമാറ്റിക് (VPN) വിലാസങ്ങള്‍ മാത്രം"
 
 #: ../src/connection-editor/page-ip4.c:132
-#: ../src/connection-editor/page-ip6.c:137
+#: ../src/connection-editor/page-ip6.c:143
 msgid "Automatic, addresses only"
 msgstr "ഓട്ടോമാറ്റിക് വിലാസങ്ങള്‍ മാത്രം"
 
 #: ../src/connection-editor/page-ip4.c:134
-#: ../src/connection-editor/page-ip6.c:133
+#: ../src/connection-editor/page-ip6.c:139
 msgid "Automatic (PPPoE)"
 msgstr "ഓട്ടോമാറ്റിക് (PPPoE)"
 
 #: ../src/connection-editor/page-ip4.c:135
-#: ../src/connection-editor/page-ip6.c:134
+#: ../src/connection-editor/page-ip6.c:140
 msgid "Automatic (PPPoE) addresses only"
 msgstr "ഓട്ടോമാറ്റിക് (PPPoE) വിലാസങ്ങള്‍ മാത്രം"
 
@@ -3379,17 +3620,17 @@ msgid "Automatic (DHCP) addresses only"
 msgstr "ഓട്ടോമാറ്റിക് (DHCP) വിലാസങ്ങള്‍ മാത്രം"
 
 #: ../src/connection-editor/page-ip4.c:181
-#: ../src/connection-editor/page-ip6.c:198
+#: ../src/connection-editor/page-ip6.c:204
 msgid "Link-Local Only"
 msgstr "ലിങ്ക്-ലോക്കല്‍ മാത്രം"
 
 #: ../src/connection-editor/page-ip4.c:361
-#: ../src/connection-editor/page-ip6.c:324
+#: ../src/connection-editor/page-ip6.c:335
 msgid "Additional DNS ser_vers:"
 msgstr "കൂടുതല്‍ _ഡിഎന്‍എസ് സെര്‍വറുകള്‍:"
 
 #: ../src/connection-editor/page-ip4.c:370
-#: ../src/connection-editor/page-ip6.c:333
+#: ../src/connection-editor/page-ip6.c:344
 msgid "Additional s_earch domains:"
 msgstr "അധികമായി തെ_രയേണ്ട ഡൊമെയിനുകള്‍:"
 
@@ -3426,42 +3667,52 @@ msgstr ""
 msgid "IPv4 DNS server “%s” invalid"
 msgstr ""
 
-#: ../src/connection-editor/page-ip6.c:173
+#: ../src/connection-editor/page-ip6.c:179
 msgid "Automatic, DHCP only"
 msgstr "ഓട്ടോമാറ്റിക്, DHCP മാത്രം"
 
-#: ../src/connection-editor/page-ip6.c:993
+#: ../src/connection-editor/page-ip6.c:1016
 #, c-format
 msgid "Editing IPv6 routes for %s"
 msgstr "%s-നുള്ള IPv6 റൂട്ടുകള്‍ ചിട്ടപ്പെടുത്തുക"
 
-#: ../src/connection-editor/page-ip6.c:1184
+#: ../src/connection-editor/page-ip6.c:1208
 msgid "IPv6 Settings"
 msgstr "IPv6 സജ്ജീകരണങ്ങള്‍"
 
-#: ../src/connection-editor/page-ip6.c:1186
+#: ../src/connection-editor/page-ip6.c:1210
 msgid "Could not load IPv6 user interface."
 msgstr "IPv6 യൂസര്‍ ഇന്റര്‍ഫെയിസ് ലഭ്യമാക്കുവാന്‍ സാധ്യമായില്ല."
 
-#: ../src/connection-editor/page-ip6.c:1277
+#: ../src/connection-editor/page-ip6.c:1302
 #, c-format
 msgid "IPv6 address “%s” invalid"
 msgstr ""
 
-#: ../src/connection-editor/page-ip6.c:1285
+#: ../src/connection-editor/page-ip6.c:1310
 #, c-format
 msgid "IPv6 prefix “%s” invalid"
 msgstr ""
 
-#: ../src/connection-editor/page-ip6.c:1294
+#: ../src/connection-editor/page-ip6.c:1319
 #, c-format
 msgid "IPv6 gateway “%s” invalid"
 msgstr ""
 
-#: ../src/connection-editor/page-ip6.c:1336
+#: ../src/connection-editor/page-ip6.c:1361
 #, c-format
 msgid "IPv6 DNS server “%s” invalid"
 msgstr ""
+
+#: ../src/connection-editor/page-macsec.c:192
+#, fuzzy
+msgid "Could not load MACsec user interface."
+msgstr "വൈമാക്സ് യൂസര്‍ ഇന്റര്‍ഫെയിസ് ലഭ്യമാക്കുവാന്‍ സാധ്യമായില്ല."
+
+#: ../src/connection-editor/page-macsec.c:331
+#, fuzzy, c-format
+msgid "MACSEC connection %d"
+msgstr "വൈമാക്സ് ബന്ധം %d"
 
 #: ../src/connection-editor/page-master.c:247
 #: ../src/connection-editor/page-master.c:258
@@ -3504,8 +3755,8 @@ msgid ""
 "Select the technology your mobile broadband provider uses. If you are "
 "unsure, ask your provider."
 msgstr ""
-"നിങ്ങളുടെ മൊബൈല്‍ ബ്രോഡ്ബാന്‍ഡ് പ്രൊവൈഡര്‍ ഉപയോഗിക്കുന്ന ടെക്നോളജി തെരഞ്ഞെടുക്കുക.  "
-"നിങ്ങള്‍ക്കറിയില്ലെങ്കില്‍ പ്രൊവൈഡറിനോട് അന്വേഷിക്കുക."
+"നിങ്ങളുടെ മൊബൈല്‍ ബ്രോഡ്ബാന്‍ഡ് പ്രൊവൈഡര്‍ ഉപയോഗിക്കുന്ന ടെക്നോളജി തെരഞ്ഞെടുക്കുക.  നിങ്ങള്‍"
+"ക്കറിയില്ലെങ്കില്‍ പ്രൊവൈഡറിനോട് അന്വേഷിക്കുക."
 
 #: ../src/connection-editor/page-mobile.c:572
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
@@ -3518,38 +3769,34 @@ msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr "എന്റെ പ്രൊവൈഡര്‍ C_DMA ടെക്നോളജി ഉപയോഗിക്കുന്നു (i.e. 1xRTT, EVDO)"
 
 #: ../src/connection-editor/page-mobile.c:589 ../src/mb-menu-item.c:50
-#: ../src/mobile-helpers.c:283
+#: ../src/mobile-helpers.c:282
 msgid "CDMA"
 msgstr "സിഡിഎംഎ"
 
 #: ../src/connection-editor/page-mobile.c:592 ../src/mb-menu-item.c:54
-#: ../src/mobile-helpers.c:281
+#: ../src/mobile-helpers.c:280
 msgid "GSM"
 msgstr "ജിഎസ്എം"
 
-#: ../src/connection-editor/page-ppp.c:129
-msgid "EAP"
-msgstr "EAP"
-
 #: ../src/connection-editor/page-ppp.c:130
-#: ../src/wireless-security/eap-method-ttls.c:260
+#: ../src/wireless-security/eap-method-ttls.c:287
 msgid "PAP"
 msgstr "PAP"
 
 #: ../src/connection-editor/page-ppp.c:131
-#: ../src/wireless-security/eap-method-ttls.c:322
+#: ../src/wireless-security/eap-method-ttls.c:349
 msgid "CHAP"
 msgstr "CHAP"
 
 #: ../src/connection-editor/page-ppp.c:132
-#: ../src/wireless-security/eap-method-fast.c:284
-#: ../src/wireless-security/eap-method-peap.c:273
-#: ../src/wireless-security/eap-method-ttls.c:290
+#: ../src/wireless-security/eap-method-fast.c:282
+#: ../src/wireless-security/eap-method-peap.c:299
+#: ../src/wireless-security/eap-method-ttls.c:317
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
 #: ../src/connection-editor/page-ppp.c:133
-#: ../src/wireless-security/eap-method-ttls.c:275
+#: ../src/wireless-security/eap-method-ttls.c:302
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
@@ -3585,12 +3832,12 @@ msgstr "ബോണ്ട് യൂസര്‍ ഇന്റര്‍ഫെയി�
 msgid "Error: file doesn’t contain a valid JSON configuration"
 msgstr ""
 
-#: ../src/connection-editor/page-team.c:1156
+#: ../src/connection-editor/page-team.c:1034
 #, fuzzy
 msgid "Could not load team user interface."
 msgstr "vlan യൂസര്‍ ഇന്റര്‍ഫെയിസ് ലഭ്യമാക്കുവാന്‍ സാധ്യമായില്ല."
 
-#: ../src/connection-editor/page-team.c:1253
+#: ../src/connection-editor/page-team.c:1131
 #, fuzzy, c-format
 msgid "Team connection %d"
 msgstr "DSL ബന്ധം%d"
@@ -3598,12 +3845,12 @@ msgstr "DSL ബന്ധം%d"
 #. Translators: a "Team Port" is a network
 #. * device that is part of a team.
 #.
-#: ../src/connection-editor/page-team-port.c:732
+#: ../src/connection-editor/page-team-port.c:655
 #, fuzzy
 msgid "Team Port"
 msgstr "ബ്രിഡ്ജ് പോര്‍ട്ട്"
 
-#: ../src/connection-editor/page-team-port.c:734
+#: ../src/connection-editor/page-team-port.c:657
 #, fuzzy
 msgid "Could not load team port user interface."
 msgstr "ബ്രിഡ്ജ് പോര്‍ട്ട് യൂസര്‍ ഇന്റര്‍ഫെയിസ് ലഭ്യമാക്കുവാന്‍ സാധ്യമായില്ല."
@@ -3670,8 +3917,8 @@ msgid ""
 "not have the correct VPN plugin installed."
 msgstr ""
 "പുതിയ കണക്ഷനുവേണ്ടി നിങ്ങള്‍ ഉപയോഗിക്കുവാന്‍ ആഗ്രഹിക്കുന്ന തരത്തിലുള്ള വിപിഎന്‍ ബന്ധം "
-"തെരഞ്ഞെടുക്കുക.  നിങ്ങള്‍ക്കു് ആവശ്യമുള്ളതു് പട്ടികയില്‍ ലഭ്യമല്ല എങ്കില്‍, നിങ്ങള്‍ ശരിയായ പ്ലഗിന്‍ "
-"ഇന്‍സ്റ്റോള്‍ ചെയ്തിട്ടുണ്ടാവില്ല."
+"തെരഞ്ഞെടുക്കുക.  നിങ്ങള്‍ക്കു് ആവശ്യമുള്ളതു് പട്ടികയില്‍ ലഭ്യമല്ല എങ്കില്‍, നിങ്ങള്‍ ശരിയായ പ്ലഗിന്‍ ഇന്‍"
+"സ്റ്റോള്‍ ചെയ്തിട്ടുണ്ടാവില്ല."
 
 #: ../src/connection-editor/page-wifi.c:77
 #, fuzzy
@@ -3679,8 +3926,8 @@ msgid ""
 "This option locks this connection to the Wi-Fi access point (AP) specified "
 "by the BSSID entered here. Example: 00:11:22:33:44:55"
 msgstr ""
-"BSSID ഇവിടെ സൂചിപ്പിക്കുന്ന വയര്‍ലെസ് ആക്സെസ് പോയിന്റിലേക്കുള്ള (എപി) ബന്ധം ഈ ഐച്ഛികം "
-"മാറ്റാര്‍ക്കും അനുവദിക്കുന്നതല്ല. ഉദാഹരണം: 00:11:22:33:44:55"
+"BSSID ഇവിടെ സൂചിപ്പിക്കുന്ന വയര്‍ലെസ് ആക്സെസ് പോയിന്റിലേക്കുള്ള (എപി) ബന്ധം ഈ ഐച്ഛികം മാറ്റാര്‍"
+"ക്കും അനുവദിക്കുന്നതല്ല. ഉദാഹരണം: 00:11:22:33:44:55"
 
 #: ../src/connection-editor/page-wifi.c:88
 #, fuzzy
@@ -3715,48 +3962,48 @@ msgstr "ഏതെങ്കിലും ഡിവൈസ്"
 msgid "Wi-Fi connection %d"
 msgstr "വയര്‍ലസ് ബന്ധം %d"
 
-#: ../src/connection-editor/page-wifi-security.c:356
+#: ../src/connection-editor/page-wifi-security.c:358
 #: ../src/libnma/nma-wifi-dialog.c:923 ../src/libnm-gtk/nm-wifi-dialog.c:922
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "ഡബ്ലിയുഇപി 40/128-bit കീ (ഹെക്സോ ആസ്കിയോ)"
 
-#: ../src/connection-editor/page-wifi-security.c:366
+#: ../src/connection-editor/page-wifi-security.c:368
 #: ../src/libnma/nma-wifi-dialog.c:932 ../src/libnm-gtk/nm-wifi-dialog.c:931
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128-bit പാസ്‌ഫ്രെയിസ്"
 
-#: ../src/connection-editor/page-wifi-security.c:392
+#: ../src/connection-editor/page-wifi-security.c:394
 msgid "Dynamic WEP (802.1X)"
 msgstr "ഡൈനമിക് WEP (802.1X)"
 
-#: ../src/connection-editor/page-wifi-security.c:405
+#: ../src/connection-editor/page-wifi-security.c:407
 #: ../src/libnma/nma-wifi-dialog.c:976 ../src/libnm-gtk/nm-wifi-dialog.c:975
 msgid "WPA & WPA2 Personal"
 msgstr "WPA & WPA2 പേഴ്സണല്‍"
 
-#: ../src/connection-editor/page-wifi-security.c:418
+#: ../src/connection-editor/page-wifi-security.c:420
 #: ../src/libnma/nma-wifi-dialog.c:990 ../src/libnm-gtk/nm-wifi-dialog.c:989
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA & WPA2 എന്റര്‍പ്രൈസ്"
 
-#: ../src/connection-editor/page-wifi-security.c:461
+#: ../src/connection-editor/page-wifi-security.c:463
 msgid "Could not load Wi-Fi security user interface; missing Wi-Fi setting."
 msgstr "വൈഫൈ സുരക്ഷ യൂസര്‍ ഇന്റര്‍ഫെയിസ് ലഭ്യമാക്കുവാന്‍ സാധ്യമായില്ല; വൈഫൈ ക്രമീകരണം ലഭ്യമല്ല."
 
-#: ../src/connection-editor/page-wifi-security.c:472
+#: ../src/connection-editor/page-wifi-security.c:474
 msgid "Wi-Fi Security"
 msgstr "വയര്‍ലെസ് സെക്യൂരിറ്റി"
 
-#: ../src/connection-editor/page-wifi-security.c:474
+#: ../src/connection-editor/page-wifi-security.c:476
 msgid "Could not load Wi-Fi security user interface."
 msgstr "വൈഫൈ സെക്യൂരിറ്റി യൂസര്‍ ഇന്റര്‍ഫെയിസ് ലഭ്യമാക്കുവാന്‍ സാധ്യമായില്ല."
 
-#: ../src/connection-editor/page-wifi-security.c:558
+#: ../src/connection-editor/page-wifi-security.c:560
 #, c-format
 msgid "missing SSID"
 msgstr ""
 
-#: ../src/connection-editor/page-wifi-security.c:564
+#: ../src/connection-editor/page-wifi-security.c:566
 #, c-format
 msgid "Security not compatible with Ad-Hoc mode"
 msgstr ""
@@ -3807,35 +4054,39 @@ msgstr "ഈ ഉപകരണം സ്വയം തുറക്കുക"
 msgid "Connection Information"
 msgstr "ബന്ധവിവരം"
 
+#: ../src/info.ui.h:2
+msgid "_Close"
+msgstr ""
+
 #: ../src/info.ui.h:3
 msgid "Active Network Connections"
 msgstr "സജീവ ശൃംഖല ബന്ധങ്ങള്‍"
 
 #: ../src/libnma/nma-file-cert-chooser.c:108
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:140
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:146
 #, fuzzy
 msgid "No certificate set"
 msgstr "സിഎ സര്‍ട്ടിഫീക്കേറ്റ് _ആവശ്യമാണു്:"
 
 #: ../src/libnma/nma-file-cert-chooser.c:126
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:164
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:170
 msgid "No key set"
 msgstr ""
 
 #: ../src/libnma/nma-file-cert-chooser.c:246
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:364
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:370
 #, fuzzy, c-format
 msgid "Choose a key for %s Certificate"
 msgstr "CA സര്‍ട്ടിഫീക്കേറ്റ് തെരഞ്ഞെടുക്കുക"
 
 #: ../src/libnma/nma-file-cert-chooser.c:250
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:368
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:374
 #, fuzzy, c-format
 msgid "%s private _key:"
 msgstr "സ്വകാര്യ _കീ:"
 
 #: ../src/libnma/nma-file-cert-chooser.c:254
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:372
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:378
 #, fuzzy, c-format
 msgid "%s key _password:"
 msgstr "_സ്വകാര്യ കീ അടയാളവാക്ക്:"
@@ -3846,7 +4097,7 @@ msgid "Choose %s Certificate"
 msgstr "CA സര്‍ട്ടിഫീക്കേറ്റ് തെരഞ്ഞെടുക്കുക"
 
 #: ../src/libnma/nma-file-cert-chooser.c:262
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:380
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:386
 #, fuzzy, c-format
 msgid "%s _certificate:"
 msgstr "_ഉപയോക്താവിന്റെ സര്‍ട്ടിഫീക്കേറ്റ്:"
@@ -4053,47 +4304,47 @@ msgstr "ഒരു മൊബൈല്‍ ബ്രോഡ്ബാന്‍ഡ് 
 msgid "New Mobile Broadband Connection"
 msgstr "പുതിയ മൊബൈല്‍ ബ്രോഡ്ബാന്‍ഡ് കണക്ഷന്‍"
 
-#: ../src/libnma/nma-cert-chooser-button.c:162
+#: ../src/libnma/nma-cert-chooser-button.c:165
 #, fuzzy
 msgid "(None)"
 msgstr "(ഒന്നുമില്ല)"
 
-#: ../src/libnma/nma-cert-chooser-button.c:170
+#: ../src/libnma/nma-cert-chooser-button.c:173
 #, c-format
 msgid "Key in %s"
 msgstr ""
 
-#: ../src/libnma/nma-cert-chooser-button.c:171
+#: ../src/libnma/nma-cert-chooser-button.c:174
 #, fuzzy, c-format
 msgid "Certificate in %s"
 msgstr "C_A സര്‍ട്ടിഫീക്കേറ്റ്:"
 
-#: ../src/libnma/nma-cert-chooser-button.c:190
+#: ../src/libnma/nma-cert-chooser-button.c:193
 #: ../src/libnma/nma-pkcs11-cert-chooser-dialog.c:183
 #, fuzzy
 msgid "(Unknown)"
 msgstr "അപരിചിതം"
 
-#: ../src/libnma/nma-cert-chooser-button.c:212
-#: ../src/libnma/nma-cert-chooser-button.c:242
+#: ../src/libnma/nma-cert-chooser-button.c:215
+#: ../src/libnma/nma-cert-chooser-button.c:245
 msgid "Select"
 msgstr ""
 
-#: ../src/libnma/nma-cert-chooser-button.c:213
-#: ../src/libnma/nma-cert-chooser-button.c:243
+#: ../src/libnma/nma-cert-chooser-button.c:216
+#: ../src/libnma/nma-cert-chooser-button.c:246
 msgid "Cancel"
 msgstr ""
 
-#: ../src/libnma/nma-cert-chooser-button.c:469
+#: ../src/libnma/nma-cert-chooser-button.c:472
 msgid "Select from file…"
 msgstr ""
 
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:376
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:382
 #, fuzzy, c-format
 msgid "Choose a %s Certificate"
 msgstr "CA സര്‍ട്ടിഫീക്കേറ്റ് തെരഞ്ഞെടുക്കുക"
 
-#: ../src/libnma/nma-pkcs11-cert-chooser.c:384
+#: ../src/libnma/nma-pkcs11-cert-chooser.c:390
 #, fuzzy, c-format
 msgid "%s certificate _password:"
 msgstr "_ഉപയോക്താവിന്റെ സര്‍ട്ടിഫീക്കേറ്റ്:"
@@ -4158,8 +4409,8 @@ msgstr "_ദ്വിതീയ തലത്തിലുള്ള അടയാള
 msgid "_Tertiary Password:"
 msgstr "_ദ്വിതീയ തലത്തിലുള്ള അടയാളവാക്ക്:"
 
-#: ../src/libnma/nma-vpn-password-dialog.c:247
-#: ../src/libnm-gtk/nm-vpn-password-dialog.c:247
+#: ../src/libnma/nma-vpn-password-dialog.c:238
+#: ../src/libnm-gtk/nm-vpn-password-dialog.c:238
 msgid "Sh_ow passwords"
 msgstr "അടയാളവാക്കുക _കാണിക്കുക"
 
@@ -4188,11 +4439,11 @@ msgstr "ഒന്നുമില്ല"
 msgid "Dynamic WEP (802.1x)"
 msgstr "ഡൈനമിക് WEP (802.1X)"
 
-#: ../src/libnma/nma-wifi-dialog.c:1074 ../src/libnm-gtk/nm-wifi-dialog.c:1075
+#: ../src/libnma/nma-wifi-dialog.c:1070 ../src/libnm-gtk/nm-wifi-dialog.c:1071
 msgid "C_reate"
 msgstr "_ഉണ്ടാക്കുക"
 
-#: ../src/libnma/nma-wifi-dialog.c:1160 ../src/libnm-gtk/nm-wifi-dialog.c:1161
+#: ../src/libnma/nma-wifi-dialog.c:1149 ../src/libnm-gtk/nm-wifi-dialog.c:1150
 #, fuzzy, c-format
 msgid ""
 "Passwords or encryption keys are required to access the Wi-Fi network “%s”."
@@ -4200,35 +4451,35 @@ msgstr ""
 "വയര്‍ലെസ് ശൃംഖല '%s'-ലേക്ക് പ്രവേശിക്കുന്നതിനായി അടയാളവാക്കുകള്‍ അല്ലെങ്കില്‍ എന്‍ക്രിപ്ഷന്‍ കീകള്‍ "
 "ആവശ്യമുണ്ടു്."
 
-#: ../src/libnma/nma-wifi-dialog.c:1162 ../src/libnm-gtk/nm-wifi-dialog.c:1163
+#: ../src/libnma/nma-wifi-dialog.c:1151 ../src/libnm-gtk/nm-wifi-dialog.c:1152
 msgid "Wi-Fi Network Authentication Required"
 msgstr "വയര്‍ലെസ് ശൃംഖല ആധികാരികത ആവശ്യമുണ്ടു്"
 
-#: ../src/libnma/nma-wifi-dialog.c:1164 ../src/libnm-gtk/nm-wifi-dialog.c:1165
+#: ../src/libnma/nma-wifi-dialog.c:1153 ../src/libnm-gtk/nm-wifi-dialog.c:1154
 msgid "Authentication required by Wi-Fi network"
 msgstr "വയര്‍ലെസ് ശൃംഖല ആധികാരികത ഉറപ്പിക്കുന്നതിനായി ആവശ്യപ്പെട്ടിരിക്കുന്നു"
 
-#: ../src/libnma/nma-wifi-dialog.c:1169 ../src/libnm-gtk/nm-wifi-dialog.c:1170
+#: ../src/libnma/nma-wifi-dialog.c:1158 ../src/libnm-gtk/nm-wifi-dialog.c:1159
 msgid "Create New Wi-Fi Network"
 msgstr "പുതിയ വയര്‍ലെസ് ശൃംഖല ഉണ്ടാക്കുക"
 
-#: ../src/libnma/nma-wifi-dialog.c:1171 ../src/libnm-gtk/nm-wifi-dialog.c:1172
+#: ../src/libnma/nma-wifi-dialog.c:1160 ../src/libnm-gtk/nm-wifi-dialog.c:1161
 msgid "New Wi-Fi network"
 msgstr "പുതിയ വയര്‍ലെസ് ശൃംഖല"
 
-#: ../src/libnma/nma-wifi-dialog.c:1172 ../src/libnm-gtk/nm-wifi-dialog.c:1173
+#: ../src/libnma/nma-wifi-dialog.c:1161 ../src/libnm-gtk/nm-wifi-dialog.c:1162
 msgid "Enter a name for the Wi-Fi network you wish to create."
 msgstr "നിങ്ങള്‍ ഉണ്ടാക്കുവാന്‍ ആഗ്രഹിക്കുന്ന വയര്‍ലെസ് നെറ്റ്‌വര്‍ക്കിന്റെ പേരു് നല്‍കുക."
 
-#: ../src/libnma/nma-wifi-dialog.c:1174 ../src/libnm-gtk/nm-wifi-dialog.c:1175
+#: ../src/libnma/nma-wifi-dialog.c:1163 ../src/libnm-gtk/nm-wifi-dialog.c:1164
 msgid "Connect to Hidden Wi-Fi Network"
 msgstr "അദൃശ്യമായ വയര്‍ലെസ് നെറ്റ്‌വര്‍ക്കിലേക്ക് കണക്ട് ചെയ്യുക"
 
-#: ../src/libnma/nma-wifi-dialog.c:1176 ../src/libnm-gtk/nm-wifi-dialog.c:1177
+#: ../src/libnma/nma-wifi-dialog.c:1165 ../src/libnm-gtk/nm-wifi-dialog.c:1166
 msgid "Hidden Wi-Fi network"
 msgstr "അദൃശ്യമായ വയര്‍ലെസ് ശൃംഖല"
 
-#: ../src/libnma/nma-wifi-dialog.c:1177 ../src/libnm-gtk/nm-wifi-dialog.c:1178
+#: ../src/libnma/nma-wifi-dialog.c:1166 ../src/libnm-gtk/nm-wifi-dialog.c:1167
 msgid ""
 "Enter the name and security details of the hidden Wi-Fi network you wish to "
 "connect to."
@@ -4381,25 +4632,25 @@ msgstr "റോമിങ് ശൃംഖല (%s)"
 msgid "Roaming network"
 msgstr "റോമിങ് ശൃംഖല"
 
-#: ../src/mobile-helpers.c:331
+#: ../src/mobile-helpers.c:330
 #, fuzzy, c-format
 msgid "PIN code for SIM card “%s” on “%s”"
 msgstr "'%2$s' ലെ സിം കാര്‍ഡ് '%1$s' നു് പിന്‍ കോഡ് ആവശ്യമുണ്ടു്"
 
-#: ../src/mobile-helpers.c:464
+#: ../src/mobile-helpers.c:463
 msgid "PIN code required"
 msgstr "പിന്‍ കോഡ് ആവശ്യമുണ്ടു്"
 
-#: ../src/mobile-helpers.c:472
+#: ../src/mobile-helpers.c:471
 msgid "PIN code is needed for the mobile broadband device"
 msgstr "മൊബൈല്‍ ബ്രോഡ്ബാന്‍ഡ് ഡിവൈസിനു് പിന്‍ കോഡ് ആവശ്യമുണ്ടു്"
 
-#: ../src/mobile-helpers.c:622
+#: ../src/mobile-helpers.c:621
 #, fuzzy, c-format
 msgid "Mobile broadband connection “%s” active: (%d%%%s%s)"
 msgstr "മൊബൈല്‍ ബ്രോഡ്ബാന്‍ഡ് ബന്ധം '%s' സജീവമാണു്: (%d%%%s%s)"
 
-#: ../src/mobile-helpers.c:625
+#: ../src/mobile-helpers.c:624
 msgid "roaming"
 msgstr "പുറത്തുള്ള"
 
@@ -4409,12 +4660,12 @@ msgstr "പുറത്തുള്ള"
 msgid "%s connection"
 msgstr "%s കണക്ഷന്‍"
 
-#: ../src/utils/utils.c:563
+#: ../src/utils/utils.c:565
 #, fuzzy
 msgid "PEM certificates (*.pem, *.crt, *.cer)"
 msgstr "DER അല്ലെങ്കില്‍ PEM സര്‍ട്ടിഫീക്കേറ്റുകള്‍ (*.der, *.pem, *.crt, *.cer)"
 
-#: ../src/utils/utils.c:575
+#: ../src/utils/utils.c:577
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "DER, PEM, അല്ലെങ്കില്‍ PKCS#12 സ്വകാര്യ കീകള്‍ (*.der, *.pem, *.p12)"
 
@@ -4422,39 +4673,35 @@ msgstr "DER, PEM, അല്ലെങ്കില്‍ PKCS#12 സ്വകാ�
 msgid "undefined error in 802.1X security (wpa-eap)"
 msgstr ""
 
-#: ../src/wireless-security/eap-method.c:227
-msgid "no file selected"
+#: ../src/wireless-security/eap-method.c:365
+#, fuzzy
+msgid "no CA certificate selected"
+msgstr "സിഎ സര്‍ട്ടിഫീക്കേറ്റ് _ആവശ്യമാണു്:"
+
+#: ../src/wireless-security/eap-method.c:370
+msgid "selected CA certificate file does not exist"
 msgstr ""
 
-#: ../src/wireless-security/eap-method.c:235
-#, c-format
-msgid "file “%s” does not exist"
-msgstr ""
-
-#: ../src/wireless-security/eap-method.c:258
-msgid "unspecified error validating eap-method file"
-msgstr ""
-
-#: ../src/wireless-security/eap-method-fast.c:73
+#: ../src/wireless-security/eap-method-fast.c:71
 msgid "missing EAP-FAST PAC file"
 msgstr ""
 
-#: ../src/wireless-security/eap-method-fast.c:269
-#: ../src/wireless-security/eap-method-peap.c:303
-#: ../src/wireless-security/eap-method-ttls.c:352
+#: ../src/wireless-security/eap-method-fast.c:267
+#: ../src/wireless-security/eap-method-peap.c:329
+#: ../src/wireless-security/eap-method-ttls.c:379
 msgid "GTC"
 msgstr "GTC"
 
-#: ../src/wireless-security/eap-method-fast.c:407
+#: ../src/wireless-security/eap-method-fast.c:405
 #, fuzzy
 msgid "Choose a PAC file"
 msgstr "ഒരു പിഎസി ഫയല്‍ തിരഞ്ഞെടുക്കുക..."
 
-#: ../src/wireless-security/eap-method-fast.c:414
+#: ../src/wireless-security/eap-method-fast.c:412
 msgid "PAC files (*.pac)"
 msgstr "പിഎസി ഫയലുകള്‍ (*.pac)"
 
-#: ../src/wireless-security/eap-method-fast.c:418
+#: ../src/wireless-security/eap-method-fast.c:416
 msgid "All files"
 msgstr "എല്ലാ ഫയലുകളും"
 
@@ -4472,7 +4719,7 @@ msgstr "രണ്ടും"
 
 #: ../src/wireless-security/eap-method-fast.ui.h:4
 #: ../src/wireless-security/eap-method-peap.ui.h:4
-#: ../src/wireless-security/eap-method-ttls.ui.h:1
+#: ../src/wireless-security/eap-method-ttls.ui.h:3
 msgid "Anony_mous identity:"
 msgstr "_അ‍ജ്ഞാതം:"
 
@@ -4482,7 +4729,7 @@ msgstr "പിഎസി _ഫയല്‍:"
 
 #: ../src/wireless-security/eap-method-fast.ui.h:6
 #: ../src/wireless-security/eap-method-peap.ui.h:7
-#: ../src/wireless-security/eap-method-ttls.ui.h:4
+#: ../src/wireless-security/eap-method-ttls.ui.h:1
 msgid "_Inner authentication:"
 msgstr "_ആന്തരിക ആധികാരികത ഉറപ്പാക്കല്‍"
 
@@ -4498,26 +4745,11 @@ msgstr ""
 msgid "missing EAP-LEAP password"
 msgstr ""
 
-#: ../src/wireless-security/eap-method-peap.c:64
-#, c-format
-msgid "invalid EAP-PEAP CA certificate: %s"
-msgstr ""
-
-#: ../src/wireless-security/eap-method-peap.c:69
-msgid "invalid EAP-PEAP CA certificate: no certificate specified"
-msgstr ""
-
-#: ../src/wireless-security/eap-method-peap.c:288
-#: ../src/wireless-security/eap-method-ttls.c:337
+#: ../src/wireless-security/eap-method-peap.c:314
+#: ../src/wireless-security/eap-method-ttls.c:364
 #: ../src/wireless-security/wireless-security.c:424
 msgid "MD5"
 msgstr "MD5"
-
-#: ../src/wireless-security/eap-method-peap.c:382
-#: ../src/wireless-security/eap-method-ttls.c:431
-#, fuzzy
-msgid "Choose a Certificate Authority certificate"
-msgstr "ഒരു സര്‍ട്ടിഫീക്കേറ്റ് അഥോറിറ്റി സര്‍ട്ടിഫീക്കേറ്റ് തെരഞ്ഞെടുക്കുക..."
 
 #: ../src/wireless-security/eap-method-peap.ui.h:2
 msgid "Version 0"
@@ -4528,19 +4760,26 @@ msgid "Version 1"
 msgstr "പതിപ്പ് 1"
 
 #: ../src/wireless-security/eap-method-peap.ui.h:5
-#: ../src/wireless-security/eap-method-ttls.ui.h:2
-msgid "C_A certificate:"
-msgstr "C_A സര്‍ട്ടിഫീക്കേറ്റ്:"
-
-#: ../src/wireless-security/eap-method-peap.ui.h:6
 #: ../src/wireless-security/eap-method-tls.ui.h:2
-#: ../src/wireless-security/eap-method-ttls.ui.h:3
+#: ../src/wireless-security/eap-method-ttls.ui.h:2
 msgid "No CA certificate is _required"
 msgstr "സിഎ സര്‍ട്ടിഫീക്കേറ്റ് _ആവശ്യമാണു്:"
 
-#: ../src/wireless-security/eap-method-peap.ui.h:8
+#: ../src/wireless-security/eap-method-peap.ui.h:6
 msgid "PEAP _version:"
 msgstr "പിഇഎപി _പതിപ്പ്:"
+
+#: ../src/wireless-security/eap-method-peap.ui.h:8
+#: ../src/wireless-security/eap-method-tls.ui.h:3
+#: ../src/wireless-security/eap-method-ttls.ui.h:4
+msgid "Suffix of the server certificate name."
+msgstr ""
+
+#: ../src/wireless-security/eap-method-peap.ui.h:9
+#: ../src/wireless-security/eap-method-tls.ui.h:4
+#: ../src/wireless-security/eap-method-ttls.ui.h:5
+msgid "_Domain:"
+msgstr ""
 
 #: ../src/wireless-security/eap-method-simple.c:75
 msgid "missing EAP username"
@@ -4554,46 +4793,28 @@ msgstr ""
 msgid "missing EAP-TLS identity"
 msgstr ""
 
-#: ../src/wireless-security/eap-method-tls.c:238
+#: ../src/wireless-security/eap-method-tls.c:256
 #, fuzzy
 msgid "no user certificate selected"
 msgstr "സിഎ സര്‍ട്ടിഫീക്കേറ്റ് _ആവശ്യമാണു്:"
 
-#: ../src/wireless-security/eap-method-tls.c:243
+#: ../src/wireless-security/eap-method-tls.c:261
 msgid "selected user certificate file does not exist"
 msgstr ""
 
-#: ../src/wireless-security/eap-method-tls.c:263
+#: ../src/wireless-security/eap-method-tls.c:281
 msgid "no key selected"
 msgstr ""
 
-#: ../src/wireless-security/eap-method-tls.c:268
+#: ../src/wireless-security/eap-method-tls.c:286
 msgid "selected key file does not exist"
-msgstr ""
-
-#: ../src/wireless-security/eap-method-tls.c:314
-#, fuzzy
-msgid "no CA certificate selected"
-msgstr "സിഎ സര്‍ട്ടിഫീക്കേറ്റ് _ആവശ്യമാണു്:"
-
-#: ../src/wireless-security/eap-method-tls.c:319
-msgid "selected CA certificate file does not exist"
 msgstr ""
 
 #: ../src/wireless-security/eap-method-tls.ui.h:1
 msgid "I_dentity:"
 msgstr "_തിരിച്ചറിയല്‍:"
 
-#: ../src/wireless-security/eap-method-ttls.c:64
-#, c-format
-msgid "invalid EAP-TTLS CA certificate: %s"
-msgstr ""
-
-#: ../src/wireless-security/eap-method-ttls.c:69
-msgid "invalid EAP-TTLS CA certificate: no certificate specified"
-msgstr ""
-
-#: ../src/wireless-security/eap-method-ttls.c:306
+#: ../src/wireless-security/eap-method-ttls.c:333
 #, fuzzy
 msgid "MSCHAPv2 (no EAP)"
 msgstr "MSCHAPv2"
@@ -4667,16 +4888,16 @@ msgid "invalid wep-key: passphrase must be shorter than 64 characters"
 msgstr ""
 
 #: ../src/wireless-security/ws-wep-key.ui.h:1
-msgid "1 (Default)"
-msgstr "1 (സഹജം)"
-
-#: ../src/wireless-security/ws-wep-key.ui.h:2
 msgid "Open System"
 msgstr "തുറന്ന സിസ്റ്റം"
 
-#: ../src/wireless-security/ws-wep-key.ui.h:3
+#: ../src/wireless-security/ws-wep-key.ui.h:2
 msgid "Shared Key"
 msgstr "പങ്കുവച്ച കീ"
+
+#: ../src/wireless-security/ws-wep-key.ui.h:3
+msgid "1 (Default)"
+msgstr "1 (സഹജം)"
 
 #: ../src/wireless-security/ws-wep-key.ui.h:4
 msgid "_Key:"
@@ -4704,6 +4925,24 @@ msgstr ""
 #: ../src/wireless-security/ws-wpa-psk.ui.h:2
 msgid "_Type:"
 msgstr "_തരം:"
+
+#, fuzzy
+#~ msgid "Mode"
+#~ msgstr "രീതി(_M):"
+
+#, fuzzy
+#~ msgid "MTU"
+#~ msgstr "_എംടിയു:"
+
+#~ msgid "DSL"
+#~ msgstr "DSL"
+
+#, fuzzy
+#~ msgid "Choose a Certificate Authority certificate"
+#~ msgstr "ഒരു സര്‍ട്ടിഫീക്കേറ്റ് അഥോറിറ്റി സര്‍ട്ടിഫീക്കേറ്റ് തെരഞ്ഞെടുക്കുക..."
+
+#~ msgid "C_A certificate:"
+#~ msgstr "C_A സര്‍ട്ടിഫീക്കേറ്റ്:"
 
 #, fuzzy
 #~ msgid "NetworkManager for GNOME"
@@ -4898,12 +5137,6 @@ msgstr "_തരം:"
 #~ msgid "Automatic (PPP) addresses only"
 #~ msgstr "ഓട്ടോമാറ്റിക് (PPP) വിലാസങ്ങള്‍ മാത്രം"
 
-#~ msgid "Could not load WiMAX user interface."
-#~ msgstr "വൈമാക്സ് യൂസര്‍ ഇന്റര്‍ഫെയിസ് ലഭ്യമാക്കുവാന്‍ സാധ്യമായില്ല."
-
-#~ msgid "WiMAX connection %d"
-#~ msgstr "വൈമാക്സ് ബന്ധം %d"
-
 #~ msgid ""
 #~ "Bluetooth configuration not possible (failed to connect to D-Bus: (%s) "
 #~ "%s)."
@@ -4976,8 +5209,8 @@ msgstr "_തരം:"
 #~ "a Certificate Authority certificate?"
 #~ msgstr ""
 #~ "ഒരു സര്‍ട്ടിഫീക്കേറ്റ് അഥോറിറ്റി (CA) സര്‍ട്ടിഫീക്കേറ്റ് ഉപയോഗിച്ചില്ല എങ്കില്‍, "
-#~ "സുരക്ഷിതമല്ലാത്ത വയര്‍ലെസ് ശൃംഖലകളിലേയ്ക്കു് കടക്കുവാന്‍ സാധ്യതയുണ്ടു്. നിങ്ങള്‍ക്കു് ഒരു "
-#~ "സര്‍ട്ടിഫീക്കേറ്റ് അഥോറിറ്റി സര്‍ട്ടിഫീക്കേറ്റ് തെരഞ്ഞെടുക്കണമോ?"
+#~ "സുരക്ഷിതമല്ലാത്ത വയര്‍ലെസ് ശൃംഖലകളിലേയ്ക്കു് കടക്കുവാന്‍ സാധ്യതയുണ്ടു്. നിങ്ങള്‍ക്കു് ഒരു സര്‍"
+#~ "ട്ടിഫീക്കേറ്റ് അഥോറിറ്റി സര്‍ട്ടിഫീക്കേറ്റ് തെരഞ്ഞെടുക്കണമോ?"
 
 #~ msgid "No"
 #~ msgstr "ഇല്ല"
@@ -5022,9 +5255,6 @@ msgstr "_തരം:"
 
 #~ msgid "Wireless connection %d"
 #~ msgstr "വയര്‍ലെസ് ബന്ധം %d"
-
-#~ msgid "_Import"
-#~ msgstr "_ഇംപോര്‍ട്ട് ചെയ്യുക"
 
 #~ msgid "Connect _automatically"
 #~ msgstr "_സ്വയം കണക്ട് ചെയ്യുക"
