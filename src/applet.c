@@ -1458,8 +1458,6 @@ nma_menu_add_vpn_submenu (GtkWidget *menu, NMApplet *applet)
 	GPtrArray *list;
 	int i;
 
-	nma_menu_add_separator_item (menu);
-
 	vpn_menu = GTK_MENU (gtk_menu_new ());
 
 	item = GTK_MENU_ITEM (gtk_menu_item_new_with_mnemonic (_("_VPN Connections")));
@@ -1625,14 +1623,14 @@ static void nma_menu_show_cb (GtkWidget *menu, NMApplet *applet)
 	}
 
 	nma_menu_add_devices (menu, applet);
-	nma_menu_add_vpn_submenu (menu, applet);
 
 	if (has_usable_wifi (applet)) {
 		/* Add the "Hidden Wi-Fi network..." entry */
-		nma_menu_add_separator_item (menu);
 		nma_menu_add_hidden_network_item (menu, applet);
 		nma_menu_add_create_network_item (menu, applet);
+		nma_menu_add_separator_item (menu);
 	}
+	nma_menu_add_vpn_submenu (menu, applet);
 
 	if (!INDICATOR_ENABLED (applet))
 		gtk_widget_show_all (menu);
