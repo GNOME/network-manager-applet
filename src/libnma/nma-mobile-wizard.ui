@@ -137,8 +137,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel">
-            <property name="visible">True</property>
+          <object class="GtkLabel" id="dev_combo_label">
             <property name="can_focus">False</property>
             <property name="valign">end</property>
             <property name="vexpand">True</property>
@@ -154,7 +153,6 @@
         </child>
         <child>
           <object class="GtkComboBox" id="dev_combo">
-            <property name="visible">True</property>
             <property name="sensitive">False</property>
             <property name="can_focus">False</property>
             <property name="model">dev_store</property>
@@ -188,7 +186,7 @@
           <object class="GtkLabel">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Country or Region List:</property>
+            <property name="label" translatable="yes">Country or region:</property>
             <property name="xalign">0</property>
           </object>
           <packing>
@@ -211,6 +209,7 @@
                 <property name="hexpand">True</property>
                 <property name="vexpand">True</property>
                 <property name="model">country_sort</property>
+                <property name="headers_visible">False</property>
                 <property name="search_column">0</property>
                 <signal name="row-activated" handler="country_update_continue" swapped="yes"/>
                 <child internal-child="selection">
@@ -272,6 +271,7 @@
                 <property name="can_focus">True</property>
                 <property name="model">providers_sort</property>
                 <property name="search_column">0</property>
+                <signal name="row-activated" handler="providers_update_continue" swapped="yes"/>
                 <child internal-child="selection">
                   <object class="GtkTreeSelection"/>
                 </child>

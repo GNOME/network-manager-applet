@@ -67,6 +67,7 @@ typedef struct {
 	gboolean will_connect_after;
 
 	/* Intro page */
+	GtkLabel *dev_combo_label;
 	GtkComboBox *dev_combo;
 	GtkLabel *provider_name_label;
 	GtkLabel *plan_name_label;
@@ -569,6 +570,18 @@ providers_update_complete (NMAMobileWizard *self)
 	}
 }
 
+static void
+providers_update_continue (NMAMobileWizard *self)
+{
+	NMAMobileWizardPrivate *priv = NMA_MOBILE_WIZARD_GET_PRIVATE (self);
+
+	gtk_assistant_set_page_complete (GTK_ASSISTANT (self),
+	                                 priv->providers_page,
+	                                 TRUE);
+
+	gtk_assistant_next_page (GTK_ASSISTANT (self));
+}
+
 static gboolean
 focus_providers_view (gpointer user_data)
 {
@@ -929,7 +942,7 @@ country_setup (NMAMobileWizard *self)
 	                                 NULL);
 
 	renderer = gtk_cell_renderer_text_new ();
-	column = gtk_tree_view_column_new_with_attributes (_("Country or region"),
+	column = gtk_tree_view_column_new_with_attributes (NULL,
 	                                                   renderer,
 	                                                   "text", COUNTRIES_COL_NAME,
 	                                                   NULL);
@@ -1129,7 +1142,6 @@ intro_remove_all_devices (NMAMobileWizard *self)
 
 	/* Select the "Any device" item */
 	gtk_combo_box_set_active (priv->dev_combo, 0);
-	gtk_widget_set_sensitive (GTK_WIDGET (priv->dev_combo), FALSE);
 }
 
 static void
@@ -1404,6 +1416,7 @@ nma_mobile_wizard_class_init (NMAMobileWizardClass *klass)
 
 
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, dev_combo);
+	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, dev_combo_label);
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, country_page);
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, country_view);
 	gtk_widget_class_bind_template_child_private (widget_class, NMAMobileWizard, providers_page);
@@ -1440,6 +1453,7 @@ nma_mobile_wizard_class_init (NMAMobileWizardClass *klass)
 	gtk_widget_class_bind_template_callback (widget_class, country_update_continue);
 	gtk_widget_class_bind_template_callback (widget_class, providers_radio_toggled);
 	gtk_widget_class_bind_template_callback (widget_class, providers_update_complete);
+	gtk_widget_class_bind_template_callback (widget_class, providers_update_continue);
 	gtk_widget_class_bind_template_callback (widget_class, plan_combo_changed);
 	gtk_widget_class_bind_template_callback (widget_class, plan_update_complete);
 	gtk_widget_class_bind_template_callback (widget_class, apn_filter_cb);
@@ -1500,8 +1514,12 @@ nma_mobile_wizard_new (GtkWindow *parent,
 		priv->family = NMA_MOBILE_FAMILY_3GPP;
 	else if (modem_caps & NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO)
 		priv->family = NMA_MOBILE_FAMILY_CDMA;
-	if (priv->family)
+	if (priv->family) {
 		priv->initial_family = TRUE;  /* Skip device selection */
+	} else {
+		gtk_widget_show (GTK_WIDGET (priv->dev_combo_label));
+		gtk_widget_show (GTK_WIDGET (priv->dev_combo));
+	}
 
 	gtk_assistant_set_forward_page_func (GTK_ASSISTANT (self),
 	                                     forward_func, self, NULL);
