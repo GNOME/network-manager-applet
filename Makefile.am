@@ -33,10 +33,14 @@ DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-gtk-doc \
 	--enable-introspection \
 	--enable-more-warnings=error \
-	--with-libnm-gtk \
 	--with-wwan \
 	--with-team \
 	--with-gcr
+
+
+if WITH_LIBNM_GTK
+DISTCHECK_CONFIGURE_FLAGS += --with-libnm-gtk
+endif
 
 man_MANS =
 
