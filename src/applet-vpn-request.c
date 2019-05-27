@@ -17,7 +17,8 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2004 - 2017 Red Hat, Inc.
+ * Copyright 2004 - 2019 Red Hat, Inc.
+ * (C) Copyright 2018 Lubomir Rintel
  */
 
 #include "nm-default.h"
@@ -32,7 +33,9 @@
 #include <unistd.h>
 #include <errno.h>
 
+#include "nma-vpn-password-dialog.h"
 #include "nm-utils/nm-compat.h"
+#include "nm-utils/nm-shared-utils.h"
 
 /*****************************************************************************/
 
@@ -44,12 +47,16 @@ typedef struct {
 	guint watch_id;
 	GPid pid;
 
-	GSList *lines;
-	int child_stdin;
 	int child_stdout;
-	int num_newlines;
+	GString *child_response;
 	GIOChannel *channel;
 	guint channel_eventid;
+	GVariantBuilder secrets_builder;
+	gboolean external_ui_mode;
+
+	/* These are just for the external UI mode */
+	char *secret_names[3];
+	int no_passwords;
 } RequestData;
 
 typedef struct {
@@ -60,6 +67,7 @@ typedef struct {
 /*****************************************************************************/
 
 static void request_data_free (RequestData *req_data);
+static void complete_request (VpnSecretsInfo *info);
 
 /*****************************************************************************/
 
@@ -71,82 +79,281 @@ applet_vpn_request_get_secrets_size (void)
 
 /*****************************************************************************/
 
-static void
-child_finished_cb (GPid pid, gint status, gpointer user_data)
+static gboolean
+external_ui_add_password (NMAVpnPasswordDialog *dialog,
+                          int passwords,
+                          GKeyFile *keyfile,
+                          const char *group,
+                          GError **error)
 {
-	SecretsRequest *req = user_data;
-	VpnSecretsInfo *info = (VpnSecretsInfo *) req;
-	RequestData *req_data = info->req_data;
-	gs_free_error GError *error = NULL;
-	gs_unref_variant GVariant *settings = NULL;
-	GVariantBuilder settings_builder, vpn_builder, secrets_builder;
+	gs_free char *label = NULL;
+	gs_free char *value = NULL;
+	gboolean is_secret;
+	gboolean should_ask;
 
-	if (status == 0) {
-		GSList *iter;
+	is_secret = g_key_file_get_boolean (keyfile, group, "IsSecret", NULL);
+	should_ask = g_key_file_get_boolean (keyfile, group, "ShouldAsk", NULL);
+	if (!should_ask || !is_secret)
+		return FALSE;
 
-		g_variant_builder_init (&settings_builder, NM_VARIANT_TYPE_CONNECTION);
-		g_variant_builder_init (&vpn_builder, NM_VARIANT_TYPE_SETTING);
-		g_variant_builder_init (&secrets_builder, G_VARIANT_TYPE ("a{ss}"));
+	label = g_key_file_get_string (keyfile, group, "Label", error);
+	if (!label)
+		return FALSE;
 
-		/* The length of 'lines' must be divisible by 2 since it must contain
-		 * key:secret pairs with the key on one line and the associated secret
-		 * on the next line.
-		 */
-		for (iter = req_data->lines; iter; iter = g_slist_next (iter)) {
-			if (!iter->next)
-				break;
-			g_variant_builder_add (&secrets_builder, "{ss}", iter->data, iter->next->data);
-			iter = iter->next;
-		}
+	value = g_key_file_get_string (keyfile, group, "Value", NULL);
 
-		g_variant_builder_add (&vpn_builder, "{sv}",
-		                       NM_SETTING_VPN_SECRETS,
-		                       g_variant_builder_end (&secrets_builder));
-		g_variant_builder_add (&settings_builder, "{sa{sv}}",
-		                       NM_SETTING_VPN_SETTING_NAME,
-		                       &vpn_builder);
-		settings = g_variant_builder_end (&settings_builder);
-	} else {
-		error = g_error_new (NM_SECRET_AGENT_ERROR,
-		                     NM_SECRET_AGENT_ERROR_USER_CANCELED,
-		                     "%s.%d (%s): canceled", __FILE__, __LINE__, __func__);
+	switch (passwords) {
+	case 0:
+		nma_vpn_password_dialog_set_show_password (dialog, TRUE);
+		nma_vpn_password_dialog_set_password_label (dialog, label);
+		if (value)
+			nma_vpn_password_dialog_set_password (dialog, value);
+		break;
+	case 1:
+		nma_vpn_password_dialog_set_show_password_secondary (dialog, TRUE);
+		nma_vpn_password_dialog_set_password_secondary_label (dialog, label);
+		if (value)
+			nma_vpn_password_dialog_set_password_secondary (dialog, value);
+		break;
+	case 2:
+		nma_vpn_password_dialog_set_show_password_ternary (dialog, TRUE);
+		nma_vpn_password_dialog_set_password_ternary_label (dialog, label);
+		if (value)
+			nma_vpn_password_dialog_set_password_ternary (dialog, value);
+		break;
+	default:
+		g_set_error_literal (error, NM_SECRET_AGENT_ERROR, NM_SECRET_AGENT_ERROR_FAILED,
+		                     "More than 3 passwords are not supported.");
+		return FALSE;
 	}
 
-	/* Complete the secrets request */
-	applet_secrets_request_complete (req, settings, error);
-	applet_secrets_request_free (req);
+	return TRUE;
+}
+
+static void
+external_ui_dialog_response (GtkDialog *dialog, int response_id, gpointer user_data)
+{
+	VpnSecretsInfo *info = user_data;
+	RequestData *req_data = info->req_data;
+	NMAVpnPasswordDialog *vpn_dialog = NMA_VPN_PASSWORD_DIALOG (dialog);
+
+	g_variant_builder_add (&req_data->secrets_builder, "{ss}",
+	                       req_data->secret_names[0],
+	                       nma_vpn_password_dialog_get_password (vpn_dialog));
+
+	if (req_data->no_passwords > 1) {
+		g_variant_builder_add (&req_data->secrets_builder, "{ss}",
+		                       req_data->secret_names[1],
+		                       nma_vpn_password_dialog_get_password_secondary (vpn_dialog));
+	}
+
+	if (req_data->no_passwords > 2) {
+		g_variant_builder_add (&req_data->secrets_builder, "{ss}",
+		                       req_data->secret_names[2],
+		                       nma_vpn_password_dialog_get_password_ternary (vpn_dialog));
+	}
+
+	gtk_widget_destroy (GTK_WIDGET (dialog));
+	complete_request (info);
+}
+
+static gboolean
+external_ui_from_child_response (VpnSecretsInfo *info, GError **error)
+{
+	RequestData *req_data = info->req_data;
+	gs_unref_keyfile GKeyFile *keyfile = NULL;
+	gs_strfreev char **groups = NULL;
+	GtkWidget *dialog = NULL;
+	gs_free char *version = NULL;
+	gs_free char *title = NULL;
+	gs_free char *message = NULL;
+	gs_free char *value = NULL;
+	int i;
+
+	keyfile = g_key_file_new ();
+
+	if (!g_key_file_load_from_data (keyfile,
+	                                req_data->child_response->str,
+	                                req_data->child_response->len,
+	                                G_KEY_FILE_NONE,
+	                                error)) {
+		return FALSE;
+	}
+
+	groups = g_key_file_get_groups (keyfile, NULL);
+	if (g_strcmp0 (groups[0], "VPN Plugin UI") != 0) {
+		g_set_error_literal (error,
+		                     NM_SECRET_AGENT_ERROR,
+		                     NM_SECRET_AGENT_ERROR_FAILED,
+		                     "Expected [VPN Plugin UI]");
+		return FALSE;
+	}
+
+	version = g_key_file_get_string (keyfile, "VPN Plugin UI", "Version", error);
+	if (!version)
+		return FALSE;
+	if (strcmp (version, "2") != 0) {
+		g_set_error_literal (error,
+		                     NM_SECRET_AGENT_ERROR,
+		                     NM_SECRET_AGENT_ERROR_FAILED,
+		                     "Expected Version=2");
+		return FALSE;
+	}
+
+	title = g_key_file_get_string (keyfile, "VPN Plugin UI", "Title", error);
+	if (!title)
+		return FALSE;
+
+	message = g_key_file_get_string (keyfile, "VPN Plugin UI", "Description", error);
+	if (!message)
+		return FALSE;
+
+	dialog = nma_vpn_password_dialog_new (title, message, NULL);
+	nma_vpn_password_dialog_set_show_password (NMA_VPN_PASSWORD_DIALOG (dialog), FALSE);
+	nma_vpn_password_dialog_set_show_password_secondary (NMA_VPN_PASSWORD_DIALOG (dialog), FALSE);
+	nma_vpn_password_dialog_set_show_password_ternary (NMA_VPN_PASSWORD_DIALOG (dialog), FALSE);
+
+	for (i = 1; groups[i] != NULL; i++) {
+		GError *local = NULL;
+
+		if (external_ui_add_password (NMA_VPN_PASSWORD_DIALOG (dialog),
+		                              req_data->no_passwords,
+		                              keyfile,
+		                              groups[i],
+		                              &local)) {
+			req_data->secret_names[req_data->no_passwords++] = g_strdup (groups[i]);
+		} else if (local) {
+			g_warning ("Skipping entry: %s\n", local->message);
+			g_error_free (local);
+		}
+	}
+
+	g_object_ref_sink (dialog);
+	if (req_data->no_passwords > 0 ) {
+		g_signal_connect (dialog,
+		                  "response",
+		                  G_CALLBACK (external_ui_dialog_response),
+		                  info);
+		gtk_widget_show (dialog);
+	} else {
+		/* No secrets, return right away an empty response. */
+		g_object_unref (dialog);
+		complete_request (info);
+	}
+
+	return TRUE;
 }
 
 /*****************************************************************************/
 
+static void
+complete_request (VpnSecretsInfo *info)
+{
+	SecretsRequest *req = (SecretsRequest *) info;
+	RequestData *req_data = info->req_data;
+	GVariantBuilder settings_builder, vpn_builder;
+	gs_unref_variant GVariant *settings = NULL;
+
+	g_variant_builder_init (&settings_builder, NM_VARIANT_TYPE_CONNECTION);
+	g_variant_builder_init (&vpn_builder, NM_VARIANT_TYPE_SETTING);
+
+	g_variant_builder_add (&vpn_builder, "{sv}",
+	                       NM_SETTING_VPN_SECRETS,
+	                       g_variant_builder_end (&req_data->secrets_builder));
+	g_variant_builder_add (&settings_builder, "{sa{sv}}",
+	                       NM_SETTING_VPN_SETTING_NAME,
+	                       &vpn_builder);
+	settings = g_variant_builder_end (&settings_builder);
+
+	applet_secrets_request_complete (req, settings, NULL);
+	applet_secrets_request_free (req);
+}
+
+static void
+process_child_response (VpnSecretsInfo *info)
+{
+	SecretsRequest *req = (SecretsRequest *) info;
+	RequestData *req_data = info->req_data;
+	gs_free_error GError *error = NULL;
+
+	if (req_data->external_ui_mode) {
+		if (!external_ui_from_child_response (info, &error)) {
+			applet_secrets_request_complete (req, NULL, error);
+			applet_secrets_request_free (req);
+		}
+	} else {
+		char **lines = g_strsplit (req_data->child_response->str, "\n", -1);
+		int i;
+
+		for (i = 0; lines[i] && *(lines[i]); i += 2) {
+			if (lines[i + 1] == NULL)
+				break;
+			g_variant_builder_add (&req_data->secrets_builder, "{ss}", lines[i], lines[i + 1]);
+		}
+
+		g_strfreev (lines);
+		complete_request (info);
+	}
+}
+
+static void
+child_finished_cb (GPid pid, int status, gpointer user_data)
+{
+	VpnSecretsInfo *info = user_data;
+	SecretsRequest *req = (SecretsRequest *) info;
+	RequestData *req_data = info->req_data;
+	gs_free_error GError *error = NULL;
+
+	req_data->pid = 0;
+	req_data->watch_id = 0;
+
+	if (status) {
+		error = g_error_new (NM_SECRET_AGENT_ERROR,
+		                     NM_SECRET_AGENT_ERROR_USER_CANCELED,
+		                     "%s.%d (%s): canceled", __FILE__, __LINE__, __func__);
+
+		applet_secrets_request_complete (req, NULL, error);
+		applet_secrets_request_free (req);
+	} else if (req_data->channel_eventid == 0) {
+		/* We now have both the child response and its exit status. Process it. */
+		process_child_response (info);
+	}
+}
+
 static gboolean
 child_stdout_data_cb (GIOChannel *source, GIOCondition condition, gpointer user_data)
 {
-	VpnSecretsInfo *info = user_data;
+	SecretsRequest *req = user_data;
+	VpnSecretsInfo *info = (VpnSecretsInfo *) req;
 	RequestData *req_data = info->req_data;
-	char *str;
-	int len;
+	GIOStatus status;
+	char buf[4096];
+	size_t bytes_read;
+	gs_free_error GError *error = NULL;
 
-	if (!(condition & G_IO_IN))
-		return TRUE;
-
-	if (g_io_channel_read_line (source, &str, NULL, NULL, NULL) == G_IO_STATUS_NORMAL) {
-		len = strlen (str);
-		if (len == 1 && str[0] == '\n') {
-			/* on second line with a newline newline */
-			if (++req_data->num_newlines == 2) {
-				const char *buf = "QUIT\n\n";
-
-				/* terminate the child */
-				if (write (req_data->child_stdin, buf, strlen (buf)) == -1)
-					return TRUE;
-			}
-		} else if (len > 0) {
-			/* remove terminating newline */
-			str[len - 1] = '\0';
-			req_data->lines = g_slist_append (req_data->lines, str);
+	status = g_io_channel_read_chars (source, buf, sizeof (buf)-1, &bytes_read, &error);
+	switch (status) {
+	case G_IO_STATUS_ERROR:
+		req_data->channel_eventid = 0;
+		applet_secrets_request_complete (req, NULL, error);
+		applet_secrets_request_free (req);
+		return FALSE;
+	case G_IO_STATUS_EOF:
+		req_data->channel_eventid = 0;
+		if (req_data->pid == 0) {
+			/* We now have both the childe respons and
+			 * its exit status. Process it. */
+			process_child_response (info);
 		}
+		return FALSE;
+	case G_IO_STATUS_NORMAL:
+		g_string_append_len (req_data->child_response, buf, bytes_read);
+		break;
+	default:
+		/* What just happened... */
+		g_return_val_if_reached (FALSE);
 	}
+
 	return TRUE;
 }
 
@@ -218,7 +425,7 @@ connection_to_data (NMConnection *connection,
 	}
 	nm_clear_g_free (&keys);
 
-	g_string_append (buf, "DONE\n\n");
+	g_string_append (buf, "DONE\n\nQUIT\n\n");
 	NM_SET_OUT (out_length, buf->len);
 	return g_string_free (buf, FALSE);
 }
@@ -280,6 +487,7 @@ auth_dialog_spawn (const char *con_id,
                    const char *auth_dialog,
                    const char *service_type,
                    gboolean supports_hints,
+                   gboolean external_ui_mode,
                    guint32 flags,
                    GPid *out_pid,
                    int *out_stdin,
@@ -301,7 +509,7 @@ auth_dialog_spawn (const char *con_id,
 	g_return_val_if_fail (out_stdout, FALSE);
 
 	hints_len = NM_PTRARRAY_LEN (hints);
-	argv = g_new (const char *, 10 + (2 * hints_len));
+	argv = g_new (const char *, 11 + (2 * hints_len));
 	i = 0;
 	argv[i++] = auth_dialog;
 	argv[i++] = "-u";
@@ -318,6 +526,8 @@ auth_dialog_spawn (const char *con_id,
 		argv[i++] = "-t";
 		argv[i++] = hints[j];
 	}
+	if (external_ui_mode)
+		argv[i++] = "--external-ui-mode";
 	nm_assert (i <= 10 + (2 * hints_len));
 	argv[i++] = NULL;
 
@@ -371,6 +581,7 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 	const char *service_type;
 	const char *auth_dialog;
 	gs_unref_object NMVpnPluginInfo *plugin = NULL;
+	int child_stdin;
 
 	applet_secrets_request_set_free_func (req, free_vpn_secrets_info);
 
@@ -404,15 +615,24 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 	}
 	req_data = info->req_data;
 
+	g_variant_builder_init (&req_data->secrets_builder, G_VARIANT_TYPE ("a{ss}"));
+
+	req_data->external_ui_mode = _nm_utils_ascii_str_to_bool (
+		nm_vpn_plugin_info_lookup_property (plugin,
+		                                    "GNOME",
+		                                    "supports-external-ui-mode"),
+		FALSE);
+
 	if (!auth_dialog_spawn (nm_setting_connection_get_id (s_con),
 	                        nm_setting_connection_get_uuid (s_con),
 	                        (const char *const*) req->hints,
 	                        auth_dialog,
 	                        service_type,
 	                        nm_vpn_plugin_info_supports_hints (plugin),
+	                        req_data->external_ui_mode,
 	                        req->flags,
 	                        &req_data->pid,
-	                        &req_data->child_stdin,
+	                        &child_stdin,
 	                        &req_data->child_stdout,
 	                        error))
 		return FALSE;
@@ -422,11 +642,20 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 
 	/* listen to what child has to say */
 	req_data->channel = g_io_channel_unix_new (req_data->child_stdout);
-	req_data->channel_eventid = g_io_add_watch (req_data->channel, G_IO_IN, child_stdout_data_cb, info);
+	req_data->child_response = g_string_sized_new (4096);
+	req_data->channel_eventid = g_io_add_watch (req_data->channel,
+	                                            G_IO_IN  | G_IO_ERR | G_IO_HUP | G_IO_NVAL,
+	                                            child_stdout_data_cb,
+	                                            info);
+
+	if (!connection_to_fd (req->connection, child_stdin, error))
+		return FALSE;
+	close (child_stdin);
+
 	g_io_channel_set_encoding (req_data->channel, NULL, NULL);
 
 	/* Dump parts of the connection to the child */
-	return connection_to_fd (req->connection, req_data->child_stdin, error);
+	return TRUE;
 }
 
 /*****************************************************************************/
@@ -470,6 +699,14 @@ request_data_free (RequestData *req_data)
 		}
 	}
 
-	g_slist_free_full (req_data->lines, g_free);
+	if (req_data->child_response)
+		g_string_free (req_data->child_response, TRUE);
+
+	g_variant_builder_clear (&req_data->secrets_builder);
+
+	g_free (req_data->secret_names[0]);
+	g_free (req_data->secret_names[1]);
+	g_free (req_data->secret_names[2]);
+
 	g_slice_free (RequestData, req_data);
 }
