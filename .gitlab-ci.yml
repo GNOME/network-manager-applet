@@ -124,10 +124,10 @@
       --without-selinux
       --without-team
       --without-gcr
-    - make -j
-    - make -j check
-    - make -j install
-    - make -j uninstall
+    - make -j$(nproc)
+    - make -j$(nproc) check
+    - make -j$(nproc) install
+    - make -j$(nproc) uninstall
 
 .fedora_autotools_full: &fedora_autotools_full
   <<: *fedora_full
@@ -150,10 +150,10 @@
       --with-selinux
       --with-team
       --with-gcr
-    - make -j
-    - make -j check
-    - make -j install
-    - make -j uninstall
+    - make -j$(nproc)
+    - make -j$(nproc) check
+    - make -j$(nproc) install
+    - make -j$(nproc) uninstall
 
 fedora28_dist:
   <<: *fedora_full
@@ -165,7 +165,7 @@ fedora28_dist:
       NetworkManager-devel
       NetworkManager-glib-devel
     - sh autogen.sh
-    - make -j distcheck
+    - make -j$(nproc) distcheck
   artifacts:
     paths:
       - "*.xz"
@@ -234,10 +234,10 @@ centos7:
       --with-selinux
       --with-team
       --with-gcr
-    - make -j
-    - make -j check
-    - make -j install
-    - make -j uninstall
+    - make -j$(nproc)
+    - make -j$(nproc) check
+    - make -j$(nproc) install
+    - make -j$(nproc) uninstall
   image: centos:7
   stage: test
 
@@ -254,7 +254,7 @@ pages:
     - ./configure
       --disable-silent-rules
       --enable-gtk-doc
-    - make -j
+    - make -j$(nproc)
     - cd ..
     - mkdir -p public
     - mv network-manager-applet-*/html public/libnma
