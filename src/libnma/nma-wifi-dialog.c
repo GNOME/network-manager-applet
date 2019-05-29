@@ -7,6 +7,7 @@
  */
 
 #include "nm-default.h"
+#include "nma-private.h"
 
 #include <string.h>
 #include <netinet/ether.h>
@@ -219,7 +220,7 @@ validate_dialog_ssid (NMAWifiDialog *self)
 
 	widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "network_name_entry"));
 
-	ssid = gtk_entry_get_text (GTK_ENTRY (widget));
+	ssid = gtk_editable_get_text (GTK_EDITABLE (widget));
 
 	if (!ssid || strlen (ssid) == 0 || strlen (ssid) > 32)
 		return NULL;
@@ -365,10 +366,10 @@ connection_combo_changed (GtkWidget *combo,
 		s_wireless = nm_connection_get_setting_wireless (priv->connection);
 		ssid = nm_setting_wireless_get_ssid (s_wireless);
 		utf8_ssid = nm_utils_ssid_to_utf8 (g_bytes_get_data (ssid, NULL), g_bytes_get_size (ssid));
-		gtk_entry_set_text (GTK_ENTRY (widget), utf8_ssid);
+		gtk_editable_set_text (GTK_EDITABLE (widget), utf8_ssid);
 		g_free (utf8_ssid);
 	} else {
-		gtk_entry_set_text (GTK_ENTRY (widget), "");
+		gtk_editable_set_text (GTK_EDITABLE (widget), "");
 	}
 
 	gtk_widget_set_sensitive (GTK_WIDGET (gtk_builder_get_object (priv->builder, "network_name_entry")), is_new);

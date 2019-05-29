@@ -4,6 +4,7 @@
  */
 
 #include "nm-default.h"
+#include "nma-private.h"
 
 #include <string.h>
 
@@ -74,11 +75,11 @@ change_password_storage_icon (GtkWidget *passwd_entry, MenuItem item)
 	if (   (item == ITEM_STORAGE_ASK && !ask_mode)
 	    || item == ITEM_STORAGE_UNUSED) {
 		/* Store the old password */
-		old_pwd = gtk_entry_get_text (GTK_ENTRY (passwd_entry));
+		old_pwd = gtk_editable_get_text (GTK_EDITABLE (passwd_entry));
 		if (old_pwd && *old_pwd)
 			g_object_set_data_full (G_OBJECT (passwd_entry), "password-old",
 		                                g_strdup (old_pwd), g_free_str0);
-		gtk_entry_set_text (GTK_ENTRY (passwd_entry), "");
+		gtk_editable_set_text (GTK_EDITABLE (passwd_entry), "");
 
 		if (gtk_widget_is_focus (passwd_entry))
 			gtk_widget_child_focus ((gtk_widget_get_toplevel (passwd_entry)), GTK_DIR_TAB_BACKWARD);
@@ -87,7 +88,7 @@ change_password_storage_icon (GtkWidget *passwd_entry, MenuItem item)
 		/* Set the old password to the entry */
 		old_pwd = g_object_get_data (G_OBJECT (passwd_entry), "password-old");
 		if (old_pwd && *old_pwd)
-			gtk_entry_set_text (GTK_ENTRY (passwd_entry), old_pwd);
+			gtk_editable_set_text (GTK_EDITABLE (passwd_entry), old_pwd);
 		g_object_set_data (G_OBJECT (passwd_entry), "password-old", NULL);
 
 		if (!gtk_widget_get_can_focus (passwd_entry)) {
