@@ -8,6 +8,7 @@
  */
 
 #include "nm-default.h"
+#include "nma-private.h"
 #include "nma-cert-chooser-private.h"
 #include "utils.h"
 #ifdef LIBNM_BUILD
@@ -24,7 +25,7 @@ set_key_password (NMACertChooser *cert_chooser, const gchar *password)
 	NMAFileCertChooserPrivate *priv = NMA_FILE_CERT_CHOOSER_GET_PRIVATE (cert_chooser);
 
 	g_return_if_fail (priv->key_password != NULL);
-	gtk_entry_set_text (GTK_ENTRY (priv->key_password), password);
+	gtk_editable_set_text (GTK_EDITABLE (priv->key_password), password);
 }
 
 static const gchar *
@@ -33,7 +34,7 @@ get_key_password (NMACertChooser *cert_chooser)
 	NMAFileCertChooserPrivate *priv = NMA_FILE_CERT_CHOOSER_GET_PRIVATE (cert_chooser);
 
 	g_return_val_if_fail (priv->key_password != NULL, NULL);
-	return gtk_entry_get_text (GTK_ENTRY (priv->key_password));
+	return gtk_editable_get_text (GTK_EDITABLE (priv->key_password));
 }
 
 static void

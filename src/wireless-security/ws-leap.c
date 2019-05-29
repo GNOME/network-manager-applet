@@ -7,6 +7,7 @@
  */
 
 #include "nm-default.h"
+#include "nma-private.h"
 
 #include <string.h>
 
@@ -44,7 +45,7 @@ validate (WirelessSecurity *parent, GError **error)
 
 	entry = GTK_WIDGET (gtk_builder_get_object (parent->builder, "leap_username_entry"));
 	g_assert (entry);
-	text = gtk_entry_get_text (GTK_ENTRY (entry));
+	text = gtk_editable_get_text (GTK_EDITABLE (entry));
 	if (!text || !strlen (text)) {
 		widget_set_error (entry);
 		g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("missing leap-username"));
@@ -56,7 +57,7 @@ validate (WirelessSecurity *parent, GError **error)
 	g_assert (entry);
 
 	secret_flags = nma_utils_menu_to_secret_flags (entry);
-	text = gtk_entry_get_text (GTK_ENTRY (entry));
+	text = gtk_editable_get_text (GTK_EDITABLE (entry));
 
         if (   secret_flags & NM_SETTING_SECRET_FLAG_NOT_SAVED
             || secret_flags & NM_SETTING_SECRET_FLAG_NOT_REQUIRED
@@ -99,11 +100,11 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	nm_connection_add_setting (connection, (NMSetting *) s_wireless_sec);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "leap_username_entry"));
-	leap_username = gtk_entry_get_text (GTK_ENTRY (widget));
+	leap_username = gtk_editable_get_text (GTK_EDITABLE (widget));
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "leap_password_entry"));
 	passwd_entry = widget;
-	leap_password = gtk_entry_get_text (GTK_ENTRY (widget));
+	leap_password = gtk_editable_get_text (GTK_EDITABLE (widget));
 
 	g_object_set (s_wireless_sec,
 	              NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "ieee8021x",
@@ -190,7 +191,7 @@ ws_leap_new (NMConnection *connection, gboolean secrets_only)
 	                  (GCallback) wireless_security_changed_cb,
 	                  sec);
 	if (wsec)
-		gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_wireless_security_get_leap_username (wsec));
+		gtk_editable_set_text (GTK_EDITABLE (widget), nm_setting_wireless_security_get_leap_username (wsec));
 
 	if (secrets_only)
 		gtk_widget_hide (widget);

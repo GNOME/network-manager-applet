@@ -536,7 +536,8 @@ EXTRA_DIST += \
 	src/libnma/qrcodegen.h
 
 libnma_h_priv_real = \
-	src/libnma/nma-cert-chooser-private.h
+	src/libnma/nma-cert-chooser-private.h \
+	src/libnma/nma-private.h
 
 libnma_h_priv_gcr = \
 	src/libnma/nma-pkcs11-token-login-dialog.h \
@@ -1075,6 +1076,7 @@ IGNORE_HFILES = \
 	nma-resources.h \
 	nma-version.h \
 	nma-cert-chooser-private.h \
+	nma-private.h \
 	nma-pkcs11-token-login-dialog.h \
 	nma-pkcs11-cert-chooser-dialog.h \
 	nma-cert-chooser-button.h

@@ -13,6 +13,7 @@
  */
 
 #include "nm-default.h"
+#include "nma-private.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -59,7 +60,7 @@ password_changed (GtkEditable *editable, gpointer user_data)
 
 	g_object_set (s_wsec,
 	              NM_SETTING_WIRELESS_SECURITY_PSK,
-	              gtk_entry_get_text (GTK_ENTRY (editable)),
+	              gtk_editable_get_text (editable),
 	              NULL);
 }
 
@@ -131,7 +132,7 @@ main (int argc, char *argv[])
 
 	w = gtk_entry_new ();
 	g_signal_connect (w, "changed", G_CALLBACK (ssid_changed), connection);
-	gtk_entry_set_text (GTK_ENTRY (w), "\"ab:cd\"");
+	gtk_editable_set_text (GTK_EDITABLE (w), "\"ab:cd\"");
 	gtk_widget_show (w);
 	gtk_grid_attach (GTK_GRID (grid), w, 1, 0, 1, 1);
 
@@ -142,7 +143,7 @@ main (int argc, char *argv[])
 
 	pass = gtk_entry_new ();
 	g_signal_connect (pass, "changed", G_CALLBACK (password_changed), connection);
-	gtk_entry_set_text (GTK_ENTRY (pass), "lolofon");
+	gtk_editable_set_text (GTK_EDITABLE (pass), "lolofon");
 	gtk_widget_show (pass);
 	gtk_grid_attach (GTK_GRID (grid), pass, 1, 1, 1, 1);
 
