@@ -7,6 +7,7 @@
  */
 
 #include "nm-default.h"
+#include "nma-private.h"
 
 #include <string.h>
 
@@ -49,7 +50,7 @@ key_index_combo_changed_cb (GtkWidget *combo, WirelessSecurity *parent)
 
 	/* Save WEP key for old key index */
 	entry = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wep_key_entry"));
-	key = gtk_entry_get_text (GTK_ENTRY (entry));
+	key = gtk_editable_get_text (GTK_EDITABLE (entry));
 	if (key)
 		g_strlcpy (sec->keys[sec->cur_index], key, sizeof (sec->keys[sec->cur_index]));
 	else
@@ -60,7 +61,7 @@ key_index_combo_changed_cb (GtkWidget *combo, WirelessSecurity *parent)
 	g_return_if_fail (key_index >= 0);
 
 	/* Populate entry with key from new index */
-	gtk_entry_set_text (GTK_ENTRY (entry), sec->keys[key_index]);
+	gtk_editable_set_text (GTK_EDITABLE (entry), sec->keys[key_index]);
 	sec->cur_index = key_index;
 
 	wireless_security_changed_cb (combo, parent);
@@ -89,7 +90,7 @@ validate (WirelessSecurity *parent, GError **error)
 	g_assert (entry);
 
 	secret_flags = nma_utils_menu_to_secret_flags (entry);
-	key = gtk_entry_get_text (GTK_ENTRY (entry));
+	key = gtk_editable_get_text (GTK_EDITABLE (entry));
 
         if (   secret_flags & NM_SETTING_SECRET_FLAG_NOT_SAVED
             || secret_flags & NM_SETTING_SECRET_FLAG_NOT_REQUIRED) {
@@ -166,7 +167,7 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wep_key_entry"));
 	passwd_entry = widget;
-	key = gtk_entry_get_text (GTK_ENTRY (widget));
+	key = gtk_editable_get_text (GTK_EDITABLE (widget));
 	g_strlcpy (sec->keys[sec->cur_index], key, sizeof (sec->keys[sec->cur_index]));
 
 	/* Blow away the old security setting by adding a clear one */
@@ -217,7 +218,7 @@ update_secrets (WirelessSecurity *parent, NMConnection *connection)
 {
 	WirelessSecurityWEPKey *sec = (WirelessSecurityWEPKey *) parent;
 	NMSettingWirelessSecurity *s_wsec;
-	GtkWidget *widget;
+	GtkEditable *entry;
 	const char *tmp;
 	int i;
 
@@ -228,9 +229,9 @@ update_secrets (WirelessSecurity *parent, NMConnection *connection)
 			g_strlcpy (sec->keys[i], tmp, sizeof (sec->keys[i]));
 	}
 
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wep_key_entry"));
+	entry = GTK_EDITABLE (gtk_builder_get_object (parent->builder, "wep_key_entry"));
 	if (strlen (sec->keys[sec->cur_index]))
-		gtk_entry_set_text (GTK_ENTRY (widget), sec->keys[sec->cur_index]);
+		gtk_editable_set_text (entry, sec->keys[sec->cur_index]);
 }
 
 WirelessSecurityWEPKey *
@@ -267,7 +268,7 @@ ws_wep_key_new (NMConnection *connection,
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wep_key_entry"));
 	g_assert (widget);
-	gtk_entry_set_width_chars (GTK_ENTRY (widget), 28);
+	gtk_editable_set_width_chars (GTK_EDITABLE (widget), 28);
 
 	/* Create password-storage popup menu for password entry under entry's secondary icon */
 	if (connection)

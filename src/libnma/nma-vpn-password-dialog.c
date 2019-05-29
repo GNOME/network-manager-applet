@@ -19,7 +19,7 @@
  */
 
 #include "nm-default.h"
-
+#include "nma-private.h"
 #include "nma-vpn-password-dialog.h"
 
 typedef struct {
@@ -169,7 +169,7 @@ nma_vpn_password_dialog_set_password (NMAVpnPasswordDialog	*dialog,
 	g_return_if_fail (NMA_VPN_IS_PASSWORD_DIALOG (dialog));
 
 	priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
-	gtk_entry_set_text (GTK_ENTRY (priv->password_entry), password ? password : "");
+	gtk_editable_set_text (GTK_EDITABLE (priv->password_entry), password ? password : "");
 }
 
 void
@@ -181,7 +181,7 @@ nma_vpn_password_dialog_set_password_secondary (NMAVpnPasswordDialog *dialog,
 	g_return_if_fail (NMA_VPN_IS_PASSWORD_DIALOG (dialog));
 
 	priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
-	gtk_entry_set_text (GTK_ENTRY (priv->password_entry_secondary),
+	gtk_editable_set_text (GTK_EDITABLE (priv->password_entry_secondary),
 	                    password_secondary ? password_secondary : "");
 }
 
@@ -194,7 +194,7 @@ nma_vpn_password_dialog_set_password_ternary (NMAVpnPasswordDialog *dialog,
 	g_return_if_fail (NMA_VPN_IS_PASSWORD_DIALOG (dialog));
 
 	priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
-	gtk_entry_set_text (GTK_ENTRY (priv->password_entry_tertiary),
+	gtk_editable_set_text (GTK_EDITABLE (priv->password_entry_tertiary),
 	                    password_tertiary ? password_tertiary : "");
 }
 
@@ -286,7 +286,7 @@ nma_vpn_password_dialog_get_password (NMAVpnPasswordDialog *dialog)
 	g_return_val_if_fail (NMA_VPN_IS_PASSWORD_DIALOG (dialog), NULL);
 
 	priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
-	return gtk_entry_get_text (GTK_ENTRY (priv->password_entry));
+	return gtk_editable_get_text (GTK_EDITABLE (priv->password_entry));
 }
 
 const char *
@@ -297,7 +297,7 @@ nma_vpn_password_dialog_get_password_secondary (NMAVpnPasswordDialog *dialog)
 	g_return_val_if_fail (NMA_VPN_IS_PASSWORD_DIALOG (dialog), NULL);
 
 	priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
-	return gtk_entry_get_text (GTK_ENTRY (priv->password_entry_secondary));
+	return gtk_editable_get_text (GTK_EDITABLE (priv->password_entry_secondary));
 }
 
 const char *
@@ -308,7 +308,7 @@ nma_vpn_password_dialog_get_password_ternary (NMAVpnPasswordDialog *dialog)
 	g_return_val_if_fail (NMA_VPN_IS_PASSWORD_DIALOG (dialog), NULL);
 
 	priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
-	return gtk_entry_get_text (GTK_ENTRY (priv->password_entry_tertiary));
+	return gtk_editable_get_text (GTK_EDITABLE (priv->password_entry_tertiary));
 }
 
 void nma_vpn_password_dialog_set_password_label (NMAVpnPasswordDialog *dialog,

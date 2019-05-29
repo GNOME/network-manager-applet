@@ -7,6 +7,7 @@
  */
 
 #include "nm-default.h"
+#include "nma-private.h"
 
 #include <ctype.h>
 #include <string.h>
@@ -142,14 +143,14 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_anon_identity_entry"));
 	g_assert (widget);
-	text = gtk_entry_get_text (GTK_ENTRY (widget));
+	text = gtk_editable_get_text (GTK_EDITABLE (widget));
 	if (text && strlen (text))
 		g_object_set (s_8021x, NM_SETTING_802_1X_ANONYMOUS_IDENTITY, text, NULL);
 
 #if LIBNM_BUILD
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_domain_entry"));
 	g_assert (widget);
-	text = gtk_entry_get_text (GTK_ENTRY (widget));
+	text = gtk_editable_get_text (GTK_EDITABLE (widget));
 	if (text && strlen (text))
 		g_object_set (s_8021x, NM_SETTING_802_1X_DOMAIN_SUFFIX_MATCH, text, NULL);
 #endif
@@ -455,7 +456,7 @@ eap_method_peap_new (WirelessSecurity *ws_parent,
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_anon_identity_entry"));
 	if (s_8021x && nm_setting_802_1x_get_anonymous_identity (s_8021x))
-		gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_anonymous_identity (s_8021x));
+		gtk_editable_set_text (GTK_EDITABLE (widget), nm_setting_802_1x_get_anonymous_identity (s_8021x));
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  ws_parent);
@@ -463,7 +464,7 @@ eap_method_peap_new (WirelessSecurity *ws_parent,
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_domain_entry"));
 #if LIBNM_BUILD
 	if (s_8021x && nm_setting_802_1x_get_domain_suffix_match (s_8021x))
-		gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_domain_suffix_match (s_8021x));
+		gtk_editable_set_text (GTK_EDITABLE (widget), nm_setting_802_1x_get_domain_suffix_match (s_8021x));
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  ws_parent);

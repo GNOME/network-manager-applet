@@ -448,6 +448,7 @@ if enable_gtk_doc
     'nma-pkcs11-cert-chooser-dialog.h',
     'nma-pkcs11-token-login-dialog.h',
     'nma-resources.h',
+    'nma-private.h'
     'nma-version.h'
   ]
 
