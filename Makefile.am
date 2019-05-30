@@ -545,15 +545,28 @@ src/libnma/nma-resources.h: src/libnma/nma.gresource.xml
 src/libnma/nma-resources.c: src/libnma/nma.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir)/src/libnma --generate-dependencies $(srcdir)/src/libnma/nma.gresource.xml)
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir)/src/libnma --generate-source --internal
 
+src/libnma-gtk4/nma-resources.c: src/libnma/nma.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --generate-dependencies $(srcdir)/src/libnma/nma.gresource.xml |sed "s,^,$(builddir)/src/libnma-gtk4/,")
+	@mkdir -p $(builddir)/src/libnma-gtk4
+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(builddir)/src/libnma-gtk4 --generate-source --internal
+
+
+src/libnma-gtk4/%.ui: src/libnma/%.ui
+	@mkdir -p $(builddir)/src/libnma-gtk4
+	gtk4-builder-tool simplify --3to4 $< >$@
+
 CLEANFILES += \
 	$(libnma_h_priv_gen) \
-	$(libnma_c_gen)
+	$(libnma_c_gen) \
+	$(libnma_gtk4_c_gen)
 
 libnma_h_priv_gen = \
 	src/libnma/nma-resources.h
 
 libnma_c_gen = \
 	src/libnma/nma-resources.c
+
+libnma_gtk4_c_gen = \
+	src/libnma-gtk4/nma-resources.c
 
 libnma_h_pub = \
 	src/libnma/nma-version.h \
@@ -806,7 +819,7 @@ endif
 
 nodist_src_libnma_libnma_gtk4_la_SOURCES = \
 	$(libnma_h_priv_gen) \
-	$(libnma_c_gen)
+	$(libnma_gtk4_c_gen)
 
 src_libnma_libnma_gtk4_la_CFLAGS = \
 	-DICONDIR=\""$(datadir)/icons"\" \
