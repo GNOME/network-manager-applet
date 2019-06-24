@@ -667,6 +667,11 @@ has_visible_children (NMConnectionList *self, GtkTreeModel *model, GtkTreeIter *
 	search = gtk_entry_get_text (GTK_ENTRY (priv->search_entry));
 	do {
 		gtk_tree_model_get (model, &iter, COL_ID, &id, -1);
+		if (!id) {
+			/* gtk_tree_store_append() inserts an empty row, ignore
+			 * it until it is fully populated. */
+			continue;
+		}
 		if (strcasestr (id, search) != NULL) {
 			g_free (id);
 			return TRUE;
