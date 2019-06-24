@@ -981,7 +981,6 @@ connection_added (NMClient *client,
 		gtk_tree_path_free (path);
 	}
 
-	g_signal_connect (client, NM_CLIENT_CONNECTION_REMOVED, G_CALLBACK (connection_removed), self);
 	g_signal_connect (connection, NM_CONNECTION_CHANGED, G_CALLBACK (connection_changed), self);
 	gtk_tree_model_filter_refilter (priv->filter);
 }
@@ -1010,6 +1009,10 @@ nm_connection_list_new (void)
 	g_signal_connect (priv->client,
 	                  NM_CLIENT_CONNECTION_ADDED,
 	                  G_CALLBACK (connection_added),
+	                  list);
+	g_signal_connect (priv->client,
+	                  NM_CLIENT_CONNECTION_REMOVED,
+	                  G_CALLBACK (connection_removed),
 	                  list);
 
 	add_connection_buttons (list);
