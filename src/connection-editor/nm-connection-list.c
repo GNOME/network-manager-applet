@@ -667,6 +667,11 @@ has_visible_children (NMConnectionList *self, GtkTreeModel *model, GtkTreeIter *
 	search = gtk_entry_get_text (GTK_ENTRY (priv->search_entry));
 	do {
 		gtk_tree_model_get (model, &iter, COL_ID, &id, -1);
+		if (!id) {
+			/* gtk_tree_store_append() inserts an empty row, ignore
+			 * it until it is fully populated. */
+			continue;
+		}
 		if (strcasestr (id, search) != NULL) {
 			g_free (id);
 			return TRUE;
@@ -976,7 +981,6 @@ connection_added (NMClient *client,
 		gtk_tree_path_free (path);
 	}
 
-	g_signal_connect (client, NM_CLIENT_CONNECTION_REMOVED, G_CALLBACK (connection_removed), self);
 	g_signal_connect (connection, NM_CONNECTION_CHANGED, G_CALLBACK (connection_changed), self);
 	gtk_tree_model_filter_refilter (priv->filter);
 }
@@ -1005,6 +1009,10 @@ nm_connection_list_new (void)
 	g_signal_connect (priv->client,
 	                  NM_CLIENT_CONNECTION_ADDED,
 	                  G_CALLBACK (connection_added),
+	                  list);
+	g_signal_connect (priv->client,
+	                  NM_CLIENT_CONNECTION_REMOVED,
+	                  G_CALLBACK (connection_removed),
 	                  list);
 
 	add_connection_buttons (list);
