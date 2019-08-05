@@ -497,7 +497,7 @@ eap_method_ttls_new (WirelessSecurity *ws_parent,
 	g_signal_connect (G_OBJECT (widget), "toggled",
 	                  (GCallback) wireless_security_changed_cb,
 	                  ws_parent);
-        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), ca_not_required);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), ca_not_required);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_ttls_anon_identity_entry"));
 	if (s_8021x && nm_setting_802_1x_get_anonymous_identity (s_8021x))
