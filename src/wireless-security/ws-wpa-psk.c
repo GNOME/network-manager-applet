@@ -131,14 +131,10 @@ fill_connection (WirelessSecurity *parent, NMConnection *connection)
 	wireless_security_clear_ciphers (connection);
 	if (is_adhoc) {
 		/* Ad-Hoc settings as specified by the supplicant */
-		g_object_set (s_wireless_sec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "wpa-none", NULL);
-		nm_setting_wireless_security_add_proto (s_wireless_sec, "wpa");
-		nm_setting_wireless_security_add_pairwise (s_wireless_sec, "none");
-
-		/* Ad-hoc can only have _one_ group cipher... default to TKIP to be more
-		 * compatible for now.  Maybe we'll support selecting CCMP later.
-		 */
-		nm_setting_wireless_security_add_group (s_wireless_sec, "tkip");
+		g_object_set (s_wireless_sec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "wpa-psk", NULL);
+		nm_setting_wireless_security_add_proto (s_wireless_sec, "rsn");
+		nm_setting_wireless_security_add_pairwise (s_wireless_sec, "ccmp");
+		nm_setting_wireless_security_add_group (s_wireless_sec, "ccmp");
 	} else {
 		g_object_set (s_wireless_sec, NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "wpa-psk", NULL);
 
@@ -178,7 +174,7 @@ ws_wpa_psk_new (NMConnection *connection, gboolean secrets_only)
 	if (!parent)
 		return NULL;
 
-	parent->adhoc_compatible = FALSE;
+	parent->adhoc_compatible = TRUE;
 	sec = (WirelessSecurityWPAPSK *) parent;
 	sec->editing_connection = secrets_only ? FALSE : TRUE;
 	sec->password_flags_name = NM_SETTING_WIRELESS_SECURITY_PSK;
