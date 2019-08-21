@@ -401,7 +401,7 @@ finish_setup (CEPageWifiSecurity *self, gpointer user_data)
 		ws_wpa_psk = ws_wpa_psk_new (connection, FALSE);
 		if (ws_wpa_psk) {
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_psk), sec_model,
-			                   &iter, _("WPA & WPA2 Personal"), FALSE, TRUE);
+			                   &iter, _("WPA & WPA2 Personal"), TRUE, TRUE);
 			if ((active < 0) && ((default_type == NMU_SEC_WPA_PSK) || (default_type == NMU_SEC_WPA2_PSK)))
 				active = item;
 			item++;
@@ -533,10 +533,6 @@ ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 	s_wireless = nm_connection_get_setting_wireless (connection);
 	g_assert (s_wireless);
 
-	/* Kernel Ad-Hoc WPA support is busted; it creates open networks.  Disable
-	 * WPA when Ad-Hoc is selected.  set_sensitive() will pick up priv->mode
-	 * and do the right thing.
-	 */
 	mode = nm_setting_wireless_get_mode (s_wireless);
 	if (g_strcmp0 (mode, NM_SETTING_WIRELESS_MODE_ADHOC) == 0)
 		priv->mode = NM_802_11_MODE_ADHOC;
