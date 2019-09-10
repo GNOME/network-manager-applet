@@ -83,7 +83,7 @@ nma_vpn_password_dialog_class_init (NMAVpnPasswordDialogClass *klass)
 
 	gtk_widget_class_bind_template_callback (widget_class, dialog_close_callback);
 	gtk_widget_class_bind_template_callback (widget_class, dialog_show_callback);
-	gtk_widget_class_bind_template_callback (widget_class, gtk_window_activate_default);
+	gtk_widget_class_bind_template_callback (widget_class, nma_gtk_widget_activate_default);
 	gtk_widget_class_bind_template_callback (widget_class, show_passwords_toggled_cb);
 }
 
