@@ -519,7 +519,9 @@ connection_combo_init (NMAWifiDialog *self)
 	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (widget), renderer, TRUE);
 	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (widget), renderer,
 	                               "text", C_NAME_COLUMN);
+#if !GTK_CHECK_VERSION(3,96,0)
 	gtk_combo_box_set_wrap_width (GTK_COMBO_BOX (widget), 1);
+#endif
 
 	gtk_combo_box_set_model (GTK_COMBO_BOX (widget), priv->connection_model);
 
@@ -1098,8 +1100,10 @@ internal_init (NMAWifiDialog *self,
 		priv->ok_response_button = widget;
 	}
 
+#if !GTK_CHECK_VERSION(3,96,0)
 	g_object_set (G_OBJECT (widget), "can-default", TRUE, NULL);
 	gtk_widget_grab_default (widget);
+#endif
 
 	widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "wifi_dialog"));
 	if (!widget) {
