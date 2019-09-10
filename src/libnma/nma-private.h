@@ -28,6 +28,8 @@
 #define gtk_editable_set_width_chars(editable, n_chars)  gtk_entry_set_width_chars(GTK_ENTRY(editable), (n_chars))
 #endif
 
+void nma_gtk_widget_activate_default (GtkWidget *widget);
+
 #define NMA_PRIVATE_H
 
 #endif /* NMA_PRIVATE_H */

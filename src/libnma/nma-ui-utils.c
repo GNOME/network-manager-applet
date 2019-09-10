@@ -206,6 +206,16 @@ popup_menu_item_info_register (GtkWidget *item,
 	                       (GClosureNotify) popup_menu_item_info_destroy, 0);
 }
 
+void
+nma_gtk_widget_activate_default (GtkWidget *widget)
+{
+#if GTK_CHECK_VERSION(3,90,0)
+	gtk_widget_activate_default (widget);
+#else
+	gtk_window_activate_default (GTK_WINDOW (widget));
+#endif
+}
+
 static void
 icon_release_cb (GtkEntry *entry,
                  GtkEntryIconPosition position,
