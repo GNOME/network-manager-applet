@@ -12,6 +12,12 @@
 
 #include <stdlib.h>
 
+#if GTK_CHECK_VERSION(3,90,0)
+#include <gdk/x11/gdkx.h>
+#else
+#include <gdk/gdkx.h>
+#endif
+
 #include <NetworkManager.h>
 #include <nm-setting-gsm.h>
 #include <nm-setting-cdma.h>
@@ -1451,6 +1457,17 @@ static void
 nma_mobile_wizard_init (NMAMobileWizard *self)
 {
 	gtk_widget_init_template (GTK_WIDGET (self));
+	gtk_widget_realize (GTK_WIDGET (self));
+
+	if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (self)))) {
+#if GTK_CHECK_VERSION(3,90,0)
+		GdkSurface *surface = gtk_widget_get_surface (GTK_WIDGET (self));
+		gdk_x11_surface_set_skip_taskbar_hint (surface, TRUE);
+#else
+		GdkWindow *gdk_window = gtk_widget_get_window (GTK_WIDGET (self));
+		gdk_window_set_skip_taskbar_hint (gdk_window, TRUE);
+#endif
+	}
 }
 
 /**
