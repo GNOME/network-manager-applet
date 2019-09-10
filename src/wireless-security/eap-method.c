@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: GPL-2.0+
-/* -*- Mode: C; tab-width: 5; indent-tabs-mode: t; c-basic-offset: 5 -*- */
 
 /* NetworkManager Applet -- allow user control over networking
  *

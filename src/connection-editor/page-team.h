@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: GPL-2.0+
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /*
  * Copyright 2013 Jiri Pirko <jiri@resnulli.us>
  * Copyright 2013 - 2014  Red Hat, Inc.

@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: LGPL-2.1+
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /*
  * Copyright (C) 2009 Novell, Inc.
  * Author: Tambet Ingo (tambet@gmail.com).

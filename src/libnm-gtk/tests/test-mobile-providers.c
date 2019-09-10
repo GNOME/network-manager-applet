@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: GPL-2.0+
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /*
  * Copyright (C) 2012 Aleksander Morgado <aleksander@gnu.org>
  */

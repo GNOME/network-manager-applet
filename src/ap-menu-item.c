@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: GPL-2.0+
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* ap-menu-item.c - Class to represent a Wifi access point 
  *
  * Jonathan Blandford <jrb@redhat.com>

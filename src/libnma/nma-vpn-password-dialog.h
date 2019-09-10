@@ -1,4 +1,3 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* vpn-password-dialog.c - A use password prompting dialog widget.
  *
  * The Gnome Library is free software; you can redistribute it and/or

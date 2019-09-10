@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: GPL-2.0+
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /* vim: set ft=c ts=4 sts=4 sw=4 noexpandtab smartindent: */
 
 /* EAP-FAST authentication method (RFC4851)
