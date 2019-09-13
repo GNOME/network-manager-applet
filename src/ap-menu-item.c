@@ -167,14 +167,15 @@ update_label (NMNetworkMenuItem *item, gboolean use_bold)
 {
 	NMNetworkMenuItemPrivate *priv = NM_NETWORK_MENU_ITEM_GET_PRIVATE (item);
 
-	gtk_label_set_use_markup (GTK_LABEL (priv->ssid), use_bold);
 	if (use_bold) {
 		char *markup = g_markup_printf_escaped ("<b>%s</b>", priv->ssid_string);
 
 		gtk_label_set_markup (GTK_LABEL (priv->ssid), markup);
 		g_free (markup);
-	} else
+	} else {
+		gtk_label_set_use_markup (GTK_LABEL (priv->ssid), FALSE);
 		gtk_label_set_text (GTK_LABEL (priv->ssid), priv->ssid_string);
+	}
 }
 
 void
