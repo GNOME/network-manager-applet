@@ -18,6 +18,8 @@ built_sources = gnome.compile_resources(
 )
 
 gir_headers = cert_chooser_headers + files(
+  'nma-bar-code-widget.h',
+  'nma-bar-code.h',
   'nma-mobile-providers.h',
   'nma-mobile-wizard.h',
   'nma-ui-utils.h',
