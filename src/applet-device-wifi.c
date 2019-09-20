@@ -178,12 +178,9 @@ out:
 static void
 show_ignore_focus_stealing_prevention (GtkWidget *widget)
 {
-	GdkWindow *window;
-
 	gtk_widget_realize (widget);
 	gtk_widget_show (widget);
-	window = gtk_widget_get_window (widget);
-	gtk_window_present_with_time (GTK_WINDOW (widget), gdk_x11_get_server_time (window));
+	gtk_window_present (GTK_WINDOW (widget));
 }
 
 gboolean

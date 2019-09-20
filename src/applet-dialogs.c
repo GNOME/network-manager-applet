@@ -1096,8 +1096,7 @@ applet_info_dialog_show (NMApplet *applet)
 	g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_hide), dialog);
 	gtk_widget_realize (dialog);
 	gtk_window_set_position (GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ALWAYS);
-	gtk_window_present_with_time (GTK_WINDOW (dialog),
-		gdk_x11_get_server_time (gtk_widget_get_window (dialog)));
+	gtk_window_present (GTK_WINDOW (dialog));
 }
 
 void
@@ -1152,8 +1151,7 @@ applet_missing_ui_warning_dialog_show (void)
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Missing resources"));
 	gtk_widget_realize (dialog);
 	gtk_widget_show (dialog);
-	gtk_window_present_with_time (GTK_WINDOW (dialog),
-		gdk_x11_get_server_time (gtk_widget_get_window (dialog)));
+	gtk_window_present (GTK_WINDOW (dialog));
 
 	g_signal_connect_swapped (dialog, "response",
 	                          G_CALLBACK (gtk_widget_destroy),
