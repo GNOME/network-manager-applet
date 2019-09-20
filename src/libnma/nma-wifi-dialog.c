@@ -7,6 +7,7 @@
  */
 
 #include "nm-default.h"
+#include "nma-private.h"
 
 #include <string.h>
 #include <netinet/ether.h>
@@ -219,7 +220,7 @@ validate_dialog_ssid (NMAWifiDialog *self)
 
 	widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "network_name_entry"));
 
-	ssid = gtk_entry_get_text (GTK_ENTRY (widget));
+	ssid = gtk_editable_get_text (GTK_EDITABLE (widget));
 
 	if (!ssid || strlen (ssid) == 0 || strlen (ssid) > 32)
 		return NULL;
@@ -365,10 +366,10 @@ connection_combo_changed (GtkWidget *combo,
 		s_wireless = nm_connection_get_setting_wireless (priv->connection);
 		ssid = nm_setting_wireless_get_ssid (s_wireless);
 		utf8_ssid = nm_utils_ssid_to_utf8 (g_bytes_get_data (ssid, NULL), g_bytes_get_size (ssid));
-		gtk_entry_set_text (GTK_ENTRY (widget), utf8_ssid);
+		gtk_editable_set_text (GTK_EDITABLE (widget), utf8_ssid);
 		g_free (utf8_ssid);
 	} else {
-		gtk_entry_set_text (GTK_ENTRY (widget), "");
+		gtk_editable_set_text (GTK_EDITABLE (widget), "");
 	}
 
 	gtk_widget_set_sensitive (GTK_WIDGET (gtk_builder_get_object (priv->builder, "network_name_entry")), is_new);
@@ -518,7 +519,9 @@ connection_combo_init (NMAWifiDialog *self)
 	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (widget), renderer, TRUE);
 	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (widget), renderer,
 	                               "text", C_NAME_COLUMN);
+#if !GTK_CHECK_VERSION(3,96,0)
 	gtk_combo_box_set_wrap_width (GTK_COMBO_BOX (widget), 1);
+#endif
 
 	gtk_combo_box_set_model (GTK_COMBO_BOX (widget), priv->connection_model);
 
@@ -1083,7 +1086,11 @@ internal_init (NMAWifiDialog *self,
 
 	gtk_window_set_icon_name (GTK_WINDOW (self), icon_name);
 	widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "image1"));
+#if GTK_CHECK_VERSION(3,90,0)
+	gtk_image_set_from_icon_name (GTK_IMAGE (widget), icon_name);
+#else
 	gtk_image_set_from_icon_name (GTK_IMAGE (widget), icon_name, GTK_ICON_SIZE_DIALOG);
+#endif
 
 	gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (self))), 2);
 
@@ -1097,8 +1104,10 @@ internal_init (NMAWifiDialog *self,
 		priv->ok_response_button = widget;
 	}
 
+#if !GTK_CHECK_VERSION(3,96,0)
 	g_object_set (G_OBJECT (widget), "can-default", TRUE, NULL);
 	gtk_widget_grab_default (widget);
+#endif
 
 	widget = GTK_WIDGET (gtk_builder_get_object (priv->builder, "wifi_dialog"));
 	if (!widget) {

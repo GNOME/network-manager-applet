@@ -13,6 +13,7 @@
  */
 
 #include "nm-default.h"
+#include "nma-private.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -59,7 +60,7 @@ password_changed (GtkEditable *editable, gpointer user_data)
 
 	g_object_set (s_wsec,
 	              NM_SETTING_WIRELESS_SECURITY_PSK,
-	              gtk_entry_get_text (GTK_ENTRY (editable)),
+	              gtk_editable_get_text (editable),
 	              NULL);
 }
 
@@ -105,10 +106,14 @@ main (int argc, char *argv[])
 	nm_connection_add_setting (connection,
 	                           nm_setting_wireless_new ());
 
-        gtk_init (&argc, &argv);
+#if GTK_CHECK_VERSION(3,90,0)
+	gtk_init ();
+#else
+	gtk_init (&argc, &argv);
+#endif
 
-        w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-        gtk_widget_show (w);
+	w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_widget_show (w);
 	gtk_window_set_default_size (GTK_WINDOW (w), 800, 680);
 	g_signal_connect (w, "delete-event", G_CALLBACK (delete), NULL);
 
@@ -131,7 +136,7 @@ main (int argc, char *argv[])
 
 	w = gtk_entry_new ();
 	g_signal_connect (w, "changed", G_CALLBACK (ssid_changed), connection);
-	gtk_entry_set_text (GTK_ENTRY (w), "\"ab:cd\"");
+	gtk_editable_set_text (GTK_EDITABLE (w), "\"ab:cd\"");
 	gtk_widget_show (w);
 	gtk_grid_attach (GTK_GRID (grid), w, 1, 0, 1, 1);
 
@@ -142,7 +147,7 @@ main (int argc, char *argv[])
 
 	pass = gtk_entry_new ();
 	g_signal_connect (pass, "changed", G_CALLBACK (password_changed), connection);
-	gtk_entry_set_text (GTK_ENTRY (pass), "lolofon");
+	gtk_editable_set_text (GTK_EDITABLE (pass), "lolofon");
 	gtk_widget_show (pass);
 	gtk_grid_attach (GTK_GRID (grid), pass, 1, 1, 1, 1);
 

@@ -7,6 +7,7 @@
  */
 
 #include "nm-default.h"
+#include "nma-private.h"
 #include "nma-cert-chooser-private.h"
 #include "nma-cert-chooser-button.h"
 #include "nma-ui-utils.h"
@@ -27,7 +28,7 @@ set_key_password (NMACertChooser *cert_chooser, const gchar *password)
 
 	g_return_if_fail (priv->key_password != NULL);
 	if (password)
-		gtk_entry_set_text (GTK_ENTRY (priv->key_password), password);
+		gtk_editable_set_text (GTK_EDITABLE (priv->key_password), password);
 }
 
 static const gchar *
@@ -37,7 +38,7 @@ get_key_password (NMACertChooser *cert_chooser)
 	const gchar *text;
 
 	g_return_val_if_fail (priv->key_password != NULL, NULL);
-	text = gtk_entry_get_text (GTK_ENTRY (priv->key_password));
+	text = gtk_editable_get_text (GTK_EDITABLE (priv->key_password));
 
 	return text && text[0] ? text : NULL;
 }
@@ -72,7 +73,7 @@ set_cert_password (NMACertChooser *cert_chooser, const gchar *password)
 
 	g_return_if_fail (priv->cert_password != NULL);
 	if (password)
-		gtk_entry_set_text (GTK_ENTRY (priv->cert_password), password);
+		gtk_editable_set_text (GTK_EDITABLE (priv->cert_password), password);
 }
 
 static const gchar *
@@ -82,7 +83,7 @@ get_cert_password (NMACertChooser *cert_chooser)
 	const gchar *text;
 
 	g_return_val_if_fail (priv->cert_password != NULL, NULL);
-	text = gtk_entry_get_text (GTK_ENTRY (priv->cert_password));
+	text = gtk_editable_get_text (GTK_EDITABLE (priv->cert_password));
 
 	return text && text[0] ? text : NULL;
 }
@@ -281,7 +282,7 @@ cert_changed_cb (NMACertChooserButton *button, gpointer user_data)
 	if (nma_cert_chooser_button_get_remember_pin (button))
 		pin = nma_cert_chooser_button_get_pin (button);
 	if (pin)
-		gtk_entry_set_text (GTK_ENTRY (priv->cert_password), pin);
+		gtk_editable_set_text (GTK_EDITABLE (priv->cert_password), pin);
 
 	gtk_widget_set_sensitive (priv->cert_password, uri_data != NULL);
 	gtk_widget_set_sensitive (priv->cert_password_label, uri_data != NULL);
@@ -297,7 +298,7 @@ cert_changed_cb (NMACertChooserButton *button, gpointer user_data)
 				gtk_widget_set_sensitive (priv->key_password, TRUE);
 				gtk_widget_set_sensitive (priv->key_password_label, TRUE);
 				if (pin)
-					gtk_entry_set_text (GTK_ENTRY (priv->key_password), pin);
+					gtk_editable_set_text (GTK_EDITABLE (priv->key_password), pin);
 			}
 		}
 	}
@@ -319,7 +320,7 @@ key_changed_cb (NMACertChooserButton *button, gpointer user_data)
 	if (nma_cert_chooser_button_get_remember_pin (button))
 		pin = nma_cert_chooser_button_get_pin (button);
 	if (pin) {
-		gtk_entry_set_text (GTK_ENTRY (priv->key_password), pin);
+		gtk_editable_set_text (GTK_EDITABLE (priv->key_password), pin);
 		g_free (pin);
 	}
 

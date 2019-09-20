@@ -8,8 +8,15 @@
  */
 
 #include "nm-default.h"
+#include "nma-private.h"
 
 #include <stdlib.h>
+
+#if GTK_CHECK_VERSION(3,90,0)
+#include <gdk/x11/gdkx.h>
+#else
+#include <gdk/gdkx.h>
+#endif
 
 #include <NetworkManager.h>
 #include <nm-setting-gsm.h>
@@ -90,7 +97,7 @@ typedef struct {
 	GtkTreeStore *plan_store;
 	guint32 plan_focus_id;
 
-	GtkEntry *plan_apn_entry;
+	GtkEditable *plan_apn_entry;
 
 	/* Confirm page */
 	GtkWidget *confirm_page;
@@ -165,7 +172,7 @@ assistant_closed (GtkButton *button, gpointer user_data)
 				}
 			} else {
 				family = NMA_MOBILE_FAMILY_3GPP;
-				wiz_method->gsm_apn = g_strdup (gtk_entry_get_text (priv->plan_apn_entry));
+				wiz_method->gsm_apn = g_strdup (gtk_editable_get_text (priv->plan_apn_entry));
 			}
 		}
 	}
@@ -271,7 +278,7 @@ confirm_prepare (NMAMobileWizard *self)
 		else
 			gtk_label_set_text (priv->confirm_plan, _("Unlisted"));
 
-		apn = gtk_entry_get_text (priv->plan_apn_entry);
+		apn = gtk_editable_get_text (priv->plan_apn_entry);
 	}
 
 	if (apn) {
@@ -339,7 +346,7 @@ plan_update_complete (NMAMobileWizard *self)
 	} else {
 		const char *manual_apn;
 
-		manual_apn = gtk_entry_get_text (priv->plan_apn_entry);
+		manual_apn = gtk_editable_get_text (priv->plan_apn_entry);
 		gtk_assistant_set_page_complete (assistant, priv->plan_page,
 		                                 (manual_apn && strlen (manual_apn)));
 	}
@@ -354,10 +361,10 @@ plan_combo_changed (NMAMobileWizard *self)
 
 	method = get_selected_method (self, &is_manual);
 	if (method) {
-		gtk_entry_set_text (priv->plan_apn_entry, nma_mobile_access_method_get_3gpp_apn (method));
+		gtk_editable_set_text (priv->plan_apn_entry, nma_mobile_access_method_get_3gpp_apn (method));
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->plan_apn_entry), FALSE);
 	} else {
-		gtk_entry_set_text (priv->plan_apn_entry, "");
+		gtk_editable_set_text (priv->plan_apn_entry, "");
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->plan_apn_entry), TRUE);
 		gtk_widget_grab_focus (GTK_WIDGET (priv->plan_apn_entry));
 	}
@@ -1450,6 +1457,17 @@ static void
 nma_mobile_wizard_init (NMAMobileWizard *self)
 {
 	gtk_widget_init_template (GTK_WIDGET (self));
+	gtk_widget_realize (GTK_WIDGET (self));
+
+	if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (self)))) {
+#if GTK_CHECK_VERSION(3,90,0)
+		GdkSurface *surface = gtk_widget_get_surface (GTK_WIDGET (self));
+		gdk_x11_surface_set_skip_taskbar_hint (surface, TRUE);
+#else
+		GdkWindow *gdk_window = gtk_widget_get_window (GTK_WIDGET (self));
+		gdk_window_set_skip_taskbar_hint (gdk_window, TRUE);
+#endif
+	}
 }
 
 /**
