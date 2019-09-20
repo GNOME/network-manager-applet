@@ -4,6 +4,7 @@
  */
 
 #include "nm-default.h"
+#include "nma-private.h"
 
 #include <string.h>
 
@@ -74,11 +75,11 @@ change_password_storage_icon (GtkWidget *passwd_entry, MenuItem item)
 	if (   (item == ITEM_STORAGE_ASK && !ask_mode)
 	    || item == ITEM_STORAGE_UNUSED) {
 		/* Store the old password */
-		old_pwd = gtk_entry_get_text (GTK_ENTRY (passwd_entry));
+		old_pwd = gtk_editable_get_text (GTK_EDITABLE (passwd_entry));
 		if (old_pwd && *old_pwd)
 			g_object_set_data_full (G_OBJECT (passwd_entry), "password-old",
 		                                g_strdup (old_pwd), g_free_str0);
-		gtk_entry_set_text (GTK_ENTRY (passwd_entry), "");
+		gtk_editable_set_text (GTK_EDITABLE (passwd_entry), "");
 
 		if (gtk_widget_is_focus (passwd_entry))
 			gtk_widget_child_focus ((gtk_widget_get_toplevel (passwd_entry)), GTK_DIR_TAB_BACKWARD);
@@ -87,7 +88,7 @@ change_password_storage_icon (GtkWidget *passwd_entry, MenuItem item)
 		/* Set the old password to the entry */
 		old_pwd = g_object_get_data (G_OBJECT (passwd_entry), "password-old");
 		if (old_pwd && *old_pwd)
-			gtk_entry_set_text (GTK_ENTRY (passwd_entry), old_pwd);
+			gtk_editable_set_text (GTK_EDITABLE (passwd_entry), old_pwd);
 		g_object_set_data (G_OBJECT (passwd_entry), "password-old", NULL);
 
 		if (!gtk_widget_get_can_focus (passwd_entry)) {
@@ -205,17 +206,45 @@ popup_menu_item_info_register (GtkWidget *item,
 	                       (GClosureNotify) popup_menu_item_info_destroy, 0);
 }
 
+void
+nma_gtk_widget_activate_default (GtkWidget *widget)
+{
+#if GTK_CHECK_VERSION(3,90,0)
+	gtk_widget_activate_default (widget);
+#else
+	gtk_window_activate_default (GTK_WINDOW (widget));
+#endif
+}
+
 static void
 icon_release_cb (GtkEntry *entry,
                  GtkEntryIconPosition position,
+#if !GTK_CHECK_VERSION(3,90,0)
                  GdkEventButton *event,
+#endif
                  gpointer data)
 {
 	GtkMenu *menu = GTK_MENU (data);
+#if GTK_CHECK_VERSION(3,90,0)
+	GdkRectangle icon_area;
+#endif
+
 	if (position == GTK_ENTRY_ICON_SECONDARY) {
-		gtk_widget_show_all (GTK_WIDGET (data));
+		gtk_widget_show (GTK_WIDGET (data));
+#if GTK_CHECK_VERSION(3,90,0)
+		gtk_entry_get_icon_area (entry,
+		                         GTK_ENTRY_ICON_SECONDARY,
+		                         &icon_area);
+		gtk_menu_popup_at_rect (menu,
+		                        gtk_widget_get_surface (GTK_WIDGET (entry)),
+		                        &icon_area,
+		                        GDK_GRAVITY_CENTER,
+		                        GDK_GRAVITY_CENTER,
+		                        NULL);
+#else
 		gtk_menu_popup (menu, NULL, NULL, NULL, NULL,
 		                event->button, event->time);
+#endif
 	}
 }
 
