@@ -447,7 +447,6 @@ schema = 'org.gnome.nm-applet.gschema.xml'
 configure_file(
   input: schema + '.in',
   output: schema,
-  install: true,
   install_dir: join_paths(nma_datadir, 'glib-2.0', 'schemas'),
   configuration: schema_conf
 )

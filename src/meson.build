@@ -17,7 +17,6 @@ version_header = configure_file(
   input: 'libnma/' + version + '.in',
   output: version,
   configuration: version_conf,
-  install: true,
   install_dir: join_paths(nma_includedir, 'libnma')
 )
 

@@ -12,7 +12,6 @@ foreach man: mans
   configure_file(
     input: man + '.in',
     output: man,
-    install: true,
     install_dir: man1_dir,
     configuration: man_subst,
   )
