@@ -230,8 +230,8 @@ icon_release_cb (GtkEntry *entry,
 #endif
 
 	if (position == GTK_ENTRY_ICON_SECONDARY) {
-		gtk_widget_show (GTK_WIDGET (data));
 #if GTK_CHECK_VERSION(3,90,0)
+		gtk_widget_show (GTK_WIDGET (data));
 		gtk_entry_get_icon_area (entry,
 		                         GTK_ENTRY_ICON_SECONDARY,
 		                         &icon_area);
@@ -242,6 +242,7 @@ icon_release_cb (GtkEntry *entry,
 		                        GDK_GRAVITY_CENTER,
 		                        NULL);
 #else
+		gtk_widget_show_all (GTK_WIDGET (data));
 		gtk_menu_popup (menu, NULL, NULL, NULL, NULL,
 		                event->button, event->time);
 #endif
