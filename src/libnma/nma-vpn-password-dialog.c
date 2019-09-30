@@ -101,19 +101,18 @@ dialog_show_callback (GtkWidget *widget, gpointer callback_data)
 	NMAVpnPasswordDialogPrivate *priv = NMA_VPN_PASSWORD_DIALOG_GET_PRIVATE (dialog);
 	GtkWidget *to_focus = NULL;
 
-	if (   gtk_widget_get_visible (priv->password_entry_tertiary)
-	    && gtk_entry_get_text_length (GTK_ENTRY (priv->password_entry_tertiary)) == 0) {
-		to_focus = priv->password_entry_tertiary;
-	}
 
-	if (   gtk_widget_get_visible (priv->password_entry_secondary)
-	           && gtk_entry_get_text_length (GTK_ENTRY (priv->password_entry_secondary)) == 0) {
-		to_focus = priv->password_entry_secondary;
-	}
-
-	if (to_focus == NULL)
+	if (   gtk_widget_get_visible (priv->password_entry)
+	    && gtk_entry_get_text_length (GTK_ENTRY (priv->password_entry)) == 0)
 		to_focus = priv->password_entry;
-	gtk_widget_grab_focus (to_focus);
+	else if (   gtk_widget_get_visible (priv->password_entry_secondary)
+	         && gtk_entry_get_text_length (GTK_ENTRY (priv->password_entry_secondary)) == 0)
+		to_focus = priv->password_entry_secondary;
+	else if (   gtk_widget_get_visible (priv->password_entry_tertiary)
+	         && gtk_entry_get_text_length (GTK_ENTRY (priv->password_entry_tertiary)) == 0)
+		to_focus = priv->password_entry_tertiary;
+
+	gtk_widget_grab_focus (to_focus ?: priv->password_entry);
 }
 
 static void
