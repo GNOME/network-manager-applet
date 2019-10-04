@@ -12,6 +12,7 @@ sources = [version_header] + files(
   'wireless-security.c',
   'ws-dynamic-wep.c',
   'ws-leap.c',
+  'ws-sae.c',
   'ws-wep-key.c',
   'ws-wpa-eap.c',
   'ws-wpa-psk.c'
@@ -26,6 +27,7 @@ resource_data = files(
   'eap-method-ttls.ui',
   'ws-dynamic-wep.ui',
   'ws-leap.ui',
+  'ws-sae.ui',
   'ws-wep-key.ui',
   'ws-wpa-eap.ui',
   'ws-wpa-psk.ui'
