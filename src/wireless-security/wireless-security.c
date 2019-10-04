@@ -592,4 +592,3 @@ ws_802_1x_update_secrets (WirelessSecurity *sec,
 		} while (gtk_tree_model_iter_next (model, &iter));
 	}
 }
-
