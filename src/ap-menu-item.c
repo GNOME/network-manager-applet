@@ -18,6 +18,8 @@
 #include "nm-access-point.h"
 #include "mobile-helpers.h"
 
+/* Only to get the NMU_SEC_SAE compat constant. */
+#include "wireless-security.h"
 
 G_DEFINE_TYPE (NMNetworkMenuItem, nm_network_menu_item, GTK_TYPE_MENU_ITEM);
 
@@ -268,13 +270,14 @@ nm_network_menu_item_new (NMAccessPoint *ap,
 
 	/* Don't enable the menu item the device can't even connect to the AP */
 	if (   !nm_utils_security_valid (NMU_SEC_NONE, dev_caps, TRUE, priv->is_adhoc, ap_flags, ap_wpa, ap_rsn)
-        && !nm_utils_security_valid (NMU_SEC_STATIC_WEP, dev_caps, TRUE, priv->is_adhoc, ap_flags, ap_wpa, ap_rsn)
+	    && !nm_utils_security_valid (NMU_SEC_STATIC_WEP, dev_caps, TRUE, priv->is_adhoc, ap_flags, ap_wpa, ap_rsn)
 	    && !nm_utils_security_valid (NMU_SEC_LEAP, dev_caps, TRUE, priv->is_adhoc, ap_flags, ap_wpa, ap_rsn)
 	    && !nm_utils_security_valid (NMU_SEC_DYNAMIC_WEP, dev_caps, TRUE, priv->is_adhoc, ap_flags, ap_wpa, ap_rsn)
 	    && !nm_utils_security_valid (NMU_SEC_WPA_PSK, dev_caps, TRUE, priv->is_adhoc, ap_flags, ap_wpa, ap_rsn)
 	    && !nm_utils_security_valid (NMU_SEC_WPA2_PSK, dev_caps, TRUE, priv->is_adhoc, ap_flags, ap_wpa, ap_rsn)
 	    && !nm_utils_security_valid (NMU_SEC_WPA_ENTERPRISE, dev_caps, TRUE, priv->is_adhoc, ap_flags, ap_wpa, ap_rsn)
-	    && !nm_utils_security_valid (NMU_SEC_WPA2_ENTERPRISE, dev_caps, TRUE, priv->is_adhoc, ap_flags, ap_wpa, ap_rsn)) {
+	    && !nm_utils_security_valid (NMU_SEC_WPA2_ENTERPRISE, dev_caps, TRUE, priv->is_adhoc, ap_flags, ap_wpa, ap_rsn)
+	    && !nm_utils_security_valid (NMU_SEC_SAE, dev_caps, TRUE, priv->is_adhoc, ap_flags, ap_wpa, ap_rsn)) {
 		gtk_widget_set_sensitive (GTK_WIDGET (item), FALSE);
 	}
 
