@@ -361,7 +361,7 @@ finish_setup (CEPageWifiSecurity *self, gpointer user_data)
 		ws_leap = ws_leap_new (connection, FALSE);
 		if (ws_leap) {
 			add_security_item (self, WIRELESS_SECURITY (ws_leap), sec_model,
-			                   &iter, _("LEAP"), FALSE, FALSE);
+			                   &iter, "LEAP", FALSE, FALSE);
 			if ((active < 0) && (default_type == NMU_SEC_LEAP))
 				active = item;
 			item++;

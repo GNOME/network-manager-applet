@@ -931,7 +931,7 @@ security_combo_init (NMAWifiDialog *self, gboolean secrets_only)
 		ws_leap = ws_leap_new (priv->connection, secrets_only);
 		if (ws_leap) {
 			add_security_item (self, WIRELESS_SECURITY (ws_leap), sec_model,
-			                   &iter, _("LEAP"));
+			                   &iter, "LEAP");
 			if ((active < 0) && (default_type == NMU_SEC_LEAP))
 				active = item;
 			item++;

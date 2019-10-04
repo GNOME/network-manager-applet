@@ -57,11 +57,11 @@ get_eap_label (NMSettingWirelessSecurity *sec,
 
 		if (!strcmp (key_mgmt, "ieee8021x")) {
 			if (auth_alg && !strcmp (auth_alg, "leap"))
-				str = g_string_new (_("LEAP"));
+				str = g_string_new ("LEAP");
 			else
 				str = g_string_new (_("Dynamic WEP"));
 		} else if (!strcmp (key_mgmt, "wpa-eap"))
-			str = g_string_new (_("WPA/WPA2"));
+			str = g_string_new ("WPA/WPA2");
 		else
 			return NULL;
 	} else if (s_8021x)
@@ -221,11 +221,11 @@ create_info_label_security (NMConnection *connection)
 			const char *key_mgmt = nm_setting_wireless_security_get_key_mgmt (s_wireless_sec);
 
 			if (!strcmp (key_mgmt, "none"))
-				label = g_strdup (_("WEP"));
+				label = g_strdup ("WEP");
 			else if (!strcmp (key_mgmt, "wpa-none"))
-				label = g_strdup (_("WPA/WPA2"));
+				label = g_strdup ("WPA/WPA2");
 			else if (!strcmp (key_mgmt, "wpa-psk"))
-				label = g_strdup (_("WPA/WPA2"));
+				label = g_strdup ("WPA/WPA2");
 			else
 				label = get_eap_label (s_wireless_sec, s_8021x);
 		} else {

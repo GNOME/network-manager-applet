@@ -408,7 +408,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		em_md5 = eap_method_simple_new (sec, connection, EAP_METHOD_SIMPLE_TYPE_MD5, simple_flags, NULL);
 		gtk_list_store_append (auth_model, &iter);
 		gtk_list_store_set (auth_model, &iter,
-			                AUTH_NAME_COLUMN, _("MD5"),
+			                AUTH_NAME_COLUMN, "MD5",
 			                AUTH_METHOD_COLUMN, em_md5,
 			                -1);
 		eap_method_unref (EAP_METHOD (em_md5));
@@ -420,7 +420,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	em_tls = eap_method_tls_new (sec, connection, FALSE, secrets_only);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
-	                    AUTH_NAME_COLUMN, _("TLS"),
+	                    AUTH_NAME_COLUMN, "TLS",
 	                    AUTH_METHOD_COLUMN, em_tls,
 	                    -1);
 	eap_method_unref (EAP_METHOD (em_tls));
@@ -432,7 +432,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		em_leap = eap_method_leap_new (sec, connection, secrets_only);
 		gtk_list_store_append (auth_model, &iter);
 		gtk_list_store_set (auth_model, &iter,
-		                    AUTH_NAME_COLUMN, _("LEAP"),
+		                    AUTH_NAME_COLUMN, "LEAP",
 		                    AUTH_METHOD_COLUMN, em_leap,
 		                    -1);
 		eap_method_unref (EAP_METHOD (em_leap));
@@ -444,7 +444,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	em_pwd = eap_method_simple_new (sec, connection, EAP_METHOD_SIMPLE_TYPE_PWD, simple_flags, NULL);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
-	                    AUTH_NAME_COLUMN, _("PWD"),
+	                    AUTH_NAME_COLUMN, "PWD",
 	                    AUTH_METHOD_COLUMN, em_pwd,
 	                    -1);
 	eap_method_unref (EAP_METHOD (em_pwd));
@@ -455,7 +455,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 	em_fast = eap_method_fast_new (sec, connection, is_editor, secrets_only);
 	gtk_list_store_append (auth_model, &iter);
 	gtk_list_store_set (auth_model, &iter,
-	                    AUTH_NAME_COLUMN, _("FAST"),
+	                    AUTH_NAME_COLUMN, "FAST",
 	                    AUTH_METHOD_COLUMN, em_fast,
 	                    -1);
 	eap_method_unref (EAP_METHOD (em_fast));
@@ -492,7 +492,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		                                  simple_flags, secrets_hints);
 		gtk_list_store_append (auth_model, &iter);
 		gtk_list_store_set (auth_model, &iter,
-		                    AUTH_NAME_COLUMN, "Unknown",
+		                    AUTH_NAME_COLUMN, _("Unknown"),
 		                    AUTH_METHOD_COLUMN, em_hints,
 		                    -1);
 		eap_method_unref (EAP_METHOD (em_hints));
