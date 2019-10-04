@@ -692,6 +692,9 @@ get_default_type_for_security (NMSettingWirelessSecurity *sec,
 		return NMU_SEC_DYNAMIC_WEP;
 	}
 
+	if (!strcmp (key_mgmt, "sae"))
+		return NMU_SEC_SAE;
+
 	if (   !strcmp (key_mgmt, "wpa-none")
 	    || !strcmp (key_mgmt, "wpa-psk")) {
 		if (!have_ap || (ap_flags & NM_802_11_AP_FLAGS_PRIVACY)) {
@@ -829,6 +832,8 @@ security_valid (NMUtilsSecurityType sectype,
 {
 	switch (mode) {
 	case NM_802_11_MODE_AP:
+		if (sectype == NMU_SEC_SAE)
+			return TRUE;
 		return nm_utils_ap_mode_security_valid (sectype, wifi_caps);
 	case NM_802_11_MODE_ADHOC:
 	case NM_802_11_MODE_INFRA:
@@ -1005,6 +1010,19 @@ security_combo_init (NMAWifiDialog *self, gboolean secrets_only,
 			add_security_item (self, WIRELESS_SECURITY (ws_wpa_eap), sec_model,
 			                   &iter, _("WPA & WPA2 Enterprise"));
 			if ((active < 0) && ((default_type == NMU_SEC_WPA_ENTERPRISE) || (default_type == NMU_SEC_WPA2_ENTERPRISE)))
+				active = item;
+			item++;
+		}
+	}
+
+	if (security_valid (NMU_SEC_SAE, mode, dev_caps, !!priv->ap, ap_flags, ap_wpa, ap_rsn)) {
+		WirelessSecuritySAE *ws_sae;
+
+		ws_sae = ws_sae_new (priv->connection, secrets_only);
+		if (ws_sae) {
+			add_security_item (self, WIRELESS_SECURITY (ws_sae), sec_model,
+			                   &iter, _("WPA3 Personal"));
+			if (active < 0 && default_type == NMU_SEC_SAE)
 				active = item;
 			item++;
 		}
