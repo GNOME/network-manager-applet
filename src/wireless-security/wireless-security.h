@@ -80,6 +80,7 @@ void wireless_security_unref (WirelessSecurity *sec);
 
 /* Below for internal use only */
 
+#include "ws-sae.h"
 #include "ws-wep-key.h"
 #include "ws-wpa-psk.h"
 #include "ws-leap.h"

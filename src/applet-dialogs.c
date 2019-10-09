@@ -226,6 +226,8 @@ create_info_label_security (NMConnection *connection)
 				label = g_strdup (_("WPA/WPA2"));
 			else if (!strcmp (key_mgmt, "wpa-psk"))
 				label = g_strdup (_("WPA/WPA2"));
+			else if (!strcmp (key_mgmt, "sae"))
+				label = g_strdup (_("WPA3"));
 			else
 				label = get_eap_label (s_wireless_sec, s_8021x);
 		} else {

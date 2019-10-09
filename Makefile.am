@@ -275,6 +275,8 @@ wireless_security_c_gen = \
 wireless_security_c_real = \
 	src/wireless-security/wireless-security.h \
 	src/wireless-security/wireless-security.c \
+	src/wireless-security/ws-sae.h \
+	src/wireless-security/ws-sae.c \
 	src/wireless-security/ws-wep-key.h \
 	src/wireless-security/ws-wep-key.c \
 	src/wireless-security/ws-wpa-psk.h \
@@ -392,6 +394,7 @@ EXTRA_DIST += \
 	src/wireless-security/eap-method-ttls.ui \
 	src/wireless-security/ws-dynamic-wep.ui \
 	src/wireless-security/ws-leap.ui \
+	src/wireless-security/ws-sae.ui \
 	src/wireless-security/ws-wep-key.ui \
 	src/wireless-security/ws-wpa-eap.ui \
 	src/wireless-security/ws-wpa-psk.ui \

@@ -129,6 +129,9 @@ get_default_type_for_security (NMSettingWirelessSecurity *sec)
 			return NMU_SEC_WPA_ENTERPRISE;
 	}
 
+	if (!strcmp (key_mgmt, "sae"))
+		return NMU_SEC_SAE;
+
 	return NMU_SEC_INVALID;
 }
 
@@ -264,6 +267,8 @@ security_valid (NMUtilsSecurityType sectype, NM80211Mode mode)
 
 	switch (mode) {
 	case NM_802_11_MODE_AP:
+		if (sectype == NMU_SEC_SAE)
+			return TRUE;
 		return nm_utils_ap_mode_security_valid (sectype, NM_WIFI_DEVICE_CAP_AP);
 	case NM_802_11_MODE_ADHOC:
 	case NM_802_11_MODE_INFRA:
@@ -407,6 +412,19 @@ finish_setup (CEPageWifiSecurity *self, gpointer user_data)
 		}
 	}
 
+	if (security_valid (NMU_SEC_SAE, mode)) {
+		WirelessSecuritySAE *ws_sae;
+
+		ws_sae = ws_sae_new (connection, FALSE);
+		if (ws_sae) {
+			add_security_item (self, WIRELESS_SECURITY (ws_sae), sec_model,
+			                   &iter, _("WPA3 Personal"), TRUE, TRUE);
+			if ((active < 0) && ((default_type == NMU_SEC_SAE)))
+				active = item;
+			item++;
+		}
+	}
+
 	combo = GTK_COMBO_BOX (gtk_builder_get_object (parent->builder, "wifi_security_combo"));
 	gtk_combo_box_set_model (combo, GTK_TREE_MODEL (sec_model));
 	gtk_cell_layout_clear (GTK_CELL_LAYOUT (combo));
@@ -471,6 +489,7 @@ ce_page_wifi_security_new (NMConnectionEditor *editor,
 	/* Get secrets if the connection is not 802.1X enabled */
 	if (   default_type == NMU_SEC_STATIC_WEP
 	    || default_type == NMU_SEC_LEAP
+	    || default_type == NMU_SEC_SAE
 	    || default_type == NMU_SEC_WPA_PSK
 	    || default_type == NMU_SEC_WPA2_PSK) {
 		*out_secrets_setting_name = NM_SETTING_WIRELESS_SECURITY_SETTING_NAME;
