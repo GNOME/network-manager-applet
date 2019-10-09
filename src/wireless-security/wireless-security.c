@@ -492,7 +492,7 @@ ws_802_1x_auth_combo_init (WirelessSecurity *sec,
 		                                  simple_flags, secrets_hints);
 		gtk_list_store_append (auth_model, &iter);
 		gtk_list_store_set (auth_model, &iter,
-		                    AUTH_NAME_COLUMN, "Unknown",
+		                    AUTH_NAME_COLUMN, _("Unknown"),
 		                    AUTH_METHOD_COLUMN, em_hints,
 		                    -1);
 		eap_method_unref (EAP_METHOD (em_hints));
