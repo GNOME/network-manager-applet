@@ -74,21 +74,3 @@ if enable_libnma_gtk4
     c_args: cflags
   )
 endif
-
-if enable_libnm_gtk
-  deps = [
-    gtk_dep,
-    libnm_glib_dep,
-    libutils_libnm_glib_dep
-  ]
-
-  cflags = '-DNETWORKMANAGER_COMPILATION=NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY'
-
-  libwireless_security_libnm_glib = static_library(
-    'wireless-security-libnm-glib',
-    sources: sources,
-    include_directories: incs,
-    dependencies: deps,
-    c_args: cflags
-  )
-endif

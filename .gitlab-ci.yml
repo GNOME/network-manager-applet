@@ -43,7 +43,6 @@
       iso-codes-devel
       mobile-broadband-provider-info-devel
       jansson-devel
-      ModemManager-glib-devel
       libselinux-devel
 
 .dist: &dist
@@ -59,7 +58,6 @@
     - tar xJf network-manager-applet-*.tar.xz
     - dnf -y install meson
     - meson
-      -Dlibnm_gtk=false
       -Dwwan=false
       -Dselinux=false
       -Dteam=false
@@ -84,7 +82,6 @@
     - dnf -y install meson
     - tar xJf network-manager-applet-*.tar.xz
     - meson
-      -Dlibnm_gtk=false
       -Dwwan=true
       -Dselinux=true
       -Dteam=true
@@ -162,8 +159,6 @@ fedora28_dist:
   script:
     - dnf -y install
       autoconf automake make
-      NetworkManager-devel
-      NetworkManager-glib-devel
     - sh autogen.sh
     - make -j$(nproc) distcheck
   artifacts:
@@ -214,7 +209,6 @@ centos7:
       iso-codes-devel
       mobile-broadband-provider-info-devel
       jansson-devel
-      ModemManager-glib-devel
       libselinux-devel
       make
   script:
