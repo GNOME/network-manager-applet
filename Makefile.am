@@ -38,10 +38,6 @@ DISTCHECK_CONFIGURE_FLAGS = \
 	--with-gcr
 
 
-if WITH_LIBNM_GTK
-DISTCHECK_CONFIGURE_FLAGS += --with-libnm-gtk
-endif
-
 man_MANS =
 
 pkgconfig_DATA =
@@ -194,28 +190,6 @@ src_utils_libutils_libnm_la_LIBADD = \
 	$(GTK3_LIBS) \
 	$(LIBNM_LIBS)
 
-if WITH_LIBNM_GTK
-
-noinst_LTLIBRARIES += src/utils/libutils-libnm-glib.la
-
-src_utils_libutils_libnm_glib_la_CPPFLAGS = \
-	$(dflt_cppflags) \
-	-DNETWORKMANAGER_COMPILATION=NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY \
-	"-I$(srcdir)/shared" \
-	$(GTK3_CFLAGS) \
-	$(LIBNM_GLIB_CFLAGS)
-
-src_utils_libutils_libnm_glib_la_SOURCES = \
-	$(shared_files) \
-	src/utils/utils.c \
-	src/utils/utils.h
-
-src_utils_libutils_libnm_glib_la_LIBADD = \
-	$(GTK3_LIBS) \
-	$(LIBNM_GLIB_LIBS)
-
-endif
-
 if WITH_LIBNMA_GTK4
 
 noinst_LTLIBRARIES += src/utils/libutils-libnm-gtk4.la
@@ -329,35 +303,6 @@ src_wireless_security_libwireless_security_libnm_la_LIBADD = \
 
 $(src_wireless_security_libwireless_security_libnm_la_OBJECTS): $(wireless_security_h_gen)
 
-if WITH_LIBNM_GTK
-
-noinst_LTLIBRARIES += src/wireless-security/libwireless-security-libnm-glib.la
-
-src_wireless_security_libwireless_security_libnm_glib_la_SOURCES = \
-	$(wireless_security_c_real)
-
-nodist_src_wireless_security_libwireless_security_libnm_glib_la_SOURCES = \
-	$(wireless_security_c_gen)
-
-src_wireless_security_libwireless_security_libnm_glib_la_CPPFLAGS = \
-	$(dflt_cppflags) \
-	$(GTK3_CFLAGS) \
-	-DNETWORKMANAGER_COMPILATION=NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY \
-	"-I$(srcdir)/shared" \
-	"-I$(srcdir)/src/utils" \
-	"-I$(srcdir)/src/libnma" \
-	-Isrc/libnma \
-	$(LIBNM_GLIB_CFLAGS)
-
-src_wireless_security_libwireless_security_libnm_glib_la_LIBADD = \
-	src/utils/libutils-libnm-glib.la \
-	$(GTK3_LIBS) \
-	$(LIBNM_GLIB_LIBS)
-
-$(src_wireless_security_libwireless_security_libnm_glib_la_OBJECTS): $(wireless_security_h_gen)
-
-endif
-
 if WITH_LIBNMA_GTK4
 
 noinst_LTLIBRARIES += src/wireless-security/libwireless-security-libnm-gtk4.la
@@ -400,145 +345,6 @@ EXTRA_DIST += \
 	src/wireless-security/ws-wpa-psk.ui \
 	src/wireless-security/ws.gresource.xml \
 	src/wireless-security/meson.build
-
-###############################################################################
-
-if WITH_LIBNM_GTK
-
-src/libnm-gtk/nm-resources.h: src/libnm-gtk/nm.gresource.xml
-	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir)/src/libnm-gtk --generate-header --internal
-
-src/libnm-gtk/nm-resources.c: src/libnm-gtk/nm.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=$(srcdir)/src/libnm-gtk --generate-dependencies $(srcdir)/src/libnm-gtk/nm.gresource.xml)
-	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir)/src/libnm-gtk --generate-source --internal
-
-CLEANFILES += \
-	$(libnm_gtk_h_priv_gen) \
-	$(libnm_gtk_c_gen)
-
-libnm_gtk_h_priv_gen = \
-	src/libnm-gtk/nm-resources.h
-
-libnm_gtk_c_gen = \
-	src/libnm-gtk/nm-resources.c
-
-libnm_gtk_h_pub = \
-	src/libnm-gtk/nm-wifi-dialog.h \
-	src/libnm-gtk/nm-wireless-dialog.h \
-	src/libnm-gtk/nm-mobile-wizard.h \
-	src/libnm-gtk/nm-ui-utils.h \
-	src/libnm-gtk/nm-mobile-providers.h \
-	src/libnm-gtk/nm-vpn-password-dialog.h \
-	src/libnm-gtk/nm-cert-chooser.h
-
-libnm_gtk_c_real = \
-	src/libnm-gtk/nm-wifi-dialog.c \
-	src/libnm-gtk/nm-wireless-dialog.c \
-	src/libnm-gtk/nm-mobile-wizard.c \
-	src/libnm-gtk/nm-ui-utils.c \
-	src/libnm-gtk/nm-mobile-providers.c \
-	src/libnm-gtk/nm-vpn-password-dialog.c \
-	src/libnma/nma-cert-chooser.c \
-	src/libnma/nma-file-cert-chooser.c \
-	src/libnm-gtk/init.c
-
-src_libnm_gtk_libnmgtkdir = $(includedir)/libnm-gtk
-
-src_libnm_gtk_libnmgtk_HEADERS = \
-	$(libnm_gtk_h_pub)
-
-lib_LTLIBRARIES += src/libnm-gtk/libnm-gtk.la
-
-src_libnm_gtk_libnm_gtk_la_SOURCES = \
-	$(libnm_gtk_c_real)
-
-nodist_src_libnm_gtk_libnm_gtk_la_SOURCES = \
-	$(libnm_gtk_c_gen)
-
-src_libnm_gtk_libnm_gtk_la_CFLAGS = \
-	$(dflt_cppflags) \
-	-DNETWORKMANAGER_COMPILATION=NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY \
-	-DICONDIR=\""$(datadir)/icons"\" \
-	-DBINDIR=\""$(bindir)"\" \
-	-DSYSCONFDIR=\""$(sysconfdir)"\" \
-	-DLIBEXECDIR=\""$(libexecdir)"\" \
-	-DDATADIR=\""$(datadir)"\" \
-	-DAUTOSTARTDIR=\""$(sysconfdir)/xdg/autostart"\" \
-	-DNMALOCALEDIR=\"$(datadir)/locale\" \
-	"-I$(srcdir)/shared" \
-	"-I$(srcdir)/src/utils" \
-	"-I$(srcdir)/src/wireless-security" \
-	"-I$(srcdir)/src/libnm-gtk" \
-	"-I$(srcdir)/src/libnma" \
-	-Isrc/libnma \
-	$(GTK3_CFLAGS) \
-	$(LIBNM_GLIB_CFLAGS) \
-	$(GUDEV_CFLAGS)
-
-src_libnm_gtk_libnm_gtk_la_LIBADD = \
-	src/wireless-security/libwireless-security-libnm-glib.la \
-	$(GTK3_LIBS) \
-	$(LIBNM_GLIB_LIBS) \
-	$(GUDEV_LIBS)
-
-EXTRA_src_libnm_gtk_libnm_gtk_la_DEPENDENCIES = src/libnm-gtk/libnm-gtk.ver
-
-src_libnm_gtk_libnm_gtk_la_LDFLAGS = \
-	-Wl,-no-undefined \
-	-Wl,--version-script=$(srcdir)/src/libnm-gtk/libnm-gtk.ver
-
-$(src_libnm_gtk_libnm_gtk_la_OBJECTS): $(libnm_gtk_h_priv_gen)
-
-check-local-exports-libnm-gtk:
-	$(srcdir)/src/libnm-gtk/check-exports.sh $(builddir)/src/libnm-gtk/.libs/libnm-gtk.so $(srcdir)/src/libnm-gtk/libnm-gtk.ver
-
-check_local += check-local-exports-libnm-gtk
-
-
-pkgconfig_DATA += src/libnm-gtk/libnm-gtk.pc
-
-if HAVE_INTROSPECTION
-src/libnm-gtk/NMGtk-1.0.gir: src/libnm-gtk/libnm-gtk.la
-src_libnm_gtk_NMGtk_1_0_gir_INCLUDES = NMClient-1.0 NetworkManager-1.0 Gtk-3.0
-src_libnm_gtk_NMGtk_1_0_gir_EXPORT_PACKAGES = libnm-gtk
-src_libnm_gtk_NMGtk_1_0_gir_CFLAGS = $(src_libnm_gtk_libnm_gtk_la_CFLAGS)
-src_libnm_gtk_NMGtk_1_0_gir_LIBS = src/libnm-gtk/libnm-gtk.la
-src_libnm_gtk_NMGtk_1_0_gir_FILES = \
-	$(filter-out src/libnm-gtk/nm-wireless-dialog.h, $(libnm_gtk_h_pub)) \
-	$(filter-out src/libnm-gtk/nm-wireless-dialog.c, $(libnm_gtk_c_real))
-src_libnm_gtk_NMGtk_1_0_gir_SCANNERFLAGS = --warn-all --identifier-prefix=NMA --symbol-prefix=nma
-INTROSPECTION_GIRS += src/libnm-gtk/NMGtk-1.0.gir
-endif
-
-
-check_programs += src/libnm-gtk/tests/test-mobile-providers
-
-src_libnm_gtk_tests_test_mobile_providers_CPPFLAGS = \
-	$(dflt_cppflags) \
-	-DTEST_DATA_DIR=\""$(abs_srcdir)/src/libnm-gtk/tests"\" \
-	"-I$(srcdir)/shared" \
-	"-I$(srcdir)/src/libnm-gtk" \
-	$(GTK3_CFLAGS) \
-	$(LIBNM_GLIB_CFLAGS)
-
-src_libnm_gtk_tests_test_mobile_providers_LDADD = \
-	src/libnm-gtk/libnm-gtk.la \
-	$(LIBNM_GLIB_LIBS)
-
-endif
-
-EXTRA_DIST += \
-	src/libnm-gtk/libnm-gtk.pc.in \
-	src/libnm-gtk/libnm-gtk.ver \
-	src/libnm-gtk/check-exports.sh \
-	src/libnm-gtk/wifi.ui \
-	src/libnm-gtk/nm.gresource.xml \
-	src/libnm-gtk/meson.build \
-	\
-	src/libnm-gtk/tests/iso3166-test.xml \
-	src/libnm-gtk/tests/serviceproviders-test.xml \
-	\
-	src/libnm-gtk/examples/mobile-providers.js \
-	$(NULL)
 
 ###############################################################################
 
