@@ -24,10 +24,6 @@ subdir('utils')
 subdir('wireless-security')
 subdir('libnma')
 
-if enable_libnm_gtk
-  subdir('libnm-gtk')
-endif
-
 subdir('connection-editor')
 
 sources = files(
