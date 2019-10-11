@@ -6,10 +6,10 @@ m4_define([nma_micro_version], [25])
 m4_define([nma_version],
           [nma_major_version.nma_minor_version.nma_micro_version])
 
-AC_INIT([nm-applet],
+AC_INIT([libnma],
         [nma_version],
-        [https://gitlab.gnome.org/GNOME/network-manager-applet/issues],
-        [network-manager-applet])
+        [https://gitlab.gnome.org/GNOME/libnma/issues],
+        [libnma])
 
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
@@ -64,7 +64,7 @@ dnl
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.18])
 
-GETTEXT_PACKAGE=nm-applet
+GETTEXT_PACKAGE=libnma
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package])
 
@@ -125,42 +125,11 @@ dnl API documentation
 dnl
 GTK_DOC_CHECK(1.0)
 
-AC_ARG_WITH(libnm-gtk, AS_HELP_STRING([--with-libnm-gtk], [build legacy library libnm-gtk which depends on libnm-glib/libnm-util/dbus-glib (deprecated)]))
-if test "$with_libnm_gtk" == yes; then
-	PKG_CHECK_MODULES(LIBNM_GLIB,
-			[gio-2.0 >= 2.38
-			 NetworkManager >= 1.7
-			 libnm-glib >= 1.7
-			 libnm-util >= 1.7
-			 libnm-glib-vpn >= 1.7
-			 gmodule-export-2.0],
-			 :,
-			 [AC_MSG_FAILURE([$LIBNM_GLIB_PKG_ERRORS
-
-Configure without --with-libnm-gtk if you do not need the legacy library])])
-	LIBNM_GLIB_CFLAGS="$LIBNM_GLIB_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_38"
-	LIBNM_GLIB_CFLAGS="$LIBNM_GLIB_CFLAGS -DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_38"
-	LIBNM_GLIB_CFLAGS="$LIBNM_GLIB_CFLAGS -DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_4"
-	LIBNM_GLIB_CFLAGS="$LIBNM_GLIB_CFLAGS -DNM_VERSION_MAX_ALLOWED=NM_VERSION_1_4"
-else
-	with_libnm_gtk=no
-fi
-AM_CONDITIONAL(WITH_LIBNM_GTK, test "$with_libnm_gtk" == "yes")
-
 PKG_CHECK_MODULES(LIBNM, [libnm >= 1.7 gio-2.0 >= 2.38 gmodule-export-2.0])
 LIBNM_CFLAGS="$LIBNM_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_38"
 LIBNM_CFLAGS="$LIBNM_CFLAGS -DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_38"
 LIBNM_CFLAGS="$LIBNM_CFLAGS -DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_8"
 LIBNM_CFLAGS="$LIBNM_CFLAGS -DNM_VERSION_MAX_ALLOWED=NM_VERSION_1_8"
-
-PKG_CHECK_MODULES(LIBSECRET, [libsecret-1 >= 0.18])
-
-# Check for libnotify >= 0.7
-PKG_CHECK_MODULES(LIBNOTIFY_07, [libnotify >= 0.7], [have_libnotify_07=yes],[have_libnotify_07=no])
-if test x"$have_libnotify_07" = "xyes"; then
-	AC_DEFINE(HAVE_LIBNOTIFY_07, 1, [Define if you have libnotify 0.7 or later])
-fi
-PKG_CHECK_MODULES(NOTIFY, [libnotify >= 0.4.3])
 
 PKG_CHECK_MODULES(GTK3, gtk+-3.0 >= 3.10)
 GTK3_CFLAGS="$GTK3_CFLAGS -DGDK_VERSION_MIN_REQUIRED=GDK_VERSION_3_10 -DGDK_VERSION_MAX_ALLOWED=GDK_VERSION_3_10"
@@ -178,78 +147,6 @@ AM_CONDITIONAL(WITH_LIBNMA_GTK4, test "$with_libnma_gtk4" != "no")
 # it may actually end up being called differently.
 AC_DEFINE(WITH_GCR_GTK4, 0, [Define if GTK4 Gcr is available])
 AM_CONDITIONAL(WITH_GCR_GTK4, false)
-
-AC_ARG_WITH([appindicator],
-            AS_HELP_STRING([--with-appindicator=no|yes|auto|ayatana|ubuntu], [Build with lib(ayatana-)appindicator support in addition to xembed systray support.]),
-            [], [with_appindicator=no])
-if test "$with_appindicator" != "no"; then
-	if test "$with_appindicator" = "yes" -o "$with_appindicator" = "auto"; then
-		PKG_CHECK_MODULES(APPINDICATOR, ayatana-appindicator3-0.1, [with_appindicator=ayatana], [with_appindicator=no])
-		if test "$with_appindicator" = "no"; then
-			PKG_CHECK_MODULES(APPINDICATOR, appindicator3-0.1, [with_appindicator=ubuntu], [with_appindicator=no])
-			if test "$with_appindicator" = "no"; then
-				AC_MSG_ERROR([Neither Ubuntu's AppIndicator nor Ayatana AppIndicator found. Better --without-appindicator?])
-			fi
-		fi
-	elif test "$with_appindicator" = "ayatana"; then
-		PKG_CHECK_MODULES(APPINDICATOR, ayatana-appindicator3-0.1)
-	elif test "$with_appindicator" = "ubuntu"; then
-		PKG_CHECK_MODULES(APPINDICATOR, appindicator3-0.1)
-	else
-		AC_MSG_ERROR([Invalid --with-appindicator option. Must be one of no|yes|auto|ayatana|ubuntu])
-	fi
-
-	if test "$with_appindicator" = "ayatana"; then
-		PKG_CHECK_MODULES(DBUSMENU, dbusmenu-gtk3-0.4 >= 16.04.0)
-		AC_DEFINE([WITH_APPINDICATOR], 1, [Enable AppIndicator support and use Ayatana AppIndicator])
-		AC_DEFINE([USE_AYATANA_INDICATORS], 1, [Explicitly enforce Ayatana AppIndicator])
-	else
-		PKG_CHECK_MODULES(DBUSMENU, dbusmenu-gtk3-0.4 >= 16.04.0)
-		AC_DEFINE([WITH_APPINDICATOR], 1, [Enable AppIndicator support and use Ubuntu AppIndicator])
-		AC_DEFINE([USE_AYATANA_INDICATORS], 0, [Explicitly enforce Ayatana AppIndicator])
-	fi
-fi
-
-AM_CONDITIONAL(HAVE_GBT, test x"$have_gbt" = "xyes")
-
-dnl ModemManager1 with libmm-glib for WWAN support
-AC_ARG_WITH(wwan, AS_HELP_STRING([--with-wwan], [Enable WWAN support (default: yes)]))
-if (test "${with_wwan}" == "no"); then
-    AC_DEFINE(WITH_WWAN, 0, [Define if you have ModemManager/WWAN support])
-else
-    PKG_CHECK_MODULES(MM_GLIB,
-                      [mm-glib],,
-                      AC_MSG_ERROR([libmm-glib is needed for WWAN support. Use --without-wwan to build without it.]))
-    AC_DEFINE(WITH_WWAN, 1, [Define if you have ModemManager/WWAN support])
-fi
-AM_CONDITIONAL(WITH_WWAN, test "${with_wwan}" != "no")
-
-dnl Check for gudev
-PKG_CHECK_MODULES(GUDEV, gudev-1.0 >= 147)
-
-dnl SELinux
-AC_ARG_WITH(selinux, AS_HELP_STRING([--with-selinux], [Enable support for adjusting SELinux labels in configuration editor (default: yes)]))
-if (test "${with_selinux}" == "no"); then
-    AC_DEFINE(WITH_SELINUX, 0, [Define if libselinux is available])
-else
-    PKG_CHECK_MODULES(SELINUX,
-                      [libselinux],,
-                      AC_MSG_ERROR([libselinux is needed for SELinux label support in configuration editor. Use --without-selinux to build without it.]))
-    AC_DEFINE(WITH_SELINUX, 1, [Define if libselinux is available])
-fi
-AM_CONDITIONAL(WITH_SELINUX, test "${with_selinux}" != "no")
-
-dnl Jansson for team configuration editing
-AC_ARG_WITH(team, AS_HELP_STRING([--with-team], [Enable team configuration editor (default: yes)]))
-if (test "${with_team}" == "no"); then
-    AC_DEFINE(WITH_JANSSON, 0, [Define if Jansson is available])
-else
-    PKG_CHECK_MODULES(JANSSON,
-                      [jansson >= 2.7],,
-                      AC_MSG_ERROR([jansson is needed for team configuration editor. Use --without-team to build without it.]))
-    AC_DEFINE(WITH_JANSSON, 1, [Define if Jansson is available])
-fi
-AM_CONDITIONAL(WITH_JANSSON, test "${with_team}" != "no")
 
 dnl GCR for PKCS#11 enabled certificate chooser
 AC_ARG_WITH(gcr, AS_HELP_STRING([--with-gcr], [Enable advanced certificate chooser (default: auto)]))
@@ -357,22 +254,16 @@ AC_DEFINE_UNQUOTED(NM_MORE_ASSERTS, $more_asserts, [Define if more asserts are e
 
 AC_CONFIG_FILES([
 Makefile
-src/libnm-gtk/libnm-gtk.pc
-src/libnma/libnma.pc
-src/libnma/libnma-gtk4.pc
+src/nma-version.h
+src/libnma.pc
+src/libnma-gtk4.pc
 po/Makefile.in
-man/nm-applet.1
-man/nm-connection-editor.1
-org.gnome.nm-applet.gschema.xml
-src/libnma/nma-version.h
 ])
 AC_OUTPUT
 
 echo ""
-echo "  Build legacy library libnm-gtk: --with-libnm-gtk=${with_libnm_gtk}"
 echo "  Build EXPERIMENTAL libnma-gtk4 library for use with GTK4: --with-libnma-gtk4=${with_libnma_gtk4}"
 echo "  GCR: --with-gcr=$have_gcr"
 echo "  LTO: --enable-lto=$enable_lto"
 echo "  Linker garbage collection: --enable-ld-gc=$enable_ld_gc"
-echo "  appindicator: $with_appindicator"
 echo ""

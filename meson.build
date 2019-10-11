@@ -1,5 +1,5 @@
 project(
-  'network-manager-applet', 'c',
+  'libnma', 'c',
   version: '1.8.25',
   license: 'GPL2+',
   default_options: [
@@ -9,8 +9,6 @@ project(
   meson_version: '>= 0.46.0'
 )
 
-nma_name = 'nm-applet'
-
 nma_version = meson.project_version()
 version_array = nma_version.split('.')
 nma_major_version = version_array[0].to_int()
@@ -19,8 +17,6 @@ nma_micro_version = version_array[2].to_int()
 
 nma_gir_version = '1.0'
 nma_gir_prefix = 'NMA'
-
-nma_gtk_gir_ns = 'NMGtk'
 
 nma_prefix = get_option('prefix')
 nma_bindir = join_paths(nma_prefix, get_option('bindir'))
@@ -48,7 +44,7 @@ cc = meson.get_compiler('c')
 config_h = configuration_data()
 
 # defines
-config_h.set_quoted('GETTEXT_PACKAGE', nma_name)
+config_h.set_quoted('GETTEXT_PACKAGE', 'libnma')
 config_h.set_quoted('VERSION', nma_version)
 
 # types
@@ -154,7 +150,6 @@ endif
 
 gio_dep = dependency('gio-2.0', version: '>= 2.38')
 gmodule_export_dep = dependency('gmodule-export-2.0')
-libsecret_dep = dependency('libsecret-1', version: '>= 0.18')
 
 m_dep = cc.find_library('m')
 
@@ -168,14 +163,6 @@ gtk_dep = declare_dependency(
     '-DGDK_VERSION_MAX_ALLOWED=GDK_VERSION_3_10'
   ]
 )
-
-# Check for gudev
-gudev_dep = dependency('gudev-1.0', version: '>= 147')
-
-# Check for libnotify >= 0.7
-libnotify_dep = dependency('libnotify', version: '>= 0.4.3')
-config_h.set10('HAVE_LIBNOTIFY_07', libnotify_dep.found() and libnotify_dep.version().version_compare('>= 0.7'),
-               description: 'Define if you have libnotify 0.7 or later')
 
 # API documentation
 nm_req_version = '>= 1.7'
@@ -198,91 +185,9 @@ libnm_dep = declare_dependency(
   compile_args: cflags
 )
 
-enable_libnm_gtk = get_option('libnm_gtk')
-if enable_libnm_gtk
-  deps = [
-    gio_dep,
-    gmodule_export_dep,
-    dependency('libnm-glib', version: nm_req_version),
-    dependency('libnm-glib-vpn', version: nm_req_version),
-    dependency('libnm-util', version: nm_req_version),
-    dependency('NetworkManager', version: nm_req_version)
-  ]
-
-  cflags = [
-    '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_38',
-    '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_38',
-    '-DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_4',
-    '-DNM_VERSION_MAX_ALLOWED=NM_VERSION_1_4'
-  ]
-
-  libnm_glib_dep = declare_dependency(
-    dependencies: deps,
-    compile_args: cflags
-  )
-endif
-
 # No such thing yet, just same lame duck placeholders.
 # it may actually end up being called differently.
 config_h.set10('WITH_GCR_GTK4', false)
-
-enable_appindicator = get_option('appindicator')
-if enable_appindicator == 'auto' or enable_appindicator == 'yes'
-  appindicator_dep = dependency('ayatana-appindicator3-0.1', required: false)
-  if appindicator_dep.found()
-    enable_appindicator = 'ayatana'
-  else
-    appindicator_dep = dependency('appindicator3-0.1', required: false)
-    if appindicator_dep.found()
-      enable_appindicator = 'ubuntu'
-    else
-      assert(appindicator_dep.found(), 'Neither Ubuntu\'s AppIndicator nor Ayatana AppIndicator found.')
-    endif
-  endif
-elif enable_appindicator == 'ayatana'
-  appindicator_dep = dependency('ayatana-appindicator3-0.1')
-elif enable_appindicator == 'ubuntu'
-  appindicator_dep = dependency('appindicator3-0.1')
-endif
-
-if enable_appindicator == 'no'
-  config_h.set('WITH_APPINDICATOR', false)
-  config_h.set('USE_AYATANA_INDICATORS', false)
-elif enable_appindicator == 'ubuntu'
-  dbusmenu_dep = dependency('dbusmenu-gtk3-0.4', version: '>= 16.04.0')
-  config_h.set10('WITH_APPINDICATOR', true)
-  config_h.set10('USE_AYATANA_INDICATORS', false)
-elif enable_appindicator == 'ayatana'
-  dbusmenu_dep = dependency('dbusmenu-gtk3-0.4', version: '>= 16.04.0')
-  config_h.set10('WITH_APPINDICATOR', true)
-  config_h.set10('USE_AYATANA_INDICATORS', true)
-else
-  error('Options allowed for -Dappindicator=<str> are: no, yes|auto, ayatana, ubuntu.')
-endif
-
-# ModemManager1 with libmm-glib for WWAN support
-enable_wwan = get_option('wwan')
-if enable_wwan
-  mm_glib_dep = dependency('mm-glib', required: false)
-  assert(mm_glib_dep.found(), 'libmm-glib is needed for WWAN support. Use -Dwwan=false to build without it.')
-endif
-config_h.set10('WITH_WWAN', enable_wwan)
-
-# SELinux
-enable_selinux = get_option('selinux')
-if enable_selinux
-  libselinux_dep = dependency('libselinux', required: false)
-  assert(libselinux_dep.found(), 'libselinux is needed for SELinux label support in configuration editor. Use -Dselinux=false to build without it.')
-endif
-config_h.set10('WITH_SELINUX', enable_selinux)
-
-# Jansson for team configuration editing
-enable_team = get_option('team')
-if enable_team
-  jansson_dep = dependency('jansson', version: '>= 2.7', required: false)
-  assert(jansson_dep.found(), 'jansson is needed for team configuration editor. Use -Dteam=false to build without it.')
-endif
-config_h.set10('WITH_JANSSON', enable_team)
 
 # GCR for PKCS#11 enabled certificate chooser
 enable_gcr = get_option('gcr')
@@ -382,79 +287,8 @@ po_dir = join_paths(meson.source_root(), 'po')
 top_inc = include_directories('.')
 
 subdir('po')
-subdir('icons')
 subdir('shared')
 subdir('src')
-subdir('man')
-
-i18n = import('i18n')
-
-# FIXME: The same target can not be copied into two directories.
-#        There is a workaround in meson_post_install.py until proper solution arises:
-#        https://groups.google.com/forum/#!topic/mesonbuild/3iIoYPrN4P0
-desktop_files = [
-  'nm-applet',
-  'nm-connection-editor',
-]
-
-desktop_file_validate = find_program('desktop-file-validate', required: false)
-
-foreach desktop: desktop_files
-  i18n.merge_file(
-    desktop + '-desktop',
-    input: desktop + '.desktop.in',
-    output: desktop + '.desktop',
-    install: true,
-    install_dir: nma_appdir,
-    po_dir: po_dir,
-    type: 'desktop',
-  )
-
-  if desktop_file_validate.found()
-    test('validate-' + desktop + '-desktop',
-      desktop_file_validate,
-      args: desktop + '.desktop',
-      workdir: meson.current_build_dir(),
-    )
-  endif
-endforeach
-
-appdata = 'nm-connection-editor.appdata.xml'
-
-i18n.merge_file(
-  'desktop',
-  input: appdata + '.in',
-  output: appdata,
-  install: true,
-  install_dir: join_paths(nma_datadir, 'metainfo'),
-  po_dir: po_dir,
-)
-
-appstream_util = find_program('appstream-util', required: false)
-if appstream_util.found()
-  test('validate-appdata',
-    appstream_util,
-    args: ['validate', '--nonet', appdata],
-    workdir: meson.current_build_dir(),
-  )
-endif
-
-schema_conf = configuration_data()
-schema_conf.set('GETTEXT_PACKAGE', nma_name)
-
-schema = 'org.gnome.nm-applet.gschema.xml'
-
-configure_file(
-  input: schema + '.in',
-  output: schema,
-  install_dir: join_paths(nma_datadir, 'glib-2.0', 'schemas'),
-  configuration: schema_conf
-)
-
-install_data(
-  'nm-applet.convert',
-  install_dir: join_paths(nma_datadir, 'GConf', 'gsettings')
-)
 
 # documentation
 enable_gtk_doc = get_option('gtk_doc')
@@ -469,6 +303,8 @@ if enable_gtk_doc
     'nma-resources.h',
     'nma-private.h',
     'nma-version.h',
+    'eap-method.h',
+    'wireless-security.h',
   ]
 
   private_sources = [
@@ -482,9 +318,9 @@ if enable_gtk_doc
 
   ent_conf = configuration_data()
   ent_conf.set_quoted('PACKAGE', meson.project_name())
-  ent_conf.set_quoted('PACKAGE_BUGREPORT', 'https://gitlab.gnome.org/GNOME/network-manager-applet/issues')
-  ent_conf.set_quoted('PACKAGE_NAME', nma_name)
-  ent_conf.set_quoted('PACKAGE_STRING', '@0@ @1@'.format(nma_name, nma_version))
+  ent_conf.set_quoted('PACKAGE_BUGREPORT', 'https://gitlab.gnome.org/GNOME/libnma/issues')
+  ent_conf.set_quoted('PACKAGE_NAME', 'libnma')
+  ent_conf.set_quoted('PACKAGE_STRING', 'libnma @0@'.format(nma_version))
   ent_conf.set_quoted('PACKAGE_TARNAME', meson.project_name())
   ent_conf.set_quoted('PACKAGE_URL', '')
   ent_conf.set_quoted('PACKAGE_VERSION', nma_version)
@@ -502,7 +338,7 @@ if enable_gtk_doc
   gnome.gtkdoc(
     mod_name,
     main_xml: mod_name + '-docs.xml',
-    src_dir: libnma_inc,
+    src_dir: src_inc,
     dependencies: libnma_dep,
     scan_args: [
       '--rebuild-types',
@@ -524,16 +360,9 @@ configure_file(
   configuration: config_h
 )
 
-meson.add_install_script(
-  'meson_post_install.py',
-  nma_datadir,
-  nma_sysconfdir
-)
-
-output = '\n  Build legacy library libnm-gtk: ' + enable_libnm_gtk.to_string() + '\n'
+output = '\n'
 output += '  Build EXPERIMENTAL library libnm-gtk4 for use with GTK4: ' + enable_libnma_gtk4.to_string() + '\n'
 output += '  GCR: ' + enable_gcr.to_string() + '\n'
 output += '  LTO: ' + get_option('b_lto').to_string() + '\n'
 output += '  Linker garbage collection: ' + enable_ld_gc.to_string() + '\n'
-output += '  libappindicator: ' + enable_appindicator
 message(output)

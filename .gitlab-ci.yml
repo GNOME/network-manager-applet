@@ -2,7 +2,7 @@
 # python -c 'import sys, yaml; yaml.dump (yaml.load (sys.stdin), sys.stdout)' <.gitlab-ci.yml
 
 # If things don't seem to work, this can help:
-# https://gitlab.gnome.org/GNOME/network-manager-applet/-/ci/lint
+# https://gitlab.gnome.org/GNOME/libnma/-/ci/lint
 
 .fedora_minimal: &fedora_minimal
   before_script:
@@ -14,9 +14,6 @@
       gettext-devel
       glib2-devel
       gtk3-devel
-      libgudev1-devel
-      libnotify-devel
-      libsecret-devel
       NetworkManager-libnm-devel
       pkgconfig
       /usr/bin/autopoint
@@ -31,9 +28,6 @@
       gettext-devel
       glib2-devel
       gtk3-devel
-      libgudev1-devel
-      libnotify-devel
-      libsecret-devel
       NetworkManager-libnm-devel
       pkgconfig
       /usr/bin/autopoint
@@ -42,9 +36,6 @@
       gtk-doc
       iso-codes-devel
       mobile-broadband-provider-info-devel
-      jansson-devel
-      ModemManager-glib-devel
-      libselinux-devel
 
 .dist: &dist
   dependencies:
@@ -56,22 +47,18 @@
   <<: *fedora_minimal
   <<: *dist
   script:
-    - tar xJf network-manager-applet-*.tar.xz
+    - tar xJf libnma-*.tar.xz
     - dnf -y install meson
     - meson
       -Dlibnm_gtk=false
-      -Dwwan=false
-      -Dselinux=false
-      -Dteam=false
       -Dgcr=false
       -Diso_codes=false
       -Dmobile_broadband_provider_info=false
       -Dld_gc=false
       -Dgtk_doc=false
       -Dintrospection=false
-      -Dappindicator=no
       -Dmore_asserts=no
-      network-manager-applet-*/ build
+      libnma-*/ build
     - ninja -v -C build
     - ninja -v -C build test
     - ninja -v -C build install
@@ -82,21 +69,17 @@
   <<: *dist
   script:
     - dnf -y install meson
-    - tar xJf network-manager-applet-*.tar.xz
+    - tar xJf libnma-*.tar.xz
     - meson
       -Dlibnm_gtk=false
-      -Dwwan=true
-      -Dselinux=true
-      -Dteam=true
       -Dgcr=true
       -Diso_codes=true
       -Dmobile_broadband_provider_info=true
       -Dld_gc=true
       -Dgtk_doc=true
       -Dintrospection=true
-      -Dappindicator=no
       -Dmore_asserts=yes
-      network-manager-applet-*/ build
+      libnma-*/ build
     - ninja -v -C build
     - ninja -v -C build test
     - ninja -v -C build install
@@ -107,8 +90,8 @@
   <<: *dist
   script:
     - dnf -y install make
-    - tar xJf network-manager-applet-*.tar.xz
-    - cd network-manager-applet-*/
+    - tar xJf libnma-*.tar.xz
+    - cd libnma-*/
     - ./configure
       --disable-silent-rules
       --with-more-asserts=no
@@ -117,12 +100,7 @@
       --disable-mobile-broadband-provider-info
       --disable-gtk-doc
       --disable-introspection
-      --disable-schemas-compile
       --disable-more-warnings
-      --without-appindicator
-      --without-wwan
-      --without-selinux
-      --without-team
       --without-gcr
     - make -j$(nproc)
     - make -j$(nproc) check
@@ -134,8 +112,8 @@
   <<: *dist
   script:
     - dnf -y install make
-    - tar xJf network-manager-applet-*.tar.xz
-    - cd network-manager-applet-*/
+    - tar xJf libnma-*.tar.xz
+    - cd libnma-*/
     - ./configure
       --disable-silent-rules
       --with-more-asserts=yes
@@ -144,11 +122,7 @@
       --enable-mobile-broadband-provider-info
       --enable-gtk-doc
       --enable-introspection
-      --enable-schemas-compile
       --enable-more-warnings
-      --with-wwan
-      --with-selinux
-      --with-team
       --with-gcr
     - make -j$(nproc)
     - make -j$(nproc) check
@@ -202,9 +176,6 @@ centos7:
       glib2-devel
       gtk3-devel
       intltool
-      libgudev1-devel
-      libnotify-devel
-      libsecret-devel
       NetworkManager-libnm-devel
       pkgconfig
       /usr/bin/autopoint
@@ -213,13 +184,10 @@ centos7:
       gtk-doc
       iso-codes-devel
       mobile-broadband-provider-info-devel
-      jansson-devel
-      ModemManager-glib-devel
-      libselinux-devel
       make
   script:
-    - tar xJf network-manager-applet-*.tar.xz
-    - cd network-manager-applet-*/
+    - tar xJf libnma-*.tar.xz
+    - cd libnma-*/
     - ./configure
       --disable-silent-rules
       --with-more-asserts=yes
@@ -228,11 +196,7 @@ centos7:
       --enable-mobile-broadband-provider-info
       --enable-gtk-doc
       --enable-introspection
-      --enable-schemas-compile
       --enable-more-warnings
-      --with-wwan
-      --with-selinux
-      --with-team
       --with-gcr
     - make -j$(nproc)
     - make -j$(nproc) check
@@ -241,7 +205,7 @@ centos7:
   image: centos:7
   stage: test
 
-# https://network-manager-applet.pages.gitlab.gnome.org/libnma/
+# https://libnma.pages.gitlab.gnome.org/libnma/
 pages:
   <<: *fedora_full
   <<: *dist
@@ -249,15 +213,15 @@ pages:
   stage: deploy
   script:
     - dnf -y install make
-    - tar xJf network-manager-applet-*.tar.xz
-    - cd network-manager-applet-*/
+    - tar xJf libnma-*.tar.xz
+    - cd libnma-*/
     - ./configure
       --disable-silent-rules
       --enable-gtk-doc
     - make -j$(nproc)
     - cd ..
     - mkdir -p public
-    - mv network-manager-applet-*/html public/libnma
+    - mv libnma-*/html public/libnma
   artifacts:
     paths:
       - public
