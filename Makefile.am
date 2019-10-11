@@ -4,7 +4,7 @@ include $(top_srcdir)/gtk-doc.make
 
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 
-AUTOMAKE_OPTIONS = subdir-objects
+AUTOMAKE_OPTIONS = subdir-objects foreign
 
 BUILT_SOURCES =
 
@@ -791,6 +791,7 @@ check-local: $(check_local)
 TESTS += $(check_programs)
 
 EXTRA_DIST += \
+	NEWS \
 	linker-script-binary.ver \
 	CONTRIBUTING \
 	autogen.sh \
