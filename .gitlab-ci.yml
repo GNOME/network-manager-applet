@@ -43,7 +43,6 @@
       /usr/bin/autopoint
       redhat-rpm-config
       jansson-devel
-      ModemManager-glib-devel
       libselinux-devel
 
 .dist: &dist
@@ -140,8 +139,6 @@ fedora30_dist:
   script:
     - dnf -y install
       autoconf automake make
-      NetworkManager-devel
-      NetworkManager-glib-devel
     - sh autogen.sh
     - make -j$(nproc) distcheck
   artifacts:
@@ -189,7 +186,6 @@ centos7:
       /usr/bin/autopoint
       redhat-rpm-config
       jansson-devel
-      ModemManager-glib-devel
       libselinux-devel
       make
   script:
