@@ -21,7 +21,8 @@
       NetworkManager-libnm-devel
       pkgconfig
       /usr/bin/autopoint
-    - dnf -y install --releasever=31
+      fedora-repos-rawhide
+    - dnf -y install --nogpgcheck --enablerepo=rawhide
       libnma-devel
 
 .fedora_full: &fedora_full
@@ -45,7 +46,8 @@
       jansson-devel
       ModemManager-glib-devel
       libselinux-devel
-    - dnf -y install --releasever=31
+      fedora-repos-rawhide
+    - dnf -y install --nogpgcheck --enablerepo=rawhide
       libnma-devel
 
 .dist: &dist
