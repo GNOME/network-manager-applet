@@ -50,7 +50,7 @@
 
 .dist: &dist
   dependencies:
-    - fedora28_dist
+    - fedora30_dist
   variables:
     GIT_STRATEGY: none
 
@@ -135,9 +135,9 @@
     - make -j$(nproc) install
     - make -j$(nproc) uninstall
 
-fedora28_dist:
+fedora30_dist:
   <<: *fedora_full
-  image: fedora:28
+  image: fedora:30
   stage: build
   script:
     - dnf -y install
