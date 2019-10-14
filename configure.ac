@@ -125,28 +125,6 @@ dnl API documentation
 dnl
 GTK_DOC_CHECK(1.0)
 
-AC_ARG_WITH(libnm-gtk, AS_HELP_STRING([--with-libnm-gtk], [build legacy library libnm-gtk which depends on libnm-glib/libnm-util/dbus-glib (deprecated)]))
-if test "$with_libnm_gtk" == yes; then
-	PKG_CHECK_MODULES(LIBNM_GLIB,
-			[gio-2.0 >= 2.38
-			 NetworkManager >= 1.7
-			 libnm-glib >= 1.7
-			 libnm-util >= 1.7
-			 libnm-glib-vpn >= 1.7
-			 gmodule-export-2.0],
-			 :,
-			 [AC_MSG_FAILURE([$LIBNM_GLIB_PKG_ERRORS
-
-Configure without --with-libnm-gtk if you do not need the legacy library])])
-	LIBNM_GLIB_CFLAGS="$LIBNM_GLIB_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_38"
-	LIBNM_GLIB_CFLAGS="$LIBNM_GLIB_CFLAGS -DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_38"
-	LIBNM_GLIB_CFLAGS="$LIBNM_GLIB_CFLAGS -DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_4"
-	LIBNM_GLIB_CFLAGS="$LIBNM_GLIB_CFLAGS -DNM_VERSION_MAX_ALLOWED=NM_VERSION_1_4"
-else
-	with_libnm_gtk=no
-fi
-AM_CONDITIONAL(WITH_LIBNM_GTK, test "$with_libnm_gtk" == "yes")
-
 PKG_CHECK_MODULES(LIBNM, [libnm >= 1.7 gio-2.0 >= 2.38 gmodule-export-2.0])
 LIBNM_CFLAGS="$LIBNM_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_38"
 LIBNM_CFLAGS="$LIBNM_CFLAGS -DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_38"
@@ -357,7 +335,6 @@ AC_DEFINE_UNQUOTED(NM_MORE_ASSERTS, $more_asserts, [Define if more asserts are e
 
 AC_CONFIG_FILES([
 Makefile
-src/libnm-gtk/libnm-gtk.pc
 src/libnma/libnma.pc
 src/libnma/libnma-gtk4.pc
 po/Makefile.in
@@ -369,7 +346,6 @@ src/libnma/nma-version.h
 AC_OUTPUT
 
 echo ""
-echo "  Build legacy library libnm-gtk: --with-libnm-gtk=${with_libnm_gtk}"
 echo "  Build EXPERIMENTAL libnma-gtk4 library for use with GTK4: --with-libnma-gtk4=${with_libnma_gtk4}"
 echo "  GCR: --with-gcr=$have_gcr"
 echo "  LTO: --enable-lto=$enable_lto"

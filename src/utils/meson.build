@@ -35,27 +35,3 @@ exe = executable(
 )
 
 test(test_unit, exe)
-
-if enable_libnm_gtk
-  deps = [
-    gtk_dep,
-    libnm_glib_dep
-  ]
-
-  cflags = '-DNETWORKMANAGER_COMPILATION=NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY'
-
-  libutils_libnm_glib = static_library(
-    'utils-libnm-glib',
-    sources: shared_legacy_sources + files(
-      'utils.c',
-    ),
-    include_directories: incs,
-    dependencies: deps,
-    c_args: cflags
-  )
-
-  libutils_libnm_glib_dep = declare_dependency(
-    link_with: libutils_libnm_glib,
-    include_directories: utils_inc
-  )
-endif

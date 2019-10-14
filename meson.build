@@ -20,8 +20,6 @@ nma_micro_version = version_array[2].to_int()
 nma_gir_version = '1.0'
 nma_gir_prefix = 'NMA'
 
-nma_gtk_gir_ns = 'NMGtk'
-
 nma_prefix = get_option('prefix')
 nma_bindir = join_paths(nma_prefix, get_option('bindir'))
 nma_datadir = join_paths(nma_prefix, get_option('datadir'))
@@ -197,30 +195,6 @@ libnm_dep = declare_dependency(
   dependencies: deps,
   compile_args: cflags
 )
-
-enable_libnm_gtk = get_option('libnm_gtk')
-if enable_libnm_gtk
-  deps = [
-    gio_dep,
-    gmodule_export_dep,
-    dependency('libnm-glib', version: nm_req_version),
-    dependency('libnm-glib-vpn', version: nm_req_version),
-    dependency('libnm-util', version: nm_req_version),
-    dependency('NetworkManager', version: nm_req_version)
-  ]
-
-  cflags = [
-    '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_38',
-    '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_38',
-    '-DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_4',
-    '-DNM_VERSION_MAX_ALLOWED=NM_VERSION_1_4'
-  ]
-
-  libnm_glib_dep = declare_dependency(
-    dependencies: deps,
-    compile_args: cflags
-  )
-endif
 
 # No such thing yet, just same lame duck placeholders.
 # it may actually end up being called differently.
@@ -530,7 +504,7 @@ meson.add_install_script(
   nma_sysconfdir
 )
 
-output = '\n  Build legacy library libnm-gtk: ' + enable_libnm_gtk.to_string() + '\n'
+output = '\n'
 output += '  Build EXPERIMENTAL library libnm-gtk4 for use with GTK4: ' + enable_libnma_gtk4.to_string() + '\n'
 output += '  GCR: ' + enable_gcr.to_string() + '\n'
 output += '  LTO: ' + get_option('b_lto').to_string() + '\n'
