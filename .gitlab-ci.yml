@@ -10,6 +10,7 @@
       file
       findutils
       gcc
+      libtool
       desktop-file-utils
       gettext-devel
       glib2-devel
@@ -18,6 +19,7 @@
       libnotify-devel
       libsecret-devel
       NetworkManager-libnm-devel
+      libnma-devel
       pkgconfig
       /usr/bin/autopoint
 
@@ -27,6 +29,7 @@
       file
       findutils
       gcc
+      libtool
       desktop-file-utils
       gettext-devel
       glib2-devel
@@ -35,13 +38,10 @@
       libnotify-devel
       libsecret-devel
       NetworkManager-libnm-devel
+      libnma-devel
       pkgconfig
       /usr/bin/autopoint
-      gcr-devel
-      gobject-introspection-devel redhat-rpm-config
-      gtk-doc
-      iso-codes-devel
-      mobile-broadband-provider-info-devel
+      redhat-rpm-config
       jansson-devel
       ModemManager-glib-devel
       libselinux-devel
@@ -62,12 +62,7 @@
       -Dwwan=false
       -Dselinux=false
       -Dteam=false
-      -Dgcr=false
-      -Diso_codes=false
-      -Dmobile_broadband_provider_info=false
       -Dld_gc=false
-      -Dgtk_doc=false
-      -Dintrospection=false
       -Dappindicator=no
       -Dmore_asserts=no
       network-manager-applet-*/ build
@@ -86,12 +81,7 @@
       -Dwwan=true
       -Dselinux=true
       -Dteam=true
-      -Dgcr=true
-      -Diso_codes=true
-      -Dmobile_broadband_provider_info=true
       -Dld_gc=true
-      -Dgtk_doc=true
-      -Dintrospection=true
       -Dappindicator=no
       -Dmore_asserts=yes
       network-manager-applet-*/ build
@@ -111,17 +101,12 @@
       --disable-silent-rules
       --with-more-asserts=no
       --disable-nls
-      --disable-iso-codes
-      --disable-mobile-broadband-provider-info
-      --disable-gtk-doc
-      --disable-introspection
       --disable-schemas-compile
       --disable-more-warnings
       --without-appindicator
       --without-wwan
       --without-selinux
       --without-team
-      --without-gcr
     - make -j$(nproc)
     - make -j$(nproc) check
     - make -j$(nproc) install
@@ -138,16 +123,11 @@
       --disable-silent-rules
       --with-more-asserts=yes
       --enable-nls
-      --enable-iso-codes
-      --enable-mobile-broadband-provider-info
-      --enable-gtk-doc
-      --enable-introspection
       --enable-schemas-compile
       --enable-more-warnings
       --with-wwan
       --with-selinux
       --with-team
-      --with-gcr
     - make -j$(nproc)
     - make -j$(nproc) check
     - make -j$(nproc) install
@@ -195,6 +175,7 @@ centos7:
       file
       findutils
       gcc
+      libtool
       desktop-file-utils
       gettext-devel
       glib2-devel
@@ -206,11 +187,7 @@ centos7:
       NetworkManager-libnm-devel
       pkgconfig
       /usr/bin/autopoint
-      gcr-devel
-      gobject-introspection-devel redhat-rpm-config
-      gtk-doc
-      iso-codes-devel
-      mobile-broadband-provider-info-devel
+      redhat-rpm-config
       jansson-devel
       ModemManager-glib-devel
       libselinux-devel
@@ -222,42 +199,14 @@ centos7:
       --disable-silent-rules
       --with-more-asserts=yes
       --enable-nls
-      --enable-iso-codes
-      --enable-mobile-broadband-provider-info
-      --enable-gtk-doc
-      --enable-introspection
       --enable-schemas-compile
       --enable-more-warnings
       --with-wwan
       --with-selinux
       --with-team
-      --with-gcr
     - make -j$(nproc)
     - make -j$(nproc) check
     - make -j$(nproc) install
     - make -j$(nproc) uninstall
   image: centos:7
   stage: test
-
-# https://network-manager-applet.pages.gitlab.gnome.org/libnma/
-pages:
-  <<: *fedora_full
-  <<: *dist
-  image: fedora:latest
-  stage: deploy
-  script:
-    - dnf -y install make
-    - tar xJf network-manager-applet-*.tar.xz
-    - cd network-manager-applet-*/
-    - ./configure
-      --disable-silent-rules
-      --enable-gtk-doc
-    - make -j$(nproc)
-    - cd ..
-    - mkdir -p public
-    - mv network-manager-applet-*/html public/libnma
-  artifacts:
-    paths:
-      - public
-  only:
-    - master
