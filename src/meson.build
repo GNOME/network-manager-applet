@@ -1,32 +1,12 @@
 src_inc = include_directories('.')
 
-# FIXME: although this file is contained in the libnma directory
-#        it should be generated before because it's used at
-#        wireless-security directory, which is needed later for
-#        libnma directory.
-libnma_inc = include_directories('libnma')
-
 version_conf = configuration_data()
 version_conf.set('NMA_MAJOR_VERSION', nma_major_version)
 version_conf.set('NMA_MINOR_VERSION', nma_minor_version)
 version_conf.set('NMA_MICRO_VERSION', nma_micro_version)
 
-version = 'nma-version.h'
-
-version_header = configure_file(
-  input: 'libnma/' + version + '.in',
-  output: version,
-  configuration: version_conf,
-  install_dir: join_paths(nma_includedir, 'libnma')
-)
-
 subdir('utils')
 subdir('wireless-security')
-subdir('libnma')
-
-if enable_libnm_gtk
-  subdir('libnm-gtk')
-endif
 
 subdir('connection-editor')
 
