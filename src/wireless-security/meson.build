@@ -1,6 +1,6 @@
 wireless_security_inc = include_directories('.')
 
-sources = [version_header] + files(
+sources = files(
   'eap-method.c',
   'eap-method-fast.c',
   'eap-method-leap.c',
@@ -42,13 +42,13 @@ sources += gnome.compile_resources(
 incs = [
   top_inc,
   shared_inc,
-  src_inc,
-  libnma_inc
+  src_inc
 ]
 
 deps = [
   gtk_dep,
   libnm_dep,
+  libnma_dep,
   libutils_libnm_dep
 ]
 
@@ -58,37 +58,3 @@ libwireless_security_libnm = static_library(
   include_directories: incs,
   dependencies: deps
 )
-
-if enable_libnma_gtk4
-  deps = [
-    gtk4_dep,
-    libnm_dep,
-    libutils_libnm_dep
-  ]
-
-  libwireless_security_libnma_gtk4 = static_library(
-    'wireless-security-libnma-gtk4',
-    sources: sources,
-    include_directories: incs,
-    dependencies: deps,
-    c_args: cflags
-  )
-endif
-
-if enable_libnm_gtk
-  deps = [
-    gtk_dep,
-    libnm_glib_dep,
-    libutils_libnm_glib_dep
-  ]
-
-  cflags = '-DNETWORKMANAGER_COMPILATION=NM_NETWORKMANAGER_COMPILATION_LIB_LEGACY'
-
-  libwireless_security_libnm_glib = static_library(
-    'wireless-security-libnm-glib',
-    sources: sources,
-    include_directories: incs,
-    dependencies: deps,
-    c_args: cflags
-  )
-endif
