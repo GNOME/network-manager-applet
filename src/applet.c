@@ -3108,12 +3108,12 @@ status_icon_size_changed_cb (GtkStatusIcon *icon,
 	g_debug ("%s(): status icon size %d requested", __func__, size);
 
 	/* icon_size may be 0 if for example the panel hasn't given us any space
-	 * yet.  We'll get resized later, but for now just load the 16x16 icons.
+	 * yet.  We'll get resized later, but for now just load the 22x22 icons.
 	 */
 	if (size > 0)
 		applet->icon_size = size;
 	else {
-		applet->icon_size = 16;
+		applet->icon_size = 22;
 		g_warn_if_fail (size == 0);
 	}
 
@@ -3401,7 +3401,7 @@ static void finalize (GObject *object)
 
 static void nma_init (NMApplet *applet)
 {
-	applet->icon_size = 16;
+	applet->icon_size = 22;
 
 	g_signal_connect (applet, "startup", G_CALLBACK (applet_startup), NULL);
 	g_signal_connect (applet, "activate", G_CALLBACK (applet_activate), NULL);
