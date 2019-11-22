@@ -84,37 +84,50 @@ static void
 update_icon (NMNetworkMenuItem *item, NMApplet *applet)
 {
 	NMNetworkMenuItemPrivate *priv = NM_NETWORK_MENU_ITEM_GET_PRIVATE (item);
-	gs_unref_object GdkPixbuf *icon_free = NULL, *icon_free2 = NULL;
-	GdkPixbuf *icon;
+	cairo_surface_t *icon;
 	const char *icon_name = NULL;
+	int scale;
+	int icon_size = 24;
 
 	if (priv->is_adhoc)
 		icon_name = "nm-adhoc";
 	else
 		icon_name = mobile_helper_get_quality_icon_name (priv->int_strength);
 
-	icon = nma_icon_check_and_load (icon_name, applet);
+	scale = gtk_widget_get_scale_factor (GTK_WIDGET (item));
+	icon = gtk_icon_theme_load_surface (applet->icon_theme, icon_name,
+					    icon_size, scale,
+					    NULL, GTK_ICON_LOOKUP_FORCE_SIZE, NULL);
 	if (icon) {
 		if (priv->is_encrypted) {
-			GdkPixbuf *encrypted = nma_icon_check_and_load ("nm-secure-lock", applet);
+			cairo_surface_t *lock = gtk_icon_theme_load_surface (applet->icon_theme, "nm-secure-lock",
+									     icon_size, scale,
+									     NULL, GTK_ICON_LOOKUP_FORCE_SIZE, NULL);
 
-			if (encrypted) {
-				icon = icon_free = gdk_pixbuf_copy (icon);
+			if (lock) {
+				cairo_surface_t *encrypted;
+				cairo_t *cr;
 
-				gdk_pixbuf_composite (encrypted, icon, 0, 0,
-				                      gdk_pixbuf_get_width (encrypted),
-				                      gdk_pixbuf_get_height (encrypted),
-				                      0, 0, 1.0, 1.0,
-				                      GDK_INTERP_NEAREST, 255);
+				encrypted = cairo_surface_create_similar (icon,
+									  cairo_surface_get_content (icon),
+									  icon_size, icon_size);
+				cr = cairo_create (encrypted);
+				cairo_set_source_surface (cr, icon, 0, 0);
+				cairo_paint (cr);
+
+				cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
+				cairo_set_source_surface (cr, lock, 0, 0);
+				cairo_paint (cr);
+
+				cairo_surface_destroy (lock);
+				cairo_surface_destroy (icon);
+				icon = encrypted;
 			}
 		}
-
-		/* Scale to menu size if larger so the menu doesn't look awful */
-		if (gdk_pixbuf_get_height (icon) > 24 || gdk_pixbuf_get_width (icon) > 24)
-			icon = icon_free2 = gdk_pixbuf_scale_simple (icon, 24, 24, GDK_INTERP_BILINEAR);
 	}
 
-	gtk_image_set_from_pixbuf (GTK_IMAGE (priv->strength), icon);
+	gtk_image_set_from_surface (GTK_IMAGE (priv->strength), icon);
+	cairo_surface_destroy (icon);
 }
 
 void
