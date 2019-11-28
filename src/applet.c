@@ -3001,7 +3001,7 @@ nma_icon_check_and_load (const char *name, NMApplet *applet)
 	if (g_hash_table_lookup_extended (applet->icon_cache, name, NULL, (gpointer) &icon))
 		return icon;
 
-	scale = gtk_widget_get_scale_factor (applet->context_menu);
+	scale = gdk_window_get_scale_factor (gdk_get_default_root_window ());
 
 	/* Try to load the icon; if the load fails, log the problem, and set
 	 * the icon to the fallback icon if requested.
