@@ -86,12 +86,25 @@ update_icon (NMNetworkMenuItem *item, NMApplet *applet)
 	NMNetworkMenuItemPrivate *priv = NM_NETWORK_MENU_ITEM_GET_PRIVATE (item);
 	gs_unref_object GdkPixbuf *icon_free = NULL, *icon_free2 = NULL;
 	GdkPixbuf *icon;
+	cairo_surface_t *surface;
+	int icon_size, scale;
 	const char *icon_name = NULL;
 
 	if (priv->is_adhoc)
 		icon_name = "nm-adhoc";
 	else
 		icon_name = mobile_helper_get_quality_icon_name (priv->int_strength);
+
+	scale = gtk_widget_get_scale_factor (GTK_WIDGET (item));
+#ifdef WITH_APPINDICATOR
+	/* Since app_indicator relies on GdkPixbuf, we should not scale it */
+	if (applet->app_indicator)
+		icon_size = 24;
+	else
+#endif  /* WITH_APPINDICATOR */
+	{
+		icon_size = 24 * scale;
+	}
 
 	icon = nma_icon_check_and_load (icon_name, applet);
 	if (icon) {
@@ -110,11 +123,21 @@ update_icon (NMNetworkMenuItem *item, NMApplet *applet)
 		}
 
 		/* Scale to menu size if larger so the menu doesn't look awful */
-		if (gdk_pixbuf_get_height (icon) > 24 || gdk_pixbuf_get_width (icon) > 24)
-			icon = icon_free2 = gdk_pixbuf_scale_simple (icon, 24, 24, GDK_INTERP_BILINEAR);
+		if (gdk_pixbuf_get_height (icon) > icon_size || gdk_pixbuf_get_width (icon) > icon_size)
+			icon = icon_free2 = gdk_pixbuf_scale_simple (icon, icon_size, icon_size, GDK_INTERP_BILINEAR);
 	}
 
-	gtk_image_set_from_pixbuf (GTK_IMAGE (priv->strength), icon);
+#ifdef WITH_APPINDICATOR
+	/* app_indicator only uses GdkPixbuf */
+	if (applet->app_indicator)
+		gtk_image_set_from_pixbuf (GTK_IMAGE (priv->strength), icon);
+	else
+#endif  /* WITH_APPINDICATOR */
+	{
+		surface = gdk_cairo_surface_create_from_pixbuf (icon, scale, NULL);
+		gtk_image_set_from_surface (GTK_IMAGE (priv->strength), surface);
+		cairo_surface_destroy (surface);
+	}
 }
 
 void
