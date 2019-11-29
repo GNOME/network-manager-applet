@@ -22,11 +22,8 @@
 struct _EAPMethodTLS {
 	EAPMethod parent;
 
-#if LIBNM_BUILD
-/* libnm-glib doesn't support these. */
 	const char *ca_cert_password_flags_name;
 	const char *client_cert_password_flags_name;
-#endif
 	const char *client_key_password_flags_name;
 
 	gboolean editing_connection;
@@ -116,13 +113,11 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	g_assert (widget);
 	g_object_set (s_8021x, NM_SETTING_802_1X_IDENTITY, gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
 
-#if LIBNM_BUILD
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_domain_entry"));
 	g_assert (widget);
 	g_object_set (s_8021x,
 	              parent->phase2 ? NM_SETTING_802_1X_PHASE2_DOMAIN_SUFFIX_MATCH : NM_SETTING_802_1X_DOMAIN_SUFFIX_MATCH,
 	              gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
-#endif
 
 	/* TLS private key */
 	password = nma_cert_chooser_get_key_password (NMA_CERT_CHOOSER (method->client_cert_chooser));
@@ -141,8 +136,6 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	}
 	g_free (value);
 
-#if LIBNM_BUILD
-/* libnm-glib doesn't support these. */
 	/* Save CA certificate PIN and its flags to the connection */
 	secret_flags = nma_cert_chooser_get_cert_password_flags (NMA_CERT_CHOOSER (method->ca_cert_chooser));
 	nm_setting_set_secret_flags (NM_SETTING (s_8021x), method->ca_cert_password_flags_name,
@@ -169,7 +162,6 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 		              nma_cert_chooser_get_cert_password (NMA_CERT_CHOOSER (method->client_cert_chooser)),
 		              NULL);
 	}
-#endif
 
 	/* Save user private key password flags to the connection */
 	secret_flags = nma_cert_chooser_get_key_password_flags (NMA_CERT_CHOOSER (method->client_cert_chooser));
@@ -366,15 +358,12 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 		return NULL;
 
 	method = (EAPMethodTLS *) parent;
-#if LIBNM_BUILD
-/* libnm-glib doesn't support these. */
 	method->ca_cert_password_flags_name = phase2
 	                                      ? NM_SETTING_802_1X_PHASE2_CA_CERT_PASSWORD
 	                                      : NM_SETTING_802_1X_CA_CERT_PASSWORD;
 	method->client_cert_password_flags_name = phase2
 	                                          ? NM_SETTING_802_1X_PHASE2_CLIENT_CERT_PASSWORD
 	                                          : NM_SETTING_802_1X_CLIENT_CERT_PASSWORD;
-#endif
 	method->client_key_password_flags_name = phase2
 	                                         ? NM_SETTING_802_1X_PHASE2_PRIVATE_KEY_PASSWORD
 	                                         : NM_SETTING_802_1X_PRIVATE_KEY_PASSWORD;
@@ -402,7 +391,6 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_domain_entry"));
 	g_assert (widget);
-#if LIBNM_BUILD
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  ws_parent);
@@ -413,11 +401,6 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 		if (s_8021x && nm_setting_802_1x_get_domain_suffix_match (s_8021x))
 			gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_domain_suffix_match (s_8021x));
 	}
-#else
-	gtk_widget_hide (widget);
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_domain_label"));
-	gtk_widget_hide (widget);
-#endif
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_tls_grid"));
 	g_assert (widget);
@@ -500,15 +483,12 @@ eap_method_tls_new (WirelessSecurity *ws_parent,
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), ca_not_required);
 
 	/* Create password-storage popup menus for password entries under their secondary icon */
-#if LIBNM_BUILD
-/* libnm-glib doesn't support these. */
 	nma_cert_chooser_setup_cert_password_storage (NMA_CERT_CHOOSER (method->ca_cert_chooser),
 	                                              0, (NMSetting *) s_8021x, method->ca_cert_password_flags_name,
 	                                              FALSE, secrets_only);
 	nma_cert_chooser_setup_cert_password_storage (NMA_CERT_CHOOSER (method->client_cert_chooser),
 	                                              0, (NMSetting *) s_8021x, method->client_cert_password_flags_name,
 	                                              FALSE, secrets_only);
-#endif
 	nma_cert_chooser_setup_key_password_storage (NMA_CERT_CHOOSER (method->client_cert_chooser),
 	                                             0, (NMSetting *) s_8021x, method->client_key_password_flags_name,
 	                                             FALSE, secrets_only);

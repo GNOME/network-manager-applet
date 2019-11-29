@@ -131,9 +131,7 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	GError *error = NULL;
 	gboolean ca_cert_error = FALSE;
 	NMSetting8021xCKScheme scheme = NM_SETTING_802_1X_CK_SCHEME_UNKNOWN;
-#if LIBNM_BUILD
 	NMSettingSecretFlags secret_flags;
-#endif
 
 	s_8021x = nm_connection_get_setting_802_1x (connection);
 	g_assert (s_8021x);
@@ -146,16 +144,12 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 	if (text && strlen (text))
 		g_object_set (s_8021x, NM_SETTING_802_1X_ANONYMOUS_IDENTITY, text, NULL);
 
-#if LIBNM_BUILD
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_domain_entry"));
 	g_assert (widget);
 	text = gtk_entry_get_text (GTK_ENTRY (widget));
 	if (text && strlen (text))
 		g_object_set (s_8021x, NM_SETTING_802_1X_DOMAIN_SUFFIX_MATCH, text, NULL);
-#endif
 
-#if LIBNM_BUILD
-/* libnm-glib doesn't support this. */
 	/* Save CA certificate PIN and its flags to the connection */
 	secret_flags = nma_cert_chooser_get_cert_password_flags (NMA_CERT_CHOOSER (method->ca_cert_chooser));
 	nm_setting_set_secret_flags (NM_SETTING (s_8021x), NM_SETTING_802_1X_CA_CERT_PASSWORD,
@@ -169,7 +163,6 @@ fill_connection (EAPMethod *parent, NMConnection *connection)
 		              nma_cert_chooser_get_cert_password (NMA_CERT_CHOOSER (method->ca_cert_chooser)),
 		              NULL);
 	}
-#endif
 
 	/* TLS CA certificate */
 	if (gtk_widget_get_sensitive (method->ca_cert_chooser))
@@ -461,17 +454,11 @@ eap_method_peap_new (WirelessSecurity *ws_parent,
 	                  ws_parent);
 
 	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_domain_entry"));
-#if LIBNM_BUILD
 	if (s_8021x && nm_setting_802_1x_get_domain_suffix_match (s_8021x))
 		gtk_entry_set_text (GTK_ENTRY (widget), nm_setting_802_1x_get_domain_suffix_match (s_8021x));
 	g_signal_connect (G_OBJECT (widget), "changed",
 	                  (GCallback) wireless_security_changed_cb,
 	                  ws_parent);
-#else
-	gtk_widget_hide (widget);
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_domain_label"));
-	gtk_widget_hide (widget);
-#endif
 
 	if (secrets_only) {
 		widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "eap_peap_anon_identity_label"));
