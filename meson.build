@@ -131,7 +131,7 @@ config_h.set10('HAVE_LIBNOTIFY_07', libnotify_dep.found() and libnotify_dep.vers
                description: 'Define if you have libnotify 0.7 or later')
 
 # API documentation
-nm_req_version = '>= 1.7'
+nm_req_version = '>= 1.12'
 
 deps = [
   gio_dep,
@@ -142,8 +142,8 @@ deps = [
 cflags = [
   '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_38',
   '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_38',
-  '-DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_8',
-  '-DNM_VERSION_MAX_ALLOWED=NM_VERSION_1_8'
+  '-DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_12',
+  '-DNM_VERSION_MAX_ALLOWED=NM_VERSION_1_12'
 ]
 
 libnm_dep = declare_dependency(
