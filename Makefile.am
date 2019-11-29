@@ -567,7 +567,6 @@ EXTRA_DIST += \
 	shared/nm-utils/nm-test-utils.h \
 	shared/nm-utils/nm-vpn-editor-plugin-call.h \
 	shared/nm-default.h \
-	shared/nm-libnm-compat.h \
 	shared/meson.build \
 	$(NULL)
 
