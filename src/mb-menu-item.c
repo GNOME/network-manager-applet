@@ -167,15 +167,15 @@ nm_mb_menu_item_new (const char *connection_name,
 	if (enabled && strength) {
 		const char *icon_name = mobile_helper_get_quality_icon_name (strength);
 		GdkPixbuf *icon = nma_icon_check_and_load (icon_name, applet);
-#ifdef WITH_APPINDICATOR
-		/* app_indicator only uses GdkPixbuf */
-		if (applet->app_indicator)
+
+		if (INDICATOR_ENABLED (applet)) {
+			/* app_indicator only uses GdkPixbuf */
 			gtk_image_set_from_pixbuf (GTK_IMAGE (priv->strength), icon);
-		else
-#endif  /* WITH_APPINDICATOR */
-		{
+		} else {
 			int scale = gtk_widget_get_scale_factor (GTK_WIDGET (priv->strength));
-			cairo_surface_t *surface = gdk_cairo_surface_create_from_pixbuf (icon, scale, NULL);
+			cairo_surface_t *surface;
+
+			surface = gdk_cairo_surface_create_from_pixbuf (icon, scale, NULL);
 			gtk_image_set_from_surface (GTK_IMAGE (priv->strength), surface);
 			cairo_surface_destroy (surface);
 		}
