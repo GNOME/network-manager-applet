@@ -42,12 +42,6 @@ extern gboolean shell_debug;
 extern gboolean with_agent;
 extern gboolean with_appindicator;
 
-#ifdef WITH_APPINDICATOR
-#define INDICATOR_ENABLED(a) ((a)->app_indicator)
-#else
-#define INDICATOR_ENABLED(a) (FALSE)
-#endif  /* WITH_APPINDICATOR */
-
 G_DEFINE_TYPE (NMApplet, nma, G_TYPE_APPLICATION)
 
 /********************************************************************/
