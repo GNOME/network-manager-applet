@@ -33,6 +33,7 @@ sources = files(
   'page-vpn.c',
   'page-wifi.c',
   'page-wifi-security.c',
+  'page-wireguard.c',
   'ppp-auth-methods-dialog.c',
   'vpn-helpers.c'
 )
@@ -62,6 +63,7 @@ resource_data = files(
   'ce-page-vlan.ui',
   'ce-page-wifi-security.ui',
   'ce-page-wifi.ui',
+  'ce-page-wireguard.ui',
   'ce-ppp-auth-methods.ui',
   'gtk/menus.ui',
   'nm-connection-editor.ui',
