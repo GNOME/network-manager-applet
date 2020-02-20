@@ -361,6 +361,8 @@ connection_editor_hc_real = \
 	src/connection-editor/page-vlan.c \
 	src/connection-editor/page-dcb.c \
 	src/connection-editor/page-dcb.h \
+	src/connection-editor/page-wireguard.h \
+	src/connection-editor/page-wireguard.c \
 	src/connection-editor/vpn-helpers.h \
 	src/connection-editor/vpn-helpers.c \
 	src/connection-editor/ip4-routes-dialog.h \
@@ -445,6 +447,7 @@ EXTRA_DIST += \
 	src/connection-editor/ce-page-vlan.ui \
 	src/connection-editor/ce-page-wifi-security.ui \
 	src/connection-editor/ce-page-wifi.ui \
+	src/connection-editor/ce-page-wireguard.ui \
 	src/connection-editor/ce-ppp-auth-methods.ui \
 	src/connection-editor/gtk/menus.ui \
 	src/connection-editor/nm-connection-editor.ui \
