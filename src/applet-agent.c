@@ -66,6 +66,8 @@ typedef struct {
 
 	GCancellable *cancellable;
 	gint keyring_calls;
+
+	GVariant *secrets;
 } Request;
 
 static Request *
@@ -97,6 +99,7 @@ request_new (NMSecretAgentOld *agent,
 	r->delete_callback = delete_callback;
 	r->callback_data = callback_data;
 	r->cancellable = g_cancellable_new ();
+	r->secrets = NULL;
 	return r;
 }
 
@@ -126,7 +129,11 @@ get_save_cb (NMSecretAgentOld *agent,
              GError *error,
              gpointer user_data)
 {
-	/* Ignored */
+
+	Request *r = user_data;
+	r->get_callback (NM_SECRET_AGENT_OLD (r->agent), r->connection, r->secrets, error, r->callback_data);
+	g_variant_unref(r->secrets);
+	request_free(r);
 }
 
 static void
@@ -160,8 +167,11 @@ get_secrets_cb (AppletAgent *self,
 				nm_connection_update_secrets (dupl, setting_name, secrets, NULL);
 
 			/* And save updated secrets to the keyring */
-			nm_secret_agent_old_save_secrets (NM_SECRET_AGENT_OLD (self), dupl, get_save_cb, NULL);
+			g_variant_ref(secrets);
+			r->secrets = secrets;
+			nm_secret_agent_old_save_secrets (NM_SECRET_AGENT_OLD (self), dupl, get_save_cb, r);
 			g_object_unref (dupl);
+			return;
 		}
 
 		r->get_callback (NM_SECRET_AGENT_OLD (r->agent), r->connection, secrets, error, r->callback_data);
