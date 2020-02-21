@@ -515,14 +515,14 @@ cancel_get_secrets (NMSecretAgentOld *agent,
 /*******************************************************/
 
 static void
-save_request_try_complete (Request *r)
+save_request_try_complete (Request *r, GError *error)
 {
 	/* Only call the SaveSecrets callback and free the request when all the
 	 * secrets have been saved to the keyring.
 	 */
 	if (r->keyring_calls == 0) {
 		if (!g_cancellable_is_cancelled (r->cancellable))
-			r->save_callback (NM_SECRET_AGENT_OLD (r->agent), r->connection, NULL, r->callback_data);
+			r->save_callback (NM_SECRET_AGENT_OLD (r->agent), r->connection, error, r->callback_data);
 		request_free (r);
 	}
 }
@@ -532,8 +532,32 @@ save_secret_cb (GObject *source,
                 GAsyncResult *result,
                 gpointer user_data)
 {
-	secret_password_store_finish (result, NULL);
-	save_request_try_complete (user_data);
+	Request *r = user_data;
+	GError *error = NULL;
+	GError *secret_error = NULL;
+	gboolean cancelled = FALSE;
+
+	r->keyring_calls--;
+
+	secret_password_store_finish (result, &secret_error);
+	if (secret_error != NULL) {
+		if (g_error_matches (secret_error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+			/* Callback already called by NM or dispose */
+			cancelled = TRUE;
+		} else {
+			error = g_error_new (NM_SECRET_AGENT_ERROR,
+			                     NM_SECRET_AGENT_ERROR_FAILED,
+			                     "The request could not be completed (%s)",
+			                     secret_error->message);
+		}
+		g_error_free (secret_error);
+	}
+
+	if (!cancelled) {
+		save_request_try_complete (user_data, error);
+	}
+
+	request_free (r);
 }
 
 
@@ -676,7 +700,7 @@ save_delete_cb (NMSecretAgentOld *agent,
 	 * try to complete the request here.  If there were secrets to save the
 	 * request will get completed when those keyring calls return.
 	 */
-	save_request_try_complete (r);
+	save_request_try_complete (r, error);
 }
 
 static void
