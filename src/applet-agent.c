@@ -266,7 +266,8 @@ is_connection_always_ask (NMConnection *connection)
 }
 
 static void
-keyring_find_secrets_cb (GObject *source,
+keyring_find_secrets_cb (gboolean is_vpn,
+                         GObject *source,
                          GAsyncResult *result,
                          gpointer user_data)
 {
@@ -315,7 +316,8 @@ keyring_find_secrets_cb (GObject *source,
 	 * secrets yet, doesn't trigger the applet secrets dialog.
 	 */
 	if (   (r->flags & NM_SECRET_AGENT_GET_SECRETS_FLAG_ALLOW_INTERACTION)
-	    && g_list_length (list) == 0) {
+	    && !list
+	    && !is_vpn) {
 		g_message ("No keyring secrets found for %s/%s; asking user.", connection_id, r->setting_name);
 		ask_for_secrets (r);
 		return;
@@ -355,11 +357,14 @@ keyring_find_secrets_cb (GObject *source,
 		}
 	}
 
-	/* If there were hints, and none of the hints were returned by the keyring,
+	/* VPN passwords are handled by the VPN plugin's auth dialog.
+	 * If there were hints, and none of the hints were returned by the keyring,
 	 * get some new secrets.
 	 */
-	if (r->flags) {
-		if (r->hints && r->hints[0] && !hint_found)
+	if (is_vpn || r->flags) {
+		if (is_vpn)
+			ask = TRUE;
+		else if (r->hints && r->hints[0] && !hint_found)
 			ask = TRUE;
 		else if (r->flags & NM_SECRET_AGENT_GET_SECRETS_FLAG_REQUEST_NEW) {
 			g_message ("New secrets for %s/%s requested; ask the user", connection_id, r->setting_name);
@@ -406,6 +411,22 @@ done:
 }
 
 static void
+keyring_find_vpn_secrets_cb (GObject *source,
+                             GAsyncResult *result,
+                             gpointer user_data)
+{
+	return keyring_find_secrets_cb (true, source, result, user_data);
+}
+
+static void
+keyring_find_non_vpn_secrets_cb (GObject *source,
+                                 GAsyncResult *result,
+                                 gpointer user_data)
+{
+	return keyring_find_secrets_cb (false, source, result, user_data);
+}
+
+static void
 get_secrets (NMSecretAgentOld *agent,
              NMConnection *connection,
              const char *connection_path,
@@ -422,6 +443,8 @@ get_secrets (NMSecretAgentOld *agent,
 	NMSetting *setting;
 	const char *uuid, *ctype;
 	GHashTable *attrs;
+	GAsyncReadyCallback search_cb;
+
 
 	setting = nm_connection_get_setting_by_name (connection, setting_name);
 	if (!setting) {
@@ -454,12 +477,6 @@ get_secrets (NMSecretAgentOld *agent,
 	r = request_new (agent, connection, connection_path, setting_name, hints, flags, callback, NULL, NULL, callback_data);
 	g_hash_table_insert (priv->requests, GUINT_TO_POINTER (r->id), r);
 
-	/* VPN passwords are handled by the VPN plugin's auth dialog */
-	if (!strcmp (ctype, NM_SETTING_VPN_SETTING_NAME)) {
-		ask_for_secrets (r);
-		return;
-	}
-
 	/* Only handle non-VPN secrets if we're supposed to */
 	if (priv->vpn_only == TRUE) {
 		error = g_error_new_literal (NM_SECRET_AGENT_ERROR,
@@ -478,9 +495,15 @@ get_secrets (NMSecretAgentOld *agent,
 	                                 KEYRING_SN_TAG, setting_name,
 	                                 NULL);
 
+	if (!strcmp (ctype, NM_SETTING_VPN_SETTING_NAME)) {
+		search_cb = keyring_find_vpn_secrets_cb;
+	} else {
+		search_cb = keyring_find_non_vpn_secrets_cb;
+	}
+
 	secret_service_search (NULL, &network_manager_secret_schema, attrs,
 	                       SECRET_SEARCH_ALL | SECRET_SEARCH_UNLOCK | SECRET_SEARCH_LOAD_SECRETS,
-	                       r->cancellable, keyring_find_secrets_cb, r);
+	                       r->cancellable, search_cb, r);
 
 	r->keyring_calls++;
 	g_hash_table_unref (attrs);
