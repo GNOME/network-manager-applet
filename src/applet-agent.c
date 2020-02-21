@@ -532,6 +532,15 @@ save_secret_cb (GObject *source,
                 GAsyncResult *result,
                 gpointer user_data)
 {
+	Request *r = user_data;
+
+	r->keyring_calls--;
+	if (g_cancellable_is_cancelled (r->cancellable)) {
+		/* Callback already called by NM or dispose */
+		request_free (r);
+		return;
+	}
+
 	secret_password_store_finish (result, NULL);
 	save_request_try_complete (user_data);
 }
