@@ -281,7 +281,7 @@ complete_request (VpnSecretsInfo *info)
 	g_variant_builder_add (&settings_builder, "{sa{sv}}",
 	                       NM_SETTING_VPN_SETTING_NAME,
 	                       &vpn_builder);
-	settings = g_variant_builder_end (&settings_builder);
+	settings = g_variant_ref_sink (g_variant_builder_end (&settings_builder));
 
 	applet_secrets_request_complete (req, settings, NULL);
 	applet_secrets_request_free (req);
