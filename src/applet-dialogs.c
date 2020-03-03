@@ -937,31 +937,6 @@ info_dialog_add_page_for_vpn (GtkNotebook *notebook,
 	gtk_widget_show_all (GTK_WIDGET (grid));
 }
 
-#ifndef NM_REMOTE_CONNECTION_FLAGS
-/*
- * NetworkManager < 1.12 compatibility.
- * If you look outside and see flying cars, remove this.
- */
-typedef enum {
-        NM_SETTINGS_CONNECTION_FLAG_NM_GENERATED = 2,
-} NMSettingsConnectionFlags;
-
-static NMSettingsConnectionFlags
-nm_remote_connection_get_flags (NMRemoteConnection *connection)
-{
-	NMSettingsConnectionFlags flags;
-
-	if (!g_object_class_find_property (G_OBJECT_GET_CLASS (connection), "flags"))
-		return 0;
-
-	g_object_get (connection, "flags", &flags, NULL);
-	return flags;
-}
-#else
-#define nm_remote_connection_get_flags(conn) \
-	NM_LIBNM_COMPAT_UNDEPRECATE (nm_remote_connection_get_flags (conn))
-#endif
-
 static int
 _compare_active_connections (gconstpointer a, gconstpointer b)
 {

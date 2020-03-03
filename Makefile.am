@@ -471,7 +471,6 @@ nm_applet_c_gen = \
 	src/applet-resources.c
 
 nm_applet_hc_real = \
-	shared/nm-utils/nm-compat.c \
 	src/main.c \
 	src/applet.c \
 	src/applet.h \
@@ -561,8 +560,6 @@ EXTRA_DIST += \
 
 EXTRA_DIST += \
 	shared/nm-utils/gsystem-local-alloc.h \
-	shared/nm-utils/nm-compat.c \
-	shared/nm-utils/nm-compat.h \
 	shared/nm-utils/nm-glib.h \
 	shared/nm-utils/nm-macros-internal.h \
 	shared/nm-utils/nm-shared-utils.c \
@@ -570,7 +567,6 @@ EXTRA_DIST += \
 	shared/nm-utils/nm-test-utils.h \
 	shared/nm-utils/nm-vpn-editor-plugin-call.h \
 	shared/nm-default.h \
-	shared/nm-libnm-compat.h \
 	shared/meson.build \
 	$(NULL)
 
