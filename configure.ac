@@ -1,8 +1,8 @@
 AC_PREREQ([2.63])
 
 m4_define([nma_major_version], [1])
-m4_define([nma_minor_version], [8])
-m4_define([nma_micro_version], [25])
+m4_define([nma_minor_version], [15])
+m4_define([nma_micro_version], [0])
 m4_define([nma_version],
           [nma_major_version.nma_minor_version.nma_micro_version])
 
