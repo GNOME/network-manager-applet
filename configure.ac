@@ -182,10 +182,10 @@ AC_DEFINE_UNQUOTED(NM_MORE_ASSERTS, $more_asserts, [Define if more asserts are e
 
 AC_CONFIG_FILES([
 Makefile
-po/Makefile.in
 man/nm-applet.1
 man/nm-connection-editor.1
 org.gnome.nm-applet.gschema.xml
+po/Makefile.in
 ])
 AC_OUTPUT
 
