@@ -11,11 +11,11 @@ project(
 
 nma_name = 'nm-applet'
 
-nma_version = meson.project_version()
-version_array = nma_version.split('.')
-nma_major_version = version_array[0].to_int()
-nma_minor_version = version_array[1].to_int()
-nma_micro_version = version_array[2].to_int()
+nm_applet_version = meson.project_version()
+version_array = nm_applet_version.split('.')
+nm_applet_major_version = version_array[0].to_int()
+nm_applet_minor_version = version_array[1].to_int()
+nm_applet_micro_version = version_array[2].to_int()
 
 nma_gir_version = '1.0'
 nma_gir_prefix = 'NMA'
@@ -47,7 +47,7 @@ config_h = configuration_data()
 
 # defines
 config_h.set_quoted('GETTEXT_PACKAGE', nma_name)
-config_h.set_quoted('VERSION', nma_version)
+config_h.set_quoted('VERSION', nm_applet_version)
 
 # types
 if not cc.has_type('pid_t', prefix: '#include<sys/types.h>')

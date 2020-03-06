@@ -1,13 +1,13 @@
 AC_PREREQ([2.63])
 
-m4_define([nma_major_version], [1])
-m4_define([nma_minor_version], [15])
-m4_define([nma_micro_version], [0])
-m4_define([nma_version],
-          [nma_major_version.nma_minor_version.nma_micro_version])
+m4_define([nm_applet_major_version], [1])
+m4_define([nm_applet_minor_version], [15])
+m4_define([nm_applet_micro_version], [0])
+m4_define([nm_applet_version],
+          [nm_applet_major_version.nma_minor_version.nma_micro_version])
 
 AC_INIT([nm-applet],
-        [nma_version],
+        [nm_applet_version],
         [https://gitlab.gnome.org/GNOME/network-manager-applet/issues],
         [network-manager-applet])
 
