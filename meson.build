@@ -107,7 +107,7 @@ linker_script_ver = join_paths(meson.source_root(), 'linker-script-binary.ver')
 gio_dep = dependency('gio-2.0', version: '>= 2.38')
 gmodule_export_dep = dependency('gmodule-export-2.0')
 libsecret_dep = dependency('libsecret-1', version: '>= 0.18')
-libnma_dep = dependency('libnma')
+libnma_dep = dependency('libnma', version: '>= 1.8.27')
 
 m_dep = cc.find_library('m')
 
@@ -144,8 +144,8 @@ cflags = [
   '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_38',
   '-DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_16',
   '-DNM_VERSION_MAX_ALLOWED=NM_VERSION_1_16',
-  '-DNMA_VERSION_MIN_REQUIRED=NMA_VERSION_1_8_22',
-  '-DNMA_VERSION_MAX_ALLOWED=NMA_VERSION_1_8_22',
+  '-DNMA_VERSION_MIN_REQUIRED=NMA_VERSION_1_8_28',
+  '-DNMA_VERSION_MAX_ALLOWED=NMA_VERSION_1_8_28',
 ]
 
 libnm_dep = declare_dependency(
