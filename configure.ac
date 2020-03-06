@@ -18,15 +18,6 @@ AM_INIT_AUTOMAKE([1.11 no-dist-gzip dist-xz -Wno-portability])
 AM_MAINTAINER_MODE([enable])
 AM_SILENT_RULES([yes])
 
-NMA_MAJOR_VERSION=nma_major_version
-NMA_MINOR_VERSION=nma_minor_version
-NMA_MICRO_VERSION=nma_micro_version
-NMA_VERSION=nma_version
-AC_SUBST(NMA_MAJOR_VERSION)
-AC_SUBST(NMA_MINOR_VERSION)
-AC_SUBST(NMA_MICRO_VERSION)
-AC_SUBST(NMA_VERSION)
-
 dnl
 dnl Require programs
 dnl

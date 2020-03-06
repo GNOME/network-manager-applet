@@ -1,10 +1,5 @@
 src_inc = include_directories('.')
 
-version_conf = configuration_data()
-version_conf.set('NMA_MAJOR_VERSION', nma_major_version)
-version_conf.set('NMA_MINOR_VERSION', nma_minor_version)
-version_conf.set('NMA_MICRO_VERSION', nma_micro_version)
-
 subdir('utils')
 subdir('wireless-security')
 
