@@ -4,61 +4,28 @@
 # If things don't seem to work, this can help:
 # https://gitlab.gnome.org/GNOME/network-manager-applet/-/ci/lint
 
-.fedora_minimal: &fedora_minimal
-  before_script:
-    - dnf -y install
-      file
-      findutils
-      gcc
-      libtool
-      desktop-file-utils
-      gettext-devel
-      glib2-devel
-      gtk3-devel
-      libgudev1-devel
-      libnotify-devel
-      libsecret-devel
-      NetworkManager-libnm-devel
-      pkgconfig
-      /usr/bin/autopoint
-      fedora-repos-rawhide
-    - dnf -y install --nogpgcheck --enablerepo=rawhide
-      libnma-devel
-
-.fedora_full: &fedora_full
-  before_script:
-    - dnf -y install
-      file
-      findutils
-      gcc
-      libtool
-      desktop-file-utils
-      gettext-devel
-      glib2-devel
-      gtk3-devel
-      libgudev1-devel
-      libnotify-devel
-      libsecret-devel
-      NetworkManager-libnm-devel
-      pkgconfig
-      /usr/bin/autopoint
-      redhat-rpm-config
-      jansson-devel
-      ModemManager-glib-devel
-      libselinux-devel
-      fedora-repos-rawhide
-    - dnf -y install --nogpgcheck --enablerepo=rawhide
-      libnma-devel
-
 .dist: &dist
   dependencies:
     - fedora30_dist
-  variables:
-    GIT_STRATEGY: none
 
-.fedora_meson_minimal: &fedora_meson_minimal
-  <<: *fedora_minimal
+fedora30_dist:
+  image: fedora:30
+  stage: build
+  before_script:
+    - ./scripts/gitlab-ci.sh fedora_install_full
+  script:
+    - dnf -y install
+      autoconf automake make
+    - sh autogen.sh
+    - make -j$(nproc) distcheck
+  artifacts:
+    paths:
+      - "*.xz"
+
+fedora_meson_minimal:
   <<: *dist
+  before_script:
+    - ./scripts/gitlab-ci.sh fedora_install_minimal
   script:
     - tar xJf network-manager-applet-*.tar.xz
     - dnf -y install meson
@@ -74,10 +41,13 @@
     - ninja -v -C build test
     - ninja -v -C build install
     - ninja -v -C build uninstall
+  image: fedora:latest
+  stage: test
 
-.fedora_meson_full: &fedora_meson_full
-  <<: *fedora_full
+fedora_meson_full:
   <<: *dist
+  before_script:
+    - ./scripts/gitlab-ci.sh fedora_install_full
   script:
     - dnf -y install meson
     - tar xJf network-manager-applet-*.tar.xz
@@ -93,10 +63,13 @@
     - ninja -v -C build test
     - ninja -v -C build install
     - ninja -v -C build uninstall
+  image: fedora:latest
+  stage: test
 
-.fedora_autotools_minimal: &fedora_autotools_minimal
-  <<: *fedora_minimal
+fedora_autotools_minimal:
   <<: *dist
+  before_script:
+    - ./scripts/gitlab-ci.sh fedora_install_minimal
   script:
     - dnf -y install make
     - tar xJf network-manager-applet-*.tar.xz
@@ -115,10 +88,13 @@
     - make -j$(nproc) check
     - make -j$(nproc) install
     - make -j$(nproc) uninstall
+  image: fedora:latest
+  stage: test
 
-.fedora_autotools_full: &fedora_autotools_full
-  <<: *fedora_full
+fedora_autotools_full:
   <<: *dist
+  before_script:
+    - ./scripts/gitlab-ci.sh fedora_install_full
   script:
     - dnf -y install make
     - tar xJf network-manager-applet-*.tar.xz
@@ -136,79 +112,5 @@
     - make -j$(nproc) check
     - make -j$(nproc) install
     - make -j$(nproc) uninstall
-
-fedora30_dist:
-  <<: *fedora_full
-  image: fedora:30
-  stage: build
-  script:
-    - dnf -y install
-      autoconf automake make
-    - sh autogen.sh
-    - make -j$(nproc) distcheck
-  artifacts:
-    paths:
-      - "*.xz"
-
-fedora_meson_minimal:
-  <<: *fedora_meson_minimal
   image: fedora:latest
   stage: test
-
-fedora_meson_full:
-  <<: *fedora_meson_full
-  image: fedora:latest
-  stage: test
-
-fedora_autotools_minimal:
-  <<: *fedora_autotools_minimal
-  image: fedora:latest
-  stage: test
-
-fedora_autotools_full:
-  <<: *fedora_autotools_full
-  image: fedora:latest
-  stage: test
-
-#centos7:
-#  <<: *dist
-#  before_script:
-#    - yum -y install
-#      file
-#      findutils
-#      gcc
-#      libtool
-#      desktop-file-utils
-#      gettext-devel
-#      glib2-devel
-#      gtk3-devel
-#      intltool
-#      libgudev1-devel
-#      libnotify-devel
-#      libsecret-devel
-#      NetworkManager-libnm-devel
-#      pkgconfig
-#      /usr/bin/autopoint
-#      redhat-rpm-config
-#      jansson-devel
-#      ModemManager-glib-devel
-#      libselinux-devel
-#      make
-#  script:
-#    - tar xJf network-manager-applet-*.tar.xz
-#    - cd network-manager-applet-*/
-#    - ./configure
-#      --disable-silent-rules
-#      --with-more-asserts=yes
-#      --enable-nls
-#      --enable-schemas-compile
-#      --enable-more-warnings
-#      --with-wwan
-#      --with-selinux
-#      --with-team
-#    - make -j$(nproc)
-#    - make -j$(nproc) check
-#    - make -j$(nproc) install
-#    - make -j$(nproc) uninstall
-#  image: centos:7
-#  stage: test
