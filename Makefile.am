@@ -599,7 +599,6 @@ EXTRA_DIST += \
 	meson_options.txt \
 	meson_post_install.py \
 	config.h.meson \
-	gtkdocentities.ent.in \
 	\
 	po/meson.build
 
