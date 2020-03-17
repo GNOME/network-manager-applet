@@ -50,6 +50,7 @@ typedef struct {
 
 	/* These are just for the external UI mode */
 	EuiSecret *eui_secrets;
+	GtkDialog *dialog;
 } RequestData;
 
 typedef struct {
@@ -124,6 +125,7 @@ external_ui_dialog_response (GtkDialog *dialog, int response_id, gpointer user_d
 	}
 
 	gtk_widget_destroy (GTK_WIDGET (dialog));
+	g_clear_object (&req_data->dialog);
 	external_ui_add_secrets (info);
 	complete_request (info);
 }
@@ -210,7 +212,7 @@ external_ui_from_child_response (VpnSecretsInfo *info, GError **error)
 	 * create a dialog and display it. */
 	if (num_ask > 0) {
 		dialog = (NMAVpnPasswordDialog *) nma_vpn_password_dialog_new (title, message, NULL);
-		g_object_ref_sink (dialog);
+		req_data->dialog = g_object_ref_sink (dialog);
 
 		nma_vpn_password_dialog_set_show_password (dialog, FALSE);
 		nma_vpn_password_dialog_set_show_password_secondary (dialog, FALSE);
@@ -594,6 +596,13 @@ ensure_killed (gpointer data)
 }
 
 static void
+dialog_response_destroy (GtkDialog *dialog, int response_id, gpointer user_data)
+{
+	gtk_widget_destroy (GTK_WIDGET (dialog));
+	g_object_unref (dialog);
+}
+
+static void
 free_vpn_secrets_info (SecretsRequest *req)
 {
 	RequestData *req_data;
@@ -637,6 +646,17 @@ free_vpn_secrets_info (SecretsRequest *req)
 			g_free (req_data->eui_secrets[i].value);
 		}
 		g_free (req_data->eui_secrets);
+	}
+
+	if (req_data->dialog) {
+		g_signal_handlers_disconnect_by_func (req_data->dialog,
+		                                      external_ui_dialog_response,
+		                                      req);
+		g_signal_connect (req_data->dialog,
+		                  "response",
+		                  G_CALLBACK (dialog_response_destroy),
+		                  NULL);
+		req_data->dialog = NULL;
 	}
 
 	g_slice_free (RequestData, req_data);
