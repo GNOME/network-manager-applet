@@ -59,7 +59,6 @@ typedef struct {
 
 /*****************************************************************************/
 
-static void request_data_free (RequestData *req_data);
 static void complete_request (VpnSecretsInfo *info);
 
 /*****************************************************************************/
@@ -582,10 +581,65 @@ auth_dialog_spawn (const char *con_id,
 
 /*****************************************************************************/
 
+static gboolean
+ensure_killed (gpointer data)
+{
+	pid_t pid = GPOINTER_TO_INT (data);
+
+	if (kill (pid, 0) == 0)
+		kill (pid, SIGKILL);
+	/* ensure the child is reaped */
+	waitpid (pid, NULL, 0);
+	return FALSE;
+}
+
 static void
 free_vpn_secrets_info (SecretsRequest *req)
 {
-	request_data_free (((VpnSecretsInfo *) req)->req_data);
+	RequestData *req_data;
+	guint i;
+
+	req_data = ((VpnSecretsInfo *) req)->req_data;
+
+	if (!req_data)
+		return;
+
+	g_free (req_data->uuid);
+	g_free (req_data->id);
+	g_free (req_data->service_type);
+
+	nm_clear_g_source (&req_data->watch_id);
+
+	nm_clear_g_source (&req_data->channel_eventid);
+	if (req_data->channel)
+		g_io_channel_unref (req_data->channel);
+
+	if (req_data->pid) {
+		g_spawn_close_pid (req_data->pid);
+		if (kill (req_data->pid, SIGTERM) == 0)
+			g_timeout_add_seconds (2, ensure_killed, GINT_TO_POINTER (req_data->pid));
+		else {
+			kill (req_data->pid, SIGKILL);
+			/* ensure the child is reaped */
+			waitpid (req_data->pid, NULL, 0);
+		}
+	}
+
+	if (req_data->child_response)
+		g_string_free (req_data->child_response, TRUE);
+
+	g_variant_builder_clear (&req_data->secrets_builder);
+
+	if (req_data->eui_secrets) {
+		for (i = 0; req_data->eui_secrets[i].name; i++) {
+			g_free (req_data->eui_secrets[i].name);
+			g_free (req_data->eui_secrets[i].label);
+			g_free (req_data->eui_secrets[i].value);
+		}
+		g_free (req_data->eui_secrets);
+	}
+
+	g_slice_free (RequestData, req_data);
 }
 
 gboolean
@@ -676,62 +730,3 @@ applet_vpn_request_get_secrets (SecretsRequest *req, GError **error)
 	return TRUE;
 }
 
-/*****************************************************************************/
-
-static gboolean
-ensure_killed (gpointer data)
-{
-	pid_t pid = GPOINTER_TO_INT (data);
-
-	if (kill (pid, 0) == 0)
-		kill (pid, SIGKILL);
-	/* ensure the child is reaped */
-	waitpid (pid, NULL, 0);
-	return FALSE;
-}
-
-static void
-request_data_free (RequestData *req_data)
-{
-	guint i;
-
-	if (!req_data)
-		return;
-
-	g_free (req_data->uuid);
-	g_free (req_data->id);
-	g_free (req_data->service_type);
-
-	nm_clear_g_source (&req_data->watch_id);
-
-	nm_clear_g_source (&req_data->channel_eventid);
-	if (req_data->channel)
-		g_io_channel_unref (req_data->channel);
-
-	if (req_data->pid) {
-		g_spawn_close_pid (req_data->pid);
-		if (kill (req_data->pid, SIGTERM) == 0)
-			g_timeout_add_seconds (2, ensure_killed, GINT_TO_POINTER (req_data->pid));
-		else {
-			kill (req_data->pid, SIGKILL);
-			/* ensure the child is reaped */
-			waitpid (req_data->pid, NULL, 0);
-		}
-	}
-
-	if (req_data->child_response)
-		g_string_free (req_data->child_response, TRUE);
-
-	g_variant_builder_clear (&req_data->secrets_builder);
-
-	if (req_data->eui_secrets) {
-		for (i = 0; req_data->eui_secrets[i].name; i++) {
-			g_free (req_data->eui_secrets[i].name);
-			g_free (req_data->eui_secrets[i].label);
-			g_free (req_data->eui_secrets[i].value);
-		}
-		g_free (req_data->eui_secrets);
-	}
-
-	g_slice_free (RequestData, req_data);
-}
