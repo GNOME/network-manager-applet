@@ -124,6 +124,7 @@ external_ui_dialog_response (GtkDialog *dialog, int response_id, gpointer user_d
 	}
 
 	gtk_widget_destroy (GTK_WIDGET (dialog));
+	g_object_unref (dialog);
 	external_ui_add_secrets (info);
 	complete_request (info);
 }
