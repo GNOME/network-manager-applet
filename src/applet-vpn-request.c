@@ -683,9 +683,7 @@ ensure_killed (gpointer data)
 {
 	pid_t pid = GPOINTER_TO_INT (data);
 
-	if (kill (pid, 0) == 0)
-		kill (pid, SIGKILL);
-	/* ensure the child is reaped */
+	kill (pid, SIGKILL);
 	waitpid (pid, NULL, 0);
 	return FALSE;
 }
@@ -709,12 +707,10 @@ request_data_free (RequestData *req_data)
 		g_io_channel_unref (req_data->channel);
 
 	if (req_data->pid) {
-		g_spawn_close_pid (req_data->pid);
 		if (kill (req_data->pid, SIGTERM) == 0)
 			g_timeout_add_seconds (2, ensure_killed, GINT_TO_POINTER (req_data->pid));
 		else {
 			kill (req_data->pid, SIGKILL);
-			/* ensure the child is reaped */
 			waitpid (req_data->pid, NULL, 0);
 		}
 	}
