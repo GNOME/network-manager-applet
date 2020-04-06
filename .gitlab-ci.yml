@@ -4,6 +4,11 @@
 # If things don't seem to work, this can help:
 # https://gitlab.gnome.org/GNOME/network-manager-applet/-/ci/lint
 
+stages:
+  - build
+  - test
+  - triage
+
 .dist: &dist
   dependencies:
     - fedora30_dist
@@ -110,3 +115,12 @@ fedora_autotools_full:
     - make -j$(nproc) uninstall
   image: fedora:latest
   stage: test
+
+triage:issues:
+  stage: triage
+  image: ruby:2.7
+  script:
+    - gem install gitlab-triage
+    - gitlab-triage -n -d --token $API_TOKEN --source-id $SOURCE_ID
+  only:
+    - schedules
