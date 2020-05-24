@@ -9,23 +9,24 @@
 # Roy Chan <roy.chan@linux.org.hk>, 2011.
 # Anthony Fok <anthony.t.fok@gmail.com>, 2013.
 # lrintel <lrintel@redhat.com>, 2017. #zanata
+# Hsiu-Ming Chang <cges30901@gmail.com>, 2018, 2019.
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
-"applet/\n"
-"POT-Creation-Date: 2020-03-06 23:05+0100\n"
-"PO-Revision-Date: 2017-11-07 06:45+0000\n"
-"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
+"Project-Id-Version: network-manager-applet master\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
+"issues\n"
+"POT-Creation-Date: 2019-11-19 10:17+0000\n"
+"PO-Revision-Date: 2020-01-08 21:29+0800\n"
+"Last-Translator: Hsiu-Ming Chang <cges30901@gmail.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.linux.org.tw>\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Zanata 4.3.2\n"
+"X-Generator: Poedit 2.2.4\n"
 
-#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3179
+#: nm-applet.desktop.in:3 src/applet.c:3185 src/applet-dialogs.c:725
 msgid "Network"
 msgstr "網路"
 
@@ -35,41 +36,11 @@ msgstr "管理您的網路連線"
 
 #: nm-applet.desktop.in:5
 msgid "nm-device-wireless"
-msgstr ""
-
-# Tag: title
-#: nm-connection-editor.appdata.xml.in:7
-msgid "NetworkManager"
-msgstr "NetworkManager"
-
-#: nm-connection-editor.appdata.xml.in:8
-#, fuzzy
-msgid "NetworkManager connection editor"
-msgstr "沒有網路連接"
-
-#: nm-connection-editor.appdata.xml.in:11
-msgid ""
-"NetworkManager is a system service for managing and configuring your network "
-"connections and devices."
-msgstr "NetworkManager是一種用於管理和配置網絡連接和設備的系統服務。"
-
-#: nm-connection-editor.appdata.xml.in:13
-msgid ""
-"The nm-connection-editor program works with NetworkManager to create and "
-"edit existing connection profiles for NetworkManager."
-msgstr ""
-"nm-connection-editor程序與NetworkManager一起使用，以創建和編輯NetworkManager"
-"的現有連接配置文件。"
-
-#: nm-connection-editor.appdata.xml.in:27
-#, fuzzy
-msgid "The NetworkManager Developers"
-msgstr "NetworkManager 面板程式"
+msgstr "nm-device-wireless"
 
 #: nm-connection-editor.desktop.in:3
-#, fuzzy
 msgid "Advanced Network Configuration"
-msgstr "啟用網路連線"
+msgstr "進階網路設定"
 
 #: nm-connection-editor.desktop.in:4
 msgid "Manage and change your network connection settings"
@@ -77,46 +48,149 @@ msgstr "管理與變更您的連線設定值"
 
 #: nm-connection-editor.desktop.in:5
 msgid "preferences-system-network"
+msgstr "preferences-system-network"
+
+#: org.gnome.nm-applet.gschema.xml.in:6
+msgid "Disable connected notifications"
+msgstr "停止已連線的通知"
+
+#: org.gnome.nm-applet.gschema.xml.in:7
+msgid "Set this to true to disable notifications when connecting to a network."
+msgstr "將這設為 True，以停用網路連線時的通知。"
+
+#: org.gnome.nm-applet.gschema.xml.in:11
+msgid "Disable disconnected notifications"
+msgstr "停止已離線的通知"
+
+#: org.gnome.nm-applet.gschema.xml.in:12
+msgid ""
+"Set this to true to disable notifications when disconnecting from a network."
+msgstr "將這設為 True，以停用網路離線時的通知。"
+
+#: org.gnome.nm-applet.gschema.xml.in:16
+msgid "Disable VPN notifications"
+msgstr "停用 VPN 的通知"
+
+#: org.gnome.nm-applet.gschema.xml.in:17
+msgid ""
+"Set this to true to disable notifications when connecting to or "
+"disconnecting from a VPN."
+msgstr "將這設為 True，以停用 VPN 連線或離線時的通知。"
+
+#: org.gnome.nm-applet.gschema.xml.in:21
+msgid "Suppress networks available notifications"
+msgstr "停止可用網路的通知"
+
+#: org.gnome.nm-applet.gschema.xml.in:22
+msgid ""
+"Set this to true to disable notifications when Wi-Fi networks are available."
+msgstr "將這設為 True，以停用有 Wi-Fi 無線網路可用時的通知。"
+
+#: org.gnome.nm-applet.gschema.xml.in:26
+msgid "Stamp"
+msgstr "戳記"
+
+#: org.gnome.nm-applet.gschema.xml.in:27
+msgid "Used to determine whether settings should be migrated to a new version."
+msgstr "用來決定設定是不是要轉移到新版本上。"
+
+#: org.gnome.nm-applet.gschema.xml.in:31
+msgid "Disable WiFi Create"
+msgstr "禁止建立 Wi-Fi"
+
+#: org.gnome.nm-applet.gschema.xml.in:32
+msgid ""
+"Set to true to disable creation of adhoc networks when using the applet."
+msgstr "將這設為 True，以停用使用面板程式建立 Ad hoc 網路。"
+
+#: org.gnome.nm-applet.gschema.xml.in:36
+msgid "Show the applet in notification area"
+msgstr "在通知區域顯示面板程式"
+
+#: org.gnome.nm-applet.gschema.xml.in:37
+msgid "Set to FALSE to disable displaying the applet in the notification area."
+msgstr "設定為 FALSE 來停用在通知區域示顯示面板程式的功能。"
+
+#: org.gnome.nm-applet.gschema.xml.in:43 org.gnome.nm-applet.gschema.xml.in:48
+msgid "Ignore CA certificate"
+msgstr "忽略 CA 憑證"
+
+#: org.gnome.nm-applet.gschema.xml.in:44
+msgid ""
+"Set this to true to disable warnings about CA certificates in EAP "
+"authentication."
+msgstr "將這設為 True，以停用在 EAP 認證中關於 CA 證書的警告。"
+
+#: org.gnome.nm-applet.gschema.xml.in:49
+msgid ""
+"Set this to true to disable warnings about CA certificates in phase 2 of EAP "
+"authentication."
+msgstr "將這設為 True，以停用在 EAP 認證第二階段中關於 CA 證書的警告。"
+
+#: nm-connection-editor.appdata.xml.in:7
+msgid "NetworkManager"
+msgstr "NetworkManager"
+
+#: nm-connection-editor.appdata.xml.in:8
+msgid "NetworkManager connection editor"
+msgstr "NetworkManager 連線編輯器"
+
+#: nm-connection-editor.appdata.xml.in:11
+msgid ""
+"NetworkManager is a system service for managing and configuring your network "
+"connections and devices."
+msgstr "NetworkManager 是一個用於管理和設定網路連線和裝置的系統服務。"
+
+#: nm-connection-editor.appdata.xml.in:13
+msgid ""
+"The nm-connection-editor program works with NetworkManager to create and "
+"edit existing connection profiles for NetworkManager."
 msgstr ""
+"nm-connection-editor 程式與 NetworkManager 一起使用，以建立和編輯 "
+"NetworkManager 的現有連線設定檔。"
+
+#: nm-connection-editor.appdata.xml.in:27
+msgid "The NetworkManager Developers"
+msgstr "NetworkManager 開發者"
 
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
 msgid "object class '%s' has no property named '%s'"
-msgstr "對像類'%s'沒有名字'%s“"
+msgstr "物件類別「%s」沒有名為「%s」的屬性"
 
 #: shared/nm-utils/nm-shared-utils.c:800
 #, c-format
 msgid "property '%s' of object class '%s' is not writable"
-msgstr "物業'%s'對像類'%s'不可寫"
+msgstr "物件類別「%2$s」的屬性「%1$s」是不可寫入的"
 
 #: shared/nm-utils/nm-shared-utils.c:807
 #, c-format
 msgid ""
 "construct property \"%s\" for object '%s' can't be set after construction"
-msgstr "建築物“%s“對象”%s'施工後無法設置"
+msgstr "物件「%2$s」的建構屬性「%1$s」無法在建構後設定"
 
 #: shared/nm-utils/nm-shared-utils.c:815
 #, c-format
 msgid "'%s::%s' is not a valid property name; '%s' is not a GObject subtype"
-msgstr "“%s::%s'不是有效的財產名稱; “%s'不是GObject子類型"
+msgstr "「%s::%s」不是有效的屬性名稱；「%s」不是 GObject 子類型"
 
 #: shared/nm-utils/nm-shared-utils.c:824
 #, c-format
 msgid "unable to set property '%s' of type '%s' from value of type '%s'"
-msgstr "無法設置屬性'%s'類型'%s'來自類型的價值'%s“"
+msgstr "無法從類型「%3$s」的值設定類型為「%2$s」的屬性「%1$s」"
 
 #: shared/nm-utils/nm-shared-utils.c:835
 #, c-format
 msgid ""
 "value \"%s\" of type '%s' is invalid or out of range for property '%s' of "
 "type '%s'"
-msgstr "價值“%s“類型'%s'無效或超出財產範圍'%s'類型'%s“"
+msgstr "類型「%2$s」的值「%1$s」無效或超出類型為「%4$s」的屬性「%3$s」的範圍"
 
 #: src/8021x.ui:11 src/ethernet-dialog.c:85
 msgid "802.1X authentication"
 msgstr "802.1X 驗證"
 
-#: src/8021x.ui:31 src/applet-device-ethernet.c:335 src/applet-dialogs.c:1179
+#: src/8021x.ui:31 src/applet-device-ethernet.c:335 src/applet-dialogs.c:1180
 #: src/connection-editor/ce-ip4-routes.ui:30
 #: src/connection-editor/ce-ip6-routes.ui:30
 #: src/connection-editor/ce-new-connection.ui:50
@@ -127,23 +201,21 @@ msgstr "802.1X 驗證"
 #: src/connection-editor/connection-helpers.c:745
 #: src/connection-editor/nm-connection-editor.ui:197
 #: src/connection-editor/page-bluetooth.c:293
-#: src/connection-editor/page-mobile.c:530
-#: src/connection-editor/page-proxy.c:107
+#: src/connection-editor/page-mobile.c:526
+#: src/connection-editor/page-proxy.c:107 src/connection-editor/page-team.c:330
 #: src/connection-editor/page-team-port.c:192
-#: src/connection-editor/page-team.c:330
 #: src/connection-editor/vpn-helpers.c:198 src/gsm-unlock.ui:28
 #: src/mobile-helpers.c:451
 msgid "_Cancel"
-msgstr "取消 (_C)"
+msgstr "取消(_C)"
 
 #: src/8021x.ui:46
 msgid "C_onnect"
 msgstr "連線(_O)"
 
 #: src/8021x.ui:122
-#, fuzzy
 msgid "_Network name"
-msgstr "網路名稱(_N)："
+msgstr "網路名稱(_N)"
 
 #: src/ap-menu-item.c:70
 msgid "ad-hoc"
@@ -152,6 +224,316 @@ msgstr "ad-hoc"
 #: src/ap-menu-item.c:75
 msgid "secure."
 msgstr "安全。"
+
+#: src/applet.c:378
+msgid "Failed to add/activate connection"
+msgstr "無法加入/使用連線"
+
+#: src/applet.c:380 src/applet.c:434 src/applet.c:469
+#: src/applet-device-wifi.c:1371 src/applet-device-wifi.c:1394
+msgid "Unknown error"
+msgstr "不明的錯誤"
+
+#: src/applet.c:383 src/applet.c:472 src/applet-device-wifi.c:522
+#: src/applet-device-wifi.c:1374 src/applet-device-wifi.c:1397
+msgid "Connection failure"
+msgstr "連線失敗"
+
+#: src/applet.c:432
+msgid "Device disconnect failed"
+msgstr "裝置斷線失敗"
+
+#: src/applet.c:437
+msgid "Disconnect failure"
+msgstr "斷線失敗"
+
+#: src/applet.c:467
+msgid "Connection activation failed"
+msgstr "連線生效失敗"
+
+#: src/applet.c:794 src/applet-device-wifi.c:1110
+msgid "Don’t show this message again"
+msgstr "不要再顯示這個訊息"
+
+#: src/applet.c:884
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” disconnected because the network connection was "
+"interrupted."
+msgstr ""
+"\n"
+"VPN 連線「%s」已斷線，因為網路連線中斷了。"
+
+#: src/applet.c:886
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed because the network connection was "
+"interrupted."
+msgstr ""
+"\n"
+"VPN 連線「%s」失敗，因為網路連線中斷了。"
+
+#: src/applet.c:888
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed because the VPN service stopped unexpectedly."
+msgstr ""
+"\n"
+"VPN 連線「%s」失敗，因為 VPN 服務意外的停止了。"
+
+#: src/applet.c:890
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed because the VPN service returned invalid "
+"configuration."
+msgstr ""
+"\n"
+"VPN 連線「%s」失敗，因為 VPN 服務傳回無效的組態。"
+
+#: src/applet.c:892
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed because the connection attempt timed out."
+msgstr ""
+"\n"
+"VPN 連線「%s」失敗，因為連線的嘗試已逾時。"
+
+#: src/applet.c:894
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed because the VPN service did not start in time."
+msgstr ""
+"\n"
+"VPN 連線「%s」失敗，因為 VPN 服務沒有及時啟動。"
+
+#: src/applet.c:896
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed because the VPN service failed to start."
+msgstr ""
+"\n"
+"VPN 連線「%s」失敗，因為 VPN 服務啟動失敗。"
+
+#: src/applet.c:898
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed because there were no valid VPN secrets."
+msgstr ""
+"\n"
+"VPN 連線「%s」失敗，因為沒有有效的 VPN 密碼。"
+
+#: src/applet.c:900
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed because of invalid VPN secrets."
+msgstr ""
+"\n"
+"VPN 連線「%s」失敗，因為無效的 VPN 密碼。"
+
+#: src/applet.c:905
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed."
+msgstr ""
+"\n"
+"VPN 連線「%s」失敗。"
+
+#: src/applet.c:932
+#, c-format
+msgid ""
+"VPN connection has been successfully established.\n"
+"\n"
+"%s\n"
+msgstr ""
+"VPN 連線已成功的建立。\n"
+"%s\n"
+
+#: src/applet.c:934
+msgid "VPN connection has been successfully established.\n"
+msgstr "VPN 連線已成功的建立。\n"
+
+#: src/applet.c:936
+msgid "VPN Login Message"
+msgstr "VPN 登錄訊息"
+
+#: src/applet.c:944 src/applet.c:984
+msgid "VPN Connection Failed"
+msgstr "VPN 連線失敗"
+
+#: src/applet.c:988
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed because the VPN service failed to start.\n"
+"\n"
+"%s"
+msgstr ""
+"\n"
+"VPN 連線「%s」失敗，因為 VPN 服務啟動失敗。\n"
+"\n"
+"%s"
+
+#: src/applet.c:991
+#, c-format
+msgid ""
+"\n"
+"The VPN connection “%s” failed to start.\n"
+"\n"
+"%s"
+msgstr ""
+"\n"
+"VPN 連線「%s」啟動失敗。\n"
+"\n"
+"%s"
+
+#: src/applet.c:1282
+msgid "device not ready (firmware missing)"
+msgstr "裝置尚未就緒 (缺少韌體)"
+
+#: src/applet.c:1284
+msgid "device not ready"
+msgstr "裝置尚未就緒"
+
+#. Notify user of unmanaged or unavailable device
+#: src/applet.c:1294 src/applet-device-ethernet.c:95
+msgid "disconnected"
+msgstr "已斷線"
+
+#: src/applet.c:1310
+msgid "Disconnect"
+msgstr "斷線"
+
+#: src/applet.c:1324
+msgid "device not managed"
+msgstr "裝置無法管理"
+
+#: src/applet.c:1397
+msgid "No network devices available"
+msgstr "沒有可用的網路裝置"
+
+#: src/applet.c:1449
+msgid "_VPN Connections"
+msgstr "_VPN 連線"
+
+#: src/applet.c:1493
+msgid "_Configure VPN…"
+msgstr "設定 VPN(_C)…"
+
+#: src/applet.c:1496
+msgid "_Add a VPN connection…"
+msgstr "加入 VPN 連線(_A)…"
+
+#: src/applet.c:1602
+msgid "NetworkManager is not running…"
+msgstr "NetworkManager 沒有執行…"
+
+#: src/applet.c:1607 src/applet.c:2672
+msgid "Networking disabled"
+msgstr "網路已停用"
+
+#. 'Enable Networking' item
+#: src/applet.c:1817
+msgid "Enable _Networking"
+msgstr "啟用網路(_N)"
+
+#. 'Enable Wi-Fi' item
+#: src/applet.c:1826
+msgid "Enable _Wi-Fi"
+msgstr "啟用 _Wi-Fi"
+
+#. 'Enable Mobile Broadband' item
+#: src/applet.c:1835
+msgid "Enable _Mobile Broadband"
+msgstr "啟用行動寬頻(_M)"
+
+#. Toggle notifications item
+#: src/applet.c:1847
+msgid "Enable N_otifications"
+msgstr "啟用通知功能(_O)"
+
+#. 'Connection Information' item
+#: src/applet.c:1859
+msgid "Connection _Information"
+msgstr "連線資訊(_I)"
+
+#. 'Edit Connections...' item
+#: src/applet.c:1867
+msgid "Edit Connections…"
+msgstr "編輯連線…"
+
+#: src/applet.c:1881
+msgid "_About"
+msgstr "關於(_A)"
+
+#: src/applet.c:2192
+#, c-format
+msgid "You are now connected to “%s”."
+msgstr "您現在已連線至「%s」。"
+
+#: src/applet.c:2232
+msgid "Disconnected"
+msgstr "已斷線"
+
+#: src/applet.c:2233
+msgid "The network connection has been disconnected."
+msgstr "網路連線已中斷。"
+
+#: src/applet.c:2535
+#, c-format
+msgid "Preparing network connection “%s”…"
+msgstr "正在準備網路連線「%s」…"
+
+#: src/applet.c:2538
+#, c-format
+msgid "User authentication required for network connection “%s”…"
+msgstr "網路連線「%s」需要使用者驗證…"
+
+#: src/applet.c:2541 src/applet-device-bt.c:111 src/mobile-helpers.c:593
+#, c-format
+msgid "Requesting a network address for “%s”…"
+msgstr "正在要求提供「%s」的網路位址…"
+
+#: src/applet.c:2544
+#, c-format
+msgid "Network connection “%s” active"
+msgstr "網路連線「%s」在使用中"
+
+#: src/applet.c:2617
+#, c-format
+msgid "Starting VPN connection “%s”…"
+msgstr "正在啟動 VPN 連線「%s」…"
+
+#: src/applet.c:2620
+#, c-format
+msgid "User authentication required for VPN connection “%s”…"
+msgstr "VPN 連線「%s」需要使用者驗證…"
+
+#: src/applet.c:2623
+#, c-format
+msgid "Requesting a VPN address for “%s”…"
+msgstr "正在要求提供「%s」的 VPN 網路位址…"
+
+#: src/applet.c:2626
+msgid "VPN connection active"
+msgstr "VPN 連線在使用中"
+
+#: src/applet.c:2676
+msgid "No network connection"
+msgstr "沒有網路連接"
+
+#: src/applet.c:3286
+msgid "NetworkManager Applet"
+msgstr "NetworkManager 面板程式"
 
 #: src/applet-device-broadband.c:147
 msgid "Wrong PUK code; please contact your provider."
@@ -163,9 +545,8 @@ msgstr "PIN 碼錯誤，請聯絡您的供應商。"
 
 #. Start the spinner to show the progress of the unlock
 #: src/applet-device-broadband.c:240
-#, fuzzy
 msgid "Sending unlock code…"
-msgstr "發送解鎖用的密碼…"
+msgstr "正在傳送解鎖密碼…"
 
 #: src/applet-device-broadband.c:725 src/applet-dialogs.c:521
 #, c-format
@@ -174,7 +555,7 @@ msgstr "行動寬頻 (%s)"
 
 #: src/applet-device-broadband.c:727
 #: src/connection-editor/connection-helpers.c:94
-#: src/connection-editor/page-mobile.c:295
+#: src/connection-editor/page-mobile.c:291
 msgid "Mobile Broadband"
 msgstr "行動寬頻"
 
@@ -185,9 +566,8 @@ msgstr "可用"
 
 #. Default connection item
 #: src/applet-device-broadband.c:793
-#, fuzzy
 msgid "New Mobile Broadband connection…"
-msgstr "新的行動寬頻連線"
+msgstr "新的行動寬頻連線…"
 
 #: src/applet-device-broadband.c:807 src/applet-device-bt.c:73
 #: src/applet-device-ethernet.c:118 src/applet-device-wifi.c:1292
@@ -215,27 +595,22 @@ msgid "You are now connected to the mobile broadband network."
 msgstr "您現在已連線至行動寬頻網路。"
 
 #: src/applet-device-bt.c:102 src/mobile-helpers.c:584
-#, fuzzy, c-format
+#, c-format
 msgid "Preparing mobile broadband connection “%s”…"
 msgstr "正在準備行動寬頻連線「%s」…"
 
 #: src/applet-device-bt.c:105 src/mobile-helpers.c:587
-#, fuzzy, c-format
+#, c-format
 msgid "Configuring mobile broadband connection “%s”…"
 msgstr "正在設定行動寬頻連線「%s」…"
 
 #: src/applet-device-bt.c:108 src/mobile-helpers.c:590
-#, fuzzy, c-format
+#, c-format
 msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr "行動寬頻連線「%s」需要使用者驗證…"
 
-#: src/applet-device-bt.c:111 src/applet.c:2535 src/mobile-helpers.c:593
-#, fuzzy, c-format
-msgid "Requesting a network address for “%s”…"
-msgstr "正在要求提供「%s」的網路位址…"
-
 #: src/applet-device-bt.c:115 src/mobile-helpers.c:612
-#, fuzzy, c-format
+#, c-format
 msgid "Mobile broadband connection “%s” active"
 msgstr "行動寬頻連線「%s」在使用中"
 
@@ -261,37 +636,32 @@ msgstr "有線網路"
 msgid "Ethernet Network"
 msgstr "有線網路"
 
-#. Notify user of unmanaged or unavailable device
-#: src/applet-device-ethernet.c:95 src/applet.c:1288
-msgid "disconnected"
-msgstr "已斷線"
-
 #: src/applet-device-ethernet.c:119
 msgid "You are now connected to the ethernet network."
 msgstr "您現在已連線至有線網路。"
 
 #: src/applet-device-ethernet.c:147
-#, fuzzy, c-format
+#, c-format
 msgid "Preparing ethernet network connection “%s”…"
 msgstr "正在準備有線網路連線「%s」…"
 
 #: src/applet-device-ethernet.c:150
-#, fuzzy, c-format
+#, c-format
 msgid "Configuring ethernet network connection “%s”…"
 msgstr "正在設定有線網路連線「%s」…"
 
 #: src/applet-device-ethernet.c:153
-#, fuzzy, c-format
+#, c-format
 msgid "User authentication required for ethernet network connection “%s”…"
 msgstr "有線網路連線「%s」需要使用者驗證…"
 
 #: src/applet-device-ethernet.c:156
-#, fuzzy, c-format
+#, c-format
 msgid "Requesting an ethernet network address for “%s”…"
 msgstr "正要求有線網路「%s」提供網路位址…"
 
 #: src/applet-device-ethernet.c:160
-#, fuzzy, c-format
+#, c-format
 msgid "Ethernet network connection “%s” active"
 msgstr "有線網路連線「%s」在使用中"
 
@@ -299,26 +669,24 @@ msgstr "有線網路連線「%s」在使用中"
 msgid "DSL authentication"
 msgstr "DSL 驗證"
 
-#: src/applet-device-ethernet.c:336 src/applet-dialogs.c:1180
+#: src/applet-device-ethernet.c:336 src/applet-dialogs.c:1181
 #: src/connection-editor/ce-ip4-routes.ui:44
 #: src/connection-editor/ce-ip6-routes.ui:44
 #: src/connection-editor/ce-page-dcb.ui:583
 #: src/connection-editor/ce-page-dcb.ui:1033
 #: src/connection-editor/ce-ppp-auth-methods.ui:42
 #: src/connection-editor/page-bluetooth.c:295
-#: src/connection-editor/page-mobile.c:532 src/mobile-helpers.c:452
+#: src/connection-editor/page-mobile.c:528 src/mobile-helpers.c:452
 msgid "_OK"
 msgstr "確定(_O)"
 
 #: src/applet-device-wifi.c:208
-#, fuzzy
 msgid "_Connect to Hidden Wi-Fi Network…"
-msgstr "連接到隱藏的 Wi-Fi 網路"
+msgstr "連線到隱藏的 Wi-Fi 網路(_C)…"
 
 #: src/applet-device-wifi.c:259
-#, fuzzy
 msgid "Create _New Wi-Fi Network…"
-msgstr "建立新的 Wi-Fi 網路"
+msgstr "建立新的 Wi-Fi 網路(_N)…"
 
 #: src/applet-device-wifi.c:341
 msgid "(none)"
@@ -331,11 +699,6 @@ msgstr "無法加入新連線"
 #: src/applet-device-wifi.c:520
 msgid "Insufficient privileges."
 msgstr "權限不足。"
-
-#: src/applet-device-wifi.c:522 src/applet-device-wifi.c:1374
-#: src/applet-device-wifi.c:1397 src/applet.c:377 src/applet.c:466
-msgid "Connection failure"
-msgstr "連線失敗"
 
 #: src/applet-device-wifi.c:822
 #, c-format
@@ -372,54 +735,44 @@ msgstr "有 Wi-Fi 網路可用"
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "使用網路選單來連線到 Wi-Fi 網路"
 
-#: src/applet-device-wifi.c:1110 src/applet.c:788
-#, fuzzy
-msgid "Don’t show this message again"
-msgstr "不要再顯示這個訊息"
-
 #: src/applet-device-wifi.c:1291
-#, fuzzy, c-format
+#, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "您現在已連線至 Wi-Fi 網路「%s」。"
 
 #: src/applet-device-wifi.c:1326
-#, fuzzy, c-format
+#, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "正在準備 Wi-Fi 網路連線「%s」…"
 
 #: src/applet-device-wifi.c:1329
-#, fuzzy, c-format
+#, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "正在設定 Wi-Fi 網路連線「%s」…"
 
 #: src/applet-device-wifi.c:1332
-#, fuzzy, c-format
+#, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "Wi-Fi 網路連線「%s」需要使用者驗證…"
 
 #: src/applet-device-wifi.c:1335
-#, fuzzy, c-format
+#, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "正在要求提供「%s」的 Wi-Fi 網路位址…"
 
 #: src/applet-device-wifi.c:1346
-#, fuzzy, c-format
+#, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
-msgstr "Wi-Fi 網路連線「%s」在使用中： %s (%d%%)"
+msgstr "Wi-Fi 網路連線「%s」在使用中：%s (%d%%)"
 
 #: src/applet-device-wifi.c:1350
-#, fuzzy, c-format
+#, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "Wi-Fi 網路連線「%s」在使用中"
 
 #: src/applet-device-wifi.c:1369
 msgid "Failed to activate connection"
 msgstr "無法使用連線"
-
-#: src/applet-device-wifi.c:1371 src/applet-device-wifi.c:1394 src/applet.c:374
-#: src/applet.c:428 src/applet.c:463
-msgid "Unknown error"
-msgstr "不明的錯誤"
 
 #: src/applet-dialogs.c:28
 msgid "Error displaying connection information:"
@@ -440,9 +793,8 @@ msgstr "WPA/WPA2"
 
 #. Create the expander
 #: src/applet-dialogs.c:163
-#, fuzzy
 msgid "More addresses"
-msgstr "地址"
+msgstr "更多位址"
 
 #: src/applet-dialogs.c:224
 msgid "WEP"
@@ -450,7 +802,7 @@ msgstr "WEP"
 
 #: src/applet-dialogs.c:230
 msgid "WPA3"
-msgstr ""
+msgstr "WPA3"
 
 #: src/applet-dialogs.c:234 src/applet-dialogs.c:243
 #: src/connection-editor/page-wifi-security.c:320
@@ -493,18 +845,16 @@ msgid "Subnet Mask"
 msgstr "子網路遮罩"
 
 #: src/applet-dialogs.c:428
-#, fuzzy
 msgid "Primary DNS"
-msgstr "主要(_P):"
+msgstr "主要 DNS"
 
 #: src/applet-dialogs.c:428
-#, fuzzy
 msgid "Secondary DNS"
-msgstr "第二密碼(_S)："
+msgstr "第二 DNS"
 
 #: src/applet-dialogs.c:428
 msgid "Tertiary DNS"
-msgstr ""
+msgstr "第三 DNS"
 
 #: src/applet-dialogs.c:507
 #, c-format
@@ -527,7 +877,7 @@ msgid "CDMA (%s)"
 msgstr "CDMA (%s)"
 
 #. --- General ---
-#: src/applet-dialogs.c:527 src/applet-dialogs.c:861
+#: src/applet-dialogs.c:527 src/applet-dialogs.c:862
 #: src/connection-editor/ce-page-team-port.ui:394
 #: src/connection-editor/ce-page-team.ui:776
 #: src/connection-editor/page-general.c:355
@@ -552,487 +902,202 @@ msgid "Speed"
 msgstr "速度"
 
 #: src/applet-dialogs.c:604
-#, fuzzy
 msgid "Security"
-msgstr "安全性："
+msgstr "安全性"
 
 #. --- IPv4 ---
-#: src/applet-dialogs.c:629 src/applet-dialogs.c:891
+#: src/applet-dialogs.c:629 src/applet-dialogs.c:892
 #: src/connection-editor/ce-page-team.ui:493
 msgid "IPv4"
 msgstr "IPv4"
 
-#: src/applet-dialogs.c:648 src/applet-dialogs.c:696
+#: src/applet-dialogs.c:648 src/applet-dialogs.c:697
 msgid "Default Route"
 msgstr "預設路由"
 
-#: src/applet-dialogs.c:676 src/applet-dialogs.c:918
+#: src/applet-dialogs.c:676 src/applet-dialogs.c:919
 #: src/connection-editor/ce-page-team.ui:497
 msgid "IPv6"
 msgstr "IPv6"
 
-#: src/applet-dialogs.c:717 src/connection-editor/ce-page-wifi.ui:52
+#: src/applet-dialogs.c:718 src/connection-editor/ce-page-wifi.ui:52
 msgid "Hotspot"
 msgstr "熱點"
 
-#: src/applet-dialogs.c:735
-#, fuzzy
+#: src/applet-dialogs.c:736
 msgid "Password"
-msgstr "密碼："
+msgstr "密碼"
 
-#: src/applet-dialogs.c:865
+#: src/applet-dialogs.c:866
 msgid "VPN Type"
 msgstr "VPN 類型"
 
-#: src/applet-dialogs.c:870
+#: src/applet-dialogs.c:871
 msgid "VPN Gateway"
 msgstr "VPN 閘道器"
 
-#: src/applet-dialogs.c:874
+#: src/applet-dialogs.c:875
 msgid "VPN Username"
 msgstr "VPN 使用者名稱"
 
-#: src/applet-dialogs.c:878
+#: src/applet-dialogs.c:879
 msgid "VPN Banner"
 msgstr "VPN 旗幟"
 
-#: src/applet-dialogs.c:882
+#: src/applet-dialogs.c:883
 msgid "Base Connection"
 msgstr "基礎連線"
 
-#: src/applet-dialogs.c:883 src/wireless-security/wireless-security.c:495
+#: src/applet-dialogs.c:884 src/wireless-security/wireless-security.c:495
 msgid "Unknown"
 msgstr "不明"
 
 #. Shouldn't really happen but ...
-#: src/applet-dialogs.c:1080
+#: src/applet-dialogs.c:1081
 msgid "No valid active connections found!"
 msgstr "找不到有效的使用中連線！"
 
-#: src/applet-dialogs.c:1128
+#: src/applet-dialogs.c:1129
 msgid ""
 "Copyright © 2004-2017 Red Hat, Inc.\n"
 "Copyright © 2005-2008 Novell, Inc.\n"
 "and many other community contributors and translators"
 msgstr ""
-"版權所有©2004-2017 Red Hat，Inc。版權所有©2005-2008 Novell，Inc。和許多其他社"
-"區貢獻者和翻譯"
+"版權所有 © 2004-2017 Red Hat, Inc.\n"
+"版權所有 © 2005-2008 Novell, Inc.\n"
+"和許多其他社群貢獻者和翻譯者"
 
-#: src/applet-dialogs.c:1131
+#: src/applet-dialogs.c:1132
 msgid ""
 "Notification area applet for managing your network devices and connections."
 msgstr "用來管理您的網路裝置與連線的通知區面板程式。"
 
-#: src/applet-dialogs.c:1133
+#: src/applet-dialogs.c:1134
 msgid "NetworkManager Website"
 msgstr "NetworkManager 網站"
 
-#: src/applet-dialogs.c:1137
+#: src/applet-dialogs.c:1138
 msgid "translator-credits"
 msgstr ""
+"Woodman Tuen <wmtuen@gmail.com>, 2005.\n"
+"Hialan Liu <hialan.liu@gmail.com>, 2008.\n"
+"Chester Cheng <ccheng@redhat.com>, 2010.\n"
+"Terry Chuang <tchuang@redhat.com>, 2010.\n"
+"Wei-Lun Chao <chaoweilun@gmail.com>, 2010.\n"
+"Roy Chan <roy.chan@linux.org.hk>, 2011.\n"
+"Anthony Fok <anthony.t.fok@gmail.com>, 2013.\n"
+"lrintel <lrintel@redhat.com>, 2017. #zanata\n"
 "莊佳儒 <tchuang@redhat.com>.\n"
-"Cheng-Chia Tseng <pswo10680@gmail.com>, 2017."
+"Cheng-Chia Tseng <pswo10680@gmail.com>, 2017.\n"
+"Hsiu-Ming Chang <cges30901@gmail.com>, 2018, 2019."
 
-#: src/applet-dialogs.c:1147
+#: src/applet-dialogs.c:1148
 msgid ""
 "The NetworkManager Applet could not find some required resources (the .ui "
 "file was not found)."
 msgstr "NetworkManager 面板程式無法找到一些需要的資源（找不到 .ui 檔）。"
 
-#: src/applet-dialogs.c:1152
+#: src/applet-dialogs.c:1153
 msgid "Missing resources"
 msgstr "遺失資源"
 
-#: src/applet-dialogs.c:1177
+#: src/applet-dialogs.c:1178
 msgid "Mobile broadband network password"
 msgstr "行動寬頻網路密碼"
 
-#: src/applet-dialogs.c:1186
-#, fuzzy, c-format
+#: src/applet-dialogs.c:1187
+#, c-format
 msgid "A password is required to connect to “%s”."
 msgstr "連線至「%s」需要密碼。"
 
-#: src/applet-dialogs.c:1201
+#: src/applet-dialogs.c:1202
 msgid "Password:"
 msgstr "密碼："
 
-#: src/applet-dialogs.c:1483
+#: src/applet-dialogs.c:1484
 msgid "SIM PIN unlock required"
 msgstr "需要解鎖 SIM PIN 碼"
 
-#: src/applet-dialogs.c:1484
+#: src/applet-dialogs.c:1485
 msgid "SIM PIN Unlock Required"
 msgstr "需要解鎖 SIM PIN 碼"
 
 #. FIXME: some warning about # of times you can enter incorrect PIN
-#: src/applet-dialogs.c:1486
-#, fuzzy, c-format
+#: src/applet-dialogs.c:1487
+#, c-format
 msgid ""
 "The mobile broadband device “%s” requires a SIM PIN code before it can be "
 "used."
 msgstr "要使用行動寬頻裝置「%s」之前，需要 SIM PIN 碼。"
 
 #. Translators: PIN code entry label
-#: src/applet-dialogs.c:1488
+#: src/applet-dialogs.c:1489
 msgid "PIN code:"
 msgstr "PIN 碼："
 
 #. Translators: Show/obscure PIN checkbox label
-#: src/applet-dialogs.c:1492
+#: src/applet-dialogs.c:1493
 msgid "Show PIN code"
 msgstr "顯示 PIN 碼"
 
-#: src/applet-dialogs.c:1494
+#: src/applet-dialogs.c:1495
 msgid "SIM PUK unlock required"
 msgstr "需要解鎖 SIM PUK 碼"
 
-#: src/applet-dialogs.c:1495
+#: src/applet-dialogs.c:1496
 msgid "SIM PUK Unlock Required"
 msgstr "需要解鎖 SIM PUK 碼"
 
 #. FIXME: some warning about # of times you can enter incorrect PUK
-#: src/applet-dialogs.c:1497
-#, fuzzy, c-format
+#: src/applet-dialogs.c:1498
+#, c-format
 msgid ""
 "The mobile broadband device “%s” requires a SIM PUK code before it can be "
 "used."
 msgstr "要使用行動寬頻裝置「%s」之前，需要 SIM PUK 碼。"
 
 #. Translators: PUK code entry label
-#: src/applet-dialogs.c:1499
+#: src/applet-dialogs.c:1500
 msgid "PUK code:"
 msgstr "PUK 碼："
 
 #. Translators: New PIN entry label
-#: src/applet-dialogs.c:1502
+#: src/applet-dialogs.c:1503
 msgid "New PIN code:"
 msgstr "新的 PIN 碼："
 
 #. Translators: New PIN verification entry label
-#: src/applet-dialogs.c:1504
+#: src/applet-dialogs.c:1505
 msgid "Re-enter new PIN code:"
 msgstr "重新輸入 PIN 碼："
 
 #. Translators: Show/obscure PIN/PUK checkbox label
-#: src/applet-dialogs.c:1509
+#: src/applet-dialogs.c:1510
 msgid "Show PIN/PUK codes"
 msgstr "顯示 PIN/PUK 碼"
 
 #: src/applet-vpn-request.c:426
-#, fuzzy
 msgid "Connection had no VPN setting"
-msgstr "連線資訊"
+msgstr "連線沒有 VPN 設定"
 
 #: src/applet-vpn-request.c:476
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to write connection to VPN UI: %s (%d)"
-msgstr "無法使用連線"
+msgstr "無法寫入與 VPN UI 的連線：%s (%d)"
 
 #: src/applet-vpn-request.c:484
 msgid "Failed to write connection to VPN UI: incomplete write"
-msgstr "無法寫入與VPN UI的連接：寫入不完整"
+msgstr "無法寫入與 VPN UI 的連線：寫入不完整"
 
-#: src/applet.c:372
-msgid "Failed to add/activate connection"
-msgstr "無法加入/使用連線"
-
-#: src/applet.c:426
-msgid "Device disconnect failed"
-msgstr "裝置斷線失敗"
-
-#: src/applet.c:431
-msgid "Disconnect failure"
-msgstr "斷線失敗"
-
-#: src/applet.c:461
-msgid "Connection activation failed"
-msgstr "連線生效失敗"
-
-#: src/applet.c:878
-#, fuzzy, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” disconnected because the network connection was "
-"interrupted."
-msgstr ""
-"\n"
-"VPN 連線「%s」失敗，因為網路連線中斷了。"
-
-#: src/applet.c:880
-#, fuzzy, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because the network connection was "
-"interrupted."
-msgstr ""
-"\n"
-"VPN 連線「%s」失敗，因為網路連線被中斷了。"
-
-#: src/applet.c:882
-#, fuzzy, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because the VPN service stopped unexpectedly."
-msgstr ""
-"\n"
-"VPN 連線「%s」失敗，因為 VPN 服務意外的停止了。"
-
-#: src/applet.c:884
-#, fuzzy, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because the VPN service returned invalid "
-"configuration."
-msgstr ""
-"\n"
-"VPN 連線「%s」失敗，因為 VPN 服務傳回無效的組態。"
-
-#: src/applet.c:886
-#, fuzzy, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because the connection attempt timed out."
-msgstr ""
-"\n"
-"VPN 連線「%s」失敗，因為連線的嘗試已逾時。"
-
-#: src/applet.c:888
-#, fuzzy, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because the VPN service did not start in time."
-msgstr ""
-"\n"
-"VPN 連線「%s」失敗，因為 VPN 服務沒有及時啟動。"
-
-#: src/applet.c:890
-#, fuzzy, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because the VPN service failed to start."
-msgstr ""
-"\n"
-"VPN 連線「%s」失敗，因為 VPN 服務啟動失敗。"
-
-#: src/applet.c:892
-#, fuzzy, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because there were no valid VPN secrets."
-msgstr ""
-"\n"
-"VPN 連線「%s」失敗，因為沒有有效的 VPN 服務。"
-
-#: src/applet.c:894
-#, fuzzy, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because of invalid VPN secrets."
-msgstr ""
-"\n"
-"VPN 連線「%s」失敗，因為無效的 VPN 機密。"
-
-#: src/applet.c:899
-#, fuzzy, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed."
-msgstr ""
-"\n"
-"VPN 連線「%s」失敗。"
-
-#: src/applet.c:926
-#, c-format
-msgid ""
-"VPN connection has been successfully established.\n"
-"\n"
-"%s\n"
-msgstr ""
-"VPN 連線已成功的。\n"
-"%s\n"
-
-#: src/applet.c:928
-msgid "VPN connection has been successfully established.\n"
-msgstr "VPN 連線已成功的。\n"
-
-#: src/applet.c:930
-msgid "VPN Login Message"
-msgstr "VPN 登錄訊息"
-
-#: src/applet.c:938 src/applet.c:978
-msgid "VPN Connection Failed"
-msgstr "VPN 連線失敗"
-
-#: src/applet.c:982
-#, fuzzy, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed because the VPN service failed to start.\n"
-"\n"
-"%s"
-msgstr ""
-"\n"
-"VPN 連線「%s」失敗，因為 VPN 服務啟動失敗。\n"
-"\n"
-"%s"
-
-#: src/applet.c:985
-#, fuzzy, c-format
-msgid ""
-"\n"
-"The VPN connection “%s” failed to start.\n"
-"\n"
-"%s"
-msgstr ""
-"\n"
-"VPN 連線「%s」啟動失敗。\n"
-"\n"
-"%s"
-
-#: src/applet.c:1276
-msgid "device not ready (firmware missing)"
-msgstr "裝置尚未就緒 (缺少韌體)"
-
-#: src/applet.c:1278
-msgid "device not ready"
-msgstr "裝置尚未就緒"
-
-#: src/applet.c:1304
-msgid "Disconnect"
-msgstr "斷線"
-
-#: src/applet.c:1318
-msgid "device not managed"
-msgstr "裝置無法管理"
-
-#: src/applet.c:1391
-msgid "No network devices available"
-msgstr "沒有可用的網路裝置"
-
-#: src/applet.c:1443
-msgid "_VPN Connections"
-msgstr "_VPN 連線"
-
-#: src/applet.c:1487
-#, fuzzy
-msgid "_Configure VPN…"
-msgstr "設置 VPN(_C)…"
-
-#: src/applet.c:1490
-#, fuzzy
-msgid "_Add a VPN connection…"
-msgstr "_VPN 連線"
-
-#: src/applet.c:1596
-#, fuzzy
-msgid "NetworkManager is not running…"
-msgstr "NetworkManager 沒有執行…."
-
-#: src/applet.c:1601 src/applet.c:2666
-msgid "Networking disabled"
-msgstr "網路已停用"
-
-#. 'Enable Networking' item
-#: src/applet.c:1811
-msgid "Enable _Networking"
-msgstr "啟用網路(_N)"
-
-#. 'Enable Wi-Fi' item
-#: src/applet.c:1820
-msgid "Enable _Wi-Fi"
-msgstr "啟用 _Wi-Fi"
-
-#. 'Enable Mobile Broadband' item
-#: src/applet.c:1829
-msgid "Enable _Mobile Broadband"
-msgstr "啟用行動寬頻(_M)"
-
-#. Toggle notifications item
-#: src/applet.c:1841
-msgid "Enable N_otifications"
-msgstr "啟用通知功能(_O)"
-
-#. 'Connection Information' item
-#: src/applet.c:1853
-msgid "Connection _Information"
-msgstr "連線資訊(_I)"
-
-#. 'Edit Connections...' item
-#: src/applet.c:1861
-#, fuzzy
-msgid "Edit Connections…"
-msgstr "編輯連線…"
-
-#: src/applet.c:1875
-msgid "_About"
-msgstr "關於(_A)"
-
-#: src/applet.c:2186
-#, fuzzy, c-format
-msgid "You are now connected to “%s”."
-msgstr "您現在已連線至「%s」。"
-
-#: src/applet.c:2226
-msgid "Disconnected"
-msgstr "已斷線"
-
-#: src/applet.c:2227
-msgid "The network connection has been disconnected."
-msgstr "網路連線已中斷。"
-
-#: src/applet.c:2529
-#, fuzzy, c-format
-msgid "Preparing network connection “%s”…"
-msgstr "正在準備網路連線「%s」…"
-
-#: src/applet.c:2532
-#, fuzzy, c-format
-msgid "User authentication required for network connection “%s”…"
-msgstr "網路連線「%s」需要使用者驗證…"
-
-#: src/applet.c:2538
-#, fuzzy, c-format
-msgid "Network connection “%s” active"
-msgstr "網路連線「%s」在使用中"
-
-#: src/applet.c:2611
-#, fuzzy, c-format
-msgid "Starting VPN connection “%s”…"
-msgstr "正在啟動 VPN 連線「%s」…"
-
-#: src/applet.c:2614
-#, fuzzy, c-format
-msgid "User authentication required for VPN connection “%s”…"
-msgstr "VPN 連線「%s」需要使用者驗證…"
-
-#: src/applet.c:2617
-#, fuzzy, c-format
-msgid "Requesting a VPN address for “%s”…"
-msgstr "正在要求 VPN 提供「%s」的網路位址…"
-
-#: src/applet.c:2620
-#, fuzzy
-msgid "VPN connection active"
-msgstr "VPN 連線「%s」在使用中"
-
-#: src/applet.c:2670
-msgid "No network connection"
-msgstr "沒有網路連接"
-
-#: src/applet.c:3280
-msgid "NetworkManager Applet"
-msgstr "NetworkManager 面板程式"
-
-#: src/connection-editor/ce-ip4-routes.ui:88
-#: src/connection-editor/ce-ip6-routes.ui:88 src/connection-editor/ce-page.h:98
-#, fuzzy
+#: src/connection-editor/ce-ip4-routes.ui:92
+#: src/connection-editor/ce-ip6-routes.ui:92 src/connection-editor/ce-page.h:98
 msgid ""
 "IP addresses identify your computer on the network. Click the “Add” button "
 "to add an IP address."
-msgstr "用來在網路上區別您的電腦的 IP 位址。請按下「新增」按鈕，加入 IP 位址。"
+msgstr "用來在網路上識別您的電腦的 IP 位址。請按下「新增」按鈕，加入 IP 位址。"
 
-#: src/connection-editor/ce-ip4-routes.ui:109
-#: src/connection-editor/ce-ip6-routes.ui:109
+#: src/connection-editor/ce-ip4-routes.ui:113
+#: src/connection-editor/ce-ip6-routes.ui:113
 #: src/connection-editor/ce-page-bond.ui:180
 #: src/connection-editor/ce-page-bridge.ui:120
 #: src/connection-editor/ce-page-ip4.ui:150
@@ -1042,8 +1107,8 @@ msgstr "用來在網路上區別您的電腦的 IP 位址。請按下「新增�
 msgid "_Add"
 msgstr "新增(_A)"
 
-#: src/connection-editor/ce-ip4-routes.ui:124
-#: src/connection-editor/ce-ip6-routes.ui:124
+#: src/connection-editor/ce-ip4-routes.ui:128
+#: src/connection-editor/ce-ip6-routes.ui:128
 #: src/connection-editor/ce-page-bond.ui:208
 #: src/connection-editor/ce-page-bridge.ui:148
 #: src/connection-editor/ce-page-ip4.ui:165
@@ -1054,27 +1119,26 @@ msgstr "新增(_A)"
 msgid "_Delete"
 msgstr "刪除(_D)"
 
-#: src/connection-editor/ce-ip4-routes.ui:153
-#: src/connection-editor/ce-ip6-routes.ui:153
+#: src/connection-editor/ce-ip4-routes.ui:157
+#: src/connection-editor/ce-ip6-routes.ui:157
 msgid "Ig_nore automatically obtained routes"
 msgstr "忽略自動獲得的路由(_N)"
 
-#: src/connection-editor/ce-ip4-routes.ui:168
-#: src/connection-editor/ce-ip6-routes.ui:168
+#: src/connection-editor/ce-ip4-routes.ui:172
+#: src/connection-editor/ce-ip6-routes.ui:172
 msgid "_Use this connection only for resources on its network"
 msgstr "只在使用這個連線的網路資源時，才使用此連線(_U)"
 
-#: src/connection-editor/ce-ip4-routes.ui:173
-#: src/connection-editor/ce-ip6-routes.ui:173
+#: src/connection-editor/ce-ip4-routes.ui:177
+#: src/connection-editor/ce-ip6-routes.ui:177
 msgid ""
 "If enabled, this connection will never be used as the default network "
 "connection."
 msgstr "如果啟用，這個連線將永遠不會做為預設網路連線。"
 
 #: src/connection-editor/ce-new-connection.ui:65
-#, fuzzy
 msgid "C_reate…"
-msgstr "建立…"
+msgstr "建立(_R)…"
 
 #: src/connection-editor/ce-new-connection.ui:120
 msgid "Choose a Connection Type"
@@ -1096,9 +1160,8 @@ msgstr ""
 #: src/connection-editor/ce-page-ethernet.ui:129
 #: src/connection-editor/ce-page-infiniband.ui:50
 #: src/connection-editor/ce-page-wifi.ui:139
-#, fuzzy
 msgid "_Device"
-msgstr "服務(_S)："
+msgstr "裝置(_D)"
 
 #: src/connection-editor/ce-page-bond.ui:24
 #: src/connection-editor/ce-page-team.ui:434
@@ -1140,15 +1203,13 @@ msgid "ARP"
 msgstr "ARP"
 
 #: src/connection-editor/ce-page-bond.ui:91
-#, fuzzy
 msgid "Bonded _connections"
-msgstr "繫結的連線(_C)："
+msgstr "繫結的連線(_C)"
 
 #: src/connection-editor/ce-page-bond.ui:105
 #: src/connection-editor/ce-page-wifi.ui:400
-#, fuzzy
 msgid "M_ode"
-msgstr "模式(_O)："
+msgstr "模式(_O)"
 
 #: src/connection-editor/ce-page-bond.ui:194
 #: src/connection-editor/ce-page-bridge.ui:134
@@ -1158,9 +1219,8 @@ msgid "_Edit"
 msgstr "編輯(_E)"
 
 #: src/connection-editor/ce-page-bond.ui:238
-#, fuzzy
 msgid "Monitoring _frequency"
-msgstr "監控頻率(_F)："
+msgstr "監控頻率(_F)"
 
 #: src/connection-editor/ce-page-bond.ui:272
 #: src/connection-editor/ce-page-bond.ui:422
@@ -1171,19 +1231,16 @@ msgstr "毫秒"
 #: src/connection-editor/ce-page-bond.ui:291
 #: src/connection-editor/ce-page-bridge.ui:192
 #: src/connection-editor/ce-page-team.ui:293
-#, fuzzy
 msgid "_Interface name"
-msgstr "介面名稱(_I)："
+msgstr "介面名稱(_I)"
 
 #: src/connection-editor/ce-page-bond.ui:316
-#, fuzzy
 msgid "_Link Monitoring"
-msgstr "連線監控(_L)："
+msgstr "連線監控(_L)"
 
 #: src/connection-editor/ce-page-bond.ui:347
-#, fuzzy
 msgid "ARP _targets"
-msgstr "ARP 目標(_T)："
+msgstr "ARP 目標(_T)"
 
 #: src/connection-editor/ce-page-bond.ui:361
 msgid ""
@@ -1193,25 +1250,22 @@ msgstr ""
 "一個 IP 位址，或以逗號分隔的 IP 位址清單，這是在檢查連線狀態時查詢用的。"
 
 #: src/connection-editor/ce-page-bond.ui:373
-#, fuzzy
 msgid "Link _up delay"
-msgstr "連線延遲(_U)："
+msgstr "連線延遲(_U)"
 
 #: src/connection-editor/ce-page-bond.ui:387
-#, fuzzy
 msgid "Link _down delay"
-msgstr "斷線延遲(_D)："
+msgstr "斷線延遲(_D)"
 
 #: src/connection-editor/ce-page-bond.ui:481
-#, fuzzy
 msgid "_Primary"
-msgstr "主要(_P):"
+msgstr "主要(_P)"
 
 #: src/connection-editor/ce-page-bond.ui:495
 msgid ""
 "The interface name of the primary device. If set, this device will always be "
 "the active slave when it is available."
-msgstr "主要介面的介面名稱。如果設定，這個裝置在可用時會永遠成為使用中的從屬。"
+msgstr "主要裝置的介面名稱。如果設定，這個裝置在可用時會永遠成為使用中的從屬。"
 
 #: src/connection-editor/ce-page-bond.ui:507
 #: src/connection-editor/ce-page-ethernet.ui:188
@@ -1219,9 +1273,8 @@ msgstr "主要介面的介面名稱。如果設定，這個裝置在可用時會
 #: src/connection-editor/ce-page-team.ui:320
 #: src/connection-editor/ce-page-vlan.ui:87
 #: src/connection-editor/ce-page-wifi.ui:111
-#, fuzzy
 msgid "_MTU"
-msgstr "_MTU："
+msgstr "_MTU"
 
 #: src/connection-editor/ce-page-bond.ui:540
 #: src/connection-editor/ce-page-ethernet.ui:223
@@ -1233,39 +1286,33 @@ msgid "bytes"
 msgstr "位元組"
 
 #: src/connection-editor/ce-page-bridge-port.ui:42
-#, fuzzy
 msgid "Path _cost"
-msgstr "路徑成本(_C)："
+msgstr "路徑成本(_C)"
 
 #: src/connection-editor/ce-page-bridge-port.ui:55
 #: src/connection-editor/ce-page-bridge.ui:178
-#, fuzzy
 msgid "_Priority"
-msgstr "優先順序(_P)："
+msgstr "優先順序(_P)"
 
 #: src/connection-editor/ce-page-bridge-port.ui:97
-#, fuzzy
 msgid "_Hairpin mode"
-msgstr "_Hairpin 模式："
+msgstr "_Hairpin 模式"
 
 #: src/connection-editor/ce-page-bridge.ui:62
-#, fuzzy
 msgid "Bridged _connections"
-msgstr "橋接的連線(_C)："
+msgstr "橋接的連線(_C)"
 
 #: src/connection-editor/ce-page-bridge.ui:218
-#, fuzzy
 msgid "_Forward delay"
-msgstr "轉送延遲(_F)："
+msgstr "轉送延遲(_F)"
 
 #: src/connection-editor/ce-page-bridge.ui:232
-#, fuzzy
 msgid "_Hello time"
-msgstr "_Hello 時間："
+msgstr "_Hello time"
 
 #: src/connection-editor/ce-page-bridge.ui:252
 msgid "STP forwarding delay, in seconds"
-msgstr "STP轉發延遲，以秒為單位"
+msgstr "STP 轉送延遲，以秒為單位"
 
 #: src/connection-editor/ce-page-bridge.ui:269
 #: src/connection-editor/ce-page-bridge.ui:311
@@ -1276,12 +1323,11 @@ msgstr "秒"
 
 #: src/connection-editor/ce-page-bridge.ui:294
 msgid "STP hello time, in seconds"
-msgstr "STP你好時間，以秒為單位"
+msgstr "STP hello time，以秒為單位"
 
 #: src/connection-editor/ce-page-bridge.ui:328
-#, fuzzy
 msgid "Enable I_GMP snooping"
-msgstr "啟用網路(_N)"
+msgstr "啟用 I_GMP 監聽"
 
 #: src/connection-editor/ce-page-bridge.ui:332
 msgid ""
@@ -1289,8 +1335,8 @@ msgid ""
 "snooping was automatically disabled due to hash collisions, the system may "
 "refuse to enable the feature until the collisions are resolved."
 msgstr ""
-"控制是否為此網橋啟用IGMP偵聽。請注意，如果由於哈希衝突而自動禁用了偵聽，則係"
-"統可能會拒絕啟用該功能，直到解決衝突為止。"
+"控制是否為此橋接啟用 IGMP 監聽。請注意，如果由於雜湊衝突而自動停用了監聽，則"
+"係統可能會拒絕啟用該功能，直到解決衝突為止。"
 
 #: src/connection-editor/ce-page-bridge.ui:344
 msgid "Enable _STP (Spanning Tree Protocol)"
@@ -1299,35 +1345,36 @@ msgstr "啟用 _STP (生成樹協議)"
 #: src/connection-editor/ce-page-bridge.ui:348
 msgid ""
 "Controls whether Spanning Tree Protocol (STP) is enabled for this bridge"
-msgstr "控制是否為此網橋啟用生成樹協議（STP）"
+msgstr "控制是否為此橋接啟用生成樹協議（STP）"
 
 #: src/connection-editor/ce-page-bridge.ui:363
 msgid ""
 "STP priority for this bridge. Lower values are “better”; the lowest priority "
 "bridge will be elected the root bridge."
-msgstr "這座橋的STP優先級。較低的值是“更好”;最低優先級的橋將被選為根橋。"
+msgstr ""
+"這個橋接的 STP 優先順序。較低的值優先順序較高；最低優先順序的橋接將被選為根"
+"橋。"
 
 #: src/connection-editor/ce-page-bridge.ui:378
-#, fuzzy
 msgid "_Max age"
-msgstr "最大時間(_M)："
+msgstr "最大時間(_M)"
 
 #: src/connection-editor/ce-page-bridge.ui:398
+#, fuzzy
 msgid "STP maximum message age, in seconds"
-msgstr "STP最大消息時間，以秒為單位"
+msgstr "STP 最大消息時間，以秒為單位"
 
 #: src/connection-editor/ce-page-bridge.ui:434
-#, fuzzy
 msgid "_Aging time"
-msgstr "存續時間(_A)："
+msgstr "存留時間(_A)"
 
 #: src/connection-editor/ce-page-bridge.ui:454
 msgid "The Ethernet MAC address aging time, in seconds"
-msgstr "以太網MAC地址老化時間，單位為秒"
+msgstr "有線網路 MAC 位址存留時間，單位為秒"
 
 #: src/connection-editor/ce-page-bridge.ui:490
 msgid "Group _forward mask"
-msgstr ""
+msgstr "群組轉送遮罩(_F)"
 
 #: src/connection-editor/ce-page-bridge.ui:504
 msgid ""
@@ -1336,14 +1383,105 @@ msgid ""
 "can’t have bits 0, 1 or 2 set because they are used for STP, MAC pause "
 "frames and LACP."
 msgstr ""
-"一個16位的掩碼，每個掩碼對應於必須轉發的01：80：C2：00：00：00到01：80：C2："
-"00：00：0F範圍內的組地址。掩碼不能設置位0,1或2，因為它們用於STP，MAC暫停幀和"
-"LACP。"
+"一個 16 位元的遮罩，每個遮罩對應於必須轉送的 01:80:C2:00:00:00 到 01:80:"
+"C2:00:00:0F 範圍內的群組位址。遮罩不能設設定位元 0,1 或 2，因為它們用於 STP、"
+"MAC 暫停訊框 (Frame)和 LACP。"
+
+#: src/connection-editor/ce-page.c:64 src/connection-editor/ce-page.c:98
+msgid "automatic"
+msgstr "自動"
+
+#: src/connection-editor/ce-page.c:72 src/connection-editor/ce-page.c:107
+#: src/connection-editor/ce-page-dcb.ui:419
+#: src/connection-editor/ce-page-dcb.ui:442
+#: src/connection-editor/ce-page-dcb.ui:465
+#: src/connection-editor/page-wifi.c:154 src/connection-editor/page-wifi.c:158
+#: src/connection-editor/page-wifi.c:179
+msgid "default"
+msgstr "預設"
+
+#: src/connection-editor/ce-page.c:175
+msgid "unspecified error"
+msgstr "未指明的錯誤"
+
+#: src/connection-editor/ce-page.c:280
+msgid "Preserve"
+msgstr "保留"
+
+#: src/connection-editor/ce-page.c:281
+msgid "Permanent"
+msgstr "永久"
+
+#: src/connection-editor/ce-page.c:282
+msgid "Random"
+msgstr "隨機"
+
+#: src/connection-editor/ce-page.c:283
+msgid "Stable"
+msgstr "穩定"
+
+#: src/connection-editor/ce-page.c:287
+msgid ""
+"The MAC address entered here will be used as hardware address for the "
+"network device this connection is activated on. This feature is known as MAC "
+"cloning or spoofing. Example: 00:11:22:33:44:55"
+msgstr ""
+"在這裡輸入的 MAC 位址會成為這個連線使用的網路裝置的硬體位址。這個功能也稱為 "
+"MAC 複製或偽裝。例如：00:11:22:33:44:55"
+
+#: src/connection-editor/ce-page.c:327
+msgid "MAC address"
+msgstr "MAC 位址"
+
+#: src/connection-editor/ce-page.c:327
+msgid "HW address"
+msgstr "硬體位址"
+
+#: src/connection-editor/ce-page.c:330
+#, c-format
+msgid "invalid %s for %s (%s)"
+msgstr "無效 %s 對於 %s （%s）"
+
+#: src/connection-editor/ce-page.c:334
+#, c-format
+msgid "invalid %s (%s)"
+msgstr "無效 %s （%s）"
+
+#: src/connection-editor/ce-page.c:374
+#, c-format
+msgid "invalid interface-name for %s (%s): "
+msgstr "無效的介面名稱 %s （%s）： "
+
+#: src/connection-editor/ce-page.c:378
+#, c-format
+msgid "invalid interface-name (%s): "
+msgstr "無效的介面名稱 (%s)："
+
+#: src/connection-editor/ce-page.c:557
+msgid "can’t parse device name"
+msgstr "無法解析裝置名稱"
+
+#: src/connection-editor/ce-page.c:575
+msgid "invalid hardware address"
+msgstr "無效的硬體位址"
+
+#: src/connection-editor/ce-page.c:597
+#, c-format
+msgid "invalid %s (%s): "
+msgstr "無效 %s （%s）： "
+
+#: src/connection-editor/ce-page.c:598 src/connection-editor/ce-page.c:603
+msgid "device"
+msgstr "裝置"
+
+#: src/connection-editor/ce-page.c:602
+#, c-format
+msgid "invalid %s (%s) "
+msgstr "無效 %s （%s） "
 
 #: src/connection-editor/ce-page-dcb.ui:16
-#, fuzzy
 msgid "_Use Data Center Bridging (DCB) for this connection"
-msgstr "在這個連線使用資料中心橋接 (DCB)"
+msgstr "在這個連線使用資料中心橋接 (DCB)(_U)"
 
 #: src/connection-editor/ce-page-dcb.ui:49
 msgid "FCoE"
@@ -1384,21 +1522,12 @@ msgstr "優先順序"
 
 #: src/connection-editor/ce-page-dcb.ui:336
 #: src/connection-editor/ce-page-dcb.ui:401
-#, fuzzy
 msgid "Options…"
 msgstr "選項…"
 
 #: src/connection-editor/ce-page-dcb.ui:352
 msgid "Priority Groups"
 msgstr "優先順序群組"
-
-#: src/connection-editor/ce-page-dcb.ui:419
-#: src/connection-editor/ce-page-dcb.ui:442
-#: src/connection-editor/ce-page-dcb.ui:465 src/connection-editor/ce-page.c:72
-#: src/connection-editor/ce-page.c:107 src/connection-editor/page-wifi.c:154
-#: src/connection-editor/page-wifi.c:158 src/connection-editor/page-wifi.c:179
-msgid "default"
-msgstr "預設"
 
 #: src/connection-editor/ce-page-dcb.ui:487
 #: src/connection-editor/ce-page-dcb.ui:535
@@ -1425,9 +1554,8 @@ msgstr "依每個使用者優先順序啟用或停用優先順序暫停傳輸。
 #: src/connection-editor/ce-page-dcb.ui:1822
 #: src/connection-editor/ce-page-dcb.ui:2154
 #: src/connection-editor/ce-page-dcb.ui:2486
-#, fuzzy
 msgid "0"
-msgstr "0："
+msgstr "0"
 
 #: src/connection-editor/ce-page-dcb.ui:694
 #: src/connection-editor/ce-page-dcb.ui:1135
@@ -1435,9 +1563,8 @@ msgstr "0："
 #: src/connection-editor/ce-page-dcb.ui:1862
 #: src/connection-editor/ce-page-dcb.ui:2194
 #: src/connection-editor/ce-page-dcb.ui:2536
-#, fuzzy
 msgid "1"
-msgstr "1："
+msgstr "1"
 
 #: src/connection-editor/ce-page-dcb.ui:735
 #: src/connection-editor/ce-page-dcb.ui:1184
@@ -1445,9 +1572,8 @@ msgstr "1："
 #: src/connection-editor/ce-page-dcb.ui:1902
 #: src/connection-editor/ce-page-dcb.ui:2234
 #: src/connection-editor/ce-page-dcb.ui:2586
-#, fuzzy
 msgid "2"
-msgstr "2："
+msgstr "2"
 
 #: src/connection-editor/ce-page-dcb.ui:776
 #: src/connection-editor/ce-page-dcb.ui:1233
@@ -1455,9 +1581,8 @@ msgstr "2："
 #: src/connection-editor/ce-page-dcb.ui:1942
 #: src/connection-editor/ce-page-dcb.ui:2274
 #: src/connection-editor/ce-page-dcb.ui:2636
-#, fuzzy
 msgid "3"
-msgstr "3："
+msgstr "3"
 
 #: src/connection-editor/ce-page-dcb.ui:817
 #: src/connection-editor/ce-page-dcb.ui:1282
@@ -1465,9 +1590,8 @@ msgstr "3："
 #: src/connection-editor/ce-page-dcb.ui:1982
 #: src/connection-editor/ce-page-dcb.ui:2314
 #: src/connection-editor/ce-page-dcb.ui:2686
-#, fuzzy
 msgid "4"
-msgstr "4："
+msgstr "4"
 
 #: src/connection-editor/ce-page-dcb.ui:858
 #: src/connection-editor/ce-page-dcb.ui:1331
@@ -1475,9 +1599,8 @@ msgstr "4："
 #: src/connection-editor/ce-page-dcb.ui:2022
 #: src/connection-editor/ce-page-dcb.ui:2354
 #: src/connection-editor/ce-page-dcb.ui:2736
-#, fuzzy
 msgid "5"
-msgstr "5："
+msgstr "5"
 
 #: src/connection-editor/ce-page-dcb.ui:899
 #: src/connection-editor/ce-page-dcb.ui:1380
@@ -1485,9 +1608,8 @@ msgstr "5："
 #: src/connection-editor/ce-page-dcb.ui:2062
 #: src/connection-editor/ce-page-dcb.ui:2394
 #: src/connection-editor/ce-page-dcb.ui:2786
-#, fuzzy
 msgid "6"
-msgstr "6："
+msgstr "6"
 
 #: src/connection-editor/ce-page-dcb.ui:940
 #: src/connection-editor/ce-page-dcb.ui:1429
@@ -1495,46 +1617,39 @@ msgstr "6："
 #: src/connection-editor/ce-page-dcb.ui:2102
 #: src/connection-editor/ce-page-dcb.ui:2434
 #: src/connection-editor/ce-page-dcb.ui:2836
-#, fuzzy
 msgid "7"
-msgstr "7："
+msgstr "7"
 
 #: src/connection-editor/ce-page-dcb.ui:1069
-#, fuzzy
 msgid "Traffic Class"
-msgstr "流量類別："
+msgstr "流量類別"
 
 #: src/connection-editor/ce-page-dcb.ui:1473
-#, fuzzy
 msgid "Strict Bandwidth"
-msgstr "限制頻寬："
+msgstr "限制頻寬"
 
 #: src/connection-editor/ce-page-dcb.ui:1805
-#, fuzzy
 msgid "Priority Bandwidth"
-msgstr "優先順序頻寬："
+msgstr "優先順序頻寬"
 
 #: src/connection-editor/ce-page-dcb.ui:2137
-#, fuzzy
 msgid "Group Bandwidth"
-msgstr "群組頻寬："
+msgstr "群組頻寬"
 
 #: src/connection-editor/ce-page-dcb.ui:2469
-#, fuzzy
 msgid "Group ID"
-msgstr "群組 ID："
+msgstr "群組 ID"
 
 #: src/connection-editor/ce-page-dcb.ui:2881
 msgid "Enter the priority group ID for each User Priority."
 msgstr "依每個使用者優先順序輸入優先順序群組 ID。"
 
 #: src/connection-editor/ce-page-dcb.ui:2899
-#, fuzzy
 msgid ""
 "Enter the allowed link bandwidth percent each Priority Group may use. The "
 "sum of all groups must total 100%."
 msgstr ""
-"輸入每個優先順序群組可以使用的連線頻寬。所有群組的總合加起來必須為 100%。"
+"輸入每個優先順序群組可以使用的連線頻寬百分比。所有群組的總合必須為 100%。"
 
 #: src/connection-editor/ce-page-dcb.ui:2917
 msgid ""
@@ -1554,24 +1669,23 @@ msgstr "輸入每個使用者優先順序的流量類別。"
 #: src/wireless-security/eap-method-leap.ui:21
 #: src/wireless-security/eap-method-simple.ui:21
 #: src/wireless-security/ws-leap.ui:21
-#, fuzzy
 msgid "_Username"
-msgstr "使用者名稱(_U)："
+msgstr "使用者名稱(_U)"
 
 #: src/connection-editor/ce-page-dsl.ui:33
 msgid "Username used to authenticate with the PPPoE service."
-msgstr "用於通過PPPoE服務進行身份驗證的用戶名。"
+msgstr "用於通過 PPPoE 服務進行身份驗證的使用者名稱。"
 
 #: src/connection-editor/ce-page-dsl.ui:46
+#, fuzzy
 msgid ""
 "Only initiate sessions with access concentrators that provide the specified "
 "service. For most providers this should be left blank."
 msgstr "僅啟動提供指定服務的訪問集中器的會話。對於大多數提供商，這應該留空。"
 
 #: src/connection-editor/ce-page-dsl.ui:59
-#, fuzzy
 msgid "_Service"
-msgstr "服務(_S)："
+msgstr "服務(_S)"
 
 #: src/connection-editor/ce-page-dsl.ui:71
 #: src/wireless-security/eap-method-leap.ui:60
@@ -1583,7 +1697,7 @@ msgstr "顯示密碼(_W)"
 
 #: src/connection-editor/ce-page-dsl.ui:89
 msgid "Password used to authenticate with the PPPoE service."
-msgstr "用於通過PPPoE服務進行身份驗證的密碼。"
+msgstr "用於通過 PPPoE 服務進行身份驗證的密碼。"
 
 #: src/connection-editor/ce-page-dsl.ui:102
 #: src/connection-editor/ce-page-mobile.ui:76
@@ -1591,32 +1705,28 @@ msgstr "用於通過PPPoE服務進行身份驗證的密碼。"
 #: src/wireless-security/eap-method-simple.ui:35
 #: src/wireless-security/ws-leap.ui:35 src/wireless-security/ws-sae.ui:20
 #: src/wireless-security/ws-wpa-psk.ui:20
-#, fuzzy
 msgid "_Password"
-msgstr "密碼(_P)："
+msgstr "密碼(_P)"
 
 #: src/connection-editor/ce-page-dsl.ui:116
-#, fuzzy
 msgid "PPP _interface"
-msgstr "父介面(_P)："
+msgstr "PPP 介面(_I)"
 
 #: src/connection-editor/ce-page-dsl.ui:130
-#, fuzzy
 msgid "P_arent interface"
-msgstr "父介面(_P)："
+msgstr "父介面(_A)"
 
 #: src/connection-editor/ce-page-dsl.ui:144
 msgid "An arbitrary name to assign to the newly created PPP interface."
-msgstr "分配給新創建的PPP接口的任意名稱。"
+msgstr "分配給新建立的 PPP 介面的任意名稱。"
 
 #: src/connection-editor/ce-page-dsl.ui:160
 msgid "The interface on which the PPP connection will be established."
-msgstr "將建立PPP連接的接口。"
+msgstr "將建立 PPP 連接的介面。"
 
 #: src/connection-editor/ce-page-dsl.ui:171
-#, fuzzy
 msgid "C_laim interface"
-msgstr "父介面(_P)："
+msgstr "宣告介面(_L)"
 
 #: src/connection-editor/ce-page-dsl.ui:175
 msgid ""
@@ -1625,6 +1735,8 @@ msgid ""
 "option can only be used for Ethernet interfaces. nm-applet is able to "
 "activate the connection only if this option is selected."
 msgstr ""
+"如果選取，連線將會獨占介面的控制，並且無法在介面上啟動另一個連線。注意這個選"
+"項只能用在有線網路介面上。nm-applet 只有在選取這個選項時才能啟動連線。"
 
 #: src/connection-editor/ce-page-ethernet.ui:17
 #: src/connection-editor/ce-page-ethernet.ui:77
@@ -1672,11 +1784,11 @@ msgstr "10 Gb/s"
 
 #: src/connection-editor/ce-page-ethernet.ui:60
 msgid "Half"
-msgstr "半"
+msgstr "半雙工"
 
 #: src/connection-editor/ce-page-ethernet.ui:63
 msgid "Full"
-msgstr "完整"
+msgstr "全雙工"
 
 #: src/connection-editor/ce-page-ethernet.ui:74
 #: src/connection-editor/page-ip6.c:148
@@ -1691,25 +1803,21 @@ msgid "Manual"
 msgstr "手動"
 
 #: src/connection-editor/ce-page-ethernet.ui:97
-#, fuzzy
 msgid "_Port"
-msgstr "連接埠(_P)："
+msgstr "連接埠(_P)"
 
 #: src/connection-editor/ce-page-ethernet.ui:156
 #: src/connection-editor/ce-page-wifi.ui:169
-#, fuzzy
 msgid "C_loned MAC address"
-msgstr "複製的 MAC 位址(_L)："
+msgstr "複製的 MAC 位址(_L)"
 
 #: src/connection-editor/ce-page-ethernet.ui:242
-#, fuzzy
 msgid "Wake on LAN"
-msgstr "私密金鑰密碼(_P)："
+msgstr "網路喚醒"
 
 #: src/connection-editor/ce-page-ethernet.ui:258
-#, fuzzy
 msgid "De_fault"
-msgstr "預設"
+msgstr "預設(_F)"
 
 #: src/connection-editor/ce-page-ethernet.ui:274
 msgid "_Ignore"
@@ -1721,16 +1829,15 @@ msgstr "_Phy"
 
 #: src/connection-editor/ce-page-ethernet.ui:305
 msgid "_Unicast"
-msgstr "_Unicast"
+msgstr "單播(_U)"
 
 #: src/connection-editor/ce-page-ethernet.ui:320
 msgid "Mul_ticast"
-msgstr "Mul_ticast"
+msgstr "多播(_T)"
 
 #: src/connection-editor/ce-page-ethernet.ui:335
-#, fuzzy
 msgid "_Broadcast"
-msgstr "廣播"
+msgstr "廣播(_B)"
 
 #: src/connection-editor/ce-page-ethernet.ui:350
 msgid "_Arp"
@@ -1738,21 +1845,20 @@ msgstr "_Arp"
 
 #: src/connection-editor/ce-page-ethernet.ui:365
 msgid "Ma_gic"
-msgstr "Ma_gic"
+msgstr "魔法封包(_G)"
 
 #: src/connection-editor/ce-page-ethernet.ui:388
-#, fuzzy
 msgid "_Wake on LAN password"
-msgstr "私密金鑰密碼(_P)："
+msgstr "網路喚醒密碼(_W)"
 
 #: src/connection-editor/ce-page-ethernet.ui:402
 msgid ""
 "Wake-on-LAN password (an Ethernet MAC). It is only valid for magic packets."
-msgstr "局域網喚醒密碼（以太網MAC）。它僅對魔術包有效。"
+msgstr "網路喚醒密碼（有線網路 MAC）。只對魔法封包有效。"
 
 #: src/connection-editor/ce-page-ethernet.ui:414
 msgid "Lin_k negotiation"
-msgstr ""
+msgstr "連線協商(_K)"
 
 #: src/connection-editor/ce-page-ethernet.ui:428
 msgid ""
@@ -1760,13 +1866,12 @@ msgid ""
 "will be forced without checking the device compatibility. If unsure, leave "
 "here “Ignore” or pick “Automatic”."
 msgstr ""
-"設備鏈接協商。如果選擇“手動”，將強制“速度”和“雙工”值，而不檢查設備兼容性。如"
-"果不確定，請在此處“忽略”或選擇“自動”。"
+"裝置連線協商。如果選擇「手動」，將強制「速度」和「雙工」的值而不檢查裝置的相"
+"容性。如果不確定，保留此處為「忽略」或選擇「自動」。"
 
 #: src/connection-editor/ce-page-ethernet.ui:448
-#, fuzzy
 msgid "_Speed"
-msgstr "速度(_S)："
+msgstr "速度(_S)"
 
 #: src/connection-editor/ce-page-ethernet.ui:462
 msgid ""
@@ -1774,13 +1879,12 @@ msgid ""
 "“Automatic” options are not selected. Before specifying a speed value be "
 "sure your device supports it."
 msgstr ""
-"靜態鏈接協商的速度值，僅在未選擇“忽略”和“自動”選項時才需要。在指定速度值之"
-"前，請確保您的設備支持它。"
+"靜態連線協商的速度值，只有在沒有選擇「忽略」或「自動」選項時才需要。在指定速"
+"度值之前，請確定您的裝置支援它。"
 
 #: src/connection-editor/ce-page-ethernet.ui:482
-#, fuzzy
 msgid "Duple_x"
-msgstr "全雙工(_X)"
+msgstr "雙工(_X)"
 
 #: src/connection-editor/ce-page-ethernet.ui:496
 msgid ""
@@ -1788,36 +1892,32 @@ msgid ""
 "“Automatic” options are not selected. Before specifying a duplex mode be "
 "sure your device supports it."
 msgstr ""
-"靜態鏈接協商的雙工值，僅在未選擇“忽略”和“自動”選項時才需要。在指定雙工模式之"
-"前，請確保您的設備支持它。"
+"靜態連線協商的雙工值，只有在沒有選擇「忽略」或「自動」選項時才需要。在指定雙"
+"工模式之前，請確定您的裝置支援它。"
 
 #: src/connection-editor/ce-page-general.ui:29
 msgid "Yes"
-msgstr ""
+msgstr "是"
 
 #: src/connection-editor/ce-page-general.ui:32
-#, fuzzy
 msgid "No"
-msgstr "沒有"
+msgstr "否"
 
 #: src/connection-editor/ce-page-general.ui:65
 msgid "All _users may connect to this network"
-msgstr "所有的使用者可以連線至這個網路"
+msgstr "所有的使用者可以連線至這個網路(_U)"
 
 #: src/connection-editor/ce-page-general.ui:80
-#, fuzzy
 msgid "Automatically connect to _VPN"
-msgstr "當使用這個連線時自動連線至 _VPN"
+msgstr "自動連線至 _VPN"
 
 #: src/connection-editor/ce-page-general.ui:96
-#, fuzzy
 msgid "Firewall _zone"
-msgstr "防火牆地帶(_Z)："
+msgstr "防火牆地帶(_Z)"
 
 #: src/connection-editor/ce-page-general.ui:121
-#, fuzzy
 msgid "_Metered connection"
-msgstr "團隊連線(_T):"
+msgstr "計量連線(_M)"
 
 #: src/connection-editor/ce-page-general.ui:134
 msgid ""
@@ -1826,11 +1926,13 @@ msgid ""
 "“No”) to indicate to applications, or “Automatic” to use a default value "
 "based on the connection type and other heuristics."
 msgstr ""
+"NetworkManager 會指示應用程式連線是否是計量連線，因此應該限制數據使用。選擇指"
+"示應用程式的值（「是」或「否」），或者選擇「自動」來依據連線類型與其他啟發式"
+"算法來使用預設值。"
 
 #: src/connection-editor/ce-page-general.ui:150
-#, fuzzy
 msgid "Connect _automatically with priority"
-msgstr "忽略自動獲得的路由(_N)"
+msgstr "自動連線，優先順序(_A)"
 
 #: src/connection-editor/ce-page-general.ui:167
 msgid ""
@@ -1838,8 +1940,38 @@ msgid ""
 "numbers are preferred when selecting profiles for automatic activation. "
 "Default value is 0."
 msgstr ""
-"自動激活的連接優先級。選擇自動激活的配置文件時，首選更高編號的連接。默認值為"
-"0。"
+"自動啟動連線的優先順序。選擇自動啟動的設定檔時，會優先選擇較高數字的連線。預"
+"設值是 0。"
+
+#: src/connection-editor/ce-page.h:95
+msgid ""
+"IP addresses identify your computer on the network. Click the “Add” button "
+"to add static IP address to be configured in addition to the automatic ones."
+msgstr ""
+"用來在網路上識別您的電腦的 IP 位址。請按下「新增」按鈕，加入自動 IP 位址之外"
+"要設定的靜態 IP 位址。"
+
+#: src/connection-editor/ce-page.h:100
+msgid ""
+"The IP address identify your computer on the network and determines the "
+"address range distributed to other computers. Click the “Add” button to add "
+"an IP address. If no address is provided, range will be determined "
+"automatically."
+msgstr ""
+"IP 地址識別網路上的電腦，並確定分發給其他電腦的位址範圍。點擊「加入」按鈕加"
+"入 IP 位址。如果未提供位址，將自動決定範圍。"
+
+#: src/connection-editor/ce-page.h:105
+msgid "Additional static addresses"
+msgstr "額外的靜態位址"
+
+#: src/connection-editor/ce-page.h:106
+msgid "Addresses"
+msgstr "位址"
+
+#: src/connection-editor/ce-page.h:107
+msgid "Address (optional)"
+msgstr "位址（可選）"
 
 #. IP-over-InfiniBand "datagram mode"
 #: src/connection-editor/ce-page-infiniband.ui:17
@@ -1852,9 +1984,8 @@ msgid "Connected"
 msgstr "成功連線"
 
 #: src/connection-editor/ce-page-infiniband.ui:37
-#, fuzzy
 msgid "_Transport mode"
-msgstr "傳輸模式(_T)："
+msgstr "傳輸模式(_T)"
 
 #: src/connection-editor/ce-page-ip-tunnel.ui:17
 msgid "IPIP"
@@ -1893,39 +2024,36 @@ msgid "VTI6"
 msgstr "VTI6"
 
 #: src/connection-editor/ce-page-ip-tunnel.ui:61
-#, fuzzy
 msgid "Device name"
-msgstr "裝置名稱 + 編號"
+msgstr "裝置名稱"
 
 #: src/connection-editor/ce-page-ip-tunnel.ui:85
-#, fuzzy
 msgid "Parent device"
-msgstr "有線網路"
+msgstr "父裝置"
 
 #: src/connection-editor/ce-page-ip-tunnel.ui:115
 msgid "Mode"
-msgstr ""
+msgstr "模式"
 
 #: src/connection-editor/ce-page-ip-tunnel.ui:128
 msgid "Local IP"
-msgstr ""
+msgstr "本地 IP"
 
 #: src/connection-editor/ce-page-ip-tunnel.ui:140
 msgid "Remote IP"
-msgstr ""
+msgstr "遠端 IP"
 
 #: src/connection-editor/ce-page-ip-tunnel.ui:152
 msgid "Input key"
-msgstr ""
+msgstr "輸入金鑰"
 
 #: src/connection-editor/ce-page-ip-tunnel.ui:164
 msgid "Output key"
-msgstr ""
+msgstr "輸出金鑰"
 
 #: src/connection-editor/ce-page-ip-tunnel.ui:245
-#, fuzzy
 msgid "MTU"
-msgstr "_MTU："
+msgstr "MTU"
 
 #: src/connection-editor/ce-page-ip4.ui:15
 #: src/connection-editor/ce-page-ip6.ui:15
@@ -1945,12 +2073,10 @@ msgstr "分享給其他電腦"
 
 #: src/connection-editor/ce-page-ip4.ui:47
 #: src/connection-editor/ce-page-ip6.ui:78
-#, fuzzy
 msgid "_Method"
-msgstr "方法(_M)："
+msgstr "方法(_M)"
 
 #: src/connection-editor/ce-page-ip4.ui:202
-#, fuzzy
 msgid ""
 "The DHCP client identifier allows the network administrator to customize "
 "your computer’s configuration. If you wish to use a DHCP client identifier, "
@@ -1967,23 +2093,20 @@ msgid ""
 msgstr "用來解析主機名稱的網域。請使用逗號隔開不同的網域。"
 
 #: src/connection-editor/ce-page-ip4.ui:228
-#, fuzzy
 msgid "D_HCP client ID"
-msgstr "D_HCP 用戶端 ID："
+msgstr "D_HCP 用戶端 ID"
 
 #: src/connection-editor/ce-page-ip4.ui:242
 #: src/connection-editor/ce-page-ip6.ui:246
 #: src/connection-editor/page-ip4.c:359 src/connection-editor/page-ip6.c:347
-#, fuzzy
 msgid "S_earch domains"
-msgstr "搜尋網域(_E)："
+msgstr "搜尋網域(_E)"
 
 #: src/connection-editor/ce-page-ip4.ui:256
 #: src/connection-editor/ce-page-ip6.ui:260
 #: src/connection-editor/page-ip4.c:350 src/connection-editor/page-ip6.c:338
-#, fuzzy
 msgid "DNS ser_vers"
-msgstr "_DNS 伺服器："
+msgstr "DNS 伺服器(_V)"
 
 #: src/connection-editor/ce-page-ip4.ui:270
 msgid ""
@@ -2042,13 +2165,12 @@ msgstr ""
 "位址。Link-local 位址會自動設定到連線中的介面。"
 
 #: src/connection-editor/ce-page-ip6.ui:287
-#, fuzzy
 msgid "IPv6 _privacy extensions"
-msgstr "I_Pv6 隱私擴充功能："
+msgstr "I_Pv6 隱私擴充功能"
 
 #: src/connection-editor/ce-page-ip6.ui:319
 msgid "IPv6 address _generation mode"
-msgstr ""
+msgstr "IPv6 位址產生模式(_G)"
 
 #: src/connection-editor/ce-page-ip6.ui:356
 msgid "Require IPv_6 addressing for this connection to complete"
@@ -2080,38 +2202,36 @@ msgid "Strict"
 msgstr "嚴格"
 
 #: src/connection-editor/ce-page-macsec.ui:58
-#, fuzzy
 msgid "_Device name"
-msgstr "裝置名稱 + 編號"
+msgstr "裝置名稱(_D)"
 
 #: src/connection-editor/ce-page-macsec.ui:71
 msgid "The name of the MACsec device."
-msgstr "MACsec設備的名稱。"
+msgstr "MACsec 裝置的名稱。"
 
 #: src/connection-editor/ce-page-macsec.ui:85
-#, fuzzy
 msgid "_Parent device"
-msgstr "有線網路"
+msgstr "父裝置(_P)"
 
 #: src/connection-editor/ce-page-macsec.ui:98
 msgid ""
 "The parent interface name or parent connection UUID from which this MACSEC "
 "interface should be created."
-msgstr "應從中創建此MACSEC接口的父接口名稱或父連接UUID。"
+msgstr "應從中建立此 MACSEC 介面的父介面名稱或父連接 UUID。"
 
 #: src/connection-editor/ce-page-macsec.ui:104
 msgid ""
 "The parent interface name or parent connection UUID from which this MACsec "
 "interface should be created"
-msgstr "應從中創建此MACsec接口的父接口名稱或父連接UUID"
+msgstr "應從中建立此 MACsec 介面的父介面名稱或父連接 UUID"
 
 #: src/connection-editor/ce-page-macsec.ui:117
 msgid "Keys"
-msgstr ""
+msgstr "金鑰"
 
 #: src/connection-editor/ce-page-macsec.ui:135
 msgid "_Mode"
-msgstr ""
+msgstr "模式(_M)"
 
 #: src/connection-editor/ce-page-macsec.ui:148
 msgid ""
@@ -2119,49 +2239,50 @@ msgid ""
 "Agreement) is obtained. For the EAP mode, fill the parameters in the 802.1X "
 "security page"
 msgstr ""
-"指定如何獲取MKA的CAK（連接關聯密鑰）（MACsec密鑰協議）。對於EAP模式，請填寫"
-"802.1X安全頁面中的參數"
+"指定如何獲取 MKA（MACsec 金鑰協議）的CAK（連接關聯金鑰）。對於 EAP 模式，請填"
+"寫 802.1X 安全頁面中的參數"
 
 #: src/connection-editor/ce-page-macsec.ui:168
 msgid "C_AK"
-msgstr ""
+msgstr "C_AK"
 
 #: src/connection-editor/ce-page-macsec.ui:181
+#, fuzzy
 msgid "The pre-shared Connectivity Association Key"
-msgstr "預共享連接關聯密鑰"
+msgstr "預共享連接關聯金鑰"
 
 #: src/connection-editor/ce-page-macsec.ui:193
 msgid "C_KN"
-msgstr ""
+msgstr "C_KN"
 
 #: src/connection-editor/ce-page-macsec.ui:206
+#, fuzzy
 msgid " The pre-shared Connectivity-association Key Name"
-msgstr " 預共享連接關聯密鑰名稱"
+msgstr " 預共享連接關聯金鑰名稱"
 
 #: src/connection-editor/ce-page-macsec.ui:217
 msgid "Parameters"
-msgstr ""
+msgstr "參數"
 
 #: src/connection-editor/ce-page-macsec.ui:234
 msgid "_Validation"
-msgstr ""
+msgstr "驗證(_V)"
 
 #: src/connection-editor/ce-page-macsec.ui:247
 msgid "Specifies the validation mode for incoming frames"
-msgstr "指定傳入幀的驗證模式"
+msgstr "指定傳入訊框 (Frame)的驗證模式"
 
 #: src/connection-editor/ce-page-macsec.ui:266
 msgid "_SCI port"
-msgstr ""
+msgstr "_SCI 連接埠"
 
 #: src/connection-editor/ce-page-macsec.ui:279
 msgid "The port component of the SCI (Secure Channel Identifier)"
-msgstr "SCI的端口組件（安全通道標識符）"
+msgstr "SCI（安全通道標識符）的連接埠元件"
 
 #: src/connection-editor/ce-page-macsec.ui:291
-#, fuzzy
 msgid "_Encrypt"
-msgstr "加密"
+msgstr "加密(_E)"
 
 #: src/connection-editor/ce-page-macsec.ui:296
 msgid "Whether the transmitted traffic must be encrypted"
@@ -2173,33 +2294,28 @@ msgid "Basic"
 msgstr "基本"
 
 #: src/connection-editor/ce-page-mobile.ui:48
-#, fuzzy
 msgid "Nu_mber"
-msgstr "數字(_M)："
+msgstr "數字(_M)"
 
 #: src/connection-editor/ce-page-mobile.ui:142
 msgid "Advanced"
 msgstr "進階"
 
 #: src/connection-editor/ce-page-mobile.ui:165
-#, fuzzy
 msgid "_APN"
-msgstr "_APN："
+msgstr "_APN"
 
 #: src/connection-editor/ce-page-mobile.ui:179
-#, fuzzy
 msgid "N_etwork ID"
-msgstr "網路 ID(_E)："
+msgstr "網路 ID(_E)"
 
 #: src/connection-editor/ce-page-mobile.ui:221
-#, fuzzy
 msgid "Change…"
 msgstr "變更…"
 
 #: src/connection-editor/ce-page-mobile.ui:242
-#, fuzzy
 msgid "P_IN"
-msgstr "P_IN："
+msgstr "P_IN"
 
 #: src/connection-editor/ce-page-mobile.ui:266
 msgid "Allow _roaming if home network is not available"
@@ -2214,9 +2330,8 @@ msgid "Authentication"
 msgstr "驗證"
 
 #: src/connection-editor/ce-page-ppp.ui:53
-#, fuzzy
 msgid "Allowed methods"
-msgstr "允許的方式："
+msgstr "允許的方法"
 
 #: src/connection-editor/ce-page-ppp.ui:89
 msgid "Configure _Methods…"
@@ -2269,45 +2384,41 @@ msgstr "僅限瀏覽器"
 
 #: src/connection-editor/ce-page-proxy.ui:38
 msgid "Use this proxy configuration for only browser clients/schemes."
-msgstr "僅將此代理配置用於瀏覽器客戶端/方案。"
+msgstr "僅將此代理伺服器配置用於瀏覽器客戶端/方案。"
 
 #: src/connection-editor/ce-page-proxy.ui:52
 msgid "PAC URL"
-msgstr ""
+msgstr "PAC 網址"
 
 #: src/connection-editor/ce-page-proxy.ui:64
 msgid "PAC script"
-msgstr ""
+msgstr "PAC 腳本"
 
 #: src/connection-editor/ce-page-proxy.ui:76
 msgid "URL from where the PAC script is to be obtained."
-msgstr "要從中獲取PAC腳本的URL。"
+msgstr "要從中獲取 PAC 腳本的網址。"
 
 #: src/connection-editor/ce-page-proxy.ui:86
-#, fuzzy
 msgid "Import script from a file…"
-msgstr "從檔案匯入團隊組態(_I)…"
+msgstr "從檔案匯入腳本…"
 
 #: src/connection-editor/ce-page-proxy.ui:101
-#, fuzzy
 msgid "Method"
-msgstr "方法(_M)："
+msgstr "方法"
 
 #: src/connection-editor/ce-page-team-port.ui:47
 #: src/connection-editor/ce-page-team.ui:401
-#, fuzzy
 msgid "Ad_vanced…"
-msgstr "進階"
+msgstr "進階(_V)…"
 
 #: src/connection-editor/ce-page-team-port.ui:108
 msgid "Set by master"
-msgstr "由主人設定"
+msgstr "由主介面設定"
 
 #: src/connection-editor/ce-page-team-port.ui:112
 #: src/connection-editor/ce-page-team.ui:85
-#, fuzzy
 msgid "Ethernet port state"
-msgstr "有線網路"
+msgstr "有線網路連接埠狀態"
 
 #: src/connection-editor/ce-page-team-port.ui:116
 #: src/connection-editor/ce-page-team.ui:89
@@ -2322,161 +2433,159 @@ msgstr "NDP (IPv6)"
 #: src/connection-editor/ce-page-team-port.ui:151
 #: src/connection-editor/ce-page-team.ui:527
 msgid "Team Advanced Options"
-msgstr "團隊高級選項"
+msgstr "團隊進階選項"
 
 #: src/connection-editor/ce-page-team-port.ui:225
 msgid "_Queue ID"
-msgstr ""
+msgstr "佇列 ID(_Q)"
 
 #: src/connection-editor/ce-page-team-port.ui:239
 #: src/connection-editor/ce-page-team.ui:663
+#, fuzzy
 msgid ""
 "Number of bursts of unsolicited NAs and gratuitous ARP packets sent after "
 "port is enabled or disabled."
-msgstr "啟用或禁用端口後發送的未經請求的NA和免費ARP數據包的突發數。"
+msgstr ""
+"啟用或停用連接埠後傳送的非經請求的 NA 和免費 ARP 封包的高載 (burst) 數。"
 
 #: src/connection-editor/ce-page-team-port.ui:241
 msgid "ID of queue which this port should be mapped to."
-msgstr "此端口應映射到的隊列的ID。"
+msgstr "此連接埠應映射到的佇列的 ID。"
 
 #: src/connection-editor/ce-page-team-port.ui:255
 msgid "Active-Backup runner options"
-msgstr "Active-Backup運行選項"
+msgstr "自動備援執行器選項"
 
 #: src/connection-editor/ce-page-team-port.ui:271
-#, fuzzy
 msgid "_Port priority"
-msgstr "優先順序(_P)："
+msgstr "連接埠優先順序(_P)"
 
 #: src/connection-editor/ce-page-team-port.ui:284
 #: src/connection-editor/ce-page-team.ui:713
+#, fuzzy
 msgid ""
 "Value is positive number in milliseconds. Specifies an interval between "
 "bursts of notify-peer packets."
-msgstr "值是以毫秒為單位的正數。指定通知對等數據包突發之間的時間間隔。"
+msgstr ""
+"值是以毫秒為單位的正數。指定通知對端 (peer) 封包高載 (burst) 之間的時間間隔。"
 
 #: src/connection-editor/ce-page-team-port.ui:286
 msgid "Port priority. The higher number means higher priority."
-msgstr "端口優先級。數字越大意味著優先級越高。"
+msgstr "連接埠優先順序。數字越大意味著優先順序越高。"
 
 #: src/connection-editor/ce-page-team-port.ui:297
 msgid "Port _sticky"
-msgstr "端口_sticky"
+msgstr "連接埠黏滯 (_sticky)"
 
 #: src/connection-editor/ce-page-team-port.ui:301
 msgid "Do not unselect the port if a better one becomes available."
-msgstr ""
+msgstr "如果有更好的連接埠可用，不要取消選擇該連接埠。"
 
 #: src/connection-editor/ce-page-team-port.ui:316
 msgid "LACP runner options"
-msgstr "LACP跑步選項"
+msgstr "LACP 執行器選項"
 
 #: src/connection-editor/ce-page-team-port.ui:332
-#, fuzzy
 msgid "_LACP port priority"
-msgstr "優先順序(_P)："
+msgstr "_LACP 連接埠優先順序"
 
 #: src/connection-editor/ce-page-team-port.ui:346
-#, fuzzy
 msgid "LACP port _key"
-msgstr "私密金鑰(_K)："
+msgstr "LACP 連接埠金鑰(_K)"
 
 #: src/connection-editor/ce-page-team-port.ui:359
 #: src/connection-editor/ce-page-team.ui:676
+#, fuzzy
 msgid ""
 "Number of bursts of multicast group rejoin requests sent after port is "
 "enabled or disabled."
-msgstr "端口啟用或禁用後發送的組播組重新加入請求的突發數。"
+msgstr "連接埠啟用或停用後傳送的多播群組重新加入請求的高載 (burst) 數。"
 
 #: src/connection-editor/ce-page-team-port.ui:361
 msgid ""
 "Port priority according to LACP standard. The lower number means higher "
 "priority."
-msgstr "根據LACP標準的端口優先級。數字越小意味著優先級越高。"
+msgstr "根據 LACP 標準的連接埠優先順序。數字越小意味著優先順序越高。"
 
 #: src/connection-editor/ce-page-team-port.ui:374
 #: src/connection-editor/ce-page-team.ui:726
 msgid ""
 "Value is positive number in milliseconds. Specifies an interval between "
 "bursts of multicast group rejoin requests."
-msgstr "值是以毫秒為單位的正數。指定多播組重新加入請求的突發之間的間隔。"
+msgstr ""
+"值是以毫秒為單位的正數。指定多播群組重新加入請求的高載 (burst)之間的間隔。"
 
 #: src/connection-editor/ce-page-team-port.ui:376
 msgid ""
 "Port key according to LACP standard. It is only possible to aggregate ports "
 "with the same key."
-msgstr "端口密鑰符合LACP標準。只能使用相同的密鑰聚合端口。"
+msgstr "根據 LACP 標準的連接埠金鑰。只能聚合具有相同金鑰的連接埠。"
 
 #: src/connection-editor/ce-page-team-port.ui:416
 #: src/connection-editor/ce-page-team.ui:1143
 msgid "_Link watcher"
-msgstr ""
+msgstr "連線監視器(_L)"
 
 #: src/connection-editor/ce-page-team-port.ui:431
 #: src/connection-editor/ce-page-team.ui:1158
-#, fuzzy
 msgid "_Up delay"
-msgstr "連線延遲(_U)："
+msgstr "連線延遲(_U)"
 
 #: src/connection-editor/ce-page-team-port.ui:446
 #: src/connection-editor/ce-page-team.ui:1173
-#, fuzzy
 msgid "_Down delay"
-msgstr "斷線延遲(_D)："
+msgstr "斷線延遲(_D)"
 
 #: src/connection-editor/ce-page-team-port.ui:461
 #: src/connection-editor/ce-page-team.ui:1188
-#, fuzzy
 msgid "Send _interval"
-msgstr "父介面(_P)："
+msgstr "傳送間隔(_I)"
 
 #: src/connection-editor/ce-page-team-port.ui:476
 #: src/connection-editor/ce-page-team.ui:1203
 msgid "Delay _before first send"
-msgstr ""
+msgstr "第一次傳送之前的延遲(_B)"
 
 #: src/connection-editor/ce-page-team-port.ui:491
 #: src/connection-editor/ce-page-team.ui:1218
 msgid "_Maximum missed replies"
-msgstr ""
+msgstr "最大遺失回覆(_M)"
 
 #: src/connection-editor/ce-page-team-port.ui:506
 #: src/connection-editor/ce-page-team.ui:1233
-#, fuzzy
 msgid "_Source host"
-msgstr "ARP 目標(_T)："
+msgstr "來源主機(_S)"
 
 #: src/connection-editor/ce-page-team-port.ui:521
 #: src/connection-editor/ce-page-team.ui:1248
-#, fuzzy
 msgid "_Target host"
-msgstr "ARP 目標(_T)："
+msgstr "目標主機(_T)"
 
 #: src/connection-editor/ce-page-team-port.ui:535
 #: src/connection-editor/ce-page-team.ui:1262
 msgid ""
 "Maximum number of missed replies. If this number is exceeded, link is "
 "reported as down."
-msgstr "錯過回复的最大數量。如果超過此數量，則鏈接報告為關閉。"
+msgstr "遺失回覆的最大數量。如果超過此數量，則連線報告為關閉。"
 
 #: src/connection-editor/ce-page-team-port.ui:548
 #: src/connection-editor/ce-page-team.ui:1275
 msgid ""
 "Hostname to be converted to IP address which will be filled into ARP request "
 "as source address."
-msgstr "要轉換為IP地址的主機名，將作為源地址填入ARP請求。"
+msgstr "要轉換為 IP 位址的主機名稱，將作為來源位址填入 ARP 請求。"
 
 #: src/connection-editor/ce-page-team-port.ui:560
 #: src/connection-editor/ce-page-team.ui:1287
 msgid ""
 "Hostname to be converted to IP address which will be filled into request as "
 "destination address."
-msgstr "要轉換為IP地址的主機名，該地址將作為目標地址填充到請求中。"
+msgstr "要轉換為 IP 位址的主機名稱，該位址將作為目標位址填入到請求中。"
 
 #: src/connection-editor/ce-page-team-port.ui:570
 #: src/connection-editor/ce-page-team.ui:1297
 msgid "Ignore invalid packets from _active ports"
-msgstr "忽略來自_active端口的無效數據包"
+msgstr "忽略來自使用中的連接埠的無效封包(_A)"
 
 #: src/connection-editor/ce-page-team-port.ui:574
 #: src/connection-editor/ce-page-team.ui:1301
@@ -2484,13 +2593,13 @@ msgid ""
 "Validate received ARP packets on active ports. If this is not checked, all "
 "incoming ARP packets will be considered as a good reply."
 msgstr ""
-"驗證活動端口上收到的ARP數據包。如果未選中此選項，則所有傳入的ARP數據包都將被"
-"視為良好回复。"
+"驗證使用中的連接埠上收到的 ARP 封包。如果未勾選此選項，則所有傳入的 ARP 封包"
+"都將被視為良好回覆。"
 
 #: src/connection-editor/ce-page-team-port.ui:587
 #: src/connection-editor/ce-page-team.ui:1314
 msgid "Ignore invalid packets from i_nactive ports"
-msgstr "忽略來自i_nactive端口的無效數據包"
+msgstr "從非使用中的連接埠忽略無效的封包(_N)"
 
 #: src/connection-editor/ce-page-team-port.ui:591
 #: src/connection-editor/ce-page-team.ui:1318
@@ -2498,13 +2607,13 @@ msgid ""
 "Validate received ARP packets on inactive ports. If this is not checked, all "
 "incoming ARP packets will be considered as a good reply."
 msgstr ""
-"驗證非活動端口上收到的ARP數據包。如果未選中此選項，則所有傳入的ARP數據包都將"
-"被視為良好回复。"
+"驗證非使用中的連接埠上收到的 ARP 封包 。如果未勾選此選項，則所有傳入的 ARP 封"
+"包都將被視為良好回覆。"
 
 #: src/connection-editor/ce-page-team-port.ui:604
 #: src/connection-editor/ce-page-team.ui:1331
 msgid "S_end on inactive ports"
-msgstr "S_end在非活動端口上"
+msgstr "在非使用中的連接埠上傳送(_E)"
 
 #: src/connection-editor/ce-page-team-port.ui:608
 #: src/connection-editor/ce-page-team.ui:1335
@@ -2512,52 +2621,51 @@ msgid ""
 "By default, ARP requests are sent on active ports only. This option allows "
 "sending even on inactive ports."
 msgstr ""
-"默認情況下，ARP請求僅在活動端口上發送。此選項允許甚至在非活動端口上發送。"
+"預設情況下，ARP 請求僅在使用中的連接埠上傳送。此選項允許甚至在非使用中的連接"
+"埠上傳送。"
 
 #: src/connection-editor/ce-page-team-port.ui:671
 #: src/connection-editor/ce-page-team.ui:1398
 msgid ""
 "The delay between the link coming up and the runner being notified about it."
-msgstr "鏈接即將到來和跑者被通知之間的延遲。"
+msgstr "連線啟動和執行器被通知之間的延遲。"
 
 #: src/connection-editor/ce-page-team-port.ui:684
 #: src/connection-editor/ce-page-team.ui:1411
 msgid ""
 "The delay between the link going down and the runner being notified about it."
-msgstr "鏈路斷開與跑步者之間的延遲被通知。"
+msgstr "連線斷開和執行器被通知之間的延遲。"
 
 #: src/connection-editor/ce-page-team-port.ui:697
 #: src/connection-editor/ce-page-team.ui:1424
 msgid "The interval between requests being sent."
-msgstr "發送請求之間的間隔。"
+msgstr "傳送請求之間的間隔。"
 
 #: src/connection-editor/ce-page-team-port.ui:710
 #: src/connection-editor/ce-page-team.ui:1437
 msgid ""
 "The delay between link watch initialization and the first request being sent."
-msgstr "鏈接監視初始化和發送的第一個請求之間的延遲。"
+msgstr "連線監視初始化和傳送的第一個請求之間的延遲。"
 
 #: src/connection-editor/ce-page-team-port.ui:723
 #: src/connection-editor/ce-page-team.ui:1450
 msgid "The link watcher to be used."
-msgstr "要使用的鏈接監視器。"
+msgstr "要使用的連線監視器。"
 
 #: src/connection-editor/ce-page-team-port.ui:770
 #: src/connection-editor/ce-page-team.ui:1497
 msgid "Link Watcher"
-msgstr "Link Watcher"
+msgstr "連線監視器"
 
 #: src/connection-editor/ce-page-team-port.ui:790
 #: src/connection-editor/ce-page-team.ui:1517
-#, fuzzy
 msgid "Im_port team configuration from a file…"
-msgstr "從檔案匯入團隊組態(_I)…"
+msgstr "從檔案匯入團隊組態(_P)…"
 
 #: src/connection-editor/ce-page-team-port.ui:826
 #: src/connection-editor/ce-page-team.ui:1553
-#, fuzzy
 msgid "Edit _JSON configuration"
-msgstr "_JSON 設定:"
+msgstr "編輯 _JSON 組態"
 
 #: src/connection-editor/ce-page-team-port.ui:845
 #: src/connection-editor/ce-page-team.ui:1572
@@ -2566,47 +2674,44 @@ msgstr "原始配置"
 
 #: src/connection-editor/ce-page-team.ui:15
 msgid "Highest priority"
-msgstr "最高優先級"
+msgstr "最高優先順序"
 
 #: src/connection-editor/ce-page-team.ui:19
 msgid "Highest priority (stable)"
-msgstr "最高優先級（穩定）"
+msgstr "最高優先順序（穩定）"
 
 #: src/connection-editor/ce-page-team.ui:23
-#, fuzzy
 msgid "Bandwidth"
-msgstr "群組頻寬："
+msgstr "頻寬"
 
 #: src/connection-editor/ce-page-team.ui:27
 msgid "Highest number of ports"
-msgstr "最多端口"
+msgstr "最高連接埠數量"
 
 #: src/connection-editor/ce-page-team.ui:31
-#, fuzzy
 msgid "Port priority"
-msgstr "優先順序"
+msgstr "連接埠優先順序"
 
 #: src/connection-editor/ce-page-team.ui:57
-#, fuzzy
 msgid "From the team device"
-msgstr "有線網路"
+msgstr "從團隊裝置"
 
 #: src/connection-editor/ce-page-team.ui:61
 msgid "From the active port"
-msgstr "從活動端口"
+msgstr "從使用中的連接埠"
 
 #: src/connection-editor/ce-page-team.ui:65
+#, fuzzy
 msgid "From active to team device"
-msgstr "從活動到團隊設備"
+msgstr "從使用中的連接埠到團隊裝置"
 
 #: src/connection-editor/ce-page-team.ui:174
-#, fuzzy
 msgid "_Teamed connections"
-msgstr "團隊連線(_T):"
+msgstr "團隊連線(_T)"
 
 #: src/connection-editor/ce-page-team.ui:442
 msgid "Load balance"
-msgstr "負載均衡"
+msgstr "負載平衡"
 
 #: src/connection-editor/ce-page-team.ui:446
 msgid "LACP"
@@ -2624,19 +2729,17 @@ msgstr "有線網路"
 msgid "VLAN"
 msgstr "VLAN"
 
-# translation auto-copied from project Satellite6 Hammer CLI Foreman, version 6.1, document hammer-cli-foreman
 #: src/connection-editor/ce-page-team.ui:501
 msgid "IP"
 msgstr "IP"
 
 #: src/connection-editor/ce-page-team.ui:505
 msgid "Any L3 protocol"
-msgstr "任何L3協議"
+msgstr "任何 L3 協定"
 
 #: src/connection-editor/ce-page-team.ui:509
-#, fuzzy
 msgid "TCP"
-msgstr "GTC"
+msgstr "TCP"
 
 #: src/connection-editor/ce-page-team.ui:513
 msgid "UDP"
@@ -2648,165 +2751,161 @@ msgstr "SCTP"
 
 #: src/connection-editor/ce-page-team.ui:521
 msgid "Any L4 protocol"
-msgstr "任何L4協議"
+msgstr "任何 L4 協定"
 
 #: src/connection-editor/ce-page-team.ui:604
 msgid "_Peer notification count"
-msgstr ""
+msgstr "對端 (_Peer)通知計數"
 
 #: src/connection-editor/ce-page-team.ui:619
 msgid "Peer _notification interval"
-msgstr ""
+msgstr "對端 (peer)通知間隔(_N)"
 
 #: src/connection-editor/ce-page-team.ui:634
 msgid "_Multicast rejoin count"
-msgstr ""
+msgstr "多播重新加入計數(_M)"
 
 #: src/connection-editor/ce-page-team.ui:649
 msgid "Multicast _rejoin interval"
-msgstr ""
+msgstr "多播重新加入間隔(_R)"
 
 #: src/connection-editor/ce-page-team.ui:740
-#, fuzzy
 msgid "_Hardware Address"
-msgstr "硬體位址："
+msgstr "硬體位址(_H)"
 
 #: src/connection-editor/ce-page-team.ui:753
 msgid ""
 "Desired hardware address of new team device. Usual MAC address format is "
 "accepted."
-msgstr "新團隊設備的所需硬件地址。通常的MAC地址格式被接受。"
+msgstr "新團隊裝置的所需硬體位址。接受通常的 MAC 位址格式。"
 
 #: src/connection-editor/ce-page-team.ui:799
 msgid "_Runner"
-msgstr ""
+msgstr "執行器(_R)"
 
 #: src/connection-editor/ce-page-team.ui:814
-#, fuzzy
 msgid "_Hardware address policy"
-msgstr "硬體位址："
+msgstr "硬體位址策略(_H)"
 
 #: src/connection-editor/ce-page-team.ui:828
 msgid "Name of runner to be used."
-msgstr "要使用的跑步者姓名。"
+msgstr "要使用的執行器名稱。"
 
 #: src/connection-editor/ce-page-team.ui:849
 msgid ""
 "This defines the policy of how hardware addresses of team device and port "
 "devices should be set during the team lifetime."
-msgstr "這定義了在團隊生命週期內如何設置團隊設備和端口設備的硬件地址的策略。"
+msgstr "這定義了在團隊生命週期內如何設定團隊裝置和連接埠裝置的硬體位址的策略。"
 
 #: src/connection-editor/ce-page-team.ui:867
 msgid "Send LACPDU frames _periodically"
-msgstr "定期發送LACPDU幀"
+msgstr "定期傳送 LACPDU 訊框 (Frame)(_P)"
 
 #: src/connection-editor/ce-page-team.ui:871
 msgid ""
 "If checked, LACPDU frames are sent along the configured links periodically. "
 "If not, it acts as “speak when spoken to”."
 msgstr ""
-"如果選中，則會定期沿配置的鏈路發送LACPDU幀。如果不是，它就像“說話時說話”。"
+"如果勾選，LACPDU 訊框 (Frame)將定期沿著設定的連線傳送。如果沒有勾選，它會「有"
+"問才答」。"
 
 #: src/connection-editor/ce-page-team.ui:884
 msgid "Send a LACPDU frame _every second"
-msgstr "每隔一段時間發送一個LACPDU幀"
+msgstr "每秒傳送一個 LACPDU 訊框 (Frame)(_E)"
 
 #: src/connection-editor/ce-page-team.ui:888
+#, fuzzy
 msgid ""
 "Option specifies the rate at which our link partner is asked to transmit "
 "LACPDU packets. If checked, packets will be sent once per second. Otherwise "
 "they will be sent every 30 seconds."
 msgstr ""
-"選項指定要求鏈接夥伴傳輸LACPDU數據包的速率。如果選中，數據包將每秒發送一次。"
-"否則他們將每30秒發送一次。"
+"選項指定要求連線夥伴傳輸 LACPDU 封包的速率。如果勾選，封包將每秒傳送一次。否"
+"則它們將每 30 秒傳送一次。"
 
 #: src/connection-editor/ce-page-team.ui:904
-#, fuzzy
 msgid "_System priority"
-msgstr "優先順序(_P)："
+msgstr "系統優先順序(_S)"
 
 #: src/connection-editor/ce-page-team.ui:919
 msgid "_Minimum ports"
-msgstr ""
+msgstr "最小連接埠(_M)"
 
 #: src/connection-editor/ce-page-team.ui:934
 msgid "_Aggregator selection policy"
-msgstr ""
+msgstr "匯流器 (_Aggregator)選擇策略"
 
 #: src/connection-editor/ce-page-team.ui:948
 msgid "System priority, value can be 0 – 65535."
-msgstr "系統優先級，值可以是0  -  65535。"
+msgstr "系統優先順序，值可以是 0 – 65535。"
 
 #: src/connection-editor/ce-page-team.ui:960
+#, fuzzy
 msgid ""
 "Specifies the minimum number of ports that must be active before asserting "
 "carrier in the master interface, value can be 1 – 255."
 msgstr ""
-"指定在主接口中聲明載波之前必須處於活動狀態的最小端口數，值可以是1  -  255。"
+"指定在主介面中聲明載波之前必須處於使用中狀態的最小連接埠數量，值可以是1 - "
+"255。"
 
 #: src/connection-editor/ce-page-team.ui:972
 msgid "This selects the policy of how the aggregators will be selected."
-msgstr "這將選擇如何選擇聚合器的策略。"
+msgstr "這將選擇如何選擇匯流器 (Aggregator)的策略。"
 
 #: src/connection-editor/ce-page-team.ui:1007
+#, fuzzy
 msgid ""
 "List of fragment types (strings) which should be used for packet Tx hash "
 "computation."
-msgstr "應該用於數據包Tx散列計算的片段類型（字符串）列表。"
+msgstr "應該用於封包 Tx 雜湊計算的片段類型（字串）列表。"
 
 #: src/connection-editor/ce-page-team.ui:1036
 msgid "_Fields for transmission hash"
-msgstr "_Field用於傳輸哈希"
+msgstr "傳輸雜湊的欄位(_F)"
 
 #: src/connection-editor/ce-page-team.ui:1052
 msgid "In tenths of a second. Periodic interval between rebalancing."
-msgstr "在十分之一秒。重新平衡之間的周期性間隔。"
+msgstr "以十分之一秒為單位。重新平衡之間的周期性間隔。"
 
 #: src/connection-editor/ce-page-team.ui:1064
 msgid "Name of active Tx balancer. Active Tx balancing is disabled by default."
-msgstr "活動Tx平衡器的名稱。默認情況下禁用活動Tx平衡。"
+msgstr "自動傳輸平衡器的名稱。預設情況下停用自動傳輸平衡。"
 
 #: src/connection-editor/ce-page-team.ui:1086
-#, fuzzy
 msgid "Transmission _balancing interval"
-msgstr "傳輸耗能(_W)："
+msgstr "傳輸平衡器間隔時間(_B)"
 
 #: src/connection-editor/ce-page-team.ui:1101
-#, fuzzy
 msgid "_Transmission balancer"
-msgstr "傳輸耗能(_W)："
+msgstr "傳輸平衡器(_T)"
 
 #: src/connection-editor/ce-page-team.ui:1120
 msgid "Runner"
-msgstr "跑步者"
+msgstr "執行器"
 
 #: src/connection-editor/ce-page-vlan.ui:28
-#, fuzzy
 msgid "_Parent interface"
-msgstr "父介面(_P)："
+msgstr "父介面(_P)"
 
 #: src/connection-editor/ce-page-vlan.ui:41
-#, fuzzy
 msgid "VLAN inter_face name"
-msgstr "VLAN 介面名稱(_N)："
+msgstr "VLAN 介面名稱(_F)"
 
 #: src/connection-editor/ce-page-vlan.ui:55
-#, fuzzy
 msgid "Cloned MAC _address"
-msgstr "複製的 MA_C 位址："
+msgstr "複製的 MAC 位址(_A)"
 
 #: src/connection-editor/ce-page-vlan.ui:140
-#, fuzzy
 msgid "VLAN _id"
-msgstr "VLAN _id："
+msgstr "VLAN _id"
 
 #: src/connection-editor/ce-page-vlan.ui:197
 msgid "Flags"
-msgstr ""
+msgstr "旗標"
 
 #: src/connection-editor/ce-page-vlan.ui:213
 msgid "_Reorder headers"
-msgstr "_Reorder標頭"
+msgstr "重新排序標頭(_R)"
 
 #: src/connection-editor/ce-page-vlan.ui:228
 msgid "_GVRP"
@@ -2814,7 +2913,7 @@ msgstr "_GVRP"
 
 #: src/connection-editor/ce-page-vlan.ui:243
 msgid "_Loose binding"
-msgstr "_Loose綁定"
+msgstr "寬鬆綁定 (_Loose binding)"
 
 #: src/connection-editor/ce-page-vlan.ui:258
 msgid "M_VRP"
@@ -2831,9 +2930,8 @@ msgid "\"vlan\" + number"
 msgstr "\"vlan\" + 編號"
 
 #: src/connection-editor/ce-page-wifi-security.ui:29
-#, fuzzy
 msgid "S_ecurity"
-msgstr "安全性(_E)："
+msgstr "安全性(_E)"
 
 #: src/connection-editor/ce-page-wifi.ui:35
 msgid "A (5 GHz)"
@@ -2845,171 +2943,46 @@ msgstr "B/G (2.4 GHz)"
 
 #: src/connection-editor/ce-page-wifi.ui:49
 msgid "Client"
-msgstr "用戶端"
+msgstr "客戶端"
 
 #: src/connection-editor/ce-page-wifi.ui:55
 msgid "Ad-hoc"
-msgstr "Ad hoc"
+msgstr "Ad-hoc"
 
 #: src/connection-editor/ce-page-wifi.ui:203
 msgid "mW"
 msgstr "mW"
 
 #: src/connection-editor/ce-page-wifi.ui:222
-#, fuzzy
 msgid "Transmission po_wer"
-msgstr "傳輸耗能(_W)："
+msgstr "傳輸功率(_W)"
 
 #: src/connection-editor/ce-page-wifi.ui:256
 msgid "Mb/s"
 msgstr "Mb/s"
 
 #: src/connection-editor/ce-page-wifi.ui:275
-#, fuzzy
 msgid "_Rate"
-msgstr "速率(_R)："
+msgstr "速率(_R)"
 
 #: src/connection-editor/ce-page-wifi.ui:311
-#, fuzzy
 msgid "_BSSID"
-msgstr "_BSSID："
+msgstr "_BSSID"
 
 #: src/connection-editor/ce-page-wifi.ui:336
-#, fuzzy
 msgid "C_hannel"
-msgstr "頻道(_H)："
+msgstr "頻道(_H)"
 
 #: src/connection-editor/ce-page-wifi.ui:368
-#, fuzzy
 msgid "Ban_d"
-msgstr "波段(_D)："
+msgstr "波段(_D)"
 
 #: src/connection-editor/ce-page-wifi.ui:414
-#, fuzzy
 msgid "SS_ID"
-msgstr "SS_ID："
+msgstr "SS_ID"
 
-#: src/connection-editor/ce-page.c:64 src/connection-editor/ce-page.c:98
-msgid "automatic"
-msgstr "自動"
-
-#: src/connection-editor/ce-page.c:175
-msgid "unspecified error"
-msgstr "未指明的錯誤"
-
-#: src/connection-editor/ce-page.c:280
-msgid "Preserve"
-msgstr "保留"
-
-#: src/connection-editor/ce-page.c:281
-msgid "Permanent"
-msgstr "永久"
-
-# translation auto-copied from project virt-manager, version 0.10.0, document virt-manager, author ccheng
-#: src/connection-editor/ce-page.c:282
-msgid "Random"
-msgstr "隨機"
-
-#: src/connection-editor/ce-page.c:283
-#, fuzzy
-msgid "Stable"
-msgstr "啟用"
-
-#: src/connection-editor/ce-page.c:287
-#, fuzzy
-msgid ""
-"The MAC address entered here will be used as hardware address for the "
-"network device this connection is activated on. This feature is known as MAC "
-"cloning or spoofing. Example: 00:11:22:33:44:55"
-msgstr ""
-"在這裡輸入的 MAC 位址會成為這個連線使用的網路裝置的硬體位址。這個功能也稱為 "
-"MAC 複製或偽裝。例如：00:11:22:33:44:55"
-
-#: src/connection-editor/ce-page.c:327
-msgid "MAC address"
-msgstr "MAC 位址"
-
-#: src/connection-editor/ce-page.c:327
-#, fuzzy
-msgid "HW address"
-msgstr "地址"
-
-#: src/connection-editor/ce-page.c:330
-#, c-format
-msgid "invalid %s for %s (%s)"
-msgstr "無效 %s 對於 %s （%s）"
-
-#: src/connection-editor/ce-page.c:334
-#, c-format
-msgid "invalid %s (%s)"
-msgstr "無效 %s （%s）"
-
-#: src/connection-editor/ce-page.c:374
-#, c-format
-msgid "invalid interface-name for %s (%s): "
-msgstr "無效的接口名稱 %s （%s）： "
-
-#: src/connection-editor/ce-page.c:378
-#, fuzzy, c-format
-msgid "invalid interface-name (%s): "
-msgstr "VLAN 介面名稱(_N)："
-
-#: src/connection-editor/ce-page.c:557
-msgid "can’t parse device name"
-msgstr "無法解析設備名稱"
-
-#: src/connection-editor/ce-page.c:575
-#, fuzzy
-msgid "invalid hardware address"
-msgstr "硬體位址："
-
-#: src/connection-editor/ce-page.c:597
-#, c-format
-msgid "invalid %s (%s): "
-msgstr "無效 %s （%s）： "
-
-#: src/connection-editor/ce-page.c:598 src/connection-editor/ce-page.c:603
-#, fuzzy
-msgid "device"
-msgstr "任何裝置"
-
-#: src/connection-editor/ce-page.c:602
-#, c-format
-msgid "invalid %s (%s) "
-msgstr "無效 %s （%s） "
-
-#: src/connection-editor/ce-page.h:95
-#, fuzzy
-msgid ""
-"IP addresses identify your computer on the network. Click the “Add” button "
-"to add static IP address to be configured in addition to the automatic ones."
-msgstr "用來在網路上區別您的電腦的 IP 位址。請按下「新增」按鈕，加入 IP 位址。"
-
-#: src/connection-editor/ce-page.h:100
-msgid ""
-"The IP address identify your computer on the network and determines the "
-"address range distributed to other computers. Click the “Add” button to add "
-"an IP address. If no address is provided, range will be determined "
-"automatically."
-msgstr ""
-"IP地址標識網絡上的計算機，並確定分發給其他計算機的地址範圍。單擊“添加”按鈕添"
-"加IP地址。如果未提供地址，將自動確定範圍。"
-
-#: src/connection-editor/ce-page.h:105
-#, fuzzy
-msgid "Additional static addresses"
-msgstr "自動，僅限位址"
-
-#: src/connection-editor/ce-page.h:106
-msgid "Addresses"
-msgstr "地址"
-
-#: src/connection-editor/ce-page.h:107
-msgid "Address (optional)"
-msgstr "地址（可選）"
-
-#: src/connection-editor/ce-polkit-button.c:60
 #: src/connection-editor/ce-polkit.c:49
+#: src/connection-editor/ce-polkit-button.c:60
 msgid "No polkit authorization to perform the action"
 msgstr "沒有執行操作的polkit授權"
 
@@ -3058,7 +3031,6 @@ msgid "Microsoft Challenge Handshake Authentication Protocol version 2"
 msgstr "Microsoft Challenge Handshake 驗證通訊協定第 2 版"
 
 #: src/connection-editor/ce-ppp-auth-methods.ui:179
-#, fuzzy
 msgid ""
 "In most cases, the provider’s PPP servers will support all authentication "
 "methods. If connections fail, try disabling support for some methods."
@@ -3104,7 +3076,7 @@ msgstr "橋接"
 #: src/connection-editor/connection-helpers.c:107
 #: src/connection-editor/page-ip-tunnel.c:159
 msgid "IP tunnel"
-msgstr "IP隧道"
+msgstr "IP 隧道"
 
 #: src/connection-editor/connection-helpers.c:108
 #: src/connection-editor/page-macsec.c:173
@@ -3119,27 +3091,21 @@ msgstr "VPN"
 
 #: src/connection-editor/connection-helpers.c:190
 msgid "No VPN service type."
-msgstr ""
+msgstr "沒有 VPN 服務類型。"
 
 #: src/connection-editor/connection-helpers.c:195
-#, fuzzy
 msgid "The VPN plugin failed to import the VPN connection correctly: "
-msgstr ""
-"VPN 外掛程式無法正確的匯入 VPN 連線\n"
-"\n"
-"錯誤：沒有 VPN 服務類型。"
+msgstr "VPN 外掛程式無法正確的匯入 VPN 連線："
 
 #: src/connection-editor/connection-helpers.c:279
-#: src/connection-editor/page-proxy.c:104
+#: src/connection-editor/page-proxy.c:104 src/connection-editor/page-team.c:327
 #: src/connection-editor/page-team-port.c:189
-#: src/connection-editor/page-team.c:327
 msgid "Select file to import"
 msgstr "選擇要匯入的檔案"
 
 #: src/connection-editor/connection-helpers.c:283
-#: src/connection-editor/page-proxy.c:108
+#: src/connection-editor/page-proxy.c:108 src/connection-editor/page-team.c:331
 #: src/connection-editor/page-team-port.c:193
-#: src/connection-editor/page-team.c:331
 msgid "_Open"
 msgstr "開啟(_O)"
 
@@ -3153,7 +3119,6 @@ msgstr "虛擬"
 
 #: src/connection-editor/connection-helpers.c:490
 #: src/connection-editor/connection-helpers.c:492
-#, fuzzy
 msgid "Import a saved VPN configuration…"
 msgstr "匯入已儲存的 VPN 組態…"
 
@@ -3177,19 +3142,18 @@ msgid "Are you sure you wish to delete the connection %s?"
 msgstr "您確定要刪除連線 %s ？"
 
 #: src/connection-editor/gtk/menus.ui:6
-#, fuzzy
 msgid "_New Connection"
-msgstr "_VPN 連線"
+msgstr "新連線(_N)"
 
 #: src/connection-editor/gtk/menus.ui:13
 msgid "_Quit"
-msgstr ""
+msgstr "退出(_Q)"
 
 #: src/connection-editor/ip4-routes-dialog.c:683
 #: src/connection-editor/ip6-routes-dialog.c:704
 #: src/connection-editor/page-ip4.c:1119 src/connection-editor/page-ip6.c:1117
 msgid "Address"
-msgstr "地址"
+msgstr "位址"
 
 #: src/connection-editor/ip4-routes-dialog.c:702
 #: src/connection-editor/page-ip4.c:1138
@@ -3200,7 +3164,7 @@ msgstr "網路遮罩"
 #: src/connection-editor/ip6-routes-dialog.c:742
 #: src/connection-editor/page-ip4.c:1157 src/connection-editor/page-ip6.c:1155
 msgid "Gateway"
-msgstr "通訊閘"
+msgstr "閘道器"
 
 #: src/connection-editor/ip4-routes-dialog.c:740
 #: src/connection-editor/ip6-routes-dialog.c:761
@@ -3222,25 +3186,22 @@ msgid "Editing un-named connection"
 msgstr "編輯未命名的連線"
 
 #: src/connection-editor/nm-connection-editor.c:120
-#, fuzzy
 msgid "Missing connection name"
-msgstr "連線名稱(_N)："
+msgstr "連線名稱遺失"
 
 #: src/connection-editor/nm-connection-editor.c:336
-#, fuzzy
 msgid "Editor initializing…"
-msgstr "初始化編輯器時發生錯誤"
+msgstr "正在初始化編輯器…"
 
 #: src/connection-editor/nm-connection-editor.c:343
 #: src/connection-editor/nm-connection-list.c:457
-#, fuzzy
 msgid "Connection cannot be modified"
-msgstr "新增連線失敗"
+msgstr "無法修改連線"
 
 #: src/connection-editor/nm-connection-editor.c:358
 #, c-format
 msgid "Invalid setting %s: %s"
-msgstr "設置無效 %s： %s"
+msgstr "無效的設定 %s: %s"
 
 #: src/connection-editor/nm-connection-editor.c:434
 msgid ""
@@ -3277,7 +3238,7 @@ msgstr "建立連線編輯器對話盒時發生不明錯誤。"
 msgid ""
 "Warning: the connection contains some properties not supported by the "
 "editor. They will be cleared upon save."
-msgstr "警告：連接包含編輯器不支持的某些屬性。它們將在保存後清除。"
+msgstr "警告：連線包含一些編輯器不支援的屬性。它們會在儲存時清除。"
 
 #: src/connection-editor/nm-connection-editor.c:748
 msgid "Error initializing editor"
@@ -3289,42 +3250,39 @@ msgstr "新增連線失敗"
 
 #: src/connection-editor/nm-connection-editor.ui:35
 msgid "Fix"
-msgstr "固定"
+msgstr "修正"
 
 #: src/connection-editor/nm-connection-editor.ui:61
-#, fuzzy
 msgid ""
 "Security labels may prevent some files from being used with certificate "
 "authentication."
-msgstr "將這設為 True，以停用在 EAP 認證中關於 CA 證書的警告。"
+msgstr "安全性標籤可能使一些檔案無法與憑證驗證一起使用。"
 
 #: src/connection-editor/nm-connection-editor.ui:110
-#, fuzzy
 msgid "Connection _name"
-msgstr "連線名稱(_N)："
+msgstr "連線名稱(_N)"
 
 #: src/connection-editor/nm-connection-editor.ui:170
-#, fuzzy
 msgid "_Export…"
-msgstr "匯出(_X)"
+msgstr "匯出(_E)…"
 
 #: src/connection-editor/nm-connection-editor.ui:260
 msgid "File Relabel"
-msgstr "文件Relabel"
+msgstr "檔案重新標籤"
 
 #: src/connection-editor/nm-connection-editor.ui:291
 msgid "_Relabel"
-msgstr "_Relabel"
+msgstr "重新標籤(_R)"
 
 #: src/connection-editor/nm-connection-editor.ui:320
 msgid ""
 "The following files are not labelled for use with certificate "
 "authentication. Do you wish to adjust the labels?"
-msgstr "以下文件未標記為與證書身份驗證一起使用。你想調整標籤嗎？"
+msgstr "下列檔案未被標籤以與憑證驗證一起使用。您要調整標籤嗎？"
 
 #: src/connection-editor/nm-connection-editor.ui:347
 msgid "Relabel"
-msgstr "重新標記"
+msgstr "重新標籤"
 
 #: src/connection-editor/nm-connection-editor.ui:361
 msgid "Filename"
@@ -3372,15 +3330,15 @@ msgstr[0] "%d 年以前"
 
 #: src/connection-editor/nm-connection-list.c:459
 msgid "Connection cannot be deleted"
-msgstr "無法刪除連接"
+msgstr "連線無法刪除"
 
 #: src/connection-editor/nm-connection-list.c:462
 msgid "Select a connection to edit"
-msgstr "選擇要編輯的連接"
+msgstr "選擇要編輯的連線"
 
 #: src/connection-editor/nm-connection-list.c:464
 msgid "Select a connection to delete"
-msgstr "選擇要刪除的連接"
+msgstr "選擇要刪除的連線"
 
 #: src/connection-editor/nm-connection-list.c:785
 msgid "Name"
@@ -3407,19 +3365,17 @@ msgid "Authenticate to delete the selected connection"
 msgstr "驗證以刪除選取的連線"
 
 #: src/connection-editor/nm-connection-list.c:1053
-#, fuzzy
 msgid "Unrecognized connection type"
-msgstr "不支援的行動寬頻連線類型。"
+msgstr "無法辨識的連線類型"
 
 #: src/connection-editor/nm-connection-list.c:1058
-#, fuzzy, c-format
+#, c-format
 msgid "Don’t know how to import “%s” connections"
-msgstr "不知道如何建立「%s」連線"
+msgstr "不知道如何匯入「%s」連線"
 
 #: src/connection-editor/nm-connection-list.c:1062
-#, fuzzy
 msgid "Error importing connection"
-msgstr "編輯連線時發生錯誤"
+msgstr "匯入連線時發生錯誤"
 
 #: src/connection-editor/nm-connection-list.c:1069
 #: src/connection-editor/nm-connection-list.c:1084
@@ -3428,16 +3384,15 @@ msgid "Error creating connection"
 msgstr "建立連線時發生錯誤"
 
 #: src/connection-editor/nm-connection-list.c:1069
-#, fuzzy
 msgid "Connection type not specified."
-msgstr "新增連線失敗"
+msgstr "沒有指定連線類型。"
 
 #: src/connection-editor/nm-connection-list.c:1085
 msgid "No VPN plugins are installed."
 msgstr "尚未安裝任何 VPN 外掛程式。"
 
 #: src/connection-editor/nm-connection-list.c:1088
-#, fuzzy, c-format
+#, c-format
 msgid "Don’t know how to create “%s” connections"
 msgstr "不知道如何建立「%s」連線"
 
@@ -3446,7 +3401,7 @@ msgid "Error editing connection"
 msgstr "編輯連線時發生錯誤"
 
 #: src/connection-editor/nm-connection-list.c:1123
-#, fuzzy, c-format
+#, c-format
 msgid "Did not find a connection with UUID “%s”"
 msgstr "找不到 UUID「%s」的連線"
 
@@ -3456,7 +3411,7 @@ msgstr "網路連線"
 
 #: src/connection-editor/nm-connection-list.ui:86
 msgid "Add a new connection"
-msgstr "添加新連接"
+msgstr "加入新連線"
 
 #: src/connection-editor/page-8021x-security.c:99
 msgid "802.1X Security"
@@ -3472,41 +3427,37 @@ msgstr "在這個連線使用 802.1_X 防護"
 
 #: src/connection-editor/page-bluetooth.c:44
 msgid "MAC address of the Bluetooth device. Example: 00:11:22:33:44:55"
-msgstr "藍牙設備的MAC地址。例如：00：11：22：33：44：55"
+msgstr "藍牙裝置的 MAC 位址。例如：00:11:22:33:44:55"
 
 #: src/connection-editor/page-bluetooth.c:108
-#, fuzzy
 msgid "Could not load Bluetooth user interface."
-msgstr "無法載入 DCB 使用者介面。"
+msgstr "無法載入藍牙使用者介面。"
 
 #: src/connection-editor/page-bluetooth.c:156
-#, fuzzy, c-format
+#, c-format
 msgid "invalid Bluetooth device (%s)"
-msgstr "找不到藍牙裝置。"
+msgstr "無效的藍牙裝置 (%s)"
 
 #: src/connection-editor/page-bluetooth.c:239
-#, fuzzy, c-format
+#, c-format
 msgid "Bluetooth connection %d"
-msgstr "繫結的連線 %d"
+msgstr "藍牙連線 %d"
 
 #: src/connection-editor/page-bluetooth.c:290
-#, fuzzy
 msgid "Bluetooth Type"
-msgstr "藍牙"
+msgstr "藍牙類型"
 
 #: src/connection-editor/page-bluetooth.c:308
 msgid "Select the type of the Bluetooth connection profile."
-msgstr "選擇藍牙連接配置文件的類型。"
+msgstr "選擇藍牙連線設定檔類型。"
 
 #: src/connection-editor/page-bluetooth.c:313
-#, fuzzy
 msgid "_Personal Area Network"
-msgstr "有線網路"
+msgstr "個人區域網路(_P)"
 
 #: src/connection-editor/page-bluetooth.c:318
-#, fuzzy
 msgid "_Dial-Up Network"
-msgstr "Wi-Fi 網路"
+msgstr "撥號連線(_D)"
 
 #: src/connection-editor/page-bond.c:432
 msgid "Could not load bond user interface."
@@ -3521,6 +3472,15 @@ msgstr "主要"
 msgid "Bond connection %d"
 msgstr "繫結的連線 %d"
 
+#: src/connection-editor/page-bridge.c:219
+msgid "Could not load bridge user interface."
+msgstr "無法載入橋接的使用者介面。"
+
+#: src/connection-editor/page-bridge.c:335
+#, c-format
+msgid "Bridge connection %d"
+msgstr "橋接的連線 %d"
+
 #. Translators: a "Bridge Port" is a network
 #. * device that is part of a bridge.
 #.
@@ -3531,15 +3491,6 @@ msgstr "橋接連接埠"
 #: src/connection-editor/page-bridge-port.c:93
 msgid "Could not load bridge port user interface."
 msgstr "無法載入橋接連接埠使用者介面。"
-
-#: src/connection-editor/page-bridge.c:219
-msgid "Could not load bridge user interface."
-msgstr "無法載入橋接的使用者介面。"
-
-#: src/connection-editor/page-bridge.c:335
-#, c-format
-msgid "Bridge connection %d"
-msgstr "橋接的連線 %d"
 
 #: src/connection-editor/page-dcb.c:610
 msgid "DCB"
@@ -3555,7 +3506,7 @@ msgstr "無法載入 DSL 使用者介面。"
 
 #: src/connection-editor/page-dsl.c:306
 msgid "missing parent interface"
-msgstr "缺少父接口"
+msgstr "缺少父介面"
 
 #: src/connection-editor/page-dsl.c:351
 #, c-format
@@ -3563,17 +3514,15 @@ msgid "DSL connection %d"
 msgstr "DSL 連線 %d"
 
 #: src/connection-editor/page-ethernet.c:67
-#, fuzzy
 msgid ""
 "This option locks this connection to the network device specified either by "
 "its interface name or permanent MAC or both. Examples: “em1”, "
 "“3C:97:0E:42:1A:19”, “em1 (3C:97:0E:42:1A:19)”"
 msgstr ""
-"此選項會將此連線鎖定至在此所輸入的 MAC 位址所指定的網路裝置。例如："
-"00:11:22:33:44:55"
+"此選項會將此連線鎖定至介面名稱或永久 MAC 位址又或者兩者所指定的網路裝置。例"
+"如：「em1」、「3C:97:0E:42:1A:19」、「em1 (3C:97:0E:42:1A:19)」"
 
 #: src/connection-editor/page-ethernet.c:248
-#, fuzzy
 msgid "ignored"
 msgstr "已忽略"
 
@@ -3582,24 +3531,22 @@ msgid "Could not load ethernet user interface."
 msgstr "無法載入有線網路使用者介面。"
 
 #: src/connection-editor/page-ethernet.c:498
-#, fuzzy
 msgid "Ethernet device"
-msgstr "有線網路"
+msgstr "有線網路裝置"
 
 #: src/connection-editor/page-ethernet.c:502
 #: src/connection-editor/page-vlan.c:723 src/connection-editor/page-wifi.c:557
-#, fuzzy
 msgid "cloned MAC"
-msgstr "複製的 MAC 位址(_L)："
+msgstr "複製的 MAC 位址"
 
 #: src/connection-editor/page-ethernet.c:506
 msgid "Wake-on-LAN password"
-msgstr "局域網喚醒密碼"
+msgstr "網路喚醒密碼"
 
 #: src/connection-editor/page-ethernet.c:546
 #, c-format
 msgid "Ethernet connection %d"
-msgstr "線網路連線 %d"
+msgstr "有線網路連線 %d"
 
 #. TRANSLATORS: Default zone set for firewall, when no zone is selected
 #: src/connection-editor/page-general.c:41
@@ -3620,15 +3567,16 @@ msgid "Could not load General user interface."
 msgstr "無法載入一般使用者介面。"
 
 #: src/connection-editor/page-infiniband.c:43
-#, fuzzy
 msgid ""
 "This option locks this connection to the network device specified either by "
 "its interface name or permanent MAC or both. Examples: “ib0”, “80:00:00:48:"
 "fe:80:00:00:00:00:00:00:00:02:c9:03:00:00:0f:65”, “ib0 (80:00:00:48:"
 "fe:80:00:00:00:00:00:00:00:02:c9:03:00:00:0f:65)”"
 msgstr ""
-"此選項會將此連線鎖定至在此所輸入的 MAC 位址所指定的網路裝置。例如："
-"00:11:22:33:44:55"
+"此選項會將此連線鎖定至介面名稱或永久 MAC 位址又或者兩者所指定的網路裝置。例"
+"如：「ib0」、「80:00:00:48:fe:80:00:00:00:00:00:00:00:02:"
+"c9:03:00:00:0f:65」、「ib0 (80:00:00:48:fe:80:00:00:00:00:00:00:00:02:"
+"c9:03:00:00:0f:65)」"
 
 #: src/connection-editor/page-infiniband.c:134
 msgid "Could not load InfiniBand user interface."
@@ -3636,7 +3584,7 @@ msgstr "無法載入 InfiniBand 使用者介面。"
 
 #: src/connection-editor/page-infiniband.c:197
 msgid "infiniband device"
-msgstr "infiniband設備"
+msgstr "infiniband 裝置"
 
 #: src/connection-editor/page-infiniband.c:237
 #, c-format
@@ -3644,14 +3592,13 @@ msgid "InfiniBand connection %d"
 msgstr "InfiniBand 連線 %d"
 
 #: src/connection-editor/page-ip-tunnel.c:161
-#, fuzzy
 msgid "Could not load IP tunnel user interface."
-msgstr "無法載入 IPv4 使用者介面。"
+msgstr "無法載入 IP 隧道使用者介面。"
 
 #: src/connection-editor/page-ip-tunnel.c:275
-#, fuzzy, c-format
+#, c-format
 msgid "IP tunnel connection %d"
-msgstr "線網路連線 %d"
+msgstr "IP 隧道連線 %d"
 
 #: src/connection-editor/page-ip4.c:114 src/connection-editor/page-ip6.c:129
 msgid "Automatic (VPN)"
@@ -3686,14 +3633,12 @@ msgid "Link-Local Only"
 msgstr "只有本機連線"
 
 #: src/connection-editor/page-ip4.c:348 src/connection-editor/page-ip6.c:336
-#, fuzzy
 msgid "Additional DNS ser_vers"
-msgstr "額外的 _DNS 伺服器："
+msgstr "額外的 DNS 伺服器(_V)"
 
 #: src/connection-editor/page-ip4.c:357 src/connection-editor/page-ip6.c:345
-#, fuzzy
 msgid "Additional s_earch domains"
-msgstr "額外的搜尋網域(_E)："
+msgstr "額外的搜尋網域(_E)"
 
 #: src/connection-editor/page-ip4.c:1019
 #, c-format
@@ -3711,22 +3656,22 @@ msgstr "無法載入 IPv4 使用者介面。"
 #: src/connection-editor/page-ip4.c:1304
 #, c-format
 msgid "IPv4 address “%s” invalid"
-msgstr "IPv4地址“%s“無效"
+msgstr "IPv4 位址「%s」無效"
 
 #: src/connection-editor/page-ip4.c:1312
 #, c-format
 msgid "IPv4 address netmask “%s” invalid"
-msgstr "IPv4地址網絡掩碼“%s“無效"
+msgstr "IPv4 位址網路遮罩「%s」無效"
 
 #: src/connection-editor/page-ip4.c:1321
 #, c-format
 msgid "IPv4 gateway “%s” invalid"
-msgstr "IPv4網關“%s“無效"
+msgstr "IPv4 閘道器「%s」無效"
 
 #: src/connection-editor/page-ip4.c:1364
 #, c-format
 msgid "IPv4 DNS server “%s” invalid"
-msgstr "IPv4 DNS服務器“%s“無效"
+msgstr "IPv4 DNS 伺服器「%s」無效"
 
 #: src/connection-editor/page-ip6.c:172
 msgid "Automatic, DHCP only"
@@ -3748,31 +3693,31 @@ msgstr "無法載入 IPv6 使用者介面。"
 #: src/connection-editor/page-ip6.c:1304
 #, c-format
 msgid "IPv6 address “%s” invalid"
-msgstr "IPv6地址“%s“無效"
+msgstr "IPv6 位址「%s」無效"
 
 #: src/connection-editor/page-ip6.c:1312
 #, c-format
 msgid "IPv6 prefix “%s” invalid"
-msgstr "IPv6前綴“%s“無效"
+msgstr "IPv6 前綴「%s」無效"
 
 #: src/connection-editor/page-ip6.c:1321
 #, c-format
 msgid "IPv6 gateway “%s” invalid"
-msgstr "IPv6網關“%s“無效"
+msgstr "IPv6 閘道器「%s」無效"
 
 #: src/connection-editor/page-ip6.c:1363
 #, c-format
 msgid "IPv6 DNS server “%s” invalid"
-msgstr "IPv6 DNS服務器“%s“無效"
+msgstr "IPv6 DNS 伺服器「%s」無效"
 
 #: src/connection-editor/page-macsec.c:175
 msgid "Could not load MACsec user interface."
-msgstr "無法加載MACsec用戶界面。"
+msgstr "無法載入 MACsec 使用者介面。"
 
 #: src/connection-editor/page-macsec.c:314
 #, c-format
 msgid "MACSEC connection %d"
-msgstr "MACSEC連接 %d"
+msgstr "MACSEC 連線 %d"
 
 #: src/connection-editor/page-master.c:221
 #: src/connection-editor/page-master.c:232
@@ -3780,12 +3725,12 @@ msgid "Duplicate slaves"
 msgstr "重製從屬"
 
 #: src/connection-editor/page-master.c:222
-#, fuzzy, c-format
+#, c-format
 msgid "Slaves “%s” and “%s” both apply to device “%s”"
 msgstr "從屬「%s」與「%s」都套用到裝置「%s」"
 
 #: src/connection-editor/page-master.c:233
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Slaves “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
 "same physical device."
@@ -3794,67 +3739,66 @@ msgstr "從屬「%s」與「%s」套用到同個實體裝置不同的虛擬連�
 #: src/connection-editor/page-master.c:357
 #, c-format
 msgid "%s slave %d"
-msgstr "%s slave %d"
+msgstr "%s 從屬 %d"
 
-#: src/connection-editor/page-mobile.c:297
+#: src/connection-editor/page-mobile.c:293
 msgid "Could not load mobile broadband user interface."
 msgstr "無法載入行動寬頻使用者介面。"
 
-#: src/connection-editor/page-mobile.c:314
+#: src/connection-editor/page-mobile.c:310
 msgid "Unsupported mobile broadband connection type."
 msgstr "不支援的行動寬頻連線類型。"
 
 #. Fall back to just asking for GSM vs. CDMA
-#: src/connection-editor/page-mobile.c:527
+#: src/connection-editor/page-mobile.c:523
 msgid "Select Mobile Broadband Provider Type"
 msgstr "選擇行動寬頻供應商類型"
 
-#: src/connection-editor/page-mobile.c:554
-#, fuzzy
+#: src/connection-editor/page-mobile.c:550
 msgid ""
 "Select the technology your mobile broadband provider uses. If you are "
 "unsure, ask your provider."
-msgstr "請選擇您的無線寬頻供應商所使用的技術。如果您不確定，請洽詢供應商。"
+msgstr "請選擇您的行動寬頻供應商使用的技術。如果您不確定，請洽詢供應商。"
 
-#: src/connection-editor/page-mobile.c:559
+#: src/connection-editor/page-mobile.c:555
 msgid "My provider uses _GSM-based technology (i.e. GPRS, EDGE, UMTS, HSDPA)"
 msgstr "我的供應商使用 _GSM 為主的技術（例如 GPRS、EDGE、UMTS、HSDPA）"
 
 #. Translators: CDMA has 'D' accelerator key; 'C' collides with 'Cancel' button.
 #. You may need to change it according to your language.
-#: src/connection-editor/page-mobile.c:566
+#: src/connection-editor/page-mobile.c:562
 msgid "My provider uses C_DMA-based technology (i.e. 1xRTT, EVDO)"
 msgstr "我的供應商使用 C_DMA 為主的技術（例如 1xRTT、EVDO）"
 
-#: src/connection-editor/page-mobile.c:576 src/mb-menu-item.c:36
+#: src/connection-editor/page-mobile.c:572 src/mb-menu-item.c:36
 #: src/mobile-helpers.c:268
 msgid "CDMA"
 msgstr "CDMA"
 
-#: src/connection-editor/page-mobile.c:579 src/mb-menu-item.c:40
+#: src/connection-editor/page-mobile.c:575 src/mb-menu-item.c:40
 #: src/mobile-helpers.c:266
 msgid "GSM"
 msgstr "GSM"
 
 #: src/connection-editor/page-ppp.c:116
-#: src/wireless-security/eap-method-ttls.c:267
+#: src/wireless-security/eap-method-ttls.c:274
 msgid "PAP"
 msgstr "PAP"
 
 #: src/connection-editor/page-ppp.c:117
-#: src/wireless-security/eap-method-ttls.c:333
+#: src/wireless-security/eap-method-ttls.c:340
 msgid "CHAP"
 msgstr "CHAP"
 
 #: src/connection-editor/page-ppp.c:118
 #: src/wireless-security/eap-method-fast.c:271
-#: src/wireless-security/eap-method-peap.c:279
-#: src/wireless-security/eap-method-ttls.c:299
+#: src/wireless-security/eap-method-peap.c:286
+#: src/wireless-security/eap-method-ttls.c:306
 msgid "MSCHAPv2"
 msgstr "MSCHAPv2"
 
 #: src/connection-editor/page-ppp.c:119
-#: src/wireless-security/eap-method-ttls.c:283
+#: src/wireless-security/eap-method-ttls.c:290
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
@@ -3881,15 +3825,22 @@ msgid "Proxy"
 msgstr "代理伺服器"
 
 #: src/connection-editor/page-proxy.c:200
-#, fuzzy
 msgid "Could not load proxy user interface."
-msgstr "無法載入繫結的使用者介面。"
+msgstr "無法載入代理伺服器使用者介面。"
 
-#: src/connection-editor/page-team-port.c:209
 #: src/connection-editor/page-team.c:347
-#, fuzzy
+#: src/connection-editor/page-team-port.c:209
 msgid "Error: file doesn’t contain a valid JSON configuration"
 msgstr "錯誤：檔案不含有效的 JSON 組態"
+
+#: src/connection-editor/page-team.c:1017
+msgid "Could not load team user interface."
+msgstr "無法載入團隊使用者介面。"
+
+#: src/connection-editor/page-team.c:1114
+#, c-format
+msgid "Team connection %d"
+msgstr "團隊連線 %d"
 
 #. Translators: a "Team Port" is a network
 #. * device that is part of a team.
@@ -3902,27 +3853,17 @@ msgstr "團隊連接埠"
 msgid "Could not load team port user interface."
 msgstr "無法載入團隊連接埠使用者介面。"
 
-#: src/connection-editor/page-team.c:1017
-msgid "Could not load team user interface."
-msgstr "無法載入團隊使用者介面。"
-
-#: src/connection-editor/page-team.c:1114
-#, c-format
-msgid "Team connection %d"
-msgstr "團隊連線 %d"
-
 #. Translators: the first %s is a device name (eg, "em1"), the
 #. * second is a connection name (eg, "Auto Ethernet").
 #.
 #: src/connection-editor/page-vlan.c:399
-#, fuzzy, c-format
+#, c-format
 msgid "%s (via “%s”)"
-msgstr "%s (經由「%s」)"
+msgstr "%s（經由「%s」）"
 
 #: src/connection-editor/page-vlan.c:411
-#, fuzzy
 msgid "New connection…"
-msgstr "沒有網路連接"
+msgstr "新連線…"
 
 #: src/connection-editor/page-vlan.c:577
 msgid "Could not load vlan user interface."
@@ -3930,7 +3871,7 @@ msgstr "無法載入 vlan 使用者介面。"
 
 #: src/connection-editor/page-vlan.c:716
 msgid "vlan parent"
-msgstr "vlan的父母"
+msgstr "vlan 主介面"
 
 #: src/connection-editor/page-vlan.c:784
 #, c-format
@@ -3938,21 +3879,20 @@ msgid "VLAN connection %d"
 msgstr "VLAN 連線 %d"
 
 #: src/connection-editor/page-vpn.c:50
-#, fuzzy, c-format
+#, c-format
 msgid "Could not load editor VPN plugin for “%s” (%s)."
-msgstr "找不到「%s」的 VPN 外掛程式服務。"
+msgstr "無法載入「%s」的編輯器 VPN 外掛程式服務 (%s)。"
 
 #: src/connection-editor/page-vpn.c:51
-#, fuzzy
 msgid "unknown failure"
-msgstr "連線失敗"
+msgstr "未知失敗"
 
 #: src/connection-editor/page-vpn.c:88
 msgid "Could not load VPN user interface."
 msgstr "無法載入 VPN 使用者介面。"
 
 #: src/connection-editor/page-vpn.c:103
-#, fuzzy, c-format
+#, c-format
 msgid "Could not find VPN plugin for “%s”."
 msgstr "找不到「%s」的 VPN 外掛程式服務。"
 
@@ -3966,7 +3906,6 @@ msgid "Choose a VPN Connection Type"
 msgstr "請選擇 VPN 的連線類型"
 
 #: src/connection-editor/page-vpn.c:192
-#, fuzzy
 msgid ""
 "Select the type of VPN you wish to use for the new connection. If the type "
 "of VPN connection you wish to create does not appear in the list, you may "
@@ -3975,53 +3914,7 @@ msgstr ""
 "選擇您想要用在新連線中的 VPN 類型。如果您想要建立的 VPN 連線類型沒有出現在清"
 "單中，可能是沒有安裝正確的 VPN 外掛程式。"
 
-#: src/connection-editor/page-wifi-security.c:346
-msgid "WEP 40/128-bit Key (Hex or ASCII)"
-msgstr "WEP 40/128-位元 金鑰 (Hex 或 ASCII)"
-
-#: src/connection-editor/page-wifi-security.c:356
-msgid "WEP 128-bit Passphrase"
-msgstr "WEP 128-位元 密語"
-
-#: src/connection-editor/page-wifi-security.c:382
-msgid "Dynamic WEP (802.1X)"
-msgstr "動態 WEP (802.1X)"
-
-#: src/connection-editor/page-wifi-security.c:395
-msgid "WPA & WPA2 Personal"
-msgstr "WPA & WPA2 個人版"
-
-#: src/connection-editor/page-wifi-security.c:408
-msgid "WPA & WPA2 Enterprise"
-msgstr "WPA & WPA2 企業版"
-
-#: src/connection-editor/page-wifi-security.c:421
-#, fuzzy
-msgid "WPA3 Personal"
-msgstr "WPA & WPA2 個人版"
-
-#: src/connection-editor/page-wifi-security.c:464
-msgid "Could not load Wi-Fi security user interface; missing Wi-Fi setting."
-msgstr "無法載入 Wi-Fi 安全性使用者介面；失去 Wi-Fi 設定值。"
-
-#: src/connection-editor/page-wifi-security.c:475
-msgid "Wi-Fi Security"
-msgstr "Wi-Fi 安全性"
-
-#: src/connection-editor/page-wifi-security.c:477
-msgid "Could not load Wi-Fi security user interface."
-msgstr "無法載入 Wi-Fi 安全性使用者介面。"
-
-#: src/connection-editor/page-wifi-security.c:558
-msgid "missing SSID"
-msgstr "缺少SSID"
-
-#: src/connection-editor/page-wifi-security.c:564
-msgid "Security not compatible with Ad-Hoc mode"
-msgstr "安全性與Ad-Hoc模式不兼容"
-
 #: src/connection-editor/page-wifi.c:63
-#, fuzzy
 msgid ""
 "This option locks this connection to the Wi-Fi access point (AP) specified "
 "by the BSSID entered here. Example: 00:11:22:33:44:55"
@@ -4030,14 +3923,13 @@ msgstr ""
 "00:11:22:33:44:55"
 
 #: src/connection-editor/page-wifi.c:74
-#, fuzzy
 msgid ""
 "This option locks this connection to the network device specified either by "
 "its interface name or permanent MAC or both. Examples: “wlan0”, "
 "“3C:97:0E:42:1A:19”, “wlan0 (3C:97:0E:42:1A:19)”"
 msgstr ""
-"此選項會將此連線鎖定至在此所輸入的 MAC 位址所指定的網路裝置。例如："
-"00:11:22:33:44:55"
+"此選項會將此連線鎖定至介面名稱或永久 MAC 位址又或者兩者所指定的網路裝置。例"
+"如：「wlan0」、「3C:97:0E:42:1A:19」、「wlan0 (3C:97:0E:42:1A:19)」"
 
 #: src/connection-editor/page-wifi.c:183
 #, c-format
@@ -4053,17 +3945,60 @@ msgid "bssid"
 msgstr "bssid"
 
 #: src/connection-editor/page-wifi.c:553
-#, fuzzy
 msgid "Wi-Fi device"
-msgstr "任何裝置"
+msgstr "Wi-Fi 裝置"
 
 #: src/connection-editor/page-wifi.c:600
 #, c-format
 msgid "Wi-Fi connection %d"
 msgstr "Wi-Fi 連線 %d"
 
+#: src/connection-editor/page-wifi-security.c:346
+msgid "WEP 40/128-bit Key (Hex or ASCII)"
+msgstr "WEP 40/128-位元金鑰 (Hex 或 ASCII)"
+
+#: src/connection-editor/page-wifi-security.c:356
+msgid "WEP 128-bit Passphrase"
+msgstr "WEP 128-位元密碼"
+
+#: src/connection-editor/page-wifi-security.c:382
+msgid "Dynamic WEP (802.1X)"
+msgstr "動態 WEP (802.1X)"
+
+#: src/connection-editor/page-wifi-security.c:395
+msgid "WPA & WPA2 Personal"
+msgstr "WPA & WPA2 個人版"
+
+#: src/connection-editor/page-wifi-security.c:408
+msgid "WPA & WPA2 Enterprise"
+msgstr "WPA & WPA2 企業版"
+
+#: src/connection-editor/page-wifi-security.c:421
+msgid "WPA3 Personal"
+msgstr "WPA3 個人版"
+
+#: src/connection-editor/page-wifi-security.c:464
+msgid "Could not load Wi-Fi security user interface; missing Wi-Fi setting."
+msgstr "無法載入 Wi-Fi 安全性使用者介面；失去 Wi-Fi 設定值。"
+
+#: src/connection-editor/page-wifi-security.c:475
+msgid "Wi-Fi Security"
+msgstr "Wi-Fi 安全性"
+
+#: src/connection-editor/page-wifi-security.c:477
+msgid "Could not load Wi-Fi security user interface."
+msgstr "無法載入 Wi-Fi 安全性使用者介面。"
+
+#: src/connection-editor/page-wifi-security.c:558
+msgid "missing SSID"
+msgstr "缺少 SSID"
+
+#: src/connection-editor/page-wifi-security.c:564
+msgid "Security not compatible with Ad-Hoc mode"
+msgstr "安全性與 Ad-Hoc 模式不相容"
+
 #: src/connection-editor/vpn-helpers.c:118
-#, fuzzy, c-format
+#, c-format
 msgid "A file named “%s” already exists."
 msgstr "名為「%s」的檔案已經存在。"
 
@@ -4081,18 +4016,17 @@ msgid "Cannot export VPN connection"
 msgstr "不能匯出 VPN 連線"
 
 #: src/connection-editor/vpn-helpers.c:160
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The VPN connection “%s” could not be exported to %s.\n"
 "\n"
 "Error: %s."
 msgstr ""
-"VPN 連線「%s」不能匯出至 %s。\n"
+"VPN 連線「%s」無法匯出至 %s。\n"
 "\n"
 "錯誤：%s。"
 
 #: src/connection-editor/vpn-helpers.c:195
-#, fuzzy
 msgid "Export VPN connection…"
 msgstr "匯出 VPN 連線…"
 
@@ -4108,7 +4042,6 @@ msgstr "自動解鎖這個裝置"
 msgid "Connection Information"
 msgstr "連線資訊"
 
-# translation auto-copied from project subscription-manager, version 1.11.X, document keys
 #: src/info.ui:30
 msgid "_Close"
 msgstr "關閉(_C)"
@@ -4123,7 +4056,7 @@ msgid ""
 "Projects/NetworkManager/)."
 msgstr ""
 "本程式是 NetworkManager（https://wiki.gnome.org/Projects/NetworkManager/）的"
-"元件"
+"元件。"
 
 #: src/main.c:31
 msgid ""
@@ -4212,7 +4145,7 @@ msgid "Roaming network"
 msgstr "漫遊網路"
 
 #: src/mobile-helpers.c:316
-#, fuzzy, c-format
+#, c-format
 msgid "PIN code for SIM card “%s” on “%s”"
 msgstr "SIM 卡「%s」在「%s」的 PIN 碼"
 
@@ -4225,7 +4158,7 @@ msgid "PIN code is needed for the mobile broadband device"
 msgstr "這個行動寬頻裝置需要 PIN 碼"
 
 #: src/mobile-helpers.c:607
-#, fuzzy, c-format
+#, c-format
 msgid "Mobile broadband connection “%s” active: (%d%%%s%s)"
 msgstr "行動寬頻連線「%s」在使用中：(%d%%%s%s)"
 
@@ -4234,34 +4167,44 @@ msgid "roaming"
 msgstr "漫遊"
 
 #. The %s is a mobile provider name, eg "T-Mobile"
-#: src/utils/utils.c:160
+#: src/utils/utils.c:170
 #, c-format
 msgid "%s connection"
 msgstr "%s 連線"
 
-#: src/utils/utils.c:534
-#, fuzzy
+#: src/utils/utils.c:544
 msgid "PEM certificates (*.pem, *.crt, *.cer)"
-msgstr "DER 或 PEM 憑證 (*.der, *.pem, *.crt, *.cer)"
+msgstr "PEM 憑證 (*.pem, *.crt, *.cer)"
 
-#: src/utils/utils.c:546
+#: src/utils/utils.c:556
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "DER、PEM 或是 PKCS#12 私人金鑰 (*.der, *.pem, *.p12, *.key)"
 
+#: src/wireless-security/eap-method.c:43
+msgid "undefined error in 802.1X security (wpa-eap)"
+msgstr "802.1X安全性中的未定義錯誤（wpa-eap）"
+
+#: src/wireless-security/eap-method.c:351
+msgid "no CA certificate selected"
+msgstr "沒有選擇 CA 憑證"
+
+#: src/wireless-security/eap-method.c:356
+msgid "selected CA certificate file does not exist"
+msgstr "選擇的 CA 憑證檔案不存在"
+
 #: src/wireless-security/eap-method-fast.c:58
 msgid "missing EAP-FAST PAC file"
-msgstr "缺少EAP-FAST PAC文件"
+msgstr "缺少 EAP-FAST PAC 檔案"
 
 #: src/wireless-security/eap-method-fast.c:255
-#: src/wireless-security/eap-method-peap.c:311
-#: src/wireless-security/eap-method-ttls.c:365
+#: src/wireless-security/eap-method-peap.c:318
+#: src/wireless-security/eap-method-ttls.c:372
 msgid "GTC"
 msgstr "GTC"
 
 #: src/wireless-security/eap-method-fast.c:394
-#, fuzzy
 msgid "Choose a PAC file"
-msgstr "選擇一個 PAC 檔案…"
+msgstr "選擇一個 PAC 檔案"
 
 #: src/wireless-security/eap-method-fast.c:401
 msgid "PAC files (*.pac)"
@@ -4286,21 +4229,18 @@ msgstr "兩者"
 #: src/wireless-security/eap-method-fast.ui:48
 #: src/wireless-security/eap-method-peap.ui:48
 #: src/wireless-security/eap-method-ttls.ui:119
-#, fuzzy
 msgid "Anony_mous identity"
-msgstr "匿名識別(_M)："
+msgstr "匿名識別(_M)"
 
 #: src/wireless-security/eap-method-fast.ui:74
-#, fuzzy
 msgid "PAC _file"
-msgstr "PAC 檔案(_F)："
+msgstr "PAC 檔案(_F)"
 
 #: src/wireless-security/eap-method-fast.ui:113
 #: src/wireless-security/eap-method-peap.ui:121
 #: src/wireless-security/eap-method-ttls.ui:77
-#, fuzzy
 msgid "_Inner authentication"
-msgstr "內部驗證(_I)："
+msgstr "內部驗證(_I)"
 
 #: src/wireless-security/eap-method-fast.ui:142
 msgid "Allow automatic PAC pro_visioning"
@@ -4308,14 +4248,14 @@ msgstr "允許自動供應 PAC (_V)"
 
 #: src/wireless-security/eap-method-leap.c:52
 msgid "missing EAP-LEAP username"
-msgstr "缺少EAP-LEAP用戶名"
+msgstr "缺少 EAP-LEAP 使用者名稱"
 
 #: src/wireless-security/eap-method-leap.c:61
 msgid "missing EAP-LEAP password"
-msgstr "缺少EAP-LEAP密碼"
+msgstr "缺少 EAP-LEAP 密碼"
 
-#: src/wireless-security/eap-method-peap.c:295
-#: src/wireless-security/eap-method-ttls.c:349
+#: src/wireless-security/eap-method-peap.c:302
+#: src/wireless-security/eap-method-ttls.c:356
 #: src/wireless-security/wireless-security.c:411
 msgid "MD5"
 msgstr "MD5"
@@ -4335,91 +4275,72 @@ msgid "No CA certificate is _required"
 msgstr "不需要 CA 憑證(_R)"
 
 #: src/wireless-security/eap-method-peap.ui:89
-#, fuzzy
 msgid "PEAP _version"
-msgstr "PEAP 版本(_V)："
+msgstr "PEAP 版本(_V)"
 
 #: src/wireless-security/eap-method-peap.ui:168
 #: src/wireless-security/eap-method-tls.ui:62
 #: src/wireless-security/eap-method-ttls.ui:133
 msgid "Suffix of the server certificate name."
-msgstr "服務器證書名稱的後綴。"
+msgstr "伺服器憑證名稱的後綴。"
 
 #: src/wireless-security/eap-method-peap.ui:169
 #: src/wireless-security/eap-method-tls.ui:63
 #: src/wireless-security/eap-method-ttls.ui:134
 msgid "_Domain"
-msgstr ""
+msgstr "網域(_D)"
 
 #: src/wireless-security/eap-method-simple.c:76
 msgid "missing EAP username"
-msgstr "缺少EAP用戶名"
+msgstr "缺少 EAP 使用者名稱"
 
 #: src/wireless-security/eap-method-simple.c:92
 msgid "missing EAP password"
-msgstr "缺少EAP密碼"
+msgstr "缺少 EAP 密碼"
 
 #: src/wireless-security/eap-method-simple.c:106
 msgid "missing EAP client Private Key passphrase"
-msgstr ""
+msgstr "缺少 EAP 客戶端私密金鑰密碼"
 
 #: src/wireless-security/eap-method-simple.ui:103
-#, fuzzy
 msgid "P_rivate Key Passphrase"
-msgstr "WEP 128-位元 密語"
+msgstr "私密金鑰密碼(_R)"
 
 #: src/wireless-security/eap-method-simple.ui:128
-#, fuzzy
 msgid "Sh_ow passphrase"
 msgstr "顯示密碼(_O)"
 
-#: src/wireless-security/eap-method-tls.c:47
+#: src/wireless-security/eap-method-tls.c:50
 msgid "missing EAP-TLS identity"
-msgstr "缺少EAP-TLS身份"
+msgstr "缺少 EAP-TLS 身份"
 
-#: src/wireless-security/eap-method-tls.c:234
-#, fuzzy
+#: src/wireless-security/eap-method-tls.c:242
 msgid "no user certificate selected"
-msgstr "不需要 CA 憑證(_R)"
+msgstr "沒有選擇使用者憑證"
 
-#: src/wireless-security/eap-method-tls.c:239
+#: src/wireless-security/eap-method-tls.c:247
 msgid "selected user certificate file does not exist"
-msgstr "選定的用戶證書文件不存在"
+msgstr "選擇的使用者憑證檔案不存在"
 
-#: src/wireless-security/eap-method-tls.c:259
+#: src/wireless-security/eap-method-tls.c:267
 msgid "no key selected"
-msgstr "沒有選擇密鑰"
+msgstr "沒有選擇金鑰"
 
-#: src/wireless-security/eap-method-tls.c:264
+#: src/wireless-security/eap-method-tls.c:272
 msgid "selected key file does not exist"
-msgstr "選定的密鑰文件不存在"
+msgstr "選擇的金鑰檔案不存在"
 
 #: src/wireless-security/eap-method-tls.ui:20
-#, fuzzy
 msgid "I_dentity"
-msgstr "識別(_D)："
+msgstr "識別(_D)"
 
-#: src/wireless-security/eap-method-ttls.c:316
-#, fuzzy
+#: src/wireless-security/eap-method-ttls.c:323
 msgid "MSCHAPv2 (no EAP)"
-msgstr "MSCHAPv2"
-
-#: src/wireless-security/eap-method.c:43
-msgid "undefined error in 802.1X security (wpa-eap)"
-msgstr "802.1X安全性中的未定義錯誤（wpa-eap）"
-
-#: src/wireless-security/eap-method.c:351
-#, fuzzy
-msgid "no CA certificate selected"
-msgstr "不需要 CA 憑證(_R)"
-
-#: src/wireless-security/eap-method.c:356
-msgid "selected CA certificate file does not exist"
-msgstr "選定的CA證書文件不存在"
+msgstr "MSCHAPv2（沒有 EAP）"
 
 #: src/wireless-security/wireless-security.c:58
 msgid "Unknown error validating 802.1X security"
-msgstr "驗證802.1X安全性的未知錯誤"
+msgstr "驗證 802.1X 安全性時發生未知錯誤"
 
 #: src/wireless-security/wireless-security.c:423
 msgid "TLS"
@@ -4443,47 +4364,44 @@ msgstr "保護式 EAP (PEAP)"
 
 #: src/wireless-security/wireless-security.c:509
 msgid "Externally configured"
-msgstr ""
+msgstr "外部設定"
 
 #: src/wireless-security/ws-dynamic-wep.ui:31
 #: src/wireless-security/ws-wep-key.ui:97
 #: src/wireless-security/ws-wpa-eap.ui:31
-#, fuzzy
 msgid "Au_thentication"
-msgstr "驗證(_E)："
+msgstr "驗證(_T)"
 
 #: src/wireless-security/ws-leap.c:50
 msgid "missing leap-username"
-msgstr "缺少leap-username"
+msgstr "缺少 leap 使用者名稱"
 
 #: src/wireless-security/ws-leap.c:68
 msgid "missing leap-password"
-msgstr "缺少飛躍密碼"
+msgstr "缺少 leap 密碼"
 
 #: src/wireless-security/ws-sae.c:56
-#, fuzzy
 msgid "missing password"
-msgstr "缺少EAP密碼"
+msgstr "缺少密碼"
 
 #: src/wireless-security/ws-sae.ui:48 src/wireless-security/ws-wpa-psk.ui:48
-#, fuzzy
 msgid "_Type"
-msgstr "類型(_T)："
+msgstr "類型(_T)"
 
 #: src/wireless-security/ws-wep-key.c:99
 msgid "missing wep-key"
-msgstr "缺少wep-key"
+msgstr "缺少 wep-key"
 
 #: src/wireless-security/ws-wep-key.c:106
 #, c-format
 msgid "invalid wep-key: key with a length of %zu must contain only hex-digits"
-msgstr "無效的wep-key：密鑰長度為 %zu 必須只包含十六進制數字"
+msgstr "無效的 wep-key：長度 %zu 的金鑰只能包含十六進位數字"
 
 #: src/wireless-security/ws-wep-key.c:114
 #, c-format
 msgid ""
 "invalid wep-key: key with a length of %zu must contain only ascii characters"
-msgstr "無效的wep-key：密鑰長度為 %zu 必須只包含ascii字符"
+msgstr "無效的 wep-key：長度 %zu 的金鑰只能包含 ascii 字元"
 
 #: src/wireless-security/ws-wep-key.c:120
 #, c-format
@@ -4491,15 +4409,15 @@ msgid ""
 "invalid wep-key: wrong key length %zu. A key must be either of length 5/13 "
 "(ascii) or 10/26 (hex)"
 msgstr ""
-"無效的wep-key：錯誤的密鑰長度 %zu。密鑰長度必須為5/13（ascii）或10/26（hex）"
+"無效的 wep-key：錯誤的金鑰長度 %zu。金鑰長度必須為5/13（ascii）或10/26（hex）"
 
 #: src/wireless-security/ws-wep-key.c:127
 msgid "invalid wep-key: passphrase must be non-empty"
-msgstr "無效的wep-key：passphrase必須是非空的"
+msgstr "無效的 wep-key：密碼不能為空"
 
 #: src/wireless-security/ws-wep-key.c:129
 msgid "invalid wep-key: passphrase must be shorter than 64 characters"
-msgstr "無效的wep-key：passphrase必須短於64個字符"
+msgstr "無效的 wep-key：密碼必須短於 64 字元"
 
 #: src/wireless-security/ws-wep-key.ui:12
 msgid "Open System"
@@ -4514,18 +4432,16 @@ msgid "1 (Default)"
 msgstr "1 (預設值)"
 
 #: src/wireless-security/ws-wep-key.ui:54
-#, fuzzy
 msgid "_Key"
-msgstr "金鑰(_K)："
+msgstr "金鑰(_K)"
 
 #: src/wireless-security/ws-wep-key.ui:80
 msgid "Sho_w key"
 msgstr "顯示金鑰(_W)"
 
 #: src/wireless-security/ws-wep-key.ui:129
-#, fuzzy
 msgid "WEP inde_x"
-msgstr "WEP 索引(_X)："
+msgstr "WEP 索引(_X)"
 
 #: src/wireless-security/ws-wpa-psk.c:62
 #, c-format
@@ -4533,461 +4449,8 @@ msgid ""
 "invalid wpa-psk: invalid key-length %zu. Must be [8,63] bytes or 64 hex "
 "digits"
 msgstr ""
-"無效的wpa-psk：無效的密鑰長度 %zu。必須是[8,63]個字節或64個十六進制數字"
+"無效的 wep-key：無效的金鑰長度 %zu 。必須為 [8,63] 位元組或 64 個十六進位數字"
 
 #: src/wireless-security/ws-wpa-psk.c:69
 msgid "invalid wpa-psk: cannot interpret key with 64 bytes as hex"
-msgstr "無效的wpa-psk：無法將64字節的密鑰解釋為十六進制"
-
-#~ msgid "Disable connected notifications"
-#~ msgstr "停止已連線的通知"
-
-#~ msgid ""
-#~ "Set this to true to disable notifications when connecting to a network."
-#~ msgstr "將這設為 True，以停用網路連線時的通知。"
-
-#~ msgid "Disable disconnected notifications"
-#~ msgstr "停止已離線的通知"
-
-#~ msgid ""
-#~ "Set this to true to disable notifications when disconnecting from a "
-#~ "network."
-#~ msgstr "將這設為 True，以停用網路離線時的通知。"
-
-#~ msgid "Disable VPN notifications"
-#~ msgstr "停用 VPN 的通知"
-
-#~ msgid ""
-#~ "Set this to true to disable notifications when connecting to or "
-#~ "disconnecting from a VPN."
-#~ msgstr "將這設為 True，以停用 VPN 線或離線時的通知。"
-
-#~ msgid "Suppress networks available notifications"
-#~ msgstr "停止可用網路的通知"
-
-#~ msgid ""
-#~ "Set this to true to disable notifications when Wi-Fi networks are "
-#~ "available."
-#~ msgstr "將這設為 True，以停用有 Wi-Fi 無線網路可用時的通知。"
-
-#~ msgid "Stamp"
-#~ msgstr "戳記"
-
-#~ msgid ""
-#~ "Used to determine whether settings should be migrated to a new version."
-#~ msgstr "用來決定設定是不是要轉移到新版本上。"
-
-#, fuzzy
-#~ msgid "Disable WiFi Create"
-#~ msgstr "禁止建立 Wi-Fi"
-
-#~ msgid ""
-#~ "Set to true to disable creation of adhoc networks when using the applet."
-#~ msgstr "將這設為 True，以停用使用面板程式建立 Ad hoc 網路。"
-
-#~ msgid "Show the applet in notification area"
-#~ msgstr "在通知區域顯示面板程式"
-
-#~ msgid ""
-#~ "Set to FALSE to disable displaying the applet in the notification area."
-#~ msgstr "設定為 FALSE 來停用在通知區域示顯示面板程式的功能。"
-
-#~ msgid "Ignore CA certificate"
-#~ msgstr "忽略 CA 憑證"
-
-#~ msgid ""
-#~ "Set this to true to disable warnings about CA certificates in EAP "
-#~ "authentication."
-#~ msgstr "將這設為 True，以停用在 EAP 認證中關於 CA 證書的警告。"
-
-#~ msgid ""
-#~ "Set this to true to disable warnings about CA certificates in phase 2 of "
-#~ "EAP authentication."
-#~ msgstr "將這設為 True，以停用在 EAP 認證第二階段中關於 CA 證書的警告。"
-
-#, fuzzy
-#~ msgid "No certificate set"
-#~ msgstr "不需要 CA 憑證(_R)"
-
-#~ msgid "No key set"
-#~ msgstr "沒有按鍵設置"
-
-#, fuzzy, c-format
-#~ msgid "Choose a key for %s Certificate"
-#~ msgstr "選擇 CA 憑證"
-
-#, fuzzy, c-format
-#~ msgid "%s private _key"
-#~ msgstr "私密金鑰(_K)："
-
-#, fuzzy, c-format
-#~ msgid "%s key _password"
-#~ msgstr "私密金鑰密碼(_P)："
-
-#, fuzzy, c-format
-#~ msgid "Choose %s Certificate"
-#~ msgstr "選擇 CA 憑證"
-
-#, fuzzy, c-format
-#~ msgid "%s _certificate"
-#~ msgstr "使用者憑證(_U)："
-
-#~ msgid "My country is not listed"
-#~ msgstr "我的國家並沒有列出來"
-
-#~ msgid "Unlisted"
-#~ msgstr "未列出的"
-
-#, fuzzy
-#~ msgid "My plan is not listed…"
-#~ msgstr "我的方案沒有列出…"
-
-#~ msgid "Provider"
-#~ msgstr "供應商"
-
-#~ msgid "Installed GSM device"
-#~ msgstr "已安裝的 GSM 裝置"
-
-#~ msgid "Installed CDMA device"
-#~ msgstr "已安裝的 CDMA 裝置"
-
-#~ msgid "Any device"
-#~ msgstr "任何裝置"
-
-#~ msgid "New Mobile Broadband Connection"
-#~ msgstr "新的行動寬頻連線"
-
-#~ msgid ""
-#~ "This assistant helps you easily set up a mobile broadband connection to a "
-#~ "cellular (3G) network."
-#~ msgstr "這能幫助您輕易地設定行動寬頻連線，連至手機 (3G) 網路。"
-
-#~ msgid "You will need the following information:"
-#~ msgstr "您需要以下資訊："
-
-#, fuzzy
-#~ msgid "Your broadband provider’s name"
-#~ msgstr "寬頻供應商的名稱"
-
-#~ msgid "Your broadband billing plan name"
-#~ msgstr "寬頻計費方案的名稱"
-
-#~ msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
-#~ msgstr "（在有些情況下）您的寬頻計費方案的 APN（存取點名稱）"
-
-#~ msgid "Create a connection for _this mobile broadband device:"
-#~ msgstr "為這個行動寬頻裝置建立連線(_T)"
-
-#~ msgid "Set up a Mobile Broadband Connection"
-#~ msgstr "設定行動寬頻連線"
-
-#, fuzzy
-#~ msgid "Country or region:"
-#~ msgstr "國家或地區"
-
-#, fuzzy
-#~ msgid "Choose your Provider’s Country or Region"
-#~ msgstr "選擇您的供應商的國家或地區"
-
-#~ msgid "Select your provider from a _list:"
-#~ msgstr "請從清單裡選擇供應商(_L)："
-
-#, fuzzy
-#~ msgid ""
-#~ "I can’t find my provider and I wish to set up the connection _manually:"
-#~ msgstr "我找不到我的供應商，我想要手動輸入(_M)："
-
-#~ msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
-#~ msgstr "我的供應商使用 GSM 技術（GPRS、EDGE、UMTS、HSPA）"
-
-#~ msgid "My provider uses CDMA technology (1xRTT, EVDO)"
-#~ msgstr "我的供應商使用 CDMA 技術（1xRTT、EVDO）"
-
-#~ msgid "Choose your Provider"
-#~ msgstr "選擇您的供應商"
-
-#~ msgid "_Select your plan:"
-#~ msgstr "選擇您的方案(_S)："
-
-#~ msgid "Selected plan _APN (Access Point Name):"
-#~ msgstr "選擇方案的 _APN（Access Point Name，存取點名稱）："
-
-#, fuzzy
-#~ msgid ""
-#~ "Warning: Selecting an incorrect plan may result in billing issues for "
-#~ "your broadband account or may prevent connectivity.\n"
-#~ "\n"
-#~ "If you are unsure of your plan please ask your provider for your plan’s "
-#~ "APN."
-#~ msgstr ""
-#~ "警告：選擇不正確的方案可能會引起寬頻帳號的收費爭議，或讓您無法連線。\n"
-#~ "\n"
-#~ "如果您不確定所使用的方案，請洽詢供應商，以得知方案的 APN 為何。"
-
-#~ msgid "Choose your Billing Plan"
-#~ msgstr "選擇您的計費方案"
-
-#~ msgid ""
-#~ "Your mobile broadband connection is configured with the following "
-#~ "settings:"
-#~ msgstr "行動寬連線已經配置了以下設定："
-
-#~ msgid "Your Device:"
-#~ msgstr "您的裝置："
-
-#~ msgid "Your Provider:"
-#~ msgstr "您的供應商："
-
-#~ msgid "Your Plan:"
-#~ msgstr "您的方案："
-
-#, fuzzy
-#~ msgid ""
-#~ "A connection will now be made to your mobile broadband provider using the "
-#~ "settings you selected. If the connection fails or you cannot access "
-#~ "network resources, double-check your settings. To modify your mobile "
-#~ "broadband connection settings, choose “Network Connections” from the "
-#~ "System → Preferences menu."
-#~ msgstr ""
-#~ "現在，根據您所選取的設定，電腦將連上您的行動寬頻供應商。如果連線失敗，或是"
-#~ "您無法存取網路資源，請檢查設定。要修改行動寬頻連線的設定，請從「系統」 >> "
-#~ "「偏好設定」中，選擇「網路連線」。"
-
-#~ msgid "Confirm Mobile Broadband Settings"
-#~ msgstr "確認行動寬頻設定"
-
-#~ msgid "(None)"
-#~ msgstr "（無）"
-
-#, c-format
-#~ msgid "Key in %s"
-#~ msgstr "鍵入 %s"
-
-#, fuzzy, c-format
-#~ msgid "Certificate in %s"
-#~ msgstr "C_A 憑證："
-
-#~ msgid "(Unknown)"
-#~ msgstr "（不明）"
-
-#~ msgid "Select"
-#~ msgstr "選擇"
-
-#~ msgid "Cancel"
-#~ msgstr "取消"
-
-#~ msgid "Select from file…"
-#~ msgstr "從文件中選擇..."
-
-#, fuzzy, c-format
-#~ msgid "Choose a %s Certificate"
-#~ msgstr "選擇 CA 憑證"
-
-#, fuzzy, c-format
-#~ msgid "%s certificate _password"
-#~ msgstr "使用者憑證(_U)："
-
-#~ msgid "Error logging in: "
-#~ msgstr "登錄時出錯： "
-
-#, fuzzy
-#~ msgid "Error opening a session: "
-#~ msgstr "編輯連線時發生錯誤"
-
-#, fuzzy
-#~ msgid "_Unlock token"
-#~ msgstr "解鎖(_U)"
-
-#~ msgid "Issued By"
-#~ msgstr "由...發出"
-
-#, c-format
-#~ msgid "Enter %s PIN"
-#~ msgstr "輸入 %s 銷"
-
-#~ msgid "_Login"
-#~ msgstr "登入(_L)"
-
-#~ msgid "_Remember PIN"
-#~ msgstr "_記住密碼"
-
-#, fuzzy
-#~ msgid "Store the password only for this user"
-#~ msgstr "只儲存這個使用者的密碼(_U)"
-
-#, fuzzy
-#~ msgid "Store the password for all users"
-#~ msgstr "儲存所有使用者的密碼(_A)"
-
-#~ msgid "Ask for this password every time"
-#~ msgstr "每次都詢問此密碼"
-
-#, fuzzy
-#~ msgid "The password is not required"
-#~ msgstr "連線至「%s」需要密碼。"
-
-#~ msgid "Sh_ow passwords"
-#~ msgstr "顯示密碼(_O)"
-
-#, fuzzy
-#~ msgid "_Tertiary Password:"
-#~ msgstr "第二密碼(_S)："
-
-#~ msgid "_Secondary Password:"
-#~ msgstr "第二密碼(_S)："
-
-#~ msgid "_Password:"
-#~ msgstr "密碼(_P)："
-
-#, fuzzy
-#~ msgid "Click to connect"
-#~ msgstr "斷線"
-
-#~ msgid "New…"
-#~ msgstr "新…"
-
-#~ msgctxt "Wifi/wired security"
-#~ msgid "None"
-#~ msgstr "沒有"
-
-#~ msgid "Dynamic WEP (802.1x)"
-#~ msgstr "動態 WEP（802.1x）"
-
-#~ msgid "C_reate"
-#~ msgstr "建立(_R)"
-
-#, fuzzy, c-format
-#~ msgid ""
-#~ "Passwords or encryption keys are required to access the Wi-Fi network "
-#~ "“%s”."
-#~ msgstr "需要密碼或是加密金鑰來存取 Wi-Fi 網路「%s」。"
-
-#~ msgid "Wi-Fi Network Authentication Required"
-#~ msgstr "Wi-Fi 網路連線需要驗證"
-
-#~ msgid "Authentication required by Wi-Fi network"
-#~ msgstr "Wi-Fi 網路連線需要驗證"
-
-#~ msgid "Create New Wi-Fi Network"
-#~ msgstr "建立新的 Wi-Fi 網路"
-
-#~ msgid "New Wi-Fi network"
-#~ msgstr "新的 Wi-Fi 網路"
-
-#~ msgid "Enter a name for the Wi-Fi network you wish to create."
-#~ msgstr "輸入您要建立的 Wi-Fi 網路的名稱。"
-
-#~ msgid "Connect to Hidden Wi-Fi Network"
-#~ msgstr "連接到隱藏的 Wi-Fi 網路"
-
-#~ msgid "Hidden Wi-Fi network"
-#~ msgstr "隱藏的 Wi-Fi 網路"
-
-#~ msgid ""
-#~ "Enter the name and security details of the hidden Wi-Fi network you wish "
-#~ "to connect to."
-#~ msgstr "輸入您要連接的隱藏 Wi-Fi 網路的名稱與安全性詳細資料。"
-
-#, fuzzy
-#~ msgid "Wi-Fi _security"
-#~ msgstr "Wi-Fi 安全性(_S)："
-
-#, fuzzy
-#~ msgid "C_onnection"
-#~ msgstr "連線(_N)："
-
-#, fuzzy
-#~ msgid "Wi-Fi _adapter"
-#~ msgstr "Wi-Fi 介面卡(_A)："
-
-#, fuzzy
-#~ msgid "I can’t find my provider and I wish to enter it _manually:"
-#~ msgstr "我找不到我的供應商，我想要手動輸入(_M)："
-
-#~ msgid "Provider:"
-#~ msgstr "供應商："
-
-#~ msgid "Country or Region List:"
-#~ msgstr "國家或地區清單："
-
-#~ msgid "Country or region"
-#~ msgstr "國家或地區"
-
-#~ msgid "Wired"
-#~ msgstr "有線"
-
-#~ msgid "OLPC Mesh"
-#~ msgstr "OLPC Mesh"
-
-#~ msgid "ADSL"
-#~ msgstr "ADSL"
-
-#~ msgid "PCI"
-#~ msgstr "PCI"
-
-#~ msgid "USB"
-#~ msgstr "USB"
-
-#, c-format
-#~ msgctxt "long device name"
-#~ msgid "%s %s"
-#~ msgstr "%s %s"
-
-#~ msgid ""
-#~ "Either a password is missing or the connection is invalid. In the latter "
-#~ "case, you have to edit the connection with nm-connection-editor first"
-#~ msgstr ""
-#~ "密碼丟失或連接無效。在後一種情況下，您必須首先使用nm-connection-editor編輯"
-#~ "連接"
-
-#~ msgid "Wi-Fi _security:"
-#~ msgstr "Wi-Fi 安全性(_S)："
-
-#~ msgid "_Network name:"
-#~ msgstr "網路名稱(_N)："
-
-#~ msgid "C_onnection:"
-#~ msgstr "連線(_N)："
-
-#~ msgid "Wi-Fi _adapter:"
-#~ msgstr "Wi-Fi 介面卡(_A)："
-
-#~ msgid "%s (default)"
-#~ msgstr "%s (預設值)"
-
-#~ msgid "Ignored"
-#~ msgstr "已忽略"
-
-#~ msgid "Active Network Connections"
-#~ msgstr "啟用網路連線"
-
-#~ msgid "Failed to update connection secrets due to an unknown error."
-#~ msgstr "由於不明的錯誤使連線機密的更新失敗。"
-
-#~ msgid "Priority:"
-#~ msgstr "優先順序："
-
-#~ msgid "_Automatically connect to this network when it is available"
-#~ msgstr "當這個網路可用時自動連線(_A)"
-
-#, fuzzy
-#~ msgid "Connection _priority for auto-activation:"
-#~ msgstr "連線資訊(_I)"
-
-#~ msgid "Cannot import VPN connection"
-#~ msgstr "無法匯入 VPN 網路連線"
-
-#, fuzzy
-#~ msgid ""
-#~ "The file “%s” could not be read or does not contain recognized VPN "
-#~ "connection information\n"
-#~ "\n"
-#~ "Error: %s."
-#~ msgstr ""
-#~ "檔案「%s」無法讀取或未包含可辨識的 VPN 連線資訊\n"
-#~ "\n"
-#~ "錯誤：%s。"
-
-#, fuzzy
-#~ msgid "unknown error"
-#~ msgstr "不明的錯誤"
+msgstr "無效的 wep-key：無法以十六進位解析 64 位元組的金鑰"
