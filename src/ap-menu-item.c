@@ -294,6 +294,9 @@ nm_network_menu_item_new (NMAccessPoint *ap,
 	    && !nm_utils_security_valid (NMU_SEC_WPA2_PSK, dev_caps, TRUE, priv->is_adhoc, ap_flags, ap_wpa, ap_rsn)
 	    && !nm_utils_security_valid (NMU_SEC_WPA_ENTERPRISE, dev_caps, TRUE, priv->is_adhoc, ap_flags, ap_wpa, ap_rsn)
 	    && !nm_utils_security_valid (NMU_SEC_WPA2_ENTERPRISE, dev_caps, TRUE, priv->is_adhoc, ap_flags, ap_wpa, ap_rsn)
+#if NM_CHECK_VERSION(1,24,0)
+	    && !nm_utils_security_valid (NMU_SEC_OWE, dev_caps, TRUE, priv->is_adhoc, ap_flags, ap_wpa, ap_rsn)
+#endif
 	    && !nm_utils_security_valid (NMU_SEC_SAE, dev_caps, TRUE, priv->is_adhoc, ap_flags, ap_wpa, ap_rsn)) {
 		gtk_widget_set_sensitive (GTK_WIDGET (item), FALSE);
 	}
