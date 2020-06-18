@@ -41,6 +41,7 @@ fedora_pkg_full() {
         jansson-devel \
         ModemManager-glib-devel \
         libselinux-devel \
+        libappindicator \
         #
 }
 
