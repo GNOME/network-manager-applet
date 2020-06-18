@@ -42,6 +42,7 @@ fedora_pkg_full() {
         ModemManager-glib-devel \
         libselinux-devel \
         libappindicator-gtk3-devel \
+        libdbusmenu-gtk3-devel \
         #
 }
 
