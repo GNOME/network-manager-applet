@@ -58,7 +58,7 @@ fedora_meson_full:
       -Dselinux=true
       -Dteam=true
       -Dld_gc=true
-      -Dappindicator=no
+      -Dappindicator=yes
       -Dmore_asserts=yes
       network-manager-applet-*/ build
     - ninja -v -C build
@@ -106,6 +106,7 @@ fedora_autotools_full:
       --enable-nls
       --enable-schemas-compile
       --enable-more-warnings
+      --with-appindicator
       --with-wwan
       --with-selinux
       --with-team
