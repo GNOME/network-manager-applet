@@ -44,7 +44,6 @@ typedef struct {
 enum {
 	COL_ID,
 	COL_UUID,
-	N_COLUMNS
 };
 
 static void populate_firewall_zones_ui (CEPageGeneral *self);
@@ -243,12 +242,12 @@ populate_ui (CEPageGeneral *self)
 {
 	CEPageGeneralPrivate *priv = CE_PAGE_GENERAL_GET_PRIVATE (self);
 	NMSettingConnection *setting = priv->setting;
+	gboolean secondary_found = FALSE;
 	const char *vpn_uuid;
-	guint32 combo_idx = 0, idx;
 	const GPtrArray *con_list;
-	int i;
-	GtkTreeIter iter;
 	gboolean global_connection = TRUE;
+	GtkTreeIter iter;
+	guint i;
 
 	/* Zones are filled when got them from firewalld */
 	if (priv->got_zones)
@@ -257,21 +256,35 @@ populate_ui (CEPageGeneral *self)
 	/* Secondary UUID (VPN) */
 	vpn_uuid = nm_setting_connection_get_secondary (setting, 0);
 	con_list = nm_client_get_connections (CE_PAGE (self)->client);
-	for (i = 0, idx = 0, combo_idx = 0; i < con_list->len; i++) {
+	for (i = 0; i < con_list->len; i++) {
 		NMConnection *conn = con_list->pdata[i];
-		const char *uuid = nm_connection_get_uuid (conn);
-		const char *id = nm_connection_get_id (conn);
+		const char *uuid;
 
 		if (!nm_connection_is_type (conn, NM_SETTING_VPN_SETTING_NAME))
 			continue;
 
+		uuid = nm_connection_get_uuid (conn);
 		gtk_list_store_append (priv->dependent_vpn_store, &iter);
-		gtk_list_store_set (priv->dependent_vpn_store, &iter, COL_ID, id, COL_UUID, uuid, -1);
-		if (g_strcmp0 (vpn_uuid, uuid) == 0)
-			combo_idx = idx;
-		idx++;
+		gtk_list_store_set (priv->dependent_vpn_store, &iter,
+		                    COL_ID, nm_connection_get_id (conn),
+		                    COL_UUID, uuid,
+		                    -1);
+		if (nm_streq0 (vpn_uuid, uuid)) {
+			gtk_combo_box_set_active_iter (GTK_COMBO_BOX (priv->dependent_vpn), &iter);
+			secondary_found = TRUE;
+		}
 	}
-	gtk_combo_box_set_active (GTK_COMBO_BOX (priv->dependent_vpn), combo_idx);
+	if (!secondary_found) {
+		if (vpn_uuid) {
+			gtk_list_store_append (priv->dependent_vpn_store, &iter);
+			gtk_list_store_set (priv->dependent_vpn_store, &iter,
+			                    COL_ID, vpn_uuid,
+			                    COL_UUID, vpn_uuid,
+			                    -1);
+			gtk_combo_box_set_active_iter (GTK_COMBO_BOX (priv->dependent_vpn), &iter);
+		} else
+			gtk_combo_box_set_active (GTK_COMBO_BOX (priv->dependent_vpn), 0);
+	}
 
 	/* We don't support multiple VPNs at the moment, so hide secondary
 	 * stuff for VPN connections.  We'll revisit this later when we support
@@ -379,7 +392,8 @@ static void
 ui_to_setting (CEPageGeneral *self)
 {
 	CEPageGeneralPrivate *priv = CE_PAGE_GENERAL_GET_PRIVATE (self);
-	char *uuid = NULL;
+	const char *const*secondaries = NULL;
+	gs_free char *secondaries_uuid = NULL;
 	GtkTreeIter iter;
 	gboolean autoconnect = FALSE, everyone = FALSE;
 	int prio;
@@ -398,14 +412,13 @@ ui_to_setting (CEPageGeneral *self)
 	}
 
 	if (   gtk_toggle_button_get_active (priv->dependent_vpn_checkbox)
-	    && gtk_combo_box_get_active_iter (priv->dependent_vpn, &iter))
+	    && gtk_combo_box_get_active_iter (priv->dependent_vpn, &iter)) {
 		gtk_tree_model_get (GTK_TREE_MODEL (priv->dependent_vpn_store), &iter,
-		                                    COL_UUID, &uuid, -1);
+		                                    COL_UUID, &secondaries_uuid, -1);
+		secondaries = (const char *[]) { secondaries_uuid, NULL };
+	}
 
-	g_object_set (G_OBJECT (priv->setting), NM_SETTING_CONNECTION_SECONDARIES, NULL, NULL);
-	if (uuid)
-		nm_setting_connection_add_secondary (priv->setting, uuid);
-	g_free (uuid);
+	g_object_set (G_OBJECT (priv->setting), NM_SETTING_CONNECTION_SECONDARIES, secondaries, NULL);
 
 	autoconnect = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->autoconnect));
 	prio = gtk_spin_button_get_value_as_int (priv->autoconnect_prio);
