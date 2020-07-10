@@ -66,6 +66,8 @@ typedef struct {
 
 	GCancellable *cancellable;
 	gint keyring_calls;
+
+	GVariant *secrets;
 } Request;
 
 static Request *
@@ -97,6 +99,7 @@ request_new (NMSecretAgentOld *agent,
 	r->delete_callback = delete_callback;
 	r->callback_data = callback_data;
 	r->cancellable = g_cancellable_new ();
+	r->secrets = NULL;
 	return r;
 }
 
@@ -114,6 +117,8 @@ request_free (Request *r)
 	g_free (r->setting_name);
 	g_strfreev (r->hints);
 	g_object_unref (r->cancellable);
+	if (r->secrets)
+		g_variant_unref (r->secrets);
 	memset (r, 0, sizeof (*r));
 	g_slice_free (Request, r);
 }
@@ -126,7 +131,10 @@ get_save_cb (NMSecretAgentOld *agent,
              GError *error,
              gpointer user_data)
 {
-	/* Ignored */
+
+	Request *r = user_data;
+	r->get_callback (NM_SECRET_AGENT_OLD (r->agent), r->connection, r->secrets, error, r->callback_data);
+	request_free (r);
 }
 
 static void
@@ -160,8 +168,11 @@ get_secrets_cb (AppletAgent *self,
 				nm_connection_update_secrets (dupl, setting_name, secrets, NULL);
 
 			/* And save updated secrets to the keyring */
-			nm_secret_agent_old_save_secrets (NM_SECRET_AGENT_OLD (self), dupl, get_save_cb, NULL);
+			g_variant_ref (secrets);
+			r->secrets = secrets;
+			nm_secret_agent_old_save_secrets (NM_SECRET_AGENT_OLD (self), dupl, get_save_cb, r);
 			g_object_unref (dupl);
+			return;
 		}
 
 		r->get_callback (NM_SECRET_AGENT_OLD (r->agent), r->connection, secrets, error, r->callback_data);
@@ -255,7 +266,8 @@ is_connection_always_ask (NMConnection *connection)
 }
 
 static void
-keyring_find_secrets_cb (GObject *source,
+keyring_find_secrets_cb (gboolean is_vpn,
+                         GObject *source,
                          GAsyncResult *result,
                          gpointer user_data)
 {
@@ -304,7 +316,8 @@ keyring_find_secrets_cb (GObject *source,
 	 * secrets yet, doesn't trigger the applet secrets dialog.
 	 */
 	if (   (r->flags & NM_SECRET_AGENT_GET_SECRETS_FLAG_ALLOW_INTERACTION)
-	    && g_list_length (list) == 0) {
+	    && !list
+	    && !is_vpn) {
 		g_message ("No keyring secrets found for %s/%s; asking user.", connection_id, r->setting_name);
 		ask_for_secrets (r);
 		return;
@@ -344,11 +357,14 @@ keyring_find_secrets_cb (GObject *source,
 		}
 	}
 
-	/* If there were hints, and none of the hints were returned by the keyring,
+	/* VPN passwords are handled by the VPN plugin's auth dialog.
+	 * If there were hints, and none of the hints were returned by the keyring,
 	 * get some new secrets.
 	 */
-	if (r->flags) {
-		if (r->hints && r->hints[0] && !hint_found)
+	if (is_vpn || r->flags) {
+		if (is_vpn)
+			ask = TRUE;
+		else if (r->hints && r->hints[0] && !hint_found)
 			ask = TRUE;
 		else if (r->flags & NM_SECRET_AGENT_GET_SECRETS_FLAG_REQUEST_NEW) {
 			g_message ("New secrets for %s/%s requested; ask the user", connection_id, r->setting_name);
@@ -395,6 +411,22 @@ done:
 }
 
 static void
+keyring_find_vpn_secrets_cb (GObject *source,
+                             GAsyncResult *result,
+                             gpointer user_data)
+{
+	return keyring_find_secrets_cb (true, source, result, user_data);
+}
+
+static void
+keyring_find_non_vpn_secrets_cb (GObject *source,
+                                 GAsyncResult *result,
+                                 gpointer user_data)
+{
+	return keyring_find_secrets_cb (false, source, result, user_data);
+}
+
+static void
 get_secrets (NMSecretAgentOld *agent,
              NMConnection *connection,
              const char *connection_path,
@@ -411,6 +443,8 @@ get_secrets (NMSecretAgentOld *agent,
 	NMSetting *setting;
 	const char *uuid, *ctype;
 	GHashTable *attrs;
+	GAsyncReadyCallback search_cb;
+
 
 	setting = nm_connection_get_setting_by_name (connection, setting_name);
 	if (!setting) {
@@ -443,12 +477,6 @@ get_secrets (NMSecretAgentOld *agent,
 	r = request_new (agent, connection, connection_path, setting_name, hints, flags, callback, NULL, NULL, callback_data);
 	g_hash_table_insert (priv->requests, GUINT_TO_POINTER (r->id), r);
 
-	/* VPN passwords are handled by the VPN plugin's auth dialog */
-	if (!strcmp (ctype, NM_SETTING_VPN_SETTING_NAME)) {
-		ask_for_secrets (r);
-		return;
-	}
-
 	/* Only handle non-VPN secrets if we're supposed to */
 	if (priv->vpn_only == TRUE) {
 		error = g_error_new_literal (NM_SECRET_AGENT_ERROR,
@@ -467,9 +495,15 @@ get_secrets (NMSecretAgentOld *agent,
 	                                 KEYRING_SN_TAG, setting_name,
 	                                 NULL);
 
+	if (!strcmp (ctype, NM_SETTING_VPN_SETTING_NAME)) {
+		search_cb = keyring_find_vpn_secrets_cb;
+	} else {
+		search_cb = keyring_find_non_vpn_secrets_cb;
+	}
+
 	secret_service_search (NULL, &network_manager_secret_schema, attrs,
 	                       SECRET_SEARCH_ALL | SECRET_SEARCH_UNLOCK | SECRET_SEARCH_LOAD_SECRETS,
-	                       r->cancellable, keyring_find_secrets_cb, r);
+	                       r->cancellable, search_cb, r);
 
 	r->keyring_calls++;
 	g_hash_table_unref (attrs);
@@ -515,14 +549,14 @@ cancel_get_secrets (NMSecretAgentOld *agent,
 /*******************************************************/
 
 static void
-save_request_try_complete (Request *r)
+save_request_try_complete (Request *r, GError *error)
 {
 	/* Only call the SaveSecrets callback and free the request when all the
 	 * secrets have been saved to the keyring.
 	 */
 	if (r->keyring_calls == 0) {
 		if (!g_cancellable_is_cancelled (r->cancellable))
-			r->save_callback (NM_SECRET_AGENT_OLD (r->agent), r->connection, NULL, r->callback_data);
+			r->save_callback (NM_SECRET_AGENT_OLD (r->agent), r->connection, error, r->callback_data);
 		request_free (r);
 	}
 }
@@ -532,8 +566,34 @@ save_secret_cb (GObject *source,
                 GAsyncResult *result,
                 gpointer user_data)
 {
-	secret_password_store_finish (result, NULL);
-	save_request_try_complete (user_data);
+	Request *r = user_data;
+	GError *error = NULL;
+	GError *secret_error = NULL;
+	gboolean cancelled = FALSE;
+
+	r->keyring_calls--;
+
+	secret_password_store_finish (result, &secret_error);
+	if (secret_error != NULL) {
+		if (g_error_matches (secret_error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+			/* Callback already called by NM or dispose */
+			cancelled = TRUE;
+		} else {
+			error = g_error_new (NM_SECRET_AGENT_ERROR,
+			                     NM_SECRET_AGENT_ERROR_FAILED,
+			                     "The request could not be completed (%s)",
+			                     secret_error->message);
+		}
+		g_error_free (secret_error);
+	}
+
+	if (cancelled) {
+		request_free (r);
+		return;
+	}
+
+	save_request_try_complete (user_data, error);
+
 }
 
 
@@ -676,7 +736,7 @@ save_delete_cb (NMSecretAgentOld *agent,
 	 * try to complete the request here.  If there were secrets to save the
 	 * request will get completed when those keyring calls return.
 	 */
-	save_request_try_complete (r);
+	save_request_try_complete (r, error);
 }
 
 static void
