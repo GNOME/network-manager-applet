@@ -150,7 +150,37 @@ EXTRA_DIST += $(icon48_DATA)
 iconscalabledir=$(datadir)/icons/hicolor/scalable/apps
 iconscalable_DATA = \
 	icons/scalable/nm-device-wired.svg \
-	icons/scalable/nm-no-connection.svg
+	icons/scalable/nm-no-connection.svg \
+	icons/scalable/nm-device-wired-secure-symbolic.svg \
+	icons/scalable/nm-device-wired-symbolic.svg \
+	icons/scalable/nm-device-wwan-symbolic.svg \
+	icons/scalable/nm-no-connection-symbolic.svg \
+	icons/scalable/nm-signal-00-secure-symbolic.svg \
+	icons/scalable/nm-signal-00-symbolic.svg \
+	icons/scalable/nm-signal-25-secure-symbolic.svg \
+	icons/scalable/nm-signal-25-symbolic.svg \
+	icons/scalable/nm-signal-50-secure-symbolic.svg \
+	icons/scalable/nm-signal-50-symbolic.svg \
+	icons/scalable/nm-signal-75-secure-symbolic.svg \
+	icons/scalable/nm-signal-75-symbolic.svg \
+	icons/scalable/nm-signal-100-secure-symbolic.svg \
+	icons/scalable/nm-signal-100-symbolic.svg \
+	icons/scalable/nm-vpn-active-lock-symbolic.svg \
+	icons/scalable/nm-vpn-connecting01-symbolic.svg \
+	icons/scalable/nm-vpn-connecting02-symbolic.svg \
+	icons/scalable/nm-vpn-connecting03-symbolic.svg \
+	icons/scalable/nm-vpn-connecting04-symbolic.svg \
+	icons/scalable/nm-vpn-connecting05-symbolic.svg \
+	icons/scalable/nm-vpn-connecting06-symbolic.svg \
+	icons/scalable/nm-vpn-connecting07-symbolic.svg \
+	icons/scalable/nm-vpn-connecting08-symbolic.svg \
+	icons/scalable/nm-vpn-connecting09-symbolic.svg \
+	icons/scalable/nm-vpn-connecting10-symbolic.svg \
+	icons/scalable/nm-vpn-connecting11-symbolic.svg \
+	icons/scalable/nm-vpn-connecting12-symbolic.svg \
+	icons/scalable/nm-vpn-connecting13-symbolic.svg \
+	icons/scalable/nm-vpn-connecting14-symbolic.svg \
+	icons/scalable/nm-vpn-standalone-lock-symbolic.svg
 EXTRA_DIST += $(iconscalable_DATA)
 
 EXTRA_DIST += icons/meson.build
