@@ -363,7 +363,7 @@ keyring_find_secrets_cb (GObject *source,
 	 */
 	g_variant_builder_init (&builder_connection, NM_VARIANT_TYPE_CONNECTION);
 	g_variant_builder_add (&builder_connection, "{sa{sv}}", r->setting_name, &builder_setting);
-	settings = g_variant_builder_end (&builder_connection);
+	settings = g_variant_ref_sink (g_variant_builder_end (&builder_connection));
 
 done:
 	g_list_free_full (list, g_object_unref);
