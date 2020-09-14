@@ -98,9 +98,10 @@ typedef struct {
 #define IP6_METHOD_SHARED          6
 #define IP6_METHOD_DISABLED        7
 
-#define IP6_PRIVACY_DISABLED       0
-#define IP6_PRIVACY_PREFER_PUBLIC  1
-#define IP6_PRIVACY_PREFER_TEMP    2
+#define IP6_PRIVACY_UNKNOWN        0
+#define IP6_PRIVACY_DISABLED       1
+#define IP6_PRIVACY_PREFER_PUBLIC  2
+#define IP6_PRIVACY_PREFER_TEMP    3
 
 #define IP6_ADDR_GEN_MODE_EUI64    0
 #define IP6_ADDR_GEN_MODE_STABLE   1
@@ -481,6 +482,9 @@ populate_ui (CEPageIP6 *self)
 	/* IPv6 privacy extensions */
 	ip6_privacy = nm_setting_ip6_config_get_ip6_privacy (NM_SETTING_IP6_CONFIG (setting));
 	switch (ip6_privacy) {
+	case NM_SETTING_IP6_CONFIG_PRIVACY_UNKNOWN:
+		ip6_privacy_idx = IP6_PRIVACY_UNKNOWN;
+		break;
 	case NM_SETTING_IP6_CONFIG_PRIVACY_DISABLED:
 		ip6_privacy_idx = IP6_PRIVACY_DISABLED;
 		break;
@@ -491,7 +495,7 @@ populate_ui (CEPageIP6 *self)
 		ip6_privacy_idx = IP6_PRIVACY_PREFER_TEMP;
 		break;
 	default:
-		ip6_privacy_idx = IP6_PRIVACY_DISABLED;
+		ip6_privacy_idx = IP6_PRIVACY_UNKNOWN;
 		break;
 	}
 	gtk_combo_box_set_active (priv->ip6_privacy_combo, ip6_privacy_idx);
@@ -1384,6 +1388,9 @@ ui_to_setting (CEPageIP6 *self, GError **error)
 
 	/* IPv6 Privacy */
 	switch (gtk_combo_box_get_active (priv->ip6_privacy_combo)) {
+	case IP6_PRIVACY_UNKNOWN:
+		ip6_privacy = NM_SETTING_IP6_CONFIG_PRIVACY_UNKNOWN;
+		break;
 	case IP6_PRIVACY_DISABLED:
 		ip6_privacy = NM_SETTING_IP6_CONFIG_PRIVACY_DISABLED;
 		break;
