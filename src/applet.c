@@ -82,6 +82,46 @@ applet_stop_wifi_scan (NMApplet *applet, gpointer unused)
 	nm_clear_g_source (&applet->wifi_scan_id);
 }
 
+#ifdef WITH_APPINDICATOR
+/* Work around ubuntu libappindicator not emitting the "show"/"hide" signals,
+ * see https://bugs.launchpad.net/ubuntu/+source/libappindicator/+bug/522152.
+ * There will be no periodic Wi-Fi access point updates but at least there
+ * will be one each time the menu is opened.
+ */
+static void
+applet_menu_about_to_show_cb (NMApplet *applet, gpointer unused)
+{
+	applet_request_wifi_scan (applet);
+}
+
+static void
+applet_workaround_show_cb (NMApplet *applet, gpointer unused)
+{
+	GObject *menu_server;
+	GObject *root_menu_item;
+
+	g_object_get (applet->app_indicator, "dbus-menu-server", &menu_server, NULL);
+	g_object_get (menu_server, "root-node", &root_menu_item, NULL);
+
+	/* If libappindicator doesn't emit "show" and "hide" signals when the
+	 * menu is opened/closed, there will be exactly one "show" signal when
+	 * the menu is constructed.  Subscribe to DBusmenuMenuItem's
+	 * "about-to-show" signal to work around this.  If we're receiving the
+	 * "show" signal for the second time the workaround wasn't needed and
+	 * we can undo it.
+	 */
+	if (!applet->app_indicator_show_signal_received) {
+		applet->app_indicator_show_signal_received = TRUE;
+		g_signal_connect_swapped (root_menu_item, "about-to-show", G_CALLBACK (applet_menu_about_to_show_cb), applet);
+	} else {
+		GtkMenu *menu = app_indicator_get_menu (applet->app_indicator);
+
+		g_signal_handlers_disconnect_by_func (root_menu_item, applet_menu_about_to_show_cb, applet);
+		g_signal_handlers_disconnect_by_func (menu, applet_workaround_show_cb, applet);
+	}
+}
+#endif
+
 static inline NMADeviceClass *
 get_device_class (NMDevice *device, NMApplet *applet)
 {
@@ -1992,6 +2032,9 @@ applet_update_menu (gpointer user_data)
 			app_indicator_set_menu (applet->app_indicator, menu);
 			g_signal_connect_swapped (menu, "show", G_CALLBACK (applet_start_wifi_scan), applet);
 			g_signal_connect_swapped (menu, "hide", G_CALLBACK (applet_stop_wifi_scan), applet);
+
+			/* Work around ubuntu libappindicator not emitting the above signals in runtime */
+			g_signal_connect_swapped (menu, "show", G_CALLBACK (applet_workaround_show_cb), applet);
 		}
 #else
 		g_return_val_if_reached (G_SOURCE_REMOVE);

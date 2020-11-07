@@ -115,6 +115,7 @@ typedef struct {
 	/* Direct UI elements */
 #ifdef WITH_APPINDICATOR
 	AppIndicator *  app_indicator;
+	bool            app_indicator_show_signal_received;
 #endif
 	guint           update_menu_id;
 
