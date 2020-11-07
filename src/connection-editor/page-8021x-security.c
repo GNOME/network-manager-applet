@@ -10,10 +10,10 @@
 
 #include <string.h>
 
-#include "wireless-security.h"
 #include "page-ethernet.h"
 #include "page-8021x-security.h"
 #include "nm-connection-editor.h"
+#include "nma-ws.h"
 
 G_DEFINE_TYPE (CEPage8021xSecurity, ce_page_8021x_security, CE_TYPE_PAGE)
 
@@ -21,15 +21,14 @@ G_DEFINE_TYPE (CEPage8021xSecurity, ce_page_8021x_security, CE_TYPE_PAGE)
 
 typedef struct {
 	GtkToggleButton *enabled;
-	GtkWidget *security_widget;
-	WirelessSecurity *security;
+	NMAWs *security;
 	GtkSizeGroup *group;
 
 	gboolean initial_have_8021x;
 } CEPage8021xSecurityPrivate;
 
 static void
-stuff_changed (WirelessSecurity *sec, gpointer user_data)
+stuff_changed (NMAWs *ws, gpointer user_data)
 {
 	ce_page_changed (CE_PAGE (user_data));
 }
@@ -40,7 +39,7 @@ enable_toggled (GtkToggleButton *button, gpointer user_data)
 	CEPage8021xSecurityPrivate *priv = CE_PAGE_8021X_SECURITY_GET_PRIVATE (user_data);
 	gboolean active = gtk_toggle_button_get_active (priv->enabled);
 
-	gtk_widget_set_sensitive (priv->security_widget, active);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->security), active);
 	nm_connection_editor_inter_page_set_value (CE_PAGE (user_data)->editor,
 	                                           INTER_PAGE_CHANGE_802_1X_ENABLE,
 	                                           GINT_TO_POINTER (active));
@@ -53,27 +52,25 @@ finish_setup (CEPage8021xSecurity *self, gpointer user_data)
 	CEPage *parent = CE_PAGE (self);
 	CEPage8021xSecurityPrivate *priv = CE_PAGE_8021X_SECURITY_GET_PRIVATE (self);
 	GtkWidget *parent_container;
+	NMAWs8021x *ws;
 
-	priv->security = (WirelessSecurity *) ws_wpa_eap_new (parent->connection, TRUE, FALSE, NULL);
-	if (!priv->security) {
-		g_warning ("Could not load 802.1X user interface.");
-		return;
-	}
+	ws = nma_ws_802_1x_new (parent->connection, TRUE, FALSE);
+	if (G_IS_INITIALLY_UNOWNED (ws))
+		g_object_ref_sink (ws);
+	priv->security = NMA_WS (ws);
+	nma_ws_add_to_size_group (priv->security, priv->group);
 
-	wireless_security_add_to_size_group (priv->security, priv->group);
-
-	wireless_security_set_changed_notify (priv->security, stuff_changed, self);
-	priv->security_widget = wireless_security_get_widget (priv->security);
-	parent_container = gtk_widget_get_parent (priv->security_widget);
+	g_signal_connect (priv->security, "ws-changed", G_CALLBACK (stuff_changed), self);
+	parent_container = gtk_widget_get_parent (GTK_WIDGET (priv->security));
 	if (parent_container)
-		gtk_container_remove (GTK_CONTAINER (parent_container), priv->security_widget);
+		gtk_container_remove (GTK_CONTAINER (parent_container), GTK_WIDGET (priv->security));
 
 	gtk_toggle_button_set_active (priv->enabled, priv->initial_have_8021x);
 	g_signal_connect (priv->enabled, "toggled", G_CALLBACK (enable_toggled), self);
-	gtk_widget_set_sensitive (priv->security_widget, priv->initial_have_8021x);
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->security), priv->initial_have_8021x);
 
 	gtk_box_pack_start (GTK_BOX (parent->page), GTK_WIDGET (priv->enabled), FALSE, TRUE, 12);
-	gtk_box_pack_start (GTK_BOX (parent->page), priv->security_widget, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (parent->page), GTK_WIDGET (priv->security), TRUE, TRUE, 0);
 	gtk_widget_show (parent->page);
 }
 
@@ -144,36 +141,13 @@ ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 	gboolean valid = TRUE;
 
 	if (gtk_toggle_button_get_active (priv->enabled)) {
-		NMConnection *tmp_connection;
-		NMSetting *s_8021x;
-
-		valid = wireless_security_validate (priv->security, error);
+		valid = nma_ws_validate (priv->security, error);
 		if (valid) {
-			NMSetting *s_con;
-
-			/* Here's a nice hack to work around the fact that ws_802_1x_fill_connection needs wireless setting. */
-			tmp_connection = nm_simple_connection_new ();
-			nm_connection_add_setting (tmp_connection, nm_setting_wireless_new ());
-
-			/* temp connection needs a 'connection' setting too, since most of
-			 * the EAP methods need the UUID for CA cert ignore stuff.
-			 */
-			s_con = nm_connection_get_setting (connection, NM_TYPE_SETTING_CONNECTION);
-			nm_connection_add_setting (tmp_connection, nm_setting_duplicate (s_con));
-
-			ws_802_1x_fill_connection (priv->security, "wpa_eap_auth_combo", tmp_connection);
-
-			s_8021x = nm_connection_get_setting (tmp_connection, NM_TYPE_SETTING_802_1X);
-			nm_connection_add_setting (connection, NM_SETTING (g_object_ref (s_8021x)));
-
-			/* Remove the 8021x setting to prevent the clearing of secrets when the
-			 * simple-connection is destroyed.
-			 */
-			nm_connection_remove_setting (tmp_connection, NM_TYPE_SETTING_802_1X);
-			g_object_unref (tmp_connection);
+			nma_ws_fill_connection (priv->security, connection);
+			nm_connection_remove_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY);
 		}
 	} else {
-		gtk_container_forall (GTK_CONTAINER (priv->security_widget),
+		gtk_container_forall (GTK_CONTAINER (priv->security),
 		                      clear_widget_errors,
 		                      NULL);
 		nm_connection_remove_setting (connection, NM_TYPE_SETTING_802_1X);
@@ -213,15 +187,8 @@ dispose (GObject *object)
 
 	g_clear_object (&priv->group);
 
-	if (priv->security_widget) {
-		gtk_container_remove (GTK_CONTAINER (parent->page), priv->security_widget);
-		priv->security_widget = NULL;
-	}
-
-	if (priv->security) {
-		wireless_security_unref (priv->security);
-		priv->security = NULL;
-	}
+	gtk_container_remove (GTK_CONTAINER (parent->page), GTK_WIDGET (priv->security));
+	g_clear_object (&priv->security);
 
 	G_OBJECT_CLASS (ce_page_8021x_security_parent_class)->dispose (object);
 }
