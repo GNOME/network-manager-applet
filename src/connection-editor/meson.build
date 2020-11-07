@@ -88,7 +88,8 @@ deps = [
   gtk_dep,
   libnm_dep,
   libnma_dep,
-  m_dep
+  m_dep,
+  libutils_libnm_dep
 ]
 
 cflags = [

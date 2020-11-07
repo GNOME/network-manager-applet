@@ -2,41 +2,6 @@ wireless_security_inc = include_directories('.')
 
 sources = files(
   'eap-method.c',
-  'eap-method-fast.c',
-  'eap-method-leap.c',
-  'eap-method-peap.c',
-  'eap-method-simple.c',
-  'eap-method-tls.c',
-  'eap-method-ttls.c',
-  'helpers.c',
-  'wireless-security.c',
-  'ws-dynamic-wep.c',
-  'ws-leap.c',
-  'ws-sae.c',
-  'ws-wep-key.c',
-  'ws-wpa-eap.c',
-  'ws-wpa-psk.c'
-)
-
-resource_data = files(
-  'eap-method-fast.ui',
-  'eap-method-leap.ui',
-  'eap-method-peap.ui',
-  'eap-method-simple.ui',
-  'eap-method-tls.ui',
-  'eap-method-ttls.ui',
-  'ws-dynamic-wep.ui',
-  'ws-leap.ui',
-  'ws-sae.ui',
-  'ws-wep-key.ui',
-  'ws-wpa-eap.ui',
-  'ws-wpa-psk.ui'
-)
-
-sources += gnome.compile_resources(
-  'ws-resources',
-  'ws.gresource.xml',
-  dependencies: resource_data
 )
 
 incs = [
@@ -48,8 +13,6 @@ incs = [
 deps = [
   gtk_dep,
   libnm_dep,
-  libnma_dep,
-  libutils_libnm_dep
 ]
 
 libwireless_security_libnm = static_library(

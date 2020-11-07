@@ -47,7 +47,8 @@ deps = [
   libnma_dep,
   libnotify_dep,
   libsecret_dep,
-  m_dep
+  m_dep,
+  libutils_libnm_dep
 ]
 
 cflags = [
