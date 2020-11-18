@@ -1,27 +1,27 @@
 icons_16 = [
   'nm-device-wired.png',
   'nm-no-connection.png',
-  'nm-vpn-standalone-lock.png'
+  'nm-vpn-standalone-lock.png',
 ]
 
 icons_22 = [
   'nm-adhoc.png',
-  'nm-device-wired.png',
   'nm-device-wired-secure.png',
+  'nm-device-wired.png',
   'nm-device-wwan.png',
   'nm-mb-roam.png',
   'nm-no-connection.png',
   'nm-secure-lock.png',
-  'nm-signal-00.png',
   'nm-signal-00-secure.png',
-  'nm-signal-100.png',
+  'nm-signal-00.png',
   'nm-signal-100-secure.png',
-  'nm-signal-25.png',
+  'nm-signal-100.png',
   'nm-signal-25-secure.png',
-  'nm-signal-50.png',
+  'nm-signal-25.png',
   'nm-signal-50-secure.png',
-  'nm-signal-75.png',
+  'nm-signal-50.png',
   'nm-signal-75-secure.png',
+  'nm-signal-75.png',
   'nm-stage01-connecting01.png',
   'nm-stage01-connecting02.png',
   'nm-stage01-connecting03.png',
@@ -78,33 +78,35 @@ icons_22 = [
   'nm-vpn-connecting12.png',
   'nm-vpn-connecting13.png',
   'nm-vpn-connecting14.png',
-  'nm-wwan-tower.png'
+  'nm-wwan-tower.png',
 ]
 
 icons_32 = [
   'nm-device-wired.png',
-  'nm-no-connection.png'
+  'nm-no-connection.png',
 ]
 
-icons_48 = ['nm-device-wireless.png']
+icons_48 = [
+  'nm-device-wireless.png',
+]
 
 icons_scalable = [
-  'nm-device-wired.svg',
-  'nm-no-connection.svg',
   'nm-device-wired-secure-symbolic.svg',
   'nm-device-wired-symbolic.svg',
+  'nm-device-wired.svg',
   'nm-device-wwan-symbolic.svg',
   'nm-no-connection-symbolic.svg',
+  'nm-no-connection.svg',
   'nm-signal-00-secure-symbolic.svg',
   'nm-signal-00-symbolic.svg',
+  'nm-signal-100-secure-symbolic.svg',
+  'nm-signal-100-symbolic.svg',
   'nm-signal-25-secure-symbolic.svg',
   'nm-signal-25-symbolic.svg',
   'nm-signal-50-secure-symbolic.svg',
   'nm-signal-50-symbolic.svg',
   'nm-signal-75-secure-symbolic.svg',
   'nm-signal-75-symbolic.svg',
-  'nm-signal-100-secure-symbolic.svg',
-  'nm-signal-100-symbolic.svg',
   'nm-vpn-active-lock-symbolic.svg',
   'nm-vpn-connecting01-symbolic.svg',
   'nm-vpn-connecting02-symbolic.svg',
@@ -120,7 +122,7 @@ icons_scalable = [
   'nm-vpn-connecting12-symbolic.svg',
   'nm-vpn-connecting13-symbolic.svg',
   'nm-vpn-connecting14-symbolic.svg',
-  'nm-vpn-standalone-lock-symbolic.svg'
+  'nm-vpn-standalone-lock-symbolic.svg',
 ]
 
 icons = [
@@ -129,7 +131,7 @@ icons = [
   ['22', '22x22', icons_22],
   ['32', '32x32', icons_32],
   ['48', '48x48', icons_48],
-  ['scalable', 'scalable', icons_scalable]
+  ['scalable', 'scalable', icons_scalable],
 ]
 
 foreach icon: icons

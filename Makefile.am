@@ -55,28 +55,29 @@ icon16dir = $(datadir)/icons/hicolor/16x16/apps
 icon16_DATA = \
 	icons/16/nm-device-wired.png \
 	icons/16/nm-no-connection.png \
-	icons/16/nm-vpn-standalone-lock.png
+	icons/16/nm-vpn-standalone-lock.png \
+	$(NULL)
 EXTRA_DIST += $(icon16_DATA)
 
 icon22dir = $(datadir)/icons/hicolor/22x22/apps
 icon22_DATA = \
 	icons/22/nm-adhoc.png \
-	icons/22/nm-device-wired.png \
 	icons/22/nm-device-wired-secure.png \
+	icons/22/nm-device-wired.png \
 	icons/22/nm-device-wwan.png \
 	icons/22/nm-mb-roam.png \
 	icons/22/nm-no-connection.png \
 	icons/22/nm-secure-lock.png \
-	icons/22/nm-signal-00.png \
 	icons/22/nm-signal-00-secure.png \
-	icons/22/nm-signal-100.png \
+	icons/22/nm-signal-00.png \
 	icons/22/nm-signal-100-secure.png \
-	icons/22/nm-signal-25.png \
+	icons/22/nm-signal-100.png \
 	icons/22/nm-signal-25-secure.png \
-	icons/22/nm-signal-50.png \
+	icons/22/nm-signal-25.png \
 	icons/22/nm-signal-50-secure.png \
-	icons/22/nm-signal-75.png \
+	icons/22/nm-signal-50.png \
 	icons/22/nm-signal-75-secure.png \
+	icons/22/nm-signal-75.png \
 	icons/22/nm-stage01-connecting01.png \
 	icons/22/nm-stage01-connecting02.png \
 	icons/22/nm-stage01-connecting03.png \
@@ -133,38 +134,41 @@ icon22_DATA = \
 	icons/22/nm-vpn-connecting12.png \
 	icons/22/nm-vpn-connecting13.png \
 	icons/22/nm-vpn-connecting14.png \
-	icons/22/nm-wwan-tower.png
+	icons/22/nm-wwan-tower.png \
+	$(NULL)
 EXTRA_DIST += $(icon22_DATA)
 
 icon32dir = $(datadir)/icons/hicolor/32x32/apps
 icon32_DATA = \
 	icons/32/nm-device-wired.png \
-	icons/32/nm-no-connection.png
+	icons/32/nm-no-connection.png \
+	$(NULL)
 EXTRA_DIST += $(icon32_DATA)
 
 icon48dir = $(datadir)/icons/hicolor/48x48/apps
 icon48_DATA = \
-	icons/48/nm-device-wireless.png
+	icons/48/nm-device-wireless.png \
+	$(NULL)
 EXTRA_DIST += $(icon48_DATA)
 
 iconscalabledir=$(datadir)/icons/hicolor/scalable/apps
 iconscalable_DATA = \
-	icons/scalable/nm-device-wired.svg \
-	icons/scalable/nm-no-connection.svg \
 	icons/scalable/nm-device-wired-secure-symbolic.svg \
 	icons/scalable/nm-device-wired-symbolic.svg \
+	icons/scalable/nm-device-wired.svg \
 	icons/scalable/nm-device-wwan-symbolic.svg \
 	icons/scalable/nm-no-connection-symbolic.svg \
+	icons/scalable/nm-no-connection.svg \
 	icons/scalable/nm-signal-00-secure-symbolic.svg \
 	icons/scalable/nm-signal-00-symbolic.svg \
+	icons/scalable/nm-signal-100-secure-symbolic.svg \
+	icons/scalable/nm-signal-100-symbolic.svg \
 	icons/scalable/nm-signal-25-secure-symbolic.svg \
 	icons/scalable/nm-signal-25-symbolic.svg \
 	icons/scalable/nm-signal-50-secure-symbolic.svg \
 	icons/scalable/nm-signal-50-symbolic.svg \
 	icons/scalable/nm-signal-75-secure-symbolic.svg \
 	icons/scalable/nm-signal-75-symbolic.svg \
-	icons/scalable/nm-signal-100-secure-symbolic.svg \
-	icons/scalable/nm-signal-100-symbolic.svg \
 	icons/scalable/nm-vpn-active-lock-symbolic.svg \
 	icons/scalable/nm-vpn-connecting01-symbolic.svg \
 	icons/scalable/nm-vpn-connecting02-symbolic.svg \
@@ -180,7 +184,8 @@ iconscalable_DATA = \
 	icons/scalable/nm-vpn-connecting12-symbolic.svg \
 	icons/scalable/nm-vpn-connecting13-symbolic.svg \
 	icons/scalable/nm-vpn-connecting14-symbolic.svg \
-	icons/scalable/nm-vpn-standalone-lock-symbolic.svg
+	icons/scalable/nm-vpn-standalone-lock-symbolic.svg \
+	$(NULL)
 EXTRA_DIST += $(iconscalable_DATA)
 
 EXTRA_DIST += icons/meson.build
