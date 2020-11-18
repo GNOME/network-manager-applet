@@ -28,8 +28,6 @@ typedef struct {
 	GtkComboBox *mode;
 	GtkComboBox *band;
 	GtkSpinButton *channel;
-	GtkSpinButton *rate;
-	GtkSpinButton *tx_power;
 	GtkSpinButton *mtu;
 
 	GtkSizeGroup *group;
@@ -83,14 +81,6 @@ wifi_private_init (CEPageWifi *self)
 	/* Set mnemonic widget for Device label */
 	label = GTK_LABEL (gtk_builder_get_object (builder, "wifi_device_label"));
 	gtk_label_set_mnemonic_widget (label, GTK_WIDGET (priv->device_combo));
-
-	priv->rate     = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "wifi_rate"));
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "rate_units"));
-	gtk_size_group_add_widget (priv->group, widget);
-
-	priv->tx_power = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "wifi_tx_power"));
-	widget = GTK_WIDGET (gtk_builder_get_object (builder, "tx_power_units"));
-	gtk_size_group_add_widget (priv->group, widget);
 
 	priv->mtu      = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "wifi_mtu"));
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "mtu_units"));
@@ -278,21 +268,12 @@ populate_ui (CEPageWifi *self)
 	const char *mode;
 	const char *band;
 	int band_idx = 0;
-	int rate_def;
-	int tx_power_def;
 	int mtu_def;
 	char *utf8_ssid;
 	const char *s_ifname, *s_mac, *s_bssid;
 	GPtrArray *bssid_array;
 	char **bssid_list;
 	guint32 idx;
-
-	rate_def = ce_get_property_default (NM_SETTING (setting), NM_SETTING_WIRELESS_RATE);
-	ce_spin_automatic_val (priv->mtu, rate_def);
-
-	tx_power_def = ce_get_property_default (NM_SETTING (setting), NM_SETTING_WIRELESS_TX_POWER);
-	ce_spin_automatic_val (priv->mtu, tx_power_def);
-	g_signal_connect_swapped (priv->tx_power, "value-changed", G_CALLBACK (ce_page_changed), self);
 
 	mtu_def = ce_get_property_default (NM_SETTING (setting), NM_SETTING_WIRELESS_MTU);
 	ce_spin_automatic_val (priv->mtu, mtu_def);
@@ -376,28 +357,13 @@ populate_ui (CEPageWifi *self)
 	ce_page_setup_cloned_mac_combo (priv->cloned_mac, s_mac);
 	g_signal_connect_swapped (priv->cloned_mac, "changed", G_CALLBACK (ce_page_changed), self);
 
-	gtk_spin_button_set_value (priv->rate, (gdouble) nm_setting_wireless_get_rate (setting));
-	gtk_spin_button_set_value (priv->tx_power, (gdouble) nm_setting_wireless_get_tx_power (setting));
 	gtk_spin_button_set_value (priv->mtu, (gdouble) nm_setting_wireless_get_mtu (setting));
 }
 
 static void
 finish_setup (CEPageWifi *self, gpointer user_data)
 {
-	CEPage *parent = CE_PAGE (self);
-	GtkWidget *widget;
-
 	populate_ui (self);
-
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_tx_power_label"));
-	gtk_widget_hide (widget);
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_tx_power_hbox"));
-	gtk_widget_hide (widget);
-
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_rate_label"));
-	gtk_widget_hide (widget);
-	widget = GTK_WIDGET (gtk_builder_get_object (parent->builder, "wifi_rate_hbox"));
-	gtk_widget_hide (widget);
 }
 
 CEPage *
@@ -523,8 +489,6 @@ ui_to_setting (CEPageWifi *self)
 	              NM_SETTING_WIRELESS_MODE, mode,
 	              NM_SETTING_WIRELESS_BAND, band,
 	              NM_SETTING_WIRELESS_CHANNEL, gtk_spin_button_get_value_as_int (priv->channel),
-	              NM_SETTING_WIRELESS_RATE, gtk_spin_button_get_value_as_int (priv->rate),
-	              NM_SETTING_WIRELESS_TX_POWER, gtk_spin_button_get_value_as_int (priv->tx_power),
 	              NM_SETTING_WIRELESS_MTU, gtk_spin_button_get_value_as_int (priv->mtu),
 	              NULL);
 
