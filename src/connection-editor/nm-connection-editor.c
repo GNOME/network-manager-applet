@@ -1182,8 +1182,9 @@ updated_connection_cb (GObject *connection,
 	NMConnectionEditor *self = NM_CONNECTION_EDITOR (user_data);
 	GError *error = NULL;
 
-	nm_remote_connection_commit_changes_finish (NM_REMOTE_CONNECTION (connection),
-	                                            result, &error);
+	if (!nm_remote_connection_commit_changes_finish (NM_REMOTE_CONNECTION (connection),
+	                                                 result, &error))
+		g_message ("Error saving connection: %s", error->message);
 
 	/* Clear secrets so they don't lay around in memory; they'll get requested
 	 * again anyway next time the connection is edited.
