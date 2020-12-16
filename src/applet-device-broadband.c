@@ -698,7 +698,7 @@ add_connection_item (NMDevice *device,
 	gtk_widget_show (item);
 }
 
-static void
+static gboolean
 add_menu_item (NMDevice *device,
                gboolean multiple_devices,
                const GPtrArray *connections,
@@ -715,7 +715,7 @@ add_menu_item (NMDevice *device,
 	if (!info) {
 		g_warning ("ModemManager is not available for modem at %s",
 		           nm_device_get_udi (device));
-		return;
+		return FALSE;
 	}
 
 	if (multiple_devices) {
@@ -794,6 +794,8 @@ add_menu_item (NMDevice *device,
 			add_connection_item (device, NULL, item, menu, applet);
 		}
 	}
+
+	return TRUE;
 }
 
 /********************************************************************/

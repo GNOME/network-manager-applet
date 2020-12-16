@@ -47,7 +47,7 @@ ethernet_new_auto_connection (NMDevice *device,
 	return TRUE;
 }
 
-static void
+static gboolean
 ethernet_add_menu_item (NMDevice *device,
                         gboolean multiple_devices,
                         const GPtrArray *connections,
@@ -58,6 +58,10 @@ ethernet_add_menu_item (NMDevice *device,
 	char *text;
 	GtkWidget *item;
 	gboolean carrier = TRUE;
+
+	if (nm_device_get_state (device) == NM_DEVICE_STATE_UNMANAGED) {
+		return FALSE;
+	}
 
 	if (multiple_devices) {
 		const char *desc;
@@ -107,6 +111,8 @@ ethernet_add_menu_item (NMDevice *device,
 		else
 			applet_add_default_connection_item (device, DEFAULT_ETHERNET_NAME, carrier, menu, applet);
 	}
+
+	return TRUE;
 }
 
 static void

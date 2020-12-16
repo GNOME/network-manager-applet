@@ -1385,6 +1385,7 @@ add_device_items (NMDeviceType type, const GPtrArray *all_devices,
 		NMADeviceClass *dclass;
 		NMConnection *active;
 		GPtrArray *connections;
+		gboolean added;
 
 		dclass = get_device_class (device, applet);
 		if (!dclass)
@@ -1393,11 +1394,11 @@ add_device_items (NMDeviceType type, const GPtrArray *all_devices,
 		connections = nm_device_filter_connections (device, all_connections);
 		active = applet_find_active_connection_for_device (device, applet, NULL);
 
-		dclass->add_menu_item (device, n_devices > 1, connections, active, menu, applet);
+		added = dclass->add_menu_item (device, n_devices > 1, connections, active, menu, applet);
 
 		g_ptr_array_unref (connections);
 
-		if (INDICATOR_ENABLED (applet))
+		if (INDICATOR_ENABLED (applet) && added)
 			gtk_menu_shell_append (GTK_MENU_SHELL (menu), gtk_separator_menu_item_new ());
 	}
 
@@ -3450,4 +3451,3 @@ static void nma_class_init (NMAppletClass *klass)
 
 	oclass->finalize = finalize;
 }
-

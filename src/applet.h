@@ -186,7 +186,7 @@ struct NMADeviceClass {
 	                                        AppletNewAutoConnectionCallback callback,
 	                                        gpointer callback_data);
 
-	void           (*add_menu_item)        (NMDevice *device,
+	gboolean       (*add_menu_item)        (NMDevice *device,
 	                                        gboolean multiple_devices,
 	                                        const GPtrArray *connections,
 	                                        NMConnection *active,

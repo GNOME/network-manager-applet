@@ -24,7 +24,7 @@ bt_new_auto_connection (NMDevice *device,
 	return FALSE;
 }
 
-static void
+static gboolean
 bt_add_menu_item (NMDevice *device,
                   gboolean multiple__devices,
                   const GPtrArray *connections,
@@ -62,6 +62,8 @@ bt_add_menu_item (NMDevice *device,
 			applet_add_connection_items (device, connections, TRUE, active, NMA_ADD_INACTIVE, menu, applet);
 		}
 	}
+
+	return TRUE;
 }
 
 static void

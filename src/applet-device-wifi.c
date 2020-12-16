@@ -791,7 +791,7 @@ sort_toplevel (gconstpointer tmpa, gconstpointer tmpb)
 	return sort_by_name (a, b);
 }
 
-static void
+static gboolean
 wifi_add_menu_item (NMDevice *device,
                     gboolean multiple_devices,
                     const GPtrArray *connections,
@@ -934,6 +934,7 @@ wifi_add_menu_item (NMDevice *device,
 
 out:
 	g_slist_free (menu_items);
+	return TRUE;
 }
 
 static void
