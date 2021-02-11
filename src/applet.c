@@ -876,6 +876,13 @@ applet_is_any_device_activating (NMApplet *applet)
 }
 
 static gboolean
+connection_is_vpn (NMConnection *connection)
+{
+	return    nm_connection_is_type (connection, NM_SETTING_VPN_SETTING_NAME)
+	       || nm_connection_is_type (connection, NM_SETTING_WIREGUARD_SETTING_NAME);
+}
+
+static gboolean
 applet_is_any_vpn_activating (NMApplet *applet)
 {
 	const GPtrArray *connections;
@@ -1062,10 +1069,13 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 		return;
 	}
 
-	active = applet_get_default_active_connection (applet, &device, FALSE);
-	if (!active || !device) {
-		g_warning ("%s: no active connection or device.", __func__);
-		return;
+	if (nm_connection_is_type (connection, NM_SETTING_VPN_SETTING_NAME)) {
+		active = applet_get_default_active_connection (applet, &device, FALSE);
+		if (!active || !device) {
+			/* FIXME: show a UI notification ? */
+			g_warning ("%s: no active connection or device.", __func__);
+			return;
+		}
 	}
 
 	info = g_malloc0 (sizeof (VPNActivateInfo));
@@ -1076,7 +1086,7 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 	nm_client_activate_connection_async (applet->nm_client,
 	                                     connection,
 	                                     device,
-	                                     nm_object_get_path (NM_OBJECT (active)),
+	                                     active ? nm_object_get_path (NM_OBJECT (active)) : NULL,
 	                                     NULL,
 	                                     activate_vpn_cb,
 	                                     info);
@@ -1112,6 +1122,25 @@ nma_menu_add_vpn_item_activate (GtkMenuItem *item, gpointer user_data)
 	g_spawn_async (NULL, (gchar **) argv, NULL, 0, NULL, NULL, NULL, NULL);
 }
 
+static NMVpnConnectionState
+ac_state_to_vpn_state (NMActiveConnectionState ac_state)
+{
+	switch (ac_state) {
+	case NM_ACTIVE_CONNECTION_STATE_UNKNOWN:
+		return NM_VPN_CONNECTION_STATE_UNKNOWN;
+	case NM_ACTIVE_CONNECTION_STATE_ACTIVATING:
+		return NM_VPN_CONNECTION_STATE_PREPARE;
+	case NM_ACTIVE_CONNECTION_STATE_ACTIVATED:
+	case NM_ACTIVE_CONNECTION_STATE_DEACTIVATING:
+		return NM_VPN_CONNECTION_STATE_ACTIVATED;
+	case NM_ACTIVE_CONNECTION_STATE_DEACTIVATED:
+		return NM_VPN_CONNECTION_STATE_DISCONNECTED;
+	}
+
+	nm_assert_not_reached ();
+	return NM_VPN_CONNECTION_STATE_UNKNOWN;
+}
+
 /*
  * applet_get_active_vpn_connection:
  *
@@ -1121,7 +1150,7 @@ nma_menu_add_vpn_item_activate (GtkMenuItem *item, gpointer user_data)
  */
 static NMActiveConnection *
 applet_get_active_vpn_connection (NMApplet *applet,
-                                        NMVpnConnectionState *out_state)
+                                  NMVpnConnectionState *out_state)
 {
 	const GPtrArray *active_list;
 	NMActiveConnection *ret = NULL;
@@ -1132,7 +1161,6 @@ applet_get_active_vpn_connection (NMApplet *applet,
 	for (i = 0; active_list && (i < active_list->len); i++) {
 		NMActiveConnection *candidate;
 		NMConnection *connection;
-		NMSettingConnection *s_con;
 
 		candidate = g_ptr_array_index (active_list, i);
 
@@ -1140,17 +1168,20 @@ applet_get_active_vpn_connection (NMApplet *applet,
 		if (!connection)
 			continue;
 
-		s_con = nm_connection_get_setting_connection (connection);
-		if (!s_con)
+		if (!connection_is_vpn (connection))
 			continue;
 
-		if (!strcmp (nm_setting_connection_get_connection_type (s_con), NM_SETTING_VPN_SETTING_NAME)) {
-			ret = candidate;
+		ret = candidate;
+		if (nm_connection_is_type (connection, NM_SETTING_VPN_SETTING_NAME)) {
 			state = nm_vpn_connection_get_vpn_state (NM_VPN_CONNECTION (candidate));
+		} else {
+			NMActiveConnectionState ac_state;
 
-			if (state != NM_VPN_CONNECTION_STATE_ACTIVATED)
-				break;
+			ac_state = nm_active_connection_get_state (candidate);
+			state = ac_state_to_vpn_state (ac_state);
 		}
+		if (state != NM_VPN_CONNECTION_STATE_ACTIVATED)
+			break;
 	}
 
 	if (ret && out_state)
@@ -1453,14 +1484,8 @@ get_vpn_connections (NMApplet *applet)
 	for (i = 0; i < all_connections->len; i++) {
 		NMConnection *connection = NM_CONNECTION (all_connections->pdata[i]);
 
-		if (!nm_connection_is_type (connection, NM_SETTING_VPN_SETTING_NAME))
+		if (!connection_is_vpn (connection))
 			continue;
-
-		if (!nm_connection_get_setting_vpn (connection)) {
-			g_warning ("%s: VPN connection '%s' didn't have required vpn setting.", __func__,
-			           nm_connection_get_id (connection));
-			continue;
-		}
 
 		g_ptr_array_add (vpn_connections, g_object_ref (connection));
 	}
