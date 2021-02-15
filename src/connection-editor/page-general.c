@@ -392,7 +392,7 @@ static void
 ui_to_setting (CEPageGeneral *self)
 {
 	CEPageGeneralPrivate *priv = CE_PAGE_GENERAL_GET_PRIVATE (self);
-	const char *const*secondaries = NULL;
+	const char *secondaries[2] = { NULL, NULL };
 	gs_free char *secondaries_uuid = NULL;
 	GtkTreeIter iter;
 	gboolean autoconnect = FALSE, everyone = FALSE;
@@ -415,7 +415,7 @@ ui_to_setting (CEPageGeneral *self)
 	    && gtk_combo_box_get_active_iter (priv->dependent_vpn, &iter)) {
 		gtk_tree_model_get (GTK_TREE_MODEL (priv->dependent_vpn_store), &iter,
 		                                    COL_UUID, &secondaries_uuid, -1);
-		secondaries = (const char *[]) { secondaries_uuid, NULL };
+		secondaries[0] = secondaries_uuid;
 	}
 
 	g_object_set (G_OBJECT (priv->setting), NM_SETTING_CONNECTION_SECONDARIES, secondaries, NULL);
