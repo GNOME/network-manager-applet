@@ -65,6 +65,7 @@ finish_setup (CEPage8021xSecurity *self, gpointer user_data)
 	if (parent_container)
 		gtk_container_remove (GTK_CONTAINER (parent_container), GTK_WIDGET (priv->security));
 
+	gtk_widget_set_visible (GTK_WIDGET (priv->enabled), TRUE);
 	gtk_toggle_button_set_active (priv->enabled, priv->initial_have_8021x);
 	g_signal_connect (priv->enabled, "toggled", G_CALLBACK (enable_toggled), self);
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->security), priv->initial_have_8021x);
