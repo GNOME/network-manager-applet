@@ -1,7 +1,7 @@
 AC_PREREQ([2.63])
 
 m4_define([nm_applet_major_version], [1])
-m4_define([nm_applet_minor_version], [22])
+m4_define([nm_applet_minor_version], [23])
 m4_define([nm_applet_micro_version], [0])
 m4_define([nm_applet_version],
           [nm_applet_major_version.nm_applet_minor_version.nm_applet_micro_version])
