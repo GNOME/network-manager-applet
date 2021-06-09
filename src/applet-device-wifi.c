@@ -462,10 +462,14 @@ wifi_new_auto_connection (NMDevice *device,
 
 	connection = nm_simple_connection_new ();
 
-	/* Make the new connection available only for the current user */
 	s_con = (NMSettingConnection *) nm_setting_connection_new ();
-	nm_setting_connection_add_permission (s_con, "user", g_get_user_name (), NULL);
 	nm_connection_add_setting (connection, NM_SETTING (s_con));
+
+	if (applet->permissions[NM_CLIENT_PERMISSION_SETTINGS_MODIFY_SYSTEM]
+	    != NM_CLIENT_PERMISSION_RESULT_YES) {
+		/* Make the new connection available only for the current user */
+		nm_setting_connection_add_permission (s_con, "user", g_get_user_name (), NULL);
+	}
 
 	ssid = nm_access_point_get_ssid (ap);
 	if (   (nm_access_point_get_mode (ap) == NM_802_11_MODE_INFRA)
