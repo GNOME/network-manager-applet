@@ -3173,8 +3173,18 @@ status_icon_size_changed_cb (GtkStatusIcon *icon,
 	/* icon_size may be 0 if for example the panel hasn't given us any space
 	 * yet.  We'll get resized later, but for now just load the 16x16 icons.
 	 */
-	if (size > 0)
-		applet->icon_size = size;
+	if (size > 0) {
+		if (size < 22)
+			applet->icon_size = 16;
+		else if (size < 24)
+			applet->icon_size = 22;
+		else if (size < 32)
+			applet->icon_size = 24;
+		else if (size < 48)
+			applet->icon_size = 32;
+		else
+			applet->icon_size = size;
+	}
 	else {
 		applet->icon_size = 16;
 		g_warn_if_fail (size == 0);
