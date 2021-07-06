@@ -27,7 +27,7 @@ usage (const char *progname)
 	fprintf (stdout, "%s %s\n\n%s\n%s\n\n",
 	                 _("Usage:"),
 	                 basename,
-	                 _("This program is a component of NetworkManager (https://wiki.gnome.org/Projects/NetworkManager/)."),
+	                 _("This program is a component of NetworkManager (https://networkmanager.dev)."),
 	                 _("It is not intended for command-line interaction but instead runs in the GNOME desktop environment."));
 }
 
