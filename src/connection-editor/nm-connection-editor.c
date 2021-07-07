@@ -604,9 +604,9 @@ nm_connection_editor_get (NMConnection *connection)
 	return active_editors ? g_hash_table_lookup (active_editors, connection) : NULL;
 }
 
-/* Returns an editor for @slave's master, if any */
+/* Returns an editor for @port's controller, if any */
 NMConnectionEditor *
-nm_connection_editor_get_master (NMConnection *slave)
+nm_connection_editor_get_master (NMConnection *port)
 {
 	GHashTableIter iter;
 	gpointer connection, editor;
@@ -616,7 +616,7 @@ nm_connection_editor_get_master (NMConnection *slave)
 	if (!active_editors)
 		return NULL;
 
-	s_con = nm_connection_get_setting_connection (slave);
+	s_con = nm_connection_get_setting_connection (port);
 	master = nm_setting_connection_get_master (s_con);
 	if (!master)
 		return NULL;

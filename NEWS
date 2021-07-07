@@ -218,7 +218,7 @@ This is a new stable release of network-manager-applet.  Notable changes include
 * When activating a VPN connection, the routes to the VPN server are now
     added whichever device has a default route regardless of its kind.
 * The applet now lists the Wi-Fi network connection profiles even if they
-    are enslaved to another connection.
+    are ports for another connection.
 * Fixed a crash after editing a connection with 802.1x security setting.
 * Updated Italian, Spanish and Japanese translations.
 
@@ -327,8 +327,8 @@ are also present in network-manager-applet-1.2:
 * Connecting to a wireless network from the NetworkManager applet no longer
     results in an attempt to create system-wide connections.  This fixes the
     ability to connect to a wireless network for non-privileged user
-* The master interface name is used instead of master connection UUID for
-   slave connections created with nm-connection-editor.  This fixes
+* The controller interface name is used instead of controller connection UUID for
+   port connections created with nm-connection-editor.  This fixes
    compatibility of the ifcfg configuration files with the legacy network
    service
 * It is now possible to specify an interface name instead of a MAC address
@@ -366,7 +366,7 @@ This is a new stable release of network-manager-applet.  Notable changes include
 * Added support for VPN hints for new/additional secrets during connection
 * Added support for Data Center Bridging and FibreChannel over Ethernet configuration
 * Improved connections to new hidden WiFi networks
-* Allow slaves VLANs/slaves of more device types
+* Allow port VLANs/ports of more device types
 * Added support for changing password flags
 * Passwords/secrets now default to user-agent storage instead of system-wide storage
 * Added support for editing Team connections
