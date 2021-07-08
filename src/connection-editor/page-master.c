@@ -28,7 +28,7 @@ typedef struct {
 	GtkTreeModel *connections_model;
 	GtkButton *add, *edit, *delete;
 
-	GHashTable *new_slaves;  /* track whether some slave(s) were added */
+	GHashTable *new_slaves;  /* track whether some port(s) were added */
 
 } CEPageMasterPrivate;
 
@@ -218,8 +218,8 @@ check_new_slave_physical_port (CEPageMaster *self, NMConnection *conn)
 			continue;
 		if (dev == dev2) {
 			nm_connection_editor_warning (CE_PAGE (self)->parent_window,
-			                              _("Duplicate slaves"),
-			                              _("Slaves “%s” and “%s” both apply to device “%s”"),
+			                              _("Duplicate ports"),
+			                              _("Ports “%s” and “%s” both apply to device “%s”"),
 			                              nm_connection_get_id (conn),
 			                              nm_connection_get_id (conn2),
 			                              nm_device_get_iface (dev));
@@ -229,8 +229,8 @@ check_new_slave_physical_port (CEPageMaster *self, NMConnection *conn)
 		id2 = nm_device_get_physical_port_id (dev2);
 		if (self->aggregating && id && id2 && !strcmp (id, id2)) {
 			nm_connection_editor_warning (CE_PAGE (self)->parent_window,
-			                              _("Duplicate slaves"),
-			                              _("Slaves “%s” and “%s” apply to different virtual "
+			                              _("Duplicate ports"),
+			                              _("Ports “%s” and “%s” apply to different virtual "
 			                                "ports (“%s” and “%s”) of the same physical device."),
 			                              nm_connection_get_id (conn),
 			                              nm_connection_get_id (conn2),
@@ -345,7 +345,7 @@ add_connection (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
 	s_con = nm_connection_get_setting_connection (CE_PAGE (self)->connection);
 	master_type = nm_setting_connection_get_connection_type (s_con);
 
-	/* Mark the connection as a slave, and rename it. */
+	/* Mark the connection as a port, and rename it. */
 	s_con = nm_connection_get_setting_connection (connection);
 	g_assert (s_con != NULL);
 
@@ -354,7 +354,7 @@ add_connection (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
 		iface_name = nm_connection_get_interface_name (connection);
 	if (!iface_name || !nm_utils_is_valid_iface_name (iface_name, NULL))
 		iface_name = nm_connection_get_id (connection);
-	name = g_strdup_printf (_("%s slave %d"), iface_name,
+	name = g_strdup_printf (_("%s port %d"), iface_name,
 	                        gtk_tree_model_iter_n_children (priv->connections_model, NULL) + 1);
 
 	g_object_set (G_OBJECT (s_con),
@@ -490,7 +490,7 @@ populate_ui (CEPageMaster *self)
 	iface = nm_connection_get_interface_name (CE_PAGE (self)->connection);
 	gtk_entry_set_text (priv->interface_name, iface ? iface : "");
 
-	/* Slave connections */
+	/* Port connections */
 	connections = nm_client_get_connections (CE_PAGE (self)->client);
 	for (i = 0; i < connections->len; i++)
 		connection_added (CE_PAGE (self)->client, connections->pdata[i], self);
@@ -558,7 +558,7 @@ ui_to_setting (CEPageMaster *self)
 		interface_name = NULL;
 	g_object_set (s_con, "interface-name", interface_name, NULL);
 
-	/* Slaves are updated as they're edited, so nothing to do */
+	/* Ports are updated as they're edited, so nothing to do */
 }
 
 static gboolean
@@ -566,7 +566,7 @@ ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 {
 	CEPageMaster *self = CE_PAGE_MASTER (page);
 
-	/* We don't need to recursively check that the slaves connections
+	/* We don't need to recursively check that the ports connections
 	 * are valid because they can't end up in the table if they're not.
 	 */
 
@@ -585,12 +585,12 @@ last_update (CEPage *page, NMConnection *connection, GError **error)
 	NMSettingConnection *s_con;
 	GtkTreeIter iter;
 
-	/* No new slave added - leave master property as it is. */
+	/* No new port added - leave master property as it is. */
 	if (g_hash_table_size (priv->new_slaves) == 0)
 		return TRUE;
 
 	/*
-	 * Set master property of all slaves to be the interface name.
+	 * Set master property of all  ports to be the interface name.
 	 * Even if UUID has the advantage of being stable and thus easier to use,
 	 * users may prefer using interface name instead.
 	*/
