@@ -149,8 +149,8 @@ general_private_init (CEPageGeneral *self)
 	priv->dependent_vpn_checkbox = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, "dependent_vpn_checkbox"));
 	priv->dependent_vpn = GTK_COMBO_BOX (gtk_builder_get_object (builder, "dependent_vpn_combo"));
 	priv->dependent_vpn_store = GTK_LIST_STORE (gtk_builder_get_object (builder, "dependent_vpn_model"));
-	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (priv->dependent_vpn_store), 0,
-	                                      GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID);
+	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (priv->dependent_vpn_store), COL_ID,
+	                                      GTK_SORT_ASCENDING);
 
 	priv->autoconnect = GTK_WIDGET (gtk_builder_get_object (builder, "connection_autoconnect"));
 	priv->autoconnect_prio = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "autoconnect_prio"));
