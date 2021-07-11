@@ -3,23 +3,21 @@
 # This file is distributed under the same license as the NetworkManager package.
 # Maxim Dziumanenko <dziumanenko@gmail.com>, 2005-2010.
 # Korostil Daniel <ted.korostiled@gmail.com>, 2011, 2012.
-# Yuri Chornoivan <yurchor@ukr.net>, 2020.
+# Yuri Chornoivan <yurchor@ukr.net>, 2020, 2021.
 msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
-"applet/\n"
-"POT-Creation-Date: 2021-07-05 11:47+0200\n"
-"PO-Revision-Date: 2020-09-17 14:11+0300\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/issues\n"
+"POT-Creation-Date: 2021-07-08 18:17+0000\n"
+"PO-Revision-Date: 2021-07-11 16:14+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
-"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Lokalize 20.11.70\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Lokalize 20.12.0\n"
 
 #: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3258
 msgid "Network"
@@ -28,6 +26,10 @@ msgstr "Мережа"
 #: nm-applet.desktop.in:4
 msgid "Manage your network connections"
 msgstr "Організуйте ваші мережеві з'єднання"
+
+#: nm-applet.desktop.in:5
+msgid "nm-device-wireless"
+msgstr "nm-device-wireless"
 
 #: nm-connection-editor.appdata.xml.in:7
 msgid "NetworkManager"
@@ -64,6 +66,10 @@ msgstr "Додаткові налаштування мережі"
 #: nm-connection-editor.desktop.in:4
 msgid "Manage and change your network connection settings"
 msgstr "Керування параметрами мережних з'єднань"
+
+#: nm-connection-editor.desktop.in:5
+msgid "preferences-system-network"
+msgstr "preferences-system-network"
 
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
@@ -1198,13 +1204,12 @@ msgid "_Primary"
 msgstr "_Первинний"
 
 #: src/connection-editor/ce-page-bond.ui:495
-#, fuzzy
 msgid ""
 "The interface name of the primary device. If set, this device will always be "
 "the active port when it is available."
 msgstr ""
 "Назва інтерфейсу первинного пристрою. Якщо встановлено, цей пристрій завжди "
-"буде активним підлеглим, якщо він є доступним."
+"буде активним портом, якщо він є доступним."
 
 #: src/connection-editor/ce-page-bond.ui:507
 #: src/connection-editor/ce-page-ethernet.ui:188
@@ -2132,9 +2137,10 @@ msgid "C_KN"
 msgstr "C_KN"
 
 #: src/connection-editor/ce-page-macsec.ui:206
-msgid " The pre-shared Connectivity-association Key Name"
+#| msgid " The pre-shared Connectivity-association Key Name"
+msgid "The pre-shared Connectivity-association Key Name"
 msgstr ""
-" Назва попередньо поширеного ключа прив'язки з'єднання (Connectivity "
+"Назва попередньо поширеного ключа прив'язки з'єднання (Connectivity "
 "Association Key)"
 
 #: src/connection-editor/ce-page-macsec.ui:217
@@ -3914,29 +3920,29 @@ msgstr "З'єднання MACSEC %d"
 
 #: src/connection-editor/page-master.c:221
 #: src/connection-editor/page-master.c:232
-#, fuzzy
 msgid "Duplicate ports"
-msgstr "Дублювання підлеглих"
+msgstr "Дублювання портів"
 
 #: src/connection-editor/page-master.c:222
-#, fuzzy, c-format
+#, c-format
 msgid "Ports “%s” and “%s” both apply to device “%s”"
 msgstr ""
-"Параметри підлеглих з'єднань «%s» і «%s» застосовуються до пристрою «%s»"
+"Порти «%s» і «%s» застосовуються одночасно до пристрою «%s»"
 
 #: src/connection-editor/page-master.c:233
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Ports “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
 "same physical device."
 msgstr ""
-"Параметри підлеглих з'єднань «%s» і «%s» застосовуються до різних "
+"Порти «%s» і «%s» застосовуються до різних "
 "віртуальних портів («%s» та «%s») одного фізичного пристрою."
 
 #: src/connection-editor/page-master.c:357
 #, c-format
 msgid "%s port %d"
 msgstr ""
+"%s, порт %d"
 
 #: src/connection-editor/page-mobile.c:297
 msgid "Could not load mobile broadband user interface."
@@ -4274,12 +4280,13 @@ msgid "Usage:"
 msgstr "Використання:"
 
 #: src/main.c:30
+#| msgid ""
+#| "This program is a component of NetworkManager (https://wiki.gnome.org/"
+#| "Projects/NetworkManager/)."
 msgid ""
-"This program is a component of NetworkManager (https://wiki.gnome.org/"
-"Projects/NetworkManager/)."
+"This program is a component of NetworkManager (https://networkmanager.dev)."
 msgstr ""
-"Ця програма є частиною NetworkManager (https://wiki.gnome.org/Projects/"
-"NetworkManager/)."
+"Ця програма є частиною NetworkManager (https://networkmanager.dev)."
 
 #: src/main.c:31
 msgid ""
@@ -4404,12 +4411,6 @@ msgstr "сертифікати PEM (*.pem, *.crt, *.cer)"
 #: src/utils/utils.c:546
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "закриті ключів DER, PEM або PKCS#12 (*.der, *.pem, *.p12, *.key)"
-
-#~ msgid "nm-device-wireless"
-#~ msgstr "nm-device-wireless"
-
-#~ msgid "preferences-system-network"
-#~ msgstr "preferences-system-network"
 
 #~ msgid "missing EAP-FAST PAC file"
 #~ msgstr "не вказано файла PAC EAP-FAST"
@@ -4558,14 +4559,12 @@ msgstr "закриті ключів DER, PEM або PKCS#12 (*.der, *.pem, *.p12
 #~ msgid "missing wep-key"
 #~ msgstr "не вказано wep-key"
 
-#, c-format
 #~ msgid ""
 #~ "invalid wep-key: key with a length of %zu must contain only hex-digits"
 #~ msgstr ""
 #~ "некоректний ключ WEP: ключ довжини %zu має складатися лише із "
 #~ "шістнадцяткових цифр"
 
-#, c-format
 #~ msgid ""
 #~ "invalid wep-key: key with a length of %zu must contain only ascii "
 #~ "characters"
@@ -4573,7 +4572,6 @@ msgstr "закриті ключів DER, PEM або PKCS#12 (*.der, *.pem, *.p12
 #~ "некоректний ключ WEP: ключ довжини %zu має складатися лише із символів "
 #~ "ASCII"
 
-#, c-format
 #~ msgid ""
 #~ "invalid wep-key: wrong key length %zu. A key must be either of length "
 #~ "5/13 (ascii) or 10/26 (hex)"
@@ -4606,7 +4604,6 @@ msgstr "закриті ключів DER, PEM або PKCS#12 (*.der, *.pem, *.p12
 #~ msgid "WEP inde_x"
 #~ msgstr "_Індекс WEP"
 
-#, c-format
 #~ msgid ""
 #~ "invalid wpa-psk: invalid key-length %zu. Must be [8,63] bytes or 64 hex "
 #~ "digits"
