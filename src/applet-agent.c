@@ -264,6 +264,7 @@ keyring_find_secrets_cb (GObject *source,
 	GError *search_error = NULL;
 	const char *connection_id = NULL;
 	GVariantBuilder builder_setting, builder_connection;
+	GVariantBuilder *wg_peers_builder = NULL;
 	GVariant *settings = NULL;
 	GList *list = NULL;
 	GList *iter;
@@ -329,8 +330,34 @@ keyring_find_secrets_cb (GObject *source,
 				continue;
 			}
 
-			g_variant_builder_add (&builder_setting, "{sv}", key_name,
-			                       g_variant_new_string (secret_value_get (secret, NULL)));
+			if (   nm_streq0 (r->setting_name, NM_SETTING_WIREGUARD_SETTING_NAME)
+			    && g_str_has_prefix (key_name, NM_SETTING_WIREGUARD_PEERS ".")
+			    && g_str_has_suffix (&key_name[NM_STRLEN(NM_SETTING_WIREGUARD_PEERS ".")],
+			                         "." NM_WIREGUARD_PEER_ATTR_PRESHARED_KEY)) {
+				GVariantBuilder peer_builder;
+				char *public_key = NULL;
+
+				if (!wg_peers_builder)
+					wg_peers_builder = g_variant_builder_new (G_VARIANT_TYPE ("aa{sv}"));
+
+				public_key = g_strndup (key_name + NM_STRLEN (NM_SETTING_WIREGUARD_PEERS "."),
+				                        strlen (key_name)
+				                        - NM_STRLEN (NM_SETTING_WIREGUARD_PEERS ".")
+				                        - NM_STRLEN ("." NM_WIREGUARD_PEER_ATTR_PRESHARED_KEY));
+
+				g_variant_builder_init (&peer_builder, G_VARIANT_TYPE ("a{sv}"));
+				g_variant_builder_add (&peer_builder, "{sv}",
+				                       NM_WIREGUARD_PEER_ATTR_PUBLIC_KEY,
+				                       g_variant_new_take_string (public_key));
+				g_variant_builder_add (&peer_builder, "{sv}",
+				                       NM_WIREGUARD_PEER_ATTR_PRESHARED_KEY,
+				                       g_variant_new_string (secret_value_get (secret, NULL)));
+				g_variant_builder_add_value (wg_peers_builder, g_variant_builder_end (&peer_builder));
+
+			} else {
+				g_variant_builder_add (&builder_setting, "{sv}", key_name,
+				                       g_variant_new_string (secret_value_get (secret, NULL)));
+			}
 
 			/* See if this property matches a given hint */
 			if (r->hints && r->hints[0]) {
@@ -340,8 +367,14 @@ keyring_find_secrets_cb (GObject *source,
 
 			g_hash_table_unref (attributes);
 			secret_value_unref (secret);
-			break;
 		}
+	}
+
+	if (wg_peers_builder) {
+		g_variant_builder_add (&builder_setting, "{sv}",
+		                       NM_SETTING_WIREGUARD_PEERS,
+		                       g_variant_builder_end (wg_peers_builder));
+		g_variant_builder_unref (wg_peers_builder);
 	}
 
 	/* If there were hints, and none of the hints were returned by the keyring,
@@ -640,6 +673,26 @@ write_one_secret_to_keyring (NMSetting *setting,
 	Request *r = user_data;
 	GType type = G_VALUE_TYPE (value);
 	const char *secret;
+
+	if (NM_IS_SETTING_WIREGUARD (setting) && nm_streq0 (key, NM_SETTING_WIREGUARD_PEERS)) {
+		NMSettingWireGuard *s_wg = NM_SETTING_WIREGUARD (setting);
+		NMWireGuardPeer *peer;
+		char *peer_key;
+		guint i, len;
+
+		len = nm_setting_wireguard_get_peers_len (s_wg);
+		for (i = 0; i < len; i++) {
+			peer = nm_setting_wireguard_get_peer (s_wg, i);
+			secret = nm_wireguard_peer_get_preshared_key (peer);
+			if (secret && secret[0]) {
+				peer_key = g_strdup_printf (NM_SETTING_WIREGUARD_PEERS ".%s." NM_WIREGUARD_PEER_ATTR_PRESHARED_KEY,
+				                            nm_wireguard_peer_get_public_key (peer));
+				save_one_secret (r, setting, peer_key, secret, NULL);
+				g_free (peer_key);
+			}
+		}
+		return;
+	}
 
 	/* Non-secrets obviously don't get saved in the keyring */
 	if (!(flags & NM_SETTING_PARAM_SECRET))
