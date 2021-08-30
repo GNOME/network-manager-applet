@@ -9,22 +9,22 @@
 # Gladys Guerrero  <gguerrer@redhat.com>, 2010.
 # Jorge González <jorgegonz@svn.gnome.org>, 2007, 2008, 2009, 2010, 2011.
 # Rodrigo Lledó <rodhos92@gmail.com>, 2019.
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2010-2020.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2010-2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: networkmanager-applet.master\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
-"applet/\n"
-"POT-Creation-Date: 2021-07-05 11:47+0200\n"
-"PO-Revision-Date: 2020-05-14 17:16+0200\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
+"issues\n"
+"POT-Creation-Date: 2021-08-26 08:50+0000\n"
+"PO-Revision-Date: 2021-08-30 07:56+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
-"Language: es\n"
+"Language: es_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Gtranslator 3.36.0\n"
+"X-Generator: Gtranslator 40.0\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3258
@@ -34,6 +34,10 @@ msgstr "Red"
 #: nm-applet.desktop.in:4
 msgid "Manage your network connections"
 msgstr "Gestione sus conexiones de red"
+
+#: nm-applet.desktop.in:5
+msgid "nm-device-wireless"
+msgstr "nm-device-wireless"
 
 #: nm-connection-editor.appdata.xml.in:7
 msgid "NetworkManager"
@@ -70,6 +74,10 @@ msgstr "Configuración de red avanzada"
 #: nm-connection-editor.desktop.in:4
 msgid "Manage and change your network connection settings"
 msgstr "Gestione y cambie sus ajustes de la conexión de red"
+
+#: nm-connection-editor.desktop.in:5
+msgid "preferences-system-network"
+msgstr "preferences-system-network"
 
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
@@ -1203,13 +1211,12 @@ msgid "_Primary"
 msgstr "_Primario"
 
 #: src/connection-editor/ce-page-bond.ui:495
-#, fuzzy
 msgid ""
 "The interface name of the primary device. If set, this device will always be "
 "the active port when it is available."
 msgstr ""
 "El nombre de la interfaz del dispositivo primario. Si está establecido, este "
-"dispositivo siempre será el esclavo activo cuando esté disponible."
+"dispositivo siempre será el puerto activo cuando esté disponible."
 
 #: src/connection-editor/ce-page-bond.ui:507
 #: src/connection-editor/ce-page-ethernet.ui:188
@@ -2037,6 +2044,13 @@ msgid ""
 "also unset, use the kernel default value read from file \"/proc/sys/net/ipv6/"
 "conf/default/use_tempaddr\""
 msgstr ""
+"Si está activado, hace que el kernel genere una dirección IPv6 temporal "
+"además de la pública generada a partir de la dirección MAC. Esto mejora la "
+"privacidad, pero podría causar problemas en algunas aplicaciones. Si se "
+"establece en «Predeterminado», se utiliza el valor de la configuración "
+"global de NetworkManager. Si eso tampoco está definido, se usa el valor "
+"predeterminado del kernel leído del archivo «/proc/sys/net/ipv6/conf/default/"
+"use_tempaddr»"
 
 #: src/connection-editor/ce-page-ip6.ui:323
 msgid "IPv6 address _generation mode"
@@ -2130,8 +2144,8 @@ msgid "C_KN"
 msgstr "C_KN"
 
 #: src/connection-editor/ce-page-macsec.ui:206
-msgid " The pre-shared Connectivity-association Key Name"
-msgstr " El nombre de clave de asociación de conectividad pre-compartido"
+msgid "The pre-shared Connectivity-association Key Name"
+msgstr "El nombre de clave de asociación de conectividad pre-compartido"
 
 #: src/connection-editor/ce-page-macsec.ui:217
 msgid "Parameters"
@@ -2926,6 +2940,8 @@ msgstr ""
 msgid ""
 "An endpoint IP or hostname, followed by a colon, and then a port number."
 msgstr ""
+"Una IP de extremo o un nombre de anfitrión, seguido de dos puntos y luego un "
+"número de puerto."
 
 #: src/connection-editor/ce-page-wireguard.ui:264
 msgid ""
@@ -2934,6 +2950,10 @@ msgid ""
 "into the already existing public-key cryptography, for post-quantum "
 "resistance."
 msgstr ""
+"Una clave precompartida base64 generada por «wg genpsk». Opcional y puede "
+"omitirse. Agrega una capa adicional de criptografía de clave simétrica para "
+"ser mezclada con la criptografía de clave pública ya existente, para una "
+"resistencia post-cuántica."
 
 #: src/connection-editor/ce-page-wireguard.ui:280
 msgid ""
@@ -2941,6 +2961,9 @@ msgid ""
 "of keeping a stateful firewall or NAT mapping valid. This is optional and "
 "not recommended outside of specific setups."
 msgstr ""
+"Con qué frecuencia enviar un paquete vacío autenticado al par con el fin de "
+"mantener válido un firewall con estado o un mapeo NAT. Esto es opcional y no "
+"se recomienda fuera de configuraciones específicas."
 
 #: src/connection-editor/ce-page-wireguard.ui:297
 msgid "seconds"
@@ -2986,11 +3009,15 @@ msgstr "Añadir _rutas de pares"
 msgid ""
 "Whether to automatically add routes for the AllowedIPs ranges of the peers"
 msgstr ""
+"Indica si agregar automáticamente rutas para los rangos de IP permitidos de "
+"los pares"
 
 #: src/connection-editor/ce-page-wireguard.ui:543
 msgid ""
 "A 32-bit fwmark for outgoing packets. Leave it to 'off' to disable fwmark."
 msgstr ""
+"Un fwmark de 32 bits para paquetes salientes. Déjelo en «desactivado» para "
+"desactivar fwmark."
 
 #: src/connection-editor/ce-page-wireguard.ui:554
 msgid "_Show private key"
@@ -3884,28 +3911,27 @@ msgstr "Conexión MACSEC %d"
 
 #: src/connection-editor/page-master.c:221
 #: src/connection-editor/page-master.c:232
-#, fuzzy
 msgid "Duplicate ports"
-msgstr "Esclavos duplicados"
+msgstr "Puertos duplicados"
 
 #: src/connection-editor/page-master.c:222
-#, fuzzy, c-format
+#, c-format
 msgid "Ports “%s” and “%s” both apply to device “%s”"
-msgstr "Los esclavos «%s» y «%s» se aplican al dispositivo «%s»"
+msgstr "Los puertos «%s» y «%s» se aplican al dispositivo «%s»"
 
 #: src/connection-editor/page-master.c:233
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Ports “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
 "same physical device."
 msgstr ""
-"Los esclavos «%s» y «%s» se aplican a puertos virtuales diferentes («%s» y "
+"Los puertos «%s» y «%s» se aplican a puertos virtuales diferentes («%s» y "
 "«%s») del mismo dispositivo físico."
 
 #: src/connection-editor/page-master.c:357
 #, c-format
 msgid "%s port %d"
-msgstr ""
+msgstr "%s puerto %d"
 
 #: src/connection-editor/page-mobile.c:297
 msgid "Could not load mobile broadband user interface."
@@ -4104,7 +4130,7 @@ msgstr "WPA3 personal"
 
 #: src/connection-editor/page-wifi-security.c:431
 msgid "Enhanced Open"
-msgstr ""
+msgstr "Abrir mejorado"
 
 #: src/connection-editor/page-wifi-security.c:476
 msgid "Could not load Wi-Fi security user interface; missing Wi-Fi setting."
@@ -4240,11 +4266,10 @@ msgstr "Uso:"
 
 #: src/main.c:30
 msgid ""
-"This program is a component of NetworkManager (https://wiki.gnome.org/"
-"Projects/NetworkManager/)."
+"This program is a component of NetworkManager (https://networkmanager.dev)."
 msgstr ""
-"Este programa es un componente de NetworkManager (https://wiki.gnome.org/"
-"Projects/NetworkManager/)."
+"Este programa es un componente de NetworkManager (https://networkmanager."
+"dev)."
 
 #: src/main.c:31
 msgid ""
@@ -4369,12 +4394,6 @@ msgstr "Certificados PEM (*.pem, *.crt, *.cer)"
 #: src/utils/utils.c:546
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "Claves privadas DER, PEM, o PKCS#12 (*.der, *.pem, *.p12, *.key)"
-
-#~ msgid "nm-device-wireless"
-#~ msgstr "nm-device-wireless"
-
-#~ msgid "preferences-system-network"
-#~ msgstr "preferences-system-network"
 
 #~ msgid "missing EAP-FAST PAC file"
 #~ msgstr "falta el archivo PAC de EAP-LEAP"
@@ -4523,14 +4542,12 @@ msgstr "Claves privadas DER, PEM, o PKCS#12 (*.der, *.pem, *.p12, *.key)"
 #~ msgid "missing wep-key"
 #~ msgstr "falta la clave wep"
 
-#, c-format
 #~ msgid ""
 #~ "invalid wep-key: key with a length of %zu must contain only hex-digits"
 #~ msgstr ""
 #~ "clave wep no válida: una clave con longitud %zu sólo debe contener "
 #~ "dígitos hexadecimales"
 
-#, c-format
 #~ msgid ""
 #~ "invalid wep-key: key with a length of %zu must contain only ascii "
 #~ "characters"
@@ -4538,7 +4555,6 @@ msgstr "Claves privadas DER, PEM, o PKCS#12 (*.der, *.pem, *.p12, *.key)"
 #~ "clave wep no válida: una clave con longitud %zu sólo debe contener "
 #~ "caracteres ASCII"
 
-#, c-format
 #~ msgid ""
 #~ "invalid wep-key: wrong key length %zu. A key must be either of length "
 #~ "5/13 (ascii) or 10/26 (hex)"
@@ -4571,7 +4587,6 @@ msgstr "Claves privadas DER, PEM, o PKCS#12 (*.der, *.pem, *.p12, *.key)"
 #~ msgid "WEP inde_x"
 #~ msgstr "Ín_dice WEP"
 
-#, c-format
 #~ msgid ""
 #~ "invalid wpa-psk: invalid key-length %zu. Must be [8,63] bytes or 64 hex "
 #~ "digits"
