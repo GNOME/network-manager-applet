@@ -814,6 +814,7 @@ wifi_add_menu_item (NMDevice *device,
 	GSList *menu_items = NULL;  /* All menu items we'll be adding */
 	NMNetworkMenuItem *item, *active_item = NULL;
 	GtkWidget *widget;
+	GtkWidget *subitem;
 
 	wdev = NM_DEVICE_WIFI (device);
 	aps = nm_device_wifi_get_access_points (wdev);
@@ -883,58 +884,29 @@ wifi_add_menu_item (NMDevice *device,
 	if (active_item)
 		menu_items = g_slist_remove (menu_items, active_item);
 
-	/* Sort all the rest of the menu items for the top-level menu */
-	menu_items = g_slist_sort (menu_items, sort_toplevel);
+	subitem = gtk_menu_item_new_with_mnemonic (_("_Available networks"));
 
 	if (g_slist_length (menu_items)) {
-		GSList *submenu_items = NULL;
-		GSList *topmenu_items = NULL;
-		guint32 num_for_toplevel = 5;
+		GtkWidget *submenu;
+		GSList *sorted_subitems;
 
-		applet_menu_item_add_complex_separator_helper (menu, applet, _("Available"));
+		submenu = gtk_menu_new ();
+		gtk_menu_item_set_submenu (GTK_MENU_ITEM (subitem), submenu);
 
-		if (g_slist_length (menu_items) == (num_for_toplevel + 1))
-			num_for_toplevel++;
+		/* Sort the subitems alphabetically and by importance */
+		sorted_subitems = g_slist_copy (menu_items);
+		sorted_subitems = g_slist_sort (sorted_subitems, sort_by_name);
+		sorted_subitems = g_slist_sort (sorted_subitems, sort_toplevel);
 
-		/* Add the first 5 APs (or 6 if there are only 6 total) from the sorted
-		 * toplevel list.
-		 */
-		for (iter = menu_items; iter && num_for_toplevel; iter = g_slist_next (iter)) {
-			topmenu_items = g_slist_append (topmenu_items, iter->data);
-			num_for_toplevel--;
-			submenu_items = iter->next;
-		}
-		topmenu_items = g_slist_sort (topmenu_items, sort_by_name);
+		/* Add menu items */
+		for (iter = sorted_subitems; iter; iter = g_slist_next (iter))
+			gtk_menu_shell_append (GTK_MENU_SHELL (submenu), GTK_WIDGET (iter->data));
+		g_slist_free (sorted_subitems);
+	} else
+		gtk_widget_set_sensitive (subitem, FALSE);
 
-		for (iter = topmenu_items; iter; iter = g_slist_next (iter)) {
-			gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (iter->data));
-			gtk_widget_show_all (GTK_WIDGET (iter->data));
-		}
-		g_slist_free (topmenu_items);
-		topmenu_items = NULL;
-
-		/* If there are any submenu items, make a submenu for those */
-		if (submenu_items) {
-			GtkWidget *subitem, *submenu;
-			GSList *sorted_subitems;
-
-			subitem = gtk_menu_item_new_with_mnemonic (_("More networks"));
-			submenu = gtk_menu_new ();
-			gtk_menu_item_set_submenu (GTK_MENU_ITEM (subitem), submenu);
-
-			/* Sort the subitems alphabetically */
-			sorted_subitems = g_slist_copy (submenu_items);
-			sorted_subitems = g_slist_sort (sorted_subitems, sort_by_name);
-
-			/* And add the rest to the submenu */
-			for (iter = sorted_subitems; iter; iter = g_slist_next (iter))
-				gtk_menu_shell_append (GTK_MENU_SHELL (submenu), GTK_WIDGET (iter->data));
-			g_slist_free (sorted_subitems);
-
-			gtk_menu_shell_append (GTK_MENU_SHELL (menu), subitem);
-			gtk_widget_show_all (subitem);
-		}
-	}
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), subitem);
+	gtk_widget_show_all (subitem);
 
 out:
 	g_slist_free (menu_items);
