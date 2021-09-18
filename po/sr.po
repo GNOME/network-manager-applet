@@ -1,19 +1,19 @@
 # Serbian translation of network-manager-applet
-# Courtesy of Prevod.org team (http://prevod.org/) -- 2004—2021.
+# Courtesy of Prevod.org team (http://prevod.org/) -- 2004–2021.
 # This file is distributed under the same license as the totem package.
 # Translators:
 # Filip Miletic
 # Данило Шеган
 # Милош Поповић <gpopac@gmail.com>, 2010.
-# Мирослав Николић <miroslavnikolic@rocketmail.com>, 2011—2021.
+# Мирослав Николић <miroslavnikolic@rocketmail.com>, 2011–2021.
 # Марко М. Костић <marko.m.kostic@gmail.com>, 2016.
 msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
-"applet/\n"
-"POT-Creation-Date: 2021-07-05 11:47+0200\n"
-"PO-Revision-Date: 2021-01-21 21:41+0200\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
+"issues\n"
+"POT-Creation-Date: 2021-09-09 16:52+0000\n"
+"PO-Revision-Date: 2021-09-18 21:18+0200\n"
 "Last-Translator: Мирослав Николић <miroslavnikolic@rocketmail.com>\n"
 "Language-Team: српски <gnome-sr@googlegroups.org>\n"
 "Language: sr\n"
@@ -31,6 +31,10 @@ msgstr "Мрежа"
 #: nm-applet.desktop.in:4
 msgid "Manage your network connections"
 msgstr "Управљајте вашим везама мреже"
+
+#: nm-applet.desktop.in:5
+msgid "nm-device-wireless"
+msgstr "nm-device-wireless"
 
 #: nm-connection-editor.appdata.xml.in:7
 msgid "NetworkManager"
@@ -67,6 +71,10 @@ msgstr "Напредно подешавање мреже"
 #: nm-connection-editor.desktop.in:4
 msgid "Manage and change your network connection settings"
 msgstr "Управљајте и измените подешавања ваших мрежних веза"
+
+#: nm-connection-editor.desktop.in:5
+msgid "preferences-system-network"
+msgstr "preferences-system-network"
 
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
@@ -1192,13 +1200,12 @@ msgid "_Primary"
 msgstr "_Примарни"
 
 #: src/connection-editor/ce-page-bond.ui:495
-#, fuzzy
 msgid ""
 "The interface name of the primary device. If set, this device will always be "
 "the active port when it is available."
 msgstr ""
 "Назив сучеља примарног уређаја. Ако је постављено, овај уређај ће увек бити "
-"активан споредни када је доступан."
+"активан прикључник када је доступан."
 
 #: src/connection-editor/ce-page-bond.ui:507
 #: src/connection-editor/ce-page-ethernet.ui:188
@@ -2112,8 +2119,9 @@ msgid "C_KN"
 msgstr "Н_КП"
 
 #: src/connection-editor/ce-page-macsec.ui:206
-msgid " The pre-shared Connectivity-association Key Name"
-msgstr " Пред-дељени назив кључа придруживања повезивости"
+#| msgid " The pre-shared Connectivity-association Key Name"
+msgid "The pre-shared Connectivity-association Key Name"
+msgstr "Пред-дељени назив кључа придруживања повезивости"
 
 #: src/connection-editor/ce-page-macsec.ui:217
 msgid "Parameters"
@@ -3875,28 +3883,27 @@ msgstr "МАКСЕЦ веза %d"
 
 #: src/connection-editor/page-master.c:221
 #: src/connection-editor/page-master.c:232
-#, fuzzy
 msgid "Duplicate ports"
-msgstr "Умножи подређене"
+msgstr "Умножи прикључнике"
 
 #: src/connection-editor/page-master.c:222
-#, fuzzy, c-format
+#, c-format
 msgid "Ports “%s” and “%s” both apply to device “%s”"
-msgstr "Оба подређена „%s“ и „%s“ се примењују на уређај „%s“"
+msgstr "Оба прикључника „%s“ и „%s“ се примењују на уређај „%s“"
 
 #: src/connection-editor/page-master.c:233
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Ports “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
 "same physical device."
 msgstr ""
-"Подређени „%s“ и „%s“ се примењују на различите виртуелне портове („%s“ и "
-"„%s“) истог физичког уређаја."
+"Прикључници „%s“ и „%s“ се примењују на различите виртуелне прикључнике („%s“"
+" и „%s“) истог физичког уређаја."
 
 #: src/connection-editor/page-master.c:357
 #, c-format
 msgid "%s port %d"
-msgstr ""
+msgstr "%s прикључник %d"
 
 #: src/connection-editor/page-mobile.c:297
 msgid "Could not load mobile broadband user interface."
@@ -4229,12 +4236,12 @@ msgid "Usage:"
 msgstr "Употреба:"
 
 #: src/main.c:30
+#| msgid ""
+#| "This program is a component of NetworkManager (https://wiki.gnome.org/"
+#| "Projects/NetworkManager/)."
 msgid ""
-"This program is a component of NetworkManager (https://wiki.gnome.org/"
-"Projects/NetworkManager/)."
-msgstr ""
-"Овај програм је део Управника мреже (https://wiki.gnome.org/Projects/"
-"NetworkManager/)."
+"This program is a component of NetworkManager (https://networkmanager.dev)."
+msgstr "Овај програм је део Управника мреже (https://networkmanager.dev)."
 
 #: src/main.c:31
 msgid ""
@@ -4359,12 +4366,6 @@ msgstr "ПЕМ уверења (*.pem, *.crt, *.cer)"
 #: src/utils/utils.c:546
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "ДЕР, ПЕМ, или ПКЦС#12 лични кључеви (*.der, *.pem, *.p12, *.key)"
-
-#~ msgid "nm-device-wireless"
-#~ msgstr "nm-device-wireless"
-
-#~ msgid "preferences-system-network"
-#~ msgstr "preferences-system-network"
 
 #~ msgid "missing EAP-FAST PAC file"
 #~ msgstr "недостаје ЕАП-ФАСТ ПАЦ датотека"
