@@ -8,10 +8,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet master\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
-"applet/\n"
-"POT-Creation-Date: 2021-07-05 11:47+0200\n"
-"PO-Revision-Date: 2020-10-04 17:16+0700\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
+"issues\n"
+"POT-Creation-Date: 2021-09-09 16:52+0000\n"
+"PO-Revision-Date: 2021-09-20 23:04+0700\n"
 "Last-Translator: Andika Triwidada <andika@gmail.com>\n"
 "Language-Team: Indonesian <gnome@i15n.org>\n"
 "Language: id\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n!=1;\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 2.4.1\n"
+"X-Generator: Poedit 2.4.2\n"
 
 #: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3258
 msgid "Network"
@@ -29,6 +29,10 @@ msgstr "Jaringan"
 #: nm-applet.desktop.in:4
 msgid "Manage your network connections"
 msgstr "Mengelola koneksi jaringan Anda"
+
+#: nm-applet.desktop.in:5
+msgid "nm-device-wireless"
+msgstr "nm-device-wireless"
 
 #: nm-connection-editor.appdata.xml.in:7
 msgid "NetworkManager"
@@ -65,6 +69,10 @@ msgstr "Konfigurasi Jaringan Tingkat Lanjut"
 #: nm-connection-editor.desktop.in:4
 msgid "Manage and change your network connection settings"
 msgstr "Kelola dan ubah tatanan koneksi jaringan Anda"
+
+#: nm-connection-editor.desktop.in:5
+msgid "preferences-system-network"
+msgstr "preferences-system-network"
 
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
@@ -615,7 +623,7 @@ msgstr "Situs Web NetworkManager"
 msgid "translator-credits"
 msgstr ""
 "Kukuh Syafaat <kukuhsyafaat@gnome.org>, 2017, 2018.\n"
-"Andika Triwidada <andika@gmail.com>, 2018-2020."
+"Andika Triwidada <andika@gmail.com>, 2018-2021."
 
 #: src/applet-dialogs.c:1147
 msgid ""
@@ -1188,13 +1196,12 @@ msgid "_Primary"
 msgstr "_Primer"
 
 #: src/connection-editor/ce-page-bond.ui:495
-#, fuzzy
 msgid ""
 "The interface name of the primary device. If set, this device will always be "
 "the active port when it is available."
 msgstr ""
 "Nama antar muka dari perangkat primer. Bila diisi, perangkat ini akan selalu "
-"menjadi slave aktif ketika tersedia."
+"menjadi port aktif ketika tersedia."
 
 #: src/connection-editor/ce-page-bond.ui:507
 #: src/connection-editor/ce-page-ethernet.ui:188
@@ -2112,8 +2119,8 @@ msgid "C_KN"
 msgstr "C_KN"
 
 #: src/connection-editor/ce-page-macsec.ui:206
-msgid " The pre-shared Connectivity-association Key Name"
-msgstr " Nama Kunci Konektivitas-asosiasi pre-shared"
+msgid "The pre-shared Connectivity-association Key Name"
+msgstr "Nama Kunci Konektivitas-asosiasi pre-shared"
 
 #: src/connection-editor/ce-page-macsec.ui:217
 msgid "Parameters"
@@ -3876,28 +3883,27 @@ msgstr "Koneksi MACSEC %d"
 
 #: src/connection-editor/page-master.c:221
 #: src/connection-editor/page-master.c:232
-#, fuzzy
 msgid "Duplicate ports"
-msgstr "Slave duplikat"
+msgstr "Port duplikat"
 
 #: src/connection-editor/page-master.c:222
-#, fuzzy, c-format
+#, c-format
 msgid "Ports “%s” and “%s” both apply to device “%s”"
-msgstr "Slave \"%s\" dan \"%s\" keduanya berlaku bagi perangkat \"%s\""
+msgstr "Port \"%s\" dan \"%s\" keduanya berlaku bagi perangkat \"%s\""
 
 #: src/connection-editor/page-master.c:233
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Ports “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
 "same physical device."
 msgstr ""
-"Slave \"%s\" dan \"%s\" berlaku bagi port virtual yang berbeda (\"%s\" dan "
+"Port \"%s\" dan \"%s\" berlaku bagi port virtual yang berbeda (\"%s\" dan "
 "\"%s\") dari perangkat fisik yang sama."
 
 #: src/connection-editor/page-master.c:357
 #, c-format
 msgid "%s port %d"
-msgstr ""
+msgstr "%s port %d"
 
 #: src/connection-editor/page-mobile.c:297
 msgid "Could not load mobile broadband user interface."
@@ -4232,11 +4238,10 @@ msgstr "Penggunaan:"
 
 #: src/main.c:30
 msgid ""
-"This program is a component of NetworkManager (https://wiki.gnome.org/"
-"Projects/NetworkManager/)."
+"This program is a component of NetworkManager (https://networkmanager.dev)."
 msgstr ""
-"Program ini adalah komponen dari NetworkManager (https://wiki.gnome.org/"
-"Projects/NetworkManager/)."
+"Program ini adalah komponen dari NetworkManager (https://networkmanager."
+"dev/)."
 
 #: src/main.c:31
 msgid ""
@@ -4361,217 +4366,3 @@ msgstr "Sertifikat PEM  (*.pem, *.crt, *.cer)"
 #: src/utils/utils.c:546
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "Kunci privat DER, PEM, atau PKCS#12 (*.der, *.pem, *.p12, *.key)"
-
-#~ msgid "nm-device-wireless"
-#~ msgstr "nm-device-wireless"
-
-#~ msgid "preferences-system-network"
-#~ msgstr "preferences-system-network"
-
-#~ msgid "missing EAP-FAST PAC file"
-#~ msgstr "kurang berkas PAC EAP-FAST"
-
-#~ msgid "GTC"
-#~ msgstr "GTC"
-
-#~ msgid "Choose a PAC file"
-#~ msgstr "Pilih suatu berkas PAC"
-
-#~ msgid "PAC files (*.pac)"
-#~ msgstr "Berkas PAC (*.pac)"
-
-#~ msgid "All files"
-#~ msgstr "Semua berkas"
-
-#~ msgid "Anonymous"
-#~ msgstr "Anonim"
-
-#~ msgid "Authenticated"
-#~ msgstr "Terautentikasi"
-
-#~ msgid "Both"
-#~ msgstr "Keduanya"
-
-#~ msgid "Anony_mous identity"
-#~ msgstr "Identitas anoni_m"
-
-#~ msgid "PAC _file"
-#~ msgstr "_Berkas PAC"
-
-#~ msgid "_Inner authentication"
-#~ msgstr "Otent_ikasi dalam"
-
-#~ msgid "Allow automatic PAC pro_visioning"
-#~ msgstr "Otomatis ijinkan pro_visi PAC"
-
-#~ msgid "missing EAP-LEAP username"
-#~ msgstr "kurang nama pengguna EAP-LEAP"
-
-#~ msgid "missing EAP-LEAP password"
-#~ msgstr "kurang sandi EAP-LEAP"
-
-#~ msgid "MD5"
-#~ msgstr "MD5"
-
-#~ msgid "Version 0"
-#~ msgstr "Versi 0"
-
-#~ msgid "Version 1"
-#~ msgstr "Versi 1"
-
-#~ msgid "No CA certificate is _required"
-#~ msgstr "Tak pe_rlu ada sertifikat CA"
-
-#~ msgid "PEAP _version"
-#~ msgstr "_Versi PEAP"
-
-#~ msgid "Suffix of the server certificate name."
-#~ msgstr "Akhiran nama sertifikat server."
-
-#~ msgid "_Domain"
-#~ msgstr "_Domain"
-
-#~ msgid "missing EAP username"
-#~ msgstr "kurang nama pengguna EAP"
-
-#~ msgid "missing EAP password"
-#~ msgstr "kurang sandi EAP"
-
-#~ msgid "missing EAP client Private Key passphrase"
-#~ msgstr "kurang frasa sandi Kunci Privat klien EAP"
-
-#~ msgid "P_rivate Key Passphrase"
-#~ msgstr "Frasa-kunci Kunci P_rivat"
-
-#~ msgid "Sh_ow passphrase"
-#~ msgstr "_Tampilkan sandi"
-
-#~ msgid "missing EAP-TLS identity"
-#~ msgstr "kurang identitas EAP-TLS"
-
-#~ msgid "no user certificate selected"
-#~ msgstr "tidak ada sertifikat pengguna yang dipilih"
-
-#~ msgid "selected user certificate file does not exist"
-#~ msgstr "berkas sertifikat pengguna yang dipilih tidak ada"
-
-#~ msgid "no key selected"
-#~ msgstr "tidak ada kunci yang dipilih"
-
-#~ msgid "selected key file does not exist"
-#~ msgstr "berkas kunci yang dipilih tidak ada"
-
-#~ msgid "I_dentity"
-#~ msgstr "I_dentitas"
-
-#~ msgid "MSCHAPv2 (no EAP)"
-#~ msgstr "MSCHAPv2 (tanpa EAP)"
-
-#~ msgid "undefined error in 802.1X security (wpa-eap)"
-#~ msgstr "galat tak terdefinisi dalam keamanan 802.1X (wpa-eap)"
-
-#~ msgid "no CA certificate selected"
-#~ msgstr "tidak ada sertifikat CA yang dipilih"
-
-#~ msgid "selected CA certificate file does not exist"
-#~ msgstr "berkas sertifikat CA yang dipilih tidak ada"
-
-#~ msgid "Unknown error validating 802.1X security"
-#~ msgstr "Galat tak diketahui saat memvalidasi keamanan 802.1X"
-
-#~ msgid "TLS"
-#~ msgstr "TLS"
-
-#~ msgid "PWD"
-#~ msgstr "PWD"
-
-#~ msgid "FAST"
-#~ msgstr "FAST"
-
-#~ msgid "Tunneled TLS"
-#~ msgstr "Tunneled TLS"
-
-#~ msgid "Protected EAP (PEAP)"
-#~ msgstr "Protected EAP (PEAP)"
-
-#~ msgid "Externally configured"
-#~ msgstr "Dikonfigurasi eksternal"
-
-#~ msgid "Au_thentication"
-#~ msgstr "O_tentikasi"
-
-#~ msgid "missing leap-username"
-#~ msgstr "kurang nama pengguna leap"
-
-#~ msgid "missing leap-password"
-#~ msgstr "kurang sandi leap"
-
-#~ msgid "missing password"
-#~ msgstr "kurang kata sandi"
-
-#~ msgid "_Type"
-#~ msgstr "_Jenis"
-
-#~ msgid "missing wep-key"
-#~ msgstr "kurang kunci wep"
-
-#, c-format
-#~ msgid ""
-#~ "invalid wep-key: key with a length of %zu must contain only hex-digits"
-#~ msgstr ""
-#~ "kunci wep tak valid: kunci dengan panjang %zu mesti hanya memuat dijit "
-#~ "heksa"
-
-#, c-format
-#~ msgid ""
-#~ "invalid wep-key: key with a length of %zu must contain only ascii "
-#~ "characters"
-#~ msgstr ""
-#~ "kunci wep tak valid: kunci dengan panjang %zu mesti hanya memuat karakter "
-#~ "ascii"
-
-#, c-format
-#~ msgid ""
-#~ "invalid wep-key: wrong key length %zu. A key must be either of length "
-#~ "5/13 (ascii) or 10/26 (hex)"
-#~ msgstr ""
-#~ "kunci wep tak valid: panjang kunci %zu salah. Suatu kunci mesti memiliki "
-#~ "panjang 5/13 (ascii) atau 10/26 (heksa)"
-
-#~ msgid "invalid wep-key: passphrase must be non-empty"
-#~ msgstr "wep-key tak valid: frasa sandi tak boleh kosong"
-
-#~ msgid "invalid wep-key: passphrase must be shorter than 64 characters"
-#~ msgstr ""
-#~ "kunci wep tak valid: frasa sandi mesti lebih pendek daripada 64 karakter"
-
-#~ msgid "Open System"
-#~ msgstr "Sistem Terbuka"
-
-#~ msgid "Shared Key"
-#~ msgstr "Kunci Bersama"
-
-#~ msgid "1 (Default)"
-#~ msgstr "1 (Bawaan)"
-
-#~ msgid "_Key"
-#~ msgstr "_Kunci"
-
-#~ msgid "Sho_w key"
-#~ msgstr "Tampilkan _kunci"
-
-#~ msgid "WEP inde_x"
-#~ msgstr "Inde_ks WEP"
-
-#, c-format
-#~ msgid ""
-#~ "invalid wpa-psk: invalid key-length %zu. Must be [8,63] bytes or 64 hex "
-#~ "digits"
-#~ msgstr ""
-#~ "wpa-psk tak valid: panjang kunci %zu tak valid. Mesti antara [8,63] byte "
-#~ "atau 64 heksa dijit"
-
-#~ msgid "invalid wpa-psk: cannot interpret key with 64 bytes as hex"
-#~ msgstr ""
-#~ "wpa-psk tak valid: tak bisa menginterpretasi kunci dengan 64 byte sebagai "
-#~ "heksa"
