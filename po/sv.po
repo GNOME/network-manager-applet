@@ -1,19 +1,20 @@
 # Swedish messages for NetworkManagerApplet.
-# Copyright © 2004-2020 Free Software Foundation, Inc.
+# Copyright © 2004-2021 Free Software Foundation, Inc.
 # Christian Rose <menthos@menthos.com>, 2004, 2005, 2006.
 # Daniel Nylander <po@danielnylander.se>, 2006, 2007, 2008, 2009, 2010, 2011, 2012.
 # Påvel Nicklasson <pavel@frimix.se>, 2014.
 # Mattias Eriksson <snaggen@gmail.com>, 2014.
-# Anders Jonsson <anders.jonsson@norsjovallen.se>, 2015, 2016, 2018, 2019, 2020.
+# Anders Jonsson <anders.jonsson@norsjovallen.se>, 2015, 2016, 2018, 2019, 2020, 2021.
 # Josef Andersson <l10nl18nsweja@gmail.com>, 2015, 2017, 2018.
+# Luna Jernberg <droidbittin@gmail.com>, 2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManagerApplet\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
-"applet/\n"
-"POT-Creation-Date: 2021-07-05 11:47+0200\n"
-"PO-Revision-Date: 2020-04-23 00:58+0200\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
+"issues\n"
+"POT-Creation-Date: 2021-09-11 17:43+0000\n"
+"PO-Revision-Date: 2021-09-26 13:37+0200\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -21,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 3.0\n"
 
 #: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3258
 msgid "Network"
@@ -30,6 +31,10 @@ msgstr "Nätverk"
 #: nm-applet.desktop.in:4
 msgid "Manage your network connections"
 msgstr "Hantera dina nätverksanslutningar"
+
+#: nm-applet.desktop.in:5
+msgid "nm-device-wireless"
+msgstr "nm-device-wireless"
 
 #: nm-connection-editor.appdata.xml.in:7
 msgid "NetworkManager"
@@ -66,6 +71,10 @@ msgstr "Avancerad nätverkskonfiguration"
 #: nm-connection-editor.desktop.in:4
 msgid "Manage and change your network connection settings"
 msgstr "Hantera och ändra inställningar för dina nätverksanslutningar"
+
+#: nm-connection-editor.desktop.in:5
+msgid "preferences-system-network"
+msgstr "preferences-system-network"
 
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
@@ -1204,13 +1213,12 @@ msgid "_Primary"
 msgstr "_Primär"
 
 #: src/connection-editor/ce-page-bond.ui:495
-#, fuzzy
 msgid ""
 "The interface name of the primary device. If set, this device will always be "
 "the active port when it is available."
 msgstr ""
 "Gränssnittsnamnet på den primära enheten. Om inställt, kommer enheten alltid "
-"att vara den aktiva slaven när den är tillgänglig."
+"att vara den aktiva porten när den är tillgänglig."
 
 #: src/connection-editor/ce-page-bond.ui:507
 #: src/connection-editor/ce-page-ethernet.ui:188
@@ -1562,7 +1570,7 @@ msgstr "_Tjänst"
 
 #: src/connection-editor/ce-page-dsl.ui:71
 msgid "Sho_w password"
-msgstr "Vi_sa lösenord"
+msgstr "Vis_a lösenord"
 
 #: src/connection-editor/ce-page-dsl.ui:89
 msgid "Password used to authenticate with the PPPoE service."
@@ -1994,7 +2002,7 @@ msgstr "Inaktiverad"
 
 #: src/connection-editor/ce-page-ip6.ui:41
 msgid "Enabled (prefer public address)"
-msgstr "Aktiverad (föredra publik adress)"
+msgstr "Aktiverad (föredra öppen adress)"
 
 #: src/connection-editor/ce-page-ip6.ui:44
 msgid "Enabled (prefer temporary address)"
@@ -2032,6 +2040,12 @@ msgid ""
 "also unset, use the kernel default value read from file \"/proc/sys/net/ipv6/"
 "conf/default/use_tempaddr\""
 msgstr ""
+"Om aktiverad får det kärnan att generera en tillfällig IPv6-adress utöver "
+"den öppna som genereras från MAC-adressen. Detta ökar sekretessen, men kan "
+"orsaka problem i vissa program. Om satt till ”Standard” används värdet från "
+"Nätverkshanterares globala konfiguration. Om det också är osatt, använd "
+"kärnans standardvärde, läst från filen ”/proc/sys/net/ipv6/conf/default/"
+"use_tempaddr”"
 
 #: src/connection-editor/ce-page-ip6.ui:323
 msgid "IPv6 address _generation mode"
@@ -2118,15 +2132,15 @@ msgstr "C_AK"
 
 #: src/connection-editor/ce-page-macsec.ui:181
 msgid "The pre-shared Connectivity Association Key"
-msgstr "Fördelad Connectivity-association Key"
+msgstr "Förutdelad Connectivity-association Key"
 
 #: src/connection-editor/ce-page-macsec.ui:193
 msgid "C_KN"
 msgstr "C_KN"
 
 #: src/connection-editor/ce-page-macsec.ui:206
-msgid " The pre-shared Connectivity-association Key Name"
-msgstr " Fördelat namn för Connectivity-association Key"
+msgid "The pre-shared Connectivity-association Key Name"
+msgstr "Namn för förutdelad Connectivity-association Key"
 
 #: src/connection-editor/ce-page-macsec.ui:217
 msgid "Parameters"
@@ -2191,7 +2205,7 @@ msgstr "Tillåt _roaming om hemnätverket inte finns tillgängligt"
 
 #: src/connection-editor/ce-page-mobile.ui:303
 msgid "Sho_w passwords"
-msgstr "Visa _lösenord"
+msgstr "Vis_a lösenord"
 
 #: src/connection-editor/ce-page-ppp.ui:24
 msgid "Authentication"
@@ -2871,39 +2885,37 @@ msgid "SS_ID"
 msgstr "SS_ID"
 
 #: src/connection-editor/ce-page-wireguard.ui:23
-#, fuzzy
 msgid "Edit WireGuard peer"
-msgstr "WireGuard"
+msgstr "Redigera WireGuard-motpart"
 
 #: src/connection-editor/ce-page-wireguard.ui:55
 msgid "_Apply"
-msgstr ""
+msgstr "_Verkställ"
 
 #: src/connection-editor/ce-page-wireguard.ui:159
 msgid "_Public key"
-msgstr ""
+msgstr "Ö_ppen nyckel"
 
 #: src/connection-editor/ce-page-wireguard.ui:173
-#, fuzzy
 msgid "Allowed _IPs"
-msgstr "Tillåtna metoder"
+msgstr "Tillåtna _IP-adresser"
 
 #: src/connection-editor/ce-page-wireguard.ui:187
 msgid "_Endpoint"
-msgstr ""
+msgstr "Ä_ndpunkt"
 
 #: src/connection-editor/ce-page-wireguard.ui:201
-#, fuzzy
 msgid "Pre_shared key"
-msgstr "Delad nyckel"
+msgstr "För_utdelad nyckel"
 
 #: src/connection-editor/ce-page-wireguard.ui:215
 msgid "Persistent _keepalive"
-msgstr ""
+msgstr "Ihållande _keepalive"
 
 #: src/connection-editor/ce-page-wireguard.ui:228
 msgid "A base64 public key calculated by 'wg pubkey' from a private key."
 msgstr ""
+"En öppen nyckel i base64 beräknad med ”wg pubkey” från en privat nyckel."
 
 #: src/connection-editor/ce-page-wireguard.ui:240
 msgid ""
@@ -2911,11 +2923,16 @@ msgid ""
 "incoming traffic for this peer is allowed and to which outgoing traffic for "
 "this peer is directed."
 msgstr ""
+"Kommaseparerad lista över IP-adresser (v4 eller v6) med CIDR-masker från "
+"vilka inkommande trafik för denna motpart tillåts och till vilka utgående "
+"trafik för denna motpart dirigeras."
 
 #: src/connection-editor/ce-page-wireguard.ui:252
 msgid ""
 "An endpoint IP or hostname, followed by a colon, and then a port number."
 msgstr ""
+"Ett ändpunkts-IP eller värdnamn, följt av ett kolon, och sedan ett "
+"portnummer."
 
 #: src/connection-editor/ce-page-wireguard.ui:264
 msgid ""
@@ -2924,6 +2941,10 @@ msgid ""
 "into the already existing public-key cryptography, for post-quantum "
 "resistance."
 msgstr ""
+"En förutdelad base64-nyckel genererad av ”wg genpsk”. Valfri, och kan "
+"utelämnas. Lägger till ytterligare ett lager av symmetrisk kryptering att "
+"blanda med den redan existerande krypteringen med öppen nyckel, för motstånd "
+"mot dekryptering då kvantdatorer blir tillgängliga."
 
 #: src/connection-editor/ce-page-wireguard.ui:280
 msgid ""
@@ -2931,66 +2952,72 @@ msgid ""
 "of keeping a stateful firewall or NAT mapping valid. This is optional and "
 "not recommended outside of specific setups."
 msgstr ""
+"Hur ofta ett autentiserat tomt paket ska skickas till motparten i syfte att "
+"behålla en tillståndsbaserad brandvägg eller NAT-mappning giltig. Detta är "
+"valfritt och rekommenderas inte förutom i specifika konfigurationer."
 
 #: src/connection-editor/ce-page-wireguard.ui:297
 msgid "seconds"
-msgstr ""
+msgstr "sekunder"
 
 #: src/connection-editor/ce-page-wireguard.ui:313
-#, fuzzy
 msgid "Sho_w preshared key"
-msgstr "Vis_a nyckel"
+msgstr "Vis_a förutdelad nyckel"
 
 #: src/connection-editor/ce-page-wireguard.ui:386
 msgid "The name of the wireguard interface to create."
-msgstr ""
+msgstr "Namnet på wireguard-gränssnittet som ska skapas."
 
 #: src/connection-editor/ce-page-wireguard.ui:400
-#, fuzzy
 msgid "Private _key"
-msgstr "Privat _nyckel för %s"
+msgstr "Privat _nyckel"
 
 #: src/connection-editor/ce-page-wireguard.ui:413
 msgid "The 256 bit private key in base64 encoding"
-msgstr ""
+msgstr "Den 256-bitars privata nyckeln i base64-kodning"
 
 #: src/connection-editor/ce-page-wireguard.ui:429
-#, fuzzy
 msgid "_Listen port"
-msgstr "_Minsta antal portar"
+msgstr "_Lyssningsport"
 
+# automatisk är standardvärdet på en spinbutton
 #: src/connection-editor/ce-page-wireguard.ui:442
 msgid ""
 "A port to listen on. If set to 'automatic', the port will be chosen randomly "
 "when the interface comes up."
 msgstr ""
+"En port att lyssna på. Om den sätts till ”automatisk” kommer porten väljas "
+"slumpmässigt då gränssnittet kommer upp."
 
 #: src/connection-editor/ce-page-wireguard.ui:459
 msgid "_Fwmark"
-msgstr ""
+msgstr "_Fwmark"
 
 #: src/connection-editor/ce-page-wireguard.ui:489
 msgid "Add peer _routes"
-msgstr ""
+msgstr "Lägg till _rutter för motparter"
 
 #: src/connection-editor/ce-page-wireguard.ui:503
 msgid ""
 "Whether to automatically add routes for the AllowedIPs ranges of the peers"
 msgstr ""
+"Huruvida rutter automatiskt ska läggas till för AllowedIPs-intervallen för "
+"motparterna"
 
 #: src/connection-editor/ce-page-wireguard.ui:543
 msgid ""
 "A 32-bit fwmark for outgoing packets. Leave it to 'off' to disable fwmark."
 msgstr ""
+"En 32-bitars fwmark för utgående paket. Lämna som ”off” för att inaktivera "
+"fwmark."
 
 #: src/connection-editor/ce-page-wireguard.ui:554
-#, fuzzy
 msgid "_Show private key"
-msgstr "Privat _nyckel för %s"
+msgstr "_Visa privat nyckel"
 
 #: src/connection-editor/ce-page-wireguard.ui:641
 msgid "<b>_Peers</b>"
-msgstr ""
+msgstr "<b>_Motparter</b>"
 
 #: src/connection-editor/ce-page.c:105
 msgid "automatic"
@@ -3876,28 +3903,27 @@ msgstr "MACSEC-anslutning %d"
 
 #: src/connection-editor/page-master.c:221
 #: src/connection-editor/page-master.c:232
-#, fuzzy
 msgid "Duplicate ports"
-msgstr "Duplikatslavar"
+msgstr "Duplikatportar"
 
 #: src/connection-editor/page-master.c:222
-#, fuzzy, c-format
+#, c-format
 msgid "Ports “%s” and “%s” both apply to device “%s”"
-msgstr "Slavar ”%s” och ”%s” gäller båda för enhet ”%s”"
+msgstr "Portarna ”%s” och ”%s” gäller båda för enhet ”%s”"
 
 #: src/connection-editor/page-master.c:233
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Ports “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
 "same physical device."
 msgstr ""
-"Slavar ”%s” och ”%s” gäller för olika virtuella portar (”%s” och ”%s”) för "
+"Portarna ”%s” och ”%s” gäller för olika virtuella portar (”%s” och ”%s”) för "
 "samma fysiska enhet."
 
 #: src/connection-editor/page-master.c:357
 #, c-format
 msgid "%s port %d"
-msgstr ""
+msgstr "%s port %d"
 
 #: src/connection-editor/page-mobile.c:297
 msgid "Could not load mobile broadband user interface."
@@ -4096,7 +4122,7 @@ msgstr "WPA3 Personal"
 
 #: src/connection-editor/page-wifi-security.c:431
 msgid "Enhanced Open"
-msgstr ""
+msgstr "Enhanced Open"
 
 #: src/connection-editor/page-wifi-security.c:476
 msgid "Could not load Wi-Fi security user interface; missing Wi-Fi setting."
@@ -4163,22 +4189,20 @@ msgstr "Trådlös anslutning %d"
 
 #: src/connection-editor/page-wireguard.c:261
 msgid "Public key"
-msgstr ""
+msgstr "Öppen nyckel"
 
 #: src/connection-editor/page-wireguard.c:268
-#, fuzzy
 msgid "Allowed IPs"
-msgstr "Tillåtna metoder"
+msgstr "Tillåtna IP-adresser"
 
 #: src/connection-editor/page-wireguard.c:512
-#, fuzzy
 msgid "Could not load WireGuard user interface."
-msgstr "Kunde inte läsa in gruppanvändargränssnitt."
+msgstr "Kunde inte läsa in Wireguard-användargränssnitt."
 
 #: src/connection-editor/page-wireguard.c:628
-#, fuzzy, c-format
+#, c-format
 msgid "WireGuard connection %d"
-msgstr "Gruppanslutning %d"
+msgstr "WireGuard-anslutning %d"
 
 #: src/connection-editor/vpn-helpers.c:118
 #, c-format
@@ -4235,11 +4259,9 @@ msgstr "Användning:"
 
 #: src/main.c:30
 msgid ""
-"This program is a component of NetworkManager (https://wiki.gnome.org/"
-"Projects/NetworkManager/)."
+"This program is a component of NetworkManager (https://networkmanager.dev)."
 msgstr ""
-"Detta program är en komponent i NetworkManager (https://wiki.gnome.org/"
-"Projects/NetworkManager/)."
+"Detta program är en komponent i NetworkManager (https://networkmanager.dev)."
 
 #: src/main.c:31
 msgid ""
@@ -4364,12 +4386,6 @@ msgstr "PEM-certifikat (*.pem, *.crt, *.cer)"
 #: src/utils/utils.c:546
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "DER, PEM, eller PKCS#12 privata nycklar (*.der, *.pem, *.p12, *.key)"
-
-#~ msgid "nm-device-wireless"
-#~ msgstr "nm-device-wireless"
-
-#~ msgid "preferences-system-network"
-#~ msgstr "preferences-system-network"
 
 #~ msgid "missing EAP-FAST PAC file"
 #~ msgstr "saknar PAC-fil för EAP-FAST"
@@ -4518,14 +4534,12 @@ msgstr "DER, PEM, eller PKCS#12 privata nycklar (*.der, *.pem, *.p12, *.key)"
 #~ msgid "missing wep-key"
 #~ msgstr "saknar wep-nyckel"
 
-#, c-format
 #~ msgid ""
 #~ "invalid wep-key: key with a length of %zu must contain only hex-digits"
 #~ msgstr ""
 #~ "ogiltig wep-nyckel: nyckel med en längd på %zu får endast innehålla "
 #~ "hexadecimala siffror"
 
-#, c-format
 #~ msgid ""
 #~ "invalid wep-key: key with a length of %zu must contain only ascii "
 #~ "characters"
@@ -4533,7 +4547,6 @@ msgstr "DER, PEM, eller PKCS#12 privata nycklar (*.der, *.pem, *.p12, *.key)"
 #~ "ogiltig wep-nyckel: nyckel med en längd på %zu får endast innehålla ascii-"
 #~ "tecken"
 
-#, c-format
 #~ msgid ""
 #~ "invalid wep-key: wrong key length %zu. A key must be either of length "
 #~ "5/13 (ascii) or 10/26 (hex)"
@@ -4559,7 +4572,6 @@ msgstr "DER, PEM, eller PKCS#12 privata nycklar (*.der, *.pem, *.p12, *.key)"
 #~ msgid "WEP inde_x"
 #~ msgstr "WEP-inde_x"
 
-#, c-format
 #~ msgid ""
 #~ "invalid wpa-psk: invalid key-length %zu. Must be [8,63] bytes or 64 hex "
 #~ "digits"
@@ -4720,20 +4732,11 @@ msgstr "DER, PEM, eller PKCS#12 privata nycklar (*.der, *.pem, *.p12, *.key)"
 #~ msgid "Set up a Mobile Broadband Connection"
 #~ msgstr "Konfigurera en mobil bredbandsanslutning"
 
-#, fuzzy
-#~ msgid "Country or region:"
-#~ msgstr "Land eller region"
-
 #~ msgid "Choose your Provider’s Country or Region"
 #~ msgstr "Välj land eller region för din leverantör"
 
 #~ msgid "Select your provider from a _list:"
 #~ msgstr "Välj din leverantör från en _lista:"
-
-#, fuzzy
-#~ msgid ""
-#~ "I can’t find my provider and I wish to set up the connection _manually:"
-#~ msgstr "Jag kan inte hitta min leverantör och vill ange den _manuellt:"
 
 #~ msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
 #~ msgstr "Min leverantör använder GSM-tekniken (GPRS, EDGE, UMTS, HSPA)"
