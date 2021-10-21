@@ -171,8 +171,7 @@ get_device_class_from_connection (NMConnection *connection, NMApplet *applet)
 	else if (!strcmp (ctype, NM_SETTING_BLUETOOTH_SETTING_NAME))
 		return applet->bt_class;
 	else
-		g_warning ("%s: unhandled connection type '%s'", __func__, ctype);
-	return NULL;
+		return NULL;
 }
 
 static NMActiveConnection *
