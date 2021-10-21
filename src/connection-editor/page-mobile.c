@@ -533,7 +533,7 @@ mobile_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
 	                                      GTK_RESPONSE_OK,
 	                                      NULL);
 	g_signal_connect (dialog, "delete-event", G_CALLBACK (cancel_dialog), NULL);
-	gtk_window_set_icon_name (GTK_WINDOW (dialog), "nm-device-wwan");
+	gtk_window_set_icon_name (GTK_WINDOW (dialog), "network-cellular-connected-symbolic");
 
 	content = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 	alignment = gtk_alignment_new (0, 0, 0.5, 0.5);
@@ -543,7 +543,7 @@ mobile_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_container_add (GTK_CONTAINER (alignment), hbox);
 
-	image = gtk_image_new_from_icon_name ("nm-device-wwan", GTK_ICON_SIZE_DIALOG);
+	image = gtk_image_new_from_icon_name ("network-cellular-connected-symbolic", GTK_ICON_SIZE_DIALOG);
 	gtk_misc_set_alignment (GTK_MISC (image), 0.5, 0);
 	gtk_misc_set_padding (GTK_MISC (image), 0, 6);
 	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 6);

@@ -16,119 +16,19 @@
 #include "mobile-helpers.h"
 #include "applet-dialogs.h"
 
-GdkPixbuf *
-mobile_helper_get_status_pixbuf (guint32 quality,
-                                 gboolean quality_valid,
-                                 guint32 state,
-                                 guint32 access_tech,
-                                 NMApplet *applet)
-{
-	GdkPixbuf *pixbuf, *qual_pixbuf, *tmp;
-
-	if (!quality_valid)
-		quality = 0;
-	qual_pixbuf = nma_icon_check_and_load (mobile_helper_get_quality_icon_name (quality), applet);
-
-	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
-	                         TRUE,
-	                         qual_pixbuf ? gdk_pixbuf_get_bits_per_sample (qual_pixbuf) : 8,
-	                         qual_pixbuf ? gdk_pixbuf_get_width (qual_pixbuf) : 22,
-	                         qual_pixbuf ? gdk_pixbuf_get_height (qual_pixbuf) : 22);
-	gdk_pixbuf_fill (pixbuf, 0xFFFFFF00);
-
-	/* Composite the tower icon into the final icon at the bottom layer */
-	tmp = nma_icon_check_and_load ("nm-wwan-tower", applet);
-	if (tmp) {
-		gdk_pixbuf_composite (tmp, pixbuf,
-		                      0, 0,
-		                      gdk_pixbuf_get_width (tmp),
-		                      gdk_pixbuf_get_height (tmp),
-		                      0, 0, 1.0, 1.0,
-		                      GDK_INTERP_BILINEAR, 255);
-	}
-
-	/* Composite the signal quality onto the icon on top of the WWAN tower */
-	if (qual_pixbuf) {
-		gdk_pixbuf_composite (qual_pixbuf, pixbuf,
-		                      0, 0,
-		                      gdk_pixbuf_get_width (qual_pixbuf),
-		                      gdk_pixbuf_get_height (qual_pixbuf),
-		                      0, 0, 1.0, 1.0,
-		                      GDK_INTERP_BILINEAR, 255);
-	}
-
-	/* And finally the roaming or technology icon */
-	if (state == MB_STATE_ROAMING) {
-		tmp = nma_icon_check_and_load ("nm-mb-roam", applet);
-		if (tmp) {
-			gdk_pixbuf_composite (tmp, pixbuf, 0, 0,
-			                      gdk_pixbuf_get_width (tmp),
-			                      gdk_pixbuf_get_height (tmp),
-			                       0, 0, 1.0, 1.0,
-			                      GDK_INTERP_BILINEAR, 255);
-		}
-	} else {
-		const gchar *tech_icon_name;
-
-		/* Only try to add the access tech info icon if we get a valid
-		 * access tech reported. */
-		tech_icon_name = mobile_helper_get_tech_icon_name (access_tech);
-		if (tech_icon_name) {
-			tmp = nma_icon_check_and_load (tech_icon_name, applet);
-			if (tmp) {
-				gdk_pixbuf_composite (tmp, pixbuf, 0, 0,
-				                      gdk_pixbuf_get_width (tmp),
-				                      gdk_pixbuf_get_height (tmp),
-				                      0, 0, 1.0, 1.0,
-				                      GDK_INTERP_BILINEAR, 255);
-			}
-		}
-	}
-
-	/* 'pixbuf' will be freed by the caller */
-	return pixbuf;
-}
-
 const char *
 mobile_helper_get_quality_icon_name (guint32 quality)
 {
 	if (quality > 80)
-		return "nm-signal-100";
+		return "network-cellular-signal-excellent-symbolic";
 	else if (quality > 55)
-		return "nm-signal-75";
+		return "network-cellular-signal-good-symbolic";
 	else if (quality > 30)
-		return "nm-signal-50";
+		return "network-cellular-signal-ok-symbolic";
 	else if (quality > 5)
-		return "nm-signal-25";
+		return "network-cellular-signal-weak-symbolic";
 	else
-		return "nm-signal-00";
-}
-
-const char *
-mobile_helper_get_tech_icon_name (guint32 tech)
-{
-	switch (tech) {
-	case MB_TECH_1XRTT:
-		return "nm-tech-cdma-1x";
-	case MB_TECH_EVDO:
-		return "nm-tech-evdo";
-	case MB_TECH_GSM:
-	case MB_TECH_GPRS:
-		return "nm-tech-gprs";
-	case MB_TECH_EDGE:
-		return "nm-tech-edge";
-	case MB_TECH_UMTS:
-		return "nm-tech-umts";
-	case MB_TECH_HSDPA:
-	case MB_TECH_HSUPA:
-	case MB_TECH_HSPA:
-	case MB_TECH_HSPA_PLUS:
-		return "nm-tech-hspa";
-	case MB_TECH_LTE:
-		return "nm-tech-lte";
-	default:
-		return NULL;
-	}
+		return "network-cellular-signal-none-symbolic";
 }
 
 /********************************************************************/
@@ -551,72 +451,6 @@ mobile_helper_get_secrets (NMDeviceModemCapabilities capabilities,
 
 	return TRUE;
 }
-
-/********************************************************************/
-
-void
-mobile_helper_get_icon (NMDevice *device,
-                        NMDeviceState state,
-                        NMConnection *connection,
-                        GdkPixbuf **out_pixbuf,
-                        const char **out_icon_name,
-                        char **tip,
-                        NMApplet *applet,
-                        guint32 mb_state,
-                        guint32 mb_tech,
-                        guint32 quality,
-                        gboolean quality_valid)
-{
-	NMSettingConnection *s_con;
-	const char *id;
-
-	g_return_if_fail (out_icon_name && !*out_icon_name);
-	g_return_if_fail (tip && !*tip);
-
-	id = nm_device_get_iface (NM_DEVICE (device));
-	if (connection) {
-		s_con = nm_connection_get_setting_connection (connection);
-		id = nm_setting_connection_get_id (s_con);
-	}
-
-	switch (state) {
-	case NM_DEVICE_STATE_PREPARE:
-		*tip = g_strdup_printf (_("Preparing mobile broadband connection “%s”…"), id);
-		break;
-	case NM_DEVICE_STATE_CONFIG:
-		*tip = g_strdup_printf (_("Configuring mobile broadband connection “%s”…"), id);
-		break;
-	case NM_DEVICE_STATE_NEED_AUTH:
-		*tip = g_strdup_printf (_("User authentication required for mobile broadband connection “%s”…"), id);
-		break;
-	case NM_DEVICE_STATE_IP_CONFIG:
-		*tip = g_strdup_printf (_("Requesting a network address for “%s”…"), id);
-		break;
-	case NM_DEVICE_STATE_ACTIVATED:
-		*out_pixbuf = mobile_helper_get_status_pixbuf (quality,
-		                                               quality_valid,
-		                                               mb_state,
-		                                               mb_tech,
-		                                               applet);
-		*out_icon_name = mobile_helper_get_quality_icon_name (quality_valid ?
-		                                                      quality : 0);
-
-		if ((mb_state != MB_STATE_UNKNOWN) && quality_valid) {
-			gboolean roaming = (mb_state == MB_STATE_ROAMING);
-
-			*tip = g_strdup_printf (_("Mobile broadband connection “%s” active: (%d%%%s%s)"),
-			                        id, quality,
-			                        roaming ? ", " : "",
-			                        roaming ? _("roaming") : "");
-		} else
-			*tip = g_strdup_printf (_("Mobile broadband connection “%s” active"), id);
-		break;
-	default:
-		break;
-	}
-}
-
-/********************************************************************/
 
 char *
 mobile_helper_parse_3gpp_operator_name (NMAMobileProvidersDatabase **mpd, /* I/O */

@@ -74,51 +74,8 @@ bt_notify_connected (NMDevice *device,
 	applet_do_notify_with_pref (applet,
 	                            _("Connection Established"),
 	                            msg ? msg : _("You are now connected to the mobile broadband network."),
-	                            "nm-device-wwan",
+	                            "network-cellular-connected-symbolic",
 	                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
-}
-
-static void
-bt_get_icon (NMDevice *device,
-             NMDeviceState state,
-             NMConnection *connection,
-             GdkPixbuf **out_pixbuf,
-             const char **out_icon_name,
-             char **tip,
-             NMApplet *applet)
-{
-	NMSettingConnection *s_con;
-	const char *id;
-
-	g_return_if_fail (out_icon_name && !*out_icon_name);
-	g_return_if_fail (tip && !*tip);
-
-	id = nm_device_get_iface (NM_DEVICE (device));
-	if (connection) {
-		s_con = nm_connection_get_setting_connection (connection);
-		id = nm_setting_connection_get_id (s_con);
-	}
-
-	switch (state) {
-	case NM_DEVICE_STATE_PREPARE:
-		*tip = g_strdup_printf (_("Preparing mobile broadband connection “%s”…"), id);
-		break;
-	case NM_DEVICE_STATE_CONFIG:
-		*tip = g_strdup_printf (_("Configuring mobile broadband connection “%s”…"), id);
-		break;
-	case NM_DEVICE_STATE_NEED_AUTH:
-		*tip = g_strdup_printf (_("User authentication required for mobile broadband connection “%s”…"), id);
-		break;
-	case NM_DEVICE_STATE_IP_CONFIG:
-		*tip = g_strdup_printf (_("Requesting a network address for “%s”…"), id);
-		break;
-	case NM_DEVICE_STATE_ACTIVATED:
-		*out_icon_name = "nm-device-wwan";
-		*tip = g_strdup_printf (_("Mobile broadband connection “%s” active"), id);
-		break;
-	default:
-		break;
-	}
 }
 
 typedef struct {
@@ -247,7 +204,6 @@ applet_device_bt_get_class (NMApplet *applet)
 	dclass->new_auto_connection = bt_new_auto_connection;
 	dclass->add_menu_item = bt_add_menu_item;
 	dclass->notify_connected = bt_notify_connected;
-	dclass->get_icon = bt_get_icon;
 	dclass->get_secrets = bt_get_secrets;
 	dclass->secrets_request_size = sizeof (NMBtSecretsInfo);
 

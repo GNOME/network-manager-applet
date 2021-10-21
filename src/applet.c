@@ -175,75 +175,6 @@ get_device_class_from_connection (NMConnection *connection, NMApplet *applet)
 }
 
 static NMActiveConnection *
-applet_get_best_activating_connection (NMApplet *applet, NMDevice **device)
-{
-	NMActiveConnection *best = NULL;
-	NMDevice *best_dev = NULL;
-	const GPtrArray *connections;
-	int i;
-
-	g_return_val_if_fail (NM_IS_APPLET (applet), NULL);
-	g_return_val_if_fail (device != NULL, NULL);
-	g_return_val_if_fail (*device == NULL, NULL);
-
-	connections = nm_client_get_active_connections (applet->nm_client);
-	for (i = 0; connections && (i < connections->len); i++) {
-		NMActiveConnection *candidate = g_ptr_array_index (connections, i);
-		const GPtrArray *devices;
-		NMDevice *candidate_dev;
-
-		if (nm_active_connection_get_state (candidate) != NM_ACTIVE_CONNECTION_STATE_ACTIVATING)
-			continue;
-
-		devices = nm_active_connection_get_devices (candidate);
-		if (!devices || !devices->len)
-			continue;
-
-		candidate_dev = g_ptr_array_index (devices, 0);
-		if (!get_device_class (candidate_dev, applet))
-			continue;
-
-		if (!best_dev) {
-			best_dev = candidate_dev;
-			best = candidate;
-			continue;
-		}
-
-		if (NM_IS_DEVICE_WIFI (best_dev)) {
-			if (NM_IS_DEVICE_ETHERNET (candidate_dev)) {
-				best_dev = candidate_dev;
-				best = candidate;
-			}
-		} else if (NM_IS_DEVICE_MODEM (best_dev)) {
-			NMDeviceModemCapabilities best_caps;
-			NMDeviceModemCapabilities candidate_caps = NM_DEVICE_MODEM_CAPABILITY_NONE;
-
-			best_caps = nm_device_modem_get_current_capabilities (NM_DEVICE_MODEM (best_dev));
-			if (NM_IS_DEVICE_MODEM (candidate_dev))
-				candidate_caps = nm_device_modem_get_current_capabilities (NM_DEVICE_MODEM (candidate_dev));
-
-			if (best_caps & NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO) {
-				if (   NM_IS_DEVICE_ETHERNET (candidate_dev)
-				    || NM_IS_DEVICE_WIFI (candidate_dev)) {
-					best_dev = candidate_dev;
-					best = candidate;
-				}
-			} else if (best_caps & NM_DEVICE_MODEM_CAPABILITY_GSM_UMTS) {
-				if (   NM_IS_DEVICE_ETHERNET (candidate_dev)
-					|| NM_IS_DEVICE_WIFI (candidate_dev)
-					|| (candidate_caps & NM_DEVICE_MODEM_CAPABILITY_CDMA_EVDO)) {
-					best_dev = candidate_dev;
-					best = candidate;
-				}
-			}
-		}
-	}
-
-	*device = best_dev;
-	return best;
-}
-
-static NMActiveConnection *
 applet_get_default_active_connection (NMApplet *applet, NMDevice **device,
                                       gboolean only_known_devices)
 {
@@ -830,75 +761,10 @@ void applet_do_notify_with_pref (NMApplet *applet,
 }
 
 static gboolean
-animation_timeout (gpointer data)
-{
-	applet_schedule_update_icon (NM_APPLET (data));
-	return TRUE;
-}
-
-static void
-start_animation_timeout (NMApplet *applet)
-{
-	if (applet->animation_id == 0) {
-		applet->animation_step = 0;
-		applet->animation_id = g_timeout_add (100, animation_timeout, applet);
-	}
-}
-
-static void
-clear_animation_timeout (NMApplet *applet)
-{
-	if (applet->animation_id) {
-		g_source_remove (applet->animation_id);
-		applet->animation_id = 0;
-		applet->animation_step = 0;
-	}
-}
-
-static gboolean
-applet_is_any_device_activating (NMApplet *applet)
-{
-	const GPtrArray *devices;
-	int i;
-
-	/* Check for activating devices */
-	devices = nm_client_get_devices (applet->nm_client);
-	for (i = 0; devices && (i < devices->len); i++) {
-		NMDevice *candidate = NM_DEVICE (g_ptr_array_index (devices, i));
-		NMDeviceState state;
-
-		state = nm_device_get_state (candidate);
-		if (state > NM_DEVICE_STATE_DISCONNECTED && state < NM_DEVICE_STATE_ACTIVATED)
-			return TRUE;
-	}
-	return FALSE;
-}
-
-static gboolean
 connection_is_vpn (NMConnection *connection)
 {
 	return    nm_connection_is_type (connection, NM_SETTING_VPN_SETTING_NAME)
 	       || nm_connection_is_type (connection, NM_SETTING_WIREGUARD_SETTING_NAME);
-}
-
-static gboolean
-applet_is_any_vpn_activating (NMApplet *applet)
-{
-	const GPtrArray *connections;
-	int i;
-
-	connections = nm_client_get_active_connections (applet->nm_client);
-	for (i = 0; connections && (i < connections->len); i++) {
-		NMActiveConnection *candidate = NM_ACTIVE_CONNECTION (g_ptr_array_index (connections, i));
-		NMActiveConnectionState state;
-
-		if (NM_IS_VPN_CONNECTION (candidate)) {
-			state = nm_active_connection_get_state (candidate);
-			if (state == NM_ACTIVE_CONNECTION_STATE_ACTIVATING)
-				return TRUE;
-		}
-	}
-	return FALSE;
 }
 
 static char *
@@ -954,18 +820,8 @@ vpn_active_connection_state_changed (NMVpnConnection *vpn,
 	NMApplet *applet = NM_APPLET (user_data);
 	const char *banner;
 	char *title = NULL, *msg;
-	gboolean device_activating, vpn_activating;
-
-	device_activating = applet_is_any_device_activating (applet);
-	vpn_activating = applet_is_any_vpn_activating (applet);
 
 	switch (state) {
-	case NM_ACTIVE_CONNECTION_STATE_ACTIVATING:
-		/* Be sure to turn animation timeout on here since the dbus signals
-		 * for new active connections might not have come through yet.
-		 */
-		vpn_activating = TRUE;
-		break;
 	case NM_ACTIVE_CONNECTION_STATE_ACTIVATED:
 		banner = nm_vpn_connection_get_banner (vpn);
 		if (banner && strlen (banner))
@@ -991,11 +847,6 @@ vpn_active_connection_state_changed (NMVpnConnection *vpn,
 		break;
 	}
 
-	if (device_activating || vpn_activating)
-		start_animation_timeout (applet);
-	else
-		clear_animation_timeout (applet);
-
 	applet_schedule_update_icon (applet);
 	applet_schedule_update_menu (applet);
 }
@@ -1019,8 +870,6 @@ activate_vpn_cb (GObject *client,
 	g_clear_object (&active);
 
 	if (error) {
-		clear_animation_timeout (info->applet);
-
 		title = _("VPN Connection Failed");
 
 		name = g_dbus_error_get_remote_error (error);
@@ -1089,7 +938,6 @@ nma_menu_vpn_item_clicked (GtkMenuItem *item, gpointer user_data)
 	                                     NULL,
 	                                     activate_vpn_cb,
 	                                     info);
-	start_animation_timeout (applet);
 }
 
 
@@ -1119,74 +967,6 @@ nma_menu_add_vpn_item_activate (GtkMenuItem *item, gpointer user_data)
 	const char *argv[] = { BINDIR "/nm-connection-editor", "--create", "--type", NM_SETTING_VPN_SETTING_NAME, NULL};
 
 	g_spawn_async (NULL, (gchar **) argv, NULL, 0, NULL, NULL, NULL, NULL);
-}
-
-static NMVpnConnectionState
-ac_state_to_vpn_state (NMActiveConnectionState ac_state)
-{
-	switch (ac_state) {
-	case NM_ACTIVE_CONNECTION_STATE_UNKNOWN:
-		return NM_VPN_CONNECTION_STATE_UNKNOWN;
-	case NM_ACTIVE_CONNECTION_STATE_ACTIVATING:
-		return NM_VPN_CONNECTION_STATE_PREPARE;
-	case NM_ACTIVE_CONNECTION_STATE_ACTIVATED:
-	case NM_ACTIVE_CONNECTION_STATE_DEACTIVATING:
-		return NM_VPN_CONNECTION_STATE_ACTIVATED;
-	case NM_ACTIVE_CONNECTION_STATE_DEACTIVATED:
-		return NM_VPN_CONNECTION_STATE_DISCONNECTED;
-	}
-
-	nm_assert_not_reached ();
-	return NM_VPN_CONNECTION_STATE_UNKNOWN;
-}
-
-/*
- * applet_get_active_vpn_connection:
- *
- * Gets a VPN connection along with its state. If there are more, ones that
- * are not yet fully activated are preferred.
- *
- */
-static NMActiveConnection *
-applet_get_active_vpn_connection (NMApplet *applet,
-                                  NMVpnConnectionState *out_state)
-{
-	const GPtrArray *active_list;
-	NMActiveConnection *ret = NULL;
-	NMVpnConnectionState state = NM_VPN_CONNECTION_STATE_UNKNOWN;
-	int i;
-
-	active_list = nm_client_get_active_connections (applet->nm_client);
-	for (i = 0; active_list && (i < active_list->len); i++) {
-		NMActiveConnection *candidate;
-		NMConnection *connection;
-
-		candidate = g_ptr_array_index (active_list, i);
-
-		connection = (NMConnection *) nm_active_connection_get_connection (candidate);
-		if (!connection)
-			continue;
-
-		if (!connection_is_vpn (connection))
-			continue;
-
-		ret = candidate;
-		if (nm_connection_is_type (connection, NM_SETTING_VPN_SETTING_NAME)) {
-			state = nm_vpn_connection_get_vpn_state (NM_VPN_CONNECTION (candidate));
-		} else {
-			NMActiveConnectionState ac_state;
-
-			ac_state = nm_active_connection_get_state (candidate);
-			state = ac_state_to_vpn_state (ac_state);
-		}
-		if (state != NM_VPN_CONNECTION_STATE_ACTIVATED)
-			break;
-	}
-
-	if (ret && out_state)
-		*out_state = state;
-
-	return ret;
 }
 
 /*
@@ -2099,67 +1879,6 @@ applet_schedule_update_menu (NMApplet *applet)
 		applet->update_menu_id = g_idle_add (applet_update_menu, applet);
 }
 
-/*****************************************************************************/
-
-static void
-foo_set_icon (NMApplet *applet, guint32 layer, GdkPixbuf *pixbuf, const char *icon_name)
-{
-	gs_unref_object GdkPixbuf *pixbuf_free = NULL;
-
-	g_return_if_fail (layer == ICON_LAYER_LINK || layer == ICON_LAYER_VPN);
-
-#ifdef WITH_APPINDICATOR
-	if (INDICATOR_ENABLED (applet)) {
-		/* FIXME: We rely on the fact that VPN icon gets drawn later and therefore
-		 * wins but we cannot currently set a combined pixmap made of both the link
-		 * icon and the VPN icon.
-		 */
-		if (icon_name == NULL && layer == ICON_LAYER_LINK)
-			icon_name = "nm-no-connection";
-		if (icon_name != NULL && g_strcmp0 (app_indicator_get_icon (applet->app_indicator), icon_name) != 0)
-			app_indicator_set_icon_full (applet->app_indicator, icon_name, applet->tip);
-		return;
-	}
-#endif  /* WITH_APPINDICATOR */
-
-	/* Load the pixbuf by icon name */
-	if (icon_name && !pixbuf)
-		pixbuf = nma_icon_check_and_load (icon_name, applet);
-
-	/* Ignore setting of the same icon as is already displayed */
-	if (applet->icon_layers[layer] == pixbuf)
-		return;
-
-	g_clear_object (&applet->icon_layers[layer]);
-
-	if (pixbuf)
-		applet->icon_layers[layer] = g_object_ref (pixbuf);
-
-	if (applet->icon_layers[0]) {
-		int i;
-
-		pixbuf = applet->icon_layers[0];
-
-		for (i = ICON_LAYER_LINK + 1; i <= ICON_LAYER_MAX; i++) {
-			GdkPixbuf *top = applet->icon_layers[i];
-
-			if (!top)
-				continue;
-
-			if (!pixbuf_free)
-				pixbuf = pixbuf_free = gdk_pixbuf_copy (pixbuf);
-
-			gdk_pixbuf_composite (top, pixbuf, 0, 0, gdk_pixbuf_get_width (top),
-			                      gdk_pixbuf_get_height (top),
-			                      0, 0, 1.0, 1.0,
-			                      GDK_INTERP_NEAREST, 255);
-		}
-	} else
-		pixbuf = nma_icon_check_and_load ("nm-no-connection", applet);
-
-	gtk_status_icon_set_from_pixbuf (applet->status_icon, pixbuf);
-}
-
 NMRemoteConnection *
 applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet)
 {
@@ -2190,43 +1909,6 @@ applet_get_exported_connection_for_device (NMDevice *device, NMApplet *applet)
 }
 
 static void
-applet_common_device_state_changed (NMDevice *device,
-                                    NMDeviceState new_state,
-                                    NMDeviceState old_state,
-                                    NMDeviceStateReason reason,
-                                    NMApplet *applet)
-{
-	gboolean device_activating = FALSE, vpn_activating = FALSE;
-
-	device_activating = applet_is_any_device_activating (applet);
-	vpn_activating = applet_is_any_vpn_activating (applet);
-
-
-	switch (new_state) {
-	case NM_DEVICE_STATE_PREPARE:
-	case NM_DEVICE_STATE_CONFIG:
-	case NM_DEVICE_STATE_NEED_AUTH:
-	case NM_DEVICE_STATE_IP_CONFIG:
-		/* Be sure to turn animation timeout on here since the dbus signals
-		 * for new active connections or devices might not have come through yet.
-		 */
-		device_activating = TRUE;
-		break;
-	case NM_DEVICE_STATE_ACTIVATED:
-	default:
-		break;
-	}
-
-	/* If there's an activating device but we're not animating, start animation.
-	 * If we're animating, but there's no activating device or VPN, stop animating.
-	 */
-	if (device_activating || vpn_activating)
-		start_animation_timeout (applet);
-	else
-		clear_animation_timeout (applet);
-}
-
-static void
 foo_device_state_changed_cb (NMDevice *device,
                              NMDeviceState new_state,
                              NMDeviceState old_state,
@@ -2240,8 +1922,6 @@ foo_device_state_changed_cb (NMDevice *device,
 
 	if (dclass && dclass->device_state_changed)
 		dclass->device_state_changed (device, new_state, old_state, reason, applet);
-
-	applet_common_device_state_changed (device, new_state, old_state, reason, applet);
 
 	if (   dclass
 	    && new_state == NM_DEVICE_STATE_ACTIVATED
@@ -2293,7 +1973,7 @@ foo_client_state_changed_cb (NMClient *client, GParamSpec *pspec, gpointer user_
 	case NM_STATE_DISCONNECTED:
 		applet_do_notify_with_pref (applet, _("Disconnected"),
 		                            _("The network connection has been disconnected."),
-		                            "nm-no-connection",
+		                            "network-offline-symbolic",
 		                            PREF_DISABLE_DISCONNECTED_NOTIFICATIONS);
 		break;
 	default:
@@ -2322,7 +2002,6 @@ foo_manager_running_cb (NMClient *client,
 		g_debug ("NM appeared");
 	} else {
 		g_debug ("NM disappeared");
-		clear_animation_timeout (applet);
 	}
 
 	applet_schedule_update_icon (applet);
@@ -2361,7 +2040,6 @@ foo_active_connections_changed_cb (NMClient *client,
 		    || g_object_get_data (G_OBJECT (candidate), VPN_STATE_ID_TAG))
 			continue;
 
-		/* Start/stop animation when the AC state changes ... */
 		id = g_signal_connect (G_OBJECT (candidate), "state-changed",
 		                       G_CALLBACK (vpn_active_connection_state_changed), applet);
 		/* ... and also update icon/tooltip when the VPN state changes */
@@ -2424,6 +2102,9 @@ foo_client_setup (NMApplet *applet)
 	g_signal_connect (applet->nm_client, "notify::state",
 	                  G_CALLBACK (foo_client_state_changed_cb),
 	                  applet);
+	g_signal_connect_swapped (applet->nm_client, "notify::connectivity",
+	                          G_CALLBACK (applet_schedule_update_icon),
+	                          applet);
 	g_signal_connect (applet->nm_client, "notify::active-connections",
 	                  G_CALLBACK (foo_active_connections_changed_cb),
 	                  applet);
@@ -2540,173 +2221,132 @@ mm1_client_setup (NMApplet *applet)
 
 #endif /* WITH_WWAN */
 
-static void
-applet_common_get_device_icon (NMDeviceState state,
-                               GdkPixbuf **out_pixbuf,
-                               char **out_icon_name,
-                               NMApplet *applet)
+static NMActiveConnection *
+best_active_connection (NMApplet *applet)
 {
-	int stage = -1;
+	NMActiveConnection *best = NULL;
+	NMActiveConnection *candidate;
+	unsigned int best_score = 0x0000;
+	unsigned int candidate_score;
+	NMConnection *connection;
+	const GPtrArray *active_list;
+	int i;
 
-	switch (state) {
-	case NM_DEVICE_STATE_PREPARE:
-		stage = 0;
-		break;
-	case NM_DEVICE_STATE_CONFIG:
-	case NM_DEVICE_STATE_NEED_AUTH:
-		stage = 1;
-		break;
-	case NM_DEVICE_STATE_IP_CONFIG:
-		stage = 2;
-		break;
-	default:
-		break;
+	active_list = nm_client_get_active_connections (applet->nm_client);
+	for (i = 0; active_list && (i < active_list->len); i++) {
+		candidate = g_ptr_array_index (active_list, i);
+
+		connection = (NMConnection *) nm_active_connection_get_connection (candidate);
+		if (!connection)
+			continue;
+
+		candidate_score = 0x0000;
+		if (nm_active_connection_get_default (candidate))
+			candidate_score += 0x0010;
+		if (!connection_is_vpn (connection))
+			candidate_score += 0x0100;
+		if (nm_active_connection_get_state (candidate) == NM_ACTIVE_CONNECTION_STATE_ACTIVATING)
+			candidate_score += 0x1000;
+
+		if (candidate_score < best_score)
+			continue;
+
+		best_score = candidate_score;
+		best = candidate;
 	}
 
-	if (stage >= 0) {
-		char *name = g_strdup_printf ("nm-stage%02d-connecting%02d", stage + 1, applet->animation_step + 1);
-
-		if (out_pixbuf)
-			*out_pixbuf = nm_g_object_ref (nma_icon_check_and_load (name, applet));
-		if (out_icon_name)
-			*out_icon_name = name;
-		else
-			g_free (name);
-
-		applet->animation_step++;
-		if (applet->animation_step >= NUM_CONNECTING_FRAMES)
-			applet->animation_step = 0;
-	}
+	return best;
 }
+
 
 static char *
-get_tip_for_device_state (NMDevice *device,
-                          NMDeviceState state,
-                          NMConnection *connection)
+get_tip_for_active_connection (NMActiveConnection *active)
 {
-	char *tip = NULL;
-	const char *id = NULL;
-
-	id = nm_device_get_iface (device);
-	if (connection)
-		id = nm_connection_get_id (connection);
-
-	switch (state) {
-	case NM_DEVICE_STATE_PREPARE:
-	case NM_DEVICE_STATE_CONFIG:
-		tip = g_strdup_printf (_("Preparing network connection “%s”…"), id);
-		break;
-	case NM_DEVICE_STATE_NEED_AUTH:
-		tip = g_strdup_printf (_("User authentication required for network connection “%s”…"), id);
-		break;
-	case NM_DEVICE_STATE_IP_CONFIG:
-		tip = g_strdup_printf (_("Requesting a network address for “%s”…"), id);
-		break;
-	case NM_DEVICE_STATE_ACTIVATED:
-		tip = g_strdup_printf (_("Network connection “%s” active"), id);
-		break;
-	default:
-		break;
-	}
-
-	return tip;
-}
-
-static void
-applet_get_device_icon_for_state (NMApplet *applet,
-                                  GdkPixbuf **out_pixbuf,
-                                  char **out_icon_name,
-                                  char **out_tip)
-{
-	NMActiveConnection *active;
-	NMDevice *device = NULL;
-	NMDeviceState state = NM_DEVICE_STATE_UNKNOWN;
-	NMADeviceClass *dclass;
-
-	g_assert (out_pixbuf && out_icon_name && out_tip);
-	g_assert (!*out_pixbuf && !*out_icon_name && !*out_tip);
-
-	// FIXME: handle multiple device states here
-
-	/* First show the best activating device's state */
-	active = applet_get_best_activating_connection (applet, &device);
-	if (!active || !device) {
-		/* If there aren't any activating devices, then show the state of
-		 * the default active connection instead.
-		 */
-		active = applet_get_default_active_connection (applet, &device, TRUE);
-		if (!active || !device)
-			goto out;
-	}
-
-	state = nm_device_get_state (device);
-
-	dclass = get_device_class (device, applet);
-	if (dclass) {
-		NMConnection *connection;
-		const char *icon_name = NULL;
-
-		connection = applet_find_active_connection_for_device (device, applet, NULL);
-
-		dclass->get_icon (device, state, connection, out_pixbuf, &icon_name, out_tip, applet);
-
-		if (!*out_pixbuf && icon_name)
-			*out_pixbuf = nm_g_object_ref (nma_icon_check_and_load (icon_name, applet));
-		*out_icon_name = g_strdup (icon_name);
-		if (!*out_tip)
-			*out_tip = get_tip_for_device_state (device, state, connection);
-		if (icon_name || *out_pixbuf)
-			return;
-	}
-
-out:
-	applet_common_get_device_icon (state, out_pixbuf, out_icon_name, applet);
-}
-
-static char *
-get_tip_for_vpn (NMActiveConnection *active, NMVpnConnectionState state, NMApplet *applet)
-{
-	char *tip = NULL;
+	NMConnection *connection;
+	NMDevice *device;
 	const char *id = NULL;
 
 	id = nm_active_connection_get_id (active);
 	if (!id)
 		return NULL;
 
-	switch (state) {
-	case NM_VPN_CONNECTION_STATE_CONNECT:
-	case NM_VPN_CONNECTION_STATE_PREPARE:
-		tip = g_strdup_printf (_("Starting VPN connection “%s”…"), id);
-		break;
-	case NM_VPN_CONNECTION_STATE_NEED_AUTH:
-		tip = g_strdup_printf (_("User authentication required for VPN connection “%s”…"), id);
-		break;
-	case NM_VPN_CONNECTION_STATE_IP_CONFIG_GET:
-		tip = g_strdup_printf (_("Requesting a VPN address for “%s”…"), id);
-		break;
-	case NM_VPN_CONNECTION_STATE_ACTIVATED:
-		tip = g_strdup_printf (_("VPN connection active"));
-		break;
-	default:
-		break;
+	connection = (NMConnection *) nm_active_connection_get_connection (active);
+	if (connection_is_vpn (connection)) {
+		switch (nm_vpn_connection_get_vpn_state (NM_VPN_CONNECTION (active))) {
+		case NM_VPN_CONNECTION_STATE_CONNECT:
+		case NM_VPN_CONNECTION_STATE_PREPARE:
+			return g_strdup_printf (_("Starting VPN connection “%s”…"), id);
+		case NM_VPN_CONNECTION_STATE_NEED_AUTH:
+			return g_strdup_printf (_("User authentication required for VPN connection “%s”…"), id);
+		case NM_VPN_CONNECTION_STATE_IP_CONFIG_GET:
+			return g_strdup_printf (_("Requesting a VPN address for “%s”…"), id);
+		case NM_VPN_CONNECTION_STATE_ACTIVATED:
+			return g_strdup_printf (_("VPN connection active"));
+		default:
+			break;
+		}
+	} else {
+		device = g_ptr_array_index (nm_active_connection_get_devices (active), 0);
+
+		switch (nm_device_get_state (device)) {
+		case NM_DEVICE_STATE_PREPARE:
+		case NM_DEVICE_STATE_CONFIG:
+			return g_strdup_printf (_("Preparing network connection “%s”…"), id);
+		case NM_DEVICE_STATE_NEED_AUTH:
+			return g_strdup_printf (_("User authentication required for network connection “%s”…"), id);
+		case NM_DEVICE_STATE_IP_CONFIG:
+			return g_strdup_printf (_("Requesting a network address for “%s”…"), id);
+		case NM_DEVICE_STATE_ACTIVATED:
+			return g_strdup_printf (_("Network connection “%s” active"), id);
+		default:
+			break;
+		}
 	}
 
-	return tip;
+	return NULL;
+}
+
+static const char *
+signal_strength (NMApplet *applet, NMActiveConnection *active)
+{
+	NMConnection *connection = (NMConnection *) nm_active_connection_get_connection (active);
+	NMADeviceClass *dclass;
+	NMDevice *device;
+	guint8 strength;
+
+	device = g_ptr_array_index (nm_active_connection_get_devices (active), 0);
+	g_return_val_if_fail (device, "");
+
+	dclass = get_device_class_from_connection (connection, applet);
+	if (!dclass || !dclass->get_signal_strength)
+		return "";
+
+	strength = dclass->get_signal_strength (device, applet);
+	if (strength < 20)
+		return "-signal-none";
+	if (strength < 40)
+		return "-signal-weak";
+	if (strength < 60)
+		return "-signal-ok";
+	if (strength < 80)
+		return "-signal-good";
+	return "-signal-excellent";
 }
 
 static gboolean
 applet_update_icon (gpointer user_data)
 {
+
 	NMApplet *applet = NM_APPLET (user_data);
-	gs_unref_object GdkPixbuf *pixbuf = NULL;
+	NMActiveConnection *active = NULL;
+	NMActiveConnectionState ac_state = NM_ACTIVE_CONNECTION_STATE_DEACTIVATED;
+	NMConnection *connection;
 	NMState state;
-	const char *icon_name, *dev_tip;
-	char *vpn_tip = NULL;
-	gs_free char *icon_name_free = NULL;
+	gs_free char *icon_name = NULL;
+	char *dev_tip = NULL;
 	gs_free char *dev_tip_free = NULL;
-	NMVpnConnectionState vpn_state = NM_VPN_CONNECTION_STATE_UNKNOWN;
 	gboolean nm_running;
-	NMActiveConnection *active_vpn = NULL;
+	GString *name;
 
 	applet->update_icon_id = 0;
 
@@ -2730,65 +2370,75 @@ applet_update_icon (gpointer user_data)
 	switch (state) {
 	case NM_STATE_UNKNOWN:
 	case NM_STATE_ASLEEP:
-		icon_name = "nm-no-connection";
 		dev_tip = _("Networking disabled");
 		break;
 	case NM_STATE_DISCONNECTED:
-		icon_name = "nm-no-connection";
 		dev_tip = _("No network connection");
 		break;
 	default:
-		applet_get_device_icon_for_state (applet, &pixbuf, &icon_name_free, &dev_tip_free);
-		icon_name = icon_name_free;
-		dev_tip = dev_tip_free;
+		active = best_active_connection (applet);
 		break;
 	}
 
-	foo_set_icon (applet, ICON_LAYER_LINK, pixbuf, icon_name);
+	name = g_string_new ("network");
+	if (active) {
+		connection = (NMConnection *) nm_active_connection_get_connection (active);
+		dev_tip = dev_tip_free = get_tip_for_active_connection (active);
+		ac_state = nm_active_connection_get_state (active);
 
-	icon_name = NULL;
-	g_clear_pointer (&icon_name_free, g_free);
-
-	/* VPN state next */
-	active_vpn = applet_get_active_vpn_connection (applet, &vpn_state);
-	if (active_vpn) {
-		switch (vpn_state) {
-		case NM_VPN_CONNECTION_STATE_ACTIVATED:
-			icon_name = "nm-vpn-active-lock";
-#ifdef WITH_APPINDICATOR
-			if (INDICATOR_ENABLED (applet))
-				icon_name = icon_name_free = g_strdup_printf ("%s-secure", app_indicator_get_icon (applet->app_indicator));
-#endif /* WITH_APPINDICATOR */
-			break;
-		case NM_VPN_CONNECTION_STATE_PREPARE:
-		case NM_VPN_CONNECTION_STATE_NEED_AUTH:
-		case NM_VPN_CONNECTION_STATE_CONNECT:
-		case NM_VPN_CONNECTION_STATE_IP_CONFIG_GET:
-			icon_name = icon_name_free = g_strdup_printf ("nm-vpn-connecting%02d", applet->animation_step + 1);
-			applet->animation_step++;
-			if (applet->animation_step >= NUM_VPN_CONNECTING_FRAMES)
-				applet->animation_step = 0;
-			break;
-		default:
-			break;
-		}
-
-		vpn_tip = get_tip_for_vpn (active_vpn, vpn_state, applet);
-		if (vpn_tip && dev_tip) {
-			char *tmp;
-
-			tmp = g_strdup_printf ("%s\n%s", dev_tip, vpn_tip);
-			g_free (vpn_tip);
-			vpn_tip = tmp;
+		if (connection_is_vpn (connection)) {
+			g_string_append (name, "-vpn");
+		} else if (nm_connection_is_type (connection, NM_SETTING_WIRELESS_SETTING_NAME)) {
+			g_string_append (name, "-wireless");
+		} else if (   nm_connection_is_type (connection, NM_SETTING_GSM_SETTING_NAME)
+		           || nm_connection_is_type (connection, NM_SETTING_CDMA_SETTING_NAME)) {
+			g_string_append (name, "-cellular");
+		} else {
+			g_string_append (name, "-wired");
 		}
 	}
-	foo_set_icon (applet, ICON_LAYER_VPN, NULL, icon_name);
+
+	switch (ac_state) {
+	case NM_ACTIVE_CONNECTION_STATE_ACTIVATED:
+		switch (nm_client_get_connectivity (applet->nm_client)) {
+		case NM_CONNECTIVITY_UNKNOWN:
+		case NM_CONNECTIVITY_FULL:
+			g_string_append (name, signal_strength (applet, active));
+			break;
+		case NM_CONNECTIVITY_NONE:
+			g_string_append (name, "-offline");
+			break;
+		case NM_CONNECTIVITY_PORTAL:
+		case NM_CONNECTIVITY_LIMITED:
+			g_string_append (name, "-no-route");
+			break;
+		}
+		break;
+	case NM_ACTIVE_CONNECTION_STATE_ACTIVATING:
+		g_string_append (name, "-acquiring");
+		break;
+	case NM_ACTIVE_CONNECTION_STATE_UNKNOWN:
+	case NM_ACTIVE_CONNECTION_STATE_DEACTIVATING:
+	case NM_ACTIVE_CONNECTION_STATE_DEACTIVATED:
+		g_string_append (name, "-offline");
+		break;
+	}
+
+	g_string_append (name, "-symbolic");
+	icon_name = g_string_free (name, FALSE);
+#ifdef WITH_APPINDICATOR
+	if (INDICATOR_ENABLED (applet)) {
+		app_indicator_set_icon_full (applet->app_indicator, icon_name, applet->tip);
+	}
+	else
+#endif  /* WITH_APPINDICATOR */
+	{
+		gtk_status_icon_set_from_icon_name (applet->status_icon, icon_name);
+	}
 
 	/* update tooltip */
 	g_free (applet->tip);
-	if (vpn_tip)
-		applet->tip = vpn_tip;
-	else if (dev_tip == dev_tip_free) {
+	if (dev_tip == dev_tip_free) {
 		applet->tip = dev_tip_free;
 		dev_tip_free = NULL;
 	} else
@@ -3039,46 +2689,6 @@ applet_agent_cancel_secrets_cb (AppletAgent *agent,
 
 /*****************************************************************************/
 
-static void nma_icons_free (NMApplet *applet)
-{
-	guint i;
-
-	g_return_if_fail (NM_IS_APPLET (applet));
-
-	for (i = 0; i <= ICON_LAYER_MAX; i++)
-		g_clear_object (&applet->icon_layers[i]);
-}
-
-GdkPixbuf *
-nma_icon_check_and_load (const char *name, NMApplet *applet)
-{
-	GError *error = NULL;
-	GdkPixbuf *icon;
-	int scale;
-
-	g_assert (name != NULL);
-	g_assert (applet != NULL);
-
-	/* icon already loaded successfully */
-	if (g_hash_table_lookup_extended (applet->icon_cache, name, NULL, (gpointer) &icon))
-		return icon;
-
-	scale = gdk_window_get_scale_factor (gdk_get_default_root_window ());
-
-	/* Try to load the icon; if the load fails, log the problem, and set
-	 * the icon to the fallback icon if requested.
-	 */
-	if (!(icon = gtk_icon_theme_load_icon_for_scale (applet->icon_theme, name, applet->icon_size, scale, GTK_ICON_LOOKUP_FORCE_SIZE, &error))) {
-		g_warning ("failed to load icon \"%s\": %s", name, error->message);
-		g_clear_error (&error);
-		icon = nm_g_object_ref (applet->fallback_icon);
-	}
-
-	g_hash_table_insert (applet->icon_cache, g_strdup (name), icon);
-
-	return icon;
-}
-
 #include "fallback-icon.h"
 
 static void
@@ -3090,7 +2700,6 @@ nma_icons_reload (NMApplet *applet)
 	g_return_if_fail (applet->icon_size > 0);
 
 	g_hash_table_remove_all (applet->icon_cache);
-	nma_icons_free (applet);
 
 	if (applet->fallback_icon)
 		return;
@@ -3125,8 +2734,6 @@ static void nma_icon_theme_changed (GtkIconTheme *icon_theme, NMApplet *applet)
 
 static void nma_icons_init (NMApplet *applet)
 {
-	gboolean path_appended;
-
 	if (applet->icon_theme) {
 		g_signal_handlers_disconnect_by_func (applet->icon_theme,
 		                                      G_CALLBACK (nma_icon_theme_changed),
@@ -3138,16 +2745,6 @@ static void nma_icons_init (NMApplet *applet)
 		applet->icon_theme = gtk_icon_theme_get_for_screen (gtk_status_icon_get_screen (applet->status_icon));
 	else
 		applet->icon_theme = gtk_icon_theme_get_default ();
-
-	/* If not done yet, append our search path */
-	path_appended = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (applet->icon_theme),
-	                                 "NMAIconPathAppended"));
-	if (path_appended == FALSE) {
-		gtk_icon_theme_append_search_path (applet->icon_theme, ICONDIR);
-		g_object_set_data (G_OBJECT (applet->icon_theme),
-		                   "NMAIconPathAppended",
-		                   GINT_TO_POINTER (TRUE));
-	}
 
 	g_signal_connect (applet->icon_theme, "changed", G_CALLBACK (nma_icon_theme_changed), applet);
 
@@ -3250,7 +2847,7 @@ setup_widgets (NMApplet *applet)
 #ifdef WITH_APPINDICATOR
 	if (with_appindicator) {
 		applet->app_indicator = app_indicator_new ("nm-applet",
-		                                           "nm-no-connection",
+		                                           "network-offline-symbolic",
 		                                           APP_INDICATOR_CATEGORY_SYSTEM_SERVICES);
 		if (!applet->app_indicator)
 			return FALSE;
@@ -3448,7 +3045,6 @@ static void finalize (GObject *object)
 	g_clear_pointer (&applet->icon_cache, g_hash_table_destroy);
 	g_clear_object (&applet->fallback_icon);
 	g_free (applet->tip);
-	nma_icons_free (applet);
 
 	while (g_slist_length (applet->secrets_reqs))
 		applet_secrets_request_free ((SecretsRequest *) applet->secrets_reqs->data);

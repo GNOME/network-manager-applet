@@ -606,43 +606,24 @@ broadband_act_to_mb_act (BroadbandDeviceInfo *info)
 	return MB_TECH_UNKNOWN;
 }
 
-static void
-get_icon (NMDevice *device,
-          NMDeviceState state,
-          NMConnection *connection,
-          GdkPixbuf **out_pixbuf,
-          const char **out_icon_name,
-          char **tip,
-          NMApplet *applet)
+static guint8
+get_signal_strength (NMDevice *device, NMApplet *applet)
 {
 	BroadbandDeviceInfo *info;
 
-	g_return_if_fail (out_icon_name && !*out_icon_name);
-	g_return_if_fail (tip && !*tip);
-
 	if (!applet->mm1) {
 		g_warning ("ModemManager is not available for modem at %s", nm_device_get_udi (device));
-		return;
+		return 0;
 	}
 
 	info = g_object_get_data (G_OBJECT (device), BROADBAND_INFO_TAG);
 	if (!info) {
 		g_warning ("ModemManager is not available for modem at %s",
 		           nm_device_get_udi (device));
-		return;
+		return 0;
 	}
 
-	mobile_helper_get_icon (device,
-	                        state,
-	                        connection,
-	                        out_pixbuf,
-	                        out_icon_name,
-	                        tip,
-	                        applet,
-	                        broadband_state_to_mb_state (info),
-	                        broadband_act_to_mb_act (info),
-	                        mm_modem_get_signal_quality (info->mm_modem, NULL),
-	                        (mm_modem_get_state (info->mm_modem) >= MM_MODEM_STATE_ENABLED));
+	return mm_modem_get_signal_quality (info->mm_modem, NULL);
 }
 
 /********************************************************************/
@@ -808,7 +789,7 @@ notify_connected (NMDevice *device,
 	applet_do_notify_with_pref (applet,
 	                            _("Connection Established"),
 	                            msg ? msg : _("You are now connected to the Mobile Broadband network."),
-	                            "nm-device-wwan",
+	                            "network-cellular-connected-symbolic",
 	                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
 }
 
@@ -1074,7 +1055,7 @@ applet_device_broadband_get_class (NMApplet *applet)
 	dclass->add_menu_item = add_menu_item;
 	dclass->device_added = device_added;
 	dclass->notify_connected = notify_connected;
-	dclass->get_icon = get_icon;
+	dclass->get_signal_strength = get_signal_strength;
 	dclass->get_secrets = get_secrets;
 	dclass->secrets_request_size = sizeof (MobileHelperSecretsInfo);
 

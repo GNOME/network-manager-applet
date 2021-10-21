@@ -98,7 +98,6 @@ cflags = [
   '-DLIBDIR="@0@"'.format(nma_libdir),
   '-DNMALOCALEDIR="@0@"'.format(nma_localedir),
   '-DSYSCONFDIR="@0@"'.format(nma_sysconfdir),
-  '-DICONDIR="@0@"'.format(nma_icondir)
 ]
 
 if enable_selinux

@@ -40,14 +40,7 @@ enum {
 	MB_TECH_LTE,
 };
 
-GdkPixbuf *mobile_helper_get_status_pixbuf (guint32 quality,
-                                            gboolean quality_valid,
-                                            guint32 state,
-                                            guint32 access_tech,
-                                            NMApplet *applet);
-
 const char *mobile_helper_get_quality_icon_name (guint32 quality);
-const char *mobile_helper_get_tech_icon_name (guint32 tech);
 
 /********************************************************************/
 
@@ -77,20 +70,6 @@ typedef struct {
 gboolean mobile_helper_get_secrets (NMDeviceModemCapabilities capabilities,
                                     SecretsRequest *req,
                                     GError **error);
-
-/********************************************************************/
-
-void mobile_helper_get_icon (NMDevice *device,
-                             NMDeviceState state,
-                             NMConnection *connection,
-                             GdkPixbuf **out_pixbuf,
-                             const char **out_icon_name,
-                             char **tip,
-                             NMApplet *applet,
-                             guint32 mb_state,
-                             guint32 mb_tech,
-                             guint32 quality,
-                             gboolean quality_valid);
 
 /********************************************************************/
 

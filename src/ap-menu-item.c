@@ -24,6 +24,7 @@ G_DEFINE_TYPE (NMNetworkMenuItem, nm_network_menu_item, GTK_TYPE_MENU_ITEM);
 
 typedef struct {
 	GtkWidget * ssid;
+	GtkWidget * security;
 	GtkWidget * strength;
 	GtkWidget * hbox;
 
@@ -82,52 +83,21 @@ update_icon (NMNetworkMenuItem *item, NMApplet *applet)
 {
 	NMNetworkMenuItemPrivate *priv = NM_NETWORK_MENU_ITEM_GET_PRIVATE (item);
 	gs_unref_object GdkPixbuf *icon_free = NULL, *icon_free2 = NULL;
-	GdkPixbuf *icon;
-	int icon_size, scale;
 	const char *icon_name = NULL;
 
 	if (priv->is_adhoc)
-		icon_name = "nm-adhoc";
+		icon_name = "network-wireless-hotspot-symbolic";
 	else
 		icon_name = mobile_helper_get_quality_icon_name (priv->int_strength);
 
-	scale = gtk_widget_get_scale_factor (GTK_WIDGET (item));
-	icon_size = 24;
-	if (INDICATOR_ENABLED (applet)) {
-		/* Since app_indicator relies on GdkPixbuf, we should not scale it */
-	} else
-		icon_size *= scale;
+	gtk_image_set_from_icon_name (GTK_IMAGE (priv->strength),
+	                              icon_name,
+	                              GTK_ICON_SIZE_MENU);
 
-	icon = nma_icon_check_and_load (icon_name, applet);
-	if (icon) {
-		if (priv->is_encrypted) {
-			GdkPixbuf *encrypted = nma_icon_check_and_load ("nm-secure-lock", applet);
-
-			if (encrypted) {
-				icon = icon_free = gdk_pixbuf_copy (icon);
-
-				gdk_pixbuf_composite (encrypted, icon, 0, 0,
-				                      gdk_pixbuf_get_width (encrypted),
-				                      gdk_pixbuf_get_height (encrypted),
-				                      0, 0, 1.0, 1.0,
-				                      GDK_INTERP_NEAREST, 255);
-			}
-		}
-
-		/* Scale to menu size if larger so the menu doesn't look awful */
-		if (gdk_pixbuf_get_height (icon) > icon_size || gdk_pixbuf_get_width (icon) > icon_size)
-			icon = icon_free2 = gdk_pixbuf_scale_simple (icon, icon_size, icon_size, GDK_INTERP_BILINEAR);
-	}
-
-	if (INDICATOR_ENABLED (applet)) {
-		/* app_indicator only uses GdkPixbuf */
-		gtk_image_set_from_pixbuf (GTK_IMAGE (priv->strength), icon);
-	} else {
-		cairo_surface_t *surface;
-
-		surface = gdk_cairo_surface_create_from_pixbuf (icon, scale, NULL);
-		gtk_image_set_from_surface (GTK_IMAGE (priv->strength), surface);
-		cairo_surface_destroy (surface);
+	if (priv->is_encrypted) {
+		gtk_image_set_from_icon_name (GTK_IMAGE (priv->security),
+		                              "network-wireless-encrypted-symbolic",
+		                              GTK_ICON_SIZE_MENU);
 	}
 }
 
@@ -317,6 +287,10 @@ nm_network_menu_item_init (NMNetworkMenuItem *item)
 	priv->strength = gtk_image_new ();
 	gtk_box_pack_end (GTK_BOX (priv->hbox), priv->strength, FALSE, TRUE, 0);
 	gtk_widget_show (priv->strength);
+
+	priv->security = gtk_image_new ();
+	gtk_box_pack_end (GTK_BOX (priv->hbox), priv->security, FALSE, TRUE, 0);
+	gtk_widget_show (priv->security);
 
 	gtk_widget_show (priv->ssid);
 	gtk_widget_show (priv->hbox);

@@ -1110,7 +1110,7 @@ idle_check_avail_access_point_notification (gpointer datap)
 	                  NOTIFY_URGENCY_LOW,
 	                  _("Wi-Fi Networks Available"),
 	                  _("Use the network menu to connect to a Wi-Fi network"),
-	                  "nm-device-wireless",
+	                  "network-wireless-symbolic",
 	                  "dont-show",
 	                  _("Don’t show this message again"),
 	                  wifi_available_dont_show_cb,
@@ -1274,6 +1274,21 @@ wifi_device_state_changed (NMDevice *device,
 		queue_avail_access_point_notification (device);
 }
 
+static const char *
+wifi_quality_icon_name (guint32 quality)
+{
+	if (quality > 80)
+		return "network-wireless-signal-excellent-symbolic";
+	else if (quality > 55)
+		return "network-wireless-signal-good-symbolic";
+	else if (quality > 30)
+		return "network-wireless-signal-ok-symbolic";
+	else if (quality > 5)
+		return "network-wireless-signal-weak-symbolic";
+	else
+		return "network-wireless-signal-none-symbolic";
+}
+
 static void
 wifi_notify_connected (NMDevice *device,
                        const char *msg,
@@ -1288,10 +1303,12 @@ wifi_notify_connected (NMDevice *device,
 
 	esc_ssid = get_ssid_utf8 (ap);
 
+	nm_access_point_get_strength (ap);
+
 	if (!ap)
-		signal_strength_icon = "nm-device-wireless";
+		signal_strength_icon = "network-wireless-symbolic";
 	else
-		signal_strength_icon = mobile_helper_get_quality_icon_name (nm_access_point_get_strength (ap));
+		signal_strength_icon = wifi_quality_icon_name (nm_access_point_get_strength (ap));
 
 	ssid_msg = g_strdup_printf (_("You are now connected to the Wi-Fi network “%s”."), esc_ssid);
 	applet_do_notify_with_pref (applet, _("Connection Established"),
@@ -1301,64 +1318,17 @@ wifi_notify_connected (NMDevice *device,
 	g_free (esc_ssid);
 }
 
-static void
-wifi_get_icon (NMDevice *device,
-               NMDeviceState state,
-               NMConnection *connection,
-               GdkPixbuf **out_pixbuf,
-               const char **out_icon_name,
-               char **tip,
-               NMApplet *applet)
+static guint8
+wifi_get_signal_strength (NMDevice *device, NMApplet *applet)
 {
-	NMSettingConnection *s_con;
 	NMAccessPoint *ap;
-	const char *id;
-	guint8 strength;
-
-	g_return_if_fail (out_icon_name && !*out_icon_name);
-	g_return_if_fail (tip && !*tip);
 
 	ap = _active_ap_get (applet, device);
+	if (!ap)
+		return 0;
 
-	id = nm_device_get_iface (device);
-	if (connection) {
-		s_con = nm_connection_get_setting_connection (connection);
-		id = nm_setting_connection_get_id (s_con);
-	}
-
-	switch (state) {
-	case NM_DEVICE_STATE_PREPARE:
-		*tip = g_strdup_printf (_("Preparing Wi-Fi network connection “%s”…"), id);
-		break;
-	case NM_DEVICE_STATE_CONFIG:
-		*tip = g_strdup_printf (_("Configuring Wi-Fi network connection “%s”…"), id);
-		break;
-	case NM_DEVICE_STATE_NEED_AUTH:
-		*tip = g_strdup_printf (_("User authentication required for Wi-Fi network “%s”…"), id);
-		break;
-	case NM_DEVICE_STATE_IP_CONFIG:
-		*tip = g_strdup_printf (_("Requesting a Wi-Fi network address for “%s”…"), id);
-		break;
-	case NM_DEVICE_STATE_ACTIVATED:
-		strength = ap ? nm_access_point_get_strength (ap) : 0;
-		strength = MIN (strength, 100);
-
-		*out_icon_name = mobile_helper_get_quality_icon_name (strength);
-
-		if (ap) {
-			char *ssid = get_ssid_utf8 (ap);
-
-			*tip = g_strdup_printf (_("Wi-Fi network connection “%s” active: %s (%d%%)"),
-			                        id, ssid, strength);
-			g_free (ssid);
-		} else
-			*tip = g_strdup_printf (_("Wi-Fi network connection “%s” active"), id);
-		break;
-	default:
-		break;
-	}
+	return nm_access_point_get_strength (ap);
 }
-
 
 static void
 activate_existing_cb (GObject *client,
@@ -1665,7 +1635,7 @@ applet_device_wifi_get_class (NMApplet *applet)
 	dclass->device_added = wifi_device_added;
 	dclass->device_state_changed = wifi_device_state_changed;
 	dclass->notify_connected = wifi_notify_connected;
-	dclass->get_icon = wifi_get_icon;
+	dclass->get_signal_strength = wifi_get_signal_strength;
 	dclass->get_secrets = wifi_get_secrets;
 	dclass->secrets_request_size = sizeof (NMWifiInfo);
 

@@ -165,20 +165,9 @@ nm_mb_menu_item_new (const char *connection_name,
 
 	/* And the strength icon, if we have strength information at all */
 	if (enabled && strength) {
-		const char *icon_name = mobile_helper_get_quality_icon_name (strength);
-		GdkPixbuf *icon = nma_icon_check_and_load (icon_name, applet);
-
-		if (INDICATOR_ENABLED (applet)) {
-			/* app_indicator only uses GdkPixbuf */
-			gtk_image_set_from_pixbuf (GTK_IMAGE (priv->strength), icon);
-		} else {
-			int scale = gtk_widget_get_scale_factor (GTK_WIDGET (priv->strength));
-			cairo_surface_t *surface;
-
-			surface = gdk_cairo_surface_create_from_pixbuf (icon, scale, NULL);
-			gtk_image_set_from_surface (GTK_IMAGE (priv->strength), surface);
-			cairo_surface_destroy (surface);
-		}
+		gtk_image_set_from_icon_name (GTK_IMAGE (priv->strength),
+		                              mobile_helper_get_quality_icon_name (strength),
+		                              GTK_ICON_SIZE_MENU);
 	}
 
 	return GTK_WIDGET (item);

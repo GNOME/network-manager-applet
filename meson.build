@@ -32,7 +32,6 @@ nma_sysconfdir = join_paths(nma_prefix, get_option('sysconfdir'))
 
 nma_appdir = join_paths(nma_datadir, 'applications')
 nma_autostartdir = join_paths(nma_sysconfdir, 'xdg', 'autostart')
-nma_icondir = join_paths(nma_datadir, 'icons')
 
 soversion = 0
 current = 0
@@ -234,7 +233,6 @@ po_dir = join_paths(meson.source_root(), 'po')
 top_inc = include_directories('.')
 
 subdir('po')
-subdir('icons')
 subdir('shared')
 subdir('src')
 subdir('man')

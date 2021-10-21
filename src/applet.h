@@ -58,10 +58,6 @@ typedef struct {
 #define PREF_SUPPRESS_WIFI_NETWORKS_AVAILABLE     "suppress-wireless-networks-available"
 #define PREF_SHOW_APPLET                          "show-applet"
 
-#define ICON_LAYER_LINK                           0
-#define ICON_LAYER_VPN                            1
-#define ICON_LAYER_MAX                            ICON_LAYER_VPN
-
 typedef struct NMADeviceClass NMADeviceClass;
 
 /*
@@ -98,19 +94,10 @@ typedef struct {
 	guint           update_icon_id;
 	char *          tip;
 
-	/* Animation stuff */
-	int             animation_step;
-	guint           animation_id;
-#define NUM_CONNECTING_FRAMES 11
-#define NUM_VPN_CONNECTING_FRAMES 14
-
 	GtkIconTheme *  icon_theme;
 	GHashTable *    icon_cache;
 	GdkPixbuf *     fallback_icon;
 	int             icon_size;
-
-	/* Active status icon pixbufs */
-	GdkPixbuf *     icon_layers[ICON_LAYER_MAX + 1];
 
 	/* Direct UI elements */
 #ifdef WITH_APPINDICATOR
@@ -204,16 +191,7 @@ struct NMADeviceClass {
 	                                        const char *msg,
 	                                        NMApplet *applet);
 
-	/* Device class is expected to pass a *referenced* pixbuf, which will
-	 * be unrefed by the icon code.  This allows the device class to create
-	 * a composited pixbuf if necessary and pass the reference to the caller.
-	 */
-	void           (*get_icon)             (NMDevice *device,
-	                                        NMDeviceState state,
-	                                        NMConnection *connection,
-	                                        GdkPixbuf **out_pixbuf,
-	                                        const char **out_icon_name,
-	                                        char **tip,
+	guint8         (*get_signal_strength)  (NMDevice *device,
 	                                        NMApplet *applet);
 
 	size_t         secrets_request_size;
@@ -279,9 +257,6 @@ void applet_do_notify_with_pref (NMApplet *applet,
 GtkWidget * applet_new_menu_item_helper (NMConnection *connection,
                                          NMConnection *active,
                                          gboolean add_active);
-
-GdkPixbuf * nma_icon_check_and_load (const char *name,
-                                     NMApplet *applet);
 
 gboolean applet_wifi_connect_to_hidden_network (NMApplet *applet);
 gboolean applet_wifi_create_wifi_network (NMApplet *applet);

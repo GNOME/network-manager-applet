@@ -59,7 +59,6 @@ cflags = [
   '-DNMALOCALEDIR="@0@"'.format(nma_localedir),
   '-DSYSCONFDIR="@0@"'.format(nma_sysconfdir),
   '-DAUTOSTARTDIR="@0@"'.format(nma_autostartdir),
-  '-DICONDIR="@0@"'.format(nma_icondir),
   '-DG_LOG_DOMAIN="@0@"'.format(nma_name)
 ]
 
