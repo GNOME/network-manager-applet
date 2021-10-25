@@ -234,6 +234,28 @@ EXTRA_DIST += src/utils/meson.build
 
 ###############################################################################
 
+check_PROGRAMS_norun += src/tests/ethernet-dialog
+
+src_tests_ethernet_dialog_SOURCES = \
+	src/applet-resources.h \
+	src/applet-resources.c \
+	src/applet-dialogs.c \
+	src/applet-dialogs.h \
+	src/ethernet-dialog.c \
+	src/ethernet-dialog.h \
+	src/tests/ethernet-dialog.c
+
+src_tests_ethernet_dialog_CPPFLAGS = \
+	"-I$(srcdir)/src/" \
+	$(src_nm_applet_CPPFLAGS)
+
+src_tests_ethernet_dialog_LDADD = \
+	$(src_nm_applet_LDADD)
+
+EXTRA_DIST += src/tests/meson.build
+
+###############################################################################
+
 wireless_security_c_real = \
 	src/wireless-security/eap-method.h \
 	src/wireless-security/eap-method.c

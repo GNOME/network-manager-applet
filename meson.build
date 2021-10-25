@@ -237,6 +237,7 @@ subdir('po')
 subdir('icons')
 subdir('shared')
 subdir('src')
+subdir('src/tests')
 subdir('man')
 
 i18n = import('i18n')

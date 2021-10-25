@@ -27,11 +27,13 @@ resource_data = files(
   'info.ui'
 )
 
-sources += gnome.compile_resources(
+resource_sources = gnome.compile_resources(
   'applet-resources',
   'applet.gresource.xml',
   dependencies: resource_data
 )
+
+sources += resource_sources
 
 incs = [
   top_inc,
