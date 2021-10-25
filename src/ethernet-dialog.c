@@ -47,6 +47,9 @@ dialog_set_security (NMConnection *connection,
 	if (G_IS_INITIALLY_UNOWNED (ws))
 		g_object_ref_sink (ws);
 
+	nma_ws_add_to_size_group (NMA_WS (ws), GTK_SIZE_GROUP (
+		gtk_builder_get_object (builder, "size_group")));
+
 	/* Remove any previous wireless security widgets */
 	children = gtk_container_get_children (GTK_CONTAINER (box));
 	for (iter = children; iter; iter = iter->next)
