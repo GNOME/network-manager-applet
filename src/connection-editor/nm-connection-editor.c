@@ -736,8 +736,10 @@ static void
 page_initialized (CEPage *page, GError *error, gpointer user_data)
 {
 	NMConnectionEditor *editor = NM_CONNECTION_EDITOR (user_data);
-	GtkWidget *widget, *parent;
 	GtkNotebook *notebook;
+	GtkWidget *parent;
+	GtkWidget *scrolled;
+	GtkWidget *widget;
 	GtkWidget *label;
 	GList *children, *iter;
 	gpointer order, child_order;
@@ -755,10 +757,28 @@ page_initialized (CEPage *page, GError *error, gpointer user_data)
 	/* Add the page to the UI */
 	notebook = GTK_NOTEBOOK (gtk_builder_get_object (editor->builder, "notebook"));
 	label = gtk_label_new (ce_page_get_title (page));
+
 	widget = ce_page_get_page (page);
 	parent = gtk_widget_get_parent (widget);
 	if (parent)
 		gtk_container_remove (GTK_CONTAINER (parent), widget);
+
+	if (CE_IS_PAGE_VPN (page)) {
+		if (ce_page_vpn_can_export (CE_PAGE_VPN (page)))
+			gtk_widget_show (editor->export_button);
+
+		scrolled = gtk_scrolled_window_new (NULL, NULL);
+		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+		gtk_container_add (GTK_CONTAINER (scrolled), widget);
+		gtk_widget_show (scrolled);
+		widget = scrolled;
+
+#if GTK_CHECK_VERSION(3,22,0)
+		NM_LIBNM_COMPAT_UNDEPRECATE (
+			gtk_scrolled_window_set_propagate_natural_height (GTK_SCROLLED_WINDOW (scrolled),
+									  TRUE));
+#endif
+	}
 
 	order = g_object_get_data (G_OBJECT (page), ORDER_TAG);
 	g_object_set_data (G_OBJECT (widget), ORDER_TAG, order);
@@ -772,9 +792,6 @@ page_initialized (CEPage *page, GError *error, gpointer user_data)
 	g_list_free (children);
 
 	gtk_notebook_insert_page (notebook, widget, label, i);
-
-	if (CE_IS_PAGE_VPN (page) && ce_page_vpn_can_export (CE_PAGE_VPN (page)))
-		gtk_widget_show (editor->export_button);
 
 	/* Move the page from the initializing list to the main page list */
 	editor->initializing_pages = g_slist_remove (editor->initializing_pages, page);
