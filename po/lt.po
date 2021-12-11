@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: NetworkManager HEAD\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
 "issues\n"
-"POT-Creation-Date: 2021-07-08 18:17+0000\n"
-"PO-Revision-Date: 2021-09-07 21:23+0300\n"
+"POT-Creation-Date: 2021-11-07 12:42+0000\n"
+"PO-Revision-Date: 2021-12-11 21:38+0200\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -116,7 +116,7 @@ msgstr ""
 "reikšmė „%s“, kuri priklauso tipui „%s“, yra netinkama arba už savybės „%s“, "
 "priklausančios tipui „%s“, ribų"
 
-#: src/8021x.ui:11 src/ethernet-dialog.c:87
+#: src/8021x.ui:7 src/ethernet-dialog.c:90
 msgid "802.1X authentication"
 msgstr "802.1X tapatybės nustatymas"
 
@@ -182,7 +182,7 @@ msgid "Mobile Broadband"
 msgstr "Mobilusis plačiajuostis ryšys"
 
 #: src/applet-device-broadband.c:780 src/applet-device-bt.c:61
-#: src/applet-device-ethernet.c:107 src/applet-device-wifi.c:894
+#: src/applet-device-ethernet.c:107
 msgid "Available"
 msgstr "Prieinama"
 
@@ -192,7 +192,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "Naujas mobilusis plačiajuostis ryšys…"
 
 #: src/applet-device-broadband.c:809 src/applet-device-bt.c:75
-#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1297
+#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1269
 msgid "Connection Established"
 msgstr "Prisijungta"
 
@@ -324,7 +324,7 @@ msgstr "Sukurti _naują belaidį tinklą…"
 msgid "(none)"
 msgstr "(nėra)"
 
-#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1397
+#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1369
 msgid "Failed to add new connection"
 msgstr "Nepavyko pridėti naujo ryšio"
 
@@ -332,93 +332,94 @@ msgstr "Nepavyko pridėti naujo ryšio"
 msgid "Insufficient privileges."
 msgstr "Nepakanka teisių."
 
-#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1379
-#: src/applet-device-wifi.c:1402 src/applet.c:417 src/applet.c:506
+#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1351
+#: src/applet-device-wifi.c:1374 src/applet.c:417 src/applet.c:506
 msgid "Connection failure"
 msgstr "Ryšio problema"
 
-#: src/applet-device-wifi.c:826
+#: src/applet-device-wifi.c:827
 #, c-format
 msgid "Wi-Fi Networks (%s)"
 msgstr "Belaidžiai tinklai (%s)"
 
-#: src/applet-device-wifi.c:828
+#: src/applet-device-wifi.c:829
 #, c-format
 msgid "Wi-Fi Network (%s)"
 msgstr "Belaidis tinklas (%s)"
 
-#: src/applet-device-wifi.c:830
+#: src/applet-device-wifi.c:831
 msgid "Wi-Fi Network"
 msgid_plural "Wi-Fi Networks"
 msgstr[0] "Belaidis tinklas"
 msgstr[1] "Belaidžiai tinklai"
 msgstr[2] "Belaidžiai tinklai"
 
-#: src/applet-device-wifi.c:859
+#: src/applet-device-wifi.c:860
 msgid "Wi-Fi is disabled"
 msgstr "Belaidis tinklas išjungtas"
 
-#: src/applet-device-wifi.c:860
+#: src/applet-device-wifi.c:861
 msgid "Wi-Fi is disabled by hardware switch"
 msgstr "Belaidis tinklas išjungtas aparatiškai"
 
-#: src/applet-device-wifi.c:921
-msgid "More networks"
-msgstr "Daugiau tinklų"
+#: src/applet-device-wifi.c:887
+#| msgid "Available"
+msgid "_Available networks"
+msgstr "Priein_ami tinklai"
 
-#: src/applet-device-wifi.c:1111
+#: src/applet-device-wifi.c:1083
 msgid "Wi-Fi Networks Available"
 msgstr "Yra belaidžių tinklų"
 
-#: src/applet-device-wifi.c:1112
+#: src/applet-device-wifi.c:1084
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr ""
 "Norėdami prisijungti prie belaidžio tinklo, naudokite belaidžio tinklo meniu"
 
-#: src/applet-device-wifi.c:1115 src/applet.c:828
+#: src/applet-device-wifi.c:1087 src/applet.c:828
 msgid "Don’t show this message again"
 msgstr "Daugiau neberodyti šio pranešimo"
 
-#: src/applet-device-wifi.c:1296
+#: src/applet-device-wifi.c:1268
 #, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "Esate prisijungę prie belaidžio tinklo „%s“."
 
-#: src/applet-device-wifi.c:1331
+#: src/applet-device-wifi.c:1303
 #, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "Ruošiamas belaidis tinklo ryšys „%s“…"
 
-#: src/applet-device-wifi.c:1334
+#: src/applet-device-wifi.c:1306
 #, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "Konfigūruojamas belaidis tinklo ryšys „%s“…"
 
-#: src/applet-device-wifi.c:1337
+#: src/applet-device-wifi.c:1309
 #, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "Belaidis tinklas „%s“ reikalauja nustatyti jūsų tapatybę…"
 
-#: src/applet-device-wifi.c:1340
+#: src/applet-device-wifi.c:1312
 #, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "Užklausiamas belaidžio tinklo adresas, skirtas „%s“…"
 
-#: src/applet-device-wifi.c:1351
+#: src/applet-device-wifi.c:1323
 #, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "Belaidžio tinklo ryšys „%s“ aktyvus: %s (%d%%)"
 
-#: src/applet-device-wifi.c:1355
+#: src/applet-device-wifi.c:1327
 #, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "Belaidis tinklo ryšys „%s“ aktyvus"
 
-#: src/applet-device-wifi.c:1374
+#: src/applet-device-wifi.c:1346
 msgid "Failed to activate connection"
 msgstr "Nepavyko suaktyvinti ryšio"
 
-#: src/applet-device-wifi.c:1376 src/applet-device-wifi.c:1399 src/applet.c:414
+#: src/applet-device-wifi.c:1348 src/applet-device-wifi.c:1371 src/applet.c:414
 #: src/applet.c:468 src/applet.c:503
 msgid "Unknown error"
 msgstr "Nežinoma klaida"
@@ -2127,7 +2128,6 @@ msgid "C_KN"
 msgstr "C_KN"
 
 #: src/connection-editor/ce-page-macsec.ui:206
-#| msgid " The pre-shared Connectivity-association Key Name"
 msgid "The pre-shared Connectivity-association Key Name"
 msgstr "Iš anksto bendrinamo Connectivity-association rakto pavadinimas"
 
@@ -3234,7 +3234,7 @@ msgstr "WireGuard"
 
 #: src/connection-editor/connection-helpers.c:112
 #: src/connection-editor/connection-helpers.c:374
-#: src/connection-editor/page-vpn.c:86
+#: src/connection-editor/page-vpn.c:92
 msgid "VPN"
 msgstr "VPN"
 
@@ -3396,11 +3396,11 @@ msgstr ""
 "Įspėjimas: ryšyje yra kai kurios redaktoriaus nepalaikomos savybės. Įrašius, "
 "jos bus išvalytos."
 
-#: src/connection-editor/nm-connection-editor.c:749
+#: src/connection-editor/nm-connection-editor.c:751
 msgid "Error initializing editor"
 msgstr "Klaida inicijuojant redaktorių"
 
-#: src/connection-editor/nm-connection-editor.c:1159
+#: src/connection-editor/nm-connection-editor.c:1176
 msgid "Connection add failed"
 msgstr "Nepavyko pridėti ryšio"
 
@@ -4054,25 +4054,25 @@ msgstr "Nepavyko įkelti „%s“ VPN redaktoriaus įskiepio (%s)."
 msgid "unknown failure"
 msgstr "nežinoma klaida"
 
-#: src/connection-editor/page-vpn.c:88
+#: src/connection-editor/page-vpn.c:94
 msgid "Could not load VPN user interface."
 msgstr "Nepavyko įkelti VPN naudotojo sąsajos."
 
-#: src/connection-editor/page-vpn.c:103
+#: src/connection-editor/page-vpn.c:109
 #, c-format
 msgid "Could not find VPN plugin for “%s”."
 msgstr "Nepavyko rasti „%s“ VPN įskiepio."
 
-#: src/connection-editor/page-vpn.c:185
+#: src/connection-editor/page-vpn.c:191
 #, c-format
 msgid "VPN connection %d"
 msgstr "VPN ryšys %d"
 
-#: src/connection-editor/page-vpn.c:191
+#: src/connection-editor/page-vpn.c:197
 msgid "Choose a VPN Connection Type"
 msgstr "Pasirinkite VPN ryšio tipą"
 
-#: src/connection-editor/page-vpn.c:192
+#: src/connection-editor/page-vpn.c:198
 msgid ""
 "Select the type of VPN you wish to use for the new connection. If the type "
 "of VPN connection you wish to create does not appear in the list, you may "
@@ -4240,9 +4240,6 @@ msgid "Usage:"
 msgstr "Naudojimas:"
 
 #: src/main.c:30
-#| msgid ""
-#| "This program is a component of NetworkManager (https://wiki.gnome.org/"
-#| "Projects/NetworkManager/)."
 msgid ""
 "This program is a component of NetworkManager (https://networkmanager.dev)."
 msgstr ""
@@ -4371,6 +4368,9 @@ msgstr "PEM liudijimai (*.pem, *.crt, *.cer)"
 #: src/utils/utils.c:546
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "DER, PEM ar PKCS#12 privatieji raktai (*.der, *.pem, *.p12, *.key)"
+
+#~ msgid "More networks"
+#~ msgstr "Daugiau tinklų"
 
 #~ msgid "missing EAP-FAST PAC file"
 #~ msgstr "trūksta EAP-FAST PAC failo"
