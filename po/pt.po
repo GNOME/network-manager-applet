@@ -8,18 +8,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 3.8\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
-"applet/\n"
-"POT-Creation-Date: 2021-07-05 11:47+0200\n"
-"PO-Revision-Date: 2015-12-19 08:19+0000\n"
-"Last-Translator: Pedro Albuquerque <palbuquerque73@gmail.com>\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
+"issues\n"
+"POT-Creation-Date: 2021-11-07 12:42+0000\n"
+"PO-Revision-Date: 2022-01-04 14:33+0000\n"
+"Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Português <palbuquerque73@gmail.com>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\\n\n"
-"X-Generator: Gtranslator 2.91.6\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3258
 msgid "Network"
@@ -28,6 +28,10 @@ msgstr "Rede"
 #: nm-applet.desktop.in:4
 msgid "Manage your network connections"
 msgstr "Controle as suas ligações de rede"
+
+#: nm-applet.desktop.in:5
+msgid "nm-device-wireless"
+msgstr ""
 
 #: nm-connection-editor.appdata.xml.in:7
 msgid "NetworkManager"
@@ -68,6 +72,10 @@ msgstr "Configuração_manual"
 msgid "Manage and change your network connection settings"
 msgstr "Gerir e alterar as suas definições da ligação de rede"
 
+#: nm-connection-editor.desktop.in:5
+msgid "preferences-system-network"
+msgstr ""
+
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
 msgid "object class '%s' has no property named '%s'"
@@ -101,7 +109,7 @@ msgid ""
 "type '%s'"
 msgstr ""
 
-#: src/8021x.ui:11 src/ethernet-dialog.c:87
+#: src/8021x.ui:7 src/ethernet-dialog.c:90
 msgid "802.1X authentication"
 msgstr "Autenticação 802.1X"
 
@@ -169,7 +177,7 @@ msgid "Mobile Broadband"
 msgstr "Banda larga móvel"
 
 #: src/applet-device-broadband.c:780 src/applet-device-bt.c:61
-#: src/applet-device-ethernet.c:107 src/applet-device-wifi.c:894
+#: src/applet-device-ethernet.c:107
 msgid "Available"
 msgstr "Disponível"
 
@@ -180,7 +188,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "Nova ligação de banda larga móvel"
 
 #: src/applet-device-broadband.c:809 src/applet-device-bt.c:75
-#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1297
+#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1269
 msgid "Connection Established"
 msgstr "Ligação estabelecida"
 
@@ -316,7 +324,7 @@ msgstr "Criar uma nova rede Wi-Fi"
 msgid "(none)"
 msgstr "(nenhum)"
 
-#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1397
+#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1369
 msgid "Failed to add new connection"
 msgstr "Falha ao adicionar uma nova ligação"
 
@@ -324,92 +332,94 @@ msgstr "Falha ao adicionar uma nova ligação"
 msgid "Insufficient privileges."
 msgstr ""
 
-#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1379
-#: src/applet-device-wifi.c:1402 src/applet.c:417 src/applet.c:506
+#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1351
+#: src/applet-device-wifi.c:1374 src/applet.c:417 src/applet.c:506
 msgid "Connection failure"
 msgstr "Ligação falhou"
 
-#: src/applet-device-wifi.c:826
+#: src/applet-device-wifi.c:827
 #, c-format
 msgid "Wi-Fi Networks (%s)"
 msgstr "Redes Wi-Fi (%s)"
 
-#: src/applet-device-wifi.c:828
+#: src/applet-device-wifi.c:829
 #, c-format
 msgid "Wi-Fi Network (%s)"
 msgstr "Rede Wi-Fi (%s)"
 
-#: src/applet-device-wifi.c:830
+#: src/applet-device-wifi.c:831
 msgid "Wi-Fi Network"
 msgid_plural "Wi-Fi Networks"
 msgstr[0] "Rede Wi-Fi"
 msgstr[1] "Redes Wi-Fi"
 
-#: src/applet-device-wifi.c:859
+#: src/applet-device-wifi.c:860
 msgid "Wi-Fi is disabled"
 msgstr "Wi-Fi está desativada"
 
-#: src/applet-device-wifi.c:860
+#: src/applet-device-wifi.c:861
 msgid "Wi-Fi is disabled by hardware switch"
 msgstr "Wi-Fi está desativada por interruptor físico"
 
-#: src/applet-device-wifi.c:921
-msgid "More networks"
-msgstr "Mais redes"
+#: src/applet-device-wifi.c:887
+#, fuzzy
+#| msgid "A_vailable to all users"
+msgid "_Available networks"
+msgstr "_Disponível para todos os utilizadores"
 
-#: src/applet-device-wifi.c:1111
+#: src/applet-device-wifi.c:1083
 msgid "Wi-Fi Networks Available"
 msgstr "Redes Wi-Fi disponíveis"
 
-#: src/applet-device-wifi.c:1112
+#: src/applet-device-wifi.c:1084
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Use o menu de rede para ligar a uma rede Wi-Fi"
 
-#: src/applet-device-wifi.c:1115 src/applet.c:828
+#: src/applet-device-wifi.c:1087 src/applet.c:828
 #, fuzzy
 msgid "Don’t show this message again"
 msgstr "Não mostrar esta mensagem novamente"
 
-#: src/applet-device-wifi.c:1296
+#: src/applet-device-wifi.c:1268
 #, fuzzy, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "Encontra-se agora ligado à rede Wi-Fi \"%s\"."
 
-#: src/applet-device-wifi.c:1331
+#: src/applet-device-wifi.c:1303
 #, fuzzy, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "A preparar a ligação de rede Wi-Fi \"%s\"..."
 
-#: src/applet-device-wifi.c:1334
+#: src/applet-device-wifi.c:1306
 #, fuzzy, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "A configurar a ligação de rede Wi-Fi \"%s\"..."
 
-#: src/applet-device-wifi.c:1337
+#: src/applet-device-wifi.c:1309
 #, fuzzy, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "Autenticação de usador necessária para a rede Wi-Fi \"%s\"..."
 
-#: src/applet-device-wifi.c:1340
+#: src/applet-device-wifi.c:1312
 #, fuzzy, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "A pedir um endereço de rede Wi-Fi para \"%s\"..."
 
-#: src/applet-device-wifi.c:1351
+#: src/applet-device-wifi.c:1323
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "Ligação de rede Wi-Fi \"%s\" ativa: %s (%d%%)"
 
-#: src/applet-device-wifi.c:1355
+#: src/applet-device-wifi.c:1327
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "Ligação de rede Wi-Fi \"%s\" ativa"
 
-#: src/applet-device-wifi.c:1374
+#: src/applet-device-wifi.c:1346
 msgid "Failed to activate connection"
 msgstr "Falha ao ativar a ligação"
 
-#: src/applet-device-wifi.c:1376 src/applet-device-wifi.c:1399 src/applet.c:414
+#: src/applet-device-wifi.c:1348 src/applet-device-wifi.c:1371 src/applet.c:414
 #: src/applet.c:468 src/applet.c:503
 msgid "Unknown error"
 msgstr "Erro desconhecido"
@@ -627,7 +637,8 @@ msgstr "Página web do Gestor de redes"
 msgid "translator-credits"
 msgstr ""
 "Filipe Gomes <filipefgomes@gmail.com>\n"
-"Duarte Loreto <happyguy_pt@hotmail.com>"
+"Duarte Loreto <happyguy_pt@hotmail.com>\n"
+"Hugo Carvalho <hugokarvalho@hotmail.com>"
 
 #: src/applet-dialogs.c:1147
 msgid ""
@@ -1672,11 +1683,11 @@ msgstr "10 Gb/s"
 
 #: src/connection-editor/ce-page-ethernet.ui:60
 msgid "Half"
-msgstr ""
+msgstr "Metade"
 
 #: src/connection-editor/ce-page-ethernet.ui:63
 msgid "Full"
-msgstr ""
+msgstr "Completa"
 
 #: src/connection-editor/ce-page-ethernet.ui:74
 #: src/connection-editor/page-ip6.c:149
@@ -1787,7 +1798,7 @@ msgstr ""
 
 #: src/connection-editor/ce-page-general.ui:29
 msgid "Yes"
-msgstr ""
+msgstr "Sim"
 
 #: src/connection-editor/ce-page-general.ui:32
 #, fuzzy
@@ -1850,39 +1861,39 @@ msgstr "Modo de _Transporte:"
 
 #: src/connection-editor/ce-page-ip-tunnel.ui:17
 msgid "IPIP"
-msgstr ""
+msgstr "IPIP"
 
 #: src/connection-editor/ce-page-ip-tunnel.ui:20
 msgid "GRE"
-msgstr ""
+msgstr "GRE"
 
 #: src/connection-editor/ce-page-ip-tunnel.ui:23
 msgid "SIT"
-msgstr ""
+msgstr "SIT"
 
 #: src/connection-editor/ce-page-ip-tunnel.ui:26
 msgid "ISATAP"
-msgstr ""
+msgstr "ISATAP"
 
 #: src/connection-editor/ce-page-ip-tunnel.ui:29
 msgid "VTI"
-msgstr ""
+msgstr "VTI"
 
 #: src/connection-editor/ce-page-ip-tunnel.ui:32
 msgid "IP6IP6"
-msgstr ""
+msgstr "IP6IP6"
 
 #: src/connection-editor/ce-page-ip-tunnel.ui:35
 msgid "IPIP6"
-msgstr ""
+msgstr "IPIP6"
 
 #: src/connection-editor/ce-page-ip-tunnel.ui:38
 msgid "IP6GRE"
-msgstr ""
+msgstr "IP6GRE"
 
 #: src/connection-editor/ce-page-ip-tunnel.ui:41
 msgid "VTI6"
-msgstr ""
+msgstr "VTI6"
 
 #: src/connection-editor/ce-page-ip-tunnel.ui:61
 #, fuzzy
@@ -2005,7 +2016,7 @@ msgstr ""
 #: src/connection-editor/ce-page-ip4.ui:333
 #: src/connection-editor/ce-page-ip6.ui:405
 msgid "_Routes…"
-msgstr "_Rotas..."
+msgstr "_Rotas…"
 
 #. TRANSLATORS: Default zone set for firewall, when no zone is selected
 #: src/connection-editor/ce-page-ip6.ui:35
@@ -2029,7 +2040,7 @@ msgstr "Ativado (preferir endereço temporário)"
 
 #: src/connection-editor/ce-page-ip6.ui:55
 msgid "EUI64"
-msgstr ""
+msgstr "EUI64"
 
 #: src/connection-editor/ce-page-ip6.ui:58
 #, fuzzy
@@ -2080,7 +2091,7 @@ msgstr ""
 
 #: src/connection-editor/ce-page-macsec.ui:12
 msgid "PSK"
-msgstr ""
+msgstr "PSK"
 
 #: src/connection-editor/ce-page-macsec.ui:15
 #: src/connection-editor/page-ppp.c:115
@@ -2151,7 +2162,7 @@ msgid "C_KN"
 msgstr ""
 
 #: src/connection-editor/ce-page-macsec.ui:206
-msgid " The pre-shared Connectivity-association Key Name"
+msgid "The pre-shared Connectivity-association Key Name"
 msgstr ""
 
 #: src/connection-editor/ce-page-macsec.ui:217
@@ -2223,7 +2234,7 @@ msgstr "Permitir _Roaming se a rede doméstica não estiver disponível"
 
 #: src/connection-editor/ce-page-mobile.ui:303
 msgid "Sho_w passwords"
-msgstr "_Mostrar senhas"
+msgstr "_Mostrar palavras-passe"
 
 #: src/connection-editor/ce-page-ppp.ui:24
 msgid "Authentication"
@@ -2236,7 +2247,7 @@ msgstr "Métodos permitidos:"
 
 #: src/connection-editor/ce-page-ppp.ui:89
 msgid "Configure _Methods…"
-msgstr "_Métodos de configuração..."
+msgstr "Métodos de configuração…"
 
 #: src/connection-editor/ce-page-ppp.ui:132
 msgid "Compression"
@@ -3027,23 +3038,23 @@ msgstr "automático"
 
 #: src/connection-editor/ce-page.c:117
 msgid "off"
-msgstr ""
+msgstr "desligado"
 
 #: src/connection-editor/ce-page.c:163
 msgid "unspecified error"
-msgstr "Erro não especificado"
+msgstr "rrro não especificado"
 
 #: src/connection-editor/ce-page.c:268
 msgid "Preserve"
-msgstr ""
+msgstr "Preservar"
 
 #: src/connection-editor/ce-page.c:269
 msgid "Permanent"
-msgstr ""
+msgstr "Permanente"
 
 #: src/connection-editor/ce-page.c:270
 msgid "Random"
-msgstr ""
+msgstr "Aleatório"
 
 #: src/connection-editor/ce-page.c:271
 #, fuzzy
@@ -3145,7 +3156,7 @@ msgstr ""
 #: src/connection-editor/ce-polkit-button.c:60
 #: src/connection-editor/ce-polkit.c:49
 msgid "No polkit authorization to perform the action"
-msgstr "Sem autorização do polkit para realizar a ação."
+msgstr "Sem autorização do polkit para realizar a ação"
 
 #: src/connection-editor/ce-ppp-auth-methods.ui:76
 msgid "Allowed Authentication Methods"
@@ -3254,7 +3265,7 @@ msgstr "Com fios"
 
 #: src/connection-editor/connection-helpers.c:112
 #: src/connection-editor/connection-helpers.c:374
-#: src/connection-editor/page-vpn.c:86
+#: src/connection-editor/page-vpn.c:92
 msgid "VPN"
 msgstr "VPN"
 
@@ -3282,7 +3293,7 @@ msgstr "Selecione o ficheiro a importar"
 #: src/connection-editor/page-team-port.c:193
 #: src/connection-editor/page-team.c:331
 msgid "_Open"
-msgstr ""
+msgstr "_Abrir"
 
 #: src/connection-editor/connection-helpers.c:316
 msgid "Hardware"
@@ -3326,7 +3337,7 @@ msgstr "Ligações _VPN"
 
 #: src/connection-editor/gtk/menus.ui:13
 msgid "_Quit"
-msgstr ""
+msgstr "_Sair"
 
 #: src/connection-editor/ip4-routes-dialog.c:683
 #: src/connection-editor/ip6-routes-dialog.c:704
@@ -3424,17 +3435,17 @@ msgid ""
 "editor. They will be cleared upon save."
 msgstr ""
 
-#: src/connection-editor/nm-connection-editor.c:749
+#: src/connection-editor/nm-connection-editor.c:751
 msgid "Error initializing editor"
 msgstr "Erro ao inicializar editor"
 
-#: src/connection-editor/nm-connection-editor.c:1159
+#: src/connection-editor/nm-connection-editor.c:1176
 msgid "Connection add failed"
 msgstr "Adição de ligação falhou"
 
 #: src/connection-editor/nm-connection-editor.ui:35
 msgid "Fix"
-msgstr ""
+msgstr "Corrigir"
 
 #: src/connection-editor/nm-connection-editor.ui:61
 #, fuzzy
@@ -3591,7 +3602,7 @@ msgstr "Impossível modificar ligação"
 
 #: src/connection-editor/nm-connection-list.c:1085
 msgid "No VPN plugins are installed."
-msgstr "Não tem extensões VPN instaladas"
+msgstr "Não tem extensões VPN instaladas."
 
 #: src/connection-editor/nm-connection-list.c:1088
 #, fuzzy, c-format
@@ -4033,7 +4044,7 @@ msgstr "Impossível carregar ambiente de utilizador de PPP."
 
 #: src/connection-editor/page-proxy.c:198
 msgid "Proxy"
-msgstr ""
+msgstr "Proxy"
 
 #: src/connection-editor/page-proxy.c:200
 #, fuzzy
@@ -4075,9 +4086,8 @@ msgid "%s (via “%s”)"
 msgstr "%s (via \"%s\")"
 
 #: src/connection-editor/page-vlan.c:411
-#, fuzzy
 msgid "New connection…"
-msgstr "Nova ligação..."
+msgstr "Nova ligação…"
 
 #: src/connection-editor/page-vlan.c:577
 msgid "Could not load vlan user interface."
@@ -4085,7 +4095,7 @@ msgstr "Impossível carregar o ambiente de utilizador de vlan."
 
 #: src/connection-editor/page-vlan.c:716
 msgid "vlan parent"
-msgstr "Pai de vlan"
+msgstr "vlan principal"
 
 #: src/connection-editor/page-vlan.c:784
 #, c-format
@@ -4102,25 +4112,25 @@ msgstr "Impossível encontrar um serviço de extensão VPN para \"%s\"."
 msgid "unknown failure"
 msgstr "Ligação falhou"
 
-#: src/connection-editor/page-vpn.c:88
+#: src/connection-editor/page-vpn.c:94
 msgid "Could not load VPN user interface."
 msgstr "Impossível carregar ambiente de utilizador VPN."
 
-#: src/connection-editor/page-vpn.c:103
+#: src/connection-editor/page-vpn.c:109
 #, fuzzy, c-format
 msgid "Could not find VPN plugin for “%s”."
 msgstr "Impossível encontrar um serviço de extensão VPN para \"%s\"."
 
-#: src/connection-editor/page-vpn.c:185
+#: src/connection-editor/page-vpn.c:191
 #, c-format
 msgid "VPN connection %d"
 msgstr "Ligação VPN %d"
 
-#: src/connection-editor/page-vpn.c:191
+#: src/connection-editor/page-vpn.c:197
 msgid "Choose a VPN Connection Type"
 msgstr "Escolha um tipo de ligação VPN"
 
-#: src/connection-editor/page-vpn.c:192
+#: src/connection-editor/page-vpn.c:198
 #, fuzzy
 msgid ""
 "Select the type of VPN you wish to use for the new connection. If the type "
@@ -4229,9 +4239,8 @@ msgid "Public key"
 msgstr ""
 
 #: src/connection-editor/page-wireguard.c:268
-#, fuzzy
 msgid "Allowed IPs"
-msgstr "Métodos permitidos:"
+msgstr "IPs permitidos"
 
 #: src/connection-editor/page-wireguard.c:512
 #, fuzzy
@@ -4298,9 +4307,12 @@ msgid "Usage:"
 msgstr "Uso:"
 
 #: src/main.c:30
+#, fuzzy
+#| msgid ""
+#| "This program is a component of NetworkManager (https://wiki.gnome.org/"
+#| "Projects/NetworkManager/)."
 msgid ""
-"This program is a component of NetworkManager (https://wiki.gnome.org/"
-"Projects/NetworkManager/)."
+"This program is a component of NetworkManager (https://networkmanager.dev)."
 msgstr ""
 "Este programa é um componente do Gestor de redes (https://wiki.gnome.org/"
 "Projects/NetworkManager/)."
@@ -4429,6 +4441,9 @@ msgstr "Certificados DER ou PEM (*.der, *.pem, *.crt, *.cer)"
 #: src/utils/utils.c:546
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "Chaves privadas DER, PEM, ou PKCS#12 (*.der, *.pem, *.p12, *.key)"
+
+#~ msgid "More networks"
+#~ msgstr "Mais redes"
 
 #~ msgid "missing EAP-FAST PAC file"
 #~ msgstr "ficheiro EAP-FAST PAC em falta"
@@ -4567,14 +4582,12 @@ msgstr "Chaves privadas DER, PEM, ou PKCS#12 (*.der, *.pem, *.p12, *.key)"
 #~ msgid "missing wep-key"
 #~ msgstr "wep-key em falta"
 
-#, c-format
 #~ msgid ""
 #~ "invalid wep-key: key with a length of %zu must contain only hex-digits"
 #~ msgstr ""
 #~ "wep-key inválida: chave com comprimento de %zu só pode conter dígitos "
 #~ "hexadecimais"
 
-#, c-format
 #~ msgid ""
 #~ "invalid wep-key: key with a length of %zu must contain only ascii "
 #~ "characters"
@@ -4582,7 +4595,6 @@ msgstr "Chaves privadas DER, PEM, ou PKCS#12 (*.der, *.pem, *.p12, *.key)"
 #~ "wep-key inválida: chave com comprimento de %zu só pode conter caracteres "
 #~ "ascii"
 
-#, c-format
 #~ msgid ""
 #~ "invalid wep-key: wrong key length %zu. A key must be either of length "
 #~ "5/13 (ascii) or 10/26 (hex)"
@@ -4610,7 +4622,6 @@ msgstr "Chaves privadas DER, PEM, ou PKCS#12 (*.der, *.pem, *.p12, *.key)"
 #~ msgid "WEP inde_x"
 #~ msgstr "Índice _WEP:"
 
-#, c-format
 #~ msgid ""
 #~ "invalid wpa-psk: invalid key-length %zu. Must be [8,63] bytes or 64 hex "
 #~ "digits"
@@ -4710,19 +4721,19 @@ msgstr "Chaves privadas DER, PEM, ou PKCS#12 (*.der, *.pem, *.p12, *.key)"
 #~ msgid "No certificate set"
 #~ msgstr "Não é necessá_Rio um certificado CA"
 
-#, fuzzy, c-format
+#, fuzzy
 #~ msgid "Choose a key for %s Certificate"
 #~ msgstr "Escolha o Certificado CA"
 
-#, fuzzy, c-format
+#, fuzzy
 #~ msgid "%s key _password"
 #~ msgstr "Senha da chave _Privada:"
 
-#, fuzzy, c-format
+#, fuzzy
 #~ msgid "Choose %s Certificate"
 #~ msgstr "Escolha o Certificado CA"
 
-#, fuzzy, c-format
+#, fuzzy
 #~ msgid "%s _certificate"
 #~ msgstr "Certificado do _Utilizador:"
 
@@ -4866,7 +4877,7 @@ msgstr "Chaves privadas DER, PEM, ou PKCS#12 (*.der, *.pem, *.p12, *.key)"
 #~ msgid "(None)"
 #~ msgstr "(nenhum)"
 
-#, fuzzy, c-format
+#, fuzzy
 #~ msgid "Certificate in %s"
 #~ msgstr "Certificado C_A:"
 
@@ -4886,11 +4897,11 @@ msgstr "Chaves privadas DER, PEM, ou PKCS#12 (*.der, *.pem, *.p12, *.key)"
 #~ msgid "Select from file…"
 #~ msgstr "Selecione Um Ficheiro"
 
-#, fuzzy, c-format
+#, fuzzy
 #~ msgid "Choose a %s Certificate"
 #~ msgstr "Escolha o Certificado CA"
 
-#, fuzzy, c-format
+#, fuzzy
 #~ msgid "%s certificate _password"
 #~ msgstr "Certificado do _Utilizador:"
 
@@ -4940,7 +4951,7 @@ msgstr "Chaves privadas DER, PEM, ou PKCS#12 (*.der, *.pem, *.p12, *.key)"
 #~ msgid "C_reate"
 #~ msgstr "C_Riar"
 
-#, fuzzy, c-format
+#, fuzzy
 #~ msgid ""
 #~ "Passwords or encryption keys are required to access the Wi-Fi network "
 #~ "“%s”."
@@ -5014,7 +5025,6 @@ msgstr "Chaves privadas DER, PEM, ou PKCS#12 (*.der, *.pem, *.p12, *.key)"
 #~ msgid "USB"
 #~ msgstr "USB"
 
-#, c-format
 #~ msgctxt "long device name"
 #~ msgid "%s %s"
 #~ msgstr "%s %s"
@@ -5543,9 +5553,6 @@ msgstr "Chaves privadas DER, PEM, ou PKCS#12 (*.der, *.pem, *.p12, *.key)"
 
 #~ msgid "Wireless"
 #~ msgstr "Sem Fios"
-
-#~ msgid "A_vailable to all users"
-#~ msgstr "_Disponível para todos os utilizadores"
 
 #~ msgid "An unknown error occurred."
 #~ msgstr "Ocorreu um erro desconhecido."
