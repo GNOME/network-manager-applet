@@ -254,7 +254,6 @@ desktop_file_validate = find_program('desktop-file-validate', required: false)
 
 foreach desktop: desktop_files
   i18n.merge_file(
-    desktop + '-desktop',
     input: desktop + '.desktop.in',
     output: desktop + '.desktop',
     install: true,
@@ -275,7 +274,6 @@ endforeach
 appdata = 'nm-connection-editor.appdata.xml'
 
 i18n.merge_file(
-  'desktop',
   input: appdata + '.in',
   output: appdata,
   install: true,
