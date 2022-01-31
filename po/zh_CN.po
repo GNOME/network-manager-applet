@@ -15,23 +15,23 @@
 # Tong Hui <tonghuix@gmail.com>, 2013, 2014.
 # Sphinx Jiang <yishanj@gmail.com>, 2014.
 # Bin Li <binli@gnome.org>, 2016.
-# Dingzhong Chen <wsxy162@gmail.com>, 2016, 2018.
+# Dingzhong Chen <wsxy162@gmail.com>, 2016-2020.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet master\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
-"applet/\n"
-"POT-Creation-Date: 2021-07-05 11:47+0200\n"
-"PO-Revision-Date: 2020-08-29 21:00-0400\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
+"issues\n"
+"POT-Creation-Date: 2021-11-04 12:42+0000\n"
+"PO-Revision-Date: 2021-11-07 14:28+0800\n"
 "Last-Translator: Dingzhong Chen <wsxy162@gmail.com>\n"
-"Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
+"Language-Team: Chinese - China <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 2.4.1\n"
+"X-Generator: Poedit 3.0\n"
 
 #: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3258
 msgid "Network"
@@ -40,6 +40,10 @@ msgstr "网络"
 #: nm-applet.desktop.in:4
 msgid "Manage your network connections"
 msgstr "管理您的网络连接"
+
+#: nm-applet.desktop.in:5
+msgid "nm-device-wireless"
+msgstr "nm-device-wireless"
 
 #: nm-connection-editor.appdata.xml.in:7
 msgid "NetworkManager"
@@ -62,7 +66,8 @@ msgid ""
 "The nm-connection-editor program works with NetworkManager to create and "
 "edit existing connection profiles for NetworkManager."
 msgstr ""
-"nm-connection-editor 与网络管理器交互来为网络管理器创建和编辑已有的连接配置。"
+"程序 nm-connection-editor 与网络管理器（NetworkManager）交互来为网络管理器创"
+"建和编辑已有的连接配置。"
 
 #: nm-connection-editor.appdata.xml.in:27
 msgid "The NetworkManager Developers"
@@ -75,6 +80,10 @@ msgstr "高级网络配置"
 #: nm-connection-editor.desktop.in:4
 msgid "Manage and change your network connection settings"
 msgstr "管理或更改您的网络连接设置"
+
+#: nm-connection-editor.desktop.in:5
+msgid "preferences-system-network"
+msgstr "preferences-system-network"
 
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
@@ -175,7 +184,7 @@ msgid "Mobile Broadband"
 msgstr "移动宽带"
 
 #: src/applet-device-broadband.c:780 src/applet-device-bt.c:61
-#: src/applet-device-ethernet.c:107 src/applet-device-wifi.c:894
+#: src/applet-device-ethernet.c:107
 msgid "Available"
 msgstr "可用的"
 
@@ -185,7 +194,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "新建移动宽带连接…"
 
 #: src/applet-device-broadband.c:809 src/applet-device-bt.c:75
-#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1297
+#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1269
 msgid "Connection Established"
 msgstr "连接已建立"
 
@@ -318,7 +327,7 @@ msgstr "新建 Wi-Fi 网络(_N)…"
 msgid "(none)"
 msgstr "（无）"
 
-#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1397
+#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1369
 msgid "Failed to add new connection"
 msgstr "无法添加新连接"
 
@@ -326,90 +335,90 @@ msgstr "无法添加新连接"
 msgid "Insufficient privileges."
 msgstr "权限不足。"
 
-#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1379
-#: src/applet-device-wifi.c:1402 src/applet.c:417 src/applet.c:506
+#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1351
+#: src/applet-device-wifi.c:1374 src/applet.c:417 src/applet.c:506
 msgid "Connection failure"
 msgstr "连接失败"
 
-#: src/applet-device-wifi.c:826
+#: src/applet-device-wifi.c:827
 #, c-format
 msgid "Wi-Fi Networks (%s)"
 msgstr "Wi-Fi 网络（%s）"
 
-#: src/applet-device-wifi.c:828
+#: src/applet-device-wifi.c:829
 #, c-format
 msgid "Wi-Fi Network (%s)"
 msgstr "Wi-Fi 网络（%s）"
 
-#: src/applet-device-wifi.c:830
+#: src/applet-device-wifi.c:831
 msgid "Wi-Fi Network"
 msgid_plural "Wi-Fi Networks"
 msgstr[0] "Wi-Fi 网络"
 
-#: src/applet-device-wifi.c:859
+#: src/applet-device-wifi.c:860
 msgid "Wi-Fi is disabled"
 msgstr "Wi-Fi 已禁用"
 
-#: src/applet-device-wifi.c:860
+#: src/applet-device-wifi.c:861
 msgid "Wi-Fi is disabled by hardware switch"
 msgstr "Wi-Fi 已通过硬件开关禁用"
 
-#: src/applet-device-wifi.c:921
-msgid "More networks"
-msgstr "更多网络"
+#: src/applet-device-wifi.c:887
+msgid "_Available networks"
+msgstr "可用网络(_A)"
 
-#: src/applet-device-wifi.c:1111
+#: src/applet-device-wifi.c:1083
 msgid "Wi-Fi Networks Available"
 msgstr "Wi-Fi 网络可用"
 
-#: src/applet-device-wifi.c:1112
+#: src/applet-device-wifi.c:1084
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "使用网络菜单连接到 Wi-Fi 网络"
 
-#: src/applet-device-wifi.c:1115 src/applet.c:828
+#: src/applet-device-wifi.c:1087 src/applet.c:828
 msgid "Don’t show this message again"
 msgstr "不再显示此信息"
 
-#: src/applet-device-wifi.c:1296
+#: src/applet-device-wifi.c:1268
 #, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "您现在已连接到 Wi-Fi 网络“%s”。"
 
-#: src/applet-device-wifi.c:1331
+#: src/applet-device-wifi.c:1303
 #, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "正在准备 Wi-Fi 网络连接“%s”……"
 
-#: src/applet-device-wifi.c:1334
+#: src/applet-device-wifi.c:1306
 #, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "正在配置 Wi-Fi 网络连接“%s”……"
 
-#: src/applet-device-wifi.c:1337
+#: src/applet-device-wifi.c:1309
 #, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "Wi-Fi 网络“%s”需要用户身份验证……"
 
-#: src/applet-device-wifi.c:1340
+#: src/applet-device-wifi.c:1312
 #, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "正在为“%s”请求网络地址……"
 
-#: src/applet-device-wifi.c:1351
+#: src/applet-device-wifi.c:1323
 #, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "Wi-Fi 网络连接“%s”已激活：%s (%d%%)"
 
-#: src/applet-device-wifi.c:1355
+#: src/applet-device-wifi.c:1327
 #, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "Wi-Fi 网络连接“%s”已激活"
 
-#: src/applet-device-wifi.c:1374
+#: src/applet-device-wifi.c:1346
 msgid "Failed to activate connection"
 msgstr "无法激活连接"
 
-#: src/applet-device-wifi.c:1376 src/applet-device-wifi.c:1399 src/applet.c:414
+#: src/applet-device-wifi.c:1348 src/applet-device-wifi.c:1371 src/applet.c:414
 #: src/applet.c:468 src/applet.c:503
 msgid "Unknown error"
 msgstr "未知错误"
@@ -622,7 +631,7 @@ msgstr ""
 "Wei Mingzhi <whistler_wmz@users.sf.net>, 2009, 2010\n"
 "Leah Liu <lliu@redhat.com>, 2010\n"
 "Aron Xu <aronxu@gnome.org>, 2010\n"
-"Dingzhong Chen <wsxy162@gmail.com>, 2018"
+"Dingzhong Chen <wsxy162@gmail.com>, 2018-2021"
 
 #: src/applet-dialogs.c:1147
 msgid ""
@@ -1184,11 +1193,10 @@ msgid "_Primary"
 msgstr "主要(_P)"
 
 #: src/connection-editor/ce-page-bond.ui:495
-#, fuzzy
 msgid ""
 "The interface name of the primary device. If set, this device will always be "
 "the active port when it is available."
-msgstr "主设备的接口名称。如果设置，在此设备可用时将一直是活动从机。"
+msgstr "主设备的接口名称。如果设置，在此设备可用时将一直是活动端口。"
 
 #: src/connection-editor/ce-page-bond.ui:507
 #: src/connection-editor/ce-page-ethernet.ui:188
@@ -1981,6 +1989,10 @@ msgid ""
 "also unset, use the kernel default value read from file \"/proc/sys/net/ipv6/"
 "conf/default/use_tempaddr\""
 msgstr ""
+"如果启用，则内核从 MAC 地址生成一个公共 IPv6 地址之外，还会生成一个临时的 "
+"IPv6 地址。这可以加强隐私保护，但可能会在某些应用程序中引起问题。如果设"
+"为“Default”，则使用 NetworkManager 的全局配置。如果全局配置也未设置，则使用读"
+"取自“/proc/sys/net/ipv6/conf/default/use_tempaddr”的内核默认值。"
 
 #: src/connection-editor/ce-page-ip6.ui:323
 msgid "IPv6 address _generation mode"
@@ -2069,8 +2081,8 @@ msgid "C_KN"
 msgstr "C_KN"
 
 #: src/connection-editor/ce-page-macsec.ui:206
-msgid " The pre-shared Connectivity-association Key Name"
-msgstr " 预共享连接关联的密钥名称"
+msgid "The pre-shared Connectivity-association Key Name"
+msgstr "预共享连接关联的密钥名称"
 
 #: src/connection-editor/ce-page-macsec.ui:217
 msgid "Parameters"
@@ -2264,7 +2276,7 @@ msgstr "此端口应被映射的队列 ID。"
 
 #: src/connection-editor/ce-page-team-port.ui:255
 msgid "Active-Backup runner options"
-msgstr "热备运行程序选项"
+msgstr "热备运行器选项"
 
 #: src/connection-editor/ce-page-team-port.ui:271
 msgid "_Port priority"
@@ -2292,7 +2304,7 @@ msgstr "如果有更好的端口，请不要取消选择。"
 
 #: src/connection-editor/ce-page-team-port.ui:316
 msgid "LACP runner options"
-msgstr "LACP 运行程序选项"
+msgstr "LACP 运行器选项"
 
 #: src/connection-editor/ce-page-team-port.ui:332
 msgid "_LACP port priority"
@@ -2433,13 +2445,13 @@ msgstr "按默认，ARP 请求只在活动端口上ass。此选项允许在非�
 #: src/connection-editor/ce-page-team.ui:1398
 msgid ""
 "The delay between the link coming up and the runner being notified about it."
-msgstr "链路启动和其被通知到运行程序之间的延时。"
+msgstr "链路启动和其被通知到运行器之间的延时。"
 
 #: src/connection-editor/ce-page-team-port.ui:684
 #: src/connection-editor/ce-page-team.ui:1411
 msgid ""
 "The delay between the link going down and the runner being notified about it."
-msgstr "链路关闭和其被通知到运行程序之间的延时。"
+msgstr "链路关闭和其被通知到运行器之间的延时。"
 
 #: src/connection-editor/ce-page-team-port.ui:697
 #: src/connection-editor/ce-page-team.ui:1424
@@ -2585,7 +2597,7 @@ msgstr "新组合（team）设备的期望硬件地址。接受常见的 MAC 地
 
 #: src/connection-editor/ce-page-team.ui:799
 msgid "_Runner"
-msgstr "运行程序(_R)"
+msgstr "运行器(_R)"
 
 #: src/connection-editor/ce-page-team.ui:814
 msgid "_Hardware address policy"
@@ -2593,7 +2605,7 @@ msgstr "硬件地址策略(_H)"
 
 #: src/connection-editor/ce-page-team.ui:828
 msgid "Name of runner to be used."
-msgstr "要使用的运行程序（runner）名称。"
+msgstr "要使用的运行器（runner）名称。"
 
 #: src/connection-editor/ce-page-team.ui:849
 msgid ""
@@ -2681,7 +2693,7 @@ msgstr "传输均衡器(_T)"
 
 #: src/connection-editor/ce-page-team.ui:1120
 msgid "Runner"
-msgstr "运行程序"
+msgstr "运行器"
 
 #: src/connection-editor/ce-page-vlan.ui:28
 msgid "_Parent interface"
@@ -3760,26 +3772,25 @@ msgstr "MACSEC 连接 %d"
 
 #: src/connection-editor/page-master.c:221
 #: src/connection-editor/page-master.c:232
-#, fuzzy
 msgid "Duplicate ports"
-msgstr "重复的从连接"
+msgstr "重复的端口"
 
 #: src/connection-editor/page-master.c:222
-#, fuzzy, c-format
+#, c-format
 msgid "Ports “%s” and “%s” both apply to device “%s”"
-msgstr "从连接“%s”与“%s”都应用到设备“%s”"
+msgstr "端口“%s”与“%s”都应用到设备“%s”"
 
 #: src/connection-editor/page-master.c:233
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Ports “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
 "same physical device."
-msgstr "从连接“%s”和“%s”应用于同一物理设备的不同虚拟端口（“%s”和“%s”）。"
+msgstr "端口“%s”和“%s”应用于同一物理设备的不同虚拟端口（“%s”和“%s”）。"
 
 #: src/connection-editor/page-master.c:357
 #, c-format
 msgid "%s port %d"
-msgstr ""
+msgstr "%s 端口 %d"
 
 #: src/connection-editor/page-mobile.c:297
 msgid "Could not load mobile broadband user interface."
@@ -4107,11 +4118,10 @@ msgstr "用法："
 
 #: src/main.c:30
 msgid ""
-"This program is a component of NetworkManager (https://wiki.gnome.org/"
-"Projects/NetworkManager/)."
+"This program is a component of NetworkManager (https://networkmanager.dev)."
 msgstr ""
-"此程序是网络管理器（NetworkManager）的一个组件（https://wiki.gnome.org/"
-"Projects/NetworkManager/）。"
+"此程序是网络管理器（NetworkManager）的一个组件（https://networkmanager."
+"dev）。"
 
 #: src/main.c:31
 msgid ""
@@ -4235,11 +4245,11 @@ msgstr "PEM 证书（*.pem、*.crt、*.cer）"
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "DER、PEM 或 PKCS#12 私钥（*.der、*.pem、*.p12、*.key）"
 
-#~ msgid "nm-device-wireless"
-#~ msgstr "nm-device-wireless"
+#~ msgid "More networks"
+#~ msgstr "更多网络"
 
-#~ msgid "preferences-system-network"
-#~ msgstr "preferences-system-network"
+#~ msgid "%s slave %d"
+#~ msgstr "%s 从连接 %d"
 
 #~ msgid "missing EAP-FAST PAC file"
 #~ msgstr "缺失 EAP-FAST PAC 文件"
@@ -4388,18 +4398,15 @@ msgstr "DER、PEM 或 PKCS#12 私钥（*.der、*.pem、*.p12、*.key）"
 #~ msgid "missing wep-key"
 #~ msgstr "缺失 wep-key"
 
-#, c-format
 #~ msgid ""
 #~ "invalid wep-key: key with a length of %zu must contain only hex-digits"
 #~ msgstr "无效的 wep-key：%zu 长度的密钥只能包含十六进制数字"
 
-#, c-format
 #~ msgid ""
 #~ "invalid wep-key: key with a length of %zu must contain only ascii "
 #~ "characters"
 #~ msgstr "无效的 wep-key：%zu 长度的密钥只能包含 ascii 字符"
 
-#, c-format
 #~ msgid ""
 #~ "invalid wep-key: wrong key length %zu. A key must be either of length "
 #~ "5/13 (ascii) or 10/26 (hex)"
@@ -4431,7 +4438,6 @@ msgstr "DER、PEM 或 PKCS#12 私钥（*.der、*.pem、*.p12、*.key）"
 #~ msgid "WEP inde_x"
 #~ msgstr "WEP 索引(_X)"
 
-#, c-format
 #~ msgid ""
 #~ "invalid wpa-psk: invalid key-length %zu. Must be [8,63] bytes or 64 hex "
 #~ "digits"
@@ -5270,9 +5276,6 @@ msgstr "DER、PEM 或 PKCS#12 私钥（*.der、*.pem、*.p12、*.key）"
 
 #~ msgid "Wireless"
 #~ msgstr "无线"
-
-#~ msgid "A_vailable to all users"
-#~ msgstr "对所有用户可用(_V)"
 
 #~ msgid "An unknown error occurred."
 #~ msgstr "发生了一个未知错误。"
