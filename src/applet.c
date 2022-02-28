@@ -2795,8 +2795,10 @@ applet_update_icon (gpointer user_data)
 	} else
 		applet->tip = g_strdup (dev_tip);
 
-	if (applet->status_icon)
-		gtk_status_icon_set_tooltip_text (applet->status_icon, applet->tip);
+	if (applet->status_icon) {
+			gtk_status_icon_set_tooltip_text (applet->status_icon, applet->tip);
+			gtk_status_icon_set_title (applet->status_icon, applet->tip);
+	}
 
 	return FALSE;
 }
