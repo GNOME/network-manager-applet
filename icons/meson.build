@@ -9,6 +9,7 @@ icons_22 = [
   'nm-device-wired-secure.png',
   'nm-device-wired.png',
   'nm-device-wwan.png',
+  'nm-insecure-warn.png',
   'nm-mb-roam.png',
   'nm-no-connection.png',
   'nm-secure-lock.png',
