@@ -426,6 +426,18 @@ finish_setup (CEPageWifiSecurity *self, gpointer user_data)
 	}
 
 	if (security_valid (NMU_SEC_OWE, mode)) {
+#if NMA_CHECK_VERSION(1,8,36)
+		NMAWsOwe *ws_owe;
+
+		ws_owe = nma_ws_owe_new (connection);
+		if (ws_owe) {
+			add_security_item (self, NMA_WS (ws_owe), sec_model,
+							   &iter, _("Enhanced Open"), FALSE, TRUE);
+			if ((active < 0) && ((default_type == NMU_SEC_OWE)))
+				active = item;
+			item++;
+		}
+#else
 		gtk_list_store_append (sec_model, &iter);
 		gtk_list_store_set (sec_model, &iter,
 		                    S_NAME_COLUMN, _("Enhanced Open"),
@@ -435,6 +447,7 @@ finish_setup (CEPageWifiSecurity *self, gpointer user_data)
 		if ((active < 0) && (default_type == NMU_SEC_OWE))
 			active = item;
 		item++;
+#endif
 	}
 
 	combo = GTK_COMBO_BOX (gtk_builder_get_object (parent->builder, "wifi_security_combo"));
@@ -580,7 +593,12 @@ ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 
 		g_object_unref (ws);
 	} else {
-
+#if NMA_CHECK_VERSION(1,8,36)
+		/* No security, unencrypted */
+		nm_connection_remove_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY);
+		nm_connection_remove_setting (connection, NM_TYPE_SETTING_802_1X);
+		valid = TRUE;
+#else
 		if (gtk_combo_box_get_active (priv->security_combo) == 0) {
 			/* No security, unencrypted */
 			nm_connection_remove_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY);
@@ -598,6 +616,7 @@ ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 			nm_connection_remove_setting (connection, NM_TYPE_SETTING_802_1X);
 			valid = TRUE;
 		}
+#endif
 	}
 
 	return valid;
