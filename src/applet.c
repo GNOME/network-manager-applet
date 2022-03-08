@@ -410,12 +410,9 @@ add_and_activate_cb (GObject *client,
 
 	if (error) {
 		const char *text = _("Failed to add/activate connection");
-		char *err_text = g_strdup_printf ("(%d) %s", error->code,
-		                                  error->message ? error->message : _("Unknown error"));
+		const char *err_text = error->message ? error->message : _("Unknown error");
 
-		g_warning ("%s: %s", text, err_text);
 		utils_show_error_dialog (_("Connection failure"), text, err_text, FALSE, NULL);
-		g_free (err_text);
 		g_error_free (error);
 	}
 
@@ -464,12 +461,9 @@ disconnect_cb (GObject *device,
 	nm_device_disconnect_finish (NM_DEVICE (device), result, &error);
 	if (error) {
 		const char *text = _("Device disconnect failed");
-		char *err_text = g_strdup_printf ("(%d) %s", error->code,
-		                                  error->message ? error->message : _("Unknown error"));
+		const char *err_text = error->message ? error->message : _("Unknown error");
 
-		g_warning ("%s: %s: %s", __func__, text, err_text);
 		utils_show_error_dialog (_("Disconnect failure"), text, err_text, FALSE, NULL);
-		g_free (err_text);
 		g_error_free (error);
 	}
 
@@ -499,12 +493,9 @@ activate_connection_cb (GObject *client,
 
 	if (error) {
 		const char *text = _("Connection activation failed");
-		char *err_text = g_strdup_printf ("(%d) %s", error->code,
-		                                  error->message ? error->message : _("Unknown error"));
+		const char *err_text = error->message ? error->message : _("Unknown error");
 
-		g_warning ("%s: %s", text, err_text);
 		utils_show_error_dialog (_("Connection failure"), text, err_text, FALSE, NULL);
-		g_free (err_text);
 		g_error_free (error);
 	}
 
