@@ -282,6 +282,13 @@ security_valid (NMUtilsSecurityType sectype, NM80211Mode mode)
 	g_assert_not_reached ();
 }
 
+static gboolean
+allow_wep (void)
+{
+	/* Note to whoever uses this: this might go away! */
+	return !!getenv ("NM_ALLOW_INSECURE_WEP");
+}
+
 static void
 finish_setup (CEPageWifiSecurity *self, gpointer user_data)
 {
@@ -340,24 +347,31 @@ finish_setup (CEPageWifiSecurity *self, gpointer user_data)
 				wep_type = NM_WEP_KEY_TYPE_KEY;
 		}
 
-		ws_wep = nma_ws_wep_key_new (connection, NM_WEP_KEY_TYPE_KEY, FALSE, FALSE);
-		g_return_if_fail (ws_wep);
 
-		add_security_item (self, NMA_WS (ws_wep), sec_model,
-		                   &iter, _("WEP 40/128-bit Key (Hex or ASCII)"),
-		                   TRUE, TRUE);
 		if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP) && (wep_type == NM_WEP_KEY_TYPE_KEY))
 			active = item;
-		item++;
+		if (item == active || allow_wep()) {
+			/* If WEP is disabled, only add add the choice if the connection already uses it. */
+			ws_wep = nma_ws_wep_key_new (connection, NM_WEP_KEY_TYPE_KEY, FALSE, FALSE);
+			g_return_if_fail (ws_wep);
 
-		ws_wep = nma_ws_wep_key_new (connection, NM_WEP_KEY_TYPE_PASSPHRASE, FALSE, FALSE);
-		g_return_if_fail (ws_wep);
+			add_security_item (self, NMA_WS (ws_wep), sec_model,
+			                   &iter, _("WEP 40/128-bit Key (Hex or ASCII)"),
+			                   TRUE, TRUE);
+			item++;
+		}
 
-		add_security_item (self, NMA_WS (ws_wep), sec_model,
-		                   &iter, _("WEP 128-bit Passphrase"), TRUE, TRUE);
 		if ((active < 0) && (default_type == NMU_SEC_STATIC_WEP) && (wep_type == NM_WEP_KEY_TYPE_PASSPHRASE))
 			active = item;
-		item++;
+		if (item == active || allow_wep()) {
+			/* If WEP is disabled, only add add the choice if the connection already uses it. */
+			ws_wep = nma_ws_wep_key_new (connection, NM_WEP_KEY_TYPE_PASSPHRASE, FALSE, FALSE);
+			g_return_if_fail (ws_wep);
+
+			add_security_item (self, NMA_WS (ws_wep), sec_model,
+			                   &iter, _("WEP 128-bit Passphrase"), TRUE, TRUE);
+			item++;
+		}
 	}
 
 	if (security_valid (NMU_SEC_LEAP, mode)) {
