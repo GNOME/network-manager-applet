@@ -34,6 +34,7 @@ typedef struct {
 	gboolean    has_connections;
 	gboolean    is_adhoc;
 	gboolean    is_encrypted;
+	gboolean    is_insecure;
 } NMNetworkMenuItemPrivate;
 
 /******************************************************************/
@@ -71,6 +72,10 @@ update_atk_desc (NMNetworkMenuItem *item)
 			g_string_append (desc, ", ");
 			g_string_append (desc, _("secure."));
 		}
+		if (priv->is_insecure) {
+			g_string_append (desc, ", ");
+			g_string_append (desc, _("insecure."));
+		}
 	}
 
 	atk_object_set_name (gtk_widget_get_accessible (GTK_WIDGET (item)), desc->str);
@@ -100,18 +105,24 @@ update_icon (NMNetworkMenuItem *item, NMApplet *applet)
 
 	icon = nma_icon_check_and_load (icon_name, applet);
 	if (icon) {
-		if (priv->is_encrypted) {
-			GdkPixbuf *encrypted = nma_icon_check_and_load ("nm-secure-lock", applet);
+		GdkPixbuf *extra_icon;
 
-			if (encrypted) {
-				icon = icon_free = gdk_pixbuf_copy (icon);
+		if (priv->is_insecure) {
+			extra_icon = nma_icon_check_and_load ("nm-insecure-warn", applet);
+		} else if (priv->is_encrypted) {
+			extra_icon = nma_icon_check_and_load ("nm-secure-lock", applet);
+		} else {
+			extra_icon = NULL;
+		}
 
-				gdk_pixbuf_composite (encrypted, icon, 0, 0,
-				                      gdk_pixbuf_get_width (encrypted),
-				                      gdk_pixbuf_get_height (encrypted),
-				                      0, 0, 1.0, 1.0,
-				                      GDK_INTERP_NEAREST, 255);
-			}
+		if (extra_icon) {
+			icon = icon_free = gdk_pixbuf_copy (icon);
+
+			gdk_pixbuf_composite (extra_icon, icon, 0, 0,
+			                      gdk_pixbuf_get_width (extra_icon),
+			                      gdk_pixbuf_get_height (extra_icon),
+			                      0, 0, 1.0, 1.0,
+			                      GDK_INTERP_NEAREST, 255);
 		}
 
 		/* Scale to menu size if larger so the menu doesn't look awful */
@@ -279,8 +290,13 @@ nm_network_menu_item_new (NMAccessPoint *ap,
 	ap_flags = nm_access_point_get_flags (ap);
 	ap_wpa = nm_access_point_get_wpa_flags (ap);
 	ap_rsn = nm_access_point_get_rsn_flags (ap);
-	if ((ap_flags & NM_802_11_AP_FLAGS_PRIVACY) || ap_wpa || ap_rsn)
+
+	if ((ap_flags & NM_802_11_AP_FLAGS_PRIVACY) && !ap_wpa && !ap_rsn) {
+		/* WEP connections. */
+		priv->is_insecure = TRUE;
+	} else if ((ap_flags & NM_802_11_AP_FLAGS_PRIVACY) || ap_wpa || ap_rsn) {
 		priv->is_encrypted = TRUE;
+	}
 
 	/* Don't enable the menu item the device can't even connect to the AP */
 	if (   !nm_utils_security_valid (NMU_SEC_NONE, dev_caps, TRUE, priv->is_adhoc, ap_flags, ap_wpa, ap_rsn)

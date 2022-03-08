@@ -65,6 +65,7 @@ icon22_DATA = \
 	icons/22/nm-device-wired-secure.png \
 	icons/22/nm-device-wired.png \
 	icons/22/nm-device-wwan.png \
+	icons/22/nm-insecure-warn.png \
 	icons/22/nm-mb-roam.png \
 	icons/22/nm-no-connection.png \
 	icons/22/nm-secure-lock.png \
