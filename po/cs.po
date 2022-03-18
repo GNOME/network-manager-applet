@@ -7,17 +7,17 @@
 # Jakub Friedl <jfriedl@suse.cz>, 2006.
 # Adrian Guniš <andygun696@gmail.com>, 2008, 2009.
 # Petr Kovar <pknbe@volny.cz>, 2008, 2009, 2012.
-# Marek Černocký <marek@manet.cz>, 2010.
+# Marek Černocký <marek@manet.cz>, 2010, 2022.
 # Zdeněk Hataš <zdenek.hatas@gmail.com>, 2009 - 2019.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
-"applet/\n"
-"POT-Creation-Date: 2021-07-05 11:47+0200\n"
-"PO-Revision-Date: 2019-07-16 12:43+0200\n"
-"Last-Translator: Zdeněk Hataš <zdenek.hatas@gmail.com>\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
+"issues\n"
+"POT-Creation-Date: 2021-11-07 12:42+0000\n"
+"PO-Revision-Date: 2022-03-16 17:26+0100\n"
+"Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: čeština <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
@@ -34,6 +34,10 @@ msgstr "Síť"
 #: nm-applet.desktop.in:4
 msgid "Manage your network connections"
 msgstr "Spravujte svá síťová připojení"
+
+#: nm-applet.desktop.in:5
+msgid "nm-device-wireless"
+msgstr "nm-device-wireless"
 
 #: nm-connection-editor.appdata.xml.in:7
 msgid "NetworkManager"
@@ -71,6 +75,10 @@ msgstr "Rozšířená nastavení sítě"
 msgid "Manage and change your network connection settings"
 msgstr "Spravujte a měňte svá nastavení síťových připojení"
 
+#: nm-connection-editor.desktop.in:5
+msgid "preferences-system-network"
+msgstr "preferences-system-network"
+
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
 msgid "object class '%s' has no property named '%s'"
@@ -105,7 +113,7 @@ msgid ""
 "type '%s'"
 msgstr "hodnota „%s“ typu „%s“ je mimo rozsah vlastnosti „%s“ typu „%s“"
 
-#: src/8021x.ui:11 src/ethernet-dialog.c:87
+#: src/8021x.ui:7 src/ethernet-dialog.c:90
 msgid "802.1X authentication"
 msgstr "Ověření 802.1X"
 
@@ -171,7 +179,7 @@ msgid "Mobile Broadband"
 msgstr "Mobilní širokopásmová"
 
 #: src/applet-device-broadband.c:780 src/applet-device-bt.c:61
-#: src/applet-device-ethernet.c:107 src/applet-device-wifi.c:894
+#: src/applet-device-ethernet.c:107
 msgid "Available"
 msgstr "Dostupné"
 
@@ -181,7 +189,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "Nové mobilní širokopásmové připojení…"
 
 #: src/applet-device-broadband.c:809 src/applet-device-bt.c:75
-#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1297
+#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1269
 msgid "Connection Established"
 msgstr "Spojení navázáno"
 
@@ -314,7 +322,7 @@ msgstr "Vytvořit _novou síť Wi-Fi…"
 msgid "(none)"
 msgstr "(žádné)"
 
-#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1397
+#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1369
 msgid "Failed to add new connection"
 msgstr "Přidání nového připojení se nezdařilo"
 
@@ -322,92 +330,92 @@ msgstr "Přidání nového připojení se nezdařilo"
 msgid "Insufficient privileges."
 msgstr "Nedostatečná oprávnění."
 
-#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1379
-#: src/applet-device-wifi.c:1402 src/applet.c:417 src/applet.c:506
+#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1351
+#: src/applet-device-wifi.c:1374 src/applet.c:417 src/applet.c:506
 msgid "Connection failure"
 msgstr "Selhání připojení"
 
-#: src/applet-device-wifi.c:826
+#: src/applet-device-wifi.c:827
 #, c-format
 msgid "Wi-Fi Networks (%s)"
 msgstr "Sítě Wi-Fi (%s)"
 
-#: src/applet-device-wifi.c:828
+#: src/applet-device-wifi.c:829
 #, c-format
 msgid "Wi-Fi Network (%s)"
 msgstr "Síť Wi-Fi (%s)"
 
-#: src/applet-device-wifi.c:830
+#: src/applet-device-wifi.c:831
 msgid "Wi-Fi Network"
 msgid_plural "Wi-Fi Networks"
 msgstr[0] "Síť Wi-Fi"
 msgstr[1] "Sítě Wi-Fi"
 msgstr[2] "Sítě Wi-Fi"
 
-#: src/applet-device-wifi.c:859
+#: src/applet-device-wifi.c:860
 msgid "Wi-Fi is disabled"
 msgstr "Wi-Fi je zakázána"
 
-#: src/applet-device-wifi.c:860
+#: src/applet-device-wifi.c:861
 msgid "Wi-Fi is disabled by hardware switch"
 msgstr "Wi-Fi je zakázána hardwarovým přepínačem"
 
-#: src/applet-device-wifi.c:921
-msgid "More networks"
-msgstr "Více sítí"
+#: src/applet-device-wifi.c:887
+msgid "_Available networks"
+msgstr "_Dostupné sítě"
 
-#: src/applet-device-wifi.c:1111
+#: src/applet-device-wifi.c:1083
 msgid "Wi-Fi Networks Available"
 msgstr "Dostupné sítě Wi-Fi"
 
-#: src/applet-device-wifi.c:1112
+#: src/applet-device-wifi.c:1084
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Použijte nabídku sítí pro připojení k síti Wi-Fi"
 
-#: src/applet-device-wifi.c:1115 src/applet.c:828
+#: src/applet-device-wifi.c:1087 src/applet.c:828
 msgid "Don’t show this message again"
 msgstr "Tuto zprávu již příště nezobrazovat"
 
-#: src/applet-device-wifi.c:1296
+#: src/applet-device-wifi.c:1268
 #, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "Jste právě připojeni k síti Wi-Fi „%s“."
 
-#: src/applet-device-wifi.c:1331
+#: src/applet-device-wifi.c:1303
 #, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "Připravuje se připojení k síti Wi-Fi „%s“…"
 
-#: src/applet-device-wifi.c:1334
+#: src/applet-device-wifi.c:1306
 #, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "Nastavuje se připojení k síti Wi-Fi „%s“…"
 
-#: src/applet-device-wifi.c:1337
+#: src/applet-device-wifi.c:1309
 #, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "Je vyžadováno ověření uživatele k síti Wi-Fi „%s“…"
 
-#: src/applet-device-wifi.c:1340
+#: src/applet-device-wifi.c:1312
 #, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "Žádá se o síťovou adresu k síti Wi-Fi pro „%s“…"
 
-#: src/applet-device-wifi.c:1351
+#: src/applet-device-wifi.c:1323
 #, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "Připojení k síti Wi-Fi „%s“ je aktivní: %s (%d %%)"
 
-#: src/applet-device-wifi.c:1355
+#: src/applet-device-wifi.c:1327
 #, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "Připojení k síti Wi-Fi „%s“ je aktivní"
 
-#: src/applet-device-wifi.c:1374
+#: src/applet-device-wifi.c:1346
 msgid "Failed to activate connection"
 msgstr "Aktivace připojení se nezdařila"
 
-#: src/applet-device-wifi.c:1376 src/applet-device-wifi.c:1399 src/applet.c:414
+#: src/applet-device-wifi.c:1348 src/applet-device-wifi.c:1371 src/applet.c:414
 #: src/applet.c:468 src/applet.c:503
 msgid "Unknown error"
 msgstr "Neznámá chyba"
@@ -439,7 +447,7 @@ msgstr "WEP"
 
 #: src/applet-dialogs.c:230
 msgid "WPA3"
-msgstr ""
+msgstr "WPA3"
 
 #: src/applet-dialogs.c:234 src/applet-dialogs.c:243
 #: src/connection-editor/page-wifi-security.c:320
@@ -1090,7 +1098,7 @@ msgstr "Z_ařízení"
 #: src/connection-editor/ce-page-bond.ui:24
 #: src/connection-editor/ce-page-team.ui:434
 msgid "Round-robin"
-msgstr "Round-robin"
+msgstr "Rozklad zátěže Round-robin"
 
 #: src/connection-editor/ce-page-bond.ui:27
 #: src/connection-editor/ce-page-team.ui:438
@@ -1099,12 +1107,12 @@ msgstr "Aktivní záloha"
 
 #: src/connection-editor/ce-page-bond.ui:30
 msgid "XOR"
-msgstr "XOR"
+msgstr "Rozklad zátěže XOR"
 
 #: src/connection-editor/ce-page-bond.ui:33
 #: src/connection-editor/ce-page-team.ui:430
 msgid "Broadcast"
-msgstr "Adresa všesměrového vysílání"
+msgstr "Všesměrové vysílání"
 
 #: src/connection-editor/ce-page-bond.ui:36
 msgid "802.3ad"
@@ -1188,13 +1196,12 @@ msgid "_Primary"
 msgstr "_Primární"
 
 #: src/connection-editor/ce-page-bond.ui:495
-#, fuzzy
 msgid ""
 "The interface name of the primary device. If set, this device will always be "
 "the active port when it is available."
 msgstr ""
 "Název rozhraní primárního zařízení. Pokud je nastaveno, toto zařízení bude "
-"aktivním podřízeným jakmile je dostupné."
+"aktivním portem vždy, když bude dostupné."
 
 #: src/connection-editor/ce-page-bond.ui:507
 #: src/connection-editor/ce-page-ethernet.ui:188
@@ -2008,6 +2015,12 @@ msgid ""
 "also unset, use the kernel default value read from file \"/proc/sys/net/ipv6/"
 "conf/default/use_tempaddr\""
 msgstr ""
+"Když je zapnuto, přiměje jádro generovat navíc k veřejným adresám generovaným "
+"na základě adresy MAC i dočasné adresy IPv6. Tím se zvýší soukromí, ale může "
+"to způsobit problém v některých aplikacích. Když je nastaveno na „Default“ "
+"(výchozí), je používána hodnota z globálního nastavení NetworkManageru. Pokud "
+"zůstane nenastaveno, bude se používat výchozí hodnota jádra načtená z „proc/"
+"sys/net/ipv6/conf/default/use_tempaddr“."
 
 #: src/connection-editor/ce-page-ip6.ui:323
 msgid "IPv6 address _generation mode"
@@ -2094,15 +2107,15 @@ msgstr "C_AK"
 
 #: src/connection-editor/ce-page-macsec.ui:181
 msgid "The pre-shared Connectivity Association Key"
-msgstr "Sdílený klíč Connectivity-association"
+msgstr "Předsdílený klíč Connectivity-association"
 
 #: src/connection-editor/ce-page-macsec.ui:193
 msgid "C_KN"
 msgstr "C_KN"
 
 #: src/connection-editor/ce-page-macsec.ui:206
-msgid " The pre-shared Connectivity-association Key Name"
-msgstr " Název sdíleného klíče Connectivity-association"
+msgid "The pre-shared Connectivity-association Key Name"
+msgstr "Název předsdíleného klíče Connectivity-association"
 
 #: src/connection-editor/ce-page-macsec.ui:217
 msgid "Parameters"
@@ -2849,37 +2862,37 @@ msgstr "SS_ID"
 
 #: src/connection-editor/ce-page-wireguard.ui:23
 msgid "Edit WireGuard peer"
-msgstr ""
+msgstr "Upravit protistranu spojení WireGuard"
 
 #: src/connection-editor/ce-page-wireguard.ui:55
 msgid "_Apply"
-msgstr ""
+msgstr "_Použít"
 
 #: src/connection-editor/ce-page-wireguard.ui:159
 msgid "_Public key"
-msgstr ""
+msgstr "_Veřejný klíč"
 
 #: src/connection-editor/ce-page-wireguard.ui:173
-#, fuzzy
 msgid "Allowed _IPs"
-msgstr "Povolené metody"
+msgstr "Povolené adresy _IP"
 
 #: src/connection-editor/ce-page-wireguard.ui:187
 msgid "_Endpoint"
-msgstr ""
+msgstr "_Koncový bod"
 
 #: src/connection-editor/ce-page-wireguard.ui:201
-#, fuzzy
 msgid "Pre_shared key"
-msgstr "Sdílený klíč"
+msgstr "Před_sdílený klíč"
 
 #: src/connection-editor/ce-page-wireguard.ui:215
 msgid "Persistent _keepalive"
-msgstr ""
+msgstr "Trvalé u_držování spojení"
 
 #: src/connection-editor/ce-page-wireguard.ui:228
 msgid "A base64 public key calculated by 'wg pubkey' from a private key."
 msgstr ""
+"Veřejný klíč ve formátu base64 spočítaný ze soukromého klíče pomocí „wg "
+"pubkey“."
 
 #: src/connection-editor/ce-page-wireguard.ui:240
 msgid ""
@@ -2887,11 +2900,16 @@ msgid ""
 "incoming traffic for this peer is allowed and to which outgoing traffic for "
 "this peer is directed."
 msgstr ""
+"Čárkami oddělený seznam adres IP (v4 nebo v6) s maskami CIDR, ze kterých je "
+"povolen příchozí provoz od této protistrany a na které je směrován provoz pro "
+"tuto protistranu."
 
 #: src/connection-editor/ce-page-wireguard.ui:252
 msgid ""
 "An endpoint IP or hostname, followed by a colon, and then a port number."
 msgstr ""
+"Adresa IP nebo název hostitele koncového bodu, následováno dvojtečkou a "
+"číslem portu."
 
 #: src/connection-editor/ce-page-wireguard.ui:264
 msgid ""
@@ -2900,6 +2918,10 @@ msgid ""
 "into the already existing public-key cryptography, for post-quantum "
 "resistance."
 msgstr ""
+"Předsdílený klíč v kódování base64 vygenerovaný pomocí „wg genpsk“. Volitelné "
+"a může být vynecháno. Přidává dodatečnou vrstvu kryptografie se symetrickým "
+"klíčem, aby vytvořila mix se stávající kryptografii s veřejným klíčem a tím "
+"se zajistila postkvantová odolnost."
 
 #: src/connection-editor/ce-page-wireguard.ui:280
 msgid ""
@@ -2907,74 +2929,79 @@ msgid ""
 "of keeping a stateful firewall or NAT mapping valid. This is optional and "
 "not recommended outside of specific setups."
 msgstr ""
+"Jak často posílat protistraně ověřený prázdný paket za účelem udržení "
+"platného mapování na stavovém firewallu nebo NATu. Nastavení je volitelné a "
+"nedoporučované mimo specifickou konfiguraci."
 
 #: src/connection-editor/ce-page-wireguard.ui:297
 msgid "seconds"
-msgstr ""
+msgstr "sekund"
 
 #: src/connection-editor/ce-page-wireguard.ui:313
-#, fuzzy
 msgid "Sho_w preshared key"
-msgstr "Z_obrazit klíč"
+msgstr "Z_obrazovat předsdílený klíč"
 
 #: src/connection-editor/ce-page-wireguard.ui:386
 msgid "The name of the wireguard interface to create."
-msgstr ""
+msgstr "Název rozhraní wireguard, které se má vytvořit."
 
 #: src/connection-editor/ce-page-wireguard.ui:400
-#, fuzzy
 msgid "Private _key"
-msgstr "Soukromý _klíč %s"
+msgstr "Soukromý _klíč"
 
 #: src/connection-editor/ce-page-wireguard.ui:413
 msgid "The 256 bit private key in base64 encoding"
-msgstr ""
+msgstr "256bitový soukromý klíč v kódování base64"
 
 #: src/connection-editor/ce-page-wireguard.ui:429
-#, fuzzy
 msgid "_Listen port"
-msgstr "_Minimum portů"
+msgstr "Port pro nas_louchání"
 
 #: src/connection-editor/ce-page-wireguard.ui:442
 msgid ""
 "A port to listen on. If set to 'automatic', the port will be chosen randomly "
 "when the interface comes up."
 msgstr ""
+"Port, na kterém se má naslouchat. Kdy je nastaveno na „automatic“, bude port "
+"volen náhodně při nahození rozhraní."
 
 #: src/connection-editor/ce-page-wireguard.ui:459
 msgid "_Fwmark"
-msgstr ""
+msgstr "_Fwmark"
 
 #: src/connection-editor/ce-page-wireguard.ui:489
 msgid "Add peer _routes"
-msgstr ""
+msgstr "Přidávat smě_rování protistrany"
 
 #: src/connection-editor/ce-page-wireguard.ui:503
 msgid ""
 "Whether to automatically add routes for the AllowedIPs ranges of the peers"
 msgstr ""
+"Zda automaticky přidávat směrování tras pro všechny rozsahy povolených IP "
+"protistrany."
 
 #: src/connection-editor/ce-page-wireguard.ui:543
 msgid ""
 "A 32-bit fwmark for outgoing packets. Leave it to 'off' to disable fwmark."
 msgstr ""
+"32bitová značka firewallu pro odchozí pakety. Pokud chcete fwmark zakázat, "
+"ponechte na „off“."
 
 #: src/connection-editor/ce-page-wireguard.ui:554
-#, fuzzy
 msgid "_Show private key"
-msgstr "Soukromý _klíč %s"
+msgstr "Zobrazovat _soukromý klíč"
 
 #: src/connection-editor/ce-page-wireguard.ui:641
 msgid "<b>_Peers</b>"
-msgstr ""
+msgstr "<b>_Protistrany</b>"
 
 #: src/connection-editor/ce-page.c:105
 msgid "automatic"
-msgstr "automatické"
+msgstr "automaticky"
 
 #: src/connection-editor/ce-page.c:117
 msgid "off"
-msgstr ""
+msgstr "vypnuto"
 
 #: src/connection-editor/ce-page.c:163
 msgid "unspecified error"
@@ -3191,13 +3218,12 @@ msgstr "MACsec"
 
 #: src/connection-editor/connection-helpers.c:110
 #: src/connection-editor/page-wireguard.c:510
-#, fuzzy
 msgid "WireGuard"
-msgstr "Drátové"
+msgstr "WireGuard"
 
 #: src/connection-editor/connection-helpers.c:112
 #: src/connection-editor/connection-helpers.c:374
-#: src/connection-editor/page-vpn.c:86
+#: src/connection-editor/page-vpn.c:92
 msgid "VPN"
 msgstr "VPN"
 
@@ -3363,11 +3389,11 @@ msgstr ""
 "Varování: připojení obsahuje některé vlastnosti, které nejsou editorem "
 "podporované a při uložení se smažou."
 
-#: src/connection-editor/nm-connection-editor.c:749
+#: src/connection-editor/nm-connection-editor.c:751
 msgid "Error initializing editor"
 msgstr "Chyba při inicializaci editoru"
 
-#: src/connection-editor/nm-connection-editor.c:1159
+#: src/connection-editor/nm-connection-editor.c:1176
 msgid "Connection add failed"
 msgstr "Přidání připojení selhalo"
 
@@ -3855,28 +3881,27 @@ msgstr "Připojení MACsec %d"
 
 #: src/connection-editor/page-master.c:221
 #: src/connection-editor/page-master.c:232
-#, fuzzy
 msgid "Duplicate ports"
-msgstr "Duplikovat podřízené"
+msgstr "Duplikovat porty"
 
 #: src/connection-editor/page-master.c:222
-#, fuzzy, c-format
+#, c-format
 msgid "Ports “%s” and “%s” both apply to device “%s”"
-msgstr "Podřízená rozhraní „%s“ a „%s“ jsou přiřazena k zařízení „%s“"
+msgstr "Porty „%s“ a „%s“ jsou oba přiřazené k zařízení „%s“"
 
 #: src/connection-editor/page-master.c:233
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Ports “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
 "same physical device."
 msgstr ""
-"Podřízená rozhraní „%s“ a „%s“ jsou přiřazena k různým virtuálním portům "
-"(„%s“ a „%s“) stejného fyzického zařízení."
+"Porty „%s“ a „%s“ jsou přiřazené k různým virtuálním portům („%s“ a „%s“) "
+"stejného fyzického zařízení."
 
 #: src/connection-editor/page-master.c:357
 #, c-format
 msgid "%s port %d"
-msgstr ""
+msgstr "Port %s %d"
 
 #: src/connection-editor/page-mobile.c:297
 msgid "Could not load mobile broadband user interface."
@@ -3974,20 +3999,20 @@ msgstr "Chyba: soubor neobsahuje platné nastavení JSON"
 #.
 #: src/connection-editor/page-team-port.c:638
 msgid "Team Port"
-msgstr "Port týmu"
+msgstr "Port Team"
 
 #: src/connection-editor/page-team-port.c:640
 msgid "Could not load team port user interface."
-msgstr "Nezdařilo se načíst uživatelské rozhraní pro týmový port."
+msgstr "Nezdařilo se načíst uživatelské rozhraní pro port Team."
 
 #: src/connection-editor/page-team.c:1017
 msgid "Could not load team user interface."
-msgstr "Nezdařilo se načíst uživatelské rozhraní pro tým."
+msgstr "Nezdařilo se načíst uživatelské rozhraní pro Team."
 
 #: src/connection-editor/page-team.c:1114
 #, c-format
 msgid "Team connection %d"
-msgstr "Týmové připojení %d"
+msgstr "Připojení Team %d"
 
 #. Translators: the first %s is a device name (eg, "em1"), the
 #. * second is a connection name (eg, "Auto Ethernet").
@@ -4023,25 +4048,25 @@ msgstr "Nelze načíst zásuvný modul editor VPN pro „%s“ (%s)."
 msgid "unknown failure"
 msgstr "neznámé selhání"
 
-#: src/connection-editor/page-vpn.c:88
+#: src/connection-editor/page-vpn.c:94
 msgid "Could not load VPN user interface."
 msgstr "Nezdařilo se načíst uživatelské rozhraní pro VPN."
 
-#: src/connection-editor/page-vpn.c:103
+#: src/connection-editor/page-vpn.c:109
 #, c-format
 msgid "Could not find VPN plugin for “%s”."
 msgstr "Nelze najít zásuvný modul VPN pro „%s“."
 
-#: src/connection-editor/page-vpn.c:185
+#: src/connection-editor/page-vpn.c:191
 #, c-format
 msgid "VPN connection %d"
 msgstr "Připojení k VPN %d"
 
-#: src/connection-editor/page-vpn.c:191
+#: src/connection-editor/page-vpn.c:197
 msgid "Choose a VPN Connection Type"
 msgstr "Vyberte typ připojení VPN"
 
-#: src/connection-editor/page-vpn.c:192
+#: src/connection-editor/page-vpn.c:198
 msgid ""
 "Select the type of VPN you wish to use for the new connection. If the type "
 "of VPN connection you wish to create does not appear in the list, you may "
@@ -4065,20 +4090,19 @@ msgstr "Dynamické WEP (802.1X)"
 
 #: src/connection-editor/page-wifi-security.c:395
 msgid "WPA & WPA2 Personal"
-msgstr "WPA & WPA2 Personal"
+msgstr "WPA & WPA2 osobní"
 
 #: src/connection-editor/page-wifi-security.c:408
 msgid "WPA & WPA2 Enterprise"
-msgstr "WPA & WPA2 Enterprise"
+msgstr "WPA & WPA2 firemní"
 
 #: src/connection-editor/page-wifi-security.c:421
-#, fuzzy
 msgid "WPA3 Personal"
-msgstr "WPA & WPA2 Personal"
+msgstr "WPA3 osobní"
 
 #: src/connection-editor/page-wifi-security.c:431
 msgid "Enhanced Open"
-msgstr ""
+msgstr "Pokročilé otevření"
 
 #: src/connection-editor/page-wifi-security.c:476
 msgid "Could not load Wi-Fi security user interface; missing Wi-Fi setting."
@@ -4143,22 +4167,20 @@ msgstr "Připojení Wi-Fi %d"
 
 #: src/connection-editor/page-wireguard.c:261
 msgid "Public key"
-msgstr ""
+msgstr "Veřejný klíč"
 
 #: src/connection-editor/page-wireguard.c:268
-#, fuzzy
 msgid "Allowed IPs"
-msgstr "Povolené metody"
+msgstr "Povolené adresy IP"
 
 #: src/connection-editor/page-wireguard.c:512
-#, fuzzy
 msgid "Could not load WireGuard user interface."
-msgstr "Nezdařilo se načíst uživatelské rozhraní pro tým."
+msgstr "Nezdařilo se načíst uživatelské rozhraní pro WireGuard."
 
 #: src/connection-editor/page-wireguard.c:628
-#, fuzzy, c-format
+#, c-format
 msgid "WireGuard connection %d"
-msgstr "Týmové připojení %d"
+msgstr "Připojení WireGuard %d"
 
 #: src/connection-editor/vpn-helpers.c:118
 #, c-format
@@ -4215,11 +4237,9 @@ msgstr "Použití:"
 
 #: src/main.c:30
 msgid ""
-"This program is a component of NetworkManager (https://wiki.gnome.org/"
-"Projects/NetworkManager/)."
+"This program is a component of NetworkManager (https://networkmanager.dev)."
 msgstr ""
-"Tento program je součástí aplikace NetworkManager (https://wiki.gnome.org/"
-"Projects/NetworkManager/)."
+"Tento program je součástí aplikace NetworkManager (https://networkmanager.dev)."
 
 #: src/main.c:31
 msgid ""
@@ -4343,629 +4363,3 @@ msgstr "Certifikáty PEM (*.pem, *.crt, *.cer)"
 #: src/utils/utils.c:546
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "Soukromé klíče DER, PEM nebo PKCS#12 (*.der, *.pem, *.p12, *.key)"
-
-#~ msgid "nm-device-wireless"
-#~ msgstr "nm-device-wireless"
-
-#~ msgid "preferences-system-network"
-#~ msgstr "preferences-system-network"
-
-#~ msgid "missing EAP-FAST PAC file"
-#~ msgstr "chybějící PAC soubor EAP-FAST"
-
-#~ msgid "GTC"
-#~ msgstr "GTC"
-
-#~ msgid "Choose a PAC file"
-#~ msgstr "Vyberte soubor PAC"
-
-#~ msgid "PAC files (*.pac)"
-#~ msgstr "Soubory PAC (*.pac)"
-
-#~ msgid "All files"
-#~ msgstr "Všechny soubory"
-
-#~ msgid "Anonymous"
-#~ msgstr "Anonymní"
-
-#~ msgid "Authenticated"
-#~ msgstr "Ověřeno"
-
-#~ msgid "Both"
-#~ msgstr "Oba"
-
-#~ msgid "Anony_mous identity"
-#~ msgstr "Anony_mní identita"
-
-#~ msgid "PAC _file"
-#~ msgstr "_Soubor PAC"
-
-#~ msgid "_Inner authentication"
-#~ msgstr "V_nitřní ověření"
-
-#~ msgid "Allow automatic PAC pro_visioning"
-#~ msgstr "Po_volit automatické nastavení PAC"
-
-#~ msgid "missing EAP-LEAP username"
-#~ msgstr "chybějící uživatelské jméno pro EAP-LEAP"
-
-#~ msgid "missing EAP-LEAP password"
-#~ msgstr "chybějící heslo pro EAP-LEAP"
-
-#~ msgid "MD5"
-#~ msgstr "MD5"
-
-#~ msgid "Version 0"
-#~ msgstr "Verze 0"
-
-#~ msgid "Version 1"
-#~ msgstr "Verze 1"
-
-#~ msgid "No CA certificate is _required"
-#~ msgstr "Žádný ce_rtifikát CA není požadován"
-
-#~ msgid "PEAP _version"
-#~ msgstr "Verze _PEAP"
-
-#~ msgid "Suffix of the server certificate name."
-#~ msgstr "Přípona názvu serverového certifikátu."
-
-#~ msgid "_Domain"
-#~ msgstr "_Doména"
-
-#~ msgid "missing EAP username"
-#~ msgstr "chybějící uživatelské jméno pro EAP"
-
-#~ msgid "missing EAP password"
-#~ msgstr "chybějící heslo pro EAP"
-
-#~ msgid "missing EAP client Private Key passphrase"
-#~ msgstr "chybějící heslo soukromého klíče klienta EAP"
-
-#~ msgid "P_rivate Key Passphrase"
-#~ msgstr "Heslo souk_romého klíče"
-
-#~ msgid "Sh_ow passphrase"
-#~ msgstr "Z_obrazit heslo"
-
-#~ msgid "missing EAP-TLS identity"
-#~ msgstr "chybějící identita EAP-TLS"
-
-#~ msgid "no user certificate selected"
-#~ msgstr "není vybrán žádný uživatelský certifikát"
-
-#~ msgid "selected user certificate file does not exist"
-#~ msgstr "vybraný soubor s uživatelským certifikátem neexistuje"
-
-#~ msgid "no key selected"
-#~ msgstr "není vybrán žádný klíč"
-
-#~ msgid "selected key file does not exist"
-#~ msgstr "vybraný soubor s klíčem neexistuje"
-
-#~ msgid "I_dentity"
-#~ msgstr "I_dentita"
-
-#~ msgid "MSCHAPv2 (no EAP)"
-#~ msgstr "MSCHAPv2 (bez EAP)"
-
-#~ msgid "undefined error in 802.1X security (wpa-eap)"
-#~ msgstr "neurčená chyba v zabezpečení 802.1X (wpa-eap)"
-
-#~ msgid "no CA certificate selected"
-#~ msgstr "není vybrán žádný certifikát CA"
-
-#~ msgid "selected CA certificate file does not exist"
-#~ msgstr "vybraný soubor s certifikátem CA neexistuje"
-
-#~ msgid "Unknown error validating 802.1X security"
-#~ msgstr "Neznámá chyba při ověřování bezpečnosti 802.1X"
-
-#~ msgid "TLS"
-#~ msgstr "TLS"
-
-#~ msgid "PWD"
-#~ msgstr "PWD"
-
-#~ msgid "FAST"
-#~ msgstr "FAST"
-
-#~ msgid "Tunneled TLS"
-#~ msgstr "Tunneled TLS"
-
-#~ msgid "Protected EAP (PEAP)"
-#~ msgstr "Protected EAP (PEAP)"
-
-#~ msgid "Externally configured"
-#~ msgstr "Nastaveno externě"
-
-#~ msgid "Au_thentication"
-#~ msgstr "Ověře_ní"
-
-#~ msgid "missing leap-username"
-#~ msgstr "chybí leap-username"
-
-#~ msgid "missing leap-password"
-#~ msgstr "chybí leap-password"
-
-#, fuzzy
-#~ msgid "missing password"
-#~ msgstr "chybějící heslo pro EAP"
-
-#~ msgid "_Type"
-#~ msgstr "_Typ"
-
-#~ msgid "missing wep-key"
-#~ msgstr "chybí wep-key"
-
-#, c-format
-#~ msgid ""
-#~ "invalid wep-key: key with a length of %zu must contain only hex-digits"
-#~ msgstr ""
-#~ "neplatný wep-key: klíč délky %zu musí obsahovat jen šestnáctkové číslice"
-
-#, c-format
-#~ msgid ""
-#~ "invalid wep-key: key with a length of %zu must contain only ascii "
-#~ "characters"
-#~ msgstr "neplatný wep-key: klíč délky %zu musí obsahovat pouze znaky ASCII"
-
-#, c-format
-#~ msgid ""
-#~ "invalid wep-key: wrong key length %zu. A key must be either of length "
-#~ "5/13 (ascii) or 10/26 (hex)"
-#~ msgstr ""
-#~ "neplatný wep-key: nesprávná délka klíče %zu. Musí být dlouhý buď 5 nebo "
-#~ "13 znaků ASCII, a nebo 10 nebo 16 šestnáctkových číslic"
-
-#~ msgid "invalid wep-key: passphrase must be non-empty"
-#~ msgstr "neplatný wep-key: heslo nesmí být prázdné"
-
-#~ msgid "invalid wep-key: passphrase must be shorter than 64 characters"
-#~ msgstr "neplatný wep-key: heslo musí být kratší než 64 znaků"
-
-#~ msgid "Open System"
-#~ msgstr "Otevřený systém"
-
-#~ msgid "1 (Default)"
-#~ msgstr "1 (výchozí)"
-
-#~ msgid "_Key"
-#~ msgstr "_Klíč"
-
-#~ msgid "WEP inde_x"
-#~ msgstr "Inde_x WEP"
-
-#, c-format
-#~ msgid ""
-#~ "invalid wpa-psk: invalid key-length %zu. Must be [8,63] bytes or 64 hex "
-#~ "digits"
-#~ msgstr ""
-#~ "neplatný wpa-psk: neplatná délka klíče %zu. Musí být v rozmezí 8 až 63 "
-#~ "bajtů nebo 64 šestnáctkových číslic"
-
-#~ msgid "invalid wpa-psk: cannot interpret key with 64 bytes as hex"
-#~ msgstr ""
-#~ "neplatný wpa-psk: nelze interpretovat klíč délky 64 bajtů jako "
-#~ "šestnáctkový"
-
-#~ msgid "Disable connected notifications"
-#~ msgstr "Zakázat upozornění na připojení"
-
-#~ msgid ""
-#~ "Set this to true to disable notifications when connecting to a network."
-#~ msgstr "Nastavením na zapnuto zakážete upozornění na připojení k síti."
-
-#~ msgid "Disable disconnected notifications"
-#~ msgstr "Zakázat upozornění na odpojení"
-
-#~ msgid ""
-#~ "Set this to true to disable notifications when disconnecting from a "
-#~ "network."
-#~ msgstr "Nastavením na zapnuto zakážete upozornění na odpojení ze sítě."
-
-#~ msgid "Disable VPN notifications"
-#~ msgstr "Zakázat upozornění na VPN"
-
-#~ msgid ""
-#~ "Set this to true to disable notifications when connecting to or "
-#~ "disconnecting from a VPN."
-#~ msgstr ""
-#~ "Nastavením na zapnuto zakážete upozornění na připojení či odpojení z VPN."
-
-#~ msgid "Suppress networks available notifications"
-#~ msgstr "Potlačit upozornění na dostupné sítě"
-
-#~ msgid ""
-#~ "Set this to true to disable notifications when Wi-Fi networks are "
-#~ "available."
-#~ msgstr "Nastavením na zapnuto zakážete upozornění na dostupnost sítí Wi-Fi."
-
-#~ msgid "Stamp"
-#~ msgstr "Údaj"
-
-#~ msgid ""
-#~ "Used to determine whether settings should be migrated to a new version."
-#~ msgstr ""
-#~ "Účelem je zjištění, zda by měla být nastavení přenesena na novou verzi."
-
-#~ msgid "Disable WiFi Create"
-#~ msgstr "Zakázat vytváření WiFi"
-
-#~ msgid ""
-#~ "Set to true to disable creation of adhoc networks when using the applet."
-#~ msgstr ""
-#~ "Když je používán applet, nastavením na zapnuto zakážete vytváření adhoc "
-#~ "sítí."
-
-#~ msgid "Show the applet in notification area"
-#~ msgstr "Zobrazovat applet v oznamovací oblasti"
-
-#~ msgid ""
-#~ "Set to FALSE to disable displaying the applet in the notification area."
-#~ msgstr ""
-#~ "Nastavení na VYPNUTO zablokuje zobrazení apletu v oznamovací oblasti."
-
-#~ msgid "Ignore CA certificate"
-#~ msgstr "Ignorovat certifikát CA"
-
-#~ msgid ""
-#~ "Set this to true to disable warnings about CA certificates in EAP "
-#~ "authentication."
-#~ msgstr ""
-#~ "Nastavením na zapnuto zakážete upozornění na certifikáty CA v ověření EAP."
-
-#~ msgid ""
-#~ "Set this to true to disable warnings about CA certificates in phase 2 of "
-#~ "EAP authentication."
-#~ msgstr ""
-#~ "Nastavením na zapnuto zakážete upozornění na certifikáty CA v druhé fázi "
-#~ "ověření EAP."
-
-#~ msgid "Scan with your phone or <a href=\"nma:print\">Print</a>"
-#~ msgstr "Naskenujte svým telefonem nebo <a href=\"nma:print\">vytiskněte</a>"
-
-#~ msgid "No certificate set"
-#~ msgstr "Není nastavený žádný certifikát"
-
-#~ msgid "No key set"
-#~ msgstr "Není nastavený žádný klíč"
-
-#, c-format
-#~ msgid "Choose a key for %s Certificate"
-#~ msgstr "Vyberte klíč pro certifikát %s"
-
-#, c-format
-#~ msgid "%s key _password"
-#~ msgstr "_Heslo klíče %s"
-
-#, c-format
-#~ msgid "Choose %s Certificate"
-#~ msgstr "Vyberte certifikát %s"
-
-#, c-format
-#~ msgid "%s _certificate"
-#~ msgstr "_Certifikát %s"
-
-#~ msgid "My country is not listed"
-#~ msgstr "Moje země není v seznamu"
-
-#~ msgid "Unlisted"
-#~ msgstr "Není v seznamu"
-
-#~ msgid "My plan is not listed…"
-#~ msgstr "Můj plán není v seznamu…"
-
-#~ msgid "Provider"
-#~ msgstr "Poskytovatel"
-
-#~ msgid "Installed GSM device"
-#~ msgstr "Nainstalované zařízení GSM"
-
-#~ msgid "Installed CDMA device"
-#~ msgstr "Nainstalované zařízení CDMA"
-
-#~ msgid "Any device"
-#~ msgstr "Jakékoli zařízení"
-
-#~ msgid "New Mobile Broadband Connection"
-#~ msgstr "Nové mobilní širokopásmové připojení"
-
-#~ msgid ""
-#~ "This assistant helps you easily set up a mobile broadband connection to a "
-#~ "cellular (3G) network."
-#~ msgstr ""
-#~ "Tento pomocník vám pomůže snadno nastavit širokopásmové připojení k "
-#~ "mobilní (3G) síti."
-
-#~ msgid "You will need the following information:"
-#~ msgstr "Budete potřebovat tyto informace:"
-
-#~ msgid "Your broadband provider’s name"
-#~ msgstr "Název poskytovatele širokopásmového připojení"
-
-#~ msgid "Your broadband billing plan name"
-#~ msgstr "Název vašeho tarifu"
-
-#~ msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
-#~ msgstr "(v některých případech) Přístupový bod (APN) pro váš tarif"
-
-#~ msgid "Create a connection for _this mobile broadband device:"
-#~ msgstr "Vytvořit připojení pro _toto mobilní širokopásmové zařízení:"
-
-#~ msgid "Set up a Mobile Broadband Connection"
-#~ msgstr "Nastavit mobilní širokopásmové připojení"
-
-#~ msgid "Country or region:"
-#~ msgstr "Země nebo region:"
-
-#~ msgid "Choose your Provider’s Country or Region"
-#~ msgstr "Zvolte zemi nebo region svého poskytovatele"
-
-#~ msgid "Select your provider from a _list:"
-#~ msgstr "Vybrat poskytovate_le ze seznamu:"
-
-#~ msgid ""
-#~ "I can’t find my provider and I wish to set up the connection _manually:"
-#~ msgstr "Ne_mohu najít svého poskytovatele, chci nastavit připojení ručně:"
-
-#~ msgid "My provider uses GSM technology (GPRS, EDGE, UMTS, HSPA)"
-#~ msgstr "Můj poskytovatel používá technologii GSM (GPRS, EDGE, UTMS, HSPA)"
-
-#~ msgid "My provider uses CDMA technology (1xRTT, EVDO)"
-#~ msgstr "Můj poskytovatel používá technologii CDMA (1xRTT, EVDO)"
-
-#~ msgid "Choose your Provider"
-#~ msgstr "Vyberte svého poskytovatele"
-
-#~ msgid "_Select your plan:"
-#~ msgstr "_Vybrat tarif:"
-
-#~ msgid "Selected plan _APN (Access Point Name):"
-#~ msgstr "Zvolený přístupový bod vašeho tarifu (_APN):"
-
-#~ msgid ""
-#~ "Warning: Selecting an incorrect plan may result in billing issues for "
-#~ "your broadband account or may prevent connectivity.\n"
-#~ "\n"
-#~ "If you are unsure of your plan please ask your provider for your plan’s "
-#~ "APN."
-#~ msgstr ""
-#~ "Pozor: Pokud vyberete nesprávný tarif, může dojít ke chybnému účtování "
-#~ "vašeho účtu nebo odmítnutí připojení k síti. \n"
-#~ "\n"
-#~ "Nejste-li si jistí přístupovým bodem, obraťte se na svého poskytovatele."
-
-#~ msgid "Choose your Billing Plan"
-#~ msgstr "Vyberte svůj tarif"
-
-#~ msgid ""
-#~ "Your mobile broadband connection is configured with the following "
-#~ "settings:"
-#~ msgstr ""
-#~ "Vaše mobilní širokopásmové připojení je nastaveno s těmito parametry:"
-
-#~ msgid "Your Device:"
-#~ msgstr "Vaše zařízení:"
-
-#~ msgid "Your Provider:"
-#~ msgstr "Váš poskytovatel:"
-
-#~ msgid "Your Plan:"
-#~ msgstr "Váš tarif:"
-
-#~ msgid ""
-#~ "A connection will now be made to your mobile broadband provider using the "
-#~ "settings you selected. If the connection fails or you cannot access "
-#~ "network resources, double-check your settings. To modify your mobile "
-#~ "broadband connection settings, choose “Network Connections” from the "
-#~ "System → Preferences menu."
-#~ msgstr ""
-#~ "S vámi zvoleným nastavením bude navázáno spojení k vašemu poskytovateli "
-#~ "mobilního připojení. Pokud připojení selže, nebo nemůžete přistupovat ke "
-#~ "zdrojům v síti, zkontrolujte prosím svá nastavení. Změny v nastavení "
-#~ "připojení provedete volbou „Připojení k síti“ z nabídky Systém → "
-#~ "Nastavení."
-
-#~ msgid "Confirm Mobile Broadband Settings"
-#~ msgstr "Potvrdit volby širokopásmového připojení"
-
-#~ msgid "(None)"
-#~ msgstr "(žádný)"
-
-#, c-format
-#~ msgid "Key in %s"
-#~ msgstr "Klíč v %s"
-
-#, c-format
-#~ msgid "Certificate in %s"
-#~ msgstr "Certifikát v %s"
-
-#~ msgid "(Unknown)"
-#~ msgstr "(neznámý)"
-
-#~ msgid "Select"
-#~ msgstr "Vybrat"
-
-#~ msgid "Cancel"
-#~ msgstr "Zrušit"
-
-#~ msgid "Select from file…"
-#~ msgstr "Vybrat ze souboru…"
-
-#, c-format
-#~ msgid "Choose a %s Certificate"
-#~ msgstr "Vybrat certifikát %s"
-
-#, c-format
-#~ msgid "%s certificate _password"
-#~ msgstr "_Heslo certifikátu %s"
-
-#~ msgid "Error logging in: "
-#~ msgstr "Záznam chyb v: "
-
-#~ msgid "Error opening a session: "
-#~ msgstr "Chyba při otevirání sezení: "
-
-#~ msgid "_Unlock token"
-#~ msgstr "Odemkno_ut tiket"
-
-#~ msgid "Issued By"
-#~ msgstr "Vydal"
-
-#, c-format
-#~ msgid "Enter %s PIN"
-#~ msgstr "Zadejte PIN %s"
-
-#~ msgid "_Login"
-#~ msgstr "_Přihlásit"
-
-#~ msgid "_Remember PIN"
-#~ msgstr "Pa_matovat si PIN"
-
-#~ msgid "Store the password only for this user"
-#~ msgstr "Uložit heslo pouze pro tohoto uživatele"
-
-#~ msgid "Store the password for all users"
-#~ msgstr "Uložit heslo pro všechny uživatele"
-
-#~ msgid "Ask for this password every time"
-#~ msgstr "Pokaždé se dotazovat na heslo"
-
-#~ msgid "The password is not required"
-#~ msgstr "Heslo není vyžadováno"
-
-#~ msgid "Sh_ow passwords"
-#~ msgstr "Z_obrazit hesla"
-
-#~ msgid "_Tertiary Password:"
-#~ msgstr "_Terciální heslo:"
-
-#~ msgid "_Secondary Password:"
-#~ msgstr "_Sekundární heslo:"
-
-#~ msgid "_Password:"
-#~ msgstr "_Heslo:"
-
-#~ msgid "Click to connect"
-#~ msgstr "Kliknutím se připojíte"
-
-#~ msgid "New…"
-#~ msgstr "Nový…"
-
-#~ msgctxt "Wifi/wired security"
-#~ msgid "None"
-#~ msgstr "Žádná"
-
-#~ msgid "Dynamic WEP (802.1x)"
-#~ msgstr "Dynamické WEP (802.1x)"
-
-#~ msgid "C_reate"
-#~ msgstr "_Vytvořit"
-
-#, c-format
-#~ msgid ""
-#~ "Passwords or encryption keys are required to access the Wi-Fi network "
-#~ "“%s”."
-#~ msgstr ""
-#~ "Pro přístup k síti Wi-Fi „%s“ jsou vyžadována hesla nebo šifrovací klíče."
-
-#~ msgid "Wi-Fi Network Authentication Required"
-#~ msgstr "K síti Wi-Fi je vyžadováno ověření"
-
-#~ msgid "Authentication required by Wi-Fi network"
-#~ msgstr "Síť Wi-Fi vyžadovuje ověření"
-
-#~ msgid "Create New Wi-Fi Network"
-#~ msgstr "Vytvořit novou síť Wi-Fi"
-
-#~ msgid "New Wi-Fi network"
-#~ msgstr "Nová síť Wi-Fi"
-
-#~ msgid "Enter a name for the Wi-Fi network you wish to create."
-#~ msgstr "Zadejte název sítě Wi-Fi, kterou chcete vytvořit."
-
-#~ msgid "Connect to Hidden Wi-Fi Network"
-#~ msgstr "Připojit se ke skryté síti Wi-Fi"
-
-#~ msgid "Hidden Wi-Fi network"
-#~ msgstr "Skrytá síť Wi-Fi"
-
-#~ msgid ""
-#~ "Enter the name and security details of the hidden Wi-Fi network you wish "
-#~ "to connect to."
-#~ msgstr ""
-#~ "Zadejte název a podrobnosti o zabezpečení skryté sítě Wi-Fi, ke které se "
-#~ "chcete připojit."
-
-#~ msgid "Wi-Fi _security"
-#~ msgstr "Zabezpečení _Wi-Fi"
-
-#~ msgid "C_onnection"
-#~ msgstr "Přip_ojení"
-
-#~ msgid "Wi-Fi _adapter"
-#~ msgstr "_Adaptér Wi-Fi"
-
-#~ msgid "I can’t find my provider and I wish to enter it _manually:"
-#~ msgstr "Ne_mohu najít svého poskytovatele, chci jej zadat ručně:"
-
-#~ msgid "Provider:"
-#~ msgstr "Poskytovatel:"
-
-#~ msgid "Country or Region List:"
-#~ msgstr "Seznam zemí: nebo regionů:"
-
-#~ msgid "Country or region"
-#~ msgstr "Země nebo region"
-
-#~ msgid "OLPC Mesh"
-#~ msgstr "Buňka OLPC"
-
-#~ msgid "ADSL"
-#~ msgstr "ADSL"
-
-#~ msgid "PCI"
-#~ msgstr "PCI"
-
-#~ msgid "USB"
-#~ msgstr "USB"
-
-#, c-format
-#~ msgctxt "long device name"
-#~ msgid "%s %s"
-#~ msgstr "%s %s"
-
-#~ msgid ""
-#~ "Either a password is missing or the connection is invalid. In the latter "
-#~ "case, you have to edit the connection with nm-connection-editor first"
-#~ msgstr ""
-#~ "Chybí heslo, nebo je neplatné připojení. V druhém případě budete muset "
-#~ "nejdříve použít nm-connection-editor pro úpravu připojení"
-
-#~ msgid "Wi-Fi _security:"
-#~ msgstr "Zabezpečení _Wi-Fi:"
-
-#~ msgid "_Network name:"
-#~ msgstr "_Název sítě:"
-
-#~ msgid "C_onnection:"
-#~ msgstr "_Připojení:"
-
-#~ msgid "Wi-Fi _adapter:"
-#~ msgstr "_Adaptér Wi-Fi:"
-
-#~ msgid "CKN"
-#~ msgstr "CKN"
-
-#~ msgid "CAK"
-#~ msgstr "CAK"
-
-#~ msgid "%s (default)"
-#~ msgstr "%s (výchozí)"
-
-#~ msgid "Ignored"
-#~ msgstr "Ignorováno"
-
-#~ msgid "Active Network Connections"
-#~ msgstr "Aktivní připojení k síti"
