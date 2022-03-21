@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: network-manager-applet master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
 "applet/\n"
-"POT-Creation-Date: 2021-07-05 11:47+0200\n"
+"POT-Creation-Date: 2022-03-21 20:51+0100\n"
 "PO-Revision-Date: 2013-02-10 11:32+0900\n"
 "Last-Translator: Gheyret Kenji <gheyret@gmail.com>\n"
 "Language-Team: Uyghur Computer Science Association <UKIJ@yahoogroups.com>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3258
+#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3251
 msgid "Network"
 msgstr "تور"
 
@@ -96,7 +96,7 @@ msgid ""
 "type '%s'"
 msgstr ""
 
-#: src/8021x.ui:11 src/ethernet-dialog.c:87
+#: src/8021x.ui:7 src/ethernet-dialog.c:90
 msgid "802.1X authentication"
 msgstr "802.1X كىملىك دەلىللەش"
 
@@ -131,13 +131,17 @@ msgstr "باغلاندى"
 msgid "_Network name"
 msgstr "تور ئاتى(_N)"
 
-#: src/ap-menu-item.c:67
+#: src/ap-menu-item.c:68
 #, fuzzy
 msgid "ad-hoc"
 msgstr "Ad-hoc"
 
-#: src/ap-menu-item.c:72
+#: src/ap-menu-item.c:73
 msgid "secure."
+msgstr ""
+
+#: src/ap-menu-item.c:77
+msgid "insecure."
 msgstr ""
 
 #: src/applet-device-broadband.c:147
@@ -166,7 +170,7 @@ msgid "Mobile Broadband"
 msgstr "كۆچمە كەڭ بەلۋاغ"
 
 #: src/applet-device-broadband.c:780 src/applet-device-bt.c:61
-#: src/applet-device-ethernet.c:107 src/applet-device-wifi.c:894
+#: src/applet-device-ethernet.c:107
 msgid "Available"
 msgstr "ئىشلەتكىلى بولىدۇ"
 
@@ -177,7 +181,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "يېڭى كۆچمە كەڭ بەلۋاغ باغلىنىشى"
 
 #: src/applet-device-broadband.c:809 src/applet-device-bt.c:75
-#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1297
+#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1269
 msgid "Connection Established"
 msgstr "باغلىنىش تۇرغۇزۇلدى"
 
@@ -216,7 +220,7 @@ msgstr "كۆچمە كەڭ بەلۋاغ باغلىنىشى ‹%s› نى سەپل
 msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr "كۆچمە كەڭ بەلۋاغ باغلىنىشى ‹%s› ئۈچۈن ئىشلەتكۈچىنى تەكشۈرۈش كېرەك..."
 
-#: src/applet-device-bt.c:113 src/applet.c:2604 src/mobile-helpers.c:593
+#: src/applet-device-bt.c:113 src/applet.c:2595 src/mobile-helpers.c:593
 #, fuzzy, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "‹%s› ئۈچۈن بىر تور ئادرېسى ئىلتىماس قىلىۋاتىدۇ..."
@@ -249,7 +253,7 @@ msgid "Ethernet Network"
 msgstr "ئېزېرنېت (Ethernet) تورى"
 
 #. Notify user of unmanaged or unavailable device
-#: src/applet-device-ethernet.c:99 src/applet.c:1359
+#: src/applet-device-ethernet.c:99 src/applet.c:1350
 msgid "disconnected"
 msgstr "ئۈزۈلدى"
 
@@ -311,7 +315,7 @@ msgstr "يېڭى سىمسىز(Wi-Fi) تور قۇرۇش"
 msgid "(none)"
 msgstr "(يوق)"
 
-#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1397
+#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1366
 msgid "Failed to add new connection"
 msgstr "يېڭى باغلىنىش قوشۇش مەغلۇپ بولدى"
 
@@ -319,93 +323,94 @@ msgstr "يېڭى باغلىنىش قوشۇش مەغلۇپ بولدى"
 msgid "Insufficient privileges."
 msgstr ""
 
-#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1379
-#: src/applet-device-wifi.c:1402 src/applet.c:417 src/applet.c:506
+#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1349
+#: src/applet-device-wifi.c:1369 src/applet.c:415 src/applet.c:498
 msgid "Connection failure"
 msgstr "باغلىنىش مەغلۇپ بولدى"
 
-#: src/applet-device-wifi.c:826
+#: src/applet-device-wifi.c:827
 #, c-format
 msgid "Wi-Fi Networks (%s)"
 msgstr "سىمسىز(Wi-Fi) تورلار (%s)"
 
-#: src/applet-device-wifi.c:828
+#: src/applet-device-wifi.c:829
 #, c-format
 msgid "Wi-Fi Network (%s)"
 msgstr "سىمسىز(Wi-Fi) تور (%s)"
 
-#: src/applet-device-wifi.c:830
+#: src/applet-device-wifi.c:831
 msgid "Wi-Fi Network"
 msgid_plural "Wi-Fi Networks"
 msgstr[0] "سىمسىز(Wi-Fi) تورلار"
 
-#: src/applet-device-wifi.c:859
+#: src/applet-device-wifi.c:860
 msgid "Wi-Fi is disabled"
 msgstr "سىمسىز(Wi-Fi) تور ئىناۋەتسىز قىلىنغان"
 
-#: src/applet-device-wifi.c:860
+#: src/applet-device-wifi.c:861
 msgid "Wi-Fi is disabled by hardware switch"
 msgstr ""
 "سىمسىز(Wi-Fi) تور قاتتىق دېتالنىڭ ئۈزچاتىدا ئارقىلىق ئىناۋەتسىز قىلىنغان"
 
-#: src/applet-device-wifi.c:921
-msgid "More networks"
-msgstr "تېخىمۇ كۆپ تور"
+#: src/applet-device-wifi.c:887
+#, fuzzy
+msgid "_Available networks"
+msgstr "بارلىق ئىشلەتكۈچىلەر ئىشلىتەلەيدۇ"
 
-#: src/applet-device-wifi.c:1111
+#: src/applet-device-wifi.c:1083
 msgid "Wi-Fi Networks Available"
 msgstr "سىمسىز(Wi-Fi) تورلارنى ئىشلەتكىلى بولىدۇ"
 
-#: src/applet-device-wifi.c:1112
+#: src/applet-device-wifi.c:1084
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "سىمسىز(Wi-Fi) تورغا باغلىنىش ئۈچۈن تور تىزىملىكىنى ئىشلەتسۇن"
 
-#: src/applet-device-wifi.c:1115 src/applet.c:828
+#: src/applet-device-wifi.c:1087 src/applet.c:819
 #, fuzzy
 msgid "Don’t show this message again"
 msgstr "بۇ ئۇچۇرنى قايتا كۆرسەتمە"
 
-#: src/applet-device-wifi.c:1296
+#: src/applet-device-wifi.c:1268
 #, fuzzy, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "سىز ھازىر سىمسىز(Wi-Fi) تور ‹%s› غا باغلاندىڭىز."
 
-#: src/applet-device-wifi.c:1331
+#: src/applet-device-wifi.c:1303
 #, fuzzy, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "سىمسىز(Wi-Fi) تور باغلىنىشى ‹%s› غا تەييارلىنىۋاتىدۇ…"
 
-#: src/applet-device-wifi.c:1334
+#: src/applet-device-wifi.c:1306
 #, fuzzy, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "سىمسىز(Wi-Fi) تور باغلىنىشى ‹%s› نى سەپلەۋاتىدۇ…"
 
-#: src/applet-device-wifi.c:1337
+#: src/applet-device-wifi.c:1309
 #, fuzzy, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "سىمسىز(Wi-Fi) تور باغلىنىشى ‹%s› ئۈچۈن كىملىك دەلىللەش زۆرۈر…"
 
-#: src/applet-device-wifi.c:1340
+#: src/applet-device-wifi.c:1312
 #, fuzzy, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "‹%s› ئۈچۈن بىر سىمسىز(Wi-Fi) تور ئادرېسى ئىلتىماس قىلىۋاتىدۇ…"
 
-#: src/applet-device-wifi.c:1351
+#: src/applet-device-wifi.c:1323
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "سىمسىز(Wi-Fi) تور باغلىنىشى ‹%s› ئاكتىپ: %s (%d%%)"
 
-#: src/applet-device-wifi.c:1355
+#: src/applet-device-wifi.c:1327
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "سىمسىز(Wi-Fi) تور باغلىنىشى ‹%s› ئاكتىپ"
 
-#: src/applet-device-wifi.c:1374
+#: src/applet-device-wifi.c:1346
 msgid "Failed to activate connection"
 msgstr "باغلىنىشنى ئاكتىپلاش مەغلۇپ بولدى"
 
-#: src/applet-device-wifi.c:1376 src/applet-device-wifi.c:1399 src/applet.c:414
-#: src/applet.c:468 src/applet.c:503
+#: src/applet-device-wifi.c:1347 src/applet-device-wifi.c:1367 src/applet.c:413
+#: src/applet.c:464 src/applet.c:496
 msgid "Unknown error"
 msgstr "نامەلۇم خاتالىق"
 
@@ -413,7 +418,7 @@ msgstr "نامەلۇم خاتالىق"
 msgid "Error displaying connection information:"
 msgstr "باغلىنىش ئۇچۇرلىرىنى كۆرسەتكەندە خاتالىق چىقتى:"
 
-#: src/applet-dialogs.c:60 src/connection-editor/page-wifi-security.c:369
+#: src/applet-dialogs.c:60 src/connection-editor/page-wifi-security.c:384
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -440,7 +445,7 @@ msgid "WPA3"
 msgstr ""
 
 #: src/applet-dialogs.c:234 src/applet-dialogs.c:243
-#: src/connection-editor/page-wifi-security.c:320
+#: src/connection-editor/page-wifi-security.c:327
 msgctxt "Wi-Fi/Ethernet security"
 msgid "None"
 msgstr "يوق"
@@ -731,19 +736,19 @@ msgstr ""
 msgid "Failed to add/activate connection"
 msgstr "باغلىنىشنى قوشۇش/ئاكتىپلاش مەغلۇپ بولدى"
 
-#: src/applet.c:466
+#: src/applet.c:463
 msgid "Device disconnect failed"
 msgstr "ئۈسكۈنە ئۈزۈش مەغلۇپ بولدى"
 
-#: src/applet.c:471
+#: src/applet.c:466
 msgid "Disconnect failure"
 msgstr "ئۈزۈش مەغلۇپ بولدى"
 
-#: src/applet.c:501
+#: src/applet.c:495
 msgid "Connection activation failed"
 msgstr "باغلىنىشنى ئاكتىپلاش مەغلۇپ بولدى"
 
-#: src/applet.c:925
+#: src/applet.c:916
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -753,7 +758,7 @@ msgstr ""
 "\n"
 "ۋ پ ن(VPN) باغلىنىشى ‹%s› ئۈزۈلۈپ قالدى، چۈنكى تور باغلىنىشى ئۈزۈلدى."
 
-#: src/applet.c:927
+#: src/applet.c:918
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -763,7 +768,7 @@ msgstr ""
 "\n"
 "ۋ پ ن(VPN) باغلىنىشى ‹%s› مەغلۇپ بولدى چۈنكى تور باغلىنىشى ئۈزۈلدى."
 
-#: src/applet.c:929
+#: src/applet.c:920
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -772,7 +777,7 @@ msgstr ""
 "\n"
 "ۋ پ ن(VPN) باغلىنىشى ‹%s› مەغلۇپ بولدى چۈنكى VPN مۇلازىمىتى بىنورمال توختىدى."
 
-#: src/applet.c:931
+#: src/applet.c:922
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -783,7 +788,7 @@ msgstr ""
 "ۋ پ ن(VPN) باغلىنىشى ‹%s› مەغلۇپ بولدى چۈنكى VPN مۇلازىمىتى ئىناۋەتسىز "
 "سەپلىمىگە قايتتى."
 
-#: src/applet.c:933
+#: src/applet.c:924
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -792,7 +797,7 @@ msgstr ""
 "\n"
 "ۋ پ ن(VPN) باغلىنىشى ‹%s› مەغلۇپ بولدى چۈنكى باغلىنىش ۋاقتى ئېشىپ كەتتى."
 
-#: src/applet.c:935
+#: src/applet.c:926
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -802,7 +807,7 @@ msgstr ""
 "ۋ پ ن(VPN) باغلىنىشى ‹%s› مەغلۇپ بولدى چۈنكى VPN مۇلازىمىتى ۋاقتىدا "
 "باشلانمىدى."
 
-#: src/applet.c:937
+#: src/applet.c:928
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -812,7 +817,7 @@ msgstr ""
 "ۋ پ ن(VPN) باغلىنىشى ‹%s› مەغلۇپ بولدى چۈنكى VPN مۇلازىمەت باشلاش مەغلۇپ "
 "بولدى."
 
-#: src/applet.c:939
+#: src/applet.c:930
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -822,7 +827,7 @@ msgstr ""
 "ۋ پ ن(VPN) باغلىنىشى ‹%s› مەغلۇپ بولدى چۈنكى ئىناۋەتلىك VPN ئىم "
 "ھۆججەتلىرى(secret) يوق."
 
-#: src/applet.c:941
+#: src/applet.c:932
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -832,7 +837,7 @@ msgstr ""
 "ۋ پ ن(VPN) باغلىنىشى ‹%s› مەغلۇپ بولدى چۈنكى VPN ئىم ھۆججەتلىرى(secret) "
 "ئىناۋەتسىز."
 
-#: src/applet.c:946
+#: src/applet.c:937
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -841,7 +846,7 @@ msgstr ""
 "\n"
 "ۋ پ ن(VPN) باغلىنىشى ‹%s› مەغلۇپ بولدى."
 
-#: src/applet.c:973
+#: src/applet.c:964
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -852,19 +857,19 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/applet.c:975
+#: src/applet.c:966
 msgid "VPN connection has been successfully established.\n"
 msgstr "ۋ پ ن (VPN) باغلىنىشى مۇۋەپپەقىيەتلىك بولدى.\n"
 
-#: src/applet.c:977
+#: src/applet.c:968
 msgid "VPN Login Message"
 msgstr "ۋ پ ن(VPN) كىرىش ئۇچۇرى"
 
-#: src/applet.c:985 src/applet.c:1025
+#: src/applet.c:976 src/applet.c:1016
 msgid "VPN Connection Failed"
 msgstr "ۋ پ ن(VPN) باغلىنىشى مەغلۇپ بولدى"
 
-#: src/applet.c:1029
+#: src/applet.c:1020
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -878,7 +883,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1032
+#: src/applet.c:1023
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -891,137 +896,137 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1347
+#: src/applet.c:1338
 msgid "device not ready (firmware missing)"
 msgstr "ئۈسكۈنە تەييارلانمىدى(قۇيما دېتال كەم)"
 
-#: src/applet.c:1349
+#: src/applet.c:1340
 msgid "device not ready"
 msgstr "ئۈسكۈنە تەييارلانمىدى"
 
-#: src/applet.c:1375
+#: src/applet.c:1366
 msgid "Disconnect"
 msgstr "ئۈز"
 
-#: src/applet.c:1389
+#: src/applet.c:1380
 msgid "device not managed"
 msgstr "ئۈسكۈنە باشقۇرۇلمىدى"
 
-#: src/applet.c:1463
+#: src/applet.c:1454
 msgid "No network devices available"
 msgstr "تور ئۈسكۈنىسى يوق"
 
-#: src/applet.c:1509
+#: src/applet.c:1500
 msgid "_VPN Connections"
 msgstr "ۋ پ ن(VPN) باغلىنىشلىرى(_V)"
 
-#: src/applet.c:1553
+#: src/applet.c:1544
 #, fuzzy
 msgid "_Configure VPN…"
 msgstr "ۋ پ ن(VPN) نى سەپلە(_C)…"
 
-#: src/applet.c:1556
+#: src/applet.c:1547
 #, fuzzy
 msgid "_Add a VPN connection…"
 msgstr "ۋ پ ن(VPN) باغلىنىشلىرى(_V)"
 
-#: src/applet.c:1662
+#: src/applet.c:1653
 #, fuzzy
 msgid "NetworkManager is not running…"
 msgstr "تور باشقۇرغۇچ ئىجرا قىلىنمايۋاتىدۇ…"
 
-#: src/applet.c:1667 src/applet.c:2735
+#: src/applet.c:1658 src/applet.c:2726
 msgid "Networking disabled"
 msgstr "تور باغلىنىشى چەكلەنگەن"
 
 #. 'Enable Networking' item
-#: src/applet.c:1877
+#: src/applet.c:1868
 msgid "Enable _Networking"
 msgstr "تور ئۇلاشنى قوزغات(_N)"
 
 #. 'Enable Wi-Fi' item
-#: src/applet.c:1886
+#: src/applet.c:1877
 msgid "Enable _Wi-Fi"
 msgstr "سىمسىز تورنى(Wi-Fi) ئىناۋەتلىك قىل(_W)"
 
 #. 'Enable Mobile Broadband' item
-#: src/applet.c:1895
+#: src/applet.c:1886
 msgid "Enable _Mobile Broadband"
 msgstr "كۆچمە كەڭ بەلۋاغنى ئىناۋەتلىك قىل(_M)"
 
 #. Toggle notifications item
-#: src/applet.c:1907
+#: src/applet.c:1898
 msgid "Enable N_otifications"
 msgstr "ئۇقتۇرۇشلارنى قوزغات(_O)"
 
 #. 'Connection Information' item
-#: src/applet.c:1919
+#: src/applet.c:1910
 msgid "Connection _Information"
 msgstr "باغلىنىش ئۇچۇرلىرى(_I)"
 
 #. 'Edit Connections...' item
-#: src/applet.c:1927
+#: src/applet.c:1918
 #, fuzzy
 msgid "Edit Connections…"
 msgstr "باغلىنىشلارنى تەھرىرلە…"
 
-#: src/applet.c:1941
+#: src/applet.c:1932
 msgid "_About"
 msgstr "ھەققىدە(_A)"
 
-#: src/applet.c:2255
+#: src/applet.c:2246
 #, fuzzy, c-format
 msgid "You are now connected to “%s”."
 msgstr "سىز ھازىر ‹%s› گە باغلاندىڭىز."
 
-#: src/applet.c:2295
+#: src/applet.c:2286
 msgid "Disconnected"
 msgstr "ئۈزۈلدى"
 
-#: src/applet.c:2296
+#: src/applet.c:2287
 msgid "The network connection has been disconnected."
 msgstr "تور باغلىنىشى ئۈزۈلگەن ئىدى."
 
-#: src/applet.c:2598
+#: src/applet.c:2589
 #, fuzzy, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "‹%s› تور باغلىنىشى تەييارلىنىۋاتىدۇ…"
 
-#: src/applet.c:2601
+#: src/applet.c:2592
 #, fuzzy, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "تور باغلىنىشى ‹%s› ئۈچۈن ئىشلەتكۈچىنى تەكشۈرۈش كېرەكلىك…"
 
-#: src/applet.c:2607
+#: src/applet.c:2598
 #, fuzzy, c-format
 msgid "Network connection “%s” active"
 msgstr "‹%s› تور باغلىنىشى ئاكتىپ"
 
-#: src/applet.c:2680
+#: src/applet.c:2671
 #, fuzzy, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "ۋ پ ن(VPN) باغلىنىشى ‹%s› باشلىنىۋاتىدۇ"
 
-#: src/applet.c:2683
+#: src/applet.c:2674
 #, fuzzy, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "ۋ پ ن(VPN) باغلىنىشى ‹%s› ئۈچۈن ئىشلەتكۈچىنى تەكشۈرۈش كېرەكلىك..."
 
-#: src/applet.c:2686
+#: src/applet.c:2677
 #, fuzzy, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "‹%s› ئۈچۈن بىر VPN ئادرېسى ئىلتىماس قىلىۋاتىدۇ..."
 
-#: src/applet.c:2689
+#: src/applet.c:2680
 #, fuzzy
 msgid "VPN connection active"
 msgstr "ۋ پ ن(VPN) باغلىنىشى ‹%s› ئاكتىپ"
 
-#: src/applet.c:2739
+#: src/applet.c:2730
 msgid "No network connection"
 msgstr "تور باغلىنىشى يوق"
 
-#: src/applet.c:3359
+#: src/applet.c:3352
 msgid "NetworkManager Applet"
 msgstr "NetworkManager قوللانچاق"
 
@@ -2139,7 +2144,7 @@ msgid "C_KN"
 msgstr ""
 
 #: src/connection-editor/ce-page-macsec.ui:206
-msgid " The pre-shared Connectivity-association Key Name"
+msgid "The pre-shared Connectivity-association Key Name"
 msgstr ""
 
 #: src/connection-editor/ce-page-macsec.ui:217
@@ -3239,7 +3244,7 @@ msgstr "سىملىق"
 
 #: src/connection-editor/connection-helpers.c:112
 #: src/connection-editor/connection-helpers.c:374
-#: src/connection-editor/page-vpn.c:86
+#: src/connection-editor/page-vpn.c:92
 msgid "VPN"
 msgstr "VPN"
 
@@ -3409,11 +3414,11 @@ msgid ""
 "editor. They will be cleared upon save."
 msgstr ""
 
-#: src/connection-editor/nm-connection-editor.c:749
+#: src/connection-editor/nm-connection-editor.c:751
 msgid "Error initializing editor"
 msgstr "تەھرىرلىگۈچنى دەسلەپلەشتۈرگەندە خاتالىق كۆرۈلدى"
 
-#: src/connection-editor/nm-connection-editor.c:1159
+#: src/connection-editor/nm-connection-editor.c:1176
 msgid "Connection add failed"
 msgstr "باغلىنىش قوشۇش مەغلۇپ بولدى"
 
@@ -4081,25 +4086,25 @@ msgstr "‹%s› ئۈچۈن VPN قىستۇرما مۇلازىمەت تاپالم
 msgid "unknown failure"
 msgstr "باغلىنىش مەغلۇپ بولدى"
 
-#: src/connection-editor/page-vpn.c:88
+#: src/connection-editor/page-vpn.c:94
 msgid "Could not load VPN user interface."
 msgstr "VPN ئىشلەتكۈچى ئارايۈزنى ئوقۇغىلى بولمىدى."
 
-#: src/connection-editor/page-vpn.c:103
+#: src/connection-editor/page-vpn.c:109
 #, fuzzy, c-format
 msgid "Could not find VPN plugin for “%s”."
 msgstr "‹%s› ئۈچۈن VPN قىستۇرما مۇلازىمەت تاپالمايدۇ."
 
-#: src/connection-editor/page-vpn.c:185
+#: src/connection-editor/page-vpn.c:191
 #, c-format
 msgid "VPN connection %d"
 msgstr "VPN باغلىنىشى %d"
 
-#: src/connection-editor/page-vpn.c:191
+#: src/connection-editor/page-vpn.c:197
 msgid "Choose a VPN Connection Type"
 msgstr "بىر VPN باغلىنىش تىپى تاللا"
 
-#: src/connection-editor/page-vpn.c:192
+#: src/connection-editor/page-vpn.c:198
 #, fuzzy
 msgid ""
 "Select the type of VPN you wish to use for the new connection. If the type "
@@ -4110,54 +4115,55 @@ msgstr ""
 "قۇرۇشنى ئىستەيدىغان VPN باغلىنىش تىپى تىزىملىكتە بولمىسا، سىز بەلكىم توغرا "
 "VPN قىستۇرمىسىنى ئورۇنلاشتۇرمىغان بۆلىشىڭىز مۇمكىن."
 
-#: src/connection-editor/page-wifi-security.c:346
+#: src/connection-editor/page-wifi-security.c:359
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "WEP 40/128 بىتلىق ئاچقۇچ(16لىك ياكى ASCII)"
 
-#: src/connection-editor/page-wifi-security.c:356
+#: src/connection-editor/page-wifi-security.c:372
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128 بىتلىق شىفىر"
 
-#: src/connection-editor/page-wifi-security.c:382
+#: src/connection-editor/page-wifi-security.c:397
 msgid "Dynamic WEP (802.1X)"
 msgstr "دىنامىكىلىق WEP (802.1X)"
 
-#: src/connection-editor/page-wifi-security.c:395
+#: src/connection-editor/page-wifi-security.c:410
 msgid "WPA & WPA2 Personal"
 msgstr "WPA ۋە WPA2 كىشىلىك نۇسخىسى"
 
-#: src/connection-editor/page-wifi-security.c:408
+#: src/connection-editor/page-wifi-security.c:423
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA ۋە WPA2 كارخانا نۇسخىسى"
 
-#: src/connection-editor/page-wifi-security.c:421
+#: src/connection-editor/page-wifi-security.c:436
 #, fuzzy
 msgid "WPA3 Personal"
 msgstr "WPA ۋە WPA2 كىشىلىك نۇسخىسى"
 
-#: src/connection-editor/page-wifi-security.c:431
+#: src/connection-editor/page-wifi-security.c:449
+#: src/connection-editor/page-wifi-security.c:457
 msgid "Enhanced Open"
 msgstr ""
 
-#: src/connection-editor/page-wifi-security.c:476
+#: src/connection-editor/page-wifi-security.c:503
 msgid "Could not load Wi-Fi security user interface; missing Wi-Fi setting."
 msgstr ""
 "سىمسىز تور(Wi-Fi) بىخەتەرلىك ئىشلەتكۈچى ئارايۈزىنى ئوقۇغىلى بولمىدى؛ سىمسىز "
 "تور(Wi-Fi) تەڭشىكى تولۇق ئەمەس."
 
-#: src/connection-editor/page-wifi-security.c:487
+#: src/connection-editor/page-wifi-security.c:514
 msgid "Wi-Fi Security"
 msgstr "سىمسىز تور(Wi-Fi) بىخەتەرلىكى"
 
-#: src/connection-editor/page-wifi-security.c:489
+#: src/connection-editor/page-wifi-security.c:516
 msgid "Could not load Wi-Fi security user interface."
 msgstr "سىمسىز تور(Wi-Fi) بىخەتەرلىك ئىشلەتكۈچى ئارايۈزىنى ئوقۇغىلى بولمىدى."
 
-#: src/connection-editor/page-wifi-security.c:570
+#: src/connection-editor/page-wifi-security.c:597
 msgid "missing SSID"
 msgstr ""
 
-#: src/connection-editor/page-wifi-security.c:576
+#: src/connection-editor/page-wifi-security.c:603
 msgid "Security not compatible with Ad-Hoc mode"
 msgstr ""
 
@@ -4277,9 +4283,9 @@ msgid "Usage:"
 msgstr "ئىشلىتىش ئۇسۇلى:"
 
 #: src/main.c:30
+#, fuzzy
 msgid ""
-"This program is a component of NetworkManager (https://wiki.gnome.org/"
-"Projects/NetworkManager/)."
+"This program is a component of NetworkManager (https://networkmanager.dev)."
 msgstr ""
 "بۇ پروگرامما NetworkManager پروگراممىسىنىڭ بىر بۆلىكى(https://wiki.gnome.org/"
 "Projects/NetworkManager/)."
@@ -4409,6 +4415,9 @@ msgstr "DER ياكى PEM گۇۋاھنامىسى(der.*، pem.*، crt.*، cer.*)"
 #, fuzzy
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "DER، PEM ياكى PKCS#12 شەخسىي ئاچقۇچلار(*.der، *.pem،*.p12)"
+
+#~ msgid "More networks"
+#~ msgstr "تېخىمۇ كۆپ تور"
 
 #~ msgid "GTC"
 #~ msgstr "GTC"
@@ -5268,9 +5277,6 @@ msgstr "DER، PEM ياكى PKCS#12 شەخسىي ئاچقۇچلار(*.der، *.pem
 
 #~ msgid "Wireless"
 #~ msgstr "سىمسىز"
-
-#~ msgid "A_vailable to all users"
-#~ msgstr "بارلىق ئىشلەتكۈچىلەر ئىشلىتەلەيدۇ"
 
 #~ msgid "An unknown error occurred."
 #~ msgstr "نامەلۇم خاتالىق كۆرۈلدى."

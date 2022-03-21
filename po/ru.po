@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
 "applet/\n"
-"POT-Creation-Date: 2021-07-05 11:47+0200\n"
+"POT-Creation-Date: 2022-03-21 20:51+0100\n"
 "PO-Revision-Date: 2020-12-29 18:23+0300\n"
 "Last-Translator: Дронова Ю <juliette.tux@gmail.com>\n"
 "Language-Team: Russian <kde-i18n-doc@kde.org>\n"
@@ -28,7 +28,7 @@ msgstr ""
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 19.12.3\n"
 
-#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3258
+#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3251
 msgid "Network"
 msgstr "Сеть"
 
@@ -111,7 +111,7 @@ msgstr ""
 "значение «%s» типа «%s» недействительно или вне диапазона для свойства «%s» "
 "типа «%s»"
 
-#: src/8021x.ui:11 src/ethernet-dialog.c:87
+#: src/8021x.ui:7 src/ethernet-dialog.c:90
 msgid "802.1X authentication"
 msgstr "Аутентификация по стандарту 802.1X"
 
@@ -144,12 +144,17 @@ msgstr "П_одключиться"
 msgid "_Network name"
 msgstr "_Имя сети"
 
-#: src/ap-menu-item.c:67
+#: src/ap-menu-item.c:68
 msgid "ad-hoc"
 msgstr "ad-hoc"
 
-#: src/ap-menu-item.c:72
+#: src/ap-menu-item.c:73
 msgid "secure."
+msgstr "безопасный."
+
+#: src/ap-menu-item.c:77
+#, fuzzy
+msgid "insecure."
 msgstr "безопасный."
 
 #: src/applet-device-broadband.c:147
@@ -177,7 +182,7 @@ msgid "Mobile Broadband"
 msgstr "Мобильное широкополосное подключение"
 
 #: src/applet-device-broadband.c:780 src/applet-device-bt.c:61
-#: src/applet-device-ethernet.c:107 src/applet-device-wifi.c:894
+#: src/applet-device-ethernet.c:107
 msgid "Available"
 msgstr "Доступно"
 
@@ -187,7 +192,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "Создать мобильное широкополосное подключение…"
 
 #: src/applet-device-broadband.c:809 src/applet-device-bt.c:75
-#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1297
+#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1269
 msgid "Connection Established"
 msgstr "Соединение установлено"
 
@@ -227,7 +232,7 @@ msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr ""
 "Для мобильного широкополосного подключения «%s» требуется аутентификация…"
 
-#: src/applet-device-bt.c:113 src/applet.c:2604 src/mobile-helpers.c:593
+#: src/applet-device-bt.c:113 src/applet.c:2595 src/mobile-helpers.c:593
 #, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "Запрос сетевого адреса для «%s»…"
@@ -260,7 +265,7 @@ msgid "Ethernet Network"
 msgstr "Сеть Ethernet"
 
 #. Notify user of unmanaged or unavailable device
-#: src/applet-device-ethernet.c:99 src/applet.c:1359
+#: src/applet-device-ethernet.c:99 src/applet.c:1350
 msgid "disconnected"
 msgstr "соединение разорвано"
 
@@ -320,7 +325,7 @@ msgstr "Создать _новую сеть Wi-Fi…"
 msgid "(none)"
 msgstr "(нет)"
 
-#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1397
+#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1366
 msgid "Failed to add new connection"
 msgstr "Не удалось добавить новое соединение"
 
@@ -328,93 +333,94 @@ msgstr "Не удалось добавить новое соединение"
 msgid "Insufficient privileges."
 msgstr "Недостаточно прав."
 
-#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1379
-#: src/applet-device-wifi.c:1402 src/applet.c:417 src/applet.c:506
+#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1349
+#: src/applet-device-wifi.c:1369 src/applet.c:415 src/applet.c:498
 msgid "Connection failure"
 msgstr "Сбой подключения"
 
-#: src/applet-device-wifi.c:826
+#: src/applet-device-wifi.c:827
 #, c-format
 msgid "Wi-Fi Networks (%s)"
 msgstr "Сети Wi-Fi (%s)"
 
-#: src/applet-device-wifi.c:828
+#: src/applet-device-wifi.c:829
 #, c-format
 msgid "Wi-Fi Network (%s)"
 msgstr "Сеть Wi-Fi (%s)"
 
-#: src/applet-device-wifi.c:830
+#: src/applet-device-wifi.c:831
 msgid "Wi-Fi Network"
 msgid_plural "Wi-Fi Networks"
 msgstr[0] "Сеть Wi-Fi"
 msgstr[1] "Сети Wi-Fi"
 msgstr[2] "Сетей Wi-Fi"
 
-#: src/applet-device-wifi.c:859
+#: src/applet-device-wifi.c:860
 msgid "Wi-Fi is disabled"
 msgstr "Wi-Fi выключен"
 
-#: src/applet-device-wifi.c:860
+#: src/applet-device-wifi.c:861
 msgid "Wi-Fi is disabled by hardware switch"
 msgstr "Wi-Fi выключен механическим переключателем"
 
-#: src/applet-device-wifi.c:921
-msgid "More networks"
-msgstr "Ещё сети"
+#: src/applet-device-wifi.c:887
+#, fuzzy
+msgid "_Available networks"
+msgstr "Доступно"
 
-#: src/applet-device-wifi.c:1111
+#: src/applet-device-wifi.c:1083
 msgid "Wi-Fi Networks Available"
 msgstr "Доступны сети Wi-Fi"
 
-#: src/applet-device-wifi.c:1112
+#: src/applet-device-wifi.c:1084
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Для подключения к сети Wi-Fi используйте меню сетей"
 
-#: src/applet-device-wifi.c:1115 src/applet.c:828
+#: src/applet-device-wifi.c:1087 src/applet.c:819
 msgid "Don’t show this message again"
 msgstr "Больше не показывать это сообщение"
 
-#: src/applet-device-wifi.c:1296
+#: src/applet-device-wifi.c:1268
 #, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "Вы подключены к сети Wi-Fi «%s»."
 
-#: src/applet-device-wifi.c:1331
+#: src/applet-device-wifi.c:1303
 #, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "Подготовка сетевого соединения Wi-Fi «%s»…"
 
-#: src/applet-device-wifi.c:1334
+#: src/applet-device-wifi.c:1306
 #, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "Создание конфигурации сетевого соединения Wi-Fi «%s»…"
 
-#: src/applet-device-wifi.c:1337
+#: src/applet-device-wifi.c:1309
 #, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "Для соединения Wi-Fi «%s» требуется аутентификация пользователя…"
 
-#: src/applet-device-wifi.c:1340
+#: src/applet-device-wifi.c:1312
 #, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "Запрос адреса сети Wi-Fi для «%s»…"
 
-#: src/applet-device-wifi.c:1351
+#: src/applet-device-wifi.c:1323
 #, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "Сетевое соединение Wi-Fi «%s» активно: %s (%d%%)"
 
-#: src/applet-device-wifi.c:1355
+#: src/applet-device-wifi.c:1327
 #, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "Сетевое соединение Wi-Fi «%s» активно"
 
-#: src/applet-device-wifi.c:1374
+#: src/applet-device-wifi.c:1346
 msgid "Failed to activate connection"
 msgstr "Не удалось активировать соединение"
 
-#: src/applet-device-wifi.c:1376 src/applet-device-wifi.c:1399 src/applet.c:414
-#: src/applet.c:468 src/applet.c:503
+#: src/applet-device-wifi.c:1347 src/applet-device-wifi.c:1367 src/applet.c:413
+#: src/applet.c:464 src/applet.c:496
 msgid "Unknown error"
 msgstr "Неизвестная ошибка"
 
@@ -422,7 +428,7 @@ msgstr "Неизвестная ошибка"
 msgid "Error displaying connection information:"
 msgstr "Ошибка показа сведений о соединении:"
 
-#: src/applet-dialogs.c:60 src/connection-editor/page-wifi-security.c:369
+#: src/applet-dialogs.c:60 src/connection-editor/page-wifi-security.c:384
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -448,7 +454,7 @@ msgid "WPA3"
 msgstr "WPA3"
 
 #: src/applet-dialogs.c:234 src/applet-dialogs.c:243
-#: src/connection-editor/page-wifi-security.c:320
+#: src/connection-editor/page-wifi-security.c:327
 msgctxt "Wi-Fi/Ethernet security"
 msgid "None"
 msgstr "Нет"
@@ -733,19 +739,19 @@ msgstr "Не удалось записать соединение в VPN UI: н�
 msgid "Failed to add/activate connection"
 msgstr "Не удалось создать/активировать соединение"
 
-#: src/applet.c:466
+#: src/applet.c:463
 msgid "Device disconnect failed"
 msgstr "Сбой отключения устройства"
 
-#: src/applet.c:471
+#: src/applet.c:466
 msgid "Disconnect failure"
 msgstr "Сбой при отключении"
 
-#: src/applet.c:501
+#: src/applet.c:495
 msgid "Connection activation failed"
 msgstr "Сбой активации соединения"
 
-#: src/applet.c:925
+#: src/applet.c:916
 #, c-format
 msgid ""
 "\n"
@@ -755,7 +761,7 @@ msgstr ""
 "\n"
 "В связи с разрывом сетевого подключения связь VPN «%s» была прервана."
 
-#: src/applet.c:927
+#: src/applet.c:918
 #, c-format
 msgid ""
 "\n"
@@ -765,7 +771,7 @@ msgstr ""
 "\n"
 "В связи с разрывом сетевого подключения произошёл сбой VPN-соединения «%s»."
 
-#: src/applet.c:929
+#: src/applet.c:920
 #, c-format
 msgid ""
 "\n"
@@ -775,7 +781,7 @@ msgstr ""
 "В связи с неожиданным завершением работы службы VPN произошёл сбой VPN-"
 "соединения «%s»."
 
-#: src/applet.c:931
+#: src/applet.c:922
 #, c-format
 msgid ""
 "\n"
@@ -786,7 +792,7 @@ msgstr ""
 "В связи с недопустимой конфигурацией службы VPN произошёл сбой VPN-"
 "соединения «%s»."
 
-#: src/applet.c:933
+#: src/applet.c:924
 #, c-format
 msgid ""
 "\n"
@@ -795,7 +801,7 @@ msgstr ""
 "\n"
 "В связи с превышением времени ожидания произошёл сбой VPN-соединения «%s»."
 
-#: src/applet.c:935
+#: src/applet.c:926
 #, c-format
 msgid ""
 "\n"
@@ -805,7 +811,7 @@ msgstr ""
 "В связи с тем, что служба VPN не была запущена вовремя, произошёл сбой VPN-"
 "соединения «%s»"
 
-#: src/applet.c:937
+#: src/applet.c:928
 #, c-format
 msgid ""
 "\n"
@@ -814,7 +820,7 @@ msgstr ""
 "\n"
 "В связи со сбоем запуска службы VPN произошёл сбой VPN-соединения «%s»"
 
-#: src/applet.c:939
+#: src/applet.c:930
 #, c-format
 msgid ""
 "\n"
@@ -824,7 +830,7 @@ msgstr ""
 "В связи с отсутствием действительного пароля произошёл сбой VPN-соединения "
 "«%s»"
 
-#: src/applet.c:941
+#: src/applet.c:932
 #, c-format
 msgid ""
 "\n"
@@ -833,7 +839,7 @@ msgstr ""
 "\n"
 "В связи с недействительным паролем произошёл сбой VPN-соединения «%s»"
 
-#: src/applet.c:946
+#: src/applet.c:937
 #, c-format
 msgid ""
 "\n"
@@ -842,7 +848,7 @@ msgstr ""
 "\n"
 "Произошёл сбой VPN-соединения «%s»."
 
-#: src/applet.c:973
+#: src/applet.c:964
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -853,19 +859,19 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/applet.c:975
+#: src/applet.c:966
 msgid "VPN connection has been successfully established.\n"
 msgstr "Соединение VPN успешно установлено.\n"
 
-#: src/applet.c:977
+#: src/applet.c:968
 msgid "VPN Login Message"
 msgstr "Сообщение авторизации VPN"
 
-#: src/applet.c:985 src/applet.c:1025
+#: src/applet.c:976 src/applet.c:1016
 msgid "VPN Connection Failed"
 msgstr "Сбой соединения VPN"
 
-#: src/applet.c:1029
+#: src/applet.c:1020
 #, c-format
 msgid ""
 "\n"
@@ -879,7 +885,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1032
+#: src/applet.c:1023
 #, c-format
 msgid ""
 "\n"
@@ -892,132 +898,132 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1347
+#: src/applet.c:1338
 msgid "device not ready (firmware missing)"
 msgstr "устройство не готово (нет прошивки)"
 
-#: src/applet.c:1349
+#: src/applet.c:1340
 msgid "device not ready"
 msgstr "устройство не готово"
 
-#: src/applet.c:1375
+#: src/applet.c:1366
 msgid "Disconnect"
 msgstr "Отключиться"
 
-#: src/applet.c:1389
+#: src/applet.c:1380
 msgid "device not managed"
 msgstr "устройство не управляется"
 
-#: src/applet.c:1463
+#: src/applet.c:1454
 msgid "No network devices available"
 msgstr "Нет доступных сетевых устройств"
 
-#: src/applet.c:1509
+#: src/applet.c:1500
 msgid "_VPN Connections"
 msgstr "Соединения _VPN"
 
-#: src/applet.c:1553
+#: src/applet.c:1544
 msgid "_Configure VPN…"
 msgstr "_Настроить VPN…"
 
-#: src/applet.c:1556
+#: src/applet.c:1547
 msgid "_Add a VPN connection…"
 msgstr "_Добавить VPN-соединение…"
 
-#: src/applet.c:1662
+#: src/applet.c:1653
 msgid "NetworkManager is not running…"
 msgstr "NetworkManager не запущен…"
 
-#: src/applet.c:1667 src/applet.c:2735
+#: src/applet.c:1658 src/applet.c:2726
 msgid "Networking disabled"
 msgstr "Поддержка сети отключена"
 
 #. 'Enable Networking' item
-#: src/applet.c:1877
+#: src/applet.c:1868
 msgid "Enable _Networking"
 msgstr "Включить поддержку сети"
 
 #. 'Enable Wi-Fi' item
-#: src/applet.c:1886
+#: src/applet.c:1877
 msgid "Enable _Wi-Fi"
 msgstr "Включить _Wi-Fi"
 
 #. 'Enable Mobile Broadband' item
-#: src/applet.c:1895
+#: src/applet.c:1886
 msgid "Enable _Mobile Broadband"
 msgstr "Включить _мобильную широкополосную связь"
 
 #. Toggle notifications item
-#: src/applet.c:1907
+#: src/applet.c:1898
 msgid "Enable N_otifications"
 msgstr "Включить _уведомления"
 
 #. 'Connection Information' item
-#: src/applet.c:1919
+#: src/applet.c:1910
 msgid "Connection _Information"
 msgstr "C_ведения о соединении"
 
 #. 'Edit Connections...' item
-#: src/applet.c:1927
+#: src/applet.c:1918
 msgid "Edit Connections…"
 msgstr "Параметры соединений…"
 
-#: src/applet.c:1941
+#: src/applet.c:1932
 msgid "_About"
 msgstr "_О программе"
 
-#: src/applet.c:2255
+#: src/applet.c:2246
 #, c-format
 msgid "You are now connected to “%s”."
 msgstr "Вы подключены к «%s»."
 
-#: src/applet.c:2295
+#: src/applet.c:2286
 msgid "Disconnected"
 msgstr "Соединение разорвано"
 
-#: src/applet.c:2296
+#: src/applet.c:2287
 msgid "The network connection has been disconnected."
 msgstr "Сетевое соединение было разорвано."
 
-#: src/applet.c:2598
+#: src/applet.c:2589
 #, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "Подготовка сетевого соединения «%s»…"
 
-#: src/applet.c:2601
+#: src/applet.c:2592
 #, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "Для сетевого соединения «%s» требуется аутентификация…"
 
-#: src/applet.c:2607
+#: src/applet.c:2598
 #, c-format
 msgid "Network connection “%s” active"
 msgstr "Сетевое соединение «%s» активно"
 
-#: src/applet.c:2680
+#: src/applet.c:2671
 #, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "Устанавливается VPN-соединение «%s»…"
 
-#: src/applet.c:2683
+#: src/applet.c:2674
 #, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "Для VPN-соединения «%s» требуется аутентификация…"
 
-#: src/applet.c:2686
+#: src/applet.c:2677
 #, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "Запрос адреса VPN для «%s»…"
 
-#: src/applet.c:2689
+#: src/applet.c:2680
 msgid "VPN connection active"
 msgstr "VPN-соединение активно"
 
-#: src/applet.c:2739
+#: src/applet.c:2730
 msgid "No network connection"
 msgstr "Нет подключения к сети"
 
-#: src/applet.c:3359
+#: src/applet.c:3352
 msgid "NetworkManager Applet"
 msgstr "Аплет NetworkManager"
 
@@ -2141,7 +2147,8 @@ msgstr "Имя ключа ассоциации подключений (CKN)"
 # https://www.arista.com/assets/data/pdf/Whitepapers/MACsec-Config-Ops-WP.pdf
 # ЮДронова
 #: src/connection-editor/ce-page-macsec.ui:206
-msgid " The pre-shared Connectivity-association Key Name"
+#, fuzzy
+msgid "The pre-shared Connectivity-association Key Name"
 msgstr " Имя общего ключа ассоциации подключений"
 
 #: src/connection-editor/ce-page-macsec.ui:217
@@ -3273,7 +3280,7 @@ msgstr "WireGuard"
 
 #: src/connection-editor/connection-helpers.c:112
 #: src/connection-editor/connection-helpers.c:374
-#: src/connection-editor/page-vpn.c:86
+#: src/connection-editor/page-vpn.c:92
 msgid "VPN"
 msgstr "VPN"
 
@@ -3438,11 +3445,11 @@ msgstr ""
 "Предупреждение: конфигурация соединения содержит параметры, не "
 "поддерживаемые редактором. Они будут удалены после сохранения."
 
-#: src/connection-editor/nm-connection-editor.c:749
+#: src/connection-editor/nm-connection-editor.c:751
 msgid "Error initializing editor"
 msgstr "Ошибка инициализации редактора"
 
-#: src/connection-editor/nm-connection-editor.c:1159
+#: src/connection-editor/nm-connection-editor.c:1176
 msgid "Connection add failed"
 msgstr "Сбой добавления соединения"
 
@@ -4107,25 +4114,25 @@ msgstr "Не удалось загрузить модуль редактора V
 msgid "unknown failure"
 msgstr "неизвестный сбой"
 
-#: src/connection-editor/page-vpn.c:88
+#: src/connection-editor/page-vpn.c:94
 msgid "Could not load VPN user interface."
 msgstr "Не удалось загрузить пользовательский интерфейс VPN."
 
-#: src/connection-editor/page-vpn.c:103
+#: src/connection-editor/page-vpn.c:109
 #, c-format
 msgid "Could not find VPN plugin for “%s”."
 msgstr "Не удалось найти модуль VPN для «%s»."
 
-#: src/connection-editor/page-vpn.c:185
+#: src/connection-editor/page-vpn.c:191
 #, c-format
 msgid "VPN connection %d"
 msgstr "Соединение VPN %d"
 
-#: src/connection-editor/page-vpn.c:191
+#: src/connection-editor/page-vpn.c:197
 msgid "Choose a VPN Connection Type"
 msgstr "Выберите тип соединения VPN"
 
-#: src/connection-editor/page-vpn.c:192
+#: src/connection-editor/page-vpn.c:198
 msgid ""
 "Select the type of VPN you wish to use for the new connection. If the type "
 "of VPN connection you wish to create does not appear in the list, you may "
@@ -4134,55 +4141,56 @@ msgstr ""
 "Выберите тип VPN для использования в новом соединении. Если необходимый тип "
 "отсутствует в списке, то, возможно, не установлен необходимый VPN-модуль."
 
-#: src/connection-editor/page-wifi-security.c:346
+#: src/connection-editor/page-wifi-security.c:359
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "WEP (40/128-битный ключ (Hex или ASCII))"
 
-#: src/connection-editor/page-wifi-security.c:356
+#: src/connection-editor/page-wifi-security.c:372
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP (128-битный ключ)"
 
-#: src/connection-editor/page-wifi-security.c:382
+#: src/connection-editor/page-wifi-security.c:397
 msgid "Dynamic WEP (802.1X)"
 msgstr "Динамический WEP (802.1X)"
 
-#: src/connection-editor/page-wifi-security.c:395
+#: src/connection-editor/page-wifi-security.c:410
 msgid "WPA & WPA2 Personal"
 msgstr "WPA/WPA2 Personal"
 
-#: src/connection-editor/page-wifi-security.c:408
+#: src/connection-editor/page-wifi-security.c:423
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA/WPA2 Enterprise"
 
-#: src/connection-editor/page-wifi-security.c:421
+#: src/connection-editor/page-wifi-security.c:436
 msgid "WPA3 Personal"
 msgstr "WPA3 Personal"
 
 # https://source.android.com/devices/tech/connect/wifi-wpa3-owe
 # ЮДронова
-#: src/connection-editor/page-wifi-security.c:431
+#: src/connection-editor/page-wifi-security.c:449
+#: src/connection-editor/page-wifi-security.c:457
 msgid "Enhanced Open"
 msgstr "Enhanced Open"
 
-#: src/connection-editor/page-wifi-security.c:476
+#: src/connection-editor/page-wifi-security.c:503
 msgid "Could not load Wi-Fi security user interface; missing Wi-Fi setting."
 msgstr ""
 "Не удалось загрузить пользовательский интерфейс безопасности Wi-Fi; "
 "отсутствуют параметры Wi-Fi."
 
-#: src/connection-editor/page-wifi-security.c:487
+#: src/connection-editor/page-wifi-security.c:514
 msgid "Wi-Fi Security"
 msgstr "Защита Wi-Fi"
 
-#: src/connection-editor/page-wifi-security.c:489
+#: src/connection-editor/page-wifi-security.c:516
 msgid "Could not load Wi-Fi security user interface."
 msgstr "Не удалось загрузить пользовательский интерфейс безопасности Wi-Fi."
 
-#: src/connection-editor/page-wifi-security.c:570
+#: src/connection-editor/page-wifi-security.c:597
 msgid "missing SSID"
 msgstr "отсутствует SSID"
 
-#: src/connection-editor/page-wifi-security.c:576
+#: src/connection-editor/page-wifi-security.c:603
 msgid "Security not compatible with Ad-Hoc mode"
 msgstr "Протокол безопасности несовместим с режимом Ad-Hoc"
 
@@ -4297,9 +4305,9 @@ msgid "Usage:"
 msgstr "Использование:"
 
 #: src/main.c:30
+#, fuzzy
 msgid ""
-"This program is a component of NetworkManager (https://wiki.gnome.org/"
-"Projects/NetworkManager/)."
+"This program is a component of NetworkManager (https://networkmanager.dev)."
 msgstr ""
 "Эта программа является частью NetworkManager (https://wiki.gnome.org/"
 "Projects/NetworkManager/)."
@@ -4427,6 +4435,9 @@ msgstr "Сертификаты PEM (*.pem, *.crt, *.cer)"
 #: src/utils/utils.c:546
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "Частные ключи DER, PEM или PKCS#12 (*.der, *.pem, *.p12)"
+
+#~ msgid "More networks"
+#~ msgstr "Ещё сети"
 
 #~ msgid "nm-device-wireless"
 #~ msgstr "nm-device-wireless"

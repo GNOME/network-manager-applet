@@ -10,9 +10,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
-"issues\n"
-"POT-Creation-Date: 2021-11-07 12:42+0000\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
+"applet/\n"
+"POT-Creation-Date: 2022-03-21 20:51+0100\n"
 "PO-Revision-Date: 2021-12-30 13:57+0200\n"
 "Last-Translator: Мирослав Николић <miroslavnikolic@rocketmail.com>\n"
 "Language-Team: Serbian <(nothing)>\n"
@@ -24,17 +24,13 @@ msgstr ""
 "%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Project-Style: gnome\n"
 
-#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3258
+#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3251
 msgid "Network"
 msgstr "Мрежа"
 
 #: nm-applet.desktop.in:4
 msgid "Manage your network connections"
 msgstr "Управљајте вашим везама мреже"
-
-#: nm-applet.desktop.in:5
-msgid "nm-device-wireless"
-msgstr "nm-device-wireless"
 
 #: nm-connection-editor.appdata.xml.in:7
 msgid "NetworkManager"
@@ -71,10 +67,6 @@ msgstr "Напредно подешавање мреже"
 #: nm-connection-editor.desktop.in:4
 msgid "Manage and change your network connection settings"
 msgstr "Управљајте и измените подешавања ваших мрежних веза"
-
-#: nm-connection-editor.desktop.in:5
-msgid "preferences-system-network"
-msgstr "preferences-system-network"
 
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
@@ -144,12 +136,17 @@ msgstr "_Повежи"
 msgid "_Network name"
 msgstr "_Назив мреже"
 
-#: src/ap-menu-item.c:67
+#: src/ap-menu-item.c:68
 msgid "ad-hoc"
 msgstr "ад-хок"
 
-#: src/ap-menu-item.c:72
+#: src/ap-menu-item.c:73
 msgid "secure."
+msgstr "обезбеди."
+
+#: src/ap-menu-item.c:77
+#, fuzzy
+msgid "insecure."
 msgstr "обезбеди."
 
 #: src/applet-device-broadband.c:147
@@ -226,7 +223,7 @@ msgstr "Подешавам мобилну, широкопојасну везу �
 msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr "Потребна је пријава корисника за повезивање у мобилној мрежи „%s“…"
 
-#: src/applet-device-bt.c:113 src/applet.c:2604 src/mobile-helpers.c:593
+#: src/applet-device-bt.c:113 src/applet.c:2595 src/mobile-helpers.c:593
 #, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "Захтевам мрежну адресу за „%s“…"
@@ -259,7 +256,7 @@ msgid "Ethernet Network"
 msgstr "Жичана мрежа"
 
 #. Notify user of unmanaged or unavailable device
-#: src/applet-device-ethernet.c:99 src/applet.c:1359
+#: src/applet-device-ethernet.c:99 src/applet.c:1350
 msgid "disconnected"
 msgstr "веза је прекинута"
 
@@ -319,7 +316,7 @@ msgstr "Направи _нову бежичну мрежу…"
 msgid "(none)"
 msgstr "(ништа)"
 
-#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1369
+#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1366
 msgid "Failed to add new connection"
 msgstr "Нисам успео да додам нову везу"
 
@@ -327,8 +324,8 @@ msgstr "Нисам успео да додам нову везу"
 msgid "Insufficient privileges."
 msgstr "Недовољна овлашћења."
 
-#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1351
-#: src/applet-device-wifi.c:1374 src/applet.c:417 src/applet.c:506
+#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1349
+#: src/applet-device-wifi.c:1369 src/applet.c:415 src/applet.c:498
 msgid "Connection failure"
 msgstr "Неуспело повезивање"
 
@@ -359,7 +356,6 @@ msgid "Wi-Fi is disabled by hardware switch"
 msgstr "Бежична мрежа је искључена физичким прекидачем"
 
 #: src/applet-device-wifi.c:887
-#| msgid "Available"
 msgid "_Available networks"
 msgstr "_Доступне мреже"
 
@@ -372,7 +368,7 @@ msgstr "Доступне су бежичне мреже"
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Користите изборник мреже да се повежете на бежичну мрежу"
 
-#: src/applet-device-wifi.c:1087 src/applet.c:828
+#: src/applet-device-wifi.c:1087 src/applet.c:819
 msgid "Don’t show this message again"
 msgstr "Не приказуј више ову поруку"
 
@@ -415,8 +411,8 @@ msgstr "Повезани сте преко бежичне везе „%s“"
 msgid "Failed to activate connection"
 msgstr "Нисам успео да активирам везу"
 
-#: src/applet-device-wifi.c:1348 src/applet-device-wifi.c:1371 src/applet.c:414
-#: src/applet.c:468 src/applet.c:503
+#: src/applet-device-wifi.c:1347 src/applet-device-wifi.c:1367 src/applet.c:413
+#: src/applet.c:464 src/applet.c:496
 msgid "Unknown error"
 msgstr "Непозната грешка"
 
@@ -424,7 +420,7 @@ msgstr "Непозната грешка"
 msgid "Error displaying connection information:"
 msgstr "Грешка при приказивању података о вези:"
 
-#: src/applet-dialogs.c:60 src/connection-editor/page-wifi-security.c:369
+#: src/applet-dialogs.c:60 src/connection-editor/page-wifi-security.c:384
 msgid "LEAP"
 msgstr "ЛЕАП"
 
@@ -450,7 +446,7 @@ msgid "WPA3"
 msgstr "ВПА3"
 
 #: src/applet-dialogs.c:234 src/applet-dialogs.c:243
-#: src/connection-editor/page-wifi-security.c:320
+#: src/connection-editor/page-wifi-security.c:327
 msgctxt "Wi-Fi/Ethernet security"
 msgid "None"
 msgstr "Ништа"
@@ -736,19 +732,19 @@ msgstr "Нисам успео да запишем везу на ВПН кори�
 msgid "Failed to add/activate connection"
 msgstr "Нисам успео да додам/активирам везу"
 
-#: src/applet.c:466
+#: src/applet.c:463
 msgid "Device disconnect failed"
 msgstr "Неуспело прекидање везе уређаја"
 
-#: src/applet.c:471
+#: src/applet.c:466
 msgid "Disconnect failure"
 msgstr "Неуспело прекидање везе"
 
-#: src/applet.c:501
+#: src/applet.c:495
 msgid "Connection activation failed"
 msgstr "Неуспело активирање везе"
 
-#: src/applet.c:925
+#: src/applet.c:916
 #, c-format
 msgid ""
 "\n"
@@ -758,7 +754,7 @@ msgstr ""
 "\n"
 "Прекинута је ВПН веза „%s“ због прекида везе у мрежи."
 
-#: src/applet.c:927
+#: src/applet.c:918
 #, c-format
 msgid ""
 "\n"
@@ -768,7 +764,7 @@ msgstr ""
 "\n"
 "Не могу да успоставим ВПН везу „%s“ због прекида везе у мрежи."
 
-#: src/applet.c:929
+#: src/applet.c:920
 #, c-format
 msgid ""
 "\n"
@@ -777,7 +773,7 @@ msgstr ""
 "\n"
 "Не могу да успоставим ВПН везу „%s“ због неочекиваног искључења ВПН сервиса."
 
-#: src/applet.c:931
+#: src/applet.c:922
 #, c-format
 msgid ""
 "\n"
@@ -788,7 +784,7 @@ msgstr ""
 "Не могу да успоставим ВПН везу „%s“ јер је ВПН сервис послао неодговарајућа "
 "подешавања."
 
-#: src/applet.c:933
+#: src/applet.c:924
 #, c-format
 msgid ""
 "\n"
@@ -797,7 +793,7 @@ msgstr ""
 "\n"
 "Не могу да успоставим ВПН везу „%s“ јер је истекло време за повезивање."
 
-#: src/applet.c:935
+#: src/applet.c:926
 #, c-format
 msgid ""
 "\n"
@@ -806,7 +802,7 @@ msgstr ""
 "\n"
 "Не могу да успоставим ВПН везу „%s“ јер ВПН сервис није покренут на време."
 
-#: src/applet.c:937
+#: src/applet.c:928
 #, c-format
 msgid ""
 "\n"
@@ -815,7 +811,7 @@ msgstr ""
 "\n"
 "Не могу да успоставим ВПН везу „%s“ зато што не могу да покренем ВПН сервис."
 
-#: src/applet.c:939
+#: src/applet.c:930
 #, c-format
 msgid ""
 "\n"
@@ -824,7 +820,7 @@ msgstr ""
 "\n"
 "Не могу да успоставим ВПН везу „%s“ јер не постоје исправне ВПН лозинке."
 
-#: src/applet.c:941
+#: src/applet.c:932
 #, c-format
 msgid ""
 "\n"
@@ -833,7 +829,7 @@ msgstr ""
 "\n"
 "Не могу да успоставим ВПН везу „%s“ због неисправних ВПН лозинки."
 
-#: src/applet.c:946
+#: src/applet.c:937
 #, c-format
 msgid ""
 "\n"
@@ -842,7 +838,7 @@ msgstr ""
 "\n"
 "Не могу да успоставим ВПН везу „%s“."
 
-#: src/applet.c:973
+#: src/applet.c:964
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -853,19 +849,19 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/applet.c:975
+#: src/applet.c:966
 msgid "VPN connection has been successfully established.\n"
 msgstr "ВПН веза је успешно успостављена.\n"
 
-#: src/applet.c:977
+#: src/applet.c:968
 msgid "VPN Login Message"
 msgstr "Порука за ВПН пријаву"
 
-#: src/applet.c:985 src/applet.c:1025
+#: src/applet.c:976 src/applet.c:1016
 msgid "VPN Connection Failed"
 msgstr "Није успело повезивање на ВПН"
 
-#: src/applet.c:1029
+#: src/applet.c:1020
 #, c-format
 msgid ""
 "\n"
@@ -879,7 +875,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1032
+#: src/applet.c:1023
 #, c-format
 msgid ""
 "\n"
@@ -892,132 +888,132 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1347
+#: src/applet.c:1338
 msgid "device not ready (firmware missing)"
 msgstr "уређај није спреман (недостаје фирмвер)"
 
-#: src/applet.c:1349
+#: src/applet.c:1340
 msgid "device not ready"
 msgstr "уређај није спреман"
 
-#: src/applet.c:1375
+#: src/applet.c:1366
 msgid "Disconnect"
 msgstr "Прекини везу"
 
-#: src/applet.c:1389
+#: src/applet.c:1380
 msgid "device not managed"
 msgstr "не могу да управљам уређајем"
 
-#: src/applet.c:1463
+#: src/applet.c:1454
 msgid "No network devices available"
 msgstr "Није пронађен ниједан мрежни уређај"
 
-#: src/applet.c:1509
+#: src/applet.c:1500
 msgid "_VPN Connections"
 msgstr "_ВПН везе"
 
-#: src/applet.c:1553
+#: src/applet.c:1544
 msgid "_Configure VPN…"
 msgstr "По_деси ВПН…"
 
-#: src/applet.c:1556
+#: src/applet.c:1547
 msgid "_Add a VPN connection…"
 msgstr "_Додај ВПН везу…"
 
-#: src/applet.c:1662
+#: src/applet.c:1653
 msgid "NetworkManager is not running…"
 msgstr "Управљач мрежом није покренут…"
 
-#: src/applet.c:1667 src/applet.c:2735
+#: src/applet.c:1658 src/applet.c:2726
 msgid "Networking disabled"
 msgstr "Умрежавање искључено"
 
 #. 'Enable Networking' item
-#: src/applet.c:1877
+#: src/applet.c:1868
 msgid "Enable _Networking"
 msgstr "Укључи _мрежне услуге"
 
 #. 'Enable Wi-Fi' item
-#: src/applet.c:1886
+#: src/applet.c:1877
 msgid "Enable _Wi-Fi"
 msgstr "Укључи _бежично мрежење"
 
 #. 'Enable Mobile Broadband' item
-#: src/applet.c:1895
+#: src/applet.c:1886
 msgid "Enable _Mobile Broadband"
 msgstr "Омогући _мобилне везе"
 
 #. Toggle notifications item
-#: src/applet.c:1907
+#: src/applet.c:1898
 msgid "Enable N_otifications"
 msgstr "_Прикажи обавештења"
 
 #. 'Connection Information' item
-#: src/applet.c:1919
+#: src/applet.c:1910
 msgid "Connection _Information"
 msgstr "Пода_ци о вези"
 
 #. 'Edit Connections...' item
-#: src/applet.c:1927
+#: src/applet.c:1918
 msgid "Edit Connections…"
 msgstr "Уреди везе…"
 
-#: src/applet.c:1941
+#: src/applet.c:1932
 msgid "_About"
 msgstr "_О програму"
 
-#: src/applet.c:2255
+#: src/applet.c:2246
 #, c-format
 msgid "You are now connected to “%s”."
 msgstr "Повезани сте на „%s“."
 
-#: src/applet.c:2295
+#: src/applet.c:2286
 msgid "Disconnected"
 msgstr "Веза је прекинута"
 
-#: src/applet.c:2296
+#: src/applet.c:2287
 msgid "The network connection has been disconnected."
 msgstr "Мрежна веза је прекинута."
 
-#: src/applet.c:2598
+#: src/applet.c:2589
 #, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "Припремам мрежну везу „%s“…"
 
-#: src/applet.c:2601
+#: src/applet.c:2592
 #, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "Потребна је пријава корисника за успостављање везе „%s“…"
 
-#: src/applet.c:2607
+#: src/applet.c:2598
 #, c-format
 msgid "Network connection “%s” active"
 msgstr "Повезани сте преко везе „%s“"
 
-#: src/applet.c:2680
+#: src/applet.c:2671
 #, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "Успостављам ВПН везу „%s“…"
 
-#: src/applet.c:2683
+#: src/applet.c:2674
 #, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "Потребна је пријава корисника за успостављање ВПН везе „%s“…"
 
-#: src/applet.c:2686
+#: src/applet.c:2677
 #, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "Захтевам ВПН мрежну адресу за „%s“…"
 
-#: src/applet.c:2689
+#: src/applet.c:2680
 msgid "VPN connection active"
 msgstr "Повезани сте преко ВПН везе"
 
-#: src/applet.c:2739
+#: src/applet.c:2730
 msgid "No network connection"
 msgstr "Нема мрежне везе"
 
-#: src/applet.c:3359
+#: src/applet.c:3352
 msgid "NetworkManager Applet"
 msgstr "Програмче управника мреже"
 
@@ -4075,53 +4071,54 @@ msgstr ""
 "врста ВПН везе коју желите да направите не појави на списку, можда немате "
 "инсталиран исправан ВПН прикључак."
 
-#: src/connection-editor/page-wifi-security.c:346
+#: src/connection-editor/page-wifi-security.c:359
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "ВЕП 40/128-битни кључ (Хекс или АСКРИ)"
 
-#: src/connection-editor/page-wifi-security.c:356
+#: src/connection-editor/page-wifi-security.c:372
 msgid "WEP 128-bit Passphrase"
 msgstr "ВЕП 128-битна лозинка"
 
-#: src/connection-editor/page-wifi-security.c:382
+#: src/connection-editor/page-wifi-security.c:397
 msgid "Dynamic WEP (802.1X)"
 msgstr "Динамички ВЕП (802.1X)"
 
-#: src/connection-editor/page-wifi-security.c:395
+#: src/connection-editor/page-wifi-security.c:410
 msgid "WPA & WPA2 Personal"
 msgstr "Лични ВПА & ВПА2"
 
-#: src/connection-editor/page-wifi-security.c:408
+#: src/connection-editor/page-wifi-security.c:423
 msgid "WPA & WPA2 Enterprise"
 msgstr "Пословни ВПА & ВПА2"
 
-#: src/connection-editor/page-wifi-security.c:421
+#: src/connection-editor/page-wifi-security.c:436
 msgid "WPA3 Personal"
 msgstr "Лични ВПА3"
 
-#: src/connection-editor/page-wifi-security.c:431
+#: src/connection-editor/page-wifi-security.c:449
+#: src/connection-editor/page-wifi-security.c:457
 msgid "Enhanced Open"
 msgstr "Побољшано отварање"
 
-#: src/connection-editor/page-wifi-security.c:476
+#: src/connection-editor/page-wifi-security.c:503
 msgid "Could not load Wi-Fi security user interface; missing Wi-Fi setting."
 msgstr ""
 "Не могу да учитам безбедносно корисничко сучеље за бежичну мрежу; недостају "
 "подешавања бежичне мреже."
 
-#: src/connection-editor/page-wifi-security.c:487
+#: src/connection-editor/page-wifi-security.c:514
 msgid "Wi-Fi Security"
 msgstr "Бежична безбедност"
 
-#: src/connection-editor/page-wifi-security.c:489
+#: src/connection-editor/page-wifi-security.c:516
 msgid "Could not load Wi-Fi security user interface."
 msgstr "Не могу да учитам безбедносно корисничко сучеље за бежичну мрежу."
 
-#: src/connection-editor/page-wifi-security.c:570
+#: src/connection-editor/page-wifi-security.c:597
 msgid "missing SSID"
 msgstr "недостаје ССИД"
 
-#: src/connection-editor/page-wifi-security.c:576
+#: src/connection-editor/page-wifi-security.c:603
 msgid "Security not compatible with Ad-Hoc mode"
 msgstr "Безбедност није сагласна са ад-хок режимом"
 
@@ -4363,6 +4360,12 @@ msgstr "ПЕМ уверења (*.pem, *.crt, *.cer)"
 #: src/utils/utils.c:546
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "ДЕР, ПЕМ, или ПКЦС#12 лични кључеви (*.der, *.pem, *.p12, *.key)"
+
+#~ msgid "nm-device-wireless"
+#~ msgstr "nm-device-wireless"
+
+#~ msgid "preferences-system-network"
+#~ msgstr "preferences-system-network"
 
 #~ msgid "More networks"
 #~ msgstr "Још мрежа"

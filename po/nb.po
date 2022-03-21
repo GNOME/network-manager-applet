@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: NetworkManager 1.1.x\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
 "applet/\n"
-"POT-Creation-Date: 2021-07-05 11:47+0200\n"
+"POT-Creation-Date: 2022-03-21 20:51+0100\n"
 "PO-Revision-Date: 2015-02-11 19:39+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3258
+#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3251
 msgid "Network"
 msgstr "Nettverk"
 
@@ -96,7 +96,7 @@ msgid ""
 "type '%s'"
 msgstr ""
 
-#: src/8021x.ui:11 src/ethernet-dialog.c:87
+#: src/8021x.ui:7 src/ethernet-dialog.c:90
 msgid "802.1X authentication"
 msgstr "802.1X-autentisering"
 
@@ -130,13 +130,17 @@ msgstr "K_oble til"
 msgid "_Network name"
 msgstr "_Nettverksnavn:"
 
-#: src/ap-menu-item.c:67
+#: src/ap-menu-item.c:68
 #, fuzzy
 msgid "ad-hoc"
 msgstr "Ad-hoc"
 
-#: src/ap-menu-item.c:72
+#: src/ap-menu-item.c:73
 msgid "secure."
+msgstr ""
+
+#: src/ap-menu-item.c:77
+msgid "insecure."
 msgstr ""
 
 #: src/applet-device-broadband.c:147
@@ -165,7 +169,7 @@ msgid "Mobile Broadband"
 msgstr "Mobilt bredbånd"
 
 #: src/applet-device-broadband.c:780 src/applet-device-bt.c:61
-#: src/applet-device-ethernet.c:107 src/applet-device-wifi.c:894
+#: src/applet-device-ethernet.c:107
 msgid "Available"
 msgstr "Tilgjengelige"
 
@@ -176,7 +180,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "Ny mobil bredbåndstilkobling"
 
 #: src/applet-device-broadband.c:809 src/applet-device-bt.c:75
-#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1297
+#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1269
 msgid "Connection Established"
 msgstr "Tilkoblingen er satt opp"
 
@@ -215,7 +219,7 @@ msgstr "Konfigurerer mobil bredbåndsforbindelse «%s» …"
 msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr "Brukerautentisering kreves for mobil bredbåndsforbindelse «%s» …"
 
-#: src/applet-device-bt.c:113 src/applet.c:2604 src/mobile-helpers.c:593
+#: src/applet-device-bt.c:113 src/applet.c:2595 src/mobile-helpers.c:593
 #, fuzzy, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "Ber om en nettverksadresse for «%s» …"
@@ -248,7 +252,7 @@ msgid "Ethernet Network"
 msgstr "Ethernet-nettverk"
 
 #. Notify user of unmanaged or unavailable device
-#: src/applet-device-ethernet.c:99 src/applet.c:1359
+#: src/applet-device-ethernet.c:99 src/applet.c:1350
 msgid "disconnected"
 msgstr "frakoblet"
 
@@ -310,7 +314,7 @@ msgstr "Lag et nytt Wi-Fi-nettverk"
 msgid "(none)"
 msgstr "(ingen)"
 
-#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1397
+#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1366
 msgid "Failed to add new connection"
 msgstr "Klarte ikke å legge til ny tilkobling"
 
@@ -318,93 +322,94 @@ msgstr "Klarte ikke å legge til ny tilkobling"
 msgid "Insufficient privileges."
 msgstr ""
 
-#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1379
-#: src/applet-device-wifi.c:1402 src/applet.c:417 src/applet.c:506
+#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1349
+#: src/applet-device-wifi.c:1369 src/applet.c:415 src/applet.c:498
 msgid "Connection failure"
 msgstr "Feil med tilkobling"
 
-#: src/applet-device-wifi.c:826
+#: src/applet-device-wifi.c:827
 #, c-format
 msgid "Wi-Fi Networks (%s)"
 msgstr "Wi-Fi-nettverk (%s)"
 
-#: src/applet-device-wifi.c:828
+#: src/applet-device-wifi.c:829
 #, c-format
 msgid "Wi-Fi Network (%s)"
 msgstr "Wi-Fi-nettverk (%s)"
 
-#: src/applet-device-wifi.c:830
+#: src/applet-device-wifi.c:831
 msgid "Wi-Fi Network"
 msgid_plural "Wi-Fi Networks"
 msgstr[0] "Wi-Fi-nettverk"
 msgstr[1] "Wi-Fi-nettverk"
 
-#: src/applet-device-wifi.c:859
+#: src/applet-device-wifi.c:860
 msgid "Wi-Fi is disabled"
 msgstr "Wi-Fi er slått av"
 
-#: src/applet-device-wifi.c:860
+#: src/applet-device-wifi.c:861
 msgid "Wi-Fi is disabled by hardware switch"
 msgstr "Wi-Fi er slått av med bryter"
 
-#: src/applet-device-wifi.c:921
-msgid "More networks"
-msgstr "Flere nettverk"
+#: src/applet-device-wifi.c:887
+#, fuzzy
+msgid "_Available networks"
+msgstr "Tilgjengelige"
 
-#: src/applet-device-wifi.c:1111
+#: src/applet-device-wifi.c:1083
 msgid "Wi-Fi Networks Available"
 msgstr "Wi-Fi-nettverk er tilgjengelige"
 
-#: src/applet-device-wifi.c:1112
+#: src/applet-device-wifi.c:1084
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Bruk nettverksmenyen for å koble til et Wi-Fi-nettverk"
 
-#: src/applet-device-wifi.c:1115 src/applet.c:828
+#: src/applet-device-wifi.c:1087 src/applet.c:819
 #, fuzzy
 msgid "Don’t show this message again"
 msgstr "Ikke vis denne meldingen igjen"
 
-#: src/applet-device-wifi.c:1296
+#: src/applet-device-wifi.c:1268
 #, fuzzy, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "Du er nå koblet til Wi-Fi-nettverk «%s»."
 
-#: src/applet-device-wifi.c:1331
+#: src/applet-device-wifi.c:1303
 #, fuzzy, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "Forbereder Wi-Fi-nettverkstilkobling «%s» …"
 
-#: src/applet-device-wifi.c:1334
+#: src/applet-device-wifi.c:1306
 #, fuzzy, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "Konfigurerer Wi-Fi-nettverkstilkobling «%s» …"
 
-#: src/applet-device-wifi.c:1337
+#: src/applet-device-wifi.c:1309
 #, fuzzy, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "Brukerautentisering kreves for Wi-Fi-nettverk «%s» …"
 
-#: src/applet-device-wifi.c:1340
+#: src/applet-device-wifi.c:1312
 #, fuzzy, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "Ber om en Wi-Fi-nettverksadresse for «%s» …"
 
-#: src/applet-device-wifi.c:1351
+#: src/applet-device-wifi.c:1323
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "Wi-Fi-nettverkstilkobling «%s» er aktiv: %s (%d%%)"
 
-#: src/applet-device-wifi.c:1355
+#: src/applet-device-wifi.c:1327
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "Wi-Fi-nettverkforbindelse «%s» er aktiv"
 
-#: src/applet-device-wifi.c:1374
+#: src/applet-device-wifi.c:1346
 msgid "Failed to activate connection"
 msgstr "Kunne ikke å aktivere tilkobling"
 
-#: src/applet-device-wifi.c:1376 src/applet-device-wifi.c:1399 src/applet.c:414
-#: src/applet.c:468 src/applet.c:503
+#: src/applet-device-wifi.c:1347 src/applet-device-wifi.c:1367 src/applet.c:413
+#: src/applet.c:464 src/applet.c:496
 msgid "Unknown error"
 msgstr "Ukjent feil"
 
@@ -412,7 +417,7 @@ msgstr "Ukjent feil"
 msgid "Error displaying connection information:"
 msgstr "Feil under visning av tilkoblingsinformasjon:"
 
-#: src/applet-dialogs.c:60 src/connection-editor/page-wifi-security.c:369
+#: src/applet-dialogs.c:60 src/connection-editor/page-wifi-security.c:384
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -439,7 +444,7 @@ msgid "WPA3"
 msgstr ""
 
 #: src/applet-dialogs.c:234 src/applet-dialogs.c:243
-#: src/connection-editor/page-wifi-security.c:320
+#: src/connection-editor/page-wifi-security.c:327
 msgctxt "Wi-Fi/Ethernet security"
 msgid "None"
 msgstr "Ingen"
@@ -724,19 +729,19 @@ msgstr ""
 msgid "Failed to add/activate connection"
 msgstr "Kunne ikke å legge til/slå på tilkobling"
 
-#: src/applet.c:466
+#: src/applet.c:463
 msgid "Device disconnect failed"
 msgstr "Frakobling av enhet feilet"
 
-#: src/applet.c:471
+#: src/applet.c:466
 msgid "Disconnect failure"
 msgstr "Feil ved frakobling"
 
-#: src/applet.c:501
+#: src/applet.c:495
 msgid "Connection activation failed"
 msgstr "Aktivering av tilkobling feilet"
 
-#: src/applet.c:925
+#: src/applet.c:916
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -746,7 +751,7 @@ msgstr ""
 "\n"
 "VPN-tilkobling «%s» ble koblet fra fordi nettverkstilkoblingen ble avbrutt."
 
-#: src/applet.c:927
+#: src/applet.c:918
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -756,7 +761,7 @@ msgstr ""
 "\n"
 "VPN-tilkobling «%s» feilet fordi nettverksforbindelsen ble avbrutt."
 
-#: src/applet.c:929
+#: src/applet.c:920
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -765,7 +770,7 @@ msgstr ""
 "\n"
 "VPN-tilkobling «%s» feilet fordi VPN-tjenesten stoppet uventet."
 
-#: src/applet.c:931
+#: src/applet.c:922
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -776,7 +781,7 @@ msgstr ""
 "VPN-tilkobling «%s» feilet fordi VPN-tjenesten returnerte ugyldig "
 "konfigurasjon."
 
-#: src/applet.c:933
+#: src/applet.c:924
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -785,7 +790,7 @@ msgstr ""
 "\n"
 "VPN-tilkobling «%s» feilet pga tidsavbrudd for tilkoblingsforsøket."
 
-#: src/applet.c:935
+#: src/applet.c:926
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -794,7 +799,7 @@ msgstr ""
 "\n"
 "VPN-tilkobling «%s» feilet fordi VPN-tjenesten ikke startet i tide."
 
-#: src/applet.c:937
+#: src/applet.c:928
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -803,7 +808,7 @@ msgstr ""
 "\n"
 "VPN-tilkobling «%s» feilet fordi VPN-tjenesten ikke klarte å starte opp."
 
-#: src/applet.c:939
+#: src/applet.c:930
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -812,7 +817,7 @@ msgstr ""
 "\n"
 "VPN-tilkobling «%s» feilet fordi det ikke finnes gyldige VPN-passord."
 
-#: src/applet.c:941
+#: src/applet.c:932
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -821,7 +826,7 @@ msgstr ""
 "\n"
 "VPN-tilkobling «%s» feilet pga ugyldig hemmelighet for VPN."
 
-#: src/applet.c:946
+#: src/applet.c:937
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -830,7 +835,7 @@ msgstr ""
 "\n"
 "VPN-tilkobling «%s» feilet."
 
-#: src/applet.c:973
+#: src/applet.c:964
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -841,19 +846,19 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/applet.c:975
+#: src/applet.c:966
 msgid "VPN connection has been successfully established.\n"
 msgstr "Etablering av VPN-tilkobling er fullført.\n"
 
-#: src/applet.c:977
+#: src/applet.c:968
 msgid "VPN Login Message"
 msgstr "Påloggingsmelding for VPN"
 
-#: src/applet.c:985 src/applet.c:1025
+#: src/applet.c:976 src/applet.c:1016
 msgid "VPN Connection Failed"
 msgstr "VPN-tilkobling feilet"
 
-#: src/applet.c:1029
+#: src/applet.c:1020
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -866,7 +871,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1032
+#: src/applet.c:1023
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -879,137 +884,137 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1347
+#: src/applet.c:1338
 msgid "device not ready (firmware missing)"
 msgstr "enheten er ikke klar (fastvare mangler)"
 
-#: src/applet.c:1349
+#: src/applet.c:1340
 msgid "device not ready"
 msgstr "enheten er ikke klar"
 
-#: src/applet.c:1375
+#: src/applet.c:1366
 msgid "Disconnect"
 msgstr "Koble fra"
 
-#: src/applet.c:1389
+#: src/applet.c:1380
 msgid "device not managed"
 msgstr "enheten er ikke håndtert"
 
-#: src/applet.c:1463
+#: src/applet.c:1454
 msgid "No network devices available"
 msgstr "Ingen nettverksenheter tilgjengelig"
 
-#: src/applet.c:1509
+#: src/applet.c:1500
 msgid "_VPN Connections"
 msgstr "_VPN-tilkoblinger"
 
-#: src/applet.c:1553
+#: src/applet.c:1544
 #, fuzzy
 msgid "_Configure VPN…"
 msgstr "_Sett opp VPN …"
 
-#: src/applet.c:1556
+#: src/applet.c:1547
 #, fuzzy
 msgid "_Add a VPN connection…"
 msgstr "_VPN-tilkoblinger"
 
-#: src/applet.c:1662
+#: src/applet.c:1653
 #, fuzzy
 msgid "NetworkManager is not running…"
 msgstr "NetworkManager kjører ikke …"
 
-#: src/applet.c:1667 src/applet.c:2735
+#: src/applet.c:1658 src/applet.c:2726
 msgid "Networking disabled"
 msgstr "Nettverk slått av"
 
 #. 'Enable Networking' item
-#: src/applet.c:1877
+#: src/applet.c:1868
 msgid "Enable _Networking"
 msgstr "Slå på _nettverk"
 
 #. 'Enable Wi-Fi' item
-#: src/applet.c:1886
+#: src/applet.c:1877
 msgid "Enable _Wi-Fi"
 msgstr "Slå på _trådløst"
 
 #. 'Enable Mobile Broadband' item
-#: src/applet.c:1895
+#: src/applet.c:1886
 msgid "Enable _Mobile Broadband"
 msgstr "Slå på _mobilt bredbånd"
 
 #. Toggle notifications item
-#: src/applet.c:1907
+#: src/applet.c:1898
 msgid "Enable N_otifications"
 msgstr "Slå på _varsling"
 
 #. 'Connection Information' item
-#: src/applet.c:1919
+#: src/applet.c:1910
 msgid "Connection _Information"
 msgstr "Tilkoblings_informasjon"
 
 #. 'Edit Connections...' item
-#: src/applet.c:1927
+#: src/applet.c:1918
 #, fuzzy
 msgid "Edit Connections…"
 msgstr "Rediger tilkoblinger …"
 
-#: src/applet.c:1941
+#: src/applet.c:1932
 msgid "_About"
 msgstr "_Om"
 
-#: src/applet.c:2255
+#: src/applet.c:2246
 #, fuzzy, c-format
 msgid "You are now connected to “%s”."
 msgstr "Du er nå koblet til «%s»."
 
-#: src/applet.c:2295
+#: src/applet.c:2286
 msgid "Disconnected"
 msgstr "Frakoblet"
 
-#: src/applet.c:2296
+#: src/applet.c:2287
 msgid "The network connection has been disconnected."
 msgstr "Nettverksforbindelsen har blitt frakoblet."
 
-#: src/applet.c:2598
+#: src/applet.c:2589
 #, fuzzy, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "Forbereder nettverkstilkobling «%s» …"
 
-#: src/applet.c:2601
+#: src/applet.c:2592
 #, fuzzy, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "Brukerautentisering kreves for nettverkstilkobling «%s» …"
 
-#: src/applet.c:2607
+#: src/applet.c:2598
 #, fuzzy, c-format
 msgid "Network connection “%s” active"
 msgstr "Nettverkstilkobling «%s» er aktiv"
 
-#: src/applet.c:2680
+#: src/applet.c:2671
 #, fuzzy, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "Starter VPN-tilkobling «%s» …"
 
-#: src/applet.c:2683
+#: src/applet.c:2674
 #, fuzzy, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "Brukerautentisering kreves for VPN-tilkobling «%s» …"
 
-#: src/applet.c:2686
+#: src/applet.c:2677
 #, fuzzy, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "Ber om en nettverksadresse på VPN for «%s» …"
 
-#: src/applet.c:2689
+#: src/applet.c:2680
 #, fuzzy
 msgid "VPN connection active"
 msgstr "VPN-tilkobling «%s» er aktiv"
 
-#: src/applet.c:2739
+#: src/applet.c:2730
 msgid "No network connection"
 msgstr "Ingen nettverksforbindelse"
 
-#: src/applet.c:3359
+#: src/applet.c:3352
 msgid "NetworkManager Applet"
 msgstr "NetworkManager panelprogram"
 
@@ -2131,7 +2136,7 @@ msgid "C_KN"
 msgstr ""
 
 #: src/connection-editor/ce-page-macsec.ui:206
-msgid " The pre-shared Connectivity-association Key Name"
+msgid "The pre-shared Connectivity-association Key Name"
 msgstr ""
 
 #: src/connection-editor/ce-page-macsec.ui:217
@@ -3232,7 +3237,7 @@ msgstr "Kablet"
 
 #: src/connection-editor/connection-helpers.c:112
 #: src/connection-editor/connection-helpers.c:374
-#: src/connection-editor/page-vpn.c:86
+#: src/connection-editor/page-vpn.c:92
 msgid "VPN"
 msgstr "VPN"
 
@@ -3402,11 +3407,11 @@ msgid ""
 "editor. They will be cleared upon save."
 msgstr ""
 
-#: src/connection-editor/nm-connection-editor.c:749
+#: src/connection-editor/nm-connection-editor.c:751
 msgid "Error initializing editor"
 msgstr "Feil under initiering av redigering"
 
-#: src/connection-editor/nm-connection-editor.c:1159
+#: src/connection-editor/nm-connection-editor.c:1176
 msgid "Connection add failed"
 msgstr "Klarte ikke å legge til tilkobling"
 
@@ -4082,25 +4087,25 @@ msgstr "Fant ikke tjeneste for VPN-tillegg «%s»."
 msgid "unknown failure"
 msgstr "Feil med tilkobling"
 
-#: src/connection-editor/page-vpn.c:88
+#: src/connection-editor/page-vpn.c:94
 msgid "Could not load VPN user interface."
 msgstr "Klarte ikke å laste brukergrensesnitt for VPN."
 
-#: src/connection-editor/page-vpn.c:103
+#: src/connection-editor/page-vpn.c:109
 #, fuzzy, c-format
 msgid "Could not find VPN plugin for “%s”."
 msgstr "Fant ikke tjeneste for VPN-tillegg «%s»."
 
-#: src/connection-editor/page-vpn.c:185
+#: src/connection-editor/page-vpn.c:191
 #, c-format
 msgid "VPN connection %d"
 msgstr "VPN-tilkobling %d"
 
-#: src/connection-editor/page-vpn.c:191
+#: src/connection-editor/page-vpn.c:197
 msgid "Choose a VPN Connection Type"
 msgstr "Velg type VPN-tilkobling"
 
-#: src/connection-editor/page-vpn.c:192
+#: src/connection-editor/page-vpn.c:198
 #, fuzzy
 msgid ""
 "Select the type of VPN you wish to use for the new connection. If the type "
@@ -4111,54 +4116,55 @@ msgstr ""
 "finner riktig type VPN-tilkobling i listen er det mulig at du ikke har "
 "korrekt VPN-tillegg installert."
 
-#: src/connection-editor/page-wifi-security.c:346
+#: src/connection-editor/page-wifi-security.c:359
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "WEP 40/128-bit nøkkel (Heksadesimal eller ASCII)"
 
-#: src/connection-editor/page-wifi-security.c:356
+#: src/connection-editor/page-wifi-security.c:372
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128-bit passord"
 
-#: src/connection-editor/page-wifi-security.c:382
+#: src/connection-editor/page-wifi-security.c:397
 msgid "Dynamic WEP (802.1X)"
 msgstr "Dynamisk WEP (802.1X)"
 
-#: src/connection-editor/page-wifi-security.c:395
+#: src/connection-editor/page-wifi-security.c:410
 msgid "WPA & WPA2 Personal"
 msgstr "WPA & WPA2 personlig"
 
-#: src/connection-editor/page-wifi-security.c:408
+#: src/connection-editor/page-wifi-security.c:423
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA og WPA2 enterprise"
 
-#: src/connection-editor/page-wifi-security.c:421
+#: src/connection-editor/page-wifi-security.c:436
 #, fuzzy
 msgid "WPA3 Personal"
 msgstr "WPA & WPA2 personlig"
 
-#: src/connection-editor/page-wifi-security.c:431
+#: src/connection-editor/page-wifi-security.c:449
+#: src/connection-editor/page-wifi-security.c:457
 msgid "Enhanced Open"
 msgstr ""
 
-#: src/connection-editor/page-wifi-security.c:476
+#: src/connection-editor/page-wifi-security.c:503
 msgid "Could not load Wi-Fi security user interface; missing Wi-Fi setting."
 msgstr ""
 "Kunne ikke laste brukergrensesnitt for Wi-Fi-sikkerhet; mangler Wi-Fi-"
 "innstilling."
 
-#: src/connection-editor/page-wifi-security.c:487
+#: src/connection-editor/page-wifi-security.c:514
 msgid "Wi-Fi Security"
 msgstr "Wi-Fi-sikkerhet"
 
-#: src/connection-editor/page-wifi-security.c:489
+#: src/connection-editor/page-wifi-security.c:516
 msgid "Could not load Wi-Fi security user interface."
 msgstr "Kunne ikke laste brukergrensesnitt for Wi-Fi-sikkerhet."
 
-#: src/connection-editor/page-wifi-security.c:570
+#: src/connection-editor/page-wifi-security.c:597
 msgid "missing SSID"
 msgstr ""
 
-#: src/connection-editor/page-wifi-security.c:576
+#: src/connection-editor/page-wifi-security.c:603
 msgid "Security not compatible with Ad-Hoc mode"
 msgstr ""
 
@@ -4278,9 +4284,9 @@ msgid "Usage:"
 msgstr "Bruk:"
 
 #: src/main.c:30
+#, fuzzy
 msgid ""
-"This program is a component of NetworkManager (https://wiki.gnome.org/"
-"Projects/NetworkManager/)."
+"This program is a component of NetworkManager (https://networkmanager.dev)."
 msgstr ""
 "Dette programmet er en del av NetworkManager (https://wiki.gnome.org/"
 "Projects/NetworkManager/)."
@@ -4409,6 +4415,9 @@ msgstr "DER eller PEM-sertifikater (*.der, *.pem, *.crt, *.cer)"
 #: src/utils/utils.c:546
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "DER, PEM eller PKCS#12 private nøkler (*.der, *.pem, *.p12, *.key)"
+
+#~ msgid "More networks"
+#~ msgstr "Flere nettverk"
 
 #~ msgid "GTC"
 #~ msgstr "GTC"

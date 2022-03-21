@@ -8,9 +8,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet master\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
-"issues\n"
-"POT-Creation-Date: 2021-09-09 16:52+0000\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
+"applet/\n"
+"POT-Creation-Date: 2022-03-21 20:51+0100\n"
 "PO-Revision-Date: 2021-09-20 23:04+0700\n"
 "Last-Translator: Andika Triwidada <andika@gmail.com>\n"
 "Language-Team: Indonesian <gnome@i15n.org>\n"
@@ -22,17 +22,13 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Generator: Poedit 2.4.2\n"
 
-#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3258
+#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3251
 msgid "Network"
 msgstr "Jaringan"
 
 #: nm-applet.desktop.in:4
 msgid "Manage your network connections"
 msgstr "Mengelola koneksi jaringan Anda"
-
-#: nm-applet.desktop.in:5
-msgid "nm-device-wireless"
-msgstr "nm-device-wireless"
 
 #: nm-connection-editor.appdata.xml.in:7
 msgid "NetworkManager"
@@ -70,10 +66,6 @@ msgstr "Konfigurasi Jaringan Tingkat Lanjut"
 msgid "Manage and change your network connection settings"
 msgstr "Kelola dan ubah tatanan koneksi jaringan Anda"
 
-#: nm-connection-editor.desktop.in:5
-msgid "preferences-system-network"
-msgstr "preferences-system-network"
-
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
 msgid "object class '%s' has no property named '%s'"
@@ -110,7 +102,7 @@ msgstr ""
 "nilai \"%s\" bertipe '%s' tidak valid atau di luar jangkauan untuk properti "
 "'%s' bertipe '%s'"
 
-#: src/8021x.ui:11 src/ethernet-dialog.c:87
+#: src/8021x.ui:7 src/ethernet-dialog.c:90
 msgid "802.1X authentication"
 msgstr "Autentikasi 802.1X"
 
@@ -143,12 +135,17 @@ msgstr "_Sambung"
 msgid "_Network name"
 msgstr "_Nama jaringan"
 
-#: src/ap-menu-item.c:67
+#: src/ap-menu-item.c:68
 msgid "ad-hoc"
 msgstr "ad-hoc"
 
-#: src/ap-menu-item.c:72
+#: src/ap-menu-item.c:73
 msgid "secure."
+msgstr "aman."
+
+#: src/ap-menu-item.c:77
+#, fuzzy
+msgid "insecure."
 msgstr "aman."
 
 #: src/applet-device-broadband.c:147
@@ -176,7 +173,7 @@ msgid "Mobile Broadband"
 msgstr "Data Seluler"
 
 #: src/applet-device-broadband.c:780 src/applet-device-bt.c:61
-#: src/applet-device-ethernet.c:107 src/applet-device-wifi.c:894
+#: src/applet-device-ethernet.c:107
 msgid "Available"
 msgstr "Tersedia"
 
@@ -186,7 +183,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "Koneksi Data Seluler baru…"
 
 #: src/applet-device-broadband.c:809 src/applet-device-bt.c:75
-#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1297
+#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1269
 msgid "Connection Established"
 msgstr "Koneksi Terjalin"
 
@@ -225,7 +222,7 @@ msgstr "Mengatur koneksi data seluler \"%s\"…"
 msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr "Autentikasi pengguna dibutuhkan untuk koneksi data seluler \"%s\"…"
 
-#: src/applet-device-bt.c:113 src/applet.c:2604 src/mobile-helpers.c:593
+#: src/applet-device-bt.c:113 src/applet.c:2595 src/mobile-helpers.c:593
 #, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "Meminta alamat jaringan untuk \"%s\"…"
@@ -258,7 +255,7 @@ msgid "Ethernet Network"
 msgstr "Jaringan Ethernet"
 
 #. Notify user of unmanaged or unavailable device
-#: src/applet-device-ethernet.c:99 src/applet.c:1359
+#: src/applet-device-ethernet.c:99 src/applet.c:1350
 msgid "disconnected"
 msgstr "terputus"
 
@@ -319,7 +316,7 @@ msgstr "Buat Jari_ngan Wi-Fi Baru…"
 msgid "(none)"
 msgstr "(tidak ada)"
 
-#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1397
+#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1366
 msgid "Failed to add new connection"
 msgstr "Gagal menambahkan koneksi baru"
 
@@ -327,92 +324,93 @@ msgstr "Gagal menambahkan koneksi baru"
 msgid "Insufficient privileges."
 msgstr "Privilese tidak cukup."
 
-#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1379
-#: src/applet-device-wifi.c:1402 src/applet.c:417 src/applet.c:506
+#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1349
+#: src/applet-device-wifi.c:1369 src/applet.c:415 src/applet.c:498
 msgid "Connection failure"
 msgstr "Kegagalan koneksi"
 
-#: src/applet-device-wifi.c:826
+#: src/applet-device-wifi.c:827
 #, c-format
 msgid "Wi-Fi Networks (%s)"
 msgstr "Jaringan Wi-Fi (%s)"
 
-#: src/applet-device-wifi.c:828
+#: src/applet-device-wifi.c:829
 #, c-format
 msgid "Wi-Fi Network (%s)"
 msgstr "Jaringan Wi-Fi (%s)"
 
-#: src/applet-device-wifi.c:830
+#: src/applet-device-wifi.c:831
 msgid "Wi-Fi Network"
 msgid_plural "Wi-Fi Networks"
 msgstr[0] "Jaringan Wi-Fi"
 msgstr[1] "Jaringan Wi-Fi"
 
-#: src/applet-device-wifi.c:859
+#: src/applet-device-wifi.c:860
 msgid "Wi-Fi is disabled"
 msgstr "Wi-Fi dinonaktifkan"
 
-#: src/applet-device-wifi.c:860
+#: src/applet-device-wifi.c:861
 msgid "Wi-Fi is disabled by hardware switch"
 msgstr "Wi-Fi dinonaktifkan oleh saklar perangkat keras"
 
-#: src/applet-device-wifi.c:921
-msgid "More networks"
-msgstr "Jaringan lain"
+#: src/applet-device-wifi.c:887
+#, fuzzy
+msgid "_Available networks"
+msgstr "Tersedia"
 
-#: src/applet-device-wifi.c:1111
+#: src/applet-device-wifi.c:1083
 msgid "Wi-Fi Networks Available"
 msgstr "Jaringan Wi-Fi Tersedia"
 
-#: src/applet-device-wifi.c:1112
+#: src/applet-device-wifi.c:1084
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Gunakan menu jaringan untuk menyambung ke jaringan Wi-Fi"
 
-#: src/applet-device-wifi.c:1115 src/applet.c:828
+#: src/applet-device-wifi.c:1087 src/applet.c:819
 msgid "Don’t show this message again"
 msgstr "Jangan tunjukkan pesan ini lagi"
 
-#: src/applet-device-wifi.c:1296
+#: src/applet-device-wifi.c:1268
 #, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "Anda sekarang tersambung ke jaringan Wi-Fi \"%s\"."
 
-#: src/applet-device-wifi.c:1331
+#: src/applet-device-wifi.c:1303
 #, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "Menyiapkan koneksi jaringan Wi-Fi \"%s\"…"
 
-#: src/applet-device-wifi.c:1334
+#: src/applet-device-wifi.c:1306
 #, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "Mengatur koneksi jaringan Wi-Fi \"%s\"…"
 
-#: src/applet-device-wifi.c:1337
+#: src/applet-device-wifi.c:1309
 #, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "Autentikasi pengguna diperlukan untuk jaringan Wi-Fi \"%s\"…"
 
-#: src/applet-device-wifi.c:1340
+#: src/applet-device-wifi.c:1312
 #, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "Meminta alamat jaringan Wi-Fi untuk \"%s\"…"
 
-#: src/applet-device-wifi.c:1351
+#: src/applet-device-wifi.c:1323
 #, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "Koneksi jaringan Wi-Fi \"%s\" aktif: %s (%d%%)"
 
-#: src/applet-device-wifi.c:1355
+#: src/applet-device-wifi.c:1327
 #, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "Koneksi jaringan Wi-Fi \"%s\" aktif"
 
-#: src/applet-device-wifi.c:1374
+#: src/applet-device-wifi.c:1346
 msgid "Failed to activate connection"
 msgstr "Gagal mengaktifkan koneksi"
 
-#: src/applet-device-wifi.c:1376 src/applet-device-wifi.c:1399 src/applet.c:414
-#: src/applet.c:468 src/applet.c:503
+#: src/applet-device-wifi.c:1347 src/applet-device-wifi.c:1367 src/applet.c:413
+#: src/applet.c:464 src/applet.c:496
 msgid "Unknown error"
 msgstr "Galat tak dikenal"
 
@@ -420,7 +418,7 @@ msgstr "Galat tak dikenal"
 msgid "Error displaying connection information:"
 msgstr "Galat menampilkan informasi koneksi:"
 
-#: src/applet-dialogs.c:60 src/connection-editor/page-wifi-security.c:369
+#: src/applet-dialogs.c:60 src/connection-editor/page-wifi-security.c:384
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -446,7 +444,7 @@ msgid "WPA3"
 msgstr "WPA3"
 
 #: src/applet-dialogs.c:234 src/applet-dialogs.c:243
-#: src/connection-editor/page-wifi-security.c:320
+#: src/connection-editor/page-wifi-security.c:327
 msgctxt "Wi-Fi/Ethernet security"
 msgid "None"
 msgstr "Nihil"
@@ -731,19 +729,19 @@ msgstr "Gagal menulis koneksi ke UI VPN: tidak lengkap menulis"
 msgid "Failed to add/activate connection"
 msgstr "Gagal menambah/mengaktifkan koneksi"
 
-#: src/applet.c:466
+#: src/applet.c:463
 msgid "Device disconnect failed"
 msgstr "Pemutusan perangkat gagal"
 
-#: src/applet.c:471
+#: src/applet.c:466
 msgid "Disconnect failure"
 msgstr "Pemutusan gagal"
 
-#: src/applet.c:501
+#: src/applet.c:495
 msgid "Connection activation failed"
 msgstr "Aktivasi koneksi gagal"
 
-#: src/applet.c:925
+#: src/applet.c:916
 #, c-format
 msgid ""
 "\n"
@@ -753,7 +751,7 @@ msgstr ""
 "\n"
 "Koneksi VPN \"%s\" terputus karena koneksi jaringan terinterupsi."
 
-#: src/applet.c:927
+#: src/applet.c:918
 #, c-format
 msgid ""
 "\n"
@@ -763,7 +761,7 @@ msgstr ""
 "\n"
 "Koneksi VPN \"%s\" gagal karena koneksi jaringan terinterupsi."
 
-#: src/applet.c:929
+#: src/applet.c:920
 #, c-format
 msgid ""
 "\n"
@@ -772,7 +770,7 @@ msgstr ""
 "\n"
 "Koneksi VPN \"%s\" gagal karena layanan VPN berhenti tak disangka-sangka."
 
-#: src/applet.c:931
+#: src/applet.c:922
 #, c-format
 msgid ""
 "\n"
@@ -783,7 +781,7 @@ msgstr ""
 "Koneksi VPN \"%s\" gagal karena layanan VPN mengembalikan konfigurasi yang "
 "tidak benar."
 
-#: src/applet.c:933
+#: src/applet.c:924
 #, c-format
 msgid ""
 "\n"
@@ -792,7 +790,7 @@ msgstr ""
 "\n"
 "Koneksi VPN \"%s\" gagal karena batas waktu percobaan koneksi habis."
 
-#: src/applet.c:935
+#: src/applet.c:926
 #, c-format
 msgid ""
 "\n"
@@ -801,7 +799,7 @@ msgstr ""
 "\n"
 "Koneksi VPN \"%s\" gagal karena layanan VPN tidak mulai pada waktunya."
 
-#: src/applet.c:937
+#: src/applet.c:928
 #, c-format
 msgid ""
 "\n"
@@ -810,7 +808,7 @@ msgstr ""
 "\n"
 "Koneksi VPN \"%s\" gagal karena layanan VPN gagal dijalankan."
 
-#: src/applet.c:939
+#: src/applet.c:930
 #, c-format
 msgid ""
 "\n"
@@ -819,7 +817,7 @@ msgstr ""
 "\n"
 "Koneksi VPN \"%s\" gagal karena tidak ada kode rahasia VPN yang valid."
 
-#: src/applet.c:941
+#: src/applet.c:932
 #, c-format
 msgid ""
 "\n"
@@ -828,7 +826,7 @@ msgstr ""
 "\n"
 "Koneksi VPN \"%s\" gagal karena kode rahasia VPN yang tidak valid."
 
-#: src/applet.c:946
+#: src/applet.c:937
 #, c-format
 msgid ""
 "\n"
@@ -837,7 +835,7 @@ msgstr ""
 "\n"
 "Koneksi VPN \"%s\" gagal."
 
-#: src/applet.c:973
+#: src/applet.c:964
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -848,19 +846,19 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/applet.c:975
+#: src/applet.c:966
 msgid "VPN connection has been successfully established.\n"
 msgstr "Koneksi VPN telah sukses dijalin.\n"
 
-#: src/applet.c:977
+#: src/applet.c:968
 msgid "VPN Login Message"
 msgstr "Pesan Login VPN"
 
-#: src/applet.c:985 src/applet.c:1025
+#: src/applet.c:976 src/applet.c:1016
 msgid "VPN Connection Failed"
 msgstr "Koneksi VPN Gagal"
 
-#: src/applet.c:1029
+#: src/applet.c:1020
 #, c-format
 msgid ""
 "\n"
@@ -873,7 +871,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1032
+#: src/applet.c:1023
 #, c-format
 msgid ""
 "\n"
@@ -886,132 +884,132 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1347
+#: src/applet.c:1338
 msgid "device not ready (firmware missing)"
 msgstr "perangkat tak siap (tak ada firmware)"
 
-#: src/applet.c:1349
+#: src/applet.c:1340
 msgid "device not ready"
 msgstr "perangkat tak siap"
 
-#: src/applet.c:1375
+#: src/applet.c:1366
 msgid "Disconnect"
 msgstr "Putuskan"
 
-#: src/applet.c:1389
+#: src/applet.c:1380
 msgid "device not managed"
 msgstr "perangkat tidak dikelola"
 
-#: src/applet.c:1463
+#: src/applet.c:1454
 msgid "No network devices available"
 msgstr "Tak ada perangkat jaringan yang tersedia"
 
-#: src/applet.c:1509
+#: src/applet.c:1500
 msgid "_VPN Connections"
 msgstr "Koneksi _VPN"
 
-#: src/applet.c:1553
+#: src/applet.c:1544
 msgid "_Configure VPN…"
 msgstr "Mena_ta VPN…"
 
-#: src/applet.c:1556
+#: src/applet.c:1547
 msgid "_Add a VPN connection…"
 msgstr "Men_ambah suatu koneksi VPN…"
 
-#: src/applet.c:1662
+#: src/applet.c:1653
 msgid "NetworkManager is not running…"
 msgstr "NetworkManager tidak sedang berjalan…"
 
-#: src/applet.c:1667 src/applet.c:2735
+#: src/applet.c:1658 src/applet.c:2726
 msgid "Networking disabled"
 msgstr "Fungsi jaringan dimatikan"
 
 #. 'Enable Networking' item
-#: src/applet.c:1877
+#: src/applet.c:1868
 msgid "Enable _Networking"
 msgstr "Fungsika_n Jaringan"
 
 #. 'Enable Wi-Fi' item
-#: src/applet.c:1886
+#: src/applet.c:1877
 msgid "Enable _Wi-Fi"
 msgstr "Fungsikan Ni_rkabel"
 
 #. 'Enable Mobile Broadband' item
-#: src/applet.c:1895
+#: src/applet.c:1886
 msgid "Enable _Mobile Broadband"
 msgstr "Fungsikan _Data Seluler"
 
 #. Toggle notifications item
-#: src/applet.c:1907
+#: src/applet.c:1898
 msgid "Enable N_otifications"
 msgstr "Fungsikan N_otifikasi"
 
 #. 'Connection Information' item
-#: src/applet.c:1919
+#: src/applet.c:1910
 msgid "Connection _Information"
 msgstr "_Informasi Koneksi"
 
 #. 'Edit Connections...' item
-#: src/applet.c:1927
+#: src/applet.c:1918
 msgid "Edit Connections…"
 msgstr "Sunting Koneksi…"
 
-#: src/applet.c:1941
+#: src/applet.c:1932
 msgid "_About"
 msgstr "Tent_ang"
 
-#: src/applet.c:2255
+#: src/applet.c:2246
 #, c-format
 msgid "You are now connected to “%s”."
 msgstr "Anda sekarang tersambung ke \"%s\"."
 
-#: src/applet.c:2295
+#: src/applet.c:2286
 msgid "Disconnected"
 msgstr "Terputus"
 
-#: src/applet.c:2296
+#: src/applet.c:2287
 msgid "The network connection has been disconnected."
 msgstr "Koneksi jaringan terputus."
 
-#: src/applet.c:2598
+#: src/applet.c:2589
 #, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "Menyiapkan koneksi jaringan \"%s\"…"
 
-#: src/applet.c:2601
+#: src/applet.c:2592
 #, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "Autentikasi pengguna diperlukan untuk koneksi jaringan \"%s\"…"
 
-#: src/applet.c:2607
+#: src/applet.c:2598
 #, c-format
 msgid "Network connection “%s” active"
 msgstr "Koneksi jaringan \"%s\" aktif"
 
-#: src/applet.c:2680
+#: src/applet.c:2671
 #, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "Memulai koneksi VPN \"%s\"…"
 
-#: src/applet.c:2683
+#: src/applet.c:2674
 #, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "Autentikasi pengguna diperlukan untuk koneksi VPN \"%s\"…"
 
-#: src/applet.c:2686
+#: src/applet.c:2677
 #, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "Meminta alamat VPN untuk \"%s\"…"
 
-#: src/applet.c:2689
+#: src/applet.c:2680
 msgid "VPN connection active"
 msgstr "Koneksi VPN aktif"
 
-#: src/applet.c:2739
+#: src/applet.c:2730
 msgid "No network connection"
 msgstr "Tak ada koneksi jaringan"
 
-#: src/applet.c:3359
+#: src/applet.c:3352
 msgid "NetworkManager Applet"
 msgstr "Aplet NetworkManager"
 
@@ -3231,7 +3229,7 @@ msgstr "WireGuard"
 
 #: src/connection-editor/connection-helpers.c:112
 #: src/connection-editor/connection-helpers.c:374
-#: src/connection-editor/page-vpn.c:86
+#: src/connection-editor/page-vpn.c:92
 msgid "VPN"
 msgstr "VPN"
 
@@ -3396,11 +3394,11 @@ msgstr ""
 "Peringatan: koneksi memuat beberapa properti yang tidak didukung oleh "
 "penyunting. Mereka akan dibersikan ketika disimpan."
 
-#: src/connection-editor/nm-connection-editor.c:749
+#: src/connection-editor/nm-connection-editor.c:751
 msgid "Error initializing editor"
 msgstr "Galat menginisialisasi penyunting"
 
-#: src/connection-editor/nm-connection-editor.c:1159
+#: src/connection-editor/nm-connection-editor.c:1176
 msgid "Connection add failed"
 msgstr "Penambahan koneksi gagal"
 
@@ -4048,25 +4046,25 @@ msgstr "Tak bisa menemukan plugin VPN penyunting bagi \"%s\" (%s)."
 msgid "unknown failure"
 msgstr "kegagalan yang tak dikenal"
 
-#: src/connection-editor/page-vpn.c:88
+#: src/connection-editor/page-vpn.c:94
 msgid "Could not load VPN user interface."
 msgstr "Tak bisa memuat antar muka pengguna VPN."
 
-#: src/connection-editor/page-vpn.c:103
+#: src/connection-editor/page-vpn.c:109
 #, c-format
 msgid "Could not find VPN plugin for “%s”."
 msgstr "Tak bisa menemukan plugin VPN bagi \"%s\"."
 
-#: src/connection-editor/page-vpn.c:185
+#: src/connection-editor/page-vpn.c:191
 #, c-format
 msgid "VPN connection %d"
 msgstr "Koneksi VPN %d"
 
-#: src/connection-editor/page-vpn.c:191
+#: src/connection-editor/page-vpn.c:197
 msgid "Choose a VPN Connection Type"
 msgstr "Pilih Jenis Koneksi VPN"
 
-#: src/connection-editor/page-vpn.c:192
+#: src/connection-editor/page-vpn.c:198
 msgid ""
 "Select the type of VPN you wish to use for the new connection. If the type "
 "of VPN connection you wish to create does not appear in the list, you may "
@@ -4076,52 +4074,53 @@ msgstr ""
 "VPN yang ingin Anda buat tidak muncul pada daftar, mungkin Anda belum "
 "memasang plugin VPN yang tepat."
 
-#: src/connection-editor/page-wifi-security.c:346
+#: src/connection-editor/page-wifi-security.c:359
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "Kunci WEP 40/128-bit (Heksa atau ASCII)"
 
-#: src/connection-editor/page-wifi-security.c:356
+#: src/connection-editor/page-wifi-security.c:372
 msgid "WEP 128-bit Passphrase"
 msgstr "Frasa-kunci WEP 128-bit"
 
-#: src/connection-editor/page-wifi-security.c:382
+#: src/connection-editor/page-wifi-security.c:397
 msgid "Dynamic WEP (802.1X)"
 msgstr "WEP Dinamik (802.1X)"
 
-#: src/connection-editor/page-wifi-security.c:395
+#: src/connection-editor/page-wifi-security.c:410
 msgid "WPA & WPA2 Personal"
 msgstr "WPA & WPA2 Personal"
 
-#: src/connection-editor/page-wifi-security.c:408
+#: src/connection-editor/page-wifi-security.c:423
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA & WPA2 Enterprise"
 
-#: src/connection-editor/page-wifi-security.c:421
+#: src/connection-editor/page-wifi-security.c:436
 msgid "WPA3 Personal"
 msgstr "WPA3 Personal"
 
-#: src/connection-editor/page-wifi-security.c:431
+#: src/connection-editor/page-wifi-security.c:449
+#: src/connection-editor/page-wifi-security.c:457
 msgid "Enhanced Open"
 msgstr "Enhanced Open"
 
-#: src/connection-editor/page-wifi-security.c:476
+#: src/connection-editor/page-wifi-security.c:503
 msgid "Could not load Wi-Fi security user interface; missing Wi-Fi setting."
 msgstr ""
 "Tak bisa memuat antar muka pengguna keamanan Wi-Fi; kurang pengaturan Wi-Fi."
 
-#: src/connection-editor/page-wifi-security.c:487
+#: src/connection-editor/page-wifi-security.c:514
 msgid "Wi-Fi Security"
 msgstr "Kemananan Wi-Fi"
 
-#: src/connection-editor/page-wifi-security.c:489
+#: src/connection-editor/page-wifi-security.c:516
 msgid "Could not load Wi-Fi security user interface."
 msgstr "Tak bisa memuat antar muka pengguna keamanan Wi-Fi."
 
-#: src/connection-editor/page-wifi-security.c:570
+#: src/connection-editor/page-wifi-security.c:597
 msgid "missing SSID"
 msgstr "kurang SSID"
 
-#: src/connection-editor/page-wifi-security.c:576
+#: src/connection-editor/page-wifi-security.c:603
 msgid "Security not compatible with Ad-Hoc mode"
 msgstr "Keamanan tidak kompatibel dengan mode Ad-Hoc"
 
@@ -4366,3 +4365,12 @@ msgstr "Sertifikat PEM  (*.pem, *.crt, *.cer)"
 #: src/utils/utils.c:546
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "Kunci privat DER, PEM, atau PKCS#12 (*.der, *.pem, *.p12, *.key)"
+
+#~ msgid "nm-device-wireless"
+#~ msgstr "nm-device-wireless"
+
+#~ msgid "preferences-system-network"
+#~ msgstr "preferences-system-network"
+
+#~ msgid "More networks"
+#~ msgstr "Jaringan lain"

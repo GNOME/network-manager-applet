@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: po_nm-applet-km\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
 "applet/\n"
-"POT-Creation-Date: 2021-07-05 11:47+0200\n"
+"POT-Creation-Date: 2022-03-21 20:51+0100\n"
 "PO-Revision-Date: 2014-04-23 15:44+0700\n"
 "Last-Translator: Sophea Sok <sophea@open.org.kh>\n"
 "Language-Team: Khmer <>\n"
@@ -22,7 +22,7 @@ msgstr ""
 "X-Generator: WordForge 0.8 RC1\n"
 "X-Language: km-KH\n"
 
-#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3258
+#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3251
 msgid "Network"
 msgstr "បណ្ដាញ"
 
@@ -99,7 +99,7 @@ msgid ""
 "type '%s'"
 msgstr ""
 
-#: src/8021x.ui:11 src/ethernet-dialog.c:87
+#: src/8021x.ui:7 src/ethernet-dialog.c:90
 msgid "802.1X authentication"
 msgstr "ការ​ផ្ទៀងផ្ទាត់ 802.1X"
 
@@ -134,12 +134,17 @@ msgstr "បាន​តភ្ជាប់"
 msgid "_Network name"
 msgstr "ឈ្មោះ​បណ្ដាញ៖"
 
-#: src/ap-menu-item.c:67
+#: src/ap-menu-item.c:68
 msgid "ad-hoc"
 msgstr "បណ្ដោះ​អាសន្ន"
 
-#: src/ap-menu-item.c:72
+#: src/ap-menu-item.c:73
 msgid "secure."
+msgstr "សុវត្ថិភាព ។"
+
+#: src/ap-menu-item.c:77
+#, fuzzy
+msgid "insecure."
 msgstr "សុវត្ថិភាព ។"
 
 #: src/applet-device-broadband.c:147
@@ -168,7 +173,7 @@ msgid "Mobile Broadband"
 msgstr "រលកអាកាស​ចល័ត"
 
 #: src/applet-device-broadband.c:780 src/applet-device-bt.c:61
-#: src/applet-device-ethernet.c:107 src/applet-device-wifi.c:894
+#: src/applet-device-ethernet.c:107
 msgid "Available"
 msgstr "មាន"
 
@@ -179,7 +184,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "ការ​តភ្ជាប់​រលកអាកាស​ចល័ត​ថ្មី"
 
 #: src/applet-device-broadband.c:809 src/applet-device-bt.c:75
-#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1297
+#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1269
 msgid "Connection Established"
 msgstr "បាន​បង្កើត​ការ​តភ្ជាប់"
 
@@ -218,7 +223,7 @@ msgstr "កំពុង​កំណត់​រចនាសម្ព័ន្ធ
 msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr "បាន​ទាមទារ​ការ​ផ្ទៀងផ្ទាត់​ពី​អ្នកប្រើ​សម្រាប់​ការ​តភ្ជាប់​រលកអាកាស​ចល័ត '%s'..."
 
-#: src/applet-device-bt.c:113 src/applet.c:2604 src/mobile-helpers.c:593
+#: src/applet-device-bt.c:113 src/applet.c:2595 src/mobile-helpers.c:593
 #, fuzzy, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "កំពុង​ស្នើ​សុំ​អាសយដ្ឋាន​បណ្ដាញ​សម្រាប់ '%s'..."
@@ -251,7 +256,7 @@ msgid "Ethernet Network"
 msgstr "បណ្ដាញ​អ៊ីសឺរណិត"
 
 #. Notify user of unmanaged or unavailable device
-#: src/applet-device-ethernet.c:99 src/applet.c:1359
+#: src/applet-device-ethernet.c:99 src/applet.c:1350
 msgid "disconnected"
 msgstr "បាន​ផ្ដាច់"
 
@@ -313,7 +318,7 @@ msgstr "បង្កើត​បណ្ដាញ​វ៉ាយហ្វាយ​
 msgid "(none)"
 msgstr "(គ្មាន)"
 
-#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1397
+#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1366
 msgid "Failed to add new connection"
 msgstr "បាន​បរាជ័យ​ក្នុង​ការ​បន្ថែម​ការ​តភ្ជាប់​ថ្មី"
 
@@ -321,92 +326,93 @@ msgstr "បាន​បរាជ័យ​ក្នុង​ការ​បន្
 msgid "Insufficient privileges."
 msgstr ""
 
-#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1379
-#: src/applet-device-wifi.c:1402 src/applet.c:417 src/applet.c:506
+#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1349
+#: src/applet-device-wifi.c:1369 src/applet.c:415 src/applet.c:498
 msgid "Connection failure"
 msgstr "ការ​តភ្ជាប់​បាន​បរាជ័យ"
 
-#: src/applet-device-wifi.c:826
+#: src/applet-device-wifi.c:827
 #, c-format
 msgid "Wi-Fi Networks (%s)"
 msgstr "បណ្ដាញ​វ៉ាយហ្វាយ (%s)"
 
-#: src/applet-device-wifi.c:828
+#: src/applet-device-wifi.c:829
 #, c-format
 msgid "Wi-Fi Network (%s)"
 msgstr "បណ្ដាញ​វ៉ាយហ្វាយ (%s)"
 
-#: src/applet-device-wifi.c:830
+#: src/applet-device-wifi.c:831
 msgid "Wi-Fi Network"
 msgid_plural "Wi-Fi Networks"
 msgstr[0] "បណ្ដាញ​វ៉ាយហ្វាយ"
 
-#: src/applet-device-wifi.c:859
+#: src/applet-device-wifi.c:860
 msgid "Wi-Fi is disabled"
 msgstr "បាន​បិទ​វ៉ាយហ្វាយ"
 
-#: src/applet-device-wifi.c:860
+#: src/applet-device-wifi.c:861
 msgid "Wi-Fi is disabled by hardware switch"
 msgstr "វ៉ាយហ្វាយត្រូវ​បាន​បិទ​ដោយ​កុងតាក់​ផ្នែក​រឹង"
 
-#: src/applet-device-wifi.c:921
-msgid "More networks"
-msgstr "បណ្ដាញ​ជាច្រើនទៀត"
+#: src/applet-device-wifi.c:887
+#, fuzzy
+msgid "_Available networks"
+msgstr "មាន​សម្រាប់​អ្នកប្រើ​ទាំងអស់"
 
-#: src/applet-device-wifi.c:1111
+#: src/applet-device-wifi.c:1083
 msgid "Wi-Fi Networks Available"
 msgstr "មាន​បណ្ដាញ​វ៉ាយហ្វាយ"
 
-#: src/applet-device-wifi.c:1112
+#: src/applet-device-wifi.c:1084
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "ប្រើ​ម៉ឺនុយ​បណ្ដាញ​ដើម្បី​តភ្ជាប់​ទៅ​បណ្ដាញ​វ៉ាយហ្វាយ"
 
-#: src/applet-device-wifi.c:1115 src/applet.c:828
+#: src/applet-device-wifi.c:1087 src/applet.c:819
 #, fuzzy
 msgid "Don’t show this message again"
 msgstr "កុំ​បង្ហាញ​សារ​នេះ​ម្ដងទៀត"
 
-#: src/applet-device-wifi.c:1296
+#: src/applet-device-wifi.c:1268
 #, fuzzy, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "ឥឡូវ​អ្នក​បាន​តភ្ជាប់​ទៅកាន់​បណ្ដាញ​វ៉ាយហ្វាយ '%s' ។"
 
-#: src/applet-device-wifi.c:1331
+#: src/applet-device-wifi.c:1303
 #, fuzzy, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "កំពុង​រៀបចំ​ការ​តភ្ជាប់​បណ្ដាញ​វ៉ាយហ្វាយ '%s'..."
 
-#: src/applet-device-wifi.c:1334
+#: src/applet-device-wifi.c:1306
 #, fuzzy, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "កំពុង​កំណត់​រចនាសម្ព័ន្ធ​ការ​តភ្ជាប់​បណ្ដាញ​វ៉ាយហ្វាយ '%s'..."
 
-#: src/applet-device-wifi.c:1337
+#: src/applet-device-wifi.c:1309
 #, fuzzy, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "បាន​ទាមទារ​ការ​ផ្ទៀងផ្ទាត់​ភាព​ពី​អ្នកប្រើ​សម្រាប់​បណ្ដាញ​វ៉ាយហ្វាយ '%s'..."
 
-#: src/applet-device-wifi.c:1340
+#: src/applet-device-wifi.c:1312
 #, fuzzy, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "កំពុង​ស្នើ​សុំ​អាសយដ្ឋាន​បណ្ដាញ​សម្រាប់​សម្រាប់ '%s'..."
 
-#: src/applet-device-wifi.c:1351
+#: src/applet-device-wifi.c:1323
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "ការ​តភ្ជាប់​បណ្ដាញ​វ៉ាយហ្វាយ%s' សកម្ម ៖ %s (%d%%)"
 
-#: src/applet-device-wifi.c:1355
+#: src/applet-device-wifi.c:1327
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "ការ​តភ្ជាប់​បណ្ដាញ​វ៉ាយហ្វាយ '%s' សកម្ម"
 
-#: src/applet-device-wifi.c:1374
+#: src/applet-device-wifi.c:1346
 msgid "Failed to activate connection"
 msgstr "បាន​បរាជ័យ​ក្នុង​ការ​ធ្វើឲ្យ​ការ​តភ្ជាប់​សកម្ម"
 
-#: src/applet-device-wifi.c:1376 src/applet-device-wifi.c:1399 src/applet.c:414
-#: src/applet.c:468 src/applet.c:503
+#: src/applet-device-wifi.c:1347 src/applet-device-wifi.c:1367 src/applet.c:413
+#: src/applet.c:464 src/applet.c:496
 msgid "Unknown error"
 msgstr "មិន​ស្គាល់​កំហុស"
 
@@ -414,7 +420,7 @@ msgstr "មិន​ស្គាល់​កំហុស"
 msgid "Error displaying connection information:"
 msgstr "កំហុស​ក្នុង​ការ​បង្ហាញ​ព័ត៌មាន​តភ្ជាប់៖"
 
-#: src/applet-dialogs.c:60 src/connection-editor/page-wifi-security.c:369
+#: src/applet-dialogs.c:60 src/connection-editor/page-wifi-security.c:384
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -441,7 +447,7 @@ msgid "WPA3"
 msgstr ""
 
 #: src/applet-dialogs.c:234 src/applet-dialogs.c:243
-#: src/connection-editor/page-wifi-security.c:320
+#: src/connection-editor/page-wifi-security.c:327
 msgctxt "Wi-Fi/Ethernet security"
 msgid "None"
 msgstr "គ្មាន"
@@ -726,19 +732,19 @@ msgstr ""
 msgid "Failed to add/activate connection"
 msgstr "បាន​បរាជ័យ​ក្នុង​ការ​បន្ថែម/ធ្វើឲ្យ​ការ​តភ្ជាប់​សកម្ម"
 
-#: src/applet.c:466
+#: src/applet.c:463
 msgid "Device disconnect failed"
 msgstr "បាន​បរាជ័យ​ក្នុង​ការ​ផ្ដាច់​ឧបករណ៍"
 
-#: src/applet.c:471
+#: src/applet.c:466
 msgid "Disconnect failure"
 msgstr "ការ​ផ្ដាច់​បាន​បរាជ័យ"
 
-#: src/applet.c:501
+#: src/applet.c:495
 msgid "Connection activation failed"
 msgstr "បាន​បរាជ័យ​ក្នុង​ការ​ធ្វើឲ្យ​ការ​តភ្ជាប់​សកម្ម"
 
-#: src/applet.c:925
+#: src/applet.c:916
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -748,7 +754,7 @@ msgstr ""
 "\n"
 "ការ​តភ្ជាប់ VPN '%s' បាន​ដាច់ ដោយសារ​ការ​តភ្ជាប់​បណ្ដាញ​ត្រូវ​បាន​ជាប់​គាំង។"
 
-#: src/applet.c:927
+#: src/applet.c:918
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -758,7 +764,7 @@ msgstr ""
 "\n"
 "ការ​​តភ្ជាប់ VPN '%s' បាន​បរាជ័យ ដោយសារ​ការ​តភ្ជាប់​បណ្ដាញ​ត្រូវ​បាន​កាត់​ជាប់​គាំង។"
 
-#: src/applet.c:929
+#: src/applet.c:920
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -767,7 +773,7 @@ msgstr ""
 "\n"
 "ការ​តភ្ជាប់ VPN '%s' បាន​បរាជ័យ ដោយសារ​សេវា VPN ត្រូវ​បាន​បញ្ឈប់​ដោយ​មិន​បាន​រំពឹង។"
 
-#: src/applet.c:931
+#: src/applet.c:922
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -778,7 +784,7 @@ msgstr ""
 "ការ​​តភ្ជាប់ VPN '%s' បាន​បរាជ័យ ដោយសារ​សេវា VPN បាន​បញ្ជូន​ត្រឡប់​នូវ​ការ​កំណត់​រចនាសម្ព័ន្ធ​ដែល​មិន​"
 "ត្រឹមត្រូវ។"
 
-#: src/applet.c:933
+#: src/applet.c:924
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -787,7 +793,7 @@ msgstr ""
 "\n"
 "ការ​តភ្ជាប់ VPN '%s' បាន​បរាជ័យ ដោយសារ​អស់​ពេល​ក្នុង​ការ​តភ្ជាប់។"
 
-#: src/applet.c:935
+#: src/applet.c:926
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -796,7 +802,7 @@ msgstr ""
 "\n"
 "ការ​តភ្ជាប់ VPN '%s' បាន​បរាជ័យ ដោយសារ​សេវា VPN មិន​បាន​ចាប់ផ្ដើម​ទាន់ពេលវេលា។"
 
-#: src/applet.c:937
+#: src/applet.c:928
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -805,7 +811,7 @@ msgstr ""
 "\n"
 "ការ​តភ្ជាប់ VPN '%s' បាន​បរាជ័យ ដោយសារ​សេវា VPN បាន​បរាជ័យ​ក្នុង​ការ​ចាប់ផ្ដើម។"
 
-#: src/applet.c:939
+#: src/applet.c:930
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -814,7 +820,7 @@ msgstr ""
 "\n"
 "ការ​តភ្ជាប់ VPN '%s' បាន​បរាជ័យ ដោយសារមិន​មាន​ពាក្យសម្ងាត់ VPN ​ត្រឹមត្រូវ។"
 
-#: src/applet.c:941
+#: src/applet.c:932
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -823,7 +829,7 @@ msgstr ""
 "\n"
 "ការ​តភ្ជាប់ VPN '%s' បាន​បរាជ័យ ដោយសារ​ពាក្យសម្ងាត់ VPN មិន​ត្រឹមត្រូវ។"
 
-#: src/applet.c:946
+#: src/applet.c:937
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -832,7 +838,7 @@ msgstr ""
 "\n"
 "ការ​តភ្ជាប់ VPN '%s' បាន​បរាជ័យ។"
 
-#: src/applet.c:973
+#: src/applet.c:964
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -843,19 +849,19 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/applet.c:975
+#: src/applet.c:966
 msgid "VPN connection has been successfully established.\n"
 msgstr "បាន​បង្កើត​ការ​តភ្ជាប់ VPN ដោយ​ជោគជ័យ។\n"
 
-#: src/applet.c:977
+#: src/applet.c:968
 msgid "VPN Login Message"
 msgstr "សារ​ចូល VPN"
 
-#: src/applet.c:985 src/applet.c:1025
+#: src/applet.c:976 src/applet.c:1016
 msgid "VPN Connection Failed"
 msgstr "បាន​បរាជ័យ​ក្នុង​ការ​តភ្ជាប់ VPN"
 
-#: src/applet.c:1029
+#: src/applet.c:1020
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -868,7 +874,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1032
+#: src/applet.c:1023
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -881,137 +887,137 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1347
+#: src/applet.c:1338
 msgid "device not ready (firmware missing)"
 msgstr "ឧបករណ៍​មិន​ទាន់​រួចរាល់ (បាត់​កម្មវិធី​ប​ង្កប់)"
 
-#: src/applet.c:1349
+#: src/applet.c:1340
 msgid "device not ready"
 msgstr "ឧបករណ៍​មិន​ទាន់​រួចរាល់"
 
-#: src/applet.c:1375
+#: src/applet.c:1366
 msgid "Disconnect"
 msgstr "ផ្ដាច់"
 
-#: src/applet.c:1389
+#: src/applet.c:1380
 msgid "device not managed"
 msgstr "មិន​បាន​គ្រប់គ្រង​ឧបករណ៍"
 
-#: src/applet.c:1463
+#: src/applet.c:1454
 msgid "No network devices available"
 msgstr "មិនមាន​ឧបករណ៍​បណ្ដាញ"
 
-#: src/applet.c:1509
+#: src/applet.c:1500
 msgid "_VPN Connections"
 msgstr "ការ​តភ្ជាប់ VPN"
 
-#: src/applet.c:1553
+#: src/applet.c:1544
 #, fuzzy
 msgid "_Configure VPN…"
 msgstr "កំណត់​រចនាសម្ព័ន្ធ VPN..."
 
-#: src/applet.c:1556
+#: src/applet.c:1547
 #, fuzzy
 msgid "_Add a VPN connection…"
 msgstr "ការ​តភ្ជាប់ VPN"
 
-#: src/applet.c:1662
+#: src/applet.c:1653
 #, fuzzy
 msgid "NetworkManager is not running…"
 msgstr "NetworkManager មិន​ដំណើរការ..."
 
-#: src/applet.c:1667 src/applet.c:2735
+#: src/applet.c:1658 src/applet.c:2726
 msgid "Networking disabled"
 msgstr "បាន​បិទ​ការ​តភ្ជាប់​បណ្ដាញ"
 
 #. 'Enable Networking' item
-#: src/applet.c:1877
+#: src/applet.c:1868
 msgid "Enable _Networking"
 msgstr "បើក​ការ​តភ្ជាប់​បណ្ដាញ"
 
 #. 'Enable Wi-Fi' item
-#: src/applet.c:1886
+#: src/applet.c:1877
 msgid "Enable _Wi-Fi"
 msgstr "បើក​វ៉ាយហ្វាយ"
 
 #. 'Enable Mobile Broadband' item
-#: src/applet.c:1895
+#: src/applet.c:1886
 msgid "Enable _Mobile Broadband"
 msgstr "បើក​រលកអាកាស​ចល័ត"
 
 #. Toggle notifications item
-#: src/applet.c:1907
+#: src/applet.c:1898
 msgid "Enable N_otifications"
 msgstr "បើក​ការ​ជូនដំណឹង"
 
 #. 'Connection Information' item
-#: src/applet.c:1919
+#: src/applet.c:1910
 msgid "Connection _Information"
 msgstr "ព័ត៌មាន​ការ​តភ្ជាប់"
 
 #. 'Edit Connections...' item
-#: src/applet.c:1927
+#: src/applet.c:1918
 #, fuzzy
 msgid "Edit Connections…"
 msgstr "កែសម្រួល​ការ​តភ្ជាប់..."
 
-#: src/applet.c:1941
+#: src/applet.c:1932
 msgid "_About"
 msgstr "អំពី"
 
-#: src/applet.c:2255
+#: src/applet.c:2246
 #, fuzzy, c-format
 msgid "You are now connected to “%s”."
 msgstr "ឥឡូវនេះ អ្នក​បាន​តភ្ជាប់​ទៅ '%s' ។"
 
-#: src/applet.c:2295
+#: src/applet.c:2286
 msgid "Disconnected"
 msgstr "បាន​ផ្ដាច់"
 
-#: src/applet.c:2296
+#: src/applet.c:2287
 msgid "The network connection has been disconnected."
 msgstr "តំណ​ភ្ជាប់​បណ្ដាញ​ត្រូវ​បាន​ផ្ដាច់។"
 
-#: src/applet.c:2598
+#: src/applet.c:2589
 #, fuzzy, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "កំពុង​រៀបចំ​តភ្ជាប់​បណ្ដាញ '%s'..."
 
-#: src/applet.c:2601
+#: src/applet.c:2592
 #, fuzzy, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "បាន​ទាមទារ​ការ​ផ្ទៀងផ្ទាត់​ពី​អ្នកប្រើ​សម្រាប់​ការ​តភ្ជាប់​បណ្ដាញ '%s'..."
 
-#: src/applet.c:2607
+#: src/applet.c:2598
 #, fuzzy, c-format
 msgid "Network connection “%s” active"
 msgstr "ការ​តភ្ជាប់​បណ្ដាញ '%s' សកម្ម"
 
-#: src/applet.c:2680
+#: src/applet.c:2671
 #, fuzzy, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "កំពុង​ចាប់ផ្ដើម​តភ្ជាប់ VPN '%s'..."
 
-#: src/applet.c:2683
+#: src/applet.c:2674
 #, fuzzy, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "បាន​ទាមទារ​ការ​ផ្ទៀងផ្ទាត់​ពី​អ្នកប្រើ​សម្រាប់​ការ​តភ្ជាប់ VPN  '%s'..."
 
-#: src/applet.c:2686
+#: src/applet.c:2677
 #, fuzzy, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "កំពុង​ស្នើសុំ​អាសយដ្ឋាន VPN សម្រាប់ '%s'..."
 
-#: src/applet.c:2689
+#: src/applet.c:2680
 #, fuzzy
 msgid "VPN connection active"
 msgstr "ការ​តភ្ជាប់ VPN '%s' សកម្ម"
 
-#: src/applet.c:2739
+#: src/applet.c:2730
 msgid "No network connection"
 msgstr "មិនមាន​ការ​តភ្ជាប់​បណ្ដាញ"
 
-#: src/applet.c:3359
+#: src/applet.c:3352
 msgid "NetworkManager Applet"
 msgstr "អាប់ភ្លេត NetworkManager"
 
@@ -2125,7 +2131,7 @@ msgid "C_KN"
 msgstr ""
 
 #: src/connection-editor/ce-page-macsec.ui:206
-msgid " The pre-shared Connectivity-association Key Name"
+msgid "The pre-shared Connectivity-association Key Name"
 msgstr ""
 
 #: src/connection-editor/ce-page-macsec.ui:217
@@ -3226,7 +3232,7 @@ msgstr "មាន​ខ្សែ"
 
 #: src/connection-editor/connection-helpers.c:112
 #: src/connection-editor/connection-helpers.c:374
-#: src/connection-editor/page-vpn.c:86
+#: src/connection-editor/page-vpn.c:92
 msgid "VPN"
 msgstr "VPN"
 
@@ -3392,11 +3398,11 @@ msgid ""
 "editor. They will be cleared upon save."
 msgstr ""
 
-#: src/connection-editor/nm-connection-editor.c:749
+#: src/connection-editor/nm-connection-editor.c:751
 msgid "Error initializing editor"
 msgstr "កំហុស​ក្នុង​ការ​ចាប់ផ្ដើម​កម្មវិធី​កែសម្រួល"
 
-#: src/connection-editor/nm-connection-editor.c:1159
+#: src/connection-editor/nm-connection-editor.c:1176
 msgid "Connection add failed"
 msgstr "បាន​បរាជ័យ​ក្នុង​ការ​បន្ថែម​ការ​តភ្ជាប់"
 
@@ -4060,25 +4066,25 @@ msgstr "មិន​អាច​រក​ឃើញ​សេវា​កម្ម
 msgid "unknown failure"
 msgstr "ការ​តភ្ជាប់​បាន​បរាជ័យ"
 
-#: src/connection-editor/page-vpn.c:88
+#: src/connection-editor/page-vpn.c:94
 msgid "Could not load VPN user interface."
 msgstr "មិន​អាច​ផ្ទុក​ចំណុចប្រទាក់​អ្នកប្រើ VPN ។"
 
-#: src/connection-editor/page-vpn.c:103
+#: src/connection-editor/page-vpn.c:109
 #, fuzzy, c-format
 msgid "Could not find VPN plugin for “%s”."
 msgstr "មិន​អាច​រក​ឃើញ​សេវា​កម្មវិធី​ជំនួយ VPN សម្រាប់ '%s' ។"
 
-#: src/connection-editor/page-vpn.c:185
+#: src/connection-editor/page-vpn.c:191
 #, c-format
 msgid "VPN connection %d"
 msgstr "ការ​តភ្ជាប់ VPN %d"
 
-#: src/connection-editor/page-vpn.c:191
+#: src/connection-editor/page-vpn.c:197
 msgid "Choose a VPN Connection Type"
 msgstr "ជ្រើស​ប្រភេទ​តភ្ជាប់ VPN"
 
-#: src/connection-editor/page-vpn.c:192
+#: src/connection-editor/page-vpn.c:198
 #, fuzzy
 msgid ""
 "Select the type of VPN you wish to use for the new connection. If the type "
@@ -4088,52 +4094,53 @@ msgstr ""
 "ជ្រើស​ប្រភេទ​តភ្ជាប់ VPN ដែល​អ្នក​ចង់​ប្រើ​សម្រាប់​ការ​តភ្ជាប់​ថ្មី។ ប្រសិនបើ​ប្រភេទ​តភ្ជាប់ VPN ដែល​អ្នក​ចង់​"
 "បង្កើត​មិន​លេចឡើង​នៅ​ក្នុង​បញ្ជី​ទេ អ្នក​ប្រហែលជា​មិន​បាន​ដំឡើង​កម្មវិធី​ជំនួយ VPN ដែល​ត្រឹមត្រូវ។"
 
-#: src/connection-editor/page-wifi-security.c:346
+#: src/connection-editor/page-wifi-security.c:359
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "WEP 40/128-bit Key (Hex ឬ ASCII)"
 
-#: src/connection-editor/page-wifi-security.c:356
+#: src/connection-editor/page-wifi-security.c:372
 msgid "WEP 128-bit Passphrase"
 msgstr "ឃ្លា​សម្ងាត់ WEP 128-bit"
 
-#: src/connection-editor/page-wifi-security.c:382
+#: src/connection-editor/page-wifi-security.c:397
 msgid "Dynamic WEP (802.1X)"
 msgstr "WEP (802.1X) ថាមវន្ត"
 
-#: src/connection-editor/page-wifi-security.c:395
+#: src/connection-editor/page-wifi-security.c:410
 msgid "WPA & WPA2 Personal"
 msgstr "WPA & WPA2 ផ្ទាល់ខ្លួន"
 
-#: src/connection-editor/page-wifi-security.c:408
+#: src/connection-editor/page-wifi-security.c:423
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA & WPA2 ក្រុមហ៊ុន"
 
-#: src/connection-editor/page-wifi-security.c:421
+#: src/connection-editor/page-wifi-security.c:436
 #, fuzzy
 msgid "WPA3 Personal"
 msgstr "WPA & WPA2 ផ្ទាល់ខ្លួន"
 
-#: src/connection-editor/page-wifi-security.c:431
+#: src/connection-editor/page-wifi-security.c:449
+#: src/connection-editor/page-wifi-security.c:457
 msgid "Enhanced Open"
 msgstr ""
 
-#: src/connection-editor/page-wifi-security.c:476
+#: src/connection-editor/page-wifi-security.c:503
 msgid "Could not load Wi-Fi security user interface; missing Wi-Fi setting."
 msgstr "មិន​អាច​ផ្ទុក​ចំណុច​ប្រទាក់​អ្នកប្រើ​សុវត្ថិភាព​វ៉ាយហ្វាយ ព្រោះ​មិនមាន​ការ​កំណត់​វ៉ាយហ្វាយ។"
 
-#: src/connection-editor/page-wifi-security.c:487
+#: src/connection-editor/page-wifi-security.c:514
 msgid "Wi-Fi Security"
 msgstr "សុវត្ថិភាព​វ៉ាយហ្វាយ"
 
-#: src/connection-editor/page-wifi-security.c:489
+#: src/connection-editor/page-wifi-security.c:516
 msgid "Could not load Wi-Fi security user interface."
 msgstr "មិន​អាច​ផ្ទុក​ចំណុចប្រទាក់​អ្នកប្រើ​សុវត្ថិភាព​វ៉ាយហ្វាយ។"
 
-#: src/connection-editor/page-wifi-security.c:570
+#: src/connection-editor/page-wifi-security.c:597
 msgid "missing SSID"
 msgstr ""
 
-#: src/connection-editor/page-wifi-security.c:576
+#: src/connection-editor/page-wifi-security.c:603
 msgid "Security not compatible with Ad-Hoc mode"
 msgstr ""
 
@@ -4253,9 +4260,9 @@ msgid "Usage:"
 msgstr "ការ​ប្រើប្រាស់៖"
 
 #: src/main.c:30
+#, fuzzy
 msgid ""
-"This program is a component of NetworkManager (https://wiki.gnome.org/"
-"Projects/NetworkManager/)."
+"This program is a component of NetworkManager (https://networkmanager.dev)."
 msgstr ""
 "កម្មវិធី​នេះ គឺជា​សមាសភាគ​នៃ NetworkManager (https://wiki.gnome.org/Projects/"
 "NetworkManager/) ។"
@@ -4384,6 +4391,9 @@ msgstr "វិញ្ញាបនបត្រ DER ឬ PEM  (*.der, *.pem, *.crt, 
 #: src/utils/utils.c:546
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "DER, PEM, ឬ​ពាក្យ​គន្លឹះ​សម្ងាត់ PKCS#12 (*.der, *.pem, *.p12, *.key)"
+
+#~ msgid "More networks"
+#~ msgstr "បណ្ដាញ​ជាច្រើនទៀត"
 
 #~ msgid "GTC"
 #~ msgstr "GTC"
@@ -5399,9 +5409,6 @@ msgstr "DER, PEM, ឬ​ពាក្យ​គន្លឹះ​សម្ងា�
 #~ msgid ""
 #~ "Set to TRUE to disable creation of adhoc networks when using the applet."
 #~ msgstr "កំណត់​វា​ទៅជា​ពិត ដើម្បី​បិទ​ការ​បង្កើត​បណ្ដាញ adhoc នៅ​ពេល​ប្រើ​អាប់ភ្លេត ។"
-
-#~ msgid "Available to all users"
-#~ msgstr "មាន​សម្រាប់​អ្នកប្រើ​ទាំងអស់"
 
 #~ msgid ""
 #~ "Bluetooth configuration not possible (failed to connect to D-Bus: %s)."

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: eog\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
 "applet/\n"
-"POT-Creation-Date: 2021-07-05 11:47+0200\n"
+"POT-Creation-Date: 2022-03-21 20:51+0100\n"
 "PO-Revision-Date: 2017-03-09 15:27+0100\n"
 "Last-Translator: GunChleoc <fios@foramnagaidhlig.net>\n"
 "Language-Team: Fòram na Gàidhlig\n"
@@ -22,7 +22,7 @@ msgstr ""
 "X-Launchpad-Export-Date: 2013-09-15 06:24+0000\n"
 "X-Project-Style: gnome\n"
 
-#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3258
+#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3251
 msgid "Network"
 msgstr "Lìonra"
 
@@ -101,7 +101,7 @@ msgid ""
 "type '%s'"
 msgstr ""
 
-#: src/8021x.ui:11 src/ethernet-dialog.c:87
+#: src/8021x.ui:7 src/ethernet-dialog.c:90
 msgid "802.1X authentication"
 msgstr "Dearbhadh 802.1X"
 
@@ -135,12 +135,17 @@ msgstr "C_eangail"
 msgid "_Network name"
 msgstr "Ainm an _lìonraidh:"
 
-#: src/ap-menu-item.c:67
+#: src/ap-menu-item.c:68
 msgid "ad-hoc"
 msgstr "ad-hoc"
 
-#: src/ap-menu-item.c:72
+#: src/ap-menu-item.c:73
 msgid "secure."
+msgstr "tèarainte."
+
+#: src/ap-menu-item.c:77
+#, fuzzy
+msgid "insecure."
 msgstr "tèarainte."
 
 #: src/applet-device-broadband.c:147
@@ -168,7 +173,7 @@ msgid "Mobile Broadband"
 msgstr "Bann-leathann mobile"
 
 #: src/applet-device-broadband.c:780 src/applet-device-bt.c:61
-#: src/applet-device-ethernet.c:107 src/applet-device-wifi.c:894
+#: src/applet-device-ethernet.c:107
 msgid "Available"
 msgstr "Ri làimh"
 
@@ -178,7 +183,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "Ceangal bann-leathainn mobile ùr..."
 
 #: src/applet-device-broadband.c:809 src/applet-device-bt.c:75
-#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1297
+#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1269
 msgid "Connection Established"
 msgstr "Chaidh ceangal a dhèanamh"
 
@@ -217,7 +222,7 @@ msgstr "A' rèiteachadh a' cheangail bhann-leathainn mobile \"%s\"..."
 msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr "Feumaidh an ceangal bann-leathann mobile \"%s\" dearbhadh..."
 
-#: src/applet-device-bt.c:113 src/applet.c:2604 src/mobile-helpers.c:593
+#: src/applet-device-bt.c:113 src/applet.c:2595 src/mobile-helpers.c:593
 #, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "Ag iarraidh seòladh lìonraidh airson \"%s\"..."
@@ -250,7 +255,7 @@ msgid "Ethernet Network"
 msgstr "Lìonra Ethernet"
 
 #. Notify user of unmanaged or unavailable device
-#: src/applet-device-ethernet.c:99 src/applet.c:1359
+#: src/applet-device-ethernet.c:99 src/applet.c:1350
 msgid "disconnected"
 msgstr "chan eil ceangal ann tuilleadh"
 
@@ -312,7 +317,7 @@ msgstr "Cruthaich lìonra Wi-Fi ù_r..."
 msgid "(none)"
 msgstr "(chan eil gin)"
 
-#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1397
+#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1366
 msgid "Failed to add new connection"
 msgstr "Cha b' urrainn dhuinn ceangal ùr a chur ris"
 
@@ -320,22 +325,22 @@ msgstr "Cha b' urrainn dhuinn ceangal ùr a chur ris"
 msgid "Insufficient privileges."
 msgstr ""
 
-#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1379
-#: src/applet-device-wifi.c:1402 src/applet.c:417 src/applet.c:506
+#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1349
+#: src/applet-device-wifi.c:1369 src/applet.c:415 src/applet.c:498
 msgid "Connection failure"
 msgstr "Dh'fhàillig an ceangal"
 
-#: src/applet-device-wifi.c:826
+#: src/applet-device-wifi.c:827
 #, c-format
 msgid "Wi-Fi Networks (%s)"
 msgstr "Lìonraidhean Wi-Fi (%s)"
 
-#: src/applet-device-wifi.c:828
+#: src/applet-device-wifi.c:829
 #, c-format
 msgid "Wi-Fi Network (%s)"
 msgstr "Lìonra Wi-Fi (%s)"
 
-#: src/applet-device-wifi.c:830
+#: src/applet-device-wifi.c:831
 msgid "Wi-Fi Network"
 msgid_plural "Wi-Fi Networks"
 msgstr[0] "Lìonra Wi-Fi"
@@ -343,74 +348,75 @@ msgstr[1] "Lìonraidhean Wi-Fi"
 msgstr[2] "Lìonraidhean Wi-Fi"
 msgstr[3] "Lìonraidhean Wi-Fi"
 
-#: src/applet-device-wifi.c:859
+#: src/applet-device-wifi.c:860
 msgid "Wi-Fi is disabled"
 msgstr "Tha Wi-Fi à comas"
 
-#: src/applet-device-wifi.c:860
+#: src/applet-device-wifi.c:861
 msgid "Wi-Fi is disabled by hardware switch"
 msgstr "Chaidh am Wi-Fi a chur à comas le suidse chruaidh"
 
-#: src/applet-device-wifi.c:921
-msgid "More networks"
-msgstr "Barrachd lìonraidhean"
+#: src/applet-device-wifi.c:887
+#, fuzzy
+msgid "_Available networks"
+msgstr "Ri làimh"
 
-#: src/applet-device-wifi.c:1111
+#: src/applet-device-wifi.c:1083
 msgid "Wi-Fi Networks Available"
 msgstr "Lìonraidhean Wi-Fi a tha ri làimh"
 
-#: src/applet-device-wifi.c:1112
+#: src/applet-device-wifi.c:1084
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr ""
 "Cleachd clàr-taice nan lìonraidhean gus ceangal a dhèanamh ri lìonra Wi-Fi"
 
-#: src/applet-device-wifi.c:1115 src/applet.c:828
+#: src/applet-device-wifi.c:1087 src/applet.c:819
 msgid "Don’t show this message again"
 msgstr "Na seall an teachdaireachd seo a-rithist"
 
-#: src/applet-device-wifi.c:1296
+#: src/applet-device-wifi.c:1268
 #, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "Tha thu air ceangal a dhèanamh ris an lìonra Wi-Fi \"%s\"."
 
-#: src/applet-device-wifi.c:1331
+#: src/applet-device-wifi.c:1303
 #, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "Ag ullachadh ceangal lìonraidh Wi-Fi \"%s\"..."
 
-#: src/applet-device-wifi.c:1334
+#: src/applet-device-wifi.c:1306
 #, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "A' rèiteachadh ceangail lìonra Wi-Fi \"%s\"..."
 
-#: src/applet-device-wifi.c:1337
+#: src/applet-device-wifi.c:1309
 #, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr ""
 "Tha feum air dearbhadh a' chleachdaiche mus gabh ceangal a dhèanamh ris an "
 "lìonra Wi-Fi \"%s\"..."
 
-#: src/applet-device-wifi.c:1340
+#: src/applet-device-wifi.c:1312
 #, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "Ag iarraidh seòladh lìonra Wi-Fi airson \"%s\"..."
 
-#: src/applet-device-wifi.c:1351
+#: src/applet-device-wifi.c:1323
 #, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "Tha an ceangal lìonra Wi-Fi \"%s\" gnìomhach: %s (%d%%)"
 
-#: src/applet-device-wifi.c:1355
+#: src/applet-device-wifi.c:1327
 #, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "Tha an ceangal lìonra Wi-Fi \"%s\" gnìomhach"
 
-#: src/applet-device-wifi.c:1374
+#: src/applet-device-wifi.c:1346
 msgid "Failed to activate connection"
 msgstr "Dh'fhàillig gnìomhachadh a' cheangail"
 
-#: src/applet-device-wifi.c:1376 src/applet-device-wifi.c:1399 src/applet.c:414
-#: src/applet.c:468 src/applet.c:503
+#: src/applet-device-wifi.c:1347 src/applet-device-wifi.c:1367 src/applet.c:413
+#: src/applet.c:464 src/applet.c:496
 msgid "Unknown error"
 msgstr "Mearachd neo-aithnichte"
 
@@ -418,7 +424,7 @@ msgstr "Mearachd neo-aithnichte"
 msgid "Error displaying connection information:"
 msgstr "Mearachd a' taisbeanadh fiosrachadh a' cheangal:"
 
-#: src/applet-dialogs.c:60 src/connection-editor/page-wifi-security.c:369
+#: src/applet-dialogs.c:60 src/connection-editor/page-wifi-security.c:384
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -444,7 +450,7 @@ msgid "WPA3"
 msgstr ""
 
 #: src/applet-dialogs.c:234 src/applet-dialogs.c:243
-#: src/connection-editor/page-wifi-security.c:320
+#: src/connection-editor/page-wifi-security.c:327
 msgctxt "Wi-Fi/Ethernet security"
 msgid "None"
 msgstr "Chan eil gin"
@@ -736,19 +742,19 @@ msgstr ""
 msgid "Failed to add/activate connection"
 msgstr "Cha b' urrainn dhuinn an ceangal a chur ris/a chur an gnìomh"
 
-#: src/applet.c:466
+#: src/applet.c:463
 msgid "Device disconnect failed"
 msgstr "Cha b' urrainn dhuinn an ceangal ris an uidheam a bhriseadh"
 
-#: src/applet.c:471
+#: src/applet.c:466
 msgid "Disconnect failure"
 msgstr "Cha b' urrainn dhuinn an ceangal a bhriseadh"
 
-#: src/applet.c:501
+#: src/applet.c:495
 msgid "Connection activation failed"
 msgstr "Dh'fhàillig gnìomhachadh a' cheangail"
 
-#: src/applet.c:925
+#: src/applet.c:916
 #, c-format
 msgid ""
 "\n"
@@ -759,7 +765,7 @@ msgstr ""
 "Bhris an ceangal VPN \"%s\" a chionn 's gun do bhris rudeigin a-steach air "
 "a' cheangal ris an lìonra."
 
-#: src/applet.c:927
+#: src/applet.c:918
 #, c-format
 msgid ""
 "\n"
@@ -770,7 +776,7 @@ msgstr ""
 "Dh'fhàillig an ceangal VPN \"%s\" a chionn 's gun do bhris rudeigin a-steach "
 "air a' cheangal ris an lìonra."
 
-#: src/applet.c:929
+#: src/applet.c:920
 #, c-format
 msgid ""
 "\n"
@@ -780,7 +786,7 @@ msgstr ""
 "Dh'fhàillig an ceangal VPN \"%s\" a chionn 's gun do stad an t-seirbheis VPN "
 "gu h-obann."
 
-#: src/applet.c:931
+#: src/applet.c:922
 #, c-format
 msgid ""
 "\n"
@@ -791,7 +797,7 @@ msgstr ""
 "Dh'fhàillig an ceangal VPN \"%s\" a chionn 's gun do thill an t-seirbheis "
 "VPN rèiteachadh mì-dhligheach."
 
-#: src/applet.c:933
+#: src/applet.c:924
 #, c-format
 msgid ""
 "\n"
@@ -801,7 +807,7 @@ msgstr ""
 "Dh'fhàillig an ceangal VPN \"%s\" a chionn 's gun do dh'fhalbh an ùine air "
 "an oidhirp cheangail."
 
-#: src/applet.c:935
+#: src/applet.c:926
 #, c-format
 msgid ""
 "\n"
@@ -811,7 +817,7 @@ msgstr ""
 "Dh'fhàillig an ceangal VPN \"%s\" a chionn 's nach do thòisich an t-"
 "seirbheis VPN ri tìde."
 
-#: src/applet.c:937
+#: src/applet.c:928
 #, c-format
 msgid ""
 "\n"
@@ -821,7 +827,7 @@ msgstr ""
 "Dh'fhàillig an ceangal VPN \"%s\" a chionn 's nach do thòisich an t-"
 "seirbheis VPN."
 
-#: src/applet.c:939
+#: src/applet.c:930
 #, c-format
 msgid ""
 "\n"
@@ -831,7 +837,7 @@ msgstr ""
 "Dh'fhàillig an ceangal VPN \"%s\" a chionn 's nach robh rùintean VPN "
 "dligheach ann."
 
-#: src/applet.c:941
+#: src/applet.c:932
 #, c-format
 msgid ""
 "\n"
@@ -841,7 +847,7 @@ msgstr ""
 "Dh'fhàillig an ceangal VPN \"%s\" a chionn 's gun robh na rùintean VPN mì-"
 "dhligheach."
 
-#: src/applet.c:946
+#: src/applet.c:937
 #, c-format
 msgid ""
 "\n"
@@ -850,7 +856,7 @@ msgstr ""
 "\n"
 "Dh'fhàillig an ceangal VPN \"%s\"."
 
-#: src/applet.c:973
+#: src/applet.c:964
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -861,19 +867,19 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/applet.c:975
+#: src/applet.c:966
 msgid "VPN connection has been successfully established.\n"
 msgstr "Chaidh an ceangal VPN a stèidheachadh.\n"
 
-#: src/applet.c:977
+#: src/applet.c:968
 msgid "VPN Login Message"
 msgstr "Teachdaireachd clàradh a-steach VPN"
 
-#: src/applet.c:985 src/applet.c:1025
+#: src/applet.c:976 src/applet.c:1016
 msgid "VPN Connection Failed"
 msgstr "Dh'fhàillig an ceangal VPN"
 
-#: src/applet.c:1029
+#: src/applet.c:1020
 #, c-format
 msgid ""
 "\n"
@@ -887,7 +893,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1032
+#: src/applet.c:1023
 #, c-format
 msgid ""
 "\n"
@@ -900,136 +906,136 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1347
+#: src/applet.c:1338
 msgid "device not ready (firmware missing)"
 msgstr "chan eil an t-uidheam deiseil (bathar-an-sàs a dhìth)"
 
-#: src/applet.c:1349
+#: src/applet.c:1340
 msgid "device not ready"
 msgstr "chan eil an t-uidheam deiseil"
 
-#: src/applet.c:1375
+#: src/applet.c:1366
 msgid "Disconnect"
 msgstr "Cuir crìoch air a' cheangal"
 
-#: src/applet.c:1389
+#: src/applet.c:1380
 msgid "device not managed"
 msgstr "chan eil an t-uidheam fo stiùireadh"
 
-#: src/applet.c:1463
+#: src/applet.c:1454
 msgid "No network devices available"
 msgstr "Chan eil uidheaman lìonraidh ri làimh"
 
-#: src/applet.c:1509
+#: src/applet.c:1500
 msgid "_VPN Connections"
 msgstr "_Ceanglaicheann VPN"
 
-#: src/applet.c:1553
+#: src/applet.c:1544
 msgid "_Configure VPN…"
 msgstr "_Rèitich VPN..."
 
-#: src/applet.c:1556
+#: src/applet.c:1547
 msgid "_Add a VPN connection…"
 msgstr "Cuir ris ce_angal VPN..."
 
-#: src/applet.c:1662
+#: src/applet.c:1653
 msgid "NetworkManager is not running…"
 msgstr "Chan eil Manaidsear lìonraidh 'na ruith..."
 
-#: src/applet.c:1667 src/applet.c:2735
+#: src/applet.c:1658 src/applet.c:2726
 msgid "Networking disabled"
 msgstr "Chaidh lìonraidhean a chur à comas"
 
 #. 'Enable Networking' item
-#: src/applet.c:1877
+#: src/applet.c:1868
 msgid "Enable _Networking"
 msgstr "Cuir lìonraidhean a_n comas"
 
 #. 'Enable Wi-Fi' item
-#: src/applet.c:1886
+#: src/applet.c:1877
 msgid "Enable _Wi-Fi"
 msgstr "Cuir an comas _Wi-Fi"
 
 #. 'Enable Mobile Broadband' item
-#: src/applet.c:1895
+#: src/applet.c:1886
 msgid "Enable _Mobile Broadband"
 msgstr "Cuir an comas bann-leathann _mobile"
 
 #. Toggle notifications item
-#: src/applet.c:1907
+#: src/applet.c:1898
 msgid "Enable N_otifications"
 msgstr "Cuir an comas na _brathan"
 
 #. 'Connection Information' item
-#: src/applet.c:1919
+#: src/applet.c:1910
 msgid "Connection _Information"
 msgstr "_Fiosrachadh mun cheangal"
 
 #. 'Edit Connections...' item
-#: src/applet.c:1927
+#: src/applet.c:1918
 msgid "Edit Connections…"
 msgstr "Deasaich na ceanglaichean..."
 
-#: src/applet.c:1941
+#: src/applet.c:1932
 msgid "_About"
 msgstr "_Mu dhèidhinn"
 
-#: src/applet.c:2255
+#: src/applet.c:2246
 #, c-format
 msgid "You are now connected to “%s”."
 msgstr "Tha thu air ceangal a dhèanamh ri \"%s\"."
 
-#: src/applet.c:2295
+#: src/applet.c:2286
 msgid "Disconnected"
 msgstr "Chan eil ceangal ann tuilleadh"
 
-#: src/applet.c:2296
+#: src/applet.c:2287
 msgid "The network connection has been disconnected."
 msgstr "Bhris an ceangal lìonraidh."
 
-#: src/applet.c:2598
+#: src/applet.c:2589
 #, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "Ag ullachadh a' cheangail lìonraidh \"%s\"..."
 
-#: src/applet.c:2601
+#: src/applet.c:2592
 #, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr ""
 "Tha feum air dearbhadh a' chleachdaiche mus gabh ceangal a dhèanamh ri \"%s"
 "\"..."
 
-#: src/applet.c:2607
+#: src/applet.c:2598
 #, c-format
 msgid "Network connection “%s” active"
 msgstr "Tha an ceangal lìonraidh \"%s\" beò"
 
-#: src/applet.c:2680
+#: src/applet.c:2671
 #, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "A' tòiseachadh a' cheangail VPN \"%s\"..."
 
-#: src/applet.c:2683
+#: src/applet.c:2674
 #, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr ""
 "Tha feum air dearbhadh a' chleachdaiche mus gabh ceangal a dhèanamh ris a' "
 "VPN \"%s\"..."
 
-#: src/applet.c:2686
+#: src/applet.c:2677
 #, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "Ag iarraidh seòladh VPN airson \"%s\"..."
 
-#: src/applet.c:2689
+#: src/applet.c:2680
 msgid "VPN connection active"
 msgstr "Tha an ceangal VPN gnìomhach"
 
-#: src/applet.c:2739
+#: src/applet.c:2730
 msgid "No network connection"
 msgstr "Chan eil ceangal ris an lìonra"
 
-#: src/applet.c:3359
+#: src/applet.c:3352
 msgid "NetworkManager Applet"
 msgstr "Aplaid Manaidsear lìonraidh"
 
@@ -2156,7 +2162,7 @@ msgid "C_KN"
 msgstr ""
 
 #: src/connection-editor/ce-page-macsec.ui:206
-msgid " The pre-shared Connectivity-association Key Name"
+msgid "The pre-shared Connectivity-association Key Name"
 msgstr ""
 
 #: src/connection-editor/ce-page-macsec.ui:217
@@ -3238,7 +3244,7 @@ msgstr "Uèirichte"
 
 #: src/connection-editor/connection-helpers.c:112
 #: src/connection-editor/connection-helpers.c:374
-#: src/connection-editor/page-vpn.c:86
+#: src/connection-editor/page-vpn.c:92
 msgid "VPN"
 msgstr "VPN"
 
@@ -3409,11 +3415,11 @@ msgid ""
 "editor. They will be cleared upon save."
 msgstr ""
 
-#: src/connection-editor/nm-connection-editor.c:749
+#: src/connection-editor/nm-connection-editor.c:751
 msgid "Error initializing editor"
 msgstr "Mearachd a' tòiseachadh an deasaiche"
 
-#: src/connection-editor/nm-connection-editor.c:1159
+#: src/connection-editor/nm-connection-editor.c:1176
 msgid "Connection add failed"
 msgstr "Cha b' urrainn dhuinn an ceangal a chur ris"
 
@@ -4108,25 +4114,25 @@ msgstr "Cha b' urrainn dhuinn plugan deasaiche VPN airson \"%s\" a lorg (%s)."
 msgid "unknown failure"
 msgstr "mearachd nach aithne dhuinn"
 
-#: src/connection-editor/page-vpn.c:88
+#: src/connection-editor/page-vpn.c:94
 msgid "Could not load VPN user interface."
 msgstr "Cha b' urrainn dhuinn eadar-aghaidh cleachdaiche a luchdadh."
 
-#: src/connection-editor/page-vpn.c:103
+#: src/connection-editor/page-vpn.c:109
 #, c-format
 msgid "Could not find VPN plugin for “%s”."
 msgstr "Cha b' urrainn dhuinn am plugan VPN airson \"%s\" a lorg."
 
-#: src/connection-editor/page-vpn.c:185
+#: src/connection-editor/page-vpn.c:191
 #, c-format
 msgid "VPN connection %d"
 msgstr "Ceangal VPN %d"
 
-#: src/connection-editor/page-vpn.c:191
+#: src/connection-editor/page-vpn.c:197
 msgid "Choose a VPN Connection Type"
 msgstr "Tagh seòrsa a' cheangail VPN"
 
-#: src/connection-editor/page-vpn.c:192
+#: src/connection-editor/page-vpn.c:198
 msgid ""
 "Select the type of VPN you wish to use for the new connection. If the type "
 "of VPN connection you wish to create does not appear in the list, you may "
@@ -4136,56 +4142,57 @@ msgstr ""
 "Mur eil seòrsa a' cheangail VPN a tha thu airson cruthachadh san liosta, 's "
 "mathaid nach eil am plugan VPN ceart stàlaichte agad."
 
-#: src/connection-editor/page-wifi-security.c:346
+#: src/connection-editor/page-wifi-security.c:359
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "Iuchair WEP 40/128-bit (Hex no ASCII)"
 
-#: src/connection-editor/page-wifi-security.c:356
+#: src/connection-editor/page-wifi-security.c:372
 msgid "WEP 128-bit Passphrase"
 msgstr "Abairt-fhaire WEP 128-bit"
 
-#: src/connection-editor/page-wifi-security.c:382
+#: src/connection-editor/page-wifi-security.c:397
 msgid "Dynamic WEP (802.1X)"
 msgstr "Dynamic WEP (802.1X)"
 
-#: src/connection-editor/page-wifi-security.c:395
+#: src/connection-editor/page-wifi-security.c:410
 msgid "WPA & WPA2 Personal"
 msgstr "WPA ⁊ WPA2 pearsanta"
 
-#: src/connection-editor/page-wifi-security.c:408
+#: src/connection-editor/page-wifi-security.c:423
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA & WPA2 Enterprise"
 
-#: src/connection-editor/page-wifi-security.c:421
+#: src/connection-editor/page-wifi-security.c:436
 #, fuzzy
 msgid "WPA3 Personal"
 msgstr "WPA ⁊ WPA2 pearsanta"
 
-#: src/connection-editor/page-wifi-security.c:431
+#: src/connection-editor/page-wifi-security.c:449
+#: src/connection-editor/page-wifi-security.c:457
 msgid "Enhanced Open"
 msgstr ""
 
-#: src/connection-editor/page-wifi-security.c:476
+#: src/connection-editor/page-wifi-security.c:503
 msgid "Could not load Wi-Fi security user interface; missing Wi-Fi setting."
 msgstr ""
 "Cha b' urrainn an eadar-aghaidh cleachdaiche airson tèarainteachd Wi-Fi a "
 "luchdadh; tha roghainn Wi-Fi a dhith."
 
-#: src/connection-editor/page-wifi-security.c:487
+#: src/connection-editor/page-wifi-security.c:514
 msgid "Wi-Fi Security"
 msgstr "Tèarainteachd Wi-Fi"
 
-#: src/connection-editor/page-wifi-security.c:489
+#: src/connection-editor/page-wifi-security.c:516
 msgid "Could not load Wi-Fi security user interface."
 msgstr ""
 "Cha b' urrainn dhuinn an eadar-aghaidh cleachdaiche airson tèarainteachd Wi-"
 "Fi a luchdadh."
 
-#: src/connection-editor/page-wifi-security.c:570
+#: src/connection-editor/page-wifi-security.c:597
 msgid "missing SSID"
 msgstr "tha SSID a dhìth"
 
-#: src/connection-editor/page-wifi-security.c:576
+#: src/connection-editor/page-wifi-security.c:603
 msgid "Security not compatible with Ad-Hoc mode"
 msgstr "Chan eil an tèarainteachd co-chòrdail le modh Ad-Hoc"
 
@@ -4307,9 +4314,9 @@ msgid "Usage:"
 msgstr "Cleachdadh:"
 
 #: src/main.c:30
+#, fuzzy
 msgid ""
-"This program is a component of NetworkManager (https://wiki.gnome.org/"
-"Projects/NetworkManager/)."
+"This program is a component of NetworkManager (https://networkmanager.dev)."
 msgstr ""
 "Tha am prògram seo 'na phàirt de Manaidsear lìonraidh (https://wiki.gnome."
 "org/Projects/NetworkManager/)."
@@ -4439,6 +4446,9 @@ msgstr "Teisteanasan DER no PEM (*.der, *.pem, *.crt, *.cer)"
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr ""
 "Iuchraichean prìobhaideach DER, PEM no PKCS#12 (*.der, *.pem, *.p12, *.key)"
+
+#~ msgid "More networks"
+#~ msgstr "Barrachd lìonraidhean"
 
 #~ msgid "missing EAP-FAST PAC file"
 #~ msgstr "tha faidhle EAP-FAST PAC a dhìth"
