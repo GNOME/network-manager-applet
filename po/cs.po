@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
 "issues\n"
-"POT-Creation-Date: 2021-11-07 12:42+0000\n"
-"PO-Revision-Date: 2022-03-16 17:26+0100\n"
+"POT-Creation-Date: 2022-03-21 12:55+0000\n"
+"PO-Revision-Date: 2022-03-18 15:02+0100\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: čeština <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -27,7 +27,7 @@ msgstr ""
 "X-Generator: Poedit 2.0.6\n"
 "X-Project-Style: gnome\n"
 
-#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3258
+#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3251
 msgid "Network"
 msgstr "Síť"
 
@@ -146,13 +146,17 @@ msgstr "Přip_ojit"
 msgid "_Network name"
 msgstr "_Název sítě"
 
-#: src/ap-menu-item.c:67
+#: src/ap-menu-item.c:68
 msgid "ad-hoc"
 msgstr "ad-hoc"
 
-#: src/ap-menu-item.c:72
+#: src/ap-menu-item.c:73
 msgid "secure."
-msgstr "bezpečné."
+msgstr "bezpečná."
+
+#: src/ap-menu-item.c:77
+msgid "insecure."
+msgstr "nebezpečná."
 
 #: src/applet-device-broadband.c:147
 msgid "Wrong PUK code; please contact your provider."
@@ -229,7 +233,7 @@ msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr ""
 "Je vyžadováno ověření uživatele pro mobilní širokopásmové připojení „%s“…"
 
-#: src/applet-device-bt.c:113 src/applet.c:2604 src/mobile-helpers.c:593
+#: src/applet-device-bt.c:113 src/applet.c:2595 src/mobile-helpers.c:593
 #, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "Žádá se o síťovou adresu pro „%s“…"
@@ -262,7 +266,7 @@ msgid "Ethernet Network"
 msgstr "Drátová síť"
 
 #. Notify user of unmanaged or unavailable device
-#: src/applet-device-ethernet.c:99 src/applet.c:1359
+#: src/applet-device-ethernet.c:99 src/applet.c:1350
 msgid "disconnected"
 msgstr "odpojeno"
 
@@ -322,7 +326,7 @@ msgstr "Vytvořit _novou síť Wi-Fi…"
 msgid "(none)"
 msgstr "(žádné)"
 
-#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1369
+#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1366
 msgid "Failed to add new connection"
 msgstr "Přidání nového připojení se nezdařilo"
 
@@ -330,8 +334,8 @@ msgstr "Přidání nového připojení se nezdařilo"
 msgid "Insufficient privileges."
 msgstr "Nedostatečná oprávnění."
 
-#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1351
-#: src/applet-device-wifi.c:1374 src/applet.c:417 src/applet.c:506
+#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1349
+#: src/applet-device-wifi.c:1369 src/applet.c:415 src/applet.c:498
 msgid "Connection failure"
 msgstr "Selhání připojení"
 
@@ -372,7 +376,7 @@ msgstr "Dostupné sítě Wi-Fi"
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Použijte nabídku sítí pro připojení k síti Wi-Fi"
 
-#: src/applet-device-wifi.c:1087 src/applet.c:828
+#: src/applet-device-wifi.c:1087 src/applet.c:819
 msgid "Don’t show this message again"
 msgstr "Tuto zprávu již příště nezobrazovat"
 
@@ -415,8 +419,8 @@ msgstr "Připojení k síti Wi-Fi „%s“ je aktivní"
 msgid "Failed to activate connection"
 msgstr "Aktivace připojení se nezdařila"
 
-#: src/applet-device-wifi.c:1348 src/applet-device-wifi.c:1371 src/applet.c:414
-#: src/applet.c:468 src/applet.c:503
+#: src/applet-device-wifi.c:1347 src/applet-device-wifi.c:1367 src/applet.c:413
+#: src/applet.c:464 src/applet.c:496
 msgid "Unknown error"
 msgstr "Neznámá chyba"
 
@@ -424,7 +428,7 @@ msgstr "Neznámá chyba"
 msgid "Error displaying connection information:"
 msgstr "Chyba při zobrazování informací o spojení:"
 
-#: src/applet-dialogs.c:60 src/connection-editor/page-wifi-security.c:369
+#: src/applet-dialogs.c:60 src/connection-editor/page-wifi-security.c:384
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -450,7 +454,7 @@ msgid "WPA3"
 msgstr "WPA3"
 
 #: src/applet-dialogs.c:234 src/applet-dialogs.c:243
-#: src/connection-editor/page-wifi-security.c:320
+#: src/connection-editor/page-wifi-security.c:327
 msgctxt "Wi-Fi/Ethernet security"
 msgid "None"
 msgstr "Žádné"
@@ -732,19 +736,19 @@ msgstr "Selhal zápis připojení do VPN UI: neúplný zápis"
 msgid "Failed to add/activate connection"
 msgstr "Nepodařilo se přidat/aktivovat připojení"
 
-#: src/applet.c:466
+#: src/applet.c:463
 msgid "Device disconnect failed"
 msgstr "Odpojení zařízení selhalo"
 
-#: src/applet.c:471
+#: src/applet.c:466
 msgid "Disconnect failure"
 msgstr "Selhání odpojení"
 
-#: src/applet.c:501
+#: src/applet.c:495
 msgid "Connection activation failed"
 msgstr "Aktivace připojení selhala"
 
-#: src/applet.c:925
+#: src/applet.c:916
 #, c-format
 msgid ""
 "\n"
@@ -754,7 +758,7 @@ msgstr ""
 "\n"
 "Připojení k VPN „%s“ bylo odpojeno, protože bylo přerušeno připojení k síti."
 
-#: src/applet.c:927
+#: src/applet.c:918
 #, c-format
 msgid ""
 "\n"
@@ -764,7 +768,7 @@ msgstr ""
 "\n"
 "Připojení k VPN „%s“ selhalo, protože bylo přerušeno připojení k síti."
 
-#: src/applet.c:929
+#: src/applet.c:920
 #, c-format
 msgid ""
 "\n"
@@ -773,7 +777,7 @@ msgstr ""
 "\n"
 "Připojení k VPN „%s“ selhalo, protože se služba VPN neočekávaně zastavila."
 
-#: src/applet.c:931
+#: src/applet.c:922
 #, c-format
 msgid ""
 "\n"
@@ -784,7 +788,7 @@ msgstr ""
 "Připojení k VPN „%s“ selhalo, protože služba VPN vrátila neplatnou "
 "konfiguraci."
 
-#: src/applet.c:933
+#: src/applet.c:924
 #, c-format
 msgid ""
 "\n"
@@ -793,7 +797,7 @@ msgstr ""
 "\n"
 "Připojení k VPN „%s“ selhalo, protože vypršel časový limit pro připojení."
 
-#: src/applet.c:935
+#: src/applet.c:926
 #, c-format
 msgid ""
 "\n"
@@ -802,7 +806,7 @@ msgstr ""
 "\n"
 "Připojení k VPN „%s“ selhalo, protože se služba VPN nespustila včas."
 
-#: src/applet.c:937
+#: src/applet.c:928
 #, c-format
 msgid ""
 "\n"
@@ -811,7 +815,7 @@ msgstr ""
 "\n"
 "Připojení k VPN „%s“ selhalo, protože se nezdařilo spuštění služby VPN."
 
-#: src/applet.c:939
+#: src/applet.c:930
 #, c-format
 msgid ""
 "\n"
@@ -820,7 +824,7 @@ msgstr ""
 "\n"
 "Připojení k VPN „%s“ selhalo, protože nebyly zadány platné tajné klíče k VPN."
 
-#: src/applet.c:941
+#: src/applet.c:932
 #, c-format
 msgid ""
 "\n"
@@ -829,7 +833,7 @@ msgstr ""
 "\n"
 "Připojení k VPN „%s“ selhalo kvůli neplatným tajným klíčům k VPN."
 
-#: src/applet.c:946
+#: src/applet.c:937
 #, c-format
 msgid ""
 "\n"
@@ -838,7 +842,7 @@ msgstr ""
 "\n"
 "Připojení k VPN „%s“ selhalo."
 
-#: src/applet.c:973
+#: src/applet.c:964
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -848,19 +852,19 @@ msgstr ""
 "Připojení k VPN bylo úspěšně navázáno.\n"
 "%s\n"
 
-#: src/applet.c:975
+#: src/applet.c:966
 msgid "VPN connection has been successfully established.\n"
 msgstr "Připojení k VPN bylo úspěšně navázáno.\n"
 
-#: src/applet.c:977
+#: src/applet.c:968
 msgid "VPN Login Message"
 msgstr "Zpráva po přihlášení VPN"
 
-#: src/applet.c:985 src/applet.c:1025
+#: src/applet.c:976 src/applet.c:1016
 msgid "VPN Connection Failed"
 msgstr "Připojení k VPN selhalo"
 
-#: src/applet.c:1029
+#: src/applet.c:1020
 #, c-format
 msgid ""
 "\n"
@@ -873,7 +877,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1032
+#: src/applet.c:1023
 #, c-format
 msgid ""
 "\n"
@@ -886,132 +890,132 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1347
+#: src/applet.c:1338
 msgid "device not ready (firmware missing)"
 msgstr "zařízení není připraveno (chybí firmware)"
 
-#: src/applet.c:1349
+#: src/applet.c:1340
 msgid "device not ready"
 msgstr "zařízení není připraveno"
 
-#: src/applet.c:1375
+#: src/applet.c:1366
 msgid "Disconnect"
 msgstr "Odpojit"
 
-#: src/applet.c:1389
+#: src/applet.c:1380
 msgid "device not managed"
 msgstr "zařízení není spravováno"
 
-#: src/applet.c:1463
+#: src/applet.c:1454
 msgid "No network devices available"
 msgstr "Nejsou dostupná žádná síťová zařízení"
 
-#: src/applet.c:1509
+#: src/applet.c:1500
 msgid "_VPN Connections"
 msgstr "Připojení k _VPN"
 
-#: src/applet.c:1553
+#: src/applet.c:1544
 msgid "_Configure VPN…"
 msgstr "_Nastavit VPN…"
 
-#: src/applet.c:1556
+#: src/applet.c:1547
 msgid "_Add a VPN connection…"
 msgstr "Přid_at připojení k VPN…"
 
-#: src/applet.c:1662
+#: src/applet.c:1653
 msgid "NetworkManager is not running…"
 msgstr "NetworkManager neběží…"
 
-#: src/applet.c:1667 src/applet.c:2735
+#: src/applet.c:1658 src/applet.c:2726
 msgid "Networking disabled"
 msgstr "Síť zakázána"
 
 #. 'Enable Networking' item
-#: src/applet.c:1877
+#: src/applet.c:1868
 msgid "Enable _Networking"
 msgstr "Povolit _síť"
 
 #. 'Enable Wi-Fi' item
-#: src/applet.c:1886
+#: src/applet.c:1877
 msgid "Enable _Wi-Fi"
 msgstr "Povolit _Wi-Fi"
 
 #. 'Enable Mobile Broadband' item
-#: src/applet.c:1895
+#: src/applet.c:1886
 msgid "Enable _Mobile Broadband"
 msgstr "Povolit _mobilní širokopásmová připojení"
 
 #. Toggle notifications item
-#: src/applet.c:1907
+#: src/applet.c:1898
 msgid "Enable N_otifications"
 msgstr "Povolit up_ozornění"
 
 #. 'Connection Information' item
-#: src/applet.c:1919
+#: src/applet.c:1910
 msgid "Connection _Information"
 msgstr "_Informace o spojení"
 
 #. 'Edit Connections...' item
-#: src/applet.c:1927
+#: src/applet.c:1918
 msgid "Edit Connections…"
 msgstr "Upravit připojení…"
 
-#: src/applet.c:1941
+#: src/applet.c:1932
 msgid "_About"
 msgstr "O _aplikaci"
 
-#: src/applet.c:2255
+#: src/applet.c:2246
 #, c-format
 msgid "You are now connected to “%s”."
 msgstr "Jste právě připojeni k „%s“."
 
-#: src/applet.c:2295
+#: src/applet.c:2286
 msgid "Disconnected"
 msgstr "Odpojen"
 
-#: src/applet.c:2296
+#: src/applet.c:2287
 msgid "The network connection has been disconnected."
 msgstr "Připojení k síti bylo odpojeno."
 
-#: src/applet.c:2598
+#: src/applet.c:2589
 #, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "Připravuje se připojení k síti „%s“…"
 
-#: src/applet.c:2601
+#: src/applet.c:2592
 #, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "Je vyžadováno ověření uživatele pro připojení „%s“…"
 
-#: src/applet.c:2607
+#: src/applet.c:2598
 #, c-format
 msgid "Network connection “%s” active"
 msgstr "Připojení k síti „%s“ je aktivní"
 
-#: src/applet.c:2680
+#: src/applet.c:2671
 #, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "Spouští se připojení k VPN „%s“…"
 
-#: src/applet.c:2683
+#: src/applet.c:2674
 #, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "Je vyžadováno ověření uživatele pro připojení k VPN „%s“…"
 
-#: src/applet.c:2686
+#: src/applet.c:2677
 #, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "Žádá se o síťovou adresu k VPN pro „%s“…"
 
-#: src/applet.c:2689
+#: src/applet.c:2680
 msgid "VPN connection active"
 msgstr "Připojení k VPN je aktivní"
 
-#: src/applet.c:2739
+#: src/applet.c:2730
 msgid "No network connection"
 msgstr "Žádné síťové připojení"
 
-#: src/applet.c:3359
+#: src/applet.c:3352
 msgid "NetworkManager Applet"
 msgstr "Applet NetworkManager"
 
@@ -2015,12 +2019,13 @@ msgid ""
 "also unset, use the kernel default value read from file \"/proc/sys/net/ipv6/"
 "conf/default/use_tempaddr\""
 msgstr ""
-"Když je zapnuto, přiměje jádro generovat navíc k veřejným adresám generovaným "
-"na základě adresy MAC i dočasné adresy IPv6. Tím se zvýší soukromí, ale může "
-"to způsobit problém v některých aplikacích. Když je nastaveno na „Default“ "
-"(výchozí), je používána hodnota z globálního nastavení NetworkManageru. Pokud "
-"zůstane nenastaveno, bude se používat výchozí hodnota jádra načtená z „proc/"
-"sys/net/ipv6/conf/default/use_tempaddr“."
+"Když je zapnuto, přiměje jádro generovat navíc k veřejným adresám "
+"generovaným na základě adresy MAC i dočasné adresy IPv6. Tím se zvýší "
+"soukromí, ale může to způsobit problém v některých aplikacích. Když je "
+"nastaveno na „Default“ (výchozí), je používána hodnota z globálního "
+"nastavení NetworkManageru. Pokud zůstane nenastaveno, bude se používat "
+"výchozí hodnota jádra načtená z „proc/sys/net/ipv6/conf/default/"
+"use_tempaddr“."
 
 #: src/connection-editor/ce-page-ip6.ui:323
 msgid "IPv6 address _generation mode"
@@ -2901,8 +2906,8 @@ msgid ""
 "this peer is directed."
 msgstr ""
 "Čárkami oddělený seznam adres IP (v4 nebo v6) s maskami CIDR, ze kterých je "
-"povolen příchozí provoz od této protistrany a na které je směrován provoz pro "
-"tuto protistranu."
+"povolen příchozí provoz od této protistrany a na které je směrován provoz "
+"pro tuto protistranu."
 
 #: src/connection-editor/ce-page-wireguard.ui:252
 msgid ""
@@ -2918,10 +2923,10 @@ msgid ""
 "into the already existing public-key cryptography, for post-quantum "
 "resistance."
 msgstr ""
-"Předsdílený klíč v kódování base64 vygenerovaný pomocí „wg genpsk“. Volitelné "
-"a může být vynecháno. Přidává dodatečnou vrstvu kryptografie se symetrickým "
-"klíčem, aby vytvořila mix se stávající kryptografii s veřejným klíčem a tím "
-"se zajistila postkvantová odolnost."
+"Předsdílený klíč v kódování base64 vygenerovaný pomocí „wg genpsk“. "
+"Volitelné a může být vynecháno. Přidává dodatečnou vrstvu kryptografie se "
+"symetrickým klíčem, aby vytvořila mix se stávající kryptografii s veřejným "
+"klíčem a tím se zajistila postkvantová odolnost."
 
 #: src/connection-editor/ce-page-wireguard.ui:280
 msgid ""
@@ -4076,52 +4081,53 @@ msgstr ""
 "připojení k VPN, který si přejete vytvořit, není v seznamu, nemáte možná "
 "nainstalován správný zásuvný modul VPN."
 
-#: src/connection-editor/page-wifi-security.c:346
+#: src/connection-editor/page-wifi-security.c:359
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "Klíč WEP 40/128 bitů (Hex nebo ASCII)"
 
-#: src/connection-editor/page-wifi-security.c:356
+#: src/connection-editor/page-wifi-security.c:372
 msgid "WEP 128-bit Passphrase"
 msgstr "Heslo WEP 128 bitů"
 
-#: src/connection-editor/page-wifi-security.c:382
+#: src/connection-editor/page-wifi-security.c:397
 msgid "Dynamic WEP (802.1X)"
 msgstr "Dynamické WEP (802.1X)"
 
-#: src/connection-editor/page-wifi-security.c:395
+#: src/connection-editor/page-wifi-security.c:410
 msgid "WPA & WPA2 Personal"
 msgstr "WPA & WPA2 osobní"
 
-#: src/connection-editor/page-wifi-security.c:408
+#: src/connection-editor/page-wifi-security.c:423
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA & WPA2 firemní"
 
-#: src/connection-editor/page-wifi-security.c:421
+#: src/connection-editor/page-wifi-security.c:436
 msgid "WPA3 Personal"
 msgstr "WPA3 osobní"
 
-#: src/connection-editor/page-wifi-security.c:431
+#: src/connection-editor/page-wifi-security.c:449
+#: src/connection-editor/page-wifi-security.c:457
 msgid "Enhanced Open"
 msgstr "Pokročilé otevření"
 
-#: src/connection-editor/page-wifi-security.c:476
+#: src/connection-editor/page-wifi-security.c:503
 msgid "Could not load Wi-Fi security user interface; missing Wi-Fi setting."
 msgstr ""
 "Nelze nahrát uživatelské rozhraní zabezpečení Wi-Fi. Chybí volby Wi-Fi."
 
-#: src/connection-editor/page-wifi-security.c:487
+#: src/connection-editor/page-wifi-security.c:514
 msgid "Wi-Fi Security"
 msgstr "Zabezpečení Wi-Fi"
 
-#: src/connection-editor/page-wifi-security.c:489
+#: src/connection-editor/page-wifi-security.c:516
 msgid "Could not load Wi-Fi security user interface."
 msgstr "Nezdařilo se načíst uživatelské rozhraní pro zabezpečení Wi-Fi."
 
-#: src/connection-editor/page-wifi-security.c:570
+#: src/connection-editor/page-wifi-security.c:597
 msgid "missing SSID"
 msgstr "chybějící SSID"
 
-#: src/connection-editor/page-wifi-security.c:576
+#: src/connection-editor/page-wifi-security.c:603
 msgid "Security not compatible with Ad-Hoc mode"
 msgstr "Bezpečnost není kompatibilní s režimem ad hoc"
 
@@ -4239,7 +4245,8 @@ msgstr "Použití:"
 msgid ""
 "This program is a component of NetworkManager (https://networkmanager.dev)."
 msgstr ""
-"Tento program je součástí aplikace NetworkManager (https://networkmanager.dev)."
+"Tento program je součástí aplikace NetworkManager (https://networkmanager."
+"dev)."
 
 #: src/main.c:31
 msgid ""
