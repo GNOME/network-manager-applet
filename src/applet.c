@@ -628,7 +628,7 @@ menu_item_draw_generic (GtkWidget *widget, cairo_t *cr)
 	label = gtk_bin_get_child (GTK_BIN (widget));
 	text = gtk_label_get_text (GTK_LABEL (label));
 
-	layout = pango_cairo_create_layout (cr);
+	layout = gtk_widget_create_pango_layout (widget, NULL);
 	style = gtk_widget_get_style_context (widget);
 	gtk_style_context_get (style, gtk_style_context_get_state (style),
 	                       "font", &desc,
