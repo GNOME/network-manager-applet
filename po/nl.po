@@ -8,22 +8,22 @@
 # Rachid BM <rachidbm@ubuntu.com>, 2012.
 # Reinout van Schouwen <reinouts@gnome.org>, 2013.
 # Hannie Dumoleyn <hannie@ubuntu-nl.org>, 2016, 2017, 2018.
-# Nathan Follens <nthn@unseen.is>, 2018-2021.
+# Nathan Follens <nfollens@gnome.org>, 2018-2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
-"applet/\n"
-"POT-Creation-Date: 2022-03-21 20:51+0100\n"
-"PO-Revision-Date: 2021-04-02 19:44+0200\n"
-"Last-Translator: Nathan Follens <nthn@unseen.is>\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
+"issues\n"
+"POT-Creation-Date: 2022-03-21 21:00+0000\n"
+"PO-Revision-Date: 2022-03-26 23:39+0100\n"
+"Last-Translator: Nathan Follens <nfollens@gnome.org>\n"
 "Language-Team: Dutch <gnome-nl-list@gnome.org>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 3.0.1\n"
 "X-Launchpad-Export-Date: 2012-05-18 08:04+0000\n"
 "X-Project-Style: gnome\n"
 
@@ -35,6 +35,10 @@ msgstr "Netwerk"
 #: nm-applet.desktop.in:4
 msgid "Manage your network connections"
 msgstr "Uw netwerkverbindingen beheren"
+
+#: nm-applet.desktop.in:5
+msgid "nm-device-wireless"
+msgstr "nm-device-wireless"
 
 #: nm-connection-editor.appdata.xml.in:7
 msgid "NetworkManager"
@@ -72,6 +76,10 @@ msgstr "Geavanceerde netwerkconfiguratie"
 #: nm-connection-editor.desktop.in:4
 msgid "Manage and change your network connection settings"
 msgstr "De instellingen voor uw netwerkverbindingen beheren en bewerken"
+
+#: nm-connection-editor.desktop.in:5
+msgid "preferences-system-network"
+msgstr "preferences-system-network"
 
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
@@ -154,9 +162,8 @@ msgid "secure."
 msgstr "veilig."
 
 #: src/ap-menu-item.c:77
-#, fuzzy
 msgid "insecure."
-msgstr "veilig."
+msgstr "onveilig."
 
 #: src/applet-device-broadband.c:147
 msgid "Wrong PUK code; please contact your provider."
@@ -378,9 +385,8 @@ msgid "Wi-Fi is disabled by hardware switch"
 msgstr "Wifi is met de fysieke schakelaar uitgeschakeld"
 
 #: src/applet-device-wifi.c:887
-#, fuzzy
 msgid "_Available networks"
-msgstr "Beschikbaar voor alle gebruikers"
+msgstr "Beschikb_are netwerken"
 
 #: src/applet-device-wifi.c:1083
 msgid "Wi-Fi Networks Available"
@@ -652,7 +658,7 @@ msgstr "Website Netwerkbeheer"
 #: src/applet-dialogs.c:1137
 msgid "translator-credits"
 msgstr ""
-"Nathan Follens <nthn@unseen.is>\n"
+"Nathan Follens <nfollens@gnome.org>\n"
 "\n"
 "Meer info over Gnome-NL http://nl.gnome.org/"
 
@@ -1257,13 +1263,12 @@ msgid "_Primary"
 msgstr "_Primair"
 
 #: src/connection-editor/ce-page-bond.ui:495
-#, fuzzy
 msgid ""
 "The interface name of the primary device. If set, this device will always be "
 "the active port when it is available."
 msgstr ""
-"De interfacenaam van het primaire apparaat. Indien ingesteld, zal dit "
-"apparaat altijd de actieve slave zijn wanneer het beschikbaar is."
+"De interfacenaam van het primaire apparaat. Indien ingesteld zal dit "
+"apparaat altijd de actieve poort zijn wanneer het beschikbaar is."
 
 #: src/connection-editor/ce-page-bond.ui:507
 #: src/connection-editor/ce-page-ethernet.ui:188
@@ -2196,7 +2201,7 @@ msgstr "C_AK"
 
 #: src/connection-editor/ce-page-macsec.ui:181
 msgid "The pre-shared Connectivity Association Key"
-msgstr "The pre-shared Connectivity Association Key"
+msgstr "De voorafgedeelde Connectivity Association Key"
 
 #: src/connection-editor/ce-page-macsec.ui:193
 msgid "C_KN"
@@ -2204,9 +2209,8 @@ msgstr "C_KN"
 
 # Lastig te vertalen, dus laat ik het even zo. - Hannie
 #: src/connection-editor/ce-page-macsec.ui:206
-#, fuzzy
 msgid "The pre-shared Connectivity-association Key Name"
-msgstr " The pre-shared Connectivity-association Key Name"
+msgstr "De naam van de voorafgedeelde Connectivity Association Key"
 
 #: src/connection-editor/ce-page-macsec.ui:217
 msgid "Parameters"
@@ -3996,30 +4000,30 @@ msgstr "Laden van de gebruikersinterface voor MACsec-gebruiker is mislukt."
 msgid "MACSEC connection %d"
 msgstr "MACSEC-verbinding %d"
 
+# Moet beter kunnen - Nathan
 #: src/connection-editor/page-master.c:221
 #: src/connection-editor/page-master.c:232
-#, fuzzy
 msgid "Duplicate ports"
-msgstr "Duplicaat-slaves"
+msgstr "Dubbele poorten"
 
 #: src/connection-editor/page-master.c:222
-#, fuzzy, c-format
+#, c-format
 msgid "Ports “%s” and “%s” both apply to device “%s”"
-msgstr "Slaves ‘%s’ en ‘%s’ gelden beide voor apparaat ‘%s’"
+msgstr "Poorten ‘%s’ en ‘%s’ gelden beide voor apparaat ‘%s’"
 
 #: src/connection-editor/page-master.c:233
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Ports “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
 "same physical device."
 msgstr ""
-"Slaves ‘%s’ en ‘%s’ gelden voor verschillende virtuele poorten (‘%s’ en "
+"Poorten ‘%s’ en ‘%s’ gelden voor verschillende virtuele poorten (‘%s’ en "
 "‘%s’) van hetzelfde fysieke apparaat."
 
 #: src/connection-editor/page-master.c:357
 #, c-format
 msgid "%s port %d"
-msgstr ""
+msgstr "%s poort %d"
 
 #: src/connection-editor/page-mobile.c:297
 msgid "Could not load mobile broadband user interface."
@@ -4364,12 +4368,11 @@ msgid "Usage:"
 msgstr "Gebruik:"
 
 #: src/main.c:30
-#, fuzzy
 msgid ""
 "This program is a component of NetworkManager (https://networkmanager.dev)."
 msgstr ""
-"Dit programma is een onderdeel van Netwerkbeheer (https://wiki.gnome.org/"
-"Projects/NetworkManager/)."
+"Dit programma is een onderdeel van Netwerkbeheer (https://networkmanager."
+"dev)."
 
 #: src/main.c:31
 msgid ""
@@ -4500,12 +4503,6 @@ msgstr "DER, PEM, of PKCS#12 private sleutels (*.der, *.pem, *.p12, *.key)"
 
 #~ msgid "More networks"
 #~ msgstr "Meer netwerken"
-
-#~ msgid "nm-device-wireless"
-#~ msgstr "nm-device-wireless"
-
-#~ msgid "preferences-system-network"
-#~ msgstr "preferences-system-network"
 
 #~ msgid "missing EAP-FAST PAC file"
 #~ msgstr "ontbrekend EAP-FAST PAC-bestand"
