@@ -10,7 +10,7 @@
 # Anders Jenbo <anders@jenbo.dk>, 2011.
 # Joe Hansen <joedalton2@yahoo.dk>, 2011.
 # Ask Hjorth Larsen <asklarsen@gmail.com>, 2012-2014.
-# Alan Mortensen <alanmortensen.am@gmail.com>, 2017-19.
+# Alan Mortensen <alanmortensen.am@gmail.com>, 2017-19, 2022.
 # scootergrisen, 2019-2020.
 #
 # Konventioner:
@@ -20,25 +20,30 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet master\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
-"applet/\n"
-"POT-Creation-Date: 2022-03-21 20:51+0100\n"
-"PO-Revision-Date: 2020-12-30 00:00+0200\n"
-"Last-Translator: scootergrisen\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
+"issues\n"
+"POT-Creation-Date: 2021-11-07 12:42+0000\n"
+"PO-Revision-Date: 2022-03-16 16:56+0100\n"
+"Last-Translator: Alan Mortensen <alanmortensen.am@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.3\n"
 
-#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3251
+#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3258
 msgid "Network"
 msgstr "Netværk"
 
 #: nm-applet.desktop.in:4
 msgid "Manage your network connections"
 msgstr "Håndtér dine netværksforbindelser"
+
+#: nm-applet.desktop.in:5
+msgid "nm-device-wireless"
+msgstr "nm-device-wireless"
 
 #: nm-connection-editor.appdata.xml.in:7
 msgid "NetworkManager"
@@ -75,6 +80,10 @@ msgstr "Avanceret netværkskonfiguration"
 #: nm-connection-editor.desktop.in:4
 msgid "Manage and change your network connection settings"
 msgstr "Redigér og ændr dine indstillinger til netværksforbindelser"
+
+#: nm-connection-editor.desktop.in:5
+msgid "preferences-system-network"
+msgstr "preferences-system-network"
 
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
@@ -148,17 +157,12 @@ msgstr "F_orbind"
 msgid "_Network name"
 msgstr "_Netværksnavn"
 
-#: src/ap-menu-item.c:68
+#: src/ap-menu-item.c:67
 msgid "ad-hoc"
 msgstr "ad-hoc"
 
-#: src/ap-menu-item.c:73
+#: src/ap-menu-item.c:72
 msgid "secure."
-msgstr "sikker."
-
-#: src/ap-menu-item.c:77
-#, fuzzy
-msgid "insecure."
 msgstr "sikker."
 
 #: src/applet-device-broadband.c:147
@@ -236,7 +240,7 @@ msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr ""
 "Der kræves brugergodkendelse til den mobile bredbåndsforbindelse “%s” …"
 
-#: src/applet-device-bt.c:113 src/applet.c:2595 src/mobile-helpers.c:593
+#: src/applet-device-bt.c:113 src/applet.c:2604 src/mobile-helpers.c:593
 #, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "Anmoder om en netværksadresse for “%s” …"
@@ -269,7 +273,7 @@ msgid "Ethernet Network"
 msgstr "Ethernet-netværk"
 
 #. Notify user of unmanaged or unavailable device
-#: src/applet-device-ethernet.c:99 src/applet.c:1350
+#: src/applet-device-ethernet.c:99 src/applet.c:1359
 msgid "disconnected"
 msgstr "afbrudt"
 
@@ -329,7 +333,7 @@ msgstr "Opret _nyt wi-fi-netværk …"
 msgid "(none)"
 msgstr "(ingen)"
 
-#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1366
+#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1369
 msgid "Failed to add new connection"
 msgstr "Kunne ikke tilføje ny forbindelse"
 
@@ -337,8 +341,8 @@ msgstr "Kunne ikke tilføje ny forbindelse"
 msgid "Insufficient privileges."
 msgstr "Utilstrækkelige rettigheder."
 
-#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1349
-#: src/applet-device-wifi.c:1369 src/applet.c:415 src/applet.c:498
+#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1351
+#: src/applet-device-wifi.c:1374 src/applet.c:417 src/applet.c:506
 msgid "Connection failure"
 msgstr "Forbindelsesfejl"
 
@@ -367,9 +371,8 @@ msgid "Wi-Fi is disabled by hardware switch"
 msgstr "Wi-fi er slået fra med hardwareknap"
 
 #: src/applet-device-wifi.c:887
-#, fuzzy
 msgid "_Available networks"
-msgstr "Tilgængelig"
+msgstr "_Tilgængelige netværk"
 
 #: src/applet-device-wifi.c:1083
 msgid "Wi-Fi Networks Available"
@@ -379,7 +382,7 @@ msgstr "Der er tilgængelige wi-fi-netværk"
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Anvend netværksmenuen til at forbinde til et wi-fi-netværk"
 
-#: src/applet-device-wifi.c:1087 src/applet.c:819
+#: src/applet-device-wifi.c:1087 src/applet.c:828
 msgid "Don’t show this message again"
 msgstr "Vis ikke denne besked igen"
 
@@ -422,8 +425,8 @@ msgstr "Wi-fi-netværksforbindelsen “%s” er aktiv"
 msgid "Failed to activate connection"
 msgstr "Kunne ikke aktivere forbindelse"
 
-#: src/applet-device-wifi.c:1347 src/applet-device-wifi.c:1367 src/applet.c:413
-#: src/applet.c:464 src/applet.c:496
+#: src/applet-device-wifi.c:1348 src/applet-device-wifi.c:1371 src/applet.c:414
+#: src/applet.c:468 src/applet.c:503
 msgid "Unknown error"
 msgstr "Ukendt fejl"
 
@@ -431,7 +434,7 @@ msgstr "Ukendt fejl"
 msgid "Error displaying connection information:"
 msgstr "Fejl ved visning af forbindelsesinformation:"
 
-#: src/applet-dialogs.c:60 src/connection-editor/page-wifi-security.c:384
+#: src/applet-dialogs.c:60 src/connection-editor/page-wifi-security.c:369
 msgid "LEAP"
 msgstr "LEAP"
 
@@ -457,7 +460,7 @@ msgid "WPA3"
 msgstr "WPA3"
 
 #: src/applet-dialogs.c:234 src/applet-dialogs.c:243
-#: src/connection-editor/page-wifi-security.c:327
+#: src/connection-editor/page-wifi-security.c:320
 msgctxt "Wi-Fi/Ethernet security"
 msgid "None"
 msgstr "Ingen"
@@ -751,19 +754,19 @@ msgstr "Kunne ikke skrive forbindelse til VPN-UI: ufuldstændig skrivning"
 msgid "Failed to add/activate connection"
 msgstr "Kunne ikke tilføje/aktivere forbindelse"
 
-#: src/applet.c:463
+#: src/applet.c:466
 msgid "Device disconnect failed"
 msgstr "Frakobling af enhed mislykkedes"
 
-#: src/applet.c:466
+#: src/applet.c:471
 msgid "Disconnect failure"
 msgstr "Frakoblingsfejl"
 
-#: src/applet.c:495
+#: src/applet.c:501
 msgid "Connection activation failed"
 msgstr "Aktivering af forbindelse mislykkedes"
 
-#: src/applet.c:916
+#: src/applet.c:925
 #, c-format
 msgid ""
 "\n"
@@ -773,7 +776,7 @@ msgstr ""
 "\n"
 "VPN-forbindelsen “%s” blev afbrudt, fordi netværksforbindelsen blev afbrudt."
 
-#: src/applet.c:918
+#: src/applet.c:927
 #, c-format
 msgid ""
 "\n"
@@ -783,7 +786,7 @@ msgstr ""
 "\n"
 "VPN-forbindelsen “%s” mislykkedes, fordi netværksforbindelsen blev afbrudt."
 
-#: src/applet.c:920
+#: src/applet.c:929
 #, c-format
 msgid ""
 "\n"
@@ -792,7 +795,7 @@ msgstr ""
 "\n"
 "VPN-forbindelsen “%s” mislykkedes, fordi VPN-tjenesten stoppede uventet."
 
-#: src/applet.c:922
+#: src/applet.c:931
 #, c-format
 msgid ""
 "\n"
@@ -803,7 +806,7 @@ msgstr ""
 "VPN-forbindelsen “%s” mislykkedes, fordi VPN-tjenesten returnerede ugyldig "
 "konfiguration."
 
-#: src/applet.c:924
+#: src/applet.c:933
 #, c-format
 msgid ""
 "\n"
@@ -813,7 +816,7 @@ msgstr ""
 "VPN-forbindelsen “%s” mislykkedes, fordi forsøget på at forbinde overskred "
 "tidsgrænsen."
 
-#: src/applet.c:926
+#: src/applet.c:935
 #, c-format
 msgid ""
 "\n"
@@ -822,7 +825,7 @@ msgstr ""
 "\n"
 "VPN-forbindelsen “%s” mislykkedes, fordi VPN-tjenesten ikke startede i tide."
 
-#: src/applet.c:928
+#: src/applet.c:937
 #, c-format
 msgid ""
 "\n"
@@ -831,7 +834,7 @@ msgstr ""
 "\n"
 "VPN-forbindelsen “%s” mislykkedes, fordi VPN-tjenestens opstart mislykkedes."
 
-#: src/applet.c:930
+#: src/applet.c:939
 #, c-format
 msgid ""
 "\n"
@@ -841,7 +844,7 @@ msgstr ""
 "VPN-forbindelsen “%s” mislykkedes, fordi der ikke fandtes nogen gyldige VPN-"
 "hemmeligheder."
 
-#: src/applet.c:932
+#: src/applet.c:941
 #, c-format
 msgid ""
 "\n"
@@ -850,7 +853,7 @@ msgstr ""
 "\n"
 "VPN-forbindelsen “%s” mislykkedes på grund af ugyldige VPN-hemmeligheder."
 
-#: src/applet.c:937
+#: src/applet.c:946
 #, c-format
 msgid ""
 "\n"
@@ -859,7 +862,7 @@ msgstr ""
 "\n"
 "VPN-forbindelsen “%s” mislykkedes."
 
-#: src/applet.c:964
+#: src/applet.c:973
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -870,19 +873,19 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/applet.c:966
+#: src/applet.c:975
 msgid "VPN connection has been successfully established.\n"
 msgstr "VPN-forbindelsen er blevet etableret.\n"
 
-#: src/applet.c:968
+#: src/applet.c:977
 msgid "VPN Login Message"
 msgstr "Loginmeddelelse for VPN"
 
-#: src/applet.c:976 src/applet.c:1016
+#: src/applet.c:985 src/applet.c:1025
 msgid "VPN Connection Failed"
 msgstr "VPN-forbindelse mislykkedes"
 
-#: src/applet.c:1020
+#: src/applet.c:1029
 #, c-format
 msgid ""
 "\n"
@@ -896,7 +899,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1023
+#: src/applet.c:1032
 #, c-format
 msgid ""
 "\n"
@@ -909,132 +912,132 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1338
+#: src/applet.c:1347
 msgid "device not ready (firmware missing)"
 msgstr "enheden er ikke klar (firmware mangler)"
 
-#: src/applet.c:1340
+#: src/applet.c:1349
 msgid "device not ready"
 msgstr "enhed er ikke klar"
 
-#: src/applet.c:1366
+#: src/applet.c:1375
 msgid "Disconnect"
 msgstr "Afbryd"
 
-#: src/applet.c:1380
+#: src/applet.c:1389
 msgid "device not managed"
 msgstr "enhed er ikke redigeret"
 
-#: src/applet.c:1454
+#: src/applet.c:1463
 msgid "No network devices available"
 msgstr "Ingen tilgængelige netværksenheder"
 
-#: src/applet.c:1500
+#: src/applet.c:1509
 msgid "_VPN Connections"
 msgstr "_VPN-forbindelser"
 
-#: src/applet.c:1544
+#: src/applet.c:1553
 msgid "_Configure VPN…"
 msgstr "_Konfigurér VPN …"
 
-#: src/applet.c:1547
+#: src/applet.c:1556
 msgid "_Add a VPN connection…"
 msgstr "_Tilføj en VPN-forbindelse …"
 
-#: src/applet.c:1653
+#: src/applet.c:1662
 msgid "NetworkManager is not running…"
 msgstr "Netværkshåndtering kører ikke …"
 
-#: src/applet.c:1658 src/applet.c:2726
+#: src/applet.c:1667 src/applet.c:2735
 msgid "Networking disabled"
 msgstr "Netværk deaktiveret"
 
 #. 'Enable Networking' item
-#: src/applet.c:1868
+#: src/applet.c:1877
 msgid "Enable _Networking"
 msgstr "Aktivér _netværk"
 
 #. 'Enable Wi-Fi' item
-#: src/applet.c:1877
+#: src/applet.c:1886
 msgid "Enable _Wi-Fi"
 msgstr "Aktivér _wi-fi-netværk"
 
 #. 'Enable Mobile Broadband' item
-#: src/applet.c:1886
+#: src/applet.c:1895
 msgid "Enable _Mobile Broadband"
 msgstr "Aktivér _mobilt bredbånd"
 
 #. Toggle notifications item
-#: src/applet.c:1898
+#: src/applet.c:1907
 msgid "Enable N_otifications"
 msgstr "Aktivér _påmindelser"
 
 #. 'Connection Information' item
-#: src/applet.c:1910
+#: src/applet.c:1919
 msgid "Connection _Information"
 msgstr "Forbindelses_information"
 
 #. 'Edit Connections...' item
-#: src/applet.c:1918
+#: src/applet.c:1927
 msgid "Edit Connections…"
 msgstr "Håndtér forbindelser …"
 
-#: src/applet.c:1932
+#: src/applet.c:1941
 msgid "_About"
 msgstr "_Om"
 
-#: src/applet.c:2246
+#: src/applet.c:2255
 #, c-format
 msgid "You are now connected to “%s”."
 msgstr "Du er nu tilsluttet “%s”."
 
-#: src/applet.c:2286
+#: src/applet.c:2295
 msgid "Disconnected"
 msgstr "Afbrudt"
 
-#: src/applet.c:2287
+#: src/applet.c:2296
 msgid "The network connection has been disconnected."
 msgstr "Netværksforbindelsen er blevet afbrudt."
 
-#: src/applet.c:2589
+#: src/applet.c:2598
 #, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "Forbereder netværksforbindelsen “%s” …"
 
-#: src/applet.c:2592
+#: src/applet.c:2601
 #, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "Der kræves brugergodkendelse til netværksforbindelsen “%s” …"
 
-#: src/applet.c:2598
+#: src/applet.c:2607
 #, c-format
 msgid "Network connection “%s” active"
 msgstr "Netværksforbindelsen “%s” er aktiv"
 
-#: src/applet.c:2671
+#: src/applet.c:2680
 #, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "Starter VPN-forbindelsen “%s” …"
 
-#: src/applet.c:2674
+#: src/applet.c:2683
 #, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "Der kræves brugergodkendelse til VPN-forbindelsen “%s” …"
 
-#: src/applet.c:2677
+#: src/applet.c:2686
 #, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "Anmoder om en VPN-adresse for “%s” …"
 
-#: src/applet.c:2680
+#: src/applet.c:2689
 msgid "VPN connection active"
 msgstr "VPN-forbindelsen er aktiv"
 
-#: src/applet.c:2730
+#: src/applet.c:2739
 msgid "No network connection"
 msgstr "Ingen netværksforbindelse"
 
-#: src/applet.c:3352
+#: src/applet.c:3359
 msgid "NetworkManager Applet"
 msgstr "Panelprogram til Netværkshåndtering"
 
@@ -1220,13 +1223,12 @@ msgid "_Primary"
 msgstr "_Primær"
 
 #: src/connection-editor/ce-page-bond.ui:495
-#, fuzzy
 msgid ""
 "The interface name of the primary device. If set, this device will always be "
 "the active port when it is available."
 msgstr ""
 "Grænsefladenavnet for den primære enhed. Hvis givet, vil denne enhed altid "
-"være den aktive slave, når den er tilgængelig."
+"være den aktive port, når den er tilgængelig."
 
 #: src/connection-editor/ce-page-bond.ui:507
 #: src/connection-editor/ce-page-ethernet.ui:188
@@ -2145,9 +2147,8 @@ msgid "C_KN"
 msgstr "C_KN"
 
 #: src/connection-editor/ce-page-macsec.ui:206
-#, fuzzy
 msgid "The pre-shared Connectivity-association Key Name"
-msgstr " Navnet på den foruddelte Connectivity-association Key"
+msgstr "Navnet på den foruddelte Connectivity-association Key"
 
 #: src/connection-editor/ce-page-macsec.ui:217
 msgid "Parameters"
@@ -3905,28 +3906,27 @@ msgstr "MACSEC-forbindelse %d"
 
 #: src/connection-editor/page-master.c:221
 #: src/connection-editor/page-master.c:232
-#, fuzzy
 msgid "Duplicate ports"
-msgstr "Duplikerede slaver"
+msgstr "Duplikerede porte"
 
 #: src/connection-editor/page-master.c:222
-#, fuzzy, c-format
+#, c-format
 msgid "Ports “%s” and “%s” both apply to device “%s”"
-msgstr "Slaverne “%s” og “%s” svarer begge til enheden “%s”"
+msgstr "Portene “%s” og “%s” svarer begge til enheden “%s”"
 
 #: src/connection-editor/page-master.c:233
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Ports “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
 "same physical device."
 msgstr ""
-"Slaverne “%s” og “%s” svarer til forskellige virtuelle porte (“%s” og “%s”) "
+"Portene “%s” og “%s” svarer til forskellige virtuelle porte (“%s” og “%s”) "
 "for samme fysiske enhed."
 
 #: src/connection-editor/page-master.c:357
 #, c-format
 msgid "%s port %d"
-msgstr ""
+msgstr "%s port %d"
 
 #: src/connection-editor/page-mobile.c:297
 msgid "Could not load mobile broadband user interface."
@@ -4099,54 +4099,53 @@ msgstr ""
 "VPN-forbindelse du ønsker at oprette ikke fremgår af listen, har du måske "
 "ikke installeret det korrekte VPN-udvidelsesmodul."
 
-#: src/connection-editor/page-wifi-security.c:359
+#: src/connection-editor/page-wifi-security.c:346
 msgid "WEP 40/128-bit Key (Hex or ASCII)"
 msgstr "WEP 40/128-bit-nøgle (Hex eller ASCII)"
 
-#: src/connection-editor/page-wifi-security.c:372
+#: src/connection-editor/page-wifi-security.c:356
 msgid "WEP 128-bit Passphrase"
 msgstr "WEP 128-bit adgangsfrase"
 
-#: src/connection-editor/page-wifi-security.c:397
+#: src/connection-editor/page-wifi-security.c:382
 msgid "Dynamic WEP (802.1X)"
 msgstr "Dynamisk WEP (802.1X)"
 
-#: src/connection-editor/page-wifi-security.c:410
+#: src/connection-editor/page-wifi-security.c:395
 msgid "WPA & WPA2 Personal"
 msgstr "WPA og WPA2 Personal"
 
-#: src/connection-editor/page-wifi-security.c:423
+#: src/connection-editor/page-wifi-security.c:408
 msgid "WPA & WPA2 Enterprise"
 msgstr "WPA og WPA2 Enterprise"
 
-#: src/connection-editor/page-wifi-security.c:436
+#: src/connection-editor/page-wifi-security.c:421
 msgid "WPA3 Personal"
 msgstr "WPA3 Personal"
 
-#: src/connection-editor/page-wifi-security.c:449
-#: src/connection-editor/page-wifi-security.c:457
+#: src/connection-editor/page-wifi-security.c:431
 msgid "Enhanced Open"
 msgstr "Enhanced Open"
 
-#: src/connection-editor/page-wifi-security.c:503
+#: src/connection-editor/page-wifi-security.c:476
 msgid "Could not load Wi-Fi security user interface; missing Wi-Fi setting."
 msgstr ""
 "Kunne ikke indlæse brugergrænsefladen for wi-fi-sikkerhed; mangler wi-fi-"
 "indstilling."
 
-#: src/connection-editor/page-wifi-security.c:514
+#: src/connection-editor/page-wifi-security.c:487
 msgid "Wi-Fi Security"
 msgstr "Wi-fi-sikkerhed"
 
-#: src/connection-editor/page-wifi-security.c:516
+#: src/connection-editor/page-wifi-security.c:489
 msgid "Could not load Wi-Fi security user interface."
 msgstr "Kunne ikke indlæse brugergrænsefladen for wi-fi-sikkerhed."
 
-#: src/connection-editor/page-wifi-security.c:597
+#: src/connection-editor/page-wifi-security.c:570
 msgid "missing SSID"
 msgstr "manglende SSID"
 
-#: src/connection-editor/page-wifi-security.c:603
+#: src/connection-editor/page-wifi-security.c:576
 msgid "Security not compatible with Ad-Hoc mode"
 msgstr "Sikkerhed ikke kompatibel med ad hoc-tilstand"
 
@@ -4261,12 +4260,11 @@ msgid "Usage:"
 msgstr "Brug:"
 
 #: src/main.c:30
-#, fuzzy
 msgid ""
 "This program is a component of NetworkManager (https://networkmanager.dev)."
 msgstr ""
-"Dette program er en komponent til Netværkshåndtering (https://wiki.gnome.org/"
-"Projects/NetworkManager/)."
+"Dette program er en komponent til Netværkshåndtering (https://networkmanager."
+"dev)."
 
 #: src/main.c:31
 msgid ""
@@ -4394,9 +4392,3 @@ msgstr "DER-, PEM- eller PKCS#12-private nøgler (*.der, *.pem, *.p12, *.key)"
 
 #~ msgid "More networks"
 #~ msgstr "Flere netværk"
-
-#~ msgid "nm-device-wireless"
-#~ msgstr "nm-device-wireless"
-
-#~ msgid "preferences-system-network"
-#~ msgstr "preferences-system-network"
