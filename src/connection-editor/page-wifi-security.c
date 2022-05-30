@@ -407,7 +407,7 @@ finish_setup (CEPageWifiSecurity *self, gpointer user_data)
 		g_return_if_fail (ws_wpa_psk);
 
 		add_security_item (self, NMA_WS (ws_wpa_psk), sec_model,
-		                   &iter, _("WPA & WPA2 Personal"), TRUE, TRUE);
+		                   &iter, _("WPA/WPA2/WPA3 Personal"), TRUE, TRUE);
 		if ((active < 0) && ((default_type == NMU_SEC_WPA_PSK) || (default_type == NMU_SEC_WPA2_PSK)))
 			active = item;
 		item++;
@@ -420,7 +420,7 @@ finish_setup (CEPageWifiSecurity *self, gpointer user_data)
 		g_return_if_fail (ws_wpa_eap);
 
 		add_security_item (self, NMA_WS (ws_wpa_eap), sec_model,
-		                   &iter, _("WPA & WPA2 Enterprise"), FALSE, FALSE);
+		                   &iter, _("WPA/WPA2 Enterprise"), FALSE, FALSE);
 		if ((active < 0) && ((default_type == NMU_SEC_WPA_ENTERPRISE) || (default_type == NMU_SEC_WPA2_ENTERPRISE)))
 			active = item;
 		item++;

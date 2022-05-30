@@ -225,7 +225,7 @@ create_info_label_security (NMConnection *connection)
 			else if (!strcmp (key_mgmt, "wpa-none"))
 				label = g_strdup (_("WPA/WPA2"));
 			else if (!strcmp (key_mgmt, "wpa-psk"))
-				label = g_strdup (_("WPA/WPA2"));
+				label = g_strdup (_("WPA/WPA2/WPA3"));
 			else if (!strcmp (key_mgmt, "sae"))
 				label = g_strdup (_("WPA3"));
 			else
