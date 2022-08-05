@@ -252,7 +252,7 @@ desktop_files = [
 desktop_file_validate = find_program('desktop-file-validate', required: false)
 
 foreach desktop: desktop_files
-  i18n.merge_file(
+  desktop_file = i18n.merge_file(
     input: desktop + '.desktop.in',
     output: desktop + '.desktop',
     install: true,
@@ -264,15 +264,13 @@ foreach desktop: desktop_files
   if desktop_file_validate.found()
     test('validate-' + desktop + '-desktop',
       desktop_file_validate,
-      args: desktop + '.desktop',
-      workdir: meson.current_build_dir(),
+      args: [ desktop_file.full_path() ]
     )
   endif
 endforeach
 
 appdata = 'nm-connection-editor.appdata.xml'
-
-i18n.merge_file(
+appdata_file = i18n.merge_file(
   input: appdata + '.in',
   output: appdata,
   install: true,
@@ -284,8 +282,7 @@ appstream_util = find_program('appstream-util', required: false)
 if appstream_util.found()
   test('validate-appdata',
     appstream_util,
-    args: ['validate', '--nonet', appdata],
-    workdir: meson.current_build_dir(),
+    args: ['validate', '--nonet', appdata_file.full_path()],
   )
 endif
 
