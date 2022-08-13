@@ -6,20 +6,20 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
-"applet/\n"
-"POT-Creation-Date: 2022-05-30 11:43+0200\n"
-"PO-Revision-Date: 2021-11-03 13:06+0100\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
+"issues\n"
+"POT-Creation-Date: 2022-07-14 11:26+0000\n"
+"PO-Revision-Date: 2022-08-13 17:39+0200\n"
 "Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
 "Language: hr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Launchpad-Export-Date: 2017-04-09 22:32+0000\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 3.1.1\n"
 
 #: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3251
 msgid "Network"
@@ -144,9 +144,8 @@ msgid "secure."
 msgstr "zaštićeno."
 
 #: src/ap-menu-item.c:77
-#, fuzzy
 msgid "insecure."
-msgstr "zaštićeno."
+msgstr "nezaštićeno."
 
 #: src/applet-device-broadband.c:147
 msgid "Wrong PUK code; please contact your provider."
@@ -440,9 +439,8 @@ msgid "WEP"
 msgstr "WEP"
 
 #: src/applet-dialogs.c:228
-#, fuzzy
 msgid "WPA/WPA2/WPA3"
-msgstr "WPA/WPA2"
+msgstr "WPA/WPA2/WPA3"
 
 #: src/applet-dialogs.c:230
 msgid "WPA3"
@@ -1144,7 +1142,7 @@ msgid "Bonded _connections"
 msgstr "Povezana _povezivanja"
 
 #: src/connection-editor/ce-page-bond.ui:105
-#: src/connection-editor/ce-page-wifi.ui:400
+#: src/connection-editor/ce-page-wifi.ui:294
 msgid "M_ode"
 msgstr "Na_čin"
 
@@ -2026,10 +2024,10 @@ msgstr "IPv6 _proširenja privatnosti"
 msgid ""
 "If enabled, it makes the kernel generate a temporary IPv6 address in "
 "addition to the public one generated from MAC address. This enhances "
-"privacy, but could cause problems in some applications. If set to \"Default"
-"\", the value from NetworkManager global configuration is used. If that is "
-"also unset, use the kernel default value read from file \"/proc/sys/net/ipv6/"
-"conf/default/use_tempaddr\""
+"privacy, but could cause problems in some applications. If set to "
+"\"Default\", the value from NetworkManager global configuration is used. If "
+"that is also unset, use the kernel default value read from file \"/proc/sys/"
+"net/ipv6/conf/default/use_tempaddr\""
 msgstr ""
 "Ako je omogućeno, kernel stvara privremenu IPv6 adresu kao dodatak javnoj "
 "stvorenoj iz MAC adrese. Ovo poboljšava privatnost, ali može prouzrokovati "
@@ -2840,35 +2838,19 @@ msgstr "Klijent"
 msgid "Ad-hoc"
 msgstr "Ad-hoc"
 
-#: src/connection-editor/ce-page-wifi.ui:203
-msgid "mW"
-msgstr "mW"
-
-#: src/connection-editor/ce-page-wifi.ui:222
-msgid "Transmission po_wer"
-msgstr "Snaga pri_jenosa"
-
-#: src/connection-editor/ce-page-wifi.ui:256
-msgid "Mb/s"
-msgstr "Mb/s"
-
-#: src/connection-editor/ce-page-wifi.ui:275
-msgid "_Rate"
-msgstr "_Frekvencija"
-
-#: src/connection-editor/ce-page-wifi.ui:311
+#: src/connection-editor/ce-page-wifi.ui:205
 msgid "_BSSID"
 msgstr "_BSSID"
 
-#: src/connection-editor/ce-page-wifi.ui:336
+#: src/connection-editor/ce-page-wifi.ui:230
 msgid "C_hannel"
 msgstr "Kana_l"
 
-#: src/connection-editor/ce-page-wifi.ui:368
+#: src/connection-editor/ce-page-wifi.ui:262
 msgid "Ban_d"
 msgstr "Poja_s"
 
-#: src/connection-editor/ce-page-wifi.ui:414
+#: src/connection-editor/ce-page-wifi.ui:308
 msgid "SS_ID"
 msgstr "SS_ID"
 
@@ -3901,8 +3883,8 @@ msgid ""
 "Ports “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
 "same physical device."
 msgstr ""
-"Ulaze \"%s\" i \"%s\" primijeni na različite virtualne ulaze (\"%s\" i \"%s"
-"\") istog fizičkog uređaja."
+"Ulaze \"%s\" i \"%s\" primijeni na različite virtualne ulaze (\"%s\" i "
+"\"%s\") istog fizičkog uređaja."
 
 #: src/connection-editor/page-master.c:357
 #, c-format
@@ -4098,14 +4080,12 @@ msgid "Dynamic WEP (802.1X)"
 msgstr "Promjenjivi WEP (802.1X)"
 
 #: src/connection-editor/page-wifi-security.c:410
-#, fuzzy
 msgid "WPA/WPA2/WPA3 Personal"
-msgstr "WPA & WPA2 osobni"
+msgstr "WPA/WPA2/WPA3 osobni"
 
 #: src/connection-editor/page-wifi-security.c:423
-#, fuzzy
 msgid "WPA/WPA2 Enterprise"
-msgstr "WPA & WPA2 tvrtke"
+msgstr "WPA/WPA2 tvrtke"
 
 #: src/connection-editor/page-wifi-security.c:436
 msgid "WPA3 Personal"
@@ -4376,6 +4356,18 @@ msgstr "PEM vjerodajnice (*.pem, *.crt, *.cer)"
 #: src/utils/utils.c:546
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "DER, PEM ili PKCS#12 privatni ključevi (*.der, *.pem, *.p12, *.key)"
+
+#~ msgid "mW"
+#~ msgstr "mW"
+
+#~ msgid "Transmission po_wer"
+#~ msgstr "Snaga pri_jenosa"
+
+#~ msgid "Mb/s"
+#~ msgstr "Mb/s"
+
+#~ msgid "_Rate"
+#~ msgstr "_Frekvencija"
 
 #~ msgid "nm-device-wireless"
 #~ msgstr "mu-bežični-uređaj"
