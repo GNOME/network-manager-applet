@@ -289,6 +289,18 @@ if appstream_util.found()
   )
 endif
 
+schema_conf = configuration_data()
+schema_conf.set('GETTEXT_PACKAGE', nma_name)
+
+schema = 'org.gnome.nm-applet.gschema.xml'
+
+configure_file(
+  input: schema + '.in',
+  output: schema,
+  install_dir: join_paths(nma_datadir, 'glib-2.0', 'schemas'),
+  configuration: schema_conf
+)
+
 install_data(
   'nm-applet.convert',
   install_dir: join_paths(nma_datadir, 'GConf', 'gsettings')

@@ -176,6 +176,7 @@ AC_CONFIG_FILES([
 Makefile
 man/nm-applet.1
 man/nm-connection-editor.1
+org.gnome.nm-applet.gschema.xml
 po/Makefile.in
 ])
 AC_OUTPUT

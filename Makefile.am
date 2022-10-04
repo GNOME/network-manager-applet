@@ -616,6 +616,9 @@ desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 nm-connection-editor.desktop: nm-connection-editor.desktop.in
 	$(AM_V_GEN)$(MSGFMT) --desktop --template $< -d $(top_srcdir)/po -o $@
 
+gsettings_SCHEMAS = org.gnome.nm-applet.gschema.xml
+@GSETTINGS_RULES@
+
 appdatadir = $(datadir)/metainfo
 appdata_DATA = $(appdata_in_files:.xml.in=.xml)
 appdata_in_files = nm-connection-editor.appdata.xml.in
