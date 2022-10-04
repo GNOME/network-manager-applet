@@ -116,7 +116,7 @@ static Tag escaped_tags[] = {
 };
 
 char *
-utils_escape_notify_message (const char *src)
+utils_escape_notify_body (const char *src)
 {
 	const char *p = src;
 	GString *escaped;

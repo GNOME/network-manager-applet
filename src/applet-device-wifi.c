@@ -980,22 +980,6 @@ notify_ap_prop_changed_cb (NMAccessPoint *ap,
 	}
 }
 
-static void
-wifi_available_dont_show_cb (NotifyNotification *notify,
-			                 gchar *id,
-			                 gpointer user_data)
-{
-	NMApplet *applet = NM_APPLET (user_data);
-
-	if (!id || strcmp (id, "dont-show"))
-		return;
-
-	g_settings_set_boolean (applet->gsettings,
-	                        PREF_SUPPRESS_WIFI_NETWORKS_AVAILABLE,
-	                        TRUE);
-}
-
-
 struct ap_notification_data 
 {
 	NMApplet *applet;
@@ -1079,14 +1063,11 @@ idle_check_avail_access_point_notification (gpointer datap)
 	data->last_notification_time = timeval.tv_sec;
 
 	applet_do_notify (applet,
-	                  NOTIFY_URGENCY_LOW,
 	                  _("Wi-Fi Networks Available"),
 	                  _("Use the network menu to connect to a Wi-Fi network"),
 	                  "nm-device-wireless",
-	                  "dont-show",
-	                  _("Don’t show this message again"),
-	                  wifi_available_dont_show_cb,
-	                  applet);
+	                  PREF_SUPPRESS_WIFI_NETWORKS_AVAILABLE);
+
 	return FALSE;
 }
 
@@ -1266,9 +1247,11 @@ wifi_notify_connected (NMDevice *device,
 		signal_strength_icon = mobile_helper_get_quality_icon_name (nm_access_point_get_strength (ap));
 
 	ssid_msg = g_strdup_printf (_("You are now connected to the Wi-Fi network “%s”."), esc_ssid);
-	applet_do_notify_with_pref (applet, _("Connection Established"),
-	                            ssid_msg, signal_strength_icon,
-	                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
+	applet_do_notify (applet,
+	                  _("Connection Established"),
+	                  ssid_msg,
+	                  signal_strength_icon,
+	                  PREF_DISABLE_CONNECTED_NOTIFICATIONS);
 	g_free (ssid_msg);
 	g_free (esc_ssid);
 }
