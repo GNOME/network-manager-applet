@@ -47,7 +47,6 @@ deps = [
   gtk_dep,
   libnm_dep,
   libnma_dep,
-  libnotify_dep,
   libsecret_dep,
   m_dep,
   libutils_libnm_dep

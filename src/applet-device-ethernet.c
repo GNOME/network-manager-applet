@@ -120,11 +120,11 @@ ethernet_notify_connected (NMDevice *device,
                            const char *msg,
                            NMApplet *applet)
 {
-	applet_do_notify_with_pref (applet,
-	                            _("Connection Established"),
-	                            msg ? msg : _("You are now connected to the ethernet network."),
-	                            "nm-device-wired",
-	                            PREF_DISABLE_CONNECTED_NOTIFICATIONS);
+	applet_do_notify (applet,
+	                  _("Connection Established"),
+	                  msg ? msg : _("You are now connected to the ethernet network."),
+	                  "nm-device-wired",
+	                  PREF_DISABLE_CONNECTED_NOTIFICATIONS);
 }
 
 static void

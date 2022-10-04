@@ -19,7 +19,7 @@ char *utils_hash_ap (GBytes *ssid,
                      guint32 wpa_flags,
                      guint32 rsn_flags);
 
-char *utils_escape_notify_message (const char *src);
+char *utils_escape_notify_body (const char *src);
 
 char *utils_create_mobile_connection_id (const char *provider,
                                          const char *plan_name);

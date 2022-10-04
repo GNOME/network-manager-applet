@@ -15,8 +15,6 @@
 
 #include <net/ethernet.h>
 
-#include <libnotify/notify.h>
-
 #ifdef WITH_APPINDICATOR
 #if USE_AYATANA_INDICATORS
 #include <libayatana-appindicator/app-indicator.h>
@@ -138,7 +136,6 @@ typedef struct {
 	GtkWidget *     connections_menu_item;
 
 	GtkBuilder *    info_dialog_ui;
-	NotifyNotification* notification;
 
 	/* Tracker objects for secrets requests */
 	GSList *        secrets_reqs;
@@ -261,20 +258,10 @@ NMRemoteConnection *applet_get_exported_connection_for_device (NMDevice *device,
 NMDevice *applet_get_device_for_connection (NMApplet *applet, NMConnection *connection);
 
 void applet_do_notify (NMApplet *applet,
-                       NotifyUrgency urgency,
-                       const char *summary,
-                       const char *message,
-                       const char *icon,
-                       const char *action1,
-                       const char *action1_label,
-                       NotifyActionCallback action1_cb,
-                       gpointer action1_user_data);
-
-void applet_do_notify_with_pref (NMApplet *applet,
-                                 const char *summary,
-                                 const char *message,
-                                 const char *icon,
-                                 const char *pref);
+                       const char *title,
+                       const char *body,
+                       const char *icon_name,
+                       const char *pref);
 
 GtkWidget * applet_new_menu_item_helper (NMConnection *connection,
                                          NMConnection *active,

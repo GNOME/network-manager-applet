@@ -27,7 +27,6 @@ fedora_pkg_minimal() {
         glib2-devel \
         gtk3-devel \
         libgudev1-devel \
-        libnotify-devel \
         libsecret-devel \
         libtool \
         pkgconfig \

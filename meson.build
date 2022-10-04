@@ -104,7 +104,7 @@ add_project_link_arguments(common_ldflags, language: 'c')
 
 linker_script_ver = join_paths(meson.source_root(), 'linker-script-binary.ver')
 
-gio_dep = dependency('gio-2.0', version: '>= 2.38')
+gio_dep = dependency('gio-2.0', version: '>= 2.40')
 gmodule_export_dep = dependency('gmodule-export-2.0')
 libsecret_dep = dependency('libsecret-1', version: '>= 0.18')
 libnma_dep = dependency('libnma', version: '>= 1.8.27')
@@ -125,11 +125,6 @@ gtk_dep = declare_dependency(
 # Check for gudev
 gudev_dep = dependency('gudev-1.0', version: '>= 147')
 
-# Check for libnotify >= 0.7
-libnotify_dep = dependency('libnotify', version: '>= 0.4.3')
-config_h.set10('HAVE_LIBNOTIFY_07', libnotify_dep.found() and libnotify_dep.version().version_compare('>= 0.7'),
-               description: 'Define if you have libnotify 0.7 or later')
-
 # API documentation
 nm_req_version = '>= 1.7'
 
@@ -140,8 +135,8 @@ deps = [
 ]
 
 cflags = [
-  '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_38',
-  '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_38',
+  '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_40',
+  '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_40',
   '-DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_16',
   '-DNM_VERSION_MAX_ALLOWED=NM_VERSION_1_16',
   '-DNMA_VERSION_MIN_REQUIRED=NMA_VERSION_1_8_28',
