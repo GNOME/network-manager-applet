@@ -9,11 +9,10 @@
 
 #include "nm-default.h"
 
-
 #include "nma-ws.h"
+#include "nma-ui-utils.h"
 #include "ethernet-dialog.h"
 #include "applet-dialogs.h"
-#include "eap-method.h"
 
 static void
 stuff_changed_cb (NMAWs *ws, gpointer user_data)
@@ -92,7 +91,7 @@ nma_ethernet_dialog_new (NMConnection *connection)
 	dialog_set_network_name (connection, GTK_ENTRY (gtk_builder_get_object (builder, "network_name_entry")));
 
 	/* Handle CA cert ignore stuff */
-	eap_method_ca_cert_ignore_load (connection);
+	nma_utils_ca_cert_ignore_load (connection);
 
 	security = dialog_set_security (connection, builder, GTK_BOX (gtk_builder_get_object (builder, "security_vbox")));
 	g_signal_connect (security, "ws-changed", G_CALLBACK (stuff_changed_cb), GTK_WIDGET (gtk_builder_get_object (builder, "ok_button")));
@@ -128,7 +127,7 @@ nma_ethernet_dialog_get_connection (GtkWidget *dialog)
 	nm_connection_remove_setting (connection, NM_TYPE_SETTING_WIRELESS_SECURITY);
 
 	/* Save new CA cert ignore values to GSettings */
-	eap_method_ca_cert_ignore_save (connection);
+	nma_utils_ca_cert_ignore_save (connection);
 
 	return connection;
 }

@@ -23,6 +23,7 @@
 
 #include "nm-connection-editor.h"
 #include "nma-cert-chooser.h"
+#include "nma-ui-utils.h"
 
 #include "ce-page.h"
 #include "page-general.h"
@@ -51,7 +52,6 @@
 #include "page-wireguard.h"
 #include "ce-polkit-button.h"
 #include "vpn-helpers.h"
-#include "eap-method.h"
 
 extern gboolean nm_ce_keep_above;
 
@@ -985,7 +985,7 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 	nm_connection_editor_update_title (editor);
 
 	/* Handle CA cert ignore stuff */
-	eap_method_ca_cert_ignore_load (editor->connection);
+	nma_utils_ca_cert_ignore_load (editor->connection);
 
 	s_con = nm_connection_get_setting_connection (editor->connection);
 	g_assert (s_con);
@@ -1221,7 +1221,7 @@ ok_button_clicked_save_connection (NMConnectionEditor *self)
 	nm_connection_editor_set_busy (self, TRUE);
 
 	/* Save new CA cert ignore values to GSettings */
-	eap_method_ca_cert_ignore_save (self->connection);
+	nma_utils_ca_cert_ignore_save (self->connection);
 
 	if (self->is_new_connection) {
 		nm_client_add_connection_async (self->client,

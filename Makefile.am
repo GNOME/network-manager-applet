@@ -257,31 +257,6 @@ EXTRA_DIST += src/tests/meson.build
 
 ###############################################################################
 
-wireless_security_c_real = \
-	src/wireless-security/eap-method.h \
-	src/wireless-security/eap-method.c
-
-noinst_LTLIBRARIES += src/wireless-security/libwireless-security-libnm.la
-
-src_wireless_security_libwireless_security_libnm_la_SOURCES = \
-	$(wireless_security_c_real)
-
-src_wireless_security_libwireless_security_libnm_la_CPPFLAGS = \
-	$(dflt_cppflags) \
-	"-I$(srcdir)/shared" \
-	$(GTK3_CFLAGS) \
-	$(LIBNM_CFLAGS)
-
-src_wireless_security_libwireless_security_libnm_la_LIBADD = \
-	src/utils/libutils-libnm.la \
-	$(GTK3_LIBS) \
-	$(LIBNM_LIBS)
-
-EXTRA_DIST += \
-	src/wireless-security/meson.build
-
-###############################################################################
-
 src/connection-editor/ce-resources.h: src/connection-editor/ce.gresource.xml
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $< --target=$@ --sourcedir=$(srcdir)/src/connection-editor --generate-header --internal
 
@@ -391,7 +366,6 @@ src_connection_editor_nm_connection_editor_CPPFLAGS = \
 	-DNMALOCALEDIR=\"$(datadir)/locale\" \
 	"-I$(srcdir)/shared" \
 	"-I$(srcdir)/src/utils" \
-	"-I$(srcdir)/src/wireless-security" \
 	$(GTK3_CFLAGS) \
 	$(LIBNMA_CFLAGS) \
 	$(LIBNM_CFLAGS) \
@@ -399,7 +373,7 @@ src_connection_editor_nm_connection_editor_CPPFLAGS = \
 	$(SELINUX_CFLAGS)
 
 src_connection_editor_nm_connection_editor_LDADD = \
-	src/wireless-security/libwireless-security-libnm.la \
+	src/utils/libutils-libnm.la \
 	$(GTK3_LIBS) \
 	$(LIBNM_LIBS) \
 	$(LIBNMA_LIBS) \
@@ -518,7 +492,6 @@ src_nm_applet_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\""nm-applet"\" \
 	"-I$(srcdir)/shared" \
 	"-I$(srcdir)/src/utils" \
-	"-I$(srcdir)/src/wireless-security" \
 	$(GTK3_CFLAGS) \
 	$(LIBNMA_CFLAGS) \
 	$(LIBNM_CFLAGS) \
@@ -528,7 +501,7 @@ src_nm_applet_CPPFLAGS = \
 	$(APPINDICATOR_CFLAGS)
 
 src_nm_applet_LDADD = \
-	src/wireless-security/libwireless-security-libnm.la \
+	src/utils/libutils-libnm.la \
 	$(GTK3_LIBS) \
 	$(LIBNM_LIBS) \
 	$(LIBNMA_LIBS) \
