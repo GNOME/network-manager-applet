@@ -35,7 +35,7 @@ msgstr "ネットワーク"
 
 #: nm-applet.desktop.in:4
 msgid "Manage your network connections"
-msgstr "ネットワーク接続を管理"
+msgstr "ネットワーク接続の管理"
 
 #: nm-connection-editor.appdata.xml.in:7
 msgid "NetworkManager"
@@ -153,12 +153,11 @@ msgstr "アドホック"
 
 #: src/ap-menu-item.c:73
 msgid "secure."
-msgstr "セキュア。"
+msgstr "セキュアです。"
 
 #: src/ap-menu-item.c:77
-#, fuzzy
 msgid "insecure."
-msgstr "セキュア。"
+msgstr "セキュアではありません。"
 
 #: src/applet-device-broadband.c:147
 msgid "Wrong PUK code; please contact your provider."
@@ -364,9 +363,8 @@ msgid "Wi-Fi is disabled by hardware switch"
 msgstr "Wi-Fi はハードウェアのスイッチで無効になっています"
 
 #: src/applet-device-wifi.c:887
-#, fuzzy
 msgid "_Available networks"
-msgstr "利用可能"
+msgstr "利用可能なネットワーク(_A)"
 
 #: src/applet-device-wifi.c:1083
 msgid "Wi-Fi Networks Available"
@@ -1092,8 +1090,8 @@ msgid ""
 msgstr ""
 "新規接続で使用する接続の種類を選択してください。\n"
 "\n"
-"作成したい VPN 接続が VPN 接続の一覧にない場合は、正しい VPN プラグインが"
-"インストールされていない可能性があります。"
+"作成する VPN 接続が VPN 接続の一覧にない場合は、正しい VPN プラグインがインス"
+"トールされていない可能性があります。"
 
 #: src/connection-editor/ce-page-bluetooth.ui:35
 #: src/connection-editor/ce-page-ethernet.ui:129
@@ -1203,13 +1201,12 @@ msgid "_Primary"
 msgstr "プライマリー(_P)"
 
 #: src/connection-editor/ce-page-bond.ui:495
-#, fuzzy
 msgid ""
 "The interface name of the primary device. If set, this device will always be "
 "the active port when it is available."
 msgstr ""
-"プライマリーデバイスのインターフェース名を指定した場合、そのデバイスが利用可"
-"能である時、常にアクティブなスレーブになります。"
+"プライマリーデバイスのインターフェース名。設定すると、このデバイスが利用可能"
+"な場合に、常にアクティブなポートになります。"
 
 #: src/connection-editor/ce-page-bond.ui:507
 #: src/connection-editor/ce-page-ethernet.ui:188
@@ -1958,7 +1955,7 @@ msgstr ""
 
 #: src/connection-editor/ce-page-ip4.ui:288
 msgid "Require IPv_4 addressing for this connection to complete"
-msgstr "この接続を完了するには、IPv4 アドレスが必要 (_4)"
+msgstr "この接続を完了するには、IPv4 アドレスが必要"
 
 #: src/connection-editor/ce-page-ip4.ui:292
 msgid ""
@@ -2024,6 +2021,12 @@ msgid ""
 "that is also unset, use the kernel default value read from file \"/proc/sys/"
 "net/ipv6/conf/default/use_tempaddr\""
 msgstr ""
+"有効にすると、MACアドレスから生成される公開アドレスに加えて、カーネルが一時的"
+"な IPv6 アドレスを生成されます。これにより、セキュリティーが向上しますが、一"
+"部のアプリケーションで問題が発生する可能性があります。Default に設定すると、"
+"NetworkManager のグローバル設定からの値が使用されます。これも未設定の場"
+"合、\"/proc/sys/net/ipv6/conf/default/use_tempaddr\" ファイルから読み込んだ"
+"カーネルのデフォルト値が使用されます"
 
 #: src/connection-editor/ce-page-ip6.ui:323
 msgid "IPv6 address _generation mode"
@@ -2031,7 +2034,7 @@ msgstr "IPv6 アドレス生成モード(_G)"
 
 #: src/connection-editor/ce-page-ip6.ui:360
 msgid "Require IPv_6 addressing for this connection to complete"
-msgstr "この接続が完了するには、IPv6 アドレスが必要 (_6)"
+msgstr "この接続が完了するには、IPv6 アドレスが必要"
 
 #: src/connection-editor/ce-page-ip6.ui:364
 msgid ""
@@ -2115,7 +2118,6 @@ msgid "C_KN"
 msgstr "CKN(_K)"
 
 #: src/connection-editor/ce-page-macsec.ui:206
-#, fuzzy
 msgid "The pre-shared Connectivity-association Key Name"
 msgstr "共有前の接続に関連するキー名"
 
@@ -3559,7 +3561,7 @@ msgstr "Bluetooth デバイスの MAC アドレス。例: 00:11:22:33:44:55"
 
 #: src/connection-editor/page-bluetooth.c:108
 msgid "Could not load Bluetooth user interface."
-msgstr "Bluetooth  ユーザーインターフェースを読み込めませんでした。"
+msgstr "Bluetooth ユーザーインターフェースを読み込めませんでした。"
 
 #: src/connection-editor/page-bluetooth.c:156
 #, c-format
@@ -3846,28 +3848,27 @@ msgstr "MACSEC 接続 %d"
 
 #: src/connection-editor/page-master.c:221
 #: src/connection-editor/page-master.c:232
-#, fuzzy
 msgid "Duplicate ports"
-msgstr "重複するスレーブ"
+msgstr "重複するポート"
 
 #: src/connection-editor/page-master.c:222
-#, fuzzy, c-format
+#, c-format
 msgid "Ports “%s” and “%s” both apply to device “%s”"
-msgstr "スレーブ '%s' と '%s' は、両方ともデバイス '%s' へ適用されます。"
+msgstr "ポート \"%s\" と \"%s\" は両方ともデバイス \"%s\" に適用されます"
 
 #: src/connection-editor/page-master.c:233
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Ports “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
 "same physical device."
 msgstr ""
-"スレーブ '%s' と '%s' は、それぞれ同じ物理デバイスの異なる仮想ポート ('%s' "
-"と '%s') へ適用されます。"
+"ポート \"%s\" と \"%s\" は、それぞれ同じ物理デバイスの異なる仮想ポート "
+"(\"%s\" と \"%s\") に適用されます。"
 
 #: src/connection-editor/page-master.c:357
 #, c-format
 msgid "%s port %d"
-msgstr ""
+msgstr "%s ポート %d"
 
 #: src/connection-editor/page-mobile.c:297
 msgid "Could not load mobile broadband user interface."
@@ -4207,12 +4208,11 @@ msgid "Usage:"
 msgstr "使用法:"
 
 #: src/main.c:30
-#, fuzzy
 msgid ""
 "This program is a component of NetworkManager (https://networkmanager.dev)."
 msgstr ""
-"このプログラムは、NetworkManager (https://wiki.gnome.org/Projects/"
-"NetworkManager/) のコンポーネントです。"
+"このプログラムは、NetworkManager (https://networkmanager.dev) のコンポーネン"
+"トです。"
 
 #: src/main.c:31
 msgid ""
@@ -4960,6 +4960,3 @@ msgstr "DER か、PEM、 PKCS#12 の秘密鍵 (*.der, *.pem, *.p12, *.key)"
 
 #~ msgid "Wi-Fi _adapter:"
 #~ msgstr "Wi-Fi アダプター(_A):"
-
-#~ msgid "CKN"
-#~ msgstr "CKN"
