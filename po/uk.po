@@ -7,10 +7,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/is"
-"sues\n"
-"POT-Creation-Date: 2022-06-15 10:01+0000\n"
-"PO-Revision-Date: 2022-06-16 09:30+0300\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/i"
+"ssues\n"
+"POT-Creation-Date: 2022-11-07 07:01+0000\n"
+"PO-Revision-Date: 2022-11-07 18:57+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -21,7 +21,7 @@ msgstr ""
 "%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Lokalize 20.12.0\n"
 
-#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3251
+#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3166
 msgid "Network"
 msgstr "Мережа"
 
@@ -65,6 +65,81 @@ msgstr "Додаткові налаштування мережі"
 msgid "Manage and change your network connection settings"
 msgstr "Керування параметрами мережних з'єднань"
 
+#: org.gnome.nm-applet.gschema.xml.in:6
+#| msgid "Enable N_otifications"
+msgid "Disable connected notifications"
+msgstr "Вимкнути сповіщення про з'єднання"
+
+#: org.gnome.nm-applet.gschema.xml.in:7
+msgid ""
+"Set this to true to disable notifications when connecting to a network."
+msgstr "Встановіть у true, щоб вимкнути сповіщення про приєднання до мережі."
+
+#: org.gnome.nm-applet.gschema.xml.in:11
+#| msgid "Device disconnect failed"
+msgid "Disable disconnected notifications"
+msgstr "Вимкнути сповіщення про від'єднання"
+
+#: org.gnome.nm-applet.gschema.xml.in:12
+msgid ""
+"Set this to true to disable notifications when disconnecting from a network."
+msgstr ""
+"Встановіть у true, щоб вимкнути сповіщення про від'єднання від мережі."
+
+#: org.gnome.nm-applet.gschema.xml.in:16
+#| msgid "Enable N_otifications"
+msgid "Disable VPN notifications"
+msgstr "Вимкнути сповіщення VPN"
+
+#: org.gnome.nm-applet.gschema.xml.in:17
+msgid ""
+"Set this to true to disable notifications when connecting to or "
+"disconnecting from a VPN."
+msgstr ""
+"Встановіть у true, щоб вимкнути сповіщення про з'єднання або від'єднання від"
+" VPN."
+
+#: org.gnome.nm-applet.gschema.xml.in:21
+msgid "Suppress networks available notifications"
+msgstr "Вимкнути сповіщення про доступні мережі"
+
+#: org.gnome.nm-applet.gschema.xml.in:22
+msgid ""
+"Set this to true to disable notifications when Wi-Fi networks are available."
+msgstr ""
+"Встановіть у true, щоб вимкнути сповіщення щодо доступності мереж Wi-Fi."
+
+#: org.gnome.nm-applet.gschema.xml.in:26
+msgid "Stamp"
+msgstr "Штамп"
+
+#: org.gnome.nm-applet.gschema.xml.in:27
+msgid ""
+"Used to determine whether settings should be migrated to a new version."
+msgstr ""
+"Використовується для визначення параметрів, які мають бути перенесені у нову "
+"версію."
+
+#: org.gnome.nm-applet.gschema.xml.in:31
+msgid "Disable WiFi Create"
+msgstr "Вимкнути створення Wi-Fi"
+
+#: org.gnome.nm-applet.gschema.xml.in:32
+msgid ""
+"Set to true to disable creation of adhoc networks when using the applet."
+msgstr ""
+"Встановіть у true, щоб вимкнути створення спеціальних мереж при використані"
+" аплету."
+
+#: org.gnome.nm-applet.gschema.xml.in:36
+msgid "Show the applet in notification area"
+msgstr "Показувати аплет у області сповіщень"
+
+#: org.gnome.nm-applet.gschema.xml.in:37
+msgid ""
+"Set to FALSE to disable displaying the applet in the notification area."
+msgstr "Встановіть у FALSE, щоб вимкнути показ аплету у області сповіщень."
+
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
 msgid "object class '%s' has no property named '%s'"
@@ -85,7 +160,8 @@ msgstr ""
 #: shared/nm-utils/nm-shared-utils.c:815
 #, c-format
 msgid "'%s::%s' is not a valid property name; '%s' is not a GObject subtype"
-msgstr "«%s::%s» не є коректною назвою властивості; «%s» не є підтипом GObject"
+msgstr ""
+"«%s::%s» не є коректною назвою властивості; «%s» не є підтипом GObject"
 
 #: shared/nm-utils/nm-shared-utils.c:824
 #, c-format
@@ -183,7 +259,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "Нове з’єднання з мобільною радіомережею…"
 
 #: src/applet-device-broadband.c:809 src/applet-device-bt.c:75
-#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1269
+#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1251
 msgid "Connection Established"
 msgstr "З'єднання встановлено"
 
@@ -223,7 +299,7 @@ msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr ""
 "Для з'єднання мобільної радіомережі «%s» потрібне розпізнавання користувача…"
 
-#: src/applet-device-bt.c:113 src/applet.c:2595 src/mobile-helpers.c:593
+#: src/applet-device-bt.c:113 src/applet.c:2510 src/mobile-helpers.c:593
 #, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "Надсилаємо запит щодо адреси мережі для «%s»…"
@@ -256,7 +332,7 @@ msgid "Ethernet Network"
 msgstr "Мережа Ethernet"
 
 #. Notify user of unmanaged or unavailable device
-#: src/applet-device-ethernet.c:99 src/applet.c:1350
+#: src/applet-device-ethernet.c:99 src/applet.c:1265
 msgid "disconnected"
 msgstr "з'єднання розірвано"
 
@@ -277,7 +353,8 @@ msgstr "Налаштовуємо з'єднання мережі Ethernet «%s»�
 #: src/applet-device-ethernet.c:159
 #, c-format
 msgid "User authentication required for ethernet network connection “%s”…"
-msgstr "Для з'єднання мережі Ethernet «%s» потрібне розпізнавання користувача…"
+msgstr ""
+"Для з'єднання мережі Ethernet «%s» потрібне розпізнавання користувача…"
 
 #: src/applet-device-ethernet.c:162
 #, c-format
@@ -316,7 +393,7 @@ msgstr "С_творити мережу Wi-Fi…"
 msgid "(none)"
 msgstr "(немає)"
 
-#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1366
+#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1349
 msgid "Failed to add new connection"
 msgstr "Не вдалося додати нове з'єднання"
 
@@ -324,8 +401,8 @@ msgstr "Не вдалося додати нове з'єднання"
 msgid "Insufficient privileges."
 msgstr "Недостатні права доступу."
 
-#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1349
-#: src/applet-device-wifi.c:1369 src/applet.c:415 src/applet.c:498
+#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1332
+#: src/applet-device-wifi.c:1352 src/applet.c:414 src/applet.c:497
 msgid "Connection failure"
 msgstr "Невдале з'єднання"
 
@@ -359,59 +436,55 @@ msgstr "Wi-Fi вимкнено апаратним перемикачем"
 msgid "_Available networks"
 msgstr "Д_оступні мережі"
 
-#: src/applet-device-wifi.c:1083
+#: src/applet-device-wifi.c:1066
 msgid "Wi-Fi Networks Available"
 msgstr "Доступні мережі Wi-Fi"
 
-#: src/applet-device-wifi.c:1084
+#: src/applet-device-wifi.c:1067
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Використовувати меню мережі для з'єднання із мережею Wi-Fi"
 
-#: src/applet-device-wifi.c:1087 src/applet.c:819
-msgid "Don’t show this message again"
-msgstr "Більше не показувати це повідомлення"
-
-#: src/applet-device-wifi.c:1268
+#: src/applet-device-wifi.c:1249
 #, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "Зараз встановлено з'єднання із мережею Wi-Fi «%s»."
 
-#: src/applet-device-wifi.c:1303
+#: src/applet-device-wifi.c:1286
 #, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "Готуємо з'єднання мережі Wi-Fi «%s»…"
 
-#: src/applet-device-wifi.c:1306
+#: src/applet-device-wifi.c:1289
 #, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "Налаштовуємо з'єднання мережі Wi-Fi «%s»…"
 
-#: src/applet-device-wifi.c:1309
+#: src/applet-device-wifi.c:1292
 #, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "Для мережі Wi-Fi «%s» потрібне розпізнавання користувача…"
 
-#: src/applet-device-wifi.c:1312
+#: src/applet-device-wifi.c:1295
 #, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "Надсилаємо запит щодо адреси мережі Wi-Fi для «%s»…"
 
-#: src/applet-device-wifi.c:1323
+#: src/applet-device-wifi.c:1306
 #, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "Задіяно з'єднання із мережею Wi-Fi «%s»: %s (%d%%)"
 
-#: src/applet-device-wifi.c:1327
+#: src/applet-device-wifi.c:1310
 #, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "Задіяно з'єднання із мережею Wi-Fi «%s»"
 
-#: src/applet-device-wifi.c:1346
+#: src/applet-device-wifi.c:1329
 msgid "Failed to activate connection"
 msgstr "Не вдалося встановити з'єднання"
 
-#: src/applet-device-wifi.c:1347 src/applet-device-wifi.c:1367 src/applet.c:413
-#: src/applet.c:464 src/applet.c:496
+#: src/applet-device-wifi.c:1330 src/applet-device-wifi.c:1350 src/applet.c:412
+#: src/applet.c:463 src/applet.c:495
 msgid "Unknown error"
 msgstr "Невідома помилка"
 
@@ -730,23 +803,27 @@ msgid "Failed to write connection to VPN UI: incomplete write"
 msgstr ""
 "Не вдалося записати з'єднання до інтерфейсу користувача VPN: неповний запис"
 
-#: src/applet.c:412
+#: src/applet.c:411
 msgid "Failed to add/activate connection"
 msgstr "Не вдалося додати/встановити з'єднання"
 
-#: src/applet.c:463
+#: src/applet.c:462
 msgid "Device disconnect failed"
 msgstr "Не вдалось від'єднати пристрій"
 
-#: src/applet.c:466
+#: src/applet.c:465
 msgid "Disconnect failure"
 msgstr "Не вдалося від'єднати"
 
-#: src/applet.c:495
+#: src/applet.c:494
 msgid "Connection activation failed"
 msgstr "Не вдалося встановити з'єднання"
 
-#: src/applet.c:916
+#: src/applet.c:731
+msgid "Don’t show this message again"
+msgstr "Більше не показувати це повідомлення"
+
+#: src/applet.c:831
 #, c-format
 msgid ""
 "\n"
@@ -756,7 +833,7 @@ msgstr ""
 "\n"
 "З'єднання із VPN «%s» розірвано, оскільки перервано з'єднання із мережею."
 
-#: src/applet.c:918
+#: src/applet.c:833
 #, c-format
 msgid ""
 "\n"
@@ -767,7 +844,7 @@ msgstr ""
 "Не вдалося встановити з'єднання із VPN «%s», оскільки перервано з'єднання із "
 "мережею."
 
-#: src/applet.c:920
+#: src/applet.c:835
 #, c-format
 msgid ""
 "\n"
@@ -777,7 +854,7 @@ msgstr ""
 "З'єднання із VPN «%s» розірвано, оскільки служба VPN неочікувано завершила "
 "роботу."
 
-#: src/applet.c:922
+#: src/applet.c:837
 #, c-format
 msgid ""
 "\n"
@@ -788,7 +865,7 @@ msgstr ""
 "З'єднання із VPN «%s» розірвано, оскільки службою VPN повернуто некоректні "
 "налаштування."
 
-#: src/applet.c:924
+#: src/applet.c:839
 #, c-format
 msgid ""
 "\n"
@@ -798,7 +875,7 @@ msgstr ""
 "Не вдалося встановити з'єднання із VPN «%s», оскільки перевищено час "
 "виконання спроби з'єднання."
 
-#: src/applet.c:926
+#: src/applet.c:841
 #, c-format
 msgid ""
 "\n"
@@ -808,7 +885,7 @@ msgstr ""
 "З'єднання із VPN «%s» розірвано, оскільки не вдалося вчасно запустити службу "
 "VPN."
 
-#: src/applet.c:928
+#: src/applet.c:843
 #, c-format
 msgid ""
 "\n"
@@ -817,7 +894,7 @@ msgstr ""
 "\n"
 "З'єднання із VPN «%s» розірвано, оскільки не вдалося запустити службу VPN."
 
-#: src/applet.c:930
+#: src/applet.c:845
 #, c-format
 msgid ""
 "\n"
@@ -827,7 +904,7 @@ msgstr ""
 "Не вдалося встановити з'єднання із VPN «%s» через те, що не було надано "
 "коректних реєстраційних даних у VPN."
 
-#: src/applet.c:932
+#: src/applet.c:847
 #, c-format
 msgid ""
 "\n"
@@ -837,7 +914,7 @@ msgstr ""
 "Не вдалося встановити з'єднання із VPN «%s» через некоректні реєстраційні "
 "дані у VPN."
 
-#: src/applet.c:937
+#: src/applet.c:852
 #, c-format
 msgid ""
 "\n"
@@ -846,7 +923,7 @@ msgstr ""
 "\n"
 "Не вдалося встановити з'єднання із VPN «%s»."
 
-#: src/applet.c:964
+#: src/applet.c:879
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -857,19 +934,19 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/applet.c:966
+#: src/applet.c:881
 msgid "VPN connection has been successfully established.\n"
 msgstr "Успішно встановлено з'єднання із VPN.\n"
 
-#: src/applet.c:968
+#: src/applet.c:883
 msgid "VPN Login Message"
 msgstr "Повідомлення входу VPN"
 
-#: src/applet.c:976 src/applet.c:1016
+#: src/applet.c:891 src/applet.c:931
 msgid "VPN Connection Failed"
 msgstr "Збій з'єднання VPN"
 
-#: src/applet.c:1020
+#: src/applet.c:935
 #, c-format
 msgid ""
 "\n"
@@ -882,7 +959,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1023
+#: src/applet.c:938
 #, c-format
 msgid ""
 "\n"
@@ -895,132 +972,132 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1338
+#: src/applet.c:1253
 msgid "device not ready (firmware missing)"
 msgstr "пристрій не готовий (відсутній мікрокод)"
 
-#: src/applet.c:1340
+#: src/applet.c:1255
 msgid "device not ready"
 msgstr "пристрій не готовий"
 
-#: src/applet.c:1366
+#: src/applet.c:1281
 msgid "Disconnect"
 msgstr "Від'єднатися"
 
-#: src/applet.c:1380
+#: src/applet.c:1295
 msgid "device not managed"
 msgstr "пристрій не керується"
 
-#: src/applet.c:1454
+#: src/applet.c:1369
 msgid "No network devices available"
 msgstr "Немає доступних мережних пристроїв"
 
-#: src/applet.c:1500
+#: src/applet.c:1415
 msgid "_VPN Connections"
 msgstr "З'єднання _VPN"
 
-#: src/applet.c:1544
+#: src/applet.c:1459
 msgid "_Configure VPN…"
 msgstr "_Налаштувати VPN…"
 
-#: src/applet.c:1547
+#: src/applet.c:1462
 msgid "_Add a VPN connection…"
 msgstr "_Додати з'єднання VPN…"
 
-#: src/applet.c:1653
+#: src/applet.c:1568
 msgid "NetworkManager is not running…"
 msgstr "NetworkManager не запущено…"
 
-#: src/applet.c:1658 src/applet.c:2726
+#: src/applet.c:1573 src/applet.c:2641
 msgid "Networking disabled"
 msgstr "Підтримку мережі вимкнено"
 
 #. 'Enable Networking' item
-#: src/applet.c:1868
+#: src/applet.c:1783
 msgid "Enable _Networking"
 msgstr "Увімкнути _мережу"
 
 #. 'Enable Wi-Fi' item
-#: src/applet.c:1877
+#: src/applet.c:1792
 msgid "Enable _Wi-Fi"
 msgstr "Ув_імкнути Wi-Fi"
 
 #. 'Enable Mobile Broadband' item
-#: src/applet.c:1886
+#: src/applet.c:1801
 msgid "Enable _Mobile Broadband"
 msgstr "Мобільне _широкосмугове з'єднання"
 
 #. Toggle notifications item
-#: src/applet.c:1898
+#: src/applet.c:1813
 msgid "Enable N_otifications"
 msgstr "Увімкнути _сповіщення"
 
 #. 'Connection Information' item
-#: src/applet.c:1910
+#: src/applet.c:1825
 msgid "Connection _Information"
 msgstr "_Інформація про з'єднання"
 
 #. 'Edit Connections...' item
-#: src/applet.c:1918
+#: src/applet.c:1833
 msgid "Edit Connections…"
 msgstr "Змінити з'єднання…"
 
-#: src/applet.c:1932
+#: src/applet.c:1847
 msgid "_About"
 msgstr "_Про програму"
 
-#: src/applet.c:2246
+#: src/applet.c:2161
 #, c-format
 msgid "You are now connected to “%s”."
 msgstr "Зараз встановлено з'єднання «%s»."
 
-#: src/applet.c:2286
+#: src/applet.c:2201
 msgid "Disconnected"
 msgstr "З'єднання розірвано"
 
-#: src/applet.c:2287
+#: src/applet.c:2202
 msgid "The network connection has been disconnected."
 msgstr "Мережне з'єднання було розірвано."
 
-#: src/applet.c:2589
+#: src/applet.c:2504
 #, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "Готуємо з'єднання мережі «%s»…"
 
-#: src/applet.c:2592
+#: src/applet.c:2507
 #, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "Для встановлення з'єднання «%s» слід пройти розпізнавання…"
 
-#: src/applet.c:2598
+#: src/applet.c:2513
 #, c-format
 msgid "Network connection “%s” active"
 msgstr "Задіяно з'єднання із мережею «%s»"
 
-#: src/applet.c:2671
+#: src/applet.c:2586
 #, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "Запуск з'єднання VPN «%s»…"
 
-#: src/applet.c:2674
+#: src/applet.c:2589
 #, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "Для встановлення з'єднання VPN «%s» слід пройти розпізнавання…"
 
-#: src/applet.c:2677
+#: src/applet.c:2592
 #, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "Надсилаємо запит щодо адреси VPN для «%s»…"
 
-#: src/applet.c:2680
+#: src/applet.c:2595
 msgid "VPN connection active"
 msgstr "Задіяно з'єднання VPN"
 
-#: src/applet.c:2730
+#: src/applet.c:2645
 msgid "No network connection"
 msgstr "Немає з'єднання з мережею"
 
-#: src/applet.c:3352
+#: src/applet.c:3280
 msgid "NetworkManager Applet"
 msgstr "Аплет NetworkManager"
 
@@ -1149,7 +1226,7 @@ msgid "Bonded _connections"
 msgstr "Пов'язані з'єд_нання"
 
 #: src/connection-editor/ce-page-bond.ui:105
-#: src/connection-editor/ce-page-wifi.ui:400
+#: src/connection-editor/ce-page-wifi.ui:294
 msgid "M_ode"
 msgstr "_Режим"
 
@@ -1542,7 +1619,8 @@ msgstr ""
 
 #: src/connection-editor/ce-page-dcb.ui:2953
 msgid "Enter the traffic class for each user priority."
-msgstr "Введіть клас передавання даних для кожного із пріоритетів користувача."
+msgstr ""
+"Введіть клас передавання даних для кожного із пріоритетів користувача."
 
 #: src/connection-editor/ce-page-dsl.ui:19
 #: src/connection-editor/ce-page-mobile.ui:62
@@ -2778,7 +2856,8 @@ msgstr ""
 "балансування."
 
 #: src/connection-editor/ce-page-team.ui:1064
-msgid "Name of active Tx balancer. Active Tx balancing is disabled by default."
+msgid ""
+"Name of active Tx balancer. Active Tx balancing is disabled by default."
 msgstr ""
 "Назва балансувальника активного Tx. Типово, балансування активного Tx "
 "вимкнено."
@@ -2861,35 +2940,19 @@ msgstr "Клієнт"
 msgid "Ad-hoc"
 msgstr "Спеціально"
 
-#: src/connection-editor/ce-page-wifi.ui:203
-msgid "mW"
-msgstr "мВт"
-
-#: src/connection-editor/ce-page-wifi.ui:222
-msgid "Transmission po_wer"
-msgstr "Поту_жність передавання"
-
-#: src/connection-editor/ce-page-wifi.ui:256
-msgid "Mb/s"
-msgstr "Мб/c"
-
-#: src/connection-editor/ce-page-wifi.ui:275
-msgid "_Rate"
-msgstr "_Швидкість"
-
-#: src/connection-editor/ce-page-wifi.ui:311
+#: src/connection-editor/ce-page-wifi.ui:205
 msgid "_BSSID"
 msgstr "_BSSID"
 
-#: src/connection-editor/ce-page-wifi.ui:336
+#: src/connection-editor/ce-page-wifi.ui:230
 msgid "C_hannel"
 msgstr "_Канал"
 
-#: src/connection-editor/ce-page-wifi.ui:368
+#: src/connection-editor/ce-page-wifi.ui:262
 msgid "Ban_d"
 msgstr "_Діапазон"
 
-#: src/connection-editor/ce-page-wifi.ui:414
+#: src/connection-editor/ce-page-wifi.ui:308
 msgid "SS_ID"
 msgstr "SS_ID"
 
@@ -3410,7 +3473,8 @@ msgstr "Не вдалось змінити з'єднання"
 
 #: src/connection-editor/nm-connection-editor.c:588
 msgid "Unknown error creating connection editor dialog."
-msgstr "Невідома помилка під час спроби створення вікна редагування з'єднання."
+msgstr ""
+"Невідома помилка під час спроби створення вікна редагування з'єднання."
 
 #: src/connection-editor/nm-connection-editor.c:729
 msgid ""
@@ -3793,7 +3857,8 @@ msgstr "З'єднання InfiniBand %d"
 
 #: src/connection-editor/page-ip-tunnel.c:161
 msgid "Could not load IP tunnel user interface."
-msgstr "Не вдалось завантажити інтерфейс користувача налаштовування IP-тунелів"
+msgstr ""
+"Не вдалось завантажити інтерфейс користувача налаштовування IP-тунелів"
 
 #: src/connection-editor/page-ip-tunnel.c:275
 #, c-format
@@ -4407,6 +4472,18 @@ msgstr "сертифікати PEM (*.pem, *.crt, *.cer)"
 #: src/utils/utils.c:546
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "закриті ключів DER, PEM або PKCS#12 (*.der, *.pem, *.p12, *.key)"
+
+#~ msgid "mW"
+#~ msgstr "мВт"
+
+#~ msgid "Transmission po_wer"
+#~ msgstr "Поту_жність передавання"
+
+#~ msgid "Mb/s"
+#~ msgstr "Мб/c"
+
+#~ msgid "_Rate"
+#~ msgstr "_Швидкість"
 
 #~ msgid "nm-device-wireless"
 #~ msgstr "nm-device-wireless"
