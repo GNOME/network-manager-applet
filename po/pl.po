@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
 "issues\n"
-"POT-Creation-Date: 2022-07-14 11:26+0000\n"
-"PO-Revision-Date: 2022-08-21 13:20+0200\n"
+"POT-Creation-Date: 2022-11-07 07:01+0000\n"
+"PO-Revision-Date: 2022-11-13 13:37+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -23,7 +23,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
 
-#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3251
+#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3166
 msgid "Network"
 msgstr "Sieć"
 
@@ -66,6 +66,74 @@ msgstr "Zaawansowana konfiguracja sieci"
 #: nm-connection-editor.desktop.in:4
 msgid "Manage and change your network connection settings"
 msgstr "Zarządzanie ustawieniami połączeń sieciowych"
+
+#: org.gnome.nm-applet.gschema.xml.in:6
+msgid "Disable connected notifications"
+msgstr "Wyłączenie powiadomień o połączeniu"
+
+#: org.gnome.nm-applet.gschema.xml.in:7
+msgid "Set this to true to disable notifications when connecting to a network."
+msgstr "Ustawienie na „true” wyłącza powiadomienia podczas łączenia z siecią."
+
+#: org.gnome.nm-applet.gschema.xml.in:11
+msgid "Disable disconnected notifications"
+msgstr "Wyłączenie powiadomień o rozłączeniu"
+
+#: org.gnome.nm-applet.gschema.xml.in:12
+msgid ""
+"Set this to true to disable notifications when disconnecting from a network."
+msgstr ""
+"Ustawienie na „true” wyłącza powiadomienia podczas rozłączania z sieci."
+
+#: org.gnome.nm-applet.gschema.xml.in:16
+msgid "Disable VPN notifications"
+msgstr "Wyłączenie powiadomień VPN"
+
+#: org.gnome.nm-applet.gschema.xml.in:17
+msgid ""
+"Set this to true to disable notifications when connecting to or "
+"disconnecting from a VPN."
+msgstr ""
+"Ustawienie na „true” wyłącza powiadomienia podczas łączenia lub rozłączania "
+"z sieci VPN."
+
+#: org.gnome.nm-applet.gschema.xml.in:21
+msgid "Suppress networks available notifications"
+msgstr "Wyłączenie powiadomień o dostępnych sieciach"
+
+#: org.gnome.nm-applet.gschema.xml.in:22
+msgid ""
+"Set this to true to disable notifications when Wi-Fi networks are available."
+msgstr "Ustawienie na „true” wyłącza powiadomienia o dostępności sieci Wi-Fi."
+
+#: org.gnome.nm-applet.gschema.xml.in:26
+msgid "Stamp"
+msgstr "Czas"
+
+#: org.gnome.nm-applet.gschema.xml.in:27
+msgid "Used to determine whether settings should be migrated to a new version."
+msgstr ""
+"Używane do określenia, czy ustawienia mają zostać migrowane do nowej wersji."
+
+#: org.gnome.nm-applet.gschema.xml.in:31
+msgid "Disable WiFi Create"
+msgstr "Wyłączenie tworzenia sieci Wi-Fi"
+
+#: org.gnome.nm-applet.gschema.xml.in:32
+msgid ""
+"Set to true to disable creation of adhoc networks when using the applet."
+msgstr ""
+"Ustawienie na „true” wyłącza możliwość tworzenia sieci ad-hoc podczas "
+"używania apletu."
+
+#: org.gnome.nm-applet.gschema.xml.in:36
+msgid "Show the applet in notification area"
+msgstr "Wyświetlanie apletu w obszarze powiadamiania"
+
+#: org.gnome.nm-applet.gschema.xml.in:37
+msgid "Set to FALSE to disable displaying the applet in the notification area."
+msgstr ""
+"Ustawienie na „false” wyłącza wyświetlanie apletu w obszarze powiadamiania."
 
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
@@ -186,7 +254,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "Nowe połączenie komórkowe…"
 
 #: src/applet-device-broadband.c:809 src/applet-device-bt.c:75
-#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1269
+#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1251
 msgid "Connection Established"
 msgstr "Ustanowiono połączenie"
 
@@ -225,7 +293,7 @@ msgstr "Konfigurowanie połączenia komórkowego „%s”…"
 msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr "Wymagane uwierzytelnienie dla połączenia komórkowego „%s”…"
 
-#: src/applet-device-bt.c:113 src/applet.c:2595 src/mobile-helpers.c:593
+#: src/applet-device-bt.c:113 src/applet.c:2510 src/mobile-helpers.c:593
 #, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "Żądanie adresu sieciowego dla „%s”…"
@@ -258,7 +326,7 @@ msgid "Ethernet Network"
 msgstr "Sieć ethernetowa"
 
 #. Notify user of unmanaged or unavailable device
-#: src/applet-device-ethernet.c:99 src/applet.c:1350
+#: src/applet-device-ethernet.c:99 src/applet.c:1265
 msgid "disconnected"
 msgstr "rozłączone"
 
@@ -319,7 +387,7 @@ msgstr "Utwórz _nową sieć Wi-Fi…"
 msgid "(none)"
 msgstr "(brak)"
 
-#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1366
+#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1349
 msgid "Failed to add new connection"
 msgstr "Dodanie nowego połączenia się nie powiodło"
 
@@ -327,8 +395,8 @@ msgstr "Dodanie nowego połączenia się nie powiodło"
 msgid "Insufficient privileges."
 msgstr "Niewystarczające uprawnienia."
 
-#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1349
-#: src/applet-device-wifi.c:1369 src/applet.c:415 src/applet.c:498
+#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1332
+#: src/applet-device-wifi.c:1352 src/applet.c:414 src/applet.c:497
 msgid "Connection failure"
 msgstr "Niepowodzenie połączenia"
 
@@ -361,59 +429,55 @@ msgstr "Wi-Fi jest wyłączone przez przełącznik sprzętowy"
 msgid "_Available networks"
 msgstr "_Dostępne sieci"
 
-#: src/applet-device-wifi.c:1083
+#: src/applet-device-wifi.c:1066
 msgid "Wi-Fi Networks Available"
 msgstr "Dostępne sieci Wi-Fi"
 
-#: src/applet-device-wifi.c:1084
+#: src/applet-device-wifi.c:1067
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Należy użyć menu sieci, aby połączyć z siecią Wi-Fi"
 
-#: src/applet-device-wifi.c:1087 src/applet.c:819
-msgid "Don’t show this message again"
-msgstr "Bez wyświetlania tego komunikatu ponownie"
-
-#: src/applet-device-wifi.c:1268
+#: src/applet-device-wifi.c:1249
 #, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "Połączono z siecią Wi-Fi „%s”."
 
-#: src/applet-device-wifi.c:1303
+#: src/applet-device-wifi.c:1286
 #, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "Przygotowywanie połączenia sieciowego Wi-Fi „%s”…"
 
-#: src/applet-device-wifi.c:1306
+#: src/applet-device-wifi.c:1289
 #, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "Konfigurowanie połączenia sieciowego Wi-Fi „%s”…"
 
-#: src/applet-device-wifi.c:1309
+#: src/applet-device-wifi.c:1292
 #, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "Wymagane uwierzytelnienie dla sieci Wi-Fi „%s”…"
 
-#: src/applet-device-wifi.c:1312
+#: src/applet-device-wifi.c:1295
 #, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "Żądanie adresu sieciowego Wi-Fi dla „%s”…"
 
-#: src/applet-device-wifi.c:1323
+#: src/applet-device-wifi.c:1306
 #, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "Nawiązano bezprzewodowe połączenie sieciowe Wi-Fi „%s”: %s (%d%%)"
 
-#: src/applet-device-wifi.c:1327
+#: src/applet-device-wifi.c:1310
 #, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "Nawiązano połączenie sieciowe Wi-Fi „%s”"
 
-#: src/applet-device-wifi.c:1346
+#: src/applet-device-wifi.c:1329
 msgid "Failed to activate connection"
 msgstr "Aktywowanie połączenia się nie powiodło"
 
-#: src/applet-device-wifi.c:1347 src/applet-device-wifi.c:1367 src/applet.c:413
-#: src/applet.c:464 src/applet.c:496
+#: src/applet-device-wifi.c:1330 src/applet-device-wifi.c:1350 src/applet.c:412
+#: src/applet.c:463 src/applet.c:495
 msgid "Unknown error"
 msgstr "Nieznany błąd"
 
@@ -736,23 +800,27 @@ msgstr ""
 "Zapisanie połączenia do interfejsu użytkownika VPN się nie powiodło: "
 "niepełny zapis"
 
-#: src/applet.c:412
+#: src/applet.c:411
 msgid "Failed to add/activate connection"
 msgstr "Dodanie/aktywowanie połączenia się nie powiodło"
 
-#: src/applet.c:463
+#: src/applet.c:462
 msgid "Device disconnect failed"
 msgstr "Rozłączenie urządzenia się nie powiodło"
 
-#: src/applet.c:466
+#: src/applet.c:465
 msgid "Disconnect failure"
 msgstr "Niepowodzenie rozłączenia"
 
-#: src/applet.c:495
+#: src/applet.c:494
 msgid "Connection activation failed"
 msgstr "Aktywacja połączenia się nie powiodła"
 
-#: src/applet.c:916
+#: src/applet.c:731
+msgid "Don’t show this message again"
+msgstr "Bez wyświetlania tego komunikatu ponownie"
+
+#: src/applet.c:831
 #, c-format
 msgid ""
 "\n"
@@ -763,7 +831,7 @@ msgstr ""
 "Połączenie VPN „%s” rozłączone, ponieważ połączenie sieciowe zostało "
 "przerwane."
 
-#: src/applet.c:918
+#: src/applet.c:833
 #, c-format
 msgid ""
 "\n"
@@ -774,7 +842,7 @@ msgstr ""
 "Połączenie VPN „%s” się nie powiodło, ponieważ połączenie sieciowe zostało "
 "przerwane."
 
-#: src/applet.c:920
+#: src/applet.c:835
 #, c-format
 msgid ""
 "\n"
@@ -784,7 +852,7 @@ msgstr ""
 "Połączenie VPN „%s” się nie powiodło, ponieważ usługa VPN została "
 "nieoczekiwanie zatrzymana."
 
-#: src/applet.c:922
+#: src/applet.c:837
 #, c-format
 msgid ""
 "\n"
@@ -795,7 +863,7 @@ msgstr ""
 "Połączenie VPN „%s” się nie powiodło, ponieważ usługa VPN nie zwróciła "
 "odpowiedniej konfiguracji sieci."
 
-#: src/applet.c:924
+#: src/applet.c:839
 #, c-format
 msgid ""
 "\n"
@@ -804,7 +872,7 @@ msgstr ""
 "\n"
 "Połączenie VPN „%s” się nie powiodło z powodu przekroczenia limitu czasu."
 
-#: src/applet.c:926
+#: src/applet.c:841
 #, c-format
 msgid ""
 "\n"
@@ -814,7 +882,7 @@ msgstr ""
 "Połączenie VPN „%s” się nie powiodło, ponieważ usługa VPN nie została "
 "uruchomiona na czas."
 
-#: src/applet.c:928
+#: src/applet.c:843
 #, c-format
 msgid ""
 "\n"
@@ -824,7 +892,7 @@ msgstr ""
 "Połączenie VPN „%s” się nie powiodło, ponieważ usługa VPN nie mogła zostać "
 "uruchomiona."
 
-#: src/applet.c:930
+#: src/applet.c:845
 #, c-format
 msgid ""
 "\n"
@@ -834,7 +902,7 @@ msgstr ""
 "Połączenie VPN „%s” się nie powiodło z powodu braku prawidłowych sekretów "
 "VPN."
 
-#: src/applet.c:932
+#: src/applet.c:847
 #, c-format
 msgid ""
 "\n"
@@ -843,7 +911,7 @@ msgstr ""
 "\n"
 "Połączenie VPN „%s” się nie powiodło z powodu nieprawidłowych sekretów VPN."
 
-#: src/applet.c:937
+#: src/applet.c:852
 #, c-format
 msgid ""
 "\n"
@@ -852,7 +920,7 @@ msgstr ""
 "\n"
 "Połączenie VPN „%s” się nie powiodło."
 
-#: src/applet.c:964
+#: src/applet.c:879
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -863,19 +931,19 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/applet.c:966
+#: src/applet.c:881
 msgid "VPN connection has been successfully established.\n"
 msgstr "Połączenie VPN zostało pomyślnie ustanowione.\n"
 
-#: src/applet.c:968
+#: src/applet.c:883
 msgid "VPN Login Message"
 msgstr "Wiadomość logowania VPN"
 
-#: src/applet.c:976 src/applet.c:1016
+#: src/applet.c:891 src/applet.c:931
 msgid "VPN Connection Failed"
 msgstr "Połączenie VPN się nie powiodło"
 
-#: src/applet.c:1020
+#: src/applet.c:935
 #, c-format
 msgid ""
 "\n"
@@ -889,7 +957,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1023
+#: src/applet.c:938
 #, c-format
 msgid ""
 "\n"
@@ -902,132 +970,132 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1338
+#: src/applet.c:1253
 msgid "device not ready (firmware missing)"
 msgstr "urządzenie nie jest gotowe (brak oprogramowania sprzętowego)"
 
-#: src/applet.c:1340
+#: src/applet.c:1255
 msgid "device not ready"
 msgstr "urządzenie nie jest gotowe"
 
-#: src/applet.c:1366
+#: src/applet.c:1281
 msgid "Disconnect"
 msgstr "Rozłącz"
 
-#: src/applet.c:1380
+#: src/applet.c:1295
 msgid "device not managed"
 msgstr "urządzenie nieobsługiwane"
 
-#: src/applet.c:1454
+#: src/applet.c:1369
 msgid "No network devices available"
 msgstr "Brak dostępnych urządzeń sieciowych"
 
-#: src/applet.c:1500
+#: src/applet.c:1415
 msgid "_VPN Connections"
 msgstr "Połączenia _VPN"
 
-#: src/applet.c:1544
+#: src/applet.c:1459
 msgid "_Configure VPN…"
 msgstr "S_konfiguruj VPN…"
 
-#: src/applet.c:1547
+#: src/applet.c:1462
 msgid "_Add a VPN connection…"
 msgstr "_Dodaj połączenie VPN…"
 
-#: src/applet.c:1653
+#: src/applet.c:1568
 msgid "NetworkManager is not running…"
 msgstr "Usługa NetworkManager nie jest uruchomiona…"
 
-#: src/applet.c:1658 src/applet.c:2726
+#: src/applet.c:1573 src/applet.c:2641
 msgid "Networking disabled"
 msgstr "Sieć jest wyłączona"
 
 #. 'Enable Networking' item
-#: src/applet.c:1868
+#: src/applet.c:1783
 msgid "Enable _Networking"
 msgstr "_Sieć"
 
 #. 'Enable Wi-Fi' item
-#: src/applet.c:1877
+#: src/applet.c:1792
 msgid "Enable _Wi-Fi"
 msgstr "Sieć _Wi-Fi"
 
 #. 'Enable Mobile Broadband' item
-#: src/applet.c:1886
+#: src/applet.c:1801
 msgid "Enable _Mobile Broadband"
 msgstr "Sieć _komórkowa"
 
 #. Toggle notifications item
-#: src/applet.c:1898
+#: src/applet.c:1813
 msgid "Enable N_otifications"
 msgstr "P_owiadomienia"
 
 #. 'Connection Information' item
-#: src/applet.c:1910
+#: src/applet.c:1825
 msgid "Connection _Information"
 msgstr "I_nformacje o połączeniu"
 
 #. 'Edit Connections...' item
-#: src/applet.c:1918
+#: src/applet.c:1833
 msgid "Edit Connections…"
 msgstr "Modyfikuj połączenia…"
 
-#: src/applet.c:1932
+#: src/applet.c:1847
 msgid "_About"
 msgstr "_O programie"
 
-#: src/applet.c:2246
+#: src/applet.c:2161
 #, c-format
 msgid "You are now connected to “%s”."
 msgstr "Połączono z „%s”."
 
-#: src/applet.c:2286
+#: src/applet.c:2201
 msgid "Disconnected"
 msgstr "Rozłączony"
 
-#: src/applet.c:2287
+#: src/applet.c:2202
 msgid "The network connection has been disconnected."
 msgstr "Połączenie sieciowe zostało rozłączone."
 
-#: src/applet.c:2589
+#: src/applet.c:2504
 #, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "Przygotowywanie połączenia sieciowego „%s”…"
 
-#: src/applet.c:2592
+#: src/applet.c:2507
 #, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "Wymagane uwierzytelnienie dla połączenia sieciowego „%s”…"
 
-#: src/applet.c:2598
+#: src/applet.c:2513
 #, c-format
 msgid "Network connection “%s” active"
 msgstr "Nawiązano połączenie sieciowe „%s”"
 
-#: src/applet.c:2671
+#: src/applet.c:2586
 #, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "Nawiązywanie połączenia VPN „%s”…"
 
-#: src/applet.c:2674
+#: src/applet.c:2589
 #, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "Wymagane uwierzytelnienie dla połączenia VPN „%s”…"
 
-#: src/applet.c:2677
+#: src/applet.c:2592
 #, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "Żądanie adresu VPN dla „%s”…"
 
-#: src/applet.c:2680
+#: src/applet.c:2595
 msgid "VPN connection active"
 msgstr "Nawiązano połączenie VPN"
 
-#: src/applet.c:2730
+#: src/applet.c:2645
 msgid "No network connection"
 msgstr "Brak połączenia sieciowego"
 
-#: src/applet.c:3352
+#: src/applet.c:3280
 msgid "NetworkManager Applet"
 msgstr "Aplet NetworkManager"
 
@@ -2040,10 +2108,10 @@ msgstr "_Rozszerzenia prywatności IPv6"
 msgid ""
 "If enabled, it makes the kernel generate a temporary IPv6 address in "
 "addition to the public one generated from MAC address. This enhances "
-"privacy, but could cause problems in some applications. If set to \"Default"
-"\", the value from NetworkManager global configuration is used. If that is "
-"also unset, use the kernel default value read from file \"/proc/sys/net/ipv6/"
-"conf/default/use_tempaddr\""
+"privacy, but could cause problems in some applications. If set to "
+"\"Default\", the value from NetworkManager global configuration is used. If "
+"that is also unset, use the kernel default value read from file \"/proc/sys/"
+"net/ipv6/conf/default/use_tempaddr\""
 msgstr ""
 "Po włączeniu jądro będzie tworzyło tymczasowy adres IPv6 obok publicznego, "
 "utworzonego z adresu MAC. Zwiększa to prywatność, ale może powodować "
