@@ -221,7 +221,7 @@ typedef struct {
 static void
 import_vpn_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 {
-	char *filename = NULL;
+	gs_free char *filename = NULL;
 	ImportVpnInfo *info = (ImportVpnInfo *) user_data;
 	NMConnection *connection = NULL;
 	GError *error = NULL;
@@ -250,8 +250,6 @@ import_vpn_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 		                    info->result_func,
 		                    info->user_data);
 	}
-
-	g_free (filename);
 
 out:
 	if (!connection) {
