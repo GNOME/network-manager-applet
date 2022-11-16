@@ -1045,13 +1045,13 @@ nm_connection_list_create (NMConnectionList *list,
 
 	if (import_filename) {
 		if (ctype == G_TYPE_INVALID) {
-			connection = connection_import_from_file (import_filename, ctype, NULL);
+			connection = connection_import_from_file (import_filename, ctype, NULL, NULL);
 			if (!connection) {
 				g_set_error (&error, NMA_ERROR, NMA_ERROR_GENERIC,
 				             _ ("Unrecognized connection type"));
 			}
 		} else if (NM_IN_SET (ctype, NM_TYPE_SETTING_VPN, NM_TYPE_SETTING_WIREGUARD)) {
-			connection = connection_import_from_file (import_filename, ctype, &error);
+			connection = connection_import_from_file (import_filename, ctype, detail, &error);
 		} else {
 			g_set_error (&error, NMA_ERROR, NMA_ERROR_GENERIC,
 			             _("Don’t know how to import “%s” connections"), g_type_name (ctype));

@@ -163,7 +163,10 @@ no_description:
 }
 
 NMConnection *
-connection_import_from_file (const char *filename, GType ctype, GError **error)
+connection_import_from_file (const char *filename,
+                             GType ctype,
+                             const char *vpn_detail,
+                             GError **error)
 {
 	gs_free_error GError *unused_error = NULL;
 	NMConnection *connection = NULL;
@@ -181,14 +184,32 @@ connection_import_from_file (const char *filename, GType ctype, GError **error)
 	}
 
 	if (NM_IN_SET (ctype, G_TYPE_INVALID, NM_TYPE_SETTING_VPN)) {
-		for (iter = vpn_get_plugin_infos (); !connection && iter; iter = iter->next) {
-			NMVpnEditorPlugin *plugin;
+		GSList *plugin_infos = vpn_get_plugin_infos ();
+		NMVpnPluginInfo *plugin_info;
+		NMVpnEditorPlugin *plugin;
 
-			plugin = nm_vpn_plugin_info_get_editor_plugin (iter->data);
-			g_clear_error (error);
-			connection = nm_vpn_editor_plugin_import (plugin, filename, error);
-			if (connection)
-				break;
+		if (vpn_detail) {
+			gs_free char *service_type = NULL;
+
+			if ((service_type =
+			         nm_vpn_plugin_info_list_find_service_type (plugin_infos, vpn_detail)) &&
+			    (plugin_info =
+			         nm_vpn_plugin_info_list_find_by_service (plugin_infos, service_type))) {
+				plugin = nm_vpn_plugin_info_get_editor_plugin (plugin_info);
+				connection = nm_vpn_editor_plugin_import (plugin, filename, error);
+			} else {
+				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
+				             _("VPN plugin “%s” not found"), vpn_detail);
+			}
+		} else {
+			for (iter = plugin_infos; iter; iter = iter->next) {
+				plugin_info = iter->data;
+				plugin = nm_vpn_plugin_info_get_editor_plugin (plugin_info);
+				g_clear_error (error);
+				connection = nm_vpn_editor_plugin_import (plugin, filename, error);
+				if (connection)
+					break;
+			}
 		}
 
 		if (connection) {
@@ -248,7 +269,7 @@ import_vpn_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 	}
 
 	canceled = FALSE;
-	connection = connection_import_from_file (filename, G_TYPE_INVALID, &error);
+	connection = connection_import_from_file (filename, G_TYPE_INVALID, NULL, &error);
 	if (!connection) {
 		/* pass */
 	} else if (nm_streq (nm_connection_get_connection_type (connection),
