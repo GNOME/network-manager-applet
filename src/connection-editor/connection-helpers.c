@@ -163,7 +163,7 @@ no_description:
 }
 
 NMConnection *
-connection_import_from_file (const char *filename, GError **error)
+connection_import_from_file (const char *filename, GType ctype, GError **error)
 {
 	gs_free_error GError *unused_error = NULL;
 	NMConnection *connection = NULL;
@@ -180,29 +180,40 @@ connection_import_from_file (const char *filename, GError **error)
 		error = &unused_error;
 	}
 
-	for (iter = vpn_get_plugin_infos (); !connection && iter; iter = iter->next) {
-		NMVpnEditorPlugin *plugin;
+	if (NM_IN_SET (ctype, G_TYPE_INVALID, NM_TYPE_SETTING_VPN)) {
+		for (iter = vpn_get_plugin_infos (); !connection && iter; iter = iter->next) {
+			NMVpnEditorPlugin *plugin;
 
-		plugin = nm_vpn_plugin_info_get_editor_plugin (iter->data);
-		g_clear_error (error);
-		connection = nm_vpn_editor_plugin_import (plugin, filename, error);
-		if (connection)
-			break;
+			plugin = nm_vpn_plugin_info_get_editor_plugin (iter->data);
+			g_clear_error (error);
+			connection = nm_vpn_editor_plugin_import (plugin, filename, error);
+			if (connection)
+				break;
+		}
+
+		if (connection) {
+			NMSettingVpn *s_vpn;
+			const char *service_type;
+
+			s_vpn = nm_connection_get_setting_vpn (connection);
+			service_type = s_vpn ? nm_setting_vpn_get_service_type (s_vpn) : NULL;
+
+			/* Check connection sanity. */
+			if (!service_type || !strlen (service_type)) {
+				g_object_unref (connection);
+				connection = NULL;
+				g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC,
+				                     _("No VPN service type."));
+			}
+		}
 	}
 
-	if (connection) {
-		NMSettingVpn *s_vpn;
-		const char *service_type;
-
-		s_vpn = nm_connection_get_setting_vpn (connection);
-		service_type = s_vpn ? nm_setting_vpn_get_service_type (s_vpn) : NULL;
-
-		/* Check connection sanity. */
-		if (!service_type || !strlen (service_type)) {
-			g_object_unref (connection);
-			connection = NULL;
-			g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("No VPN service type."));
-		}
+	if (!connection && NM_IN_SET (ctype, G_TYPE_INVALID, NM_TYPE_SETTING_WIREGUARD)) {
+#if NM_CHECK_VERSION(1, 40, 0)
+		G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+		connection = nm_conn_wireguard_import (filename, error && !*error ? error : NULL);
+		G_GNUC_END_IGNORE_DEPRECATIONS
+#endif
 	}
 
 	if (!connection)
@@ -237,8 +248,14 @@ import_vpn_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 	}
 
 	canceled = FALSE;
-	connection = connection_import_from_file (filename, &error);
-	if (connection) {
+	connection = connection_import_from_file (filename, G_TYPE_INVALID, &error);
+	if (!connection) {
+		/* pass */
+	} else if (nm_streq (nm_connection_get_connection_type (connection),
+	                     NM_SETTING_WIREGUARD_SETTING_NAME)) {
+		info->result_func (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_CALL, connection, FALSE, NULL,
+		                   info->user_data);
+	} else {
 		/* Wrap around the actual new function so that the page can complete
 		 * the missing parts, such as UUID or make up the connection name. */
 		vpn_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_CALL,

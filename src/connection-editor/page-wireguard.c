@@ -629,15 +629,22 @@ wireguard_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
 	                             NM_SETTING_WIREGUARD_SETTING_NAME,
 	                             FALSE,
 	                             client);
-	nm_connection_add_setting (connection, nm_setting_wireguard_new ());
 
-	s_ip = (NMSettingIPConfig *) nm_setting_ip4_config_new ();
-	g_object_set (s_ip, NM_SETTING_IP_CONFIG_METHOD, NM_SETTING_IP4_CONFIG_METHOD_DISABLED, NULL);
-	nm_connection_add_setting (connection, (NMSetting *) s_ip);
+	if (!nm_connection_get_setting (connection, NM_TYPE_SETTING_WIREGUARD))
+		nm_connection_add_setting (connection, nm_setting_wireguard_new ());
 
-	s_ip = (NMSettingIPConfig *) nm_setting_ip6_config_new ();
-	g_object_set (s_ip, NM_SETTING_IP_CONFIG_METHOD, NM_SETTING_IP6_CONFIG_METHOD_IGNORE, NULL);
-	nm_connection_add_setting (connection, (NMSetting *) s_ip);
+	if (!nm_connection_get_setting (connection, NM_TYPE_SETTING_IP4_CONFIG)) {
+		s_ip = (NMSettingIPConfig *)nm_setting_ip4_config_new ();
+		g_object_set (s_ip, NM_SETTING_IP_CONFIG_METHOD, NM_SETTING_IP4_CONFIG_METHOD_DISABLED,
+		              NULL);
+		nm_connection_add_setting (connection, (NMSetting *)s_ip);
+	}
+
+	if (!nm_connection_get_setting (connection, NM_TYPE_SETTING_IP6_CONFIG)) {
+		s_ip = (NMSettingIPConfig *)nm_setting_ip6_config_new ();
+		g_object_set (s_ip, NM_SETTING_IP_CONFIG_METHOD, NM_SETTING_IP6_CONFIG_METHOD_IGNORE, NULL);
+		nm_connection_add_setting (connection, (NMSetting *)s_ip);
+	}
 
 	(*result_func) (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_CALL, connection, FALSE, NULL, user_data);
 }
