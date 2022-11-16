@@ -165,8 +165,20 @@ no_description:
 NMConnection *
 vpn_connection_from_file (const char *filename, GError **error)
 {
+	gs_free_error GError *unused_error = NULL;
 	NMConnection *connection = NULL;
 	GSList *iter;
+
+	if (!error) {
+		/* Some VPN plugins crash when passing no error variable ([1]). Work
+		 * around that. In the meantime, libnm does the same workaround ([2]).
+		 *
+		 *
+		 * [1] https://gitlab.gnome.org/GNOME/NetworkManager-vpnc/-/blob/c7d197477c94c5bae0396f0ef826db4d835e487d/properties/nm-vpnc-editor-plugin.c#L281
+		 * [2] https://gitlab.freedesktop.org/NetworkManager/NetworkManager/-/commit/3b2eb689f3da1e957216b6106382b9a46bae266f
+		 */
+		error = &unused_error;
+	}
 
 	for (iter = vpn_get_plugin_infos (); !connection && iter; iter = iter->next) {
 		NMVpnEditorPlugin *plugin;
