@@ -1046,13 +1046,13 @@ nm_connection_list_create (NMConnectionList *list,
 	if (import_filename) {
 		if (ctype == G_TYPE_INVALID) {
 			/* Atempt a VPN import */
-			connection = vpn_connection_from_file (import_filename, NULL);
+			connection = connection_import_from_file (import_filename, NULL);
 			if (connection)
 				ctype = NM_TYPE_SETTING_VPN;
 			else
 				g_set_error (&error, NMA_ERROR, NMA_ERROR_GENERIC, _("Unrecognized connection type"));
 		} else if (ctype == NM_TYPE_SETTING_VPN) {
-			connection = vpn_connection_from_file (import_filename, &error);
+			connection = connection_import_from_file (import_filename, &error);
 		} else {
 			g_set_error (&error, NMA_ERROR, NMA_ERROR_GENERIC,
 			             _("Don’t know how to import “%s” connections"), g_type_name (ctype));

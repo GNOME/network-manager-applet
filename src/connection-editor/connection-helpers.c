@@ -163,7 +163,7 @@ no_description:
 }
 
 NMConnection *
-vpn_connection_from_file (const char *filename, GError **error)
+connection_import_from_file (const char *filename, GError **error)
 {
 	gs_free_error GError *unused_error = NULL;
 	NMConnection *connection = NULL;
@@ -237,7 +237,7 @@ import_vpn_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 	}
 
 	canceled = FALSE;
-	connection = vpn_connection_from_file (filename, &error);
+	connection = connection_import_from_file (filename, &error);
 	if (connection) {
 		/* Wrap around the actual new function so that the page can complete
 		 * the missing parts, such as UUID or make up the connection name. */
