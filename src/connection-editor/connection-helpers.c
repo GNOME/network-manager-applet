@@ -223,8 +223,8 @@ import_vpn_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 {
 	gs_free char *filename = NULL;
 	ImportVpnInfo *info = (ImportVpnInfo *) user_data;
-	NMConnection *connection = NULL;
-	GError *error = NULL;
+	gs_unref_object NMConnection *connection = NULL;
+	gs_free_error GError *error = NULL;
 	gboolean canceled = TRUE;
 
 	if (response != GTK_RESPONSE_ACCEPT)
