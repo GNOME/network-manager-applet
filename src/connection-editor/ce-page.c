@@ -859,8 +859,6 @@ ce_page_complete_connection (NMConnection *connection,
                              NMClient *client)
 {
 	NMSettingConnection *s_con;
-	char *id, *uuid;
-	const GPtrArray *connections;
 
 	s_con = nm_connection_get_setting_connection (connection);
 	if (!s_con) {
@@ -869,19 +867,25 @@ ce_page_complete_connection (NMConnection *connection,
 	}
 
 	if (!nm_setting_connection_get_id (s_con)) {
+		const GPtrArray *connections;
+		gs_free char *id = NULL;
+
 		connections = nm_client_get_connections (client);
 		id = ce_page_get_next_available_name (connections, format);
 		g_object_set (s_con, NM_SETTING_CONNECTION_ID, id, NULL);
-		g_free (id);
 	}
 
-	uuid = nm_utils_uuid_generate ();
-	g_object_set (s_con,
-	              NM_SETTING_CONNECTION_UUID, uuid,
-	              NM_SETTING_CONNECTION_TYPE, ctype,
-	              NM_SETTING_CONNECTION_AUTOCONNECT, autoconnect,
-	              NULL);
-	g_free (uuid);
+	if (!nm_setting_connection_get_uuid (s_con)) {
+		gs_free char *uuid = NULL;
+
+		uuid = nm_utils_uuid_generate ();
+		g_object_set (s_con, NM_SETTING_CONNECTION_UUID, uuid, NULL);
+	}
+
+	if (ctype)
+		g_object_set (s_con, NM_SETTING_CONNECTION_TYPE, ctype, NULL);
+
+	g_object_set (s_con, NM_SETTING_CONNECTION_AUTOCONNECT, autoconnect, NULL);
 }
 
 CEPage *

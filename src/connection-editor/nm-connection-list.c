@@ -1045,14 +1045,13 @@ nm_connection_list_create (NMConnectionList *list,
 
 	if (import_filename) {
 		if (ctype == G_TYPE_INVALID) {
-			/* Atempt a VPN import */
-			connection = vpn_connection_from_file (import_filename, NULL);
-			if (connection)
-				ctype = NM_TYPE_SETTING_VPN;
-			else
-				g_set_error (&error, NMA_ERROR, NMA_ERROR_GENERIC, _("Unrecognized connection type"));
-		} else if (ctype == NM_TYPE_SETTING_VPN) {
-			connection = vpn_connection_from_file (import_filename, &error);
+			connection = connection_import_from_file (import_filename, ctype, NULL, NULL);
+			if (!connection) {
+				g_set_error (&error, NMA_ERROR, NMA_ERROR_GENERIC,
+				             _ ("Unrecognized connection type"));
+			}
+		} else if (NM_IN_SET (ctype, NM_TYPE_SETTING_VPN, NM_TYPE_SETTING_WIREGUARD)) {
+			connection = connection_import_from_file (import_filename, ctype, detail, &error);
 		} else {
 			g_set_error (&error, NMA_ERROR, NMA_ERROR_GENERIC,
 			             _("Don’t know how to import “%s” connections"), g_type_name (ctype));
@@ -1062,6 +1061,15 @@ nm_connection_list_create (NMConnectionList *list,
 			nm_connection_editor_error (NULL, _("Error importing connection"), "%s", error->message);
 			callback (list, user_data);
 			return;
+		}
+
+		if (nm_streq0 (nm_connection_get_connection_type (connection),
+		               NM_SETTING_WIREGUARD_SETTING_NAME))
+			ctype = NM_TYPE_SETTING_WIREGUARD;
+		else {
+			nm_assert (NM_IN_STRSET (nm_connection_get_connection_type (connection), NULL,
+			                         NM_SETTING_VPN_SETTING_NAME));
+			ctype = NM_TYPE_SETTING_VPN;
 		}
 	}
 

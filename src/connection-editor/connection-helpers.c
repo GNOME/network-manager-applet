@@ -163,34 +163,78 @@ no_description:
 }
 
 NMConnection *
-vpn_connection_from_file (const char *filename, GError **error)
+connection_import_from_file (const char *filename,
+                             GType ctype,
+                             const char *vpn_detail,
+                             GError **error)
 {
+	gs_free_error GError *unused_error = NULL;
 	NMConnection *connection = NULL;
 	GSList *iter;
 
-	for (iter = vpn_get_plugin_infos (); !connection && iter; iter = iter->next) {
-		NMVpnEditorPlugin *plugin;
-
-		plugin = nm_vpn_plugin_info_get_editor_plugin (iter->data);
-		g_clear_error (error);
-		connection = nm_vpn_editor_plugin_import (plugin, filename, error);
-		if (connection)
-			break;
+	if (!error) {
+		/* Some VPN plugins crash when passing no error variable ([1]). Work
+		 * around that. In the meantime, libnm does the same workaround ([2]).
+		 *
+		 *
+		 * [1] https://gitlab.gnome.org/GNOME/NetworkManager-vpnc/-/blob/c7d197477c94c5bae0396f0ef826db4d835e487d/properties/nm-vpnc-editor-plugin.c#L281
+		 * [2] https://gitlab.freedesktop.org/NetworkManager/NetworkManager/-/commit/3b2eb689f3da1e957216b6106382b9a46bae266f
+		 */
+		error = &unused_error;
 	}
 
-	if (connection) {
-		NMSettingVpn *s_vpn;
-		const char *service_type;
+	if (NM_IN_SET (ctype, G_TYPE_INVALID, NM_TYPE_SETTING_VPN)) {
+		GSList *plugin_infos = vpn_get_plugin_infos ();
+		NMVpnPluginInfo *plugin_info;
+		NMVpnEditorPlugin *plugin;
 
-		s_vpn = nm_connection_get_setting_vpn (connection);
-		service_type = s_vpn ? nm_setting_vpn_get_service_type (s_vpn) : NULL;
+		if (vpn_detail) {
+			gs_free char *service_type = NULL;
 
-		/* Check connection sanity. */
-		if (!service_type || !strlen (service_type)) {
-			g_object_unref (connection);
-			connection = NULL;
-			g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC, _("No VPN service type."));
+			if ((service_type =
+			         nm_vpn_plugin_info_list_find_service_type (plugin_infos, vpn_detail)) &&
+			    (plugin_info =
+			         nm_vpn_plugin_info_list_find_by_service (plugin_infos, service_type))) {
+				plugin = nm_vpn_plugin_info_get_editor_plugin (plugin_info);
+				connection = nm_vpn_editor_plugin_import (plugin, filename, error);
+			} else {
+				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC,
+				             _("VPN plugin “%s” not found"), vpn_detail);
+			}
+		} else {
+			for (iter = plugin_infos; iter; iter = iter->next) {
+				plugin_info = iter->data;
+				plugin = nm_vpn_plugin_info_get_editor_plugin (plugin_info);
+				g_clear_error (error);
+				connection = nm_vpn_editor_plugin_import (plugin, filename, error);
+				if (connection)
+					break;
+			}
 		}
+
+		if (connection) {
+			NMSettingVpn *s_vpn;
+			const char *service_type;
+
+			s_vpn = nm_connection_get_setting_vpn (connection);
+			service_type = s_vpn ? nm_setting_vpn_get_service_type (s_vpn) : NULL;
+
+			/* Check connection sanity. */
+			if (!service_type || !strlen (service_type)) {
+				g_object_unref (connection);
+				connection = NULL;
+				g_set_error_literal (error, NMA_ERROR, NMA_ERROR_GENERIC,
+				                     _("No VPN service type."));
+			}
+		}
+	}
+
+	if (!connection && NM_IN_SET (ctype, G_TYPE_INVALID, NM_TYPE_SETTING_WIREGUARD)) {
+#if NM_CHECK_VERSION(1, 40, 0)
+		G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+		connection = nm_conn_wireguard_import (filename, error && !*error ? error : NULL);
+		G_GNUC_END_IGNORE_DEPRECATIONS
+#endif
 	}
 
 	if (!connection)
@@ -209,10 +253,10 @@ typedef struct {
 static void
 import_vpn_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 {
-	char *filename = NULL;
+	gs_free char *filename = NULL;
 	ImportVpnInfo *info = (ImportVpnInfo *) user_data;
-	NMConnection *connection = NULL;
-	GError *error = NULL;
+	gs_unref_object NMConnection *connection = NULL;
+	gs_free_error GError *error = NULL;
 	gboolean canceled = TRUE;
 
 	if (response != GTK_RESPONSE_ACCEPT)
@@ -225,8 +269,14 @@ import_vpn_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 	}
 
 	canceled = FALSE;
-	connection = vpn_connection_from_file (filename, &error);
-	if (connection) {
+	connection = connection_import_from_file (filename, G_TYPE_INVALID, NULL, &error);
+	if (!connection) {
+		/* pass */
+	} else if (nm_streq (nm_connection_get_connection_type (connection),
+	                     NM_SETTING_WIREGUARD_SETTING_NAME)) {
+		info->result_func (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_CALL, connection, FALSE, NULL,
+		                   info->user_data);
+	} else {
 		/* Wrap around the actual new function so that the page can complete
 		 * the missing parts, such as UUID or make up the connection name. */
 		vpn_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_CALL,
@@ -238,8 +288,6 @@ import_vpn_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 		                    info->result_func,
 		                    info->user_data);
 	}
-
-	g_free (filename);
 
 out:
 	if (!connection) {
