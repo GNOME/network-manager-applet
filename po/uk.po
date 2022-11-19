@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: NetworkManager\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/i"
 "ssues\n"
-"POT-Creation-Date: 2022-11-07 07:01+0000\n"
-"PO-Revision-Date: 2022-11-07 18:57+0200\n"
+"POT-Creation-Date: 2022-11-17 11:44+0000\n"
+"PO-Revision-Date: 2022-11-19 07:00+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -66,7 +66,6 @@ msgid "Manage and change your network connection settings"
 msgstr "Керування параметрами мережних з'єднань"
 
 #: org.gnome.nm-applet.gschema.xml.in:6
-#| msgid "Enable N_otifications"
 msgid "Disable connected notifications"
 msgstr "Вимкнути сповіщення про з'єднання"
 
@@ -76,7 +75,6 @@ msgid ""
 msgstr "Встановіть у true, щоб вимкнути сповіщення про приєднання до мережі."
 
 #: org.gnome.nm-applet.gschema.xml.in:11
-#| msgid "Device disconnect failed"
 msgid "Disable disconnected notifications"
 msgstr "Вимкнути сповіщення про від'єднання"
 
@@ -87,7 +85,6 @@ msgstr ""
 "Встановіть у true, щоб вимкнути сповіщення про від'єднання від мережі."
 
 #: org.gnome.nm-applet.gschema.xml.in:16
-#| msgid "Enable N_otifications"
 msgid "Disable VPN notifications"
 msgstr "Вимкнути сповіщення VPN"
 
@@ -96,8 +93,8 @@ msgid ""
 "Set this to true to disable notifications when connecting to or "
 "disconnecting from a VPN."
 msgstr ""
-"Встановіть у true, щоб вимкнути сповіщення про з'єднання або від'єднання від"
-" VPN."
+"Встановіть у true, щоб вимкнути сповіщення про з'єднання або від'єднання від "
+"VPN."
 
 #: org.gnome.nm-applet.gschema.xml.in:21
 msgid "Suppress networks available notifications"
@@ -128,8 +125,8 @@ msgstr "Вимкнути створення Wi-Fi"
 msgid ""
 "Set to true to disable creation of adhoc networks when using the applet."
 msgstr ""
-"Встановіть у true, щоб вимкнути створення спеціальних мереж при використані"
-" аплету."
+"Встановіть у true, щоб вимкнути створення спеціальних мереж при використані "
+"аплету."
 
 #: org.gnome.nm-applet.gschema.xml.in:36
 msgid "Show the applet in notification area"
@@ -191,8 +188,8 @@ msgstr "Розпізнавання за 802.1X"
 #: src/connection-editor/ce-page-dcb.ui:1019
 #: src/connection-editor/ce-page-wireguard.ui:41
 #: src/connection-editor/ce-ppp-auth-methods.ui:28
-#: src/connection-editor/connection-helpers.c:284
-#: src/connection-editor/connection-helpers.c:747
+#: src/connection-editor/connection-helpers.c:332
+#: src/connection-editor/connection-helpers.c:795
 #: src/connection-editor/nm-connection-editor.ui:197
 #: src/connection-editor/page-bluetooth.c:293
 #: src/connection-editor/page-mobile.c:530
@@ -1130,7 +1127,7 @@ msgstr "_Додати"
 #: src/connection-editor/ce-page-ip6.ui:199
 #: src/connection-editor/ce-page-team.ui:262
 #: src/connection-editor/ce-page-wireguard.ui:617
-#: src/connection-editor/connection-helpers.c:748
+#: src/connection-editor/connection-helpers.c:796
 #: src/connection-editor/nm-connection-list.ui:101
 msgid "_Delete"
 msgstr "В_илучити"
@@ -3319,61 +3316,66 @@ msgid "WireGuard"
 msgstr "WireGuard"
 
 #: src/connection-editor/connection-helpers.c:112
-#: src/connection-editor/connection-helpers.c:374
+#: src/connection-editor/connection-helpers.c:422
 #: src/connection-editor/page-vpn.c:92
 msgid "VPN"
 msgstr "VPN"
 
-#: src/connection-editor/connection-helpers.c:192
+#: src/connection-editor/connection-helpers.c:202
+#, c-format
+msgid "VPN plugin “%s” not found"
+msgstr "Не знайдено додатка VPN «%s»"
+
+#: src/connection-editor/connection-helpers.c:227
 msgid "No VPN service type."
 msgstr "Не вказано тип служби VPN."
 
-#: src/connection-editor/connection-helpers.c:197
+#: src/connection-editor/connection-helpers.c:241
 msgid "The VPN plugin failed to import the VPN connection correctly: "
 msgstr "Додатку VPN не вдалось належним чином імпортувати з'єднання VPN: "
 
-#: src/connection-editor/connection-helpers.c:281
+#: src/connection-editor/connection-helpers.c:329
 #: src/connection-editor/page-proxy.c:104
 #: src/connection-editor/page-team-port.c:189
 #: src/connection-editor/page-team.c:327
 msgid "Select file to import"
 msgstr "Виберіть файл для імпорту"
 
-#: src/connection-editor/connection-helpers.c:285
+#: src/connection-editor/connection-helpers.c:333
 #: src/connection-editor/page-proxy.c:108
 #: src/connection-editor/page-team-port.c:193
 #: src/connection-editor/page-team.c:331
 msgid "_Open"
 msgstr "Від_крити"
 
-#: src/connection-editor/connection-helpers.c:316
+#: src/connection-editor/connection-helpers.c:364
 msgid "Hardware"
 msgstr "Апаратна"
 
-#: src/connection-editor/connection-helpers.c:343
+#: src/connection-editor/connection-helpers.c:391
 msgid "Virtual"
 msgstr "Віртуальна"
 
-#: src/connection-editor/connection-helpers.c:492
-#: src/connection-editor/connection-helpers.c:494
+#: src/connection-editor/connection-helpers.c:540
+#: src/connection-editor/connection-helpers.c:542
 msgid "Import a saved VPN configuration…"
 msgstr "Імпортувати збережені налаштування VPN…"
 
-#: src/connection-editor/connection-helpers.c:524
+#: src/connection-editor/connection-helpers.c:572
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
 msgstr "Не вдалось запустити вікно редактора з'єднань через невідому помилку."
 
-#: src/connection-editor/connection-helpers.c:533
+#: src/connection-editor/connection-helpers.c:581
 msgid "Could not create new connection"
 msgstr "Не вдається створити нове з'єднання"
 
-#: src/connection-editor/connection-helpers.c:696
+#: src/connection-editor/connection-helpers.c:744
 msgid "Connection delete failed"
 msgstr "Помилка при видаленні з'єднання"
 
-#: src/connection-editor/connection-helpers.c:744
+#: src/connection-editor/connection-helpers.c:792
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Вилучити з'єднання %s?"
@@ -3628,43 +3630,43 @@ msgstr "Вилучити виділене з'єднання"
 msgid "Authenticate to delete the selected connection"
 msgstr "Для вилучення позначеного з'єднання слід пройти розпізнавання"
 
-#: src/connection-editor/nm-connection-list.c:1053
+#: src/connection-editor/nm-connection-list.c:1051
 msgid "Unrecognized connection type"
 msgstr "Невідомий тип з'єднання"
 
-#: src/connection-editor/nm-connection-list.c:1058
+#: src/connection-editor/nm-connection-list.c:1057
 #, c-format
 msgid "Don’t know how to import “%s” connections"
 msgstr "Спосіб імпортування з'єднань «%s» є невідомим для програми"
 
-#: src/connection-editor/nm-connection-list.c:1062
+#: src/connection-editor/nm-connection-list.c:1061
 msgid "Error importing connection"
 msgstr "Помилка під час спроби імпортувати з'єднання"
 
-#: src/connection-editor/nm-connection-list.c:1069
-#: src/connection-editor/nm-connection-list.c:1084
-#: src/connection-editor/nm-connection-list.c:1087
+#: src/connection-editor/nm-connection-list.c:1077
+#: src/connection-editor/nm-connection-list.c:1092
+#: src/connection-editor/nm-connection-list.c:1095
 msgid "Error creating connection"
 msgstr "Помилка створення з'єднання"
 
-#: src/connection-editor/nm-connection-list.c:1069
+#: src/connection-editor/nm-connection-list.c:1077
 msgid "Connection type not specified."
 msgstr "Не вказано тип з'єднання."
 
-#: src/connection-editor/nm-connection-list.c:1085
+#: src/connection-editor/nm-connection-list.c:1093
 msgid "No VPN plugins are installed."
 msgstr "Не встановлено жодного додатка VPN."
 
-#: src/connection-editor/nm-connection-list.c:1088
+#: src/connection-editor/nm-connection-list.c:1096
 #, c-format
 msgid "Don’t know how to create “%s” connections"
 msgstr "Спосіб створення з'єднань «%s» є невідомим для програми"
 
-#: src/connection-editor/nm-connection-list.c:1122
+#: src/connection-editor/nm-connection-list.c:1130
 msgid "Error editing connection"
 msgstr "Помилка редагування з'єднання"
 
-#: src/connection-editor/nm-connection-list.c:1123
+#: src/connection-editor/nm-connection-list.c:1131
 #, c-format
 msgid "Did not find a connection with UUID “%s”"
 msgstr "Не знайдено з'єднання із UUID «%s»"
