@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
 "issues\n"
-"POT-Creation-Date: 2022-11-07 07:01+0000\n"
-"PO-Revision-Date: 2022-11-13 13:37+0100\n"
+"POT-Creation-Date: 2022-11-17 11:44+0000\n"
+"PO-Revision-Date: 2022-11-20 15:12+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -186,8 +186,8 @@ msgstr "Uwierzytelnianie 802.1X"
 #: src/connection-editor/ce-page-dcb.ui:1019
 #: src/connection-editor/ce-page-wireguard.ui:41
 #: src/connection-editor/ce-ppp-auth-methods.ui:28
-#: src/connection-editor/connection-helpers.c:284
-#: src/connection-editor/connection-helpers.c:747
+#: src/connection-editor/connection-helpers.c:332
+#: src/connection-editor/connection-helpers.c:795
 #: src/connection-editor/nm-connection-editor.ui:197
 #: src/connection-editor/page-bluetooth.c:293
 #: src/connection-editor/page-mobile.c:530
@@ -1128,7 +1128,7 @@ msgstr "_Dodaj"
 #: src/connection-editor/ce-page-ip6.ui:199
 #: src/connection-editor/ce-page-team.ui:262
 #: src/connection-editor/ce-page-wireguard.ui:617
-#: src/connection-editor/connection-helpers.c:748
+#: src/connection-editor/connection-helpers.c:796
 #: src/connection-editor/nm-connection-list.ui:101
 msgid "_Delete"
 msgstr "_Usuń"
@@ -2108,10 +2108,10 @@ msgstr "_Rozszerzenia prywatności IPv6"
 msgid ""
 "If enabled, it makes the kernel generate a temporary IPv6 address in "
 "addition to the public one generated from MAC address. This enhances "
-"privacy, but could cause problems in some applications. If set to "
-"\"Default\", the value from NetworkManager global configuration is used. If "
-"that is also unset, use the kernel default value read from file \"/proc/sys/"
-"net/ipv6/conf/default/use_tempaddr\""
+"privacy, but could cause problems in some applications. If set to \"Default"
+"\", the value from NetworkManager global configuration is used. If that is "
+"also unset, use the kernel default value read from file \"/proc/sys/net/ipv6/"
+"conf/default/use_tempaddr\""
 msgstr ""
 "Po włączeniu jądro będzie tworzyło tymczasowy adres IPv6 obok publicznego, "
 "utworzonego z adresu MAC. Zwiększa to prywatność, ale może powodować "
@@ -3303,47 +3303,52 @@ msgid "WireGuard"
 msgstr "WireGuard"
 
 #: src/connection-editor/connection-helpers.c:112
-#: src/connection-editor/connection-helpers.c:374
+#: src/connection-editor/connection-helpers.c:422
 #: src/connection-editor/page-vpn.c:92
 msgid "VPN"
 msgstr "VPN"
 
-#: src/connection-editor/connection-helpers.c:192
+#: src/connection-editor/connection-helpers.c:202
+#, c-format
+msgid "VPN plugin “%s” not found"
+msgstr "Nie odnaleziono wtyczki VPN „%s”"
+
+#: src/connection-editor/connection-helpers.c:227
 msgid "No VPN service type."
 msgstr "Brak typu usługi VPN."
 
-#: src/connection-editor/connection-helpers.c:197
+#: src/connection-editor/connection-helpers.c:241
 msgid "The VPN plugin failed to import the VPN connection correctly: "
 msgstr "Poprawne zaimportowanie połączenia VPN się nie powiodło: "
 
-#: src/connection-editor/connection-helpers.c:281
+#: src/connection-editor/connection-helpers.c:329
 #: src/connection-editor/page-proxy.c:104
 #: src/connection-editor/page-team-port.c:189
 #: src/connection-editor/page-team.c:327
 msgid "Select file to import"
 msgstr "Wybór pliku do zaimportowania"
 
-#: src/connection-editor/connection-helpers.c:285
+#: src/connection-editor/connection-helpers.c:333
 #: src/connection-editor/page-proxy.c:108
 #: src/connection-editor/page-team-port.c:193
 #: src/connection-editor/page-team.c:331
 msgid "_Open"
 msgstr "_Otwórz"
 
-#: src/connection-editor/connection-helpers.c:316
+#: src/connection-editor/connection-helpers.c:364
 msgid "Hardware"
 msgstr "Sprzętowe"
 
-#: src/connection-editor/connection-helpers.c:343
+#: src/connection-editor/connection-helpers.c:391
 msgid "Virtual"
 msgstr "Wirtualne"
 
-#: src/connection-editor/connection-helpers.c:492
-#: src/connection-editor/connection-helpers.c:494
+#: src/connection-editor/connection-helpers.c:540
+#: src/connection-editor/connection-helpers.c:542
 msgid "Import a saved VPN configuration…"
 msgstr "Zaimportuj zapisaną konfigurację VPN…"
 
-#: src/connection-editor/connection-helpers.c:524
+#: src/connection-editor/connection-helpers.c:572
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
@@ -3351,15 +3356,15 @@ msgstr ""
 "Nie można zainicjować okna dialogowego edytora połączeń z powodu nieznanego "
 "błędu."
 
-#: src/connection-editor/connection-helpers.c:533
+#: src/connection-editor/connection-helpers.c:581
 msgid "Could not create new connection"
 msgstr "Nie można utworzyć nowego połączenia"
 
-#: src/connection-editor/connection-helpers.c:696
+#: src/connection-editor/connection-helpers.c:744
 msgid "Connection delete failed"
 msgstr "Usunięcie połączenia się nie powiodło"
 
-#: src/connection-editor/connection-helpers.c:744
+#: src/connection-editor/connection-helpers.c:792
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Na pewno usunąć połączenie %s?"
@@ -3608,43 +3613,43 @@ msgstr "Usunięcie zaznaczonego połączenia"
 msgid "Authenticate to delete the selected connection"
 msgstr "Należy się uwierzytelnić, aby usunąć zaznaczone połączenie"
 
-#: src/connection-editor/nm-connection-list.c:1053
+#: src/connection-editor/nm-connection-list.c:1051
 msgid "Unrecognized connection type"
 msgstr "Nieznany typ połączenia"
 
-#: src/connection-editor/nm-connection-list.c:1058
+#: src/connection-editor/nm-connection-list.c:1057
 #, c-format
 msgid "Don’t know how to import “%s” connections"
 msgstr "Nie wiadomo, jak importować połączenia „%s”"
 
-#: src/connection-editor/nm-connection-list.c:1062
+#: src/connection-editor/nm-connection-list.c:1061
 msgid "Error importing connection"
 msgstr "Błąd podczas importowania połączenia"
 
-#: src/connection-editor/nm-connection-list.c:1069
-#: src/connection-editor/nm-connection-list.c:1084
-#: src/connection-editor/nm-connection-list.c:1087
+#: src/connection-editor/nm-connection-list.c:1077
+#: src/connection-editor/nm-connection-list.c:1092
+#: src/connection-editor/nm-connection-list.c:1095
 msgid "Error creating connection"
 msgstr "Błąd podczas tworzenia połączenia"
 
-#: src/connection-editor/nm-connection-list.c:1069
+#: src/connection-editor/nm-connection-list.c:1077
 msgid "Connection type not specified."
 msgstr "Nie podano typu połączenia."
 
-#: src/connection-editor/nm-connection-list.c:1085
+#: src/connection-editor/nm-connection-list.c:1093
 msgid "No VPN plugins are installed."
 msgstr "Żadna wtyczka VPN nie jest zainstalowana."
 
-#: src/connection-editor/nm-connection-list.c:1088
+#: src/connection-editor/nm-connection-list.c:1096
 #, c-format
 msgid "Don’t know how to create “%s” connections"
 msgstr "Nie wiadomo, jak tworzyć połączenia „%s”"
 
-#: src/connection-editor/nm-connection-list.c:1122
+#: src/connection-editor/nm-connection-list.c:1130
 msgid "Error editing connection"
 msgstr "Błąd podczas modyfikowania połączenia"
 
-#: src/connection-editor/nm-connection-list.c:1123
+#: src/connection-editor/nm-connection-list.c:1131
 #, c-format
 msgid "Did not find a connection with UUID “%s”"
 msgstr "Nie odnaleziono połączenia z UUID „%s”"
