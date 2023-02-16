@@ -58,8 +58,12 @@ int main (int argc, char *argv[])
 
 	bindtextdomain (GETTEXT_PACKAGE, NMALOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-	if (!with_appindicator)
-		gdk_set_allowed_backends ("x11,*");
+#ifndef WITH_APPINDICATOR
+	/* If we got no app indicator, out only chance of doing anything
+	 * useful is the XEmbed-based GtkStatusIcon, which only works on
+	 * X11. Prefer it. */
+	gdk_set_allowed_backends ("x11,*");
+#endif
 	gtk_init (&argc, &argv);
 	textdomain (GETTEXT_PACKAGE);
 
