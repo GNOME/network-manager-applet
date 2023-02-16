@@ -3392,6 +3392,15 @@ static void nma_init (NMApplet *applet)
 {
 	applet->icon_size = 16;
 
+#ifdef WITH_APPINDICATOR
+#ifdef GDK_WINDOWING_X11
+	if (!GDK_IS_X11_DISPLAY (gdk_display_get_default ()))
+		with_appindicator = TRUE;
+#else
+	with_appindicator = TRUE;
+#endif
+#endif
+
 	g_signal_connect (applet, "startup", G_CALLBACK (applet_startup), NULL);
 	g_signal_connect (applet, "activate", G_CALLBACK (applet_activate), NULL);
 }
