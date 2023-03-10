@@ -2370,6 +2370,45 @@ foo_client_setup (NMApplet *applet)
 }
 
 #if WITH_WWAN
+static void
+mm1_object_added_cb (GDBusObjectManagerClient *mm1,
+                     GDBusObject *object,
+                     NMApplet *applet)
+{
+	const char *obj_path;
+	const GPtrArray *devices;
+	size_t i;
+	unsigned int found;
+
+	obj_path = g_dbus_object_get_object_path (object);
+
+	devices = nm_client_get_devices (applet->nm_client);
+	for (i = 0, found = 0; devices && i < devices->len; i++) {
+		NMDevice *device = NM_DEVICE (g_ptr_array_index (devices, i));
+		NMADeviceClass *dclass;
+
+		if (strcmp (obj_path, nm_device_get_udi (device)) != 0)
+			continue;
+
+		dclass = get_device_class (device, applet);
+		if (!dclass || dclass != applet->broadband_class)
+			continue;
+
+		if (!dclass->device_added)
+			continue;
+
+		dclass->device_added (device, applet);
+		found++;
+	}
+
+	if (found) {
+		applet_schedule_update_icon (applet);
+		applet_schedule_update_menu (applet);
+
+		if (found > 1)
+			g_warning ("%u NM devices found for a new MM modem", found);
+	}
+}
 
 static void
 mm1_name_owner_changed_cb (GDBusObjectManagerClient *mm1,
@@ -2412,6 +2451,11 @@ mm_new_ready (GDBusConnection *connection,
 
 	applet->mm1 = mm_manager_new_finish (res, &error);
 	if (applet->mm1) {
+		g_signal_connect (applet->mm1,
+		                  "object-added",
+		                  G_CALLBACK (mm1_object_added_cb),
+		                  applet);
+
 		/* We've got our MM proxy, now check whether the ModemManager
 		 * is really running and usable */
 		g_signal_connect (applet->mm1,
