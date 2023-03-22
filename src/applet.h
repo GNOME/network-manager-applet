@@ -54,6 +54,7 @@ typedef struct {
 #define PREF_DISABLE_VPN_NOTIFICATIONS            "disable-vpn-notifications"
 #define PREF_DISABLE_WIFI_CREATE                  "disable-wifi-create"
 #define PREF_SUPPRESS_WIFI_NETWORKS_AVAILABLE     "suppress-wireless-networks-available"
+#define PREF_SUPPRESS_BROADBAND_UNLOCK_PROMPT     "suppress-broadband-unlock-prompt"
 #define PREF_SHOW_APPLET                          "show-applet"
 
 #define ICON_LAYER_LINK                           0

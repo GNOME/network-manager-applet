@@ -286,6 +286,10 @@ unlock_dialog_new (NMDevice *device,
 	if (info->dialog)
 		return;
 
+	if (g_settings_get_boolean (info->applet->gsettings,
+	                            PREF_SUPPRESS_BROADBAND_UNLOCK_PROMPT))
+		return;
+
 	/* We can only unlock PIN or PUK here */
 	lock = mm_modem_get_unlock_required (info->mm_modem);
 	if (lock == MM_MODEM_LOCK_SIM_PIN)
