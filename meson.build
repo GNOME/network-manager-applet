@@ -122,9 +122,6 @@ gtk_dep = declare_dependency(
   ]
 )
 
-# Check for gudev
-gudev_dep = dependency('gudev-1.0', version: '>= 147')
-
 # API documentation
 nm_req_version = '>= 1.7'
 

@@ -26,7 +26,6 @@ fedora_pkg_minimal() {
         gettext-devel \
         glib2-devel \
         gtk3-devel \
-        libgudev1-devel \
         libsecret-devel \
         libtool \
         pkgconfig \
