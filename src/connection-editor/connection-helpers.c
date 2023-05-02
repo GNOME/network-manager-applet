@@ -272,8 +272,8 @@ import_vpn_from_file_cb (GtkWidget *dialog, gint response, gpointer user_data)
 	connection = connection_import_from_file (filename, G_TYPE_INVALID, NULL, &error);
 	if (!connection) {
 		/* pass */
-	} else if (nm_streq (nm_connection_get_connection_type (connection),
-	                     NM_SETTING_WIREGUARD_SETTING_NAME)) {
+	} else if (nm_streq0 (nm_connection_get_connection_type (connection),
+	                      NM_SETTING_WIREGUARD_SETTING_NAME)) {
 		info->result_func (FUNC_TAG_PAGE_NEW_CONNECTION_RESULT_CALL, connection, FALSE, NULL,
 		                   info->user_data);
 	} else {
