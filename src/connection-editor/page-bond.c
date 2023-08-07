@@ -13,7 +13,7 @@
 #include "nm-connection-editor.h"
 #include "connection-helpers.h"
 
-G_DEFINE_TYPE (CEPageBond, ce_page_bond, CE_TYPE_PAGE_MASTER)
+G_DEFINE_TYPE (CEPageBond, ce_page_bond, CE_TYPE_PAGE_CONTROLLER)
 
 #define CE_PAGE_BOND_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CE_TYPE_PAGE_BOND, CEPageBondPrivate))
 
@@ -21,7 +21,7 @@ typedef struct {
 	NMSettingBond *setting;
 	NMSettingWired *wired;
 
-	int slave_arptype;
+	int port_arptype;
 
 	GtkWindow *toplevel;
 
@@ -86,27 +86,27 @@ stuff_changed (GtkWidget *w, gpointer user_data)
 }
 
 static void
-connection_removed (CEPageMaster *master, NMConnection *connection)
+connection_removed (CEPageController *controller, NMConnection *connection)
 {
-	CEPageBond *self = CE_PAGE_BOND (master);
+	CEPageBond *self = CE_PAGE_BOND (controller);
 	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
 
-	if (!ce_page_master_has_slaves (master))
-		priv->slave_arptype = ARPHRD_VOID;
+	if (!ce_page_controller_has_ports (controller))
+		priv->port_arptype = ARPHRD_VOID;
 }
 
 static void
-connection_added (CEPageMaster *master, NMConnection *connection)
+connection_added (CEPageController *controller, NMConnection *connection)
 {
-	CEPageBond *self = CE_PAGE_BOND (master);
+	CEPageBond *self = CE_PAGE_BOND (controller);
 	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
 
 	if (nm_connection_is_type (connection, NM_SETTING_INFINIBAND_SETTING_NAME)) {
-		priv->slave_arptype = ARPHRD_INFINIBAND;
+		priv->port_arptype = ARPHRD_INFINIBAND;
 		gtk_combo_box_set_active (priv->mode, MODE_ACTIVE_BACKUP);
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->mode), FALSE);
 	} else {
-		priv->slave_arptype = ARPHRD_ETHER;
+		priv->port_arptype = ARPHRD_ETHER;
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->mode), TRUE);
 	}
 }
@@ -360,7 +360,7 @@ connection_type_filter (FUNC_TAG_NEW_CONNECTION_TYPE_FILTER_IMPL,
 	 * need to check the reverse case here since we don't need to call
 	 * new_connection_dialog() in the InfiniBand case.
 	 */
-	if (   priv->slave_arptype == ARPHRD_ETHER
+	if (   priv->port_arptype == ARPHRD_ETHER
 	    && type == NM_TYPE_SETTING_INFINIBAND)
 		return FALSE;
 
@@ -368,12 +368,12 @@ connection_type_filter (FUNC_TAG_NEW_CONNECTION_TYPE_FILTER_IMPL,
 }
 
 static void
-add_slave (CEPageMaster *master, NewConnectionResultFunc result_func)
+add_port (CEPageController *controller, NewConnectionResultFunc result_func)
 {
-	CEPageBond *self = CE_PAGE_BOND (master);
+	CEPageBond *self = CE_PAGE_BOND (controller);
 	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
 
-	if (priv->slave_arptype == ARPHRD_INFINIBAND) {
+	if (priv->port_arptype == ARPHRD_INFINIBAND) {
 		new_connection_of_type (priv->toplevel,
 		                        NULL,
 		                        NULL,
@@ -381,13 +381,13 @@ add_slave (CEPageMaster *master, NewConnectionResultFunc result_func)
 		                        CE_PAGE (self)->client,
 		                        infiniband_connection_new,
 		                        result_func,
-		                        master);
+		                        controller);
 	} else {
 		new_connection_dialog (priv->toplevel,
 		                       CE_PAGE (self)->client,
 		                       connection_type_filter,
 		                       result_func,
-		                       master);
+		                       controller);
 	}
 }
 
@@ -559,10 +559,10 @@ static void
 ce_page_bond_init (CEPageBond *self)
 {
 	CEPageBondPrivate *priv = CE_PAGE_BOND_GET_PRIVATE (self);
-	CEPageMaster *master = CE_PAGE_MASTER (self);
+	CEPageController *controller = CE_PAGE_CONTROLLER (self);
 
-	priv->slave_arptype = ARPHRD_VOID;
-	master->aggregating = TRUE;
+	priv->port_arptype = ARPHRD_VOID;
+	controller->aggregating = TRUE;
 }
 
 static void
@@ -570,16 +570,16 @@ ce_page_bond_class_init (CEPageBondClass *bond_class)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (bond_class);
 	CEPageClass *parent_class = CE_PAGE_CLASS (bond_class);
-	CEPageMasterClass *master_class = CE_PAGE_MASTER_CLASS (bond_class);
+	CEPageControllerClass *controller_class = CE_PAGE_CONTROLLER_CLASS (bond_class);
 
 	g_type_class_add_private (object_class, sizeof (CEPageBondPrivate));
 
 	/* virtual methods */
 	parent_class->ce_page_validate_v = ce_page_validate_v;
 
-	master_class->connection_added = connection_added;
-	master_class->connection_removed = connection_removed;
-	master_class->add_slave = add_slave;
+	controller_class->connection_added = connection_added;
+	controller_class->connection_removed = connection_removed;
+	controller_class->add_port = add_port;
 }
 
 

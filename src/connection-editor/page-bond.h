@@ -10,7 +10,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include "page-master.h"
+#include "page-controller.h"
 
 #define CE_TYPE_PAGE_BOND            (ce_page_bond_get_type ())
 #define CE_PAGE_BOND(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), CE_TYPE_PAGE_BOND, CEPageBond))
@@ -20,11 +20,11 @@
 #define CE_PAGE_BOND_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), CE_TYPE_PAGE_BOND, CEPageBondClass))
 
 typedef struct {
-	CEPageMaster parent;
+	CEPageController parent;
 } CEPageBond;
 
 typedef struct {
-	CEPageMasterClass parent;
+	CEPageControllerClass parent;
 } CEPageBondClass;
 
 GType ce_page_bond_get_type (void);

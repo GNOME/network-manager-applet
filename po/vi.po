@@ -7,10 +7,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: network-manager-applet master\n"
+"Project-Id-Version: network-manager-applet main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
 "applet/\n"
-"POT-Creation-Date: 2022-05-30 11:43+0200\n"
+"POT-Creation-Date: 2023-08-03 11:40+0200\n"
 "PO-Revision-Date: 2014-11-28 15:54+0700\n"
 "Last-Translator: Trần Ngọc Quân <vnwildman@gmail.com>\n"
 "Language-Team: Vietnamese <gnome-vi-list@gnome.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 1.5.5\n"
 
-#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3251
+#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3166
 msgid "Network"
 msgstr "Mạng"
 
@@ -64,6 +64,68 @@ msgstr "Lỗi cấu hình VPN"
 #: nm-connection-editor.desktop.in:4
 msgid "Manage and change your network connection settings"
 msgstr "Quản lí và thay đổi thiết lập kết nối mạng"
+
+#: org.gnome.nm-applet.gschema.xml.in:6
+msgid "Disable connected notifications"
+msgstr "Tắt thông báo kết nối"
+
+#: org.gnome.nm-applet.gschema.xml.in:7
+msgid "Set this to true to disable notifications when connecting to a network."
+msgstr "Đặt là true để tắt thông báo khi nối mạng."
+
+#: org.gnome.nm-applet.gschema.xml.in:11
+msgid "Disable disconnected notifications"
+msgstr "Tắt thông báo ngắt kết nối"
+
+#: org.gnome.nm-applet.gschema.xml.in:12
+msgid ""
+"Set this to true to disable notifications when disconnecting from a network."
+msgstr "Đặt là true để tắt thông báo khi ngắt mạng."
+
+#: org.gnome.nm-applet.gschema.xml.in:16
+msgid "Disable VPN notifications"
+msgstr "Tắt thông báo VPN"
+
+#: org.gnome.nm-applet.gschema.xml.in:17
+msgid ""
+"Set this to true to disable notifications when connecting to or "
+"disconnecting from a VPN."
+msgstr "Đặt là true để tắt thông báo khi ngắt mạng VPN."
+
+#: org.gnome.nm-applet.gschema.xml.in:21
+msgid "Suppress networks available notifications"
+msgstr "Ngăn thông báo mạng sẵn sàng"
+
+#: org.gnome.nm-applet.gschema.xml.in:22
+msgid ""
+"Set this to true to disable notifications when Wi-Fi networks are available."
+msgstr "Đặt để tắt thông báo khi có mạng Wi-Fi."
+
+#: org.gnome.nm-applet.gschema.xml.in:26
+msgid "Stamp"
+msgstr "Tem"
+
+#: org.gnome.nm-applet.gschema.xml.in:27
+msgid "Used to determine whether settings should be migrated to a new version."
+msgstr "Dùng để xác định thiết lập có được chuyển sang phiên bản mới không."
+
+#: org.gnome.nm-applet.gschema.xml.in:31
+#, fuzzy
+msgid "Disable WiFi Create"
+msgstr "Tắt tạo Wi-Fi"
+
+#: org.gnome.nm-applet.gschema.xml.in:32
+msgid ""
+"Set to true to disable creation of adhoc networks when using the applet."
+msgstr "Đặt là true để tắt tạo mạng adhock bằng applet."
+
+#: org.gnome.nm-applet.gschema.xml.in:36
+msgid "Show the applet in notification area"
+msgstr "Hiện applet ở khu vực thông báo"
+
+#: org.gnome.nm-applet.gschema.xml.in:37
+msgid "Set to FALSE to disable displaying the applet in the notification area."
+msgstr "Đặt thành SAI để tắt hiển thị applet trong vùng thông báo."
 
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
@@ -110,8 +172,8 @@ msgstr "Xác thực 802.1X"
 #: src/connection-editor/ce-page-dcb.ui:1019
 #: src/connection-editor/ce-page-wireguard.ui:41
 #: src/connection-editor/ce-ppp-auth-methods.ui:28
-#: src/connection-editor/connection-helpers.c:284
-#: src/connection-editor/connection-helpers.c:747
+#: src/connection-editor/connection-helpers.c:332
+#: src/connection-editor/connection-helpers.c:795
 #: src/connection-editor/nm-connection-editor.ui:197
 #: src/connection-editor/page-bluetooth.c:293
 #: src/connection-editor/page-mobile.c:530
@@ -182,7 +244,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "Kết nối băng thông rộng di động mới"
 
 #: src/applet-device-broadband.c:809 src/applet-device-bt.c:75
-#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1269
+#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1251
 msgid "Connection Established"
 msgstr "Kết nối được thiết lập"
 
@@ -221,7 +283,7 @@ msgstr "Đang cấu hình kết nối di động băng thông rộng “%s”…
 msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr "Cần xác thực cho kết nối di động băng thông rộng “%s”…"
 
-#: src/applet-device-bt.c:113 src/applet.c:2595 src/mobile-helpers.c:593
+#: src/applet-device-bt.c:113 src/applet.c:2510 src/mobile-helpers.c:593
 #, fuzzy, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "Đang lấy địa chỉ mạng cho “%s”…"
@@ -254,7 +316,7 @@ msgid "Ethernet Network"
 msgstr "Mạng Ethernet"
 
 #. Notify user of unmanaged or unavailable device
-#: src/applet-device-ethernet.c:99 src/applet.c:1350
+#: src/applet-device-ethernet.c:99 src/applet.c:1265
 msgid "disconnected"
 msgstr "đã ngắt kết nối"
 
@@ -316,7 +378,7 @@ msgstr "Tạo mạng Wi-Fi mới"
 msgid "(none)"
 msgstr "(không)"
 
-#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1366
+#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1349
 msgid "Failed to add new connection"
 msgstr "Lỗi thêm kết nối mới"
 
@@ -324,8 +386,8 @@ msgstr "Lỗi thêm kết nối mới"
 msgid "Insufficient privileges."
 msgstr ""
 
-#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1349
-#: src/applet-device-wifi.c:1369 src/applet.c:415 src/applet.c:498
+#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1332
+#: src/applet-device-wifi.c:1352 src/applet.c:414 src/applet.c:497
 msgid "Connection failure"
 msgstr "Gặp lỗi kết nối"
 
@@ -357,60 +419,55 @@ msgstr "Wi-Fi bị tắt từ phần cứng"
 msgid "_Available networks"
 msgstr "Mọi người đều dùng được"
 
-#: src/applet-device-wifi.c:1083
+#: src/applet-device-wifi.c:1066
 msgid "Wi-Fi Networks Available"
 msgstr "Mạng Wi-Fi có thể dùng"
 
-#: src/applet-device-wifi.c:1084
+#: src/applet-device-wifi.c:1067
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Dùng trình đơn mạng để kết nối mạng Wi-Fi"
 
-#: src/applet-device-wifi.c:1087 src/applet.c:819
-#, fuzzy
-msgid "Don’t show this message again"
-msgstr "Đừng nhắc nữa"
-
-#: src/applet-device-wifi.c:1268
+#: src/applet-device-wifi.c:1249
 #, fuzzy, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "Bạn đã kết nối đến mạng Wi-Fi “%s”."
 
-#: src/applet-device-wifi.c:1303
+#: src/applet-device-wifi.c:1286
 #, fuzzy, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "Đang chuẩn bị kết nối mạng Wi-Fi “%s”…"
 
-#: src/applet-device-wifi.c:1306
+#: src/applet-device-wifi.c:1289
 #, fuzzy, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "Đang cấu hình kết nối mạng Wi-Fi “%s”…"
 
-#: src/applet-device-wifi.c:1309
+#: src/applet-device-wifi.c:1292
 #, fuzzy, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "Cần xác thực người dùng cho kết nối mạng Wi-Fi “%s”…"
 
-#: src/applet-device-wifi.c:1312
+#: src/applet-device-wifi.c:1295
 #, fuzzy, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "Đang lấy địa chỉ mạng Wi-Fi “%s”…"
 
-#: src/applet-device-wifi.c:1323
+#: src/applet-device-wifi.c:1306
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "Kết nối mạng Wi-Fi “%s” đã hoạt động: %s (%d%%)"
 
-#: src/applet-device-wifi.c:1327
+#: src/applet-device-wifi.c:1310
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "Kết nối mạng Wi-Fi “%s” đã hoạt động"
 
-#: src/applet-device-wifi.c:1346
+#: src/applet-device-wifi.c:1329
 msgid "Failed to activate connection"
 msgstr "Lỗi kích hoạt kết nối"
 
-#: src/applet-device-wifi.c:1347 src/applet-device-wifi.c:1367 src/applet.c:413
-#: src/applet.c:464 src/applet.c:496
+#: src/applet-device-wifi.c:1330 src/applet-device-wifi.c:1350 src/applet.c:412
+#: src/applet.c:463 src/applet.c:495
 msgid "Unknown error"
 msgstr "Lỗi lạ"
 
@@ -734,23 +791,28 @@ msgstr "Gặp lỗi khi tạo kết nối DUN: %s"
 msgid "Failed to write connection to VPN UI: incomplete write"
 msgstr ""
 
-#: src/applet.c:412
+#: src/applet.c:411
 msgid "Failed to add/activate connection"
 msgstr "Lỗi thêm/kích hoạt kết nối"
 
-#: src/applet.c:463
+#: src/applet.c:462
 msgid "Device disconnect failed"
 msgstr "Gặp lỗi khi ngắt kết nối thiết bị"
 
-#: src/applet.c:466
+#: src/applet.c:465
 msgid "Disconnect failure"
 msgstr "Lỗi ngắt kết nối"
 
-#: src/applet.c:495
+#: src/applet.c:494
 msgid "Connection activation failed"
 msgstr "Lỗi kích hoạt kết nối"
 
-#: src/applet.c:916
+#: src/applet.c:731
+#, fuzzy
+msgid "Don’t show this message again"
+msgstr "Đừng nhắc nữa"
+
+#: src/applet.c:831
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -760,7 +822,7 @@ msgstr ""
 "\n"
 "Kết nối VPN “%s” bị ngắt vì kết nối mạng bị ngắt."
 
-#: src/applet.c:918
+#: src/applet.c:833
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -770,7 +832,7 @@ msgstr ""
 "\n"
 "Kết nối VPN “%s” lỗi vì kết nối mạng bị ngắt."
 
-#: src/applet.c:920
+#: src/applet.c:835
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -779,7 +841,7 @@ msgstr ""
 "\n"
 "Kết nối VPN “%s” lỗi vì dịch vụ VPN dừng đột ngột."
 
-#: src/applet.c:922
+#: src/applet.c:837
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -789,7 +851,7 @@ msgstr ""
 "\n"
 "Kết nối VPN “%s” lỗi vì dịch vụ VPN trả về cấu hình không hợp lệ."
 
-#: src/applet.c:924
+#: src/applet.c:839
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -798,7 +860,7 @@ msgstr ""
 "\n"
 "Kết nối VPN “%s” lỗi vì hết hạn kết nối."
 
-#: src/applet.c:926
+#: src/applet.c:841
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -807,7 +869,7 @@ msgstr ""
 "\n"
 "Kết nối VPN “%s” lỗi vì dịch vụ VPN không khởi động kịp."
 
-#: src/applet.c:928
+#: src/applet.c:843
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -816,7 +878,7 @@ msgstr ""
 "\n"
 "Kết nối VPN “%s” lỗi vì dịch vụ VPN không khởi động được."
 
-#: src/applet.c:930
+#: src/applet.c:845
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -825,7 +887,7 @@ msgstr ""
 "\n"
 "Kết nối VPN “%s” lỗi vì không có khóa bí mật VPN hợp lệ."
 
-#: src/applet.c:932
+#: src/applet.c:847
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -834,7 +896,7 @@ msgstr ""
 "\n"
 "Kết nối VPN “%s” lỗi vì khóa bí mật VPN không hợp lệ."
 
-#: src/applet.c:937
+#: src/applet.c:852
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -843,7 +905,7 @@ msgstr ""
 "\n"
 "Kết nối VPN “%s” lỗi."
 
-#: src/applet.c:964
+#: src/applet.c:879
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -854,19 +916,19 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/applet.c:966
+#: src/applet.c:881
 msgid "VPN connection has been successfully established.\n"
 msgstr "Đã thiết lập thành công kết nối VPN.\n"
 
-#: src/applet.c:968
+#: src/applet.c:883
 msgid "VPN Login Message"
 msgstr "Thông điệp đăng nhập VPN"
 
-#: src/applet.c:976 src/applet.c:1016
+#: src/applet.c:891 src/applet.c:931
 msgid "VPN Connection Failed"
 msgstr "Lỗi kết nối VPN"
 
-#: src/applet.c:1020
+#: src/applet.c:935
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -879,7 +941,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1023
+#: src/applet.c:938
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -892,137 +954,137 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1338
+#: src/applet.c:1253
 msgid "device not ready (firmware missing)"
 msgstr "thiết bị chưa sẵn sàng (thiếu firmware)"
 
-#: src/applet.c:1340
+#: src/applet.c:1255
 msgid "device not ready"
 msgstr "thiết bị chưa sẵn sàng"
 
-#: src/applet.c:1366
+#: src/applet.c:1281
 msgid "Disconnect"
 msgstr "Ngắt kết nối"
 
-#: src/applet.c:1380
+#: src/applet.c:1295
 msgid "device not managed"
 msgstr "thiết bị không được quản lý"
 
-#: src/applet.c:1454
+#: src/applet.c:1369
 msgid "No network devices available"
 msgstr "Không tìm thấy thiết bị mạng dùng được"
 
-#: src/applet.c:1500
+#: src/applet.c:1415
 msgid "_VPN Connections"
 msgstr "Kết nối _VPN"
 
-#: src/applet.c:1544
+#: src/applet.c:1459
 #, fuzzy
 msgid "_Configure VPN…"
 msgstr "_Cấu hình VPN…"
 
-#: src/applet.c:1547
+#: src/applet.c:1462
 #, fuzzy
 msgid "_Add a VPN connection…"
 msgstr "Kết nối _VPN"
 
-#: src/applet.c:1653
+#: src/applet.c:1568
 #, fuzzy
 msgid "NetworkManager is not running…"
 msgstr "Trình Quản lí Mạng đang không chạy…"
 
-#: src/applet.c:1658 src/applet.c:2726
+#: src/applet.c:1573 src/applet.c:2641
 msgid "Networking disabled"
 msgstr "Kết nối mạng tắt"
 
 #. 'Enable Networking' item
-#: src/applet.c:1868
+#: src/applet.c:1783
 msgid "Enable _Networking"
 msgstr "Bật _mạng"
 
 #. 'Enable Wi-Fi' item
-#: src/applet.c:1877
+#: src/applet.c:1792
 msgid "Enable _Wi-Fi"
 msgstr "Bật _Wi-Fi"
 
 #. 'Enable Mobile Broadband' item
-#: src/applet.c:1886
+#: src/applet.c:1801
 msgid "Enable _Mobile Broadband"
 msgstr "Bật _di động băng thông rộng"
 
 #. Toggle notifications item
-#: src/applet.c:1898
+#: src/applet.c:1813
 msgid "Enable N_otifications"
 msgstr "Bật _thông báo"
 
 #. 'Connection Information' item
-#: src/applet.c:1910
+#: src/applet.c:1825
 msgid "Connection _Information"
 msgstr "Thông t_in kết nối"
 
 #. 'Edit Connections...' item
-#: src/applet.c:1918
+#: src/applet.c:1833
 #, fuzzy
 msgid "Edit Connections…"
 msgstr "Sửa kết nối…"
 
-#: src/applet.c:1932
+#: src/applet.c:1847
 msgid "_About"
 msgstr "_Giới thiệu"
 
-#: src/applet.c:2246
+#: src/applet.c:2161
 #, fuzzy, c-format
 msgid "You are now connected to “%s”."
 msgstr "Bạn đã kết nối đến mạng “%s”."
 
-#: src/applet.c:2286
+#: src/applet.c:2201
 msgid "Disconnected"
 msgstr "Đã ngắt kết nối"
 
-#: src/applet.c:2287
+#: src/applet.c:2202
 msgid "The network connection has been disconnected."
 msgstr "Kết nối mạng đã bị ngắt."
 
-#: src/applet.c:2589
+#: src/applet.c:2504
 #, fuzzy, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "Đang chuẩn bị kết nối “%s”…"
 
-#: src/applet.c:2592
+#: src/applet.c:2507
 #, fuzzy, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "Cần xác thực cho kết nối “%s”…"
 
-#: src/applet.c:2598
+#: src/applet.c:2513
 #, fuzzy, c-format
 msgid "Network connection “%s” active"
 msgstr "Kết nối “%s” đã hoạt động"
 
-#: src/applet.c:2671
+#: src/applet.c:2586
 #, fuzzy, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "Đang bắt đầu kết nối VPN “%s”…"
 
-#: src/applet.c:2674
+#: src/applet.c:2589
 #, fuzzy, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "Cần xác thực cho kết nối VPN “%s”…"
 
-#: src/applet.c:2677
+#: src/applet.c:2592
 #, fuzzy, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "Đang lấy địa chỉ VPN cho “%s”…"
 
-#: src/applet.c:2680
+#: src/applet.c:2595
 #, fuzzy
 msgid "VPN connection active"
 msgstr "Kết nối VPN “%s” đã hoạt động"
 
-#: src/applet.c:2730
+#: src/applet.c:2645
 msgid "No network connection"
 msgstr "Không có kết nối mạng"
 
-#: src/applet.c:3352
+#: src/applet.c:3280
 msgid "NetworkManager Applet"
 msgstr "Quản lý mạng"
 
@@ -1056,7 +1118,7 @@ msgstr ""
 #: src/connection-editor/ce-page-ip6.ui:199
 #: src/connection-editor/ce-page-team.ui:262
 #: src/connection-editor/ce-page-wireguard.ui:617
-#: src/connection-editor/connection-helpers.c:748
+#: src/connection-editor/connection-helpers.c:796
 #: src/connection-editor/nm-connection-list.ui:101
 msgid "_Delete"
 msgstr "_Xoá"
@@ -1152,7 +1214,7 @@ msgid "Bonded _connections"
 msgstr "_Kết nối bond:"
 
 #: src/connection-editor/ce-page-bond.ui:105
-#: src/connection-editor/ce-page-wifi.ui:400
+#: src/connection-editor/ce-page-wifi.ui:294
 #, fuzzy
 msgid "M_ode"
 msgstr "_Chế độ:"
@@ -2046,10 +2108,10 @@ msgstr "Mở rộng IPv6 _riêng:"
 msgid ""
 "If enabled, it makes the kernel generate a temporary IPv6 address in "
 "addition to the public one generated from MAC address. This enhances "
-"privacy, but could cause problems in some applications. If set to \"Default"
-"\", the value from NetworkManager global configuration is used. If that is "
-"also unset, use the kernel default value read from file \"/proc/sys/net/ipv6/"
-"conf/default/use_tempaddr\""
+"privacy, but could cause problems in some applications. If set to "
+"\"Default\", the value from NetworkManager global configuration is used. If "
+"that is also unset, use the kernel default value read from file \"/proc/sys/"
+"net/ipv6/conf/default/use_tempaddr\""
 msgstr ""
 
 #: src/connection-editor/ce-page-ip6.ui:323
@@ -2307,7 +2369,7 @@ msgid "Ad_vanced…"
 msgstr "Nâng cao"
 
 #: src/connection-editor/ce-page-team-port.ui:108
-msgid "Set by master"
+msgid "Set by controller"
 msgstr ""
 
 #: src/connection-editor/ce-page-team-port.ui:112
@@ -2740,7 +2802,7 @@ msgstr ""
 #: src/connection-editor/ce-page-team.ui:960
 msgid ""
 "Specifies the minimum number of ports that must be active before asserting "
-"carrier in the master interface, value can be 1 – 255."
+"carrier in the controller interface, value can be 1 – 255."
 msgstr ""
 
 #: src/connection-editor/ce-page-team.ui:972
@@ -2850,40 +2912,22 @@ msgstr ""
 msgid "Ad-hoc"
 msgstr "Ad-hoc"
 
-#: src/connection-editor/ce-page-wifi.ui:203
-msgid "mW"
-msgstr "mW"
-
-#: src/connection-editor/ce-page-wifi.ui:222
-#, fuzzy
-msgid "Transmission po_wer"
-msgstr "Năng lượng _phát:"
-
-#: src/connection-editor/ce-page-wifi.ui:256
-msgid "Mb/s"
-msgstr "Mb/giây"
-
-#: src/connection-editor/ce-page-wifi.ui:275
-#, fuzzy
-msgid "_Rate"
-msgstr "_Tốc độ:"
-
-#: src/connection-editor/ce-page-wifi.ui:311
+#: src/connection-editor/ce-page-wifi.ui:205
 #, fuzzy
 msgid "_BSSID"
 msgstr "_BSSID:"
 
-#: src/connection-editor/ce-page-wifi.ui:336
+#: src/connection-editor/ce-page-wifi.ui:230
 #, fuzzy
 msgid "C_hannel"
 msgstr "_Kênh:"
 
-#: src/connection-editor/ce-page-wifi.ui:368
+#: src/connection-editor/ce-page-wifi.ui:262
 #, fuzzy
 msgid "Ban_d"
 msgstr "_Băng tần:"
 
-#: src/connection-editor/ce-page-wifi.ui:414
+#: src/connection-editor/ce-page-wifi.ui:308
 #, fuzzy
 msgid "SS_ID"
 msgstr "SS_ID:"
@@ -3242,16 +3286,21 @@ msgid "WireGuard"
 msgstr "Dây"
 
 #: src/connection-editor/connection-helpers.c:112
-#: src/connection-editor/connection-helpers.c:374
+#: src/connection-editor/connection-helpers.c:422
 #: src/connection-editor/page-vpn.c:92
 msgid "VPN"
 msgstr "VPN"
 
-#: src/connection-editor/connection-helpers.c:192
+#: src/connection-editor/connection-helpers.c:202
+#, c-format
+msgid "VPN plugin “%s” not found"
+msgstr ""
+
+#: src/connection-editor/connection-helpers.c:227
 msgid "No VPN service type."
 msgstr ""
 
-#: src/connection-editor/connection-helpers.c:197
+#: src/connection-editor/connection-helpers.c:241
 #, fuzzy
 msgid "The VPN plugin failed to import the VPN connection correctly: "
 msgstr ""
@@ -3259,35 +3308,35 @@ msgstr ""
 "\n"
 "Lỗi: không có kiểu dịch vụ VPN."
 
-#: src/connection-editor/connection-helpers.c:281
+#: src/connection-editor/connection-helpers.c:329
 #: src/connection-editor/page-proxy.c:104
 #: src/connection-editor/page-team-port.c:189
 #: src/connection-editor/page-team.c:327
 msgid "Select file to import"
 msgstr "Chọn tập tin cần nhập"
 
-#: src/connection-editor/connection-helpers.c:285
+#: src/connection-editor/connection-helpers.c:333
 #: src/connection-editor/page-proxy.c:108
 #: src/connection-editor/page-team-port.c:193
 #: src/connection-editor/page-team.c:331
 msgid "_Open"
 msgstr ""
 
-#: src/connection-editor/connection-helpers.c:316
+#: src/connection-editor/connection-helpers.c:364
 msgid "Hardware"
 msgstr "Phần cứng"
 
-#: src/connection-editor/connection-helpers.c:343
+#: src/connection-editor/connection-helpers.c:391
 msgid "Virtual"
 msgstr "Ảo"
 
-#: src/connection-editor/connection-helpers.c:492
-#: src/connection-editor/connection-helpers.c:494
+#: src/connection-editor/connection-helpers.c:540
+#: src/connection-editor/connection-helpers.c:542
 #, fuzzy
 msgid "Import a saved VPN configuration…"
 msgstr "Nhập cấu hình VPN đã lưu…"
 
-#: src/connection-editor/connection-helpers.c:524
+#: src/connection-editor/connection-helpers.c:572
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
@@ -3295,15 +3344,15 @@ msgstr ""
 "Hộp thoại chỉnh sửa kết nối không thể được khởi tạo do xảy ra một lỗi không "
 "rõ."
 
-#: src/connection-editor/connection-helpers.c:533
+#: src/connection-editor/connection-helpers.c:581
 msgid "Could not create new connection"
 msgstr "Không thể tạo kết nối mới"
 
-#: src/connection-editor/connection-helpers.c:696
+#: src/connection-editor/connection-helpers.c:744
 msgid "Connection delete failed"
 msgstr "Lỗi xoá kết nối"
 
-#: src/connection-editor/connection-helpers.c:744
+#: src/connection-editor/connection-helpers.c:792
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Bạn có chắc muốn xoá kết nối %s không?"
@@ -3543,46 +3592,46 @@ msgstr "Xoá kết nối đã chọn"
 msgid "Authenticate to delete the selected connection"
 msgstr "Xác thực để xóa kết nối VPN đã chọn"
 
-#: src/connection-editor/nm-connection-list.c:1053
+#: src/connection-editor/nm-connection-list.c:1051
 #, fuzzy
 msgid "Unrecognized connection type"
 msgstr "Loại kết nối di động băng thông rộng không hỗ trợ."
 
-#: src/connection-editor/nm-connection-list.c:1058
+#: src/connection-editor/nm-connection-list.c:1057
 #, fuzzy, c-format
 msgid "Don’t know how to import “%s” connections"
 msgstr "Không biết cách tạo kết nối “%s”"
 
-#: src/connection-editor/nm-connection-list.c:1062
+#: src/connection-editor/nm-connection-list.c:1061
 #, fuzzy
 msgid "Error importing connection"
 msgstr "Lỗi sửa kết nối"
 
-#: src/connection-editor/nm-connection-list.c:1069
-#: src/connection-editor/nm-connection-list.c:1084
-#: src/connection-editor/nm-connection-list.c:1087
+#: src/connection-editor/nm-connection-list.c:1077
+#: src/connection-editor/nm-connection-list.c:1092
+#: src/connection-editor/nm-connection-list.c:1095
 msgid "Error creating connection"
 msgstr "Gặp lỗi tạo kết nối"
 
-#: src/connection-editor/nm-connection-list.c:1069
+#: src/connection-editor/nm-connection-list.c:1077
 #, fuzzy
 msgid "Connection type not specified."
 msgstr "Lỗi thêm kết nối"
 
-#: src/connection-editor/nm-connection-list.c:1085
+#: src/connection-editor/nm-connection-list.c:1093
 msgid "No VPN plugins are installed."
 msgstr "Chưa cài đặt phần bổ sung VPN."
 
-#: src/connection-editor/nm-connection-list.c:1088
+#: src/connection-editor/nm-connection-list.c:1096
 #, fuzzy, c-format
 msgid "Don’t know how to create “%s” connections"
 msgstr "Không biết cách tạo kết nối “%s”"
 
-#: src/connection-editor/nm-connection-list.c:1122
+#: src/connection-editor/nm-connection-list.c:1130
 msgid "Error editing connection"
 msgstr "Lỗi sửa kết nối"
 
-#: src/connection-editor/nm-connection-list.c:1123
+#: src/connection-editor/nm-connection-list.c:1131
 #, fuzzy, c-format
 msgid "Did not find a connection with UUID “%s”"
 msgstr "Không tìm thấy kết nối với UUID “%s”"
@@ -3910,18 +3959,18 @@ msgstr "Không thể nạp giao diện WiMAX"
 msgid "MACSEC connection %d"
 msgstr "Kết nối WiMAX %d"
 
-#: src/connection-editor/page-master.c:221
-#: src/connection-editor/page-master.c:232
+#: src/connection-editor/page-controller.c:221
+#: src/connection-editor/page-controller.c:232
 #, fuzzy
 msgid "Duplicate ports"
 msgstr "Nhân đôi phần phụ thuộc"
 
-#: src/connection-editor/page-master.c:222
+#: src/connection-editor/page-controller.c:222
 #, fuzzy, c-format
 msgid "Ports “%s” and “%s” both apply to device “%s”"
 msgstr "Cả hai phần phụ thuộc “%s” và “%s” áp dụng cho thiết bị “%s”"
 
-#: src/connection-editor/page-master.c:233
+#: src/connection-editor/page-controller.c:233
 #, fuzzy, c-format
 msgid ""
 "Ports “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
@@ -3930,7 +3979,7 @@ msgstr ""
 "Cả hai phần phụ thuộc “%s” và “%s” áp dụng cho các cổng ảo khác nhau (“%s” "
 "và “%s”) của cùng một thiết bị vật lý."
 
-#: src/connection-editor/page-master.c:357
+#: src/connection-editor/page-controller.c:357
 #, c-format
 msgid "%s port %d"
 msgstr ""
@@ -4412,6 +4461,20 @@ msgstr "Chứng nhậng DER hoặc PEM (*.der, *.pem, *.crt, *.cer)"
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "Khoá riêng DER, PEM, hoặc PKCS#12 (*.der, *.pem, *.p12, *.key)"
 
+#~ msgid "mW"
+#~ msgstr "mW"
+
+#, fuzzy
+#~ msgid "Transmission po_wer"
+#~ msgstr "Năng lượng _phát:"
+
+#~ msgid "Mb/s"
+#~ msgstr "Mb/giây"
+
+#, fuzzy
+#~ msgid "_Rate"
+#~ msgstr "_Tốc độ:"
+
 #~ msgid "More networks"
 #~ msgstr "Thêm mạng"
 
@@ -4532,59 +4595,6 @@ msgstr "Khoá riêng DER, PEM, hoặc PKCS#12 (*.der, *.pem, *.p12, *.key)"
 #, fuzzy
 #~ msgid "WEP inde_x"
 #~ msgstr "_Chỉ mục WEP:"
-
-#~ msgid "Disable connected notifications"
-#~ msgstr "Tắt thông báo kết nối"
-
-#~ msgid ""
-#~ "Set this to true to disable notifications when connecting to a network."
-#~ msgstr "Đặt là true để tắt thông báo khi nối mạng."
-
-#~ msgid "Disable disconnected notifications"
-#~ msgstr "Tắt thông báo ngắt kết nối"
-
-#~ msgid ""
-#~ "Set this to true to disable notifications when disconnecting from a "
-#~ "network."
-#~ msgstr "Đặt là true để tắt thông báo khi ngắt mạng."
-
-#~ msgid "Disable VPN notifications"
-#~ msgstr "Tắt thông báo VPN"
-
-#~ msgid ""
-#~ "Set this to true to disable notifications when connecting to or "
-#~ "disconnecting from a VPN."
-#~ msgstr "Đặt là true để tắt thông báo khi ngắt mạng VPN."
-
-#~ msgid "Suppress networks available notifications"
-#~ msgstr "Ngăn thông báo mạng sẵn sàng"
-
-#~ msgid ""
-#~ "Set this to true to disable notifications when Wi-Fi networks are "
-#~ "available."
-#~ msgstr "Đặt để tắt thông báo khi có mạng Wi-Fi."
-
-#~ msgid "Stamp"
-#~ msgstr "Tem"
-
-#~ msgid ""
-#~ "Used to determine whether settings should be migrated to a new version."
-#~ msgstr "Dùng để xác định thiết lập có được chuyển sang phiên bản mới không."
-
-#, fuzzy
-#~ msgid "Disable WiFi Create"
-#~ msgstr "Tắt tạo Wi-Fi"
-
-#~ msgid ""
-#~ "Set to true to disable creation of adhoc networks when using the applet."
-#~ msgstr "Đặt là true để tắt tạo mạng adhock bằng applet."
-
-#~ msgid "Show the applet in notification area"
-#~ msgstr "Hiện applet ở khu vực thông báo"
-
-#~ msgid ""
-#~ "Set to FALSE to disable displaying the applet in the notification area."
-#~ msgstr "Đặt thành SAI để tắt hiển thị applet trong vùng thông báo."
 
 #~ msgid "Ignore CA certificate"
 #~ msgstr "Bỏ qua chứng nhận CA"

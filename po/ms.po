@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: network-manager-applet master\n"
+"Project-Id-Version: network-manager-applet main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
 "applet/\n"
-"POT-Creation-Date: 2022-05-30 11:43+0200\n"
+"POT-Creation-Date: 2023-08-03 11:40+0200\n"
 "PO-Revision-Date: 2011-11-14 13:25+0730\n"
 "Last-Translator: Umarzuki Bin Mochlis Moktar <umarzuki@gmail.com>\n"
 "Language-Team: Malay <gnome-ms@googlegroups.com>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "X-Poedit-Language: Malay\n"
 "X-Poedit-Country: MALAYSIA\n"
 
-#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3251
+#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3166
 msgid "Network"
 msgstr "Rangkaian"
 
@@ -63,6 +63,86 @@ msgstr "Sambungan-sangbungan Rangkaian Aktif"
 #: nm-connection-editor.desktop.in:4
 msgid "Manage and change your network connection settings"
 msgstr "Urus dan pinda tetapan sambungan rangkaian anda"
+
+#: org.gnome.nm-applet.gschema.xml.in:6
+msgid "Disable connected notifications"
+msgstr "Lumpuhkan pemberitahuan apabila telah tersambung"
+
+#: org.gnome.nm-applet.gschema.xml.in:7
+#, fuzzy
+msgid "Set this to true to disable notifications when connecting to a network."
+msgstr ""
+"Set ini ke TRUE untuk mematikan pemberitahuan apabila menyambung kepada "
+"rangkaian"
+
+#: org.gnome.nm-applet.gschema.xml.in:11
+msgid "Disable disconnected notifications"
+msgstr "Lumpuhkan pemberitahuan apabila telah terputus"
+
+#: org.gnome.nm-applet.gschema.xml.in:12
+#, fuzzy
+msgid ""
+"Set this to true to disable notifications when disconnecting from a network."
+msgstr ""
+"Set ini ke TRUE untuk mematikan pemberitahuan apabila memutuskan dari "
+"rangkaian."
+
+#: org.gnome.nm-applet.gschema.xml.in:16
+#, fuzzy
+msgid "Disable VPN notifications"
+msgstr "Lumpuhkan pemberitahuan apabila telah tersambung"
+
+#: org.gnome.nm-applet.gschema.xml.in:17
+#, fuzzy
+msgid ""
+"Set this to true to disable notifications when connecting to or "
+"disconnecting from a VPN."
+msgstr ""
+"Set ini ke TRUE untuk mematikan pemberitahuan apabila memutuskan dari "
+"rangkaian."
+
+#: org.gnome.nm-applet.gschema.xml.in:21
+msgid "Suppress networks available notifications"
+msgstr "Redam notifikasi rangkaian tersedia"
+
+#: org.gnome.nm-applet.gschema.xml.in:22
+#, fuzzy
+msgid ""
+"Set this to true to disable notifications when Wi-Fi networks are available."
+msgstr ""
+"Set ini ke TRUE untuk mematikan pemberitahuan apabila rangkaian wayarles "
+"boleh didapati."
+
+#: org.gnome.nm-applet.gschema.xml.in:26
+msgid "Stamp"
+msgstr "Cop"
+
+#: org.gnome.nm-applet.gschema.xml.in:27
+msgid "Used to determine whether settings should be migrated to a new version."
+msgstr ""
+"Diguna untuk menentukan sama ada tetapan sedia ada patut dipindahkan ke "
+"versi baharu."
+
+#: org.gnome.nm-applet.gschema.xml.in:31
+#, fuzzy
+msgid "Disable WiFi Create"
+msgstr "Lumpuhkan Cipta Wi-Fi"
+
+#: org.gnome.nm-applet.gschema.xml.in:32
+#, fuzzy
+msgid ""
+"Set to true to disable creation of adhoc networks when using the applet."
+msgstr ""
+"Set ke TRUE untuk mematikan penciptaan rangkaian Adhoc apabila menggunakan "
+"applet."
+
+#: org.gnome.nm-applet.gschema.xml.in:36
+msgid "Show the applet in notification area"
+msgstr ""
+
+#: org.gnome.nm-applet.gschema.xml.in:37
+msgid "Set to FALSE to disable displaying the applet in the notification area."
+msgstr ""
 
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
@@ -110,8 +190,8 @@ msgstr "Pengesahan 802.1X berwayar"
 #: src/connection-editor/ce-page-dcb.ui:1019
 #: src/connection-editor/ce-page-wireguard.ui:41
 #: src/connection-editor/ce-ppp-auth-methods.ui:28
-#: src/connection-editor/connection-helpers.c:284
-#: src/connection-editor/connection-helpers.c:747
+#: src/connection-editor/connection-helpers.c:332
+#: src/connection-editor/connection-helpers.c:795
 #: src/connection-editor/nm-connection-editor.ui:197
 #: src/connection-editor/page-bluetooth.c:293
 #: src/connection-editor/page-mobile.c:530
@@ -182,7 +262,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "Sambungan Baharu Jalurlebar Mudahalih"
 
 #: src/applet-device-broadband.c:809 src/applet-device-bt.c:75
-#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1269
+#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1251
 msgid "Connection Established"
 msgstr "Sambungan Ditubuhkan"
 
@@ -224,7 +304,7 @@ msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr ""
 "Pengesahan pengguna diperlukan untuk sambungan jalurlebar mudahalih '%s'..."
 
-#: src/applet-device-bt.c:113 src/applet.c:2595 src/mobile-helpers.c:593
+#: src/applet-device-bt.c:113 src/applet.c:2510 src/mobile-helpers.c:593
 #, fuzzy, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "Meminta alamat rangkaian untuk '%s'..."
@@ -259,7 +339,7 @@ msgid "Ethernet Network"
 msgstr "Rangkaian Berwayar"
 
 #. Notify user of unmanaged or unavailable device
-#: src/applet-device-ethernet.c:99 src/applet.c:1350
+#: src/applet-device-ethernet.c:99 src/applet.c:1265
 msgid "disconnected"
 msgstr "terputus"
 
@@ -323,7 +403,7 @@ msgstr "Cipta Sambungan Wayarles Baharu"
 msgid "(none)"
 msgstr "(tiada)"
 
-#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1366
+#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1349
 #, fuzzy
 msgid "Failed to add new connection"
 msgstr "Tidak dapat menyunting rangkaian baharu"
@@ -332,8 +412,8 @@ msgstr "Tidak dapat menyunting rangkaian baharu"
 msgid "Insufficient privileges."
 msgstr ""
 
-#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1349
-#: src/applet-device-wifi.c:1369 src/applet.c:415 src/applet.c:498
+#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1332
+#: src/applet-device-wifi.c:1352 src/applet.c:414 src/applet.c:497
 #, fuzzy
 msgid "Connection failure"
 msgstr "Gagal menambah sambungan"
@@ -369,63 +449,58 @@ msgstr "WiMAX dilumpuhkan oleh suis perkakasan"
 msgid "_Available networks"
 msgstr "Tersedia untuk semua pengguna"
 
-#: src/applet-device-wifi.c:1083
+#: src/applet-device-wifi.c:1066
 #, fuzzy
 msgid "Wi-Fi Networks Available"
 msgstr "Rangkaian Wayarles Tersedia"
 
-#: src/applet-device-wifi.c:1084
+#: src/applet-device-wifi.c:1067
 #, fuzzy
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Guna menu rangkaian utuk sambung ke rangkaian wayarles"
 
-#: src/applet-device-wifi.c:1087 src/applet.c:819
-#, fuzzy
-msgid "Don’t show this message again"
-msgstr "Jangan paparkan mesej ini lagi"
-
-#: src/applet-device-wifi.c:1268
+#: src/applet-device-wifi.c:1249
 #, fuzzy, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "Anda telah tersambung ke rangkaian wayarles '%s'."
 
-#: src/applet-device-wifi.c:1303
+#: src/applet-device-wifi.c:1286
 #, fuzzy, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "Menyediakan sambungan rangkaian '%s'..."
 
-#: src/applet-device-wifi.c:1306
+#: src/applet-device-wifi.c:1289
 #, fuzzy, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "Mengkonfigur sambungan rangkaian '%s'..."
 
-#: src/applet-device-wifi.c:1309
+#: src/applet-device-wifi.c:1292
 #, fuzzy, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "Pengesahan pengguna diperlukan untuk rangkaian wayarles '%s'..."
 
-#: src/applet-device-wifi.c:1312
+#: src/applet-device-wifi.c:1295
 #, fuzzy, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "Meminta alamat rangkaian untuk '%s'..."
 
-#: src/applet-device-wifi.c:1323
+#: src/applet-device-wifi.c:1306
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "Sambungan rangkaian wayarles '%s' aktif: %s (%d%%)"
 
-#: src/applet-device-wifi.c:1327
+#: src/applet-device-wifi.c:1310
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "Sambungan rangkaian '%s' aktif"
 
-#: src/applet-device-wifi.c:1346
+#: src/applet-device-wifi.c:1329
 #, fuzzy
 msgid "Failed to activate connection"
 msgstr "Gagal mencipta sambungan PAN: %s"
 
-#: src/applet-device-wifi.c:1347 src/applet-device-wifi.c:1367 src/applet.c:413
-#: src/applet.c:464 src/applet.c:496
+#: src/applet-device-wifi.c:1330 src/applet-device-wifi.c:1350 src/applet.c:412
+#: src/applet.c:463 src/applet.c:495
 #, fuzzy
 msgid "Unknown error"
 msgstr "Tidak diketahui"
@@ -756,27 +831,32 @@ msgstr "Gagal mencipta sambungan DUN: %s"
 msgid "Failed to write connection to VPN UI: incomplete write"
 msgstr ""
 
-#: src/applet.c:412
+#: src/applet.c:411
 #, fuzzy
 msgid "Failed to add/activate connection"
 msgstr "Gagal mencipta sambungan PAN: %s"
 
-#: src/applet.c:463
+#: src/applet.c:462
 #, fuzzy
 msgid "Device disconnect failed"
 msgstr "terputus"
 
-#: src/applet.c:466
+#: src/applet.c:465
 #, fuzzy
 msgid "Disconnect failure"
 msgstr "Terputus"
 
-#: src/applet.c:495
+#: src/applet.c:494
 #, fuzzy
 msgid "Connection activation failed"
 msgstr "Gagal menambah sambungan"
 
-#: src/applet.c:916
+#: src/applet.c:731
+#, fuzzy
+msgid "Don’t show this message again"
+msgstr "Jangan paparkan mesej ini lagi"
+
+#: src/applet.c:831
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -787,7 +867,7 @@ msgstr ""
 "Sambungan VPN '%s' terputus disebabkan oleh sambungan rangkaian telah "
 "diganggu."
 
-#: src/applet.c:918
+#: src/applet.c:833
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -797,7 +877,7 @@ msgstr ""
 "\n"
 "Sambungan VPN '%s' gagal kerana terganggu."
 
-#: src/applet.c:920
+#: src/applet.c:835
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -806,7 +886,7 @@ msgstr ""
 "\n"
 "Sambungan VPN '%s' gagal kerana servis VPN tiba-tiba terhenti. "
 
-#: src/applet.c:922
+#: src/applet.c:837
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -816,7 +896,7 @@ msgstr ""
 "\n"
 "Sambungan VPN '%s' gagal kerana servis VPN mempunyai konfigurasi tidak sah."
 
-#: src/applet.c:924
+#: src/applet.c:839
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -825,7 +905,7 @@ msgstr ""
 "\n"
 "Sambungan VPN '%s' gagal kerana telah tamat masa menyambung."
 
-#: src/applet.c:926
+#: src/applet.c:841
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -834,7 +914,7 @@ msgstr ""
 "\n"
 "Sambungan VPN '%s' gagal kerana servis VPN tidak dimulakan tepat pada masa."
 
-#: src/applet.c:928
+#: src/applet.c:843
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -843,7 +923,7 @@ msgstr ""
 "\n"
 "Sambungan VPN '%s' gagal keranan servis VPN gagal dimulakan."
 
-#: src/applet.c:930
+#: src/applet.c:845
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -852,7 +932,7 @@ msgstr ""
 "\n"
 "Sambungan VPN '%s' gagal kerana tiada rahsia-rahsia VPN yang sah."
 
-#: src/applet.c:932
+#: src/applet.c:847
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -861,7 +941,7 @@ msgstr ""
 "\n"
 "Sambungan VPN '%s' gagal kerana rahsia-rahsia VPN tidak sah."
 
-#: src/applet.c:937
+#: src/applet.c:852
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -870,7 +950,7 @@ msgstr ""
 "\n"
 "Sambungan VPN '%s' gagal."
 
-#: src/applet.c:964
+#: src/applet.c:879
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -878,19 +958,19 @@ msgid ""
 "%s\n"
 msgstr ""
 
-#: src/applet.c:966
+#: src/applet.c:881
 msgid "VPN connection has been successfully established.\n"
 msgstr ""
 
-#: src/applet.c:968
+#: src/applet.c:883
 msgid "VPN Login Message"
 msgstr "Mesej Logmasuk VPN"
 
-#: src/applet.c:976 src/applet.c:1016
+#: src/applet.c:891 src/applet.c:931
 msgid "VPN Connection Failed"
 msgstr "Sambungan VPN Gagal"
 
-#: src/applet.c:1020
+#: src/applet.c:935
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -903,7 +983,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1023
+#: src/applet.c:938
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -916,138 +996,138 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1338
+#: src/applet.c:1253
 msgid "device not ready (firmware missing)"
 msgstr "peranti tidak sedia (perisian tegar tiada)"
 
-#: src/applet.c:1340
+#: src/applet.c:1255
 msgid "device not ready"
 msgstr "peranti belum bersedia"
 
-#: src/applet.c:1366
+#: src/applet.c:1281
 msgid "Disconnect"
 msgstr "Putuskan"
 
-#: src/applet.c:1380
+#: src/applet.c:1295
 msgid "device not managed"
 msgstr "peranti tidak diuruskan"
 
-#: src/applet.c:1454
+#: src/applet.c:1369
 msgid "No network devices available"
 msgstr "Tiada peranti rangkaian tersedia"
 
-#: src/applet.c:1500
+#: src/applet.c:1415
 msgid "_VPN Connections"
 msgstr "Sambungan _VPN"
 
-#: src/applet.c:1544
+#: src/applet.c:1459
 #, fuzzy
 msgid "_Configure VPN…"
 msgstr "_Konfigur VPN..."
 
-#: src/applet.c:1547
+#: src/applet.c:1462
 #, fuzzy
 msgid "_Add a VPN connection…"
 msgstr "Sambungan _VPN"
 
-#: src/applet.c:1653
+#: src/applet.c:1568
 #, fuzzy
 msgid "NetworkManager is not running…"
 msgstr "NetworkManager tidak berjalan..."
 
-#: src/applet.c:1658 src/applet.c:2726
+#: src/applet.c:1573 src/applet.c:2641
 msgid "Networking disabled"
 msgstr "Rangkaian dilumpuhkan"
 
 #. 'Enable Networking' item
-#: src/applet.c:1868
+#: src/applet.c:1783
 msgid "Enable _Networking"
 msgstr "Benarkan Ra_ngkaian"
 
 #. 'Enable Wi-Fi' item
-#: src/applet.c:1877
+#: src/applet.c:1792
 #, fuzzy
 msgid "Enable _Wi-Fi"
 msgstr "Benarkan _Wayarles"
 
 #. 'Enable Mobile Broadband' item
-#: src/applet.c:1886
+#: src/applet.c:1801
 msgid "Enable _Mobile Broadband"
 msgstr "Benarkan Jalurlebar _Mudahalih"
 
 #. Toggle notifications item
-#: src/applet.c:1898
+#: src/applet.c:1813
 msgid "Enable N_otifications"
 msgstr "Benarkan _Pemberitahuan"
 
 #. 'Connection Information' item
-#: src/applet.c:1910
+#: src/applet.c:1825
 msgid "Connection _Information"
 msgstr "Maklumat Sambungan"
 
 #. 'Edit Connections...' item
-#: src/applet.c:1918
+#: src/applet.c:1833
 #, fuzzy
 msgid "Edit Connections…"
 msgstr "Edit Sambungan..."
 
-#: src/applet.c:1932
+#: src/applet.c:1847
 msgid "_About"
 msgstr "_Mengenai"
 
-#: src/applet.c:2246
+#: src/applet.c:2161
 #, fuzzy, c-format
 msgid "You are now connected to “%s”."
 msgstr "Anda sekarang sambung ke '%s'."
 
-#: src/applet.c:2286
+#: src/applet.c:2201
 msgid "Disconnected"
 msgstr "Terputus"
 
-#: src/applet.c:2287
+#: src/applet.c:2202
 msgid "The network connection has been disconnected."
 msgstr "Sambungan rangkaian telah diputuskan."
 
-#: src/applet.c:2589
+#: src/applet.c:2504
 #, fuzzy, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "Menyediakan sambungan rangkaian '%s'..."
 
-#: src/applet.c:2592
+#: src/applet.c:2507
 #, fuzzy, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "Pengesahan pengguna diperlukan untuk sambungan rangkaian '%s'..."
 
-#: src/applet.c:2598
+#: src/applet.c:2513
 #, fuzzy, c-format
 msgid "Network connection “%s” active"
 msgstr "Sambungan rangkaian '%s' aktif"
 
-#: src/applet.c:2671
+#: src/applet.c:2586
 #, fuzzy, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "Memulakan sambungan VPN '%s'..."
 
-#: src/applet.c:2674
+#: src/applet.c:2589
 #, fuzzy, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "Pengesahan pengguna diperlukan untuk sambungan VPN '%s'..."
 
-#: src/applet.c:2677
+#: src/applet.c:2592
 #, fuzzy, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "Meminta satu alamat VPN untuk '%s'..."
 
-#: src/applet.c:2680
+#: src/applet.c:2595
 #, fuzzy
 msgid "VPN connection active"
 msgstr "Sambungan VPN '%s' aktif"
 
-#: src/applet.c:2730
+#: src/applet.c:2645
 msgid "No network connection"
 msgstr "Tiada sambungan rangkaian"
 
-#: src/applet.c:3352
+#: src/applet.c:3280
 msgid "NetworkManager Applet"
 msgstr "Aplet NetworkManager"
 
@@ -1081,7 +1161,7 @@ msgstr ""
 #: src/connection-editor/ce-page-ip6.ui:199
 #: src/connection-editor/ce-page-team.ui:262
 #: src/connection-editor/ce-page-wireguard.ui:617
-#: src/connection-editor/connection-helpers.c:748
+#: src/connection-editor/connection-helpers.c:796
 #: src/connection-editor/nm-connection-list.ui:101
 msgid "_Delete"
 msgstr "_Padam"
@@ -1183,7 +1263,7 @@ msgid "Bonded _connections"
 msgstr "Sambungan Asas:"
 
 #: src/connection-editor/ce-page-bond.ui:105
-#: src/connection-editor/ce-page-wifi.ui:400
+#: src/connection-editor/ce-page-wifi.ui:294
 #, fuzzy
 msgid "M_ode"
 msgstr "M_od:"
@@ -2052,10 +2132,10 @@ msgstr ""
 msgid ""
 "If enabled, it makes the kernel generate a temporary IPv6 address in "
 "addition to the public one generated from MAC address. This enhances "
-"privacy, but could cause problems in some applications. If set to \"Default"
-"\", the value from NetworkManager global configuration is used. If that is "
-"also unset, use the kernel default value read from file \"/proc/sys/net/ipv6/"
-"conf/default/use_tempaddr\""
+"privacy, but could cause problems in some applications. If set to "
+"\"Default\", the value from NetworkManager global configuration is used. If "
+"that is also unset, use the kernel default value read from file \"/proc/sys/"
+"net/ipv6/conf/default/use_tempaddr\""
 msgstr ""
 
 #: src/connection-editor/ce-page-ip6.ui:323
@@ -2312,7 +2392,7 @@ msgid "Ad_vanced…"
 msgstr "Lanjutan"
 
 #: src/connection-editor/ce-page-team-port.ui:108
-msgid "Set by master"
+msgid "Set by controller"
 msgstr ""
 
 #: src/connection-editor/ce-page-team-port.ui:112
@@ -2738,7 +2818,7 @@ msgstr ""
 #: src/connection-editor/ce-page-team.ui:960
 msgid ""
 "Specifies the minimum number of ports that must be active before asserting "
-"carrier in the master interface, value can be 1 – 255."
+"carrier in the controller interface, value can be 1 – 255."
 msgstr ""
 
 #: src/connection-editor/ce-page-team.ui:972
@@ -2847,40 +2927,22 @@ msgstr ""
 msgid "Ad-hoc"
 msgstr "Ad hoc"
 
-#: src/connection-editor/ce-page-wifi.ui:203
-msgid "mW"
-msgstr "mW"
-
-#: src/connection-editor/ce-page-wifi.ui:222
-#, fuzzy
-msgid "Transmission po_wer"
-msgstr "Kuasa Trans_misi:"
-
-#: src/connection-editor/ce-page-wifi.ui:256
-msgid "Mb/s"
-msgstr "Mb/s"
-
-#: src/connection-editor/ce-page-wifi.ui:275
-#, fuzzy
-msgid "_Rate"
-msgstr "_Kadar:"
-
-#: src/connection-editor/ce-page-wifi.ui:311
+#: src/connection-editor/ce-page-wifi.ui:205
 #, fuzzy
 msgid "_BSSID"
 msgstr "_BSSID:"
 
-#: src/connection-editor/ce-page-wifi.ui:336
+#: src/connection-editor/ce-page-wifi.ui:230
 #, fuzzy
 msgid "C_hannel"
 msgstr "Salura_n:"
 
-#: src/connection-editor/ce-page-wifi.ui:368
+#: src/connection-editor/ce-page-wifi.ui:262
 #, fuzzy
 msgid "Ban_d"
 msgstr "J_alur:"
 
-#: src/connection-editor/ce-page-wifi.ui:414
+#: src/connection-editor/ce-page-wifi.ui:308
 msgid "SS_ID"
 msgstr ""
 
@@ -3238,16 +3300,21 @@ msgid "WireGuard"
 msgstr "Berwayar"
 
 #: src/connection-editor/connection-helpers.c:112
-#: src/connection-editor/connection-helpers.c:374
+#: src/connection-editor/connection-helpers.c:422
 #: src/connection-editor/page-vpn.c:92
 msgid "VPN"
 msgstr "VPN"
 
-#: src/connection-editor/connection-helpers.c:192
+#: src/connection-editor/connection-helpers.c:202
+#, c-format
+msgid "VPN plugin “%s” not found"
+msgstr ""
+
+#: src/connection-editor/connection-helpers.c:227
 msgid "No VPN service type."
 msgstr ""
 
-#: src/connection-editor/connection-helpers.c:197
+#: src/connection-editor/connection-helpers.c:241
 #, fuzzy
 msgid "The VPN plugin failed to import the VPN connection correctly: "
 msgstr ""
@@ -3255,36 +3322,36 @@ msgstr ""
 "\n"
 "Ralat: tiada jenis perkhidmatan VPN."
 
-#: src/connection-editor/connection-helpers.c:281
+#: src/connection-editor/connection-helpers.c:329
 #: src/connection-editor/page-proxy.c:104
 #: src/connection-editor/page-team-port.c:189
 #: src/connection-editor/page-team.c:327
 msgid "Select file to import"
 msgstr "Pilih fail untuk diimport"
 
-#: src/connection-editor/connection-helpers.c:285
+#: src/connection-editor/connection-helpers.c:333
 #: src/connection-editor/page-proxy.c:108
 #: src/connection-editor/page-team-port.c:193
 #: src/connection-editor/page-team.c:331
 msgid "_Open"
 msgstr ""
 
-#: src/connection-editor/connection-helpers.c:316
+#: src/connection-editor/connection-helpers.c:364
 #, fuzzy
 msgid "Hardware"
 msgstr "Alamat Perkakasan:"
 
-#: src/connection-editor/connection-helpers.c:343
+#: src/connection-editor/connection-helpers.c:391
 msgid "Virtual"
 msgstr ""
 
-#: src/connection-editor/connection-helpers.c:492
-#: src/connection-editor/connection-helpers.c:494
+#: src/connection-editor/connection-helpers.c:540
+#: src/connection-editor/connection-helpers.c:542
 #, fuzzy
 msgid "Import a saved VPN configuration…"
 msgstr "Eksport sambungan VPN..."
 
-#: src/connection-editor/connection-helpers.c:524
+#: src/connection-editor/connection-helpers.c:572
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
@@ -3292,15 +3359,15 @@ msgstr ""
 "Dialog penyunting sambungan tidak dapat dimulakan kerana ralat yang tidak "
 "diketahui."
 
-#: src/connection-editor/connection-helpers.c:533
+#: src/connection-editor/connection-helpers.c:581
 msgid "Could not create new connection"
 msgstr "Tidak dapat mencipta sambungan baharu"
 
-#: src/connection-editor/connection-helpers.c:696
+#: src/connection-editor/connection-helpers.c:744
 msgid "Connection delete failed"
 msgstr "Gagal memadam sambungan"
 
-#: src/connection-editor/connection-helpers.c:744
+#: src/connection-editor/connection-helpers.c:792
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Anda pasti hendak membuang sambungan %s?"
@@ -3544,46 +3611,46 @@ msgstr "Padam sambungan yang dipilih"
 msgid "Authenticate to delete the selected connection"
 msgstr "Sahkan untuk memadam sambungan dipilih"
 
-#: src/connection-editor/nm-connection-list.c:1053
+#: src/connection-editor/nm-connection-list.c:1051
 #, fuzzy
 msgid "Unrecognized connection type"
 msgstr "Jenis sambungan jalurlebar mudahalih Tidak disokong."
 
-#: src/connection-editor/nm-connection-list.c:1058
+#: src/connection-editor/nm-connection-list.c:1057
 #, fuzzy, c-format
 msgid "Don’t know how to import “%s” connections"
 msgstr "Tidak tahu bagaimana mencipta sambungan-sambungan '%s'"
 
-#: src/connection-editor/nm-connection-list.c:1062
+#: src/connection-editor/nm-connection-list.c:1061
 #, fuzzy
 msgid "Error importing connection"
 msgstr "Ralat semasa menyunting sambungan"
 
-#: src/connection-editor/nm-connection-list.c:1069
-#: src/connection-editor/nm-connection-list.c:1084
-#: src/connection-editor/nm-connection-list.c:1087
+#: src/connection-editor/nm-connection-list.c:1077
+#: src/connection-editor/nm-connection-list.c:1092
+#: src/connection-editor/nm-connection-list.c:1095
 msgid "Error creating connection"
 msgstr "Ralat mencipta sambungan"
 
-#: src/connection-editor/nm-connection-list.c:1069
+#: src/connection-editor/nm-connection-list.c:1077
 #, fuzzy
 msgid "Connection type not specified."
 msgstr "Gagal menambah sambungan"
 
-#: src/connection-editor/nm-connection-list.c:1085
+#: src/connection-editor/nm-connection-list.c:1093
 msgid "No VPN plugins are installed."
 msgstr ""
 
-#: src/connection-editor/nm-connection-list.c:1088
+#: src/connection-editor/nm-connection-list.c:1096
 #, fuzzy, c-format
 msgid "Don’t know how to create “%s” connections"
 msgstr "Tidak tahu bagaimana mencipta sambungan-sambungan '%s'"
 
-#: src/connection-editor/nm-connection-list.c:1122
+#: src/connection-editor/nm-connection-list.c:1130
 msgid "Error editing connection"
 msgstr "Ralat semasa menyunting sambungan"
 
-#: src/connection-editor/nm-connection-list.c:1123
+#: src/connection-editor/nm-connection-list.c:1131
 #, fuzzy, c-format
 msgid "Did not find a connection with UUID “%s”"
 msgstr "Tidak menjumpai sambungan dengan UUID '%s'"
@@ -3917,24 +3984,24 @@ msgstr "Tidak dapat memuatkan antaramuka pengguna DSL."
 msgid "MACSEC connection %d"
 msgstr "Sambungan DSL %d"
 
-#: src/connection-editor/page-master.c:221
-#: src/connection-editor/page-master.c:232
+#: src/connection-editor/page-controller.c:221
+#: src/connection-editor/page-controller.c:232
 msgid "Duplicate ports"
 msgstr ""
 
-#: src/connection-editor/page-master.c:222
+#: src/connection-editor/page-controller.c:222
 #, c-format
 msgid "Ports “%s” and “%s” both apply to device “%s”"
 msgstr ""
 
-#: src/connection-editor/page-master.c:233
+#: src/connection-editor/page-controller.c:233
 #, c-format
 msgid ""
 "Ports “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
 "same physical device."
 msgstr ""
 
-#: src/connection-editor/page-master.c:357
+#: src/connection-editor/page-controller.c:357
 #, c-format
 msgid "%s port %d"
 msgstr ""
@@ -4430,6 +4497,20 @@ msgstr "Sijil-sijil DER atau PEM (*.der, *.pem, *.crt, *.cer)"
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "Kekunci peribadi DER, PEM, atau PKCS#12 (*.der, *.pem, *.p12)"
 
+#~ msgid "mW"
+#~ msgstr "mW"
+
+#, fuzzy
+#~ msgid "Transmission po_wer"
+#~ msgstr "Kuasa Trans_misi:"
+
+#~ msgid "Mb/s"
+#~ msgstr "Mb/s"
+
+#, fuzzy
+#~ msgid "_Rate"
+#~ msgstr "_Kadar:"
+
 #~ msgid "More networks"
 #~ msgstr "Lagi rangkaian-rangkain"
 
@@ -4527,70 +4608,6 @@ msgstr "Kekunci peribadi DER, PEM, atau PKCS#12 (*.der, *.pem, *.p12)"
 #, fuzzy
 #~ msgid "WEP inde_x"
 #~ msgstr "Inde_x WEP:"
-
-#~ msgid "Disable connected notifications"
-#~ msgstr "Lumpuhkan pemberitahuan apabila telah tersambung"
-
-#, fuzzy
-#~ msgid ""
-#~ "Set this to true to disable notifications when connecting to a network."
-#~ msgstr ""
-#~ "Set ini ke TRUE untuk mematikan pemberitahuan apabila menyambung kepada "
-#~ "rangkaian"
-
-#~ msgid "Disable disconnected notifications"
-#~ msgstr "Lumpuhkan pemberitahuan apabila telah terputus"
-
-#, fuzzy
-#~ msgid ""
-#~ "Set this to true to disable notifications when disconnecting from a "
-#~ "network."
-#~ msgstr ""
-#~ "Set ini ke TRUE untuk mematikan pemberitahuan apabila memutuskan dari "
-#~ "rangkaian."
-
-#, fuzzy
-#~ msgid "Disable VPN notifications"
-#~ msgstr "Lumpuhkan pemberitahuan apabila telah tersambung"
-
-#, fuzzy
-#~ msgid ""
-#~ "Set this to true to disable notifications when connecting to or "
-#~ "disconnecting from a VPN."
-#~ msgstr ""
-#~ "Set ini ke TRUE untuk mematikan pemberitahuan apabila memutuskan dari "
-#~ "rangkaian."
-
-#~ msgid "Suppress networks available notifications"
-#~ msgstr "Redam notifikasi rangkaian tersedia"
-
-#, fuzzy
-#~ msgid ""
-#~ "Set this to true to disable notifications when Wi-Fi networks are "
-#~ "available."
-#~ msgstr ""
-#~ "Set ini ke TRUE untuk mematikan pemberitahuan apabila rangkaian wayarles "
-#~ "boleh didapati."
-
-#~ msgid "Stamp"
-#~ msgstr "Cop"
-
-#~ msgid ""
-#~ "Used to determine whether settings should be migrated to a new version."
-#~ msgstr ""
-#~ "Diguna untuk menentukan sama ada tetapan sedia ada patut dipindahkan ke "
-#~ "versi baharu."
-
-#, fuzzy
-#~ msgid "Disable WiFi Create"
-#~ msgstr "Lumpuhkan Cipta Wi-Fi"
-
-#, fuzzy
-#~ msgid ""
-#~ "Set to true to disable creation of adhoc networks when using the applet."
-#~ msgstr ""
-#~ "Set ke TRUE untuk mematikan penciptaan rangkaian Adhoc apabila "
-#~ "menggunakan applet."
 
 #, fuzzy
 #~ msgid "Ignore CA certificate"

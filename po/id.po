@@ -8,9 +8,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet main\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
-"issues\n"
-"POT-Creation-Date: 2022-11-17 11:44+0000\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
+"applet/\n"
+"POT-Creation-Date: 2023-08-03 11:40+0200\n"
 "PO-Revision-Date: 2022-11-27 18:20+0700\n"
 "Last-Translator: Andika Triwidada <andika@gmail.com>\n"
 "Language-Team: Indonesian <gnome@i15n.org>\n"
@@ -1798,9 +1798,10 @@ msgid ""
 "will be forced without checking the device compatibility. If unsure, leave "
 "here “Ignore” or pick “Automatic”."
 msgstr ""
-"Negosiasi koneksi perangkat. Bila \"Manual\" yang dipilih, nilai \"Kecepatan"
-"\" dan \"Dupleks\" akan dipaksa tanpa memeriksa kompatibilitas perangkat. "
-"Bila tidak yakin, biarkan \"Abaikan\" di sini atau pilih \"Otomatis\"."
+"Negosiasi koneksi perangkat. Bila \"Manual\" yang dipilih, nilai "
+"\"Kecepatan\" dan \"Dupleks\" akan dipaksa tanpa memeriksa kompatibilitas "
+"perangkat. Bila tidak yakin, biarkan \"Abaikan\" di sini atau pilih "
+"\"Otomatis\"."
 
 #: src/connection-editor/ce-page-ethernet.ui:448
 msgid "_Speed"
@@ -2089,10 +2090,10 @@ msgstr "Ekstensi _privasi IPv6"
 msgid ""
 "If enabled, it makes the kernel generate a temporary IPv6 address in "
 "addition to the public one generated from MAC address. This enhances "
-"privacy, but could cause problems in some applications. If set to \"Default"
-"\", the value from NetworkManager global configuration is used. If that is "
-"also unset, use the kernel default value read from file \"/proc/sys/net/ipv6/"
-"conf/default/use_tempaddr\""
+"privacy, but could cause problems in some applications. If set to "
+"\"Default\", the value from NetworkManager global configuration is used. If "
+"that is also unset, use the kernel default value read from file \"/proc/sys/"
+"net/ipv6/conf/default/use_tempaddr\""
 msgstr ""
 "Jika diaktifkan, itu membuat kernel menghasilkan alamat IPv6 sementara "
 "selain alamat publik yang dihasilkan dari alamat MAC. Ini meningkatkan "
@@ -2348,7 +2349,7 @@ msgid "Ad_vanced…"
 msgstr "Tingkat _Lanjut…"
 
 #: src/connection-editor/ce-page-team-port.ui:108
-msgid "Set by master"
+msgid "Set by controller"
 msgstr "Diatur oleh induk"
 
 #: src/connection-editor/ce-page-team-port.ui:112
@@ -2798,7 +2799,7 @@ msgstr "Prioritas sistem, nilai bisa 0 – 65535."
 #: src/connection-editor/ce-page-team.ui:960
 msgid ""
 "Specifies the minimum number of ports that must be active before asserting "
-"carrier in the master interface, value can be 1 – 255."
+"carrier in the controller interface, value can be 1 – 255."
 msgstr ""
 "Menyatakan banyaknya port minimum yang mesti aktif sebelum menegaskan "
 "carrier dalam antar muka induk, nilai bisa 1 – 255."
@@ -3939,17 +3940,17 @@ msgstr "Tidak dapat memuat antarmuka pengguna MACsec."
 msgid "MACSEC connection %d"
 msgstr "Koneksi MACSEC %d"
 
-#: src/connection-editor/page-master.c:221
-#: src/connection-editor/page-master.c:232
+#: src/connection-editor/page-controller.c:221
+#: src/connection-editor/page-controller.c:232
 msgid "Duplicate ports"
 msgstr "Port duplikat"
 
-#: src/connection-editor/page-master.c:222
+#: src/connection-editor/page-controller.c:222
 #, c-format
 msgid "Ports “%s” and “%s” both apply to device “%s”"
 msgstr "Port \"%s\" dan \"%s\" keduanya berlaku bagi perangkat \"%s\""
 
-#: src/connection-editor/page-master.c:233
+#: src/connection-editor/page-controller.c:233
 #, c-format
 msgid ""
 "Ports “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
@@ -3958,7 +3959,7 @@ msgstr ""
 "Port \"%s\" dan \"%s\" berlaku bagi port virtual yang berbeda (\"%s\" dan "
 "\"%s\") dari perangkat fisik yang sama."
 
-#: src/connection-editor/page-master.c:357
+#: src/connection-editor/page-controller.c:357
 #, c-format
 msgid "%s port %d"
 msgstr "%s port %d"

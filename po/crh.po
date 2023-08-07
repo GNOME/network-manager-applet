@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: nm-aplet 0.6\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
 "applet/\n"
-"POT-Creation-Date: 2022-05-30 11:43+0200\n"
+"POT-Creation-Date: 2023-08-03 11:40+0200\n"
 "PO-Revision-Date: 2013-05-21 18:21-0500\n"
 "Last-Translator: Reşat SABIQ <tilde.birlik@gmail.com>\n"
 "Language-Team: QIRIMTATARCA (Qırım Türkçesi) <tilde-birlik-meydan@lists."
@@ -22,7 +22,7 @@ msgstr ""
 "X-Launchpad-Export-Date: 2012-04-23 03:00+0000\n"
 "X-Generator: Launchpad (build 15120)\n"
 
-#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3251
+#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3166
 msgid "Network"
 msgstr "Şebeke"
 
@@ -65,6 +65,84 @@ msgstr "Yeni Yapılandırma Oluşturuldu"
 #: nm-connection-editor.desktop.in:4
 msgid "Manage and change your network connection settings"
 msgstr "Şebeke bağlantısı tesbitleriñizni idare etiñiz ve değiştiriñiz"
+
+#: org.gnome.nm-applet.gschema.xml.in:6
+msgid "Disable connected notifications"
+msgstr "Bağlanuv bildirimlerini ğayrı qabilleştir"
+
+#: org.gnome.nm-applet.gschema.xml.in:7
+msgid "Set this to true to disable notifications when connecting to a network."
+msgstr ""
+"Bir şebekege bağlanğanda bildirimlerni ğayriqabilleştirmek içün bunı "
+"\"doğru\"ğa tesbit etiñiz."
+
+# tüklü
+#: org.gnome.nm-applet.gschema.xml.in:11
+msgid "Disable disconnected notifications"
+msgstr "Bağlantı qoparılğan bildirimlerini ğayrıqabilleştir"
+
+#: org.gnome.nm-applet.gschema.xml.in:12
+msgid ""
+"Set this to true to disable notifications when disconnecting from a network."
+msgstr ""
+"Bir şebekege bağlantını qoparğanda bildirimlerni ğayrıqabilleştirmek içün "
+"bunı \"doğru\"ğa tesbit etiñiz."
+
+#: org.gnome.nm-applet.gschema.xml.in:16
+msgid "Disable VPN notifications"
+msgstr "VPN bildirimlerini ğayrıqabilleştir"
+
+#: org.gnome.nm-applet.gschema.xml.in:17
+msgid ""
+"Set this to true to disable notifications when connecting to or "
+"disconnecting from a VPN."
+msgstr ""
+"Bir VPN'ge bağlanğanda yaki bağlantısını qoparğanda bildirimlerni "
+"ğayrıqabilleştirmek içün bunı \"doğru\"ğa tesbit etiñiz."
+
+#: org.gnome.nm-applet.gschema.xml.in:21
+msgid "Suppress networks available notifications"
+msgstr "Şebekeler faydalanılabilir bildirimlerini bastırıqla"
+
+#: org.gnome.nm-applet.gschema.xml.in:22
+msgid ""
+"Set this to true to disable notifications when Wi-Fi networks are available."
+msgstr ""
+"Telsiz-Vefa şebekeler faydalanışlı olğanda bildirimlerni ğayrıqabilleştirmek "
+"içün bunı \"doğru\"ğa tesbit etiñiz."
+
+#: org.gnome.nm-applet.gschema.xml.in:26
+msgid "Stamp"
+msgstr "Mühür"
+
+#: org.gnome.nm-applet.gschema.xml.in:27
+msgid "Used to determine whether settings should be migrated to a new version."
+msgstr ""
+"Ayarlarnıñ yañı bir sürümge köçürilmek kerek olıp olmağanını belgilemek içün "
+"qullanılır."
+
+#: org.gnome.nm-applet.gschema.xml.in:31
+#, fuzzy
+msgid "Disable WiFi Create"
+msgstr "Wi-Fi (Telsiz Vefa) İcat Et Ğayrı Qabilleştirilsin"
+
+# tüklü
+#: org.gnome.nm-applet.gschema.xml.in:32
+msgid ""
+"Set to true to disable creation of adhoc networks when using the applet."
+msgstr ""
+"Uyğulamaçıqnı qullanğanda tek-vaziyetli (adhoc) şebekelerniñ icadını "
+"ğayrıqabilleştirmek içün \"doğru\"ğa tesbit etiñiz."
+
+#: org.gnome.nm-applet.gschema.xml.in:36
+msgid "Show the applet in notification area"
+msgstr "Uyğulamaçıqnı tebliğ mıntıqasında köster"
+
+#: org.gnome.nm-applet.gschema.xml.in:37
+msgid "Set to FALSE to disable displaying the applet in the notification area."
+msgstr ""
+"Uyğulamaçıqnıñ tebliğ mıntıqasında kösterilmesini naqabilleştirmek içün "
+"\"FALSE\" (yañlış) olaraq tesbit etiñiz."
 
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
@@ -111,8 +189,8 @@ msgstr "802.1X sahihlenimi"
 #: src/connection-editor/ce-page-dcb.ui:1019
 #: src/connection-editor/ce-page-wireguard.ui:41
 #: src/connection-editor/ce-ppp-auth-methods.ui:28
-#: src/connection-editor/connection-helpers.c:284
-#: src/connection-editor/connection-helpers.c:747
+#: src/connection-editor/connection-helpers.c:332
+#: src/connection-editor/connection-helpers.c:795
 #: src/connection-editor/nm-connection-editor.ui:197
 #: src/connection-editor/page-bluetooth.c:293
 #: src/connection-editor/page-mobile.c:530
@@ -188,7 +266,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "Yañı Mobil Keniş-bant Bağlantısı"
 
 #: src/applet-device-broadband.c:809 src/applet-device-bt.c:75
-#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1269
+#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1251
 msgid "Connection Established"
 msgstr "Bağlantı Tesis Etildi"
 
@@ -227,7 +305,7 @@ msgstr "Mobil genişbant bağlantısı yapılandırlıyor '%s'..."
 msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr "'%s' mobil genişbant bağlantısı için kullanıcı doğrulaması gerekli..."
 
-#: src/applet-device-bt.c:113 src/applet.c:2595 src/mobile-helpers.c:593
+#: src/applet-device-bt.c:113 src/applet.c:2510 src/mobile-helpers.c:593
 #, fuzzy, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "'%s' içün bir şebeke adresi rica etile..."
@@ -260,7 +338,7 @@ msgid "Ethernet Network"
 msgstr "Kabelli (Ethernet) Şebeke"
 
 #. Notify user of unmanaged or unavailable device
-#: src/applet-device-ethernet.c:99 src/applet.c:1350
+#: src/applet-device-ethernet.c:99 src/applet.c:1265
 msgid "disconnected"
 msgstr "bağlanmağan"
 
@@ -324,7 +402,7 @@ msgstr "Yañı Telsiz-Vefa Şebeke İcat Et"
 msgid "(none)"
 msgstr "(hiçbiri)"
 
-#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1366
+#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1349
 msgid "Failed to add new connection"
 msgstr "Yañı bağlantı eklenamadı"
 
@@ -332,8 +410,8 @@ msgstr "Yañı bağlantı eklenamadı"
 msgid "Insufficient privileges."
 msgstr ""
 
-#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1349
-#: src/applet-device-wifi.c:1369 src/applet.c:415 src/applet.c:498
+#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1332
+#: src/applet-device-wifi.c:1352 src/applet.c:414 src/applet.c:497
 msgid "Connection failure"
 msgstr "Bağlantı muvaffaqiyetsizligi"
 
@@ -365,61 +443,56 @@ msgstr "Telsiz-Vefa donanım almaştırıcısı ile ğayrıqabilleştirilgen"
 msgid "_Available networks"
 msgstr "Qullanıcılarnıñ hepsi tarafından faydalanılabilir"
 
-#: src/applet-device-wifi.c:1083
+#: src/applet-device-wifi.c:1066
 msgid "Wi-Fi Networks Available"
 msgstr "Telsiz-Vefa Şebekeler Müsait"
 
-#: src/applet-device-wifi.c:1084
+#: src/applet-device-wifi.c:1067
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Bir Telsiz-Vefa şebekege bağlanmaq içün şebeke menüsini qullanıñız"
 
-#: src/applet-device-wifi.c:1087 src/applet.c:819
-#, fuzzy
-msgid "Don’t show this message again"
-msgstr "Bu mesajı tekrar gösterme"
-
-#: src/applet-device-wifi.c:1268
+#: src/applet-device-wifi.c:1249
 #, fuzzy, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "Şimdi '%s' Telsiz-Vefa şebekesine bağlanğan olasıñız."
 
-#: src/applet-device-wifi.c:1303
+#: src/applet-device-wifi.c:1286
 #, fuzzy, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "Telsiz-Vefa şebeke bağlantısı '%s' hazırlana..."
 
-#: src/applet-device-wifi.c:1306
+#: src/applet-device-wifi.c:1289
 #, fuzzy, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "Telsiz-Vefa şebeke bağlantısı '%s' endamlandırıla..."
 
-#: src/applet-device-wifi.c:1309
+#: src/applet-device-wifi.c:1292
 #, fuzzy, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr ""
 "Telsiz-Vefa şebeke bağlantısı '%s' içün qullanıcı sahihlenimi şarttır..."
 
-#: src/applet-device-wifi.c:1312
+#: src/applet-device-wifi.c:1295
 #, fuzzy, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "'%s' içün bir Telsiz-Vefa şebeke adresi rica etile..."
 
-#: src/applet-device-wifi.c:1323
+#: src/applet-device-wifi.c:1306
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "Telsiz-Vefa şebeke bağlantısı '%s' faal: %s (%d%%)"
 
-#: src/applet-device-wifi.c:1327
+#: src/applet-device-wifi.c:1310
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "Telsiz-Vefa şebeke bağlantısı '%s' faal"
 
-#: src/applet-device-wifi.c:1346
+#: src/applet-device-wifi.c:1329
 msgid "Failed to activate connection"
 msgstr "Bağlantısı faalleştirilamadı"
 
-#: src/applet-device-wifi.c:1347 src/applet-device-wifi.c:1367 src/applet.c:413
-#: src/applet.c:464 src/applet.c:496
+#: src/applet-device-wifi.c:1330 src/applet-device-wifi.c:1350 src/applet.c:412
+#: src/applet.c:463 src/applet.c:495
 msgid "Unknown error"
 msgstr "Bilinmegen hata"
 
@@ -762,24 +835,29 @@ msgstr "DUN bağlantısı icat etilamadı: %s"
 msgid "Failed to write connection to VPN UI: incomplete write"
 msgstr ""
 
-#: src/applet.c:412
+#: src/applet.c:411
 msgid "Failed to add/activate connection"
 msgstr "Bağlantı eklenamadı/faalleştirilamadı"
 
 # tüklü
-#: src/applet.c:463
+#: src/applet.c:462
 msgid "Device disconnect failed"
 msgstr "Cihaz bağlantısı qoparılması muvaffaqiyetsiz edi"
 
-#: src/applet.c:466
+#: src/applet.c:465
 msgid "Disconnect failure"
 msgstr "Bağlantını qoparma muvaffaqiyetsizligi"
 
-#: src/applet.c:495
+#: src/applet.c:494
 msgid "Connection activation failed"
 msgstr "Bağlantı faalleştirilmesi muvaffaqiyetsiz edi"
 
-#: src/applet.c:916
+#: src/applet.c:731
+#, fuzzy
+msgid "Don’t show this message again"
+msgstr "Bu mesajı tekrar gösterme"
+
+#: src/applet.c:831
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -789,7 +867,7 @@ msgstr ""
 "\n"
 "VPN bağlantısı '%s' qoparıldı çünki şebeke bağlantısı inqıtağa oğradı."
 
-#: src/applet.c:918
+#: src/applet.c:833
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -799,7 +877,7 @@ msgstr ""
 "\n"
 "'%s'  VPN bağlantısı başarısız oldu çünkü şebeke bağlantısı engellendi."
 
-#: src/applet.c:920
+#: src/applet.c:835
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -809,7 +887,7 @@ msgstr ""
 "'%s' VPN bağlantısı başarısız oldu çünkü VPN servisi beklenmedik bir anda "
 "durmuş."
 
-#: src/applet.c:922
+#: src/applet.c:837
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -820,7 +898,7 @@ msgstr ""
 "'%s' VPN bağlantısı başarısız oldu çünkü VPN servisi geçersiz ayarlara geri "
 "dönmüş."
 
-#: src/applet.c:924
+#: src/applet.c:839
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -829,7 +907,7 @@ msgstr ""
 "\n"
 "'%s' VPN bağlantısı başarısız oldu. Bağlanma denemesi zaman aşımına uğradı."
 
-#: src/applet.c:926
+#: src/applet.c:841
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -838,7 +916,7 @@ msgstr ""
 "\n"
 "'%s' VPN bağlantısı başarısız oldu. VPN hizmeti zamanında başlamadı."
 
-#: src/applet.c:928
+#: src/applet.c:843
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -847,7 +925,7 @@ msgstr ""
 "\n"
 "'%s' VPN bağlantısı başarısız oldu çünkü  VPN hizmeti başlatılamadı."
 
-#: src/applet.c:930
+#: src/applet.c:845
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -856,7 +934,7 @@ msgstr ""
 "\n"
 "'%s' VPN bağlantısı başarısız oldu. Geçerli VPN güvenlikleri yok."
 
-#: src/applet.c:932
+#: src/applet.c:847
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -865,7 +943,7 @@ msgstr ""
 "\n"
 "'%s' VPN bağlantısı geçersiz VPN güvenliklerinden dolayı başarısız oldu."
 
-#: src/applet.c:937
+#: src/applet.c:852
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -874,7 +952,7 @@ msgstr ""
 "\n"
 "'%s' VPN bağlantısı başarısız oldu."
 
-#: src/applet.c:964
+#: src/applet.c:879
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -882,19 +960,19 @@ msgid ""
 "%s\n"
 msgstr ""
 
-#: src/applet.c:966
+#: src/applet.c:881
 msgid "VPN connection has been successfully established.\n"
 msgstr ""
 
-#: src/applet.c:968
+#: src/applet.c:883
 msgid "VPN Login Message"
 msgstr "VPN Oturum Açılış İletisi"
 
-#: src/applet.c:976 src/applet.c:1016
+#: src/applet.c:891 src/applet.c:931
 msgid "VPN Connection Failed"
 msgstr "VPN Bağlantısı Başarısız"
 
-#: src/applet.c:1020
+#: src/applet.c:935
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -907,7 +985,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1023
+#: src/applet.c:938
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -921,139 +999,139 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1338
+#: src/applet.c:1253
 msgid "device not ready (firmware missing)"
 msgstr "cihaz hazır degil (bellenim eksik)"
 
-#: src/applet.c:1340
+#: src/applet.c:1255
 msgid "device not ready"
 msgstr "cihaz hazır degil"
 
-#: src/applet.c:1366
+#: src/applet.c:1281
 msgid "Disconnect"
 msgstr "Bağlantını qopar"
 
-#: src/applet.c:1380
+#: src/applet.c:1295
 msgid "device not managed"
 msgstr "aygıt kullanılamadı"
 
-#: src/applet.c:1454
+#: src/applet.c:1369
 msgid "No network devices available"
 msgstr "Şebeke aygıtı bulunamıyor"
 
 # tüklü
-#: src/applet.c:1500
+#: src/applet.c:1415
 msgid "_VPN Connections"
 msgstr "_VPN Bağlantıları"
 
-#: src/applet.c:1544
+#: src/applet.c:1459
 #, fuzzy
 msgid "_Configure VPN…"
 msgstr "_VPN Yapılandır..."
 
 # tüklü
-#: src/applet.c:1547
+#: src/applet.c:1462
 #, fuzzy
 msgid "_Add a VPN connection…"
 msgstr "_VPN Bağlantıları"
 
-#: src/applet.c:1653
+#: src/applet.c:1568
 #, fuzzy
 msgid "NetworkManager is not running…"
 msgstr "Şebeke Yöneticisi çalışmıyor..."
 
-#: src/applet.c:1658 src/applet.c:2726
+#: src/applet.c:1573 src/applet.c:2641
 msgid "Networking disabled"
 msgstr "Şebeke etkin değil"
 
 #. 'Enable Networking' item
-#: src/applet.c:1868
+#: src/applet.c:1783
 msgid "Enable _Networking"
 msgstr "_Şebekelemeni Qabilleştir"
 
 #. 'Enable Wi-Fi' item
-#: src/applet.c:1877
+#: src/applet.c:1792
 msgid "Enable _Wi-Fi"
 msgstr "_Telsiz-Vefanı Qabilleştir"
 
 #. 'Enable Mobile Broadband' item
-#: src/applet.c:1886
+#: src/applet.c:1801
 msgid "Enable _Mobile Broadband"
 msgstr "_Mobil Kenişbant Qabil Olsun"
 
 #. Toggle notifications item
-#: src/applet.c:1898
+#: src/applet.c:1813
 msgid "Enable N_otifications"
 msgstr "_Bildirimler Qabil Olsun"
 
 #. 'Connection Information' item
-#: src/applet.c:1910
+#: src/applet.c:1825
 msgid "Connection _Information"
 msgstr "Bağlantı _Malümatı"
 
 #. 'Edit Connections...' item
-#: src/applet.c:1918
+#: src/applet.c:1833
 #, fuzzy
 msgid "Edit Connections…"
 msgstr "Bağlantılarnı Tahrir Et..."
 
-#: src/applet.c:1932
+#: src/applet.c:1847
 msgid "_About"
 msgstr "_Haqqında"
 
-#: src/applet.c:2246
+#: src/applet.c:2161
 #, fuzzy, c-format
 msgid "You are now connected to “%s”."
 msgstr "Şimdi '%s' şebekesine bağlanğan olasıñız."
 
-#: src/applet.c:2286
+#: src/applet.c:2201
 msgid "Disconnected"
 msgstr "Bağlanmağan"
 
-#: src/applet.c:2287
+#: src/applet.c:2202
 msgid "The network connection has been disconnected."
 msgstr "Şebeke bağlantısı qoparılğandır."
 
-#: src/applet.c:2589
+#: src/applet.c:2504
 #, fuzzy, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "Şebeke bağlantısı hazırlana '%s'..."
 
-#: src/applet.c:2592
+#: src/applet.c:2507
 #, fuzzy, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "Şebeke bağlantısı için kullanıcı doğrulaması gerekli '%s'..."
 
-#: src/applet.c:2598
+#: src/applet.c:2513
 #, fuzzy, c-format
 msgid "Network connection “%s” active"
 msgstr "Şebeke bağlantısı '%s' etkin"
 
-#: src/applet.c:2671
+#: src/applet.c:2586
 #, fuzzy, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "VPN bağlantısı başlatılıyor '%s'..."
 
-#: src/applet.c:2674
+#: src/applet.c:2589
 #, fuzzy, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "VPN bağlantısı için kullanıcı doğrulaması gerekli '%s'..."
 
-#: src/applet.c:2677
+#: src/applet.c:2592
 #, fuzzy, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "'%s' için bir VPN adresi isteniyor..."
 
-#: src/applet.c:2680
+#: src/applet.c:2595
 #, fuzzy
 msgid "VPN connection active"
 msgstr "VPN bağlantısı '%s' etkin"
 
-#: src/applet.c:2730
+#: src/applet.c:2645
 msgid "No network connection"
 msgstr "Şebeke bağlantısı yok"
 
-#: src/applet.c:3352
+#: src/applet.c:3280
 msgid "NetworkManager Applet"
 msgstr "NetworkManager Uygulamacığı"
 
@@ -1087,7 +1165,7 @@ msgstr ""
 #: src/connection-editor/ce-page-ip6.ui:199
 #: src/connection-editor/ce-page-team.ui:262
 #: src/connection-editor/ce-page-wireguard.ui:617
-#: src/connection-editor/connection-helpers.c:748
+#: src/connection-editor/connection-helpers.c:796
 #: src/connection-editor/nm-connection-list.ui:101
 msgid "_Delete"
 msgstr "_Sil"
@@ -1189,7 +1267,7 @@ msgid "Bonded _connections"
 msgstr "Köpürlengen _bağlantılar:"
 
 #: src/connection-editor/ce-page-bond.ui:105
-#: src/connection-editor/ce-page-wifi.ui:400
+#: src/connection-editor/ce-page-wifi.ui:294
 #, fuzzy
 msgid "M_ode"
 msgstr "K_ip:"
@@ -2077,10 +2155,10 @@ msgstr ""
 msgid ""
 "If enabled, it makes the kernel generate a temporary IPv6 address in "
 "addition to the public one generated from MAC address. This enhances "
-"privacy, but could cause problems in some applications. If set to \"Default"
-"\", the value from NetworkManager global configuration is used. If that is "
-"also unset, use the kernel default value read from file \"/proc/sys/net/ipv6/"
-"conf/default/use_tempaddr\""
+"privacy, but could cause problems in some applications. If set to "
+"\"Default\", the value from NetworkManager global configuration is used. If "
+"that is also unset, use the kernel default value read from file \"/proc/sys/"
+"net/ipv6/conf/default/use_tempaddr\""
 msgstr ""
 
 #: src/connection-editor/ce-page-ip6.ui:323
@@ -2342,7 +2420,7 @@ msgid "Ad_vanced…"
 msgstr "İleriletilgen"
 
 #: src/connection-editor/ce-page-team-port.ui:108
-msgid "Set by master"
+msgid "Set by controller"
 msgstr ""
 
 #: src/connection-editor/ce-page-team-port.ui:112
@@ -2773,7 +2851,7 @@ msgstr ""
 #: src/connection-editor/ce-page-team.ui:960
 msgid ""
 "Specifies the minimum number of ports that must be active before asserting "
-"carrier in the master interface, value can be 1 – 255."
+"carrier in the controller interface, value can be 1 – 255."
 msgstr ""
 
 #: src/connection-editor/ce-page-team.ui:972
@@ -2885,40 +2963,22 @@ msgstr ""
 msgid "Ad-hoc"
 msgstr "Ad-hoc (Halükârğa mahsus)"
 
-#: src/connection-editor/ce-page-wifi.ui:203
-msgid "mW"
-msgstr "mW"
-
-#: src/connection-editor/ce-page-wifi.ui:222
-#, fuzzy
-msgid "Transmission po_wer"
-msgstr "Gönderim gü_cü:"
-
-#: src/connection-editor/ce-page-wifi.ui:256
-msgid "Mb/s"
-msgstr "Mb/s"
-
-#: src/connection-editor/ce-page-wifi.ui:275
-#, fuzzy
-msgid "_Rate"
-msgstr "_Nisbet:"
-
-#: src/connection-editor/ce-page-wifi.ui:311
+#: src/connection-editor/ce-page-wifi.ui:205
 #, fuzzy
 msgid "_BSSID"
 msgstr "_BSSID:"
 
-#: src/connection-editor/ce-page-wifi.ui:336
+#: src/connection-editor/ce-page-wifi.ui:230
 #, fuzzy
 msgid "C_hannel"
 msgstr "k_anal:"
 
-#: src/connection-editor/ce-page-wifi.ui:368
+#: src/connection-editor/ce-page-wifi.ui:262
 #, fuzzy
 msgid "Ban_d"
 msgstr "Ban_t:"
 
-#: src/connection-editor/ce-page-wifi.ui:414
+#: src/connection-editor/ce-page-wifi.ui:308
 #, fuzzy
 msgid "SS_ID"
 msgstr "SS_ID:"
@@ -3286,16 +3346,21 @@ msgid "WireGuard"
 msgstr "Telli"
 
 #: src/connection-editor/connection-helpers.c:112
-#: src/connection-editor/connection-helpers.c:374
+#: src/connection-editor/connection-helpers.c:422
 #: src/connection-editor/page-vpn.c:92
 msgid "VPN"
 msgstr "VPN"
 
-#: src/connection-editor/connection-helpers.c:192
+#: src/connection-editor/connection-helpers.c:202
+#, c-format
+msgid "VPN plugin “%s” not found"
+msgstr ""
+
+#: src/connection-editor/connection-helpers.c:227
 msgid "No VPN service type."
 msgstr ""
 
-#: src/connection-editor/connection-helpers.c:197
+#: src/connection-editor/connection-helpers.c:241
 #, fuzzy
 msgid "The VPN plugin failed to import the VPN connection correctly: "
 msgstr ""
@@ -3303,50 +3368,50 @@ msgstr ""
 "\n"
 "Hata: VPN hizmeti türü yok."
 
-#: src/connection-editor/connection-helpers.c:281
+#: src/connection-editor/connection-helpers.c:329
 #: src/connection-editor/page-proxy.c:104
 #: src/connection-editor/page-team-port.c:189
 #: src/connection-editor/page-team.c:327
 msgid "Select file to import"
 msgstr "İçe aktarılacak dosyayı seç"
 
-#: src/connection-editor/connection-helpers.c:285
+#: src/connection-editor/connection-helpers.c:333
 #: src/connection-editor/page-proxy.c:108
 #: src/connection-editor/page-team-port.c:193
 #: src/connection-editor/page-team.c:331
 msgid "_Open"
 msgstr ""
 
-#: src/connection-editor/connection-helpers.c:316
+#: src/connection-editor/connection-helpers.c:364
 msgid "Hardware"
 msgstr "Donanım"
 
-#: src/connection-editor/connection-helpers.c:343
+#: src/connection-editor/connection-helpers.c:391
 msgid "Virtual"
 msgstr "Virtual"
 
-#: src/connection-editor/connection-helpers.c:492
-#: src/connection-editor/connection-helpers.c:494
+#: src/connection-editor/connection-helpers.c:540
+#: src/connection-editor/connection-helpers.c:542
 #, fuzzy
 msgid "Import a saved VPN configuration…"
 msgstr "Saqlanğan bir VPN bağlantısını ithal et..."
 
-#: src/connection-editor/connection-helpers.c:524
+#: src/connection-editor/connection-helpers.c:572
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
 msgstr ""
 "Bağlantı muharriri bilinmegen bir hatadan dolayı başlanğıçlandırılamadı."
 
-#: src/connection-editor/connection-helpers.c:533
+#: src/connection-editor/connection-helpers.c:581
 msgid "Could not create new connection"
 msgstr "Yañı bağlantı icat etilamadı"
 
-#: src/connection-editor/connection-helpers.c:696
+#: src/connection-editor/connection-helpers.c:744
 msgid "Connection delete failed"
 msgstr "Bağlantı silinamadı"
 
-#: src/connection-editor/connection-helpers.c:744
+#: src/connection-editor/connection-helpers.c:792
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "%s bağlantısını silmek istediğinize emin misiniz?"
@@ -3589,46 +3654,46 @@ msgstr "Saylanğan bağlantını sil"
 msgid "Authenticate to delete the selected connection"
 msgstr "Saylanğan bağlantını silmek içün sahihleniñiz"
 
-#: src/connection-editor/nm-connection-list.c:1053
+#: src/connection-editor/nm-connection-list.c:1051
 #, fuzzy
 msgid "Unrecognized connection type"
 msgstr "Desteklenmegen mobil keniş-bant bağlantı türü."
 
-#: src/connection-editor/nm-connection-list.c:1058
+#: src/connection-editor/nm-connection-list.c:1057
 #, fuzzy, c-format
 msgid "Don’t know how to import “%s” connections"
 msgstr "'%s' bağlantılarınıñ nasıl icat etilgenini bilmeyim"
 
-#: src/connection-editor/nm-connection-list.c:1062
+#: src/connection-editor/nm-connection-list.c:1061
 #, fuzzy
 msgid "Error importing connection"
 msgstr "Bağlantını tahrir etkende hata"
 
-#: src/connection-editor/nm-connection-list.c:1069
-#: src/connection-editor/nm-connection-list.c:1084
-#: src/connection-editor/nm-connection-list.c:1087
+#: src/connection-editor/nm-connection-list.c:1077
+#: src/connection-editor/nm-connection-list.c:1092
+#: src/connection-editor/nm-connection-list.c:1095
 msgid "Error creating connection"
 msgstr "Bağlantını icat etkende hata"
 
-#: src/connection-editor/nm-connection-list.c:1069
+#: src/connection-editor/nm-connection-list.c:1077
 #, fuzzy
 msgid "Connection type not specified."
 msgstr "Bağlantı eklev muvafaqiyetsiz"
 
-#: src/connection-editor/nm-connection-list.c:1085
+#: src/connection-editor/nm-connection-list.c:1093
 msgid "No VPN plugins are installed."
 msgstr ""
 
-#: src/connection-editor/nm-connection-list.c:1088
+#: src/connection-editor/nm-connection-list.c:1096
 #, fuzzy, c-format
 msgid "Don’t know how to create “%s” connections"
 msgstr "'%s' bağlantılarınıñ nasıl icat etilgenini bilmeyim"
 
-#: src/connection-editor/nm-connection-list.c:1122
+#: src/connection-editor/nm-connection-list.c:1130
 msgid "Error editing connection"
 msgstr "Bağlantını tahrir etkende hata"
 
-#: src/connection-editor/nm-connection-list.c:1123
+#: src/connection-editor/nm-connection-list.c:1131
 #, fuzzy, c-format
 msgid "Did not find a connection with UUID “%s”"
 msgstr "UUID '%s' ile bir bağlantı tapılmadı."
@@ -3963,24 +4028,24 @@ msgstr "WiMAX qullanıcı arayüzü yüklenamadı."
 msgid "MACSEC connection %d"
 msgstr "WiMAX bağlantısı %d"
 
-#: src/connection-editor/page-master.c:221
-#: src/connection-editor/page-master.c:232
+#: src/connection-editor/page-controller.c:221
+#: src/connection-editor/page-controller.c:232
 msgid "Duplicate ports"
 msgstr ""
 
-#: src/connection-editor/page-master.c:222
+#: src/connection-editor/page-controller.c:222
 #, c-format
 msgid "Ports “%s” and “%s” both apply to device “%s”"
 msgstr ""
 
-#: src/connection-editor/page-master.c:233
+#: src/connection-editor/page-controller.c:233
 #, c-format
 msgid ""
 "Ports “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
 "same physical device."
 msgstr ""
 
-#: src/connection-editor/page-master.c:357
+#: src/connection-editor/page-controller.c:357
 #, c-format
 msgid "%s port %d"
 msgstr ""
@@ -4471,6 +4536,20 @@ msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr ""
 "DER, PEM, yaki PKCS#12 hususiy anahtarları (*.der, *.pem, *.p12, *.key)"
 
+#~ msgid "mW"
+#~ msgstr "mW"
+
+#, fuzzy
+#~ msgid "Transmission po_wer"
+#~ msgstr "Gönderim gü_cü:"
+
+#~ msgid "Mb/s"
+#~ msgstr "Mb/s"
+
+#, fuzzy
+#~ msgid "_Rate"
+#~ msgstr "_Nisbet:"
+
 #~ msgid "More networks"
 #~ msgstr "Daa çoq şebeke"
 
@@ -4591,75 +4670,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "WEP inde_x"
 #~ msgstr "WEP _indeksi:"
-
-#~ msgid "Disable connected notifications"
-#~ msgstr "Bağlanuv bildirimlerini ğayrı qabilleştir"
-
-#~ msgid ""
-#~ "Set this to true to disable notifications when connecting to a network."
-#~ msgstr ""
-#~ "Bir şebekege bağlanğanda bildirimlerni ğayriqabilleştirmek içün bunı "
-#~ "\"doğru\"ğa tesbit etiñiz."
-
-# tüklü
-#~ msgid "Disable disconnected notifications"
-#~ msgstr "Bağlantı qoparılğan bildirimlerini ğayrıqabilleştir"
-
-#~ msgid ""
-#~ "Set this to true to disable notifications when disconnecting from a "
-#~ "network."
-#~ msgstr ""
-#~ "Bir şebekege bağlantını qoparğanda bildirimlerni ğayrıqabilleştirmek içün "
-#~ "bunı \"doğru\"ğa tesbit etiñiz."
-
-#~ msgid "Disable VPN notifications"
-#~ msgstr "VPN bildirimlerini ğayrıqabilleştir"
-
-#~ msgid ""
-#~ "Set this to true to disable notifications when connecting to or "
-#~ "disconnecting from a VPN."
-#~ msgstr ""
-#~ "Bir VPN'ge bağlanğanda yaki bağlantısını qoparğanda bildirimlerni "
-#~ "ğayrıqabilleştirmek içün bunı \"doğru\"ğa tesbit etiñiz."
-
-#~ msgid "Suppress networks available notifications"
-#~ msgstr "Şebekeler faydalanılabilir bildirimlerini bastırıqla"
-
-#~ msgid ""
-#~ "Set this to true to disable notifications when Wi-Fi networks are "
-#~ "available."
-#~ msgstr ""
-#~ "Telsiz-Vefa şebekeler faydalanışlı olğanda bildirimlerni "
-#~ "ğayrıqabilleştirmek içün bunı \"doğru\"ğa tesbit etiñiz."
-
-#~ msgid "Stamp"
-#~ msgstr "Mühür"
-
-#~ msgid ""
-#~ "Used to determine whether settings should be migrated to a new version."
-#~ msgstr ""
-#~ "Ayarlarnıñ yañı bir sürümge köçürilmek kerek olıp olmağanını belgilemek "
-#~ "içün qullanılır."
-
-#, fuzzy
-#~ msgid "Disable WiFi Create"
-#~ msgstr "Wi-Fi (Telsiz Vefa) İcat Et Ğayrı Qabilleştirilsin"
-
-# tüklü
-#~ msgid ""
-#~ "Set to true to disable creation of adhoc networks when using the applet."
-#~ msgstr ""
-#~ "Uyğulamaçıqnı qullanğanda tek-vaziyetli (adhoc) şebekelerniñ icadını "
-#~ "ğayrıqabilleştirmek içün \"doğru\"ğa tesbit etiñiz."
-
-#~ msgid "Show the applet in notification area"
-#~ msgstr "Uyğulamaçıqnı tebliğ mıntıqasında köster"
-
-#~ msgid ""
-#~ "Set to FALSE to disable displaying the applet in the notification area."
-#~ msgstr ""
-#~ "Uyğulamaçıqnıñ tebliğ mıntıqasında kösterilmesini naqabilleştirmek içün "
-#~ "\"FALSE\" (yañlış) olaraq tesbit etiñiz."
 
 #~ msgid "Ignore CA certificate"
 #~ msgstr "Şehadetname Salâhiyeti (CA; ŞS) şehadetnamesini ihmal et"

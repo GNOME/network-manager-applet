@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: network-manager-applet nma-0-9-8\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
 "applet/\n"
-"POT-Creation-Date: 2022-05-30 11:43+0200\n"
+"POT-Creation-Date: 2023-08-03 11:40+0200\n"
 "PO-Revision-Date: 2014-02-07 17:37+0500\n"
 "Last-Translator: Victor Ibragimov <victor.ibragimov@gmail.com>\n"
 "Language-Team: Tajik <tg@li.org>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.6.3\n"
 
-#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3251
+#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3166
 msgid "Network"
 msgstr "Шабака"
 
@@ -67,6 +67,85 @@ msgstr ""
 "Пайвасти шабакаи дастрас вуҷуд надорад.\n"
 "Лутфан танзимоти пайвасти худро санҷида дубора кӯшиш намоед."
 
+#: org.gnome.nm-applet.gschema.xml.in:6
+#, fuzzy
+msgid "Disable connected notifications"
+msgstr "Ягон огоҳӣ нест"
+
+#: org.gnome.nm-applet.gschema.xml.in:7
+#, fuzzy
+msgid "Set this to true to disable notifications when connecting to a network."
+msgstr "Ба шабака пайваст шуда истодааст..."
+
+#: org.gnome.nm-applet.gschema.xml.in:11
+#, fuzzy
+msgid "Disable disconnected notifications"
+msgstr "Қатъшуда"
+
+#: org.gnome.nm-applet.gschema.xml.in:12
+#, fuzzy
+msgid ""
+"Set this to true to disable notifications when disconnecting from a network."
+msgstr ""
+"Қимати \"true\" гузоред, вақте ки корбари устоди танзимро аввалин бор иҷро "
+"мекунад."
+
+#: org.gnome.nm-applet.gschema.xml.in:16
+#, fuzzy
+msgid "Disable VPN notifications"
+msgstr "Ягон огоҳӣ нест"
+
+#: org.gnome.nm-applet.gschema.xml.in:17
+#, fuzzy
+msgid ""
+"Set this to true to disable notifications when connecting to or "
+"disconnecting from a VPN."
+msgstr "Ба шабакаи VPN пайваст шуда истодааст..."
+
+#: org.gnome.nm-applet.gschema.xml.in:21
+#, fuzzy
+msgid "Suppress networks available notifications"
+msgstr "Ҷустуҷӯи шабакаҳои бесими дастрас"
+
+#: org.gnome.nm-applet.gschema.xml.in:22
+#, fuzzy
+msgid ""
+"Set this to true to disable notifications when Wi-Fi networks are available."
+msgstr "Шабакаҳои Wi-Fi-и дастрас"
+
+#: org.gnome.nm-applet.gschema.xml.in:26
+msgid "Stamp"
+msgstr "Тамға"
+
+#: org.gnome.nm-applet.gschema.xml.in:27
+#, fuzzy
+msgid "Used to determine whether settings should be migrated to a new version."
+msgstr ""
+"Оё \"window-placement\" бояд барои муайян кардани ҷойгиршавии мӯҳтавоҳо "
+"нисбати наворҳои ҳаракат истиофда шавад ё не."
+
+#: org.gnome.nm-applet.gschema.xml.in:31
+#, fuzzy
+msgid "Disable WiFi Create"
+msgstr "Ғайрифаъол кардан"
+
+#: org.gnome.nm-applet.gschema.xml.in:32
+#, fuzzy
+msgid ""
+"Set to true to disable creation of adhoc networks when using the applet."
+msgstr ""
+"Қимати \"true\" гузоред, вақте ки корбари устоди танзимро аввалин бор иҷро "
+"мекунад."
+
+#: org.gnome.nm-applet.gschema.xml.in:36
+msgid "Show the applet in notification area"
+msgstr "Намоиш додани зербарнома дар ноҳияи огоҳӣ"
+
+#: org.gnome.nm-applet.gschema.xml.in:37
+#, fuzzy
+msgid "Set to FALSE to disable displaying the applet in the notification area."
+msgstr "Намоиш додани зербарнома дар ноҳияи огоҳӣ"
+
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
 msgid "object class '%s' has no property named '%s'"
@@ -112,8 +191,8 @@ msgstr "Санҷиши ҳаққонияти 802.1X"
 #: src/connection-editor/ce-page-dcb.ui:1019
 #: src/connection-editor/ce-page-wireguard.ui:41
 #: src/connection-editor/ce-ppp-auth-methods.ui:28
-#: src/connection-editor/connection-helpers.c:284
-#: src/connection-editor/connection-helpers.c:747
+#: src/connection-editor/connection-helpers.c:332
+#: src/connection-editor/connection-helpers.c:795
 #: src/connection-editor/nm-connection-editor.ui:197
 #: src/connection-editor/page-bluetooth.c:293
 #: src/connection-editor/page-mobile.c:530
@@ -185,7 +264,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "Омодасозии пайвасти паҳннавори мобилии '%s'..."
 
 #: src/applet-device-broadband.c:809 src/applet-device-bt.c:75
-#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1269
+#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1251
 msgid "Connection Established"
 msgstr "Алоқа пайваст шудааст"
 
@@ -225,7 +304,7 @@ msgstr "Омодасозии пайвасти паҳннавори мобили�
 msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr "Омодасозии пайвасти паҳннавори мобилии '%s'..."
 
-#: src/applet-device-bt.c:113 src/applet.c:2595 src/mobile-helpers.c:593
+#: src/applet-device-bt.c:113 src/applet.c:2510 src/mobile-helpers.c:593
 #, fuzzy, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "Суроғаи шабакавӣ"
@@ -258,7 +337,7 @@ msgid "Ethernet Network"
 msgstr "Шабакаи Ethernet"
 
 #. Notify user of unmanaged or unavailable device
-#: src/applet-device-ethernet.c:99 src/applet.c:1350
+#: src/applet-device-ethernet.c:99 src/applet.c:1265
 #, fuzzy
 msgid "disconnected"
 msgstr "Қатъшуда"
@@ -321,7 +400,7 @@ msgstr "Эҷод кардани шабакаи Wi-Fi-и нав"
 msgid "(none)"
 msgstr "(ҳеҷ)"
 
-#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1366
+#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1349
 #, fuzzy
 msgid "Failed to add new connection"
 msgstr "Иловакунии пайваст қатъ шудааст"
@@ -330,8 +409,8 @@ msgstr "Иловакунии пайваст қатъ шудааст"
 msgid "Insufficient privileges."
 msgstr ""
 
-#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1349
-#: src/applet-device-wifi.c:1369 src/applet.c:415 src/applet.c:498
+#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1332
+#: src/applet-device-wifi.c:1352 src/applet.c:414 src/applet.c:497
 msgid "Connection failure"
 msgstr "Вайроншавии пайваст"
 
@@ -364,62 +443,57 @@ msgstr "Wi-Fi тавассути калиди сахтафзор хомӯш шу
 msgid "_Available networks"
 msgstr "Дастрас"
 
-#: src/applet-device-wifi.c:1083
+#: src/applet-device-wifi.c:1066
 msgid "Wi-Fi Networks Available"
 msgstr "Шабакаҳои Wi-Fi-и дастрас"
 
-#: src/applet-device-wifi.c:1084
+#: src/applet-device-wifi.c:1067
 #, fuzzy
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Пайваст шудан ба шабакаи Wi-Fi-и ноаён"
 
-#: src/applet-device-wifi.c:1087 src/applet.c:819
-#, fuzzy
-msgid "Don’t show this message again"
-msgstr "Дигар намоиш надодани ин паём."
-
-#: src/applet-device-wifi.c:1268
+#: src/applet-device-wifi.c:1249
 #, fuzzy, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "Шумо ба шабакаи Wi-Fi '%s' пайваст шудед."
 
-#: src/applet-device-wifi.c:1303
+#: src/applet-device-wifi.c:1286
 #, fuzzy, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "Омодасозии пайвасти шабакавии Wi-Fi '%s'..."
 
-#: src/applet-device-wifi.c:1306
+#: src/applet-device-wifi.c:1289
 #, fuzzy, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "Омодасозии пайвасти шабакавии Wi-Fi '%s'..."
 
-#: src/applet-device-wifi.c:1309
+#: src/applet-device-wifi.c:1292
 #, fuzzy, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "Санҷиши ҳаққонияти шабакавии Wi-Fi лозим аст"
 
-#: src/applet-device-wifi.c:1312
+#: src/applet-device-wifi.c:1295
 #, fuzzy, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "Шабакаи Wi-Fi (%s)"
 
-#: src/applet-device-wifi.c:1323
+#: src/applet-device-wifi.c:1306
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "Пайвасти шабакавии Wi-Fi '%s' фаъол аст: %s (%d%%)"
 
-#: src/applet-device-wifi.c:1327
+#: src/applet-device-wifi.c:1310
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "Пайвасти шабакавии Wi-Fi '%s' фаъол аст"
 
-#: src/applet-device-wifi.c:1346
+#: src/applet-device-wifi.c:1329
 #, fuzzy
 msgid "Failed to activate connection"
 msgstr "Пайваст қатъ шудааст."
 
-#: src/applet-device-wifi.c:1347 src/applet-device-wifi.c:1367 src/applet.c:413
-#: src/applet.c:464 src/applet.c:496
+#: src/applet-device-wifi.c:1330 src/applet-device-wifi.c:1350 src/applet.c:412
+#: src/applet.c:463 src/applet.c:495
 msgid "Unknown error"
 msgstr "Хатои номаълум"
 
@@ -747,26 +821,31 @@ msgstr "Пайвастшавӣ ба '%s' қатъ шудааст"
 msgid "Failed to write connection to VPN UI: incomplete write"
 msgstr ""
 
-#: src/applet.c:412
+#: src/applet.c:411
 #, fuzzy
 msgid "Failed to add/activate connection"
 msgstr "Иловакунии пайваст қатъ шудааст"
 
-#: src/applet.c:463
+#: src/applet.c:462
 #, fuzzy
 msgid "Device disconnect failed"
 msgstr "Қатъ _кардани пайваст"
 
-#: src/applet.c:466
+#: src/applet.c:465
 #, fuzzy
 msgid "Disconnect failure"
 msgstr "Нокомӣ."
 
-#: src/applet.c:495
+#: src/applet.c:494
 msgid "Connection activation failed"
 msgstr "Фаъолсозии пайваст қатъ шудааст"
 
-#: src/applet.c:916
+#: src/applet.c:731
+#, fuzzy
+msgid "Don’t show this message again"
+msgstr "Дигар намоиш надодани ин паём."
+
+#: src/applet.c:831
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -776,7 +855,7 @@ msgstr ""
 "\n"
 "Пайвасти VPN '%s' қатъ шудааст, зеро ки пайвасти шабака қатъ карда шудааст."
 
-#: src/applet.c:918
+#: src/applet.c:833
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -786,7 +865,7 @@ msgstr ""
 "\n"
 "Пайвасти VPN '%s' қатъ шудааст, зеро ки пайвасти шабака қатъ шудааст."
 
-#: src/applet.c:920
+#: src/applet.c:835
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -795,7 +874,7 @@ msgstr ""
 "\n"
 "Пайвасти VPN '%s' қатъ шудааст, зеро ки хидмати VPN ногаҳон манъ шудааст."
 
-#: src/applet.c:922
+#: src/applet.c:837
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -806,7 +885,7 @@ msgstr ""
 "Пайвасти VPN '%s' қатъ шудааст, зеро ки хидмати VPN танзимоти беэътиборро "
 "ирсол кард."
 
-#: src/applet.c:924
+#: src/applet.c:839
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -816,7 +895,7 @@ msgstr ""
 "Пайвасти VPN '%s' қатъ шудааст, зеро ки вақти кӯшиши пайваст ба анҷом "
 "расидааст."
 
-#: src/applet.c:926
+#: src/applet.c:841
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -826,7 +905,7 @@ msgstr ""
 "Пайвасти VPN '%s' қатъ шудааст, зеро ки хидмати VPN дар вақташ оғоз "
 "нашудааст."
 
-#: src/applet.c:928
+#: src/applet.c:843
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -835,7 +914,7 @@ msgstr ""
 "\n"
 "Пайвасти VPN '%s' қатъ шудааст, зеро ки оғози хидмати VPN қатъ шудааст."
 
-#: src/applet.c:930
+#: src/applet.c:845
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -844,7 +923,7 @@ msgstr ""
 "\n"
 "Пайвасти VPN '%s' қатъ шудааст, зеро ки паролҳои VPN нодурустанд."
 
-#: src/applet.c:932
+#: src/applet.c:847
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -853,7 +932,7 @@ msgstr ""
 "\n"
 "Пайвасти VPN '%s' қатъ шудааст, зеро ки паролҳои VPN нодурустанд."
 
-#: src/applet.c:937
+#: src/applet.c:852
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -862,7 +941,7 @@ msgstr ""
 "\n"
 "Пайвасти VPN '%s' қатъ шудааст."
 
-#: src/applet.c:964
+#: src/applet.c:879
 #, fuzzy, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -873,20 +952,20 @@ msgstr ""
 "\n"
 "Хатогӣ: %s."
 
-#: src/applet.c:966
+#: src/applet.c:881
 #, fuzzy
 msgid "VPN connection has been successfully established.\n"
 msgstr "пайваст бо муваффақият иҷро шудааст"
 
-#: src/applet.c:968
+#: src/applet.c:883
 msgid "VPN Login Message"
 msgstr "Паёми воридшавии VPN"
 
-#: src/applet.c:976 src/applet.c:1016
+#: src/applet.c:891 src/applet.c:931
 msgid "VPN Connection Failed"
 msgstr "Пайвасти VPN қатъ шудааст"
 
-#: src/applet.c:1020
+#: src/applet.c:935
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -899,7 +978,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1023
+#: src/applet.c:938
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -912,147 +991,147 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1338
+#: src/applet.c:1253
 #, fuzzy
 msgid "device not ready (firmware missing)"
 msgstr "Эҳтимол аст, ки дастгоҳ нармафзори дарунсохтро надорад"
 
-#: src/applet.c:1340
+#: src/applet.c:1255
 #, fuzzy
 msgid "device not ready"
 msgstr "Тайёр"
 
-#: src/applet.c:1366
+#: src/applet.c:1281
 msgid "Disconnect"
 msgstr "Қатъ кардани пайваст"
 
-#: src/applet.c:1380
+#: src/applet.c:1295
 #, fuzzy
 msgid "device not managed"
 msgstr "Ин дастгоҳ бо рангҳо идора намешавад."
 
-#: src/applet.c:1454
+#: src/applet.c:1369
 #, fuzzy
 msgid "No network devices available"
 msgstr "Ягон дастгоҳи мултидиск дастрас нест"
 
-#: src/applet.c:1500
+#: src/applet.c:1415
 msgid "_VPN Connections"
 msgstr "_Пайвастҳои VPN"
 
-#: src/applet.c:1544
+#: src/applet.c:1459
 #, fuzzy
 msgid "_Configure VPN…"
 msgstr "_Танзим кардани VPN..."
 
-#: src/applet.c:1547
+#: src/applet.c:1462
 #, fuzzy
 msgid "_Add a VPN connection…"
 msgstr "_Пайвастҳои VPN"
 
-#: src/applet.c:1653
+#: src/applet.c:1568
 #, fuzzy
 msgid "NetworkManager is not running…"
 msgstr "Иҷро нашудааст"
 
-#: src/applet.c:1658 src/applet.c:2726
+#: src/applet.c:1573 src/applet.c:2641
 #, fuzzy
 msgid "Networking disabled"
 msgstr "Пайвасти шабакавӣ ғайрифаъол аст"
 
 #. 'Enable Networking' item
-#: src/applet.c:1868
+#: src/applet.c:1783
 #, fuzzy
 msgid "Enable _Networking"
 msgstr "Фаъол кардани шабака"
 
 #. 'Enable Wi-Fi' item
-#: src/applet.c:1877
+#: src/applet.c:1792
 #, fuzzy
 msgid "Enable _Wi-Fi"
 msgstr "Wi-Fi"
 
 #. 'Enable Mobile Broadband' item
-#: src/applet.c:1886
+#: src/applet.c:1801
 #, fuzzy
 msgid "Enable _Mobile Broadband"
 msgstr "Паҳннавори мобилӣ"
 
 #. Toggle notifications item
-#: src/applet.c:1898
+#: src/applet.c:1813
 #, fuzzy
 msgid "Enable N_otifications"
 msgstr "_Фаъол кардан"
 
 #. 'Connection Information' item
-#: src/applet.c:1910
+#: src/applet.c:1825
 msgid "Connection _Information"
 msgstr "Иттилооти _пайвастшавӣ"
 
 #. 'Edit Connections...' item
-#: src/applet.c:1918
+#: src/applet.c:1833
 #, fuzzy
 msgid "Edit Connections…"
 msgstr "Таҳрир кардани пайвастҳо..."
 
-#: src/applet.c:1932
+#: src/applet.c:1847
 msgid "_About"
 msgstr "_Дар бораи барнома"
 
-#: src/applet.c:2246
+#: src/applet.c:2161
 #, fuzzy, c-format
 msgid "You are now connected to “%s”."
 msgstr "Шумо ба '%s' пайваст шудед."
 
-#: src/applet.c:2286
+#: src/applet.c:2201
 msgid "Disconnected"
 msgstr "Қатъшуда"
 
-#: src/applet.c:2287
+#: src/applet.c:2202
 #, fuzzy
 msgid "The network connection has been disconnected."
 msgstr "Пайваст рад карда шудааст"
 
-#: src/applet.c:2589
+#: src/applet.c:2504
 #, fuzzy, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "Омодасозии пайвасти шабакавии '%s'..."
 
-#: src/applet.c:2592
+#: src/applet.c:2507
 #, fuzzy, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "Шабакаи бесим санҷиши ҳаққониятро талаб мекунад"
 
-#: src/applet.c:2598
+#: src/applet.c:2513
 #, fuzzy, c-format
 msgid "Network connection “%s” active"
 msgstr "Пайвасти шабакавии '%s' фаъол аст"
 
-#: src/applet.c:2671
+#: src/applet.c:2586
 #, fuzzy, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "Пайвасти VPN-и '%s' фаъол аст"
 
-#: src/applet.c:2674
+#: src/applet.c:2589
 #, fuzzy, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "Санҷиши ҳаққоният талаб мекунад, ки иттилооти корбарро тағйир диҳед"
 
-#: src/applet.c:2677
+#: src/applet.c:2592
 #, fuzzy, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "%s VPN"
 
-#: src/applet.c:2680
+#: src/applet.c:2595
 #, fuzzy
 msgid "VPN connection active"
 msgstr "Пайвасти VPN '%s' фаъол аст"
 
-#: src/applet.c:2730
+#: src/applet.c:2645
 msgid "No network connection"
 msgstr "Ягон пайвасти шабакавӣ нест"
 
-#: src/applet.c:3352
+#: src/applet.c:3280
 #, fuzzy
 msgid "NetworkManager Applet"
 msgstr "зербарнома"
@@ -1088,7 +1167,7 @@ msgstr ""
 #: src/connection-editor/ce-page-ip6.ui:199
 #: src/connection-editor/ce-page-team.ui:262
 #: src/connection-editor/ce-page-wireguard.ui:617
-#: src/connection-editor/connection-helpers.c:748
+#: src/connection-editor/connection-helpers.c:796
 #: src/connection-editor/nm-connection-list.ui:101
 msgid "_Delete"
 msgstr "_Нест кардан"
@@ -1189,7 +1268,7 @@ msgid "Bonded _connections"
 msgstr "Пайвастҳои _алоқадор:"
 
 #: src/connection-editor/ce-page-bond.ui:105
-#: src/connection-editor/ce-page-wifi.ui:400
+#: src/connection-editor/ce-page-wifi.ui:294
 #, fuzzy
 msgid "M_ode"
 msgstr "Ҳ_олат:"
@@ -2103,10 +2182,10 @@ msgstr ""
 msgid ""
 "If enabled, it makes the kernel generate a temporary IPv6 address in "
 "addition to the public one generated from MAC address. This enhances "
-"privacy, but could cause problems in some applications. If set to \"Default"
-"\", the value from NetworkManager global configuration is used. If that is "
-"also unset, use the kernel default value read from file \"/proc/sys/net/ipv6/"
-"conf/default/use_tempaddr\""
+"privacy, but could cause problems in some applications. If set to "
+"\"Default\", the value from NetworkManager global configuration is used. If "
+"that is also unset, use the kernel default value read from file \"/proc/sys/"
+"net/ipv6/conf/default/use_tempaddr\""
 msgstr ""
 
 #: src/connection-editor/ce-page-ip6.ui:323
@@ -2373,7 +2452,7 @@ msgid "Ad_vanced…"
 msgstr "Иловагӣ"
 
 #: src/connection-editor/ce-page-team-port.ui:108
-msgid "Set by master"
+msgid "Set by controller"
 msgstr ""
 
 #: src/connection-editor/ce-page-team-port.ui:112
@@ -2805,7 +2884,7 @@ msgstr ""
 #: src/connection-editor/ce-page-team.ui:960
 msgid ""
 "Specifies the minimum number of ports that must be active before asserting "
-"carrier in the master interface, value can be 1 – 255."
+"carrier in the controller interface, value can be 1 – 255."
 msgstr ""
 
 #: src/connection-editor/ce-page-team.ui:972
@@ -2916,41 +2995,22 @@ msgstr ""
 msgid "Ad-hoc"
 msgstr "Ad-hoc"
 
-#: src/connection-editor/ce-page-wifi.ui:203
-#, fuzzy
-msgid "mW"
-msgstr "mW"
-
-#: src/connection-editor/ce-page-wifi.ui:222
-#, fuzzy
-msgid "Transmission po_wer"
-msgstr "Қуттии почта"
-
-#: src/connection-editor/ce-page-wifi.ui:256
-msgid "Mb/s"
-msgstr "Мб/с"
-
-#: src/connection-editor/ce-page-wifi.ui:275
-#, fuzzy
-msgid "_Rate"
-msgstr "_Суръат:"
-
-#: src/connection-editor/ce-page-wifi.ui:311
+#: src/connection-editor/ce-page-wifi.ui:205
 #, fuzzy
 msgid "_BSSID"
 msgstr "_BSSID:"
 
-#: src/connection-editor/ce-page-wifi.ui:336
+#: src/connection-editor/ce-page-wifi.ui:230
 #, fuzzy
 msgid "C_hannel"
 msgstr "_Канал:"
 
-#: src/connection-editor/ce-page-wifi.ui:368
+#: src/connection-editor/ce-page-wifi.ui:262
 #, fuzzy
 msgid "Ban_d"
 msgstr "_Алоқа:"
 
-#: src/connection-editor/ce-page-wifi.ui:414
+#: src/connection-editor/ce-page-wifi.ui:308
 #, fuzzy
 msgid "SS_ID"
 msgstr "SS_ID:"
@@ -3307,16 +3367,21 @@ msgid "WireGuard"
 msgstr "Симдор"
 
 #: src/connection-editor/connection-helpers.c:112
-#: src/connection-editor/connection-helpers.c:374
+#: src/connection-editor/connection-helpers.c:422
 #: src/connection-editor/page-vpn.c:92
 msgid "VPN"
 msgstr "VPN"
 
-#: src/connection-editor/connection-helpers.c:192
+#: src/connection-editor/connection-helpers.c:202
+#, c-format
+msgid "VPN plugin “%s” not found"
+msgstr ""
+
+#: src/connection-editor/connection-helpers.c:227
 msgid "No VPN service type."
 msgstr ""
 
-#: src/connection-editor/connection-helpers.c:197
+#: src/connection-editor/connection-helpers.c:241
 #, fuzzy
 msgid "The VPN plugin failed to import the VPN connection correctly: "
 msgstr ""
@@ -3324,7 +3389,7 @@ msgstr ""
 "\n"
 "Хатогӣ: %s."
 
-#: src/connection-editor/connection-helpers.c:281
+#: src/connection-editor/connection-helpers.c:329
 #: src/connection-editor/page-proxy.c:104
 #: src/connection-editor/page-team-port.c:189
 #: src/connection-editor/page-team.c:327
@@ -3332,44 +3397,44 @@ msgstr ""
 msgid "Select file to import"
 msgstr "Файли JSON-ро барои воридот интихоб намоед"
 
-#: src/connection-editor/connection-helpers.c:285
+#: src/connection-editor/connection-helpers.c:333
 #: src/connection-editor/page-proxy.c:108
 #: src/connection-editor/page-team-port.c:193
 #: src/connection-editor/page-team.c:331
 msgid "_Open"
 msgstr ""
 
-#: src/connection-editor/connection-helpers.c:316
+#: src/connection-editor/connection-helpers.c:364
 msgid "Hardware"
 msgstr "Сахтафзор"
 
-#: src/connection-editor/connection-helpers.c:343
+#: src/connection-editor/connection-helpers.c:391
 msgid "Virtual"
 msgstr "Виртуалӣ"
 
-#: src/connection-editor/connection-helpers.c:492
-#: src/connection-editor/connection-helpers.c:494
+#: src/connection-editor/connection-helpers.c:540
+#: src/connection-editor/connection-helpers.c:542
 #, fuzzy
 msgid "Import a saved VPN configuration…"
 msgstr "Пайвасти VPN ворид намешавад"
 
-#: src/connection-editor/connection-helpers.c:524
+#: src/connection-editor/connection-helpers.c:572
 #, fuzzy
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
 msgstr "китобхонаи libburn оғоз дода нашуд"
 
-#: src/connection-editor/connection-helpers.c:533
+#: src/connection-editor/connection-helpers.c:581
 #, fuzzy
 msgid "Could not create new connection"
 msgstr "Бойгонӣ эҷод нашуд"
 
-#: src/connection-editor/connection-helpers.c:696
+#: src/connection-editor/connection-helpers.c:744
 msgid "Connection delete failed"
 msgstr "Несткунии пайваст қатъ шудааст"
 
-#: src/connection-editor/connection-helpers.c:744
+#: src/connection-editor/connection-helpers.c:792
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Шумо мутмаин ҳастед, ки мехоҳед пайвасти %s-ро нест кунед?"
@@ -3625,53 +3690,53 @@ msgstr "Несткунии пайваст қатъ шудааст"
 msgid "Authenticate to delete the selected connection"
 msgstr "Несткунии пайваст қатъ шудааст"
 
-#: src/connection-editor/nm-connection-list.c:1053
+#: src/connection-editor/nm-connection-list.c:1051
 #, fuzzy
 msgid "Unrecognized connection type"
 msgstr "Омодасозии пайвасти паҳннавори мобилии '%s'..."
 
-#: src/connection-editor/nm-connection-list.c:1058
+#: src/connection-editor/nm-connection-list.c:1057
 #, fuzzy, c-format
 msgid "Don’t know how to import “%s” connections"
 msgstr ""
 "Инро ба арзишҳои мусбат насб кунед, ки нишондиҳандаи баъзе пешравиҳо аст, "
 "вале чӣ қадар буданашонро намедонед"
 
-#: src/connection-editor/nm-connection-list.c:1062
+#: src/connection-editor/nm-connection-list.c:1061
 #, fuzzy
 msgid "Error importing connection"
 msgstr "Таҳрир"
 
-#: src/connection-editor/nm-connection-list.c:1069
-#: src/connection-editor/nm-connection-list.c:1084
-#: src/connection-editor/nm-connection-list.c:1087
+#: src/connection-editor/nm-connection-list.c:1077
+#: src/connection-editor/nm-connection-list.c:1092
+#: src/connection-editor/nm-connection-list.c:1095
 #, fuzzy
 msgid "Error creating connection"
 msgstr "Хатои эҷоди қатори RAID"
 
-#: src/connection-editor/nm-connection-list.c:1069
+#: src/connection-editor/nm-connection-list.c:1077
 #, fuzzy
 msgid "Connection type not specified."
 msgstr "Иловакунии пайваст қатъ шудааст"
 
-#: src/connection-editor/nm-connection-list.c:1085
+#: src/connection-editor/nm-connection-list.c:1093
 #, fuzzy
 msgid "No VPN plugins are installed."
 msgstr "Плагинҳои VPN бор намешаванд"
 
-#: src/connection-editor/nm-connection-list.c:1088
+#: src/connection-editor/nm-connection-list.c:1096
 #, fuzzy, c-format
 msgid "Don’t know how to create “%s” connections"
 msgstr ""
 "Инро ба арзишҳои мусбат насб кунед, ки нишондиҳандаи баъзе пешравиҳо аст, "
 "вале чӣ қадар буданашонро намедонед"
 
-#: src/connection-editor/nm-connection-list.c:1122
+#: src/connection-editor/nm-connection-list.c:1130
 #, fuzzy
 msgid "Error editing connection"
 msgstr "Таҳрир"
 
-#: src/connection-editor/nm-connection-list.c:1123
+#: src/connection-editor/nm-connection-list.c:1131
 #, fuzzy, c-format
 msgid "Did not find a connection with UUID “%s”"
 msgstr "%s бо шахсияти ‘%s’ дар маълумоти корбар ёфт нашуд"
@@ -4009,25 +4074,25 @@ msgstr "Интерфейси корбари гурӯҳӣ бор нашуд."
 msgid "MACSEC connection %d"
 msgstr "Пайвасти WiMAX %d"
 
-#: src/connection-editor/page-master.c:221
-#: src/connection-editor/page-master.c:232
+#: src/connection-editor/page-controller.c:221
+#: src/connection-editor/page-controller.c:232
 #, fuzzy
 msgid "Duplicate ports"
 msgstr "Пайвасти фармонбарон"
 
-#: src/connection-editor/page-master.c:222
+#: src/connection-editor/page-controller.c:222
 #, fuzzy, c-format
 msgid "Ports “%s” and “%s” both apply to device “%s”"
 msgstr "Татбиқкунии танзимоти нав қатъ шуд: %s"
 
-#: src/connection-editor/page-master.c:233
+#: src/connection-editor/page-controller.c:233
 #, fuzzy, c-format
 msgid ""
 "Ports “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
 "same physical device."
 msgstr "Сканкунии %s барои портҳои кушод"
 
-#: src/connection-editor/page-master.c:357
+#: src/connection-editor/page-controller.c:357
 #, c-format
 msgid "%s port %d"
 msgstr ""
@@ -4517,6 +4582,21 @@ msgstr "Гувоҳиномаҳои DER ё PEM (*.der, *.pem, *.crt, *.cer)"
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "Калидҳои шахсии DER, PEM, ё PKCS#12 (*.der, *.pem, *.p12)"
 
+#, fuzzy
+#~ msgid "mW"
+#~ msgstr "mW"
+
+#, fuzzy
+#~ msgid "Transmission po_wer"
+#~ msgstr "Қуттии почта"
+
+#~ msgid "Mb/s"
+#~ msgstr "Мб/с"
+
+#, fuzzy
+#~ msgid "_Rate"
+#~ msgstr "_Суръат:"
+
 #~ msgid "More networks"
 #~ msgstr "Шабакаҳои бештар"
 
@@ -4642,76 +4722,6 @@ msgstr "Калидҳои шахсии DER, PEM, ё PKCS#12 (*.der, *.pem, *.p12)
 #, fuzzy
 #~ msgid "WEP inde_x"
 #~ msgstr "_Индекси WEP:"
-
-#, fuzzy
-#~ msgid "Disable connected notifications"
-#~ msgstr "Ягон огоҳӣ нест"
-
-#, fuzzy
-#~ msgid ""
-#~ "Set this to true to disable notifications when connecting to a network."
-#~ msgstr "Ба шабака пайваст шуда истодааст..."
-
-#, fuzzy
-#~ msgid "Disable disconnected notifications"
-#~ msgstr "Қатъшуда"
-
-#, fuzzy
-#~ msgid ""
-#~ "Set this to true to disable notifications when disconnecting from a "
-#~ "network."
-#~ msgstr ""
-#~ "Қимати \"true\" гузоред, вақте ки корбари устоди танзимро аввалин бор "
-#~ "иҷро мекунад."
-
-#, fuzzy
-#~ msgid "Disable VPN notifications"
-#~ msgstr "Ягон огоҳӣ нест"
-
-#, fuzzy
-#~ msgid ""
-#~ "Set this to true to disable notifications when connecting to or "
-#~ "disconnecting from a VPN."
-#~ msgstr "Ба шабакаи VPN пайваст шуда истодааст..."
-
-#, fuzzy
-#~ msgid "Suppress networks available notifications"
-#~ msgstr "Ҷустуҷӯи шабакаҳои бесими дастрас"
-
-#, fuzzy
-#~ msgid ""
-#~ "Set this to true to disable notifications when Wi-Fi networks are "
-#~ "available."
-#~ msgstr "Шабакаҳои Wi-Fi-и дастрас"
-
-#~ msgid "Stamp"
-#~ msgstr "Тамға"
-
-#, fuzzy
-#~ msgid ""
-#~ "Used to determine whether settings should be migrated to a new version."
-#~ msgstr ""
-#~ "Оё \"window-placement\" бояд барои муайян кардани ҷойгиршавии мӯҳтавоҳо "
-#~ "нисбати наворҳои ҳаракат истиофда шавад ё не."
-
-#, fuzzy
-#~ msgid "Disable WiFi Create"
-#~ msgstr "Ғайрифаъол кардан"
-
-#, fuzzy
-#~ msgid ""
-#~ "Set to true to disable creation of adhoc networks when using the applet."
-#~ msgstr ""
-#~ "Қимати \"true\" гузоред, вақте ки корбари устоди танзимро аввалин бор "
-#~ "иҷро мекунад."
-
-#~ msgid "Show the applet in notification area"
-#~ msgstr "Намоиш додани зербарнома дар ноҳияи огоҳӣ"
-
-#, fuzzy
-#~ msgid ""
-#~ "Set to FALSE to disable displaying the applet in the notification area."
-#~ msgstr "Намоиш додани зербарнома дар ноҳияи огоҳӣ"
 
 #, fuzzy
 #~ msgid "Ignore CA certificate"

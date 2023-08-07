@@ -10,7 +10,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include "page-master.h"
+#include "page-controller.h"
 
 #define CE_TYPE_PAGE_BRIDGE            (ce_page_bridge_get_type ())
 #define CE_PAGE_BRIDGE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), CE_TYPE_PAGE_BRIDGE, CEPageBridge))
@@ -20,11 +20,11 @@
 #define CE_PAGE_BRIDGE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), CE_TYPE_PAGE_BRIDGE, CEPageBridgeClass))
 
 typedef struct {
-	CEPageMaster parent;
+	CEPageController parent;
 } CEPageBridge;
 
 typedef struct {
-	CEPageMasterClass parent;
+	CEPageControllerClass parent;
 } CEPageBridgeClass;
 
 GType ce_page_bridge_get_type (void);

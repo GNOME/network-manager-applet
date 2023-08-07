@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
-"issues\n"
-"POT-Creation-Date: 2022-07-14 11:26+0000\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
+"applet/\n"
+"POT-Creation-Date: 2023-08-03 11:40+0200\n"
 "PO-Revision-Date: 2022-09-21 11:03+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Gezer (Hebrew)\n"
@@ -20,7 +20,7 @@ msgstr ""
 "X-Generator: Poedit 3.1\n"
 "X-Launchpad-Export-Date: 2010-11-02 07:32+0000\n"
 
-#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3251
+#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3166
 msgid "Network"
 msgstr "רשת"
 
@@ -44,8 +44,8 @@ msgstr ""
 
 #: nm-connection-editor.appdata.xml.in:13
 msgid ""
-"The nm-connection-editor program works with NetworkManager to create and edit "
-"existing connection profiles for NetworkManager."
+"The nm-connection-editor program works with NetworkManager to create and "
+"edit existing connection profiles for NetworkManager."
 msgstr ""
 
 #: nm-connection-editor.appdata.xml.in:27
@@ -59,6 +59,76 @@ msgstr "הגדרות רשת מתקדמות"
 #: nm-connection-editor.desktop.in:4
 msgid "Manage and change your network connection settings"
 msgstr "ניהול ושינוי הגדרות חיבורי הרשת שלך"
+
+#: org.gnome.nm-applet.gschema.xml.in:6
+msgid "Disable connected notifications"
+msgstr "Disable connected notifications"
+
+#: org.gnome.nm-applet.gschema.xml.in:7
+msgid "Set this to true to disable notifications when connecting to a network."
+msgstr ""
+"Set this to true to disable notifications when connecting to a network."
+
+#: org.gnome.nm-applet.gschema.xml.in:11
+msgid "Disable disconnected notifications"
+msgstr "Disable disconnected notifications"
+
+#: org.gnome.nm-applet.gschema.xml.in:12
+msgid ""
+"Set this to true to disable notifications when disconnecting from a network."
+msgstr ""
+"Set this to true to disable notifications when disconnecting from a network."
+
+#: org.gnome.nm-applet.gschema.xml.in:16
+msgid "Disable VPN notifications"
+msgstr "Disable VPN notifications"
+
+#: org.gnome.nm-applet.gschema.xml.in:17
+msgid ""
+"Set this to true to disable notifications when connecting to or "
+"disconnecting from a VPN."
+msgstr ""
+"Set this to true to disable notifications when connecting to or "
+"disconnecting from a VPN."
+
+#: org.gnome.nm-applet.gschema.xml.in:21
+msgid "Suppress networks available notifications"
+msgstr "Suppress networks available notifications"
+
+#: org.gnome.nm-applet.gschema.xml.in:22
+msgid ""
+"Set this to true to disable notifications when Wi-Fi networks are available."
+msgstr ""
+"Set this to true to disable notifications when Wi-Fi networks are available."
+
+#: org.gnome.nm-applet.gschema.xml.in:26
+msgid "Stamp"
+msgstr "Stamp"
+
+#: org.gnome.nm-applet.gschema.xml.in:27
+msgid "Used to determine whether settings should be migrated to a new version."
+msgstr ""
+"Used to determine whether settings should be migrated to a new version."
+
+#: org.gnome.nm-applet.gschema.xml.in:31
+#, fuzzy
+msgid "Disable WiFi Create"
+msgstr "Disable Wi-Fi Create"
+
+#: org.gnome.nm-applet.gschema.xml.in:32
+msgid ""
+"Set to true to disable creation of adhoc networks when using the applet."
+msgstr ""
+"Set to true to disable creation of adhoc networks when using the applet."
+
+#: org.gnome.nm-applet.gschema.xml.in:36
+msgid "Show the applet in notification area"
+msgstr "Show the applet in notification area"
+
+#: org.gnome.nm-applet.gschema.xml.in:37
+msgid "Set to FALSE to disable displaying the applet in the notification area."
+msgstr ""
+"Set to FALSE to disable displaying the applet in the notification area."
 
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
@@ -105,15 +175,16 @@ msgstr "אימות 802.1X"
 #: src/connection-editor/ce-page-dcb.ui:1019
 #: src/connection-editor/ce-page-wireguard.ui:41
 #: src/connection-editor/ce-ppp-auth-methods.ui:28
-#: src/connection-editor/connection-helpers.c:284
-#: src/connection-editor/connection-helpers.c:747
+#: src/connection-editor/connection-helpers.c:332
+#: src/connection-editor/connection-helpers.c:795
 #: src/connection-editor/nm-connection-editor.ui:197
 #: src/connection-editor/page-bluetooth.c:293
 #: src/connection-editor/page-mobile.c:530
 #: src/connection-editor/page-proxy.c:107
 #: src/connection-editor/page-team-port.c:192
-#: src/connection-editor/page-team.c:330 src/connection-editor/vpn-helpers.c:198
-#: src/gsm-unlock.ui:28 src/mobile-helpers.c:451
+#: src/connection-editor/page-team.c:330
+#: src/connection-editor/vpn-helpers.c:198 src/gsm-unlock.ui:28
+#: src/mobile-helpers.c:451
 msgid "_Cancel"
 msgstr "_ביטול"
 
@@ -173,7 +244,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "חיבור פס רחב נייד חדש…"
 
 #: src/applet-device-broadband.c:809 src/applet-device-bt.c:75
-#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1269
+#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1251
 msgid "Connection Established"
 msgstr "החיבור נוצר"
 
@@ -212,7 +283,7 @@ msgstr "הגדרת התצורה של חיבור הפס הרחב הנייד '%s'.
 msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr "נדרש אימות מהמשתמש עבור חיבור הפס הרחב הנייד '%s'..."
 
-#: src/applet-device-bt.c:113 src/applet.c:2595 src/mobile-helpers.c:593
+#: src/applet-device-bt.c:113 src/applet.c:2510 src/mobile-helpers.c:593
 #, fuzzy, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "מתבקשת כתובת רשת עבור '%s'...."
@@ -245,7 +316,7 @@ msgid "Ethernet Network"
 msgstr "רשת קווית"
 
 #. Notify user of unmanaged or unavailable device
-#: src/applet-device-ethernet.c:99 src/applet.c:1350
+#: src/applet-device-ethernet.c:99 src/applet.c:1265
 msgid "disconnected"
 msgstr "מנותק"
 
@@ -307,7 +378,7 @@ msgstr "יצירת רשת אלחוטית חדשה"
 msgid "(none)"
 msgstr "(אין)"
 
-#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1366
+#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1349
 msgid "Failed to add new connection"
 msgstr "הוספת החיבור החדש נכשלה"
 
@@ -315,8 +386,8 @@ msgstr "הוספת החיבור החדש נכשלה"
 msgid "Insufficient privileges."
 msgstr "אין מספיק הרשאות."
 
-#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1349
-#: src/applet-device-wifi.c:1369 src/applet.c:415 src/applet.c:498
+#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1332
+#: src/applet-device-wifi.c:1352 src/applet.c:414 src/applet.c:497
 msgid "Connection failure"
 msgstr "ההתקשרות נכשלה"
 
@@ -349,59 +420,55 @@ msgstr "התקשורת האלחוטית מנוטרלת באמצעות מתג ח�
 msgid "_Available networks"
 msgstr "רשתות _זמינות"
 
-#: src/applet-device-wifi.c:1083
+#: src/applet-device-wifi.c:1066
 msgid "Wi-Fi Networks Available"
 msgstr "רשתות אלחוטיות זמינות"
 
-#: src/applet-device-wifi.c:1084
+#: src/applet-device-wifi.c:1067
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "ניתן להשתמש בתפריט הרשתות כדי להתחבר לרשת אלחוטית"
 
-#: src/applet-device-wifi.c:1087 src/applet.c:819
-msgid "Don’t show this message again"
-msgstr "לא להציג הודעה זאת שוב"
-
-#: src/applet-device-wifi.c:1268
+#: src/applet-device-wifi.c:1249
 #, fuzzy, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "התחברת כעת לרשת האלחוטית '%s'."
 
-#: src/applet-device-wifi.c:1303
+#: src/applet-device-wifi.c:1286
 #, fuzzy, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "חיבור הרשת '%s' בהכנות..."
 
-#: src/applet-device-wifi.c:1306
+#: src/applet-device-wifi.c:1289
 #, fuzzy, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "תצורת חיבור הרשת האלחוטית '%s' מוגדרת..."
 
-#: src/applet-device-wifi.c:1309
+#: src/applet-device-wifi.c:1292
 #, fuzzy, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "נדרש אימות מהמשתמש עבור חיבור הרשת האלחוטית '%s'..."
 
-#: src/applet-device-wifi.c:1312
+#: src/applet-device-wifi.c:1295
 #, fuzzy, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "מתבקשת כתובת רשת אלחוטית עבור '%s'...."
 
-#: src/applet-device-wifi.c:1323
+#: src/applet-device-wifi.c:1306
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "חיבור הרשת האלחוטית '%s' פעיל: %s ‏(%d%%)"
 
-#: src/applet-device-wifi.c:1327
+#: src/applet-device-wifi.c:1310
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "החיבור לרשת האלחוטית '%s' פעיל"
 
-#: src/applet-device-wifi.c:1346
+#: src/applet-device-wifi.c:1329
 msgid "Failed to activate connection"
 msgstr "הפעלת ההתקשרות נכשלה"
 
-#: src/applet-device-wifi.c:1347 src/applet-device-wifi.c:1367 src/applet.c:413
-#: src/applet.c:464 src/applet.c:496
+#: src/applet-device-wifi.c:1330 src/applet-device-wifi.c:1350 src/applet.c:412
+#: src/applet.c:463 src/applet.c:495
 msgid "Unknown error"
 msgstr "שגיאה בלתי מוכרת"
 
@@ -665,7 +732,8 @@ msgid ""
 "The mobile broadband device “%s” requires a SIM PIN code before it can be "
 "used."
 msgstr ""
-"התקן הפס הרחב הנייד '%s' דורש את קוד ה־PIN של ה־SIM לפני שניתן יהיה להשתמש בו."
+"התקן הפס הרחב הנייד '%s' דורש את קוד ה־PIN של ה־SIM לפני שניתן יהיה להשתמש "
+"בו."
 
 #. Translators: PIN code entry label
 #: src/applet-dialogs.c:1488
@@ -692,7 +760,8 @@ msgid ""
 "The mobile broadband device “%s” requires a SIM PUK code before it can be "
 "used."
 msgstr ""
-"התקן הפס הרחב הנייד '%s' דורש את קוד ה־PUK של ה־SIM לפני שניתן יהיה להשתמש בו."
+"התקן הפס הרחב הנייד '%s' דורש את קוד ה־PUK של ה־SIM לפני שניתן יהיה להשתמש "
+"בו."
 
 #. Translators: PUK code entry label
 #: src/applet-dialogs.c:1499
@@ -728,23 +797,27 @@ msgstr "אירע כשל ביצירת חיבור בהתקשרות: %s"
 msgid "Failed to write connection to VPN UI: incomplete write"
 msgstr "כתיבת החיבור למנשק המשתמש של ה־VPN נכשלה: כתיבה חלקית"
 
-#: src/applet.c:412
+#: src/applet.c:411
 msgid "Failed to add/activate connection"
 msgstr "הוספת/הפעלת החיבור נכשלה"
 
-#: src/applet.c:463
+#: src/applet.c:462
 msgid "Device disconnect failed"
 msgstr "ניתוק ההתקן נכשל"
 
-#: src/applet.c:466
+#: src/applet.c:465
 msgid "Disconnect failure"
 msgstr "הניתוק נכשל"
 
-#: src/applet.c:495
+#: src/applet.c:494
 msgid "Connection activation failed"
 msgstr "הפעלת החיבור נכשלה"
 
-#: src/applet.c:916
+#: src/applet.c:731
+msgid "Don’t show this message again"
+msgstr "לא להציג הודעה זאת שוב"
+
+#: src/applet.c:831
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -754,16 +827,17 @@ msgstr ""
 "\n"
 "חיבור ה־VPN‏ '%s' התנתק מכיוון שחיבור הרשת הופרע."
 
-#: src/applet.c:918
+#: src/applet.c:833
 #, fuzzy, c-format
 msgid ""
 "\n"
-"The VPN connection “%s” failed because the network connection was interrupted."
+"The VPN connection “%s” failed because the network connection was "
+"interrupted."
 msgstr ""
 "\n"
 "חיבור ה־VPN‏ '%s' נכשל בגלל שחיבור הרשת נקטע."
 
-#: src/applet.c:920
+#: src/applet.c:835
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -772,7 +846,7 @@ msgstr ""
 "\n"
 "חיבור ה־VPN‏ '%s' נכשל בגלל ששירות ה־VPN הופסק בפתאומיות."
 
-#: src/applet.c:922
+#: src/applet.c:837
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -782,7 +856,7 @@ msgstr ""
 "\n"
 "חיבור ה־VPN‏ '%s' נכשל בגלל ששירות ה־VPN החזיר תצורה לא תקינה."
 
-#: src/applet.c:924
+#: src/applet.c:839
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -791,7 +865,7 @@ msgstr ""
 "\n"
 "חיבור ה־VPN‏ '%s' נכשל משום שתם הזמן המוקצב לחיבור."
 
-#: src/applet.c:926
+#: src/applet.c:841
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -800,7 +874,7 @@ msgstr ""
 "\n"
 "חיבור ה־VPN‏ '%s' נכשל מכיוון ששירות ה־VPN לא התחיל בזמן."
 
-#: src/applet.c:928
+#: src/applet.c:843
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -809,7 +883,7 @@ msgstr ""
 "\n"
 "חיבור ה־VPN‏ '%s' נכשל מכיוון שהפעלת שירות ה־VPN נכשלה."
 
-#: src/applet.c:930
+#: src/applet.c:845
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -818,7 +892,7 @@ msgstr ""
 "\n"
 "חיבור ה־VPN‏ '%s' נכשל עקב העדר סודות VPN תקפים."
 
-#: src/applet.c:932
+#: src/applet.c:847
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -827,7 +901,7 @@ msgstr ""
 "\n"
 "חיבור ה־VPN‏ '%s' נכשל בגלל סודות VPN שגויים."
 
-#: src/applet.c:937
+#: src/applet.c:852
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -836,7 +910,7 @@ msgstr ""
 "\n"
 "חיבור ה־VPN‏ '%s' נכשל."
 
-#: src/applet.c:964
+#: src/applet.c:879
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -847,19 +921,19 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/applet.c:966
+#: src/applet.c:881
 msgid "VPN connection has been successfully established.\n"
 msgstr "חיבור ה־VPN נוצר בהצלחה.\n"
 
-#: src/applet.c:968
+#: src/applet.c:883
 msgid "VPN Login Message"
 msgstr "הודעת כניסה ל־VPN"
 
-#: src/applet.c:976 src/applet.c:1016
+#: src/applet.c:891 src/applet.c:931
 msgid "VPN Connection Failed"
 msgstr "חיבור VPN נכשל"
 
-#: src/applet.c:1020
+#: src/applet.c:935
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -872,7 +946,7 @@ msgstr ""
 "\n"
 "'%s'"
 
-#: src/applet.c:1023
+#: src/applet.c:938
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -885,132 +959,132 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1338
+#: src/applet.c:1253
 msgid "device not ready (firmware missing)"
 msgstr "ההתקן אינו מוכן (חסרה קושחה)"
 
-#: src/applet.c:1340
+#: src/applet.c:1255
 msgid "device not ready"
 msgstr "ההתקן אינו מוכן"
 
-#: src/applet.c:1366
+#: src/applet.c:1281
 msgid "Disconnect"
 msgstr "הנתקות"
 
-#: src/applet.c:1380
+#: src/applet.c:1295
 msgid "device not managed"
 msgstr "ההתקן לא מנוהל"
 
-#: src/applet.c:1454
+#: src/applet.c:1369
 msgid "No network devices available"
 msgstr "לא נמצא התקן רשת זמין"
 
-#: src/applet.c:1500
+#: src/applet.c:1415
 msgid "_VPN Connections"
 msgstr "_חיבורי VPN"
 
-#: src/applet.c:1544
+#: src/applet.c:1459
 msgid "_Configure VPN…"
 msgstr "ה_גדרת VPN…"
 
-#: src/applet.c:1547
+#: src/applet.c:1462
 msgid "_Add a VPN connection…"
 msgstr "הו_ספת חיבור VPN…"
 
-#: src/applet.c:1653
+#: src/applet.c:1568
 msgid "NetworkManager is not running…"
 msgstr "NetworkManager אינו פעיל…"
 
-#: src/applet.c:1658 src/applet.c:2726
+#: src/applet.c:1573 src/applet.c:2641
 msgid "Networking disabled"
 msgstr "מנהל הרשתות כבוי"
 
 #. 'Enable Networking' item
-#: src/applet.c:1868
+#: src/applet.c:1783
 msgid "Enable _Networking"
 msgstr "הפעלת _חיבורי רשת"
 
 #. 'Enable Wi-Fi' item
-#: src/applet.c:1877
+#: src/applet.c:1792
 msgid "Enable _Wi-Fi"
 msgstr "הפעלת ת_קשורת רשת אלחוטית"
 
 #. 'Enable Mobile Broadband' item
-#: src/applet.c:1886
+#: src/applet.c:1801
 msgid "Enable _Mobile Broadband"
 msgstr "הפעלת פס _רחב נייד"
 
 #. Toggle notifications item
-#: src/applet.c:1898
+#: src/applet.c:1813
 msgid "Enable N_otifications"
 msgstr "הפעלת הה_תרעות"
 
 #. 'Connection Information' item
-#: src/applet.c:1910
+#: src/applet.c:1825
 msgid "Connection _Information"
 msgstr "_פרטי החיבור"
 
 #. 'Edit Connections...' item
-#: src/applet.c:1918
+#: src/applet.c:1833
 msgid "Edit Connections…"
 msgstr "עריכת חיבורים…"
 
-#: src/applet.c:1932
+#: src/applet.c:1847
 msgid "_About"
 msgstr "על _אודות"
 
-#: src/applet.c:2246
+#: src/applet.c:2161
 #, c-format
 msgid "You are now connected to “%s”."
 msgstr "התחברת כעת אל „%s”."
 
-#: src/applet.c:2286
+#: src/applet.c:2201
 msgid "Disconnected"
 msgstr "נותק"
 
-#: src/applet.c:2287
+#: src/applet.c:2202
 msgid "The network connection has been disconnected."
 msgstr "חיבור הרשת נותק."
 
-#: src/applet.c:2589
+#: src/applet.c:2504
 #, fuzzy, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "חיבור הרשת '%s' בהכנות..."
 
-#: src/applet.c:2592
+#: src/applet.c:2507
 #, fuzzy, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "נדרש אימות משתמש עבור חיבור הרשת ‏'%s'..."
 
-#: src/applet.c:2598
+#: src/applet.c:2513
 #, fuzzy, c-format
 msgid "Network connection “%s” active"
 msgstr "חיבור הרשת '%s' פעיל"
 
-#: src/applet.c:2671
+#: src/applet.c:2586
 #, fuzzy, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "חיבור ה־VPN ‏'%s' מופעל..."
 
-#: src/applet.c:2674
+#: src/applet.c:2589
 #, fuzzy, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "נדרש אימות משתמש עבור חיבור ה־VPN ‏'%s'..."
 
-#: src/applet.c:2677
+#: src/applet.c:2592
 #, fuzzy, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "מתבקשת כתובת VPN עבור ‏'%s'..."
 
-#: src/applet.c:2680
+#: src/applet.c:2595
 msgid "VPN connection active"
 msgstr "חיבור ה־VPN‏ פעיל"
 
-#: src/applet.c:2730
+#: src/applet.c:2645
 msgid "No network connection"
 msgstr "אין חיבור רשת"
 
-#: src/applet.c:3352
+#: src/applet.c:3280
 msgid "NetworkManager Applet"
 msgstr "יישומון מנהל הרשתות"
 
@@ -1018,8 +1092,8 @@ msgstr "יישומון מנהל הרשתות"
 #: src/connection-editor/ce-ip6-routes.ui:88 src/connection-editor/ce-page.h:97
 #, fuzzy
 msgid ""
-"IP addresses identify your computer on the network. Click the “Add” button to "
-"add an IP address."
+"IP addresses identify your computer on the network. Click the “Add” button "
+"to add an IP address."
 msgstr ""
 "כתובות IP מהוות זיהוי למחשב שלך ברשת. יש ללחוץ על \"הוספה\" כדי להוסיף כתובת "
 "IP:"
@@ -1044,7 +1118,7 @@ msgstr "הו_ספה"
 #: src/connection-editor/ce-page-ip6.ui:199
 #: src/connection-editor/ce-page-team.ui:262
 #: src/connection-editor/ce-page-wireguard.ui:617
-#: src/connection-editor/connection-helpers.c:748
+#: src/connection-editor/connection-helpers.c:796
 #: src/connection-editor/nm-connection-list.ui:101
 msgid "_Delete"
 msgstr "מ_חיקה"
@@ -1078,8 +1152,8 @@ msgstr "נא לבחור את סוג החיבור"
 msgid ""
 "Select the type of connection you wish to create.\n"
 "\n"
-"If you are creating a VPN, and the VPN connection you wish to create does not "
-"appear in the list, you may not have the correct VPN plugin installed."
+"If you are creating a VPN, and the VPN connection you wish to create does "
+"not appear in the list, you may not have the correct VPN plugin installed."
 msgstr ""
 "נא לבחור את סוג חיבור עבור ההתחברות החדשה.\n"
 "\n"
@@ -1290,7 +1364,8 @@ msgid "Enable _STP (Spanning Tree Protocol)"
 msgstr "ה_פעלת STP (פרוטוקול עץ משתרע)"
 
 #: src/connection-editor/ce-page-bridge.ui:348
-msgid "Controls whether Spanning Tree Protocol (STP) is enabled for this bridge"
+msgid ""
+"Controls whether Spanning Tree Protocol (STP) is enabled for this bridge"
 msgstr ""
 
 #: src/connection-editor/ce-page-bridge.ui:363
@@ -1324,9 +1399,9 @@ msgstr ""
 #: src/connection-editor/ce-page-bridge.ui:504
 msgid ""
 "A mask of 16 bits, each corresponding to a group address in the range from "
-"01:80:C2:00:00:00 to 01:80:C2:00:00:0F that must be forwarded. The mask can’t "
-"have bits 0, 1 or 2 set because they are used for STP, MAC pause frames and "
-"LACP."
+"01:80:C2:00:00:00 to 01:80:C2:00:00:0F that must be forwarded. The mask "
+"can’t have bits 0, 1 or 2 set because they are used for STP, MAC pause "
+"frames and LACP."
 msgstr ""
 
 #: src/connection-editor/ce-page-dcb.ui:16
@@ -1510,8 +1585,8 @@ msgstr ""
 
 #: src/connection-editor/ce-page-dcb.ui:2899
 msgid ""
-"Enter the allowed link bandwidth percent each Priority Group may use. The sum "
-"of all groups must total 100%."
+"Enter the allowed link bandwidth percent each Priority Group may use. The "
+"sum of all groups must total 100%."
 msgstr ""
 
 #: src/connection-editor/ce-page-dcb.ui:2917
@@ -1594,8 +1669,8 @@ msgstr ""
 #: src/connection-editor/ce-page-ip4.ui:12
 #: src/connection-editor/ce-page-ip6.ui:12
 #: src/connection-editor/ce-page-proxy.ui:24
-#: src/connection-editor/ce-page-wifi.ui:32 src/connection-editor/page-ip4.c:118
-#: src/connection-editor/page-ip6.c:136
+#: src/connection-editor/ce-page-wifi.ui:32
+#: src/connection-editor/page-ip4.c:118 src/connection-editor/page-ip6.c:136
 msgid "Automatic"
 msgstr "אוטומטי"
 
@@ -1724,8 +1799,8 @@ msgstr "_מהירות"
 #: src/connection-editor/ce-page-ethernet.ui:462
 msgid ""
 "Speed value for static link negotiation, required only when “Ignore” and "
-"“Automatic” options are not selected. Before specifying a speed value be sure "
-"your device supports it."
+"“Automatic” options are not selected. Before specifying a speed value be "
+"sure your device supports it."
 msgstr ""
 
 #: src/connection-editor/ce-page-ethernet.ui:482
@@ -1735,8 +1810,8 @@ msgstr "_דו־כיווני"
 #: src/connection-editor/ce-page-ethernet.ui:496
 msgid ""
 "Duplex value for static link negotiation, required only when “Ignore” and "
-"“Automatic” options are not selected. Before specifying a duplex mode be sure "
-"your device supports it."
+"“Automatic” options are not selected. Before specifying a duplex mode be "
+"sure your device supports it."
 msgstr ""
 
 #: src/connection-editor/ce-page-general.ui:29
@@ -1777,9 +1852,9 @@ msgstr "התחברות אוטו_מטית עם עדיפות"
 
 #: src/connection-editor/ce-page-general.ui:167
 msgid ""
-"Connection priority for automatic activation. Connections with higher numbers "
-"are preferred when selecting profiles for automatic activation. Default value "
-"is 0."
+"Connection priority for automatic activation. Connections with higher "
+"numbers are preferred when selecting profiles for automatic activation. "
+"Default value is 0."
 msgstr ""
 
 #. IP-over-InfiniBand "datagram mode"
@@ -1889,9 +1964,9 @@ msgstr "_שיטה"
 #: src/connection-editor/ce-page-ip4.ui:202
 #, fuzzy
 msgid ""
-"The DHCP client identifier allows the network administrator to customize your "
-"computer’s configuration. If you wish to use a DHCP client identifier, enter "
-"it here."
+"The DHCP client identifier allows the network administrator to customize "
+"your computer’s configuration. If you wish to use a DHCP client identifier, "
+"enter it here."
 msgstr ""
 "מזהה לקוח ה־DHCP מאפשר למנהל הרשת שלך להתאים את תצורת המחשב שלך. אם ברצונך "
 "להשתמש במזהה לקוח DHCP יש להזין אותו כאן."
@@ -1910,21 +1985,21 @@ msgid "D_HCP client ID"
 msgstr "מזהה _לקוח DHCP"
 
 #: src/connection-editor/ce-page-ip4.ui:242
-#: src/connection-editor/ce-page-ip6.ui:249 src/connection-editor/page-ip4.c:359
-#: src/connection-editor/page-ip6.c:348
+#: src/connection-editor/ce-page-ip6.ui:249
+#: src/connection-editor/page-ip4.c:359 src/connection-editor/page-ip6.c:348
 msgid "S_earch domains"
 msgstr "שמות _תחום לחיפוש"
 
 #: src/connection-editor/ce-page-ip4.ui:256
-#: src/connection-editor/ce-page-ip6.ui:263 src/connection-editor/page-ip4.c:350
-#: src/connection-editor/page-ip6.c:339
+#: src/connection-editor/ce-page-ip6.ui:263
+#: src/connection-editor/page-ip4.c:350 src/connection-editor/page-ip6.c:339
 msgid "DNS ser_vers"
 msgstr "_שרתי DNS"
 
 #: src/connection-editor/ce-page-ip4.ui:270
 msgid ""
-"IP addresses of domain name servers used to resolve host names. Use commas to "
-"separate multiple domain name server addresses."
+"IP addresses of domain name servers used to resolve host names. Use commas "
+"to separate multiple domain name server addresses."
 msgstr ""
 "כתובת IP של שמות מתחם המשתמשים לפתרון שמות מאחרים. יש להשתמש בפסיקים כדי "
 "להפריד מספר כתובות שמות מתחם."
@@ -1978,9 +2053,9 @@ msgstr "הפעלה"
 #: src/connection-editor/ce-page-ip6.ui:277
 #, fuzzy
 msgid ""
-"IP addresses of domain name servers used to resolve host names. Use commas to "
-"separate multiple domain name server addresses. Link-local addresses will be "
-"automatically scoped to the connecting interface."
+"IP addresses of domain name servers used to resolve host names. Use commas "
+"to separate multiple domain name server addresses. Link-local addresses will "
+"be automatically scoped to the connecting interface."
 msgstr ""
 "כתובת IP של שמות מתחם המשתמשים לפתרון שמות מאחרים. יש להשתמש בפסיקים כדי "
 "להפריד מספר כתובות שמות מתחם."
@@ -1991,12 +2066,12 @@ msgstr ""
 
 #: src/connection-editor/ce-page-ip6.ui:304
 msgid ""
-"If enabled, it makes the kernel generate a temporary IPv6 address in addition "
-"to the public one generated from MAC address. This enhances privacy, but "
-"could cause problems in some applications. If set to \"Default\", the value "
-"from NetworkManager global configuration is used. If that is also unset, use "
-"the kernel default value read from file \"/proc/sys/net/ipv6/conf/default/"
-"use_tempaddr\""
+"If enabled, it makes the kernel generate a temporary IPv6 address in "
+"addition to the public one generated from MAC address. This enhances "
+"privacy, but could cause problems in some applications. If set to "
+"\"Default\", the value from NetworkManager global configuration is used. If "
+"that is also unset, use the kernel default value read from file \"/proc/sys/"
+"net/ipv6/conf/default/use_tempaddr\""
 msgstr ""
 
 #: src/connection-editor/ce-page-ip6.ui:323
@@ -2243,7 +2318,7 @@ msgid "Ad_vanced…"
 msgstr "מ_תקדם…"
 
 #: src/connection-editor/ce-page-team-port.ui:108
-msgid "Set by master"
+msgid "Set by controller"
 msgstr ""
 
 #: src/connection-editor/ce-page-team-port.ui:112
@@ -2664,7 +2739,7 @@ msgstr ""
 #: src/connection-editor/ce-page-team.ui:960
 msgid ""
 "Specifies the minimum number of ports that must be active before asserting "
-"carrier in the master interface, value can be 1 – 255."
+"carrier in the controller interface, value can be 1 – 255."
 msgstr ""
 
 #: src/connection-editor/ce-page-team.ui:972
@@ -2833,7 +2908,8 @@ msgid ""
 msgstr ""
 
 #: src/connection-editor/ce-page-wireguard.ui:252
-msgid "An endpoint IP or hostname, followed by a colon, and then a port number."
+msgid ""
+"An endpoint IP or hostname, followed by a colon, and then a port number."
 msgstr ""
 
 #: src/connection-editor/ce-page-wireguard.ui:264
@@ -2847,8 +2923,8 @@ msgstr ""
 #: src/connection-editor/ce-page-wireguard.ui:280
 msgid ""
 "How often to send an authenticated empty packet to the peer for the purpose "
-"of keeping a stateful firewall or NAT mapping valid. This is optional and not "
-"recommended outside of specific setups."
+"of keeping a stateful firewall or NAT mapping valid. This is optional and "
+"not recommended outside of specific setups."
 msgstr ""
 
 #: src/connection-editor/ce-page-wireguard.ui:297
@@ -2938,9 +3014,9 @@ msgstr "יציב"
 #: src/connection-editor/ce-page.c:275
 #, fuzzy
 msgid ""
-"The MAC address entered here will be used as hardware address for the network "
-"device this connection is activated on. This feature is known as MAC cloning "
-"or spoofing. Example: 00:11:22:33:44:55"
+"The MAC address entered here will be used as hardware address for the "
+"network device this connection is activated on. This feature is known as MAC "
+"cloning or spoofing. Example: 00:11:22:33:44:55"
 msgstr ""
 "כתובת ה־MAC שהוזנה כאן תשמש ככתובת החומרה עבור התקן הרשת שחיבור זה מופעל "
 "דרכו. תכונה זו ידועה כשכפול או זיוף  MAC. לדוגמה: 00:11:22:33:44:55"
@@ -2998,8 +3074,8 @@ msgstr ""
 #: src/connection-editor/ce-page.h:94
 #, fuzzy
 msgid ""
-"IP addresses identify your computer on the network. Click the “Add” button to "
-"add static IP address to be configured in addition to the automatic ones."
+"IP addresses identify your computer on the network. Click the “Add” button "
+"to add static IP address to be configured in addition to the automatic ones."
 msgstr ""
 "כתובות IP מהוות זיהוי למחשב שלך ברשת. יש ללחוץ על \"הוספה\" כדי להוסיף כתובת "
 "IP:"
@@ -3132,60 +3208,66 @@ msgid "WireGuard"
 msgstr "WireGuard"
 
 #: src/connection-editor/connection-helpers.c:112
-#: src/connection-editor/connection-helpers.c:374
+#: src/connection-editor/connection-helpers.c:422
 #: src/connection-editor/page-vpn.c:92
 msgid "VPN"
 msgstr "VPN"
 
-#: src/connection-editor/connection-helpers.c:192
+#: src/connection-editor/connection-helpers.c:202
+#, c-format
+msgid "VPN plugin “%s” not found"
+msgstr ""
+
+#: src/connection-editor/connection-helpers.c:227
 msgid "No VPN service type."
 msgstr "אין סוג שירות VPN."
 
-#: src/connection-editor/connection-helpers.c:197
+#: src/connection-editor/connection-helpers.c:241
 msgid "The VPN plugin failed to import the VPN connection correctly: "
 msgstr "תוסף ה־VPN נכשל בייבוא חיבור ה־VPN כראוי: "
 
-#: src/connection-editor/connection-helpers.c:281
+#: src/connection-editor/connection-helpers.c:329
 #: src/connection-editor/page-proxy.c:104
 #: src/connection-editor/page-team-port.c:189
 #: src/connection-editor/page-team.c:327
 msgid "Select file to import"
 msgstr "בחירת קובץ לייבוא"
 
-#: src/connection-editor/connection-helpers.c:285
+#: src/connection-editor/connection-helpers.c:333
 #: src/connection-editor/page-proxy.c:108
 #: src/connection-editor/page-team-port.c:193
 #: src/connection-editor/page-team.c:331
 msgid "_Open"
 msgstr "_פתיחה"
 
-#: src/connection-editor/connection-helpers.c:316
+#: src/connection-editor/connection-helpers.c:364
 msgid "Hardware"
 msgstr "חומרה"
 
-#: src/connection-editor/connection-helpers.c:343
+#: src/connection-editor/connection-helpers.c:391
 msgid "Virtual"
 msgstr "וירטואלי"
 
-#: src/connection-editor/connection-helpers.c:492
-#: src/connection-editor/connection-helpers.c:494
+#: src/connection-editor/connection-helpers.c:540
+#: src/connection-editor/connection-helpers.c:542
 msgid "Import a saved VPN configuration…"
 msgstr "ייבוא תצורת חיבור VPN שנשמרה…"
 
-#: src/connection-editor/connection-helpers.c:524
+#: src/connection-editor/connection-helpers.c:572
 msgid ""
-"The connection editor dialog could not be initialized due to an unknown error."
+"The connection editor dialog could not be initialized due to an unknown "
+"error."
 msgstr "אתחול תיבת הדו־שיח של עורך ההתחברות לא צלח בשל שגיאה לא מוכרת."
 
-#: src/connection-editor/connection-helpers.c:533
+#: src/connection-editor/connection-helpers.c:581
 msgid "Could not create new connection"
 msgstr "לא ניתן ליצור חיבור חדש"
 
-#: src/connection-editor/connection-helpers.c:696
+#: src/connection-editor/connection-helpers.c:744
 msgid "Connection delete failed"
 msgstr "מחיקת החיבור נכשלה"
 
-#: src/connection-editor/connection-helpers.c:744
+#: src/connection-editor/connection-helpers.c:792
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "האם ברצונך למחוק את החיבור %s?"
@@ -3285,10 +3367,11 @@ msgstr "אירעה שגיאה בלתי ידועה בעת יצירת חלון ע�
 
 #: src/connection-editor/nm-connection-editor.c:729
 msgid ""
-"Warning: the connection contains some properties not supported by the editor. "
-"They will be cleared upon save."
+"Warning: the connection contains some properties not supported by the "
+"editor. They will be cleared upon save."
 msgstr ""
-"אזהרה: החיבור מכיל מספר מאפיינים שלא נתמכים על ידי העורך. הם יימחקו עם השמירה."
+"אזהרה: החיבור מכיל מספר מאפיינים שלא נתמכים על ידי העורך. הם יימחקו עם "
+"השמירה."
 
 #: src/connection-editor/nm-connection-editor.c:751
 msgid "Error initializing editor"
@@ -3329,8 +3412,8 @@ msgstr "_עריכת תווית"
 
 #: src/connection-editor/nm-connection-editor.ui:320
 msgid ""
-"The following files are not labelled for use with certificate authentication. "
-"Do you wish to adjust the labels?"
+"The following files are not labelled for use with certificate "
+"authentication. Do you wish to adjust the labels?"
 msgstr ""
 
 #: src/connection-editor/nm-connection-editor.ui:347
@@ -3427,43 +3510,43 @@ msgstr "מחיקת החיבור המסומן"
 msgid "Authenticate to delete the selected connection"
 msgstr "נדרש אימות כדי למחוק את החיבור המסומן"
 
-#: src/connection-editor/nm-connection-list.c:1053
+#: src/connection-editor/nm-connection-list.c:1051
 msgid "Unrecognized connection type"
 msgstr "סוג החיבור לא מזוהה"
 
-#: src/connection-editor/nm-connection-list.c:1058
+#: src/connection-editor/nm-connection-list.c:1057
 #, c-format
 msgid "Don’t know how to import “%s” connections"
 msgstr "לא ידוע כיצד לייבא חיבורים מסוג „%s”"
 
-#: src/connection-editor/nm-connection-list.c:1062
+#: src/connection-editor/nm-connection-list.c:1061
 msgid "Error importing connection"
 msgstr "שגיאה בייבוא החיבור"
 
-#: src/connection-editor/nm-connection-list.c:1069
-#: src/connection-editor/nm-connection-list.c:1084
-#: src/connection-editor/nm-connection-list.c:1087
+#: src/connection-editor/nm-connection-list.c:1077
+#: src/connection-editor/nm-connection-list.c:1092
+#: src/connection-editor/nm-connection-list.c:1095
 msgid "Error creating connection"
 msgstr "שגיאה ביצירת החיבור"
 
-#: src/connection-editor/nm-connection-list.c:1069
+#: src/connection-editor/nm-connection-list.c:1077
 msgid "Connection type not specified."
 msgstr "סוג החיבור לא צוין."
 
-#: src/connection-editor/nm-connection-list.c:1085
+#: src/connection-editor/nm-connection-list.c:1093
 msgid "No VPN plugins are installed."
 msgstr "לא הותקנו תוספי VPN."
 
-#: src/connection-editor/nm-connection-list.c:1088
+#: src/connection-editor/nm-connection-list.c:1096
 #, c-format
 msgid "Don’t know how to create “%s” connections"
 msgstr "לא ידוע כיצד ליצור חיבורים מסוג „%s”"
 
-#: src/connection-editor/nm-connection-list.c:1122
+#: src/connection-editor/nm-connection-list.c:1130
 msgid "Error editing connection"
 msgstr "שגיאה בעריכת החיבור"
 
-#: src/connection-editor/nm-connection-list.c:1123
+#: src/connection-editor/nm-connection-list.c:1131
 #, c-format
 msgid "Did not find a connection with UUID “%s”"
 msgstr "לא נמצא חיבור עם המזהה הייחודי „%s”"
@@ -3619,9 +3702,9 @@ msgid ""
 "zone, selecting it results in the use of the default zone set in the "
 "firewall. Only usable if firewalld is active."
 msgstr ""
-"האזור מגדיר את רמת המהימנות של החיבור. בררת המחדל אינה אזור רגיל, בחירה באזור "
-"זה תוביל לשימוש באזור בררת המחדל בחומת האש. יש להשתמש בזה רק אם חומת האש "
-"פעילה."
+"האזור מגדיר את רמת המהימנות של החיבור. בררת המחדל אינה אזור רגיל, בחירה "
+"באזור זה תוביל לשימוש באזור בררת המחדל בחומת האש. יש להשתמש בזה רק אם חומת "
+"האש פעילה."
 
 #: src/connection-editor/page-general.c:371
 msgid "Could not load General user interface."
@@ -3779,24 +3862,24 @@ msgstr "לא ניתן לטעון את מנשק המשתמש ל־MACsec."
 msgid "MACSEC connection %d"
 msgstr "חיבור MACSEC‏ %d"
 
-#: src/connection-editor/page-master.c:221
-#: src/connection-editor/page-master.c:232
+#: src/connection-editor/page-controller.c:221
+#: src/connection-editor/page-controller.c:232
 msgid "Duplicate ports"
 msgstr "פתחות כפולות"
 
-#: src/connection-editor/page-master.c:222
+#: src/connection-editor/page-controller.c:222
 #, c-format
 msgid "Ports “%s” and “%s” both apply to device “%s”"
 msgstr "הפתחות „%s” ו־„%s” שתיהן חלות על ההתקן „%s”"
 
-#: src/connection-editor/page-master.c:233
+#: src/connection-editor/page-controller.c:233
 #, c-format
 msgid ""
 "Ports “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
 "same physical device."
 msgstr ""
 
-#: src/connection-editor/page-master.c:357
+#: src/connection-editor/page-controller.c:357
 #, c-format
 msgid "%s port %d"
 msgstr "פתחת %s‏ %d"
@@ -3817,8 +3900,8 @@ msgstr "בחירת סוג הפס הרחב הנייד"
 #: src/connection-editor/page-mobile.c:554
 #, fuzzy
 msgid ""
-"Select the technology your mobile broadband provider uses. If you are unsure, "
-"ask your provider."
+"Select the technology your mobile broadband provider uses. If you are "
+"unsure, ask your provider."
 msgstr ""
 "נא לבחור את הטכנולוגיה בה משתמש ספק הפס הרחב הנייד שלך. במידה של חוסר ודאות, "
 "נא לשאול את הספק שלך."
@@ -3969,9 +4052,9 @@ msgstr "נא לבחור את סוג חיבור ה־VPN"
 #: src/connection-editor/page-vpn.c:198
 #, fuzzy
 msgid ""
-"Select the type of VPN you wish to use for the new connection. If the type of "
-"VPN connection you wish to create does not appear in the list, you may not "
-"have the correct VPN plugin installed."
+"Select the type of VPN you wish to use for the new connection. If the type "
+"of VPN connection you wish to create does not appear in the list, you may "
+"not have the correct VPN plugin installed."
 msgstr ""
 "נא לבחור את סוג חיבור ה־VPN בו ברצונך להשתמש עבור ההתחברות החדשה. אם סוג "
 "חיבור ה־VPN שברצונך ליצור אינו מופיע ברשימה, יתכן שלא מותקן אצלך תוסף ה־VPN "
@@ -4009,7 +4092,8 @@ msgstr ""
 #: src/connection-editor/page-wifi-security.c:503
 msgid "Could not load Wi-Fi security user interface; missing Wi-Fi setting."
 msgstr ""
-"לא ניתן לטעון את מנשק המשתמש של אבטחת הרשת האלחוטית; חסרה הגדרה לרשת האלחוטית."
+"לא ניתן לטעון את מנשק המשתמש של אבטחת הרשת האלחוטית; חסרה הגדרה לרשת "
+"האלחוטית."
 
 #: src/connection-editor/page-wifi-security.c:514
 msgid "Wi-Fi Security"
@@ -4030,8 +4114,8 @@ msgstr ""
 #: src/connection-editor/page-wifi.c:61
 #, fuzzy
 msgid ""
-"This option locks this connection to the Wi-Fi access point (AP) specified by "
-"the BSSID entered here. Example: 00:11:22:33:44:55"
+"This option locks this connection to the Wi-Fi access point (AP) specified "
+"by the BSSID entered here. Example: 00:11:22:33:44:55"
 msgstr ""
 "אפשרות זהו נועלת חיבור זה לנקודה הגישה האלחוטית (AP) שצוינה על ידי ה־BSSID "
 "שצוין כאן. לדוגמה: 00:11:22:33:44:55"
@@ -4147,11 +4231,11 @@ msgstr ""
 
 #: src/main.c:31
 msgid ""
-"It is not intended for command-line interaction but instead runs in the GNOME "
-"desktop environment."
+"It is not intended for command-line interaction but instead runs in the "
+"GNOME desktop environment."
 msgstr ""
-"It is not intended for command-line interaction but instead runs in the GNOME "
-"desktop environment."
+"It is not intended for command-line interaction but instead runs in the "
+"GNOME desktop environment."
 
 #: src/mb-menu-item.c:38
 msgid "EVDO"
@@ -4401,69 +4485,6 @@ msgstr "‏DER, ‏PEM או מפתחות פרטיים מסוג PKCS#12 ‏(‎*.
 #~ msgid "WEP inde_x"
 #~ msgstr "_אינדקס WEP:"
 
-#~ msgid "Disable connected notifications"
-#~ msgstr "Disable connected notifications"
-
-#~ msgid ""
-#~ "Set this to true to disable notifications when connecting to a network."
-#~ msgstr ""
-#~ "Set this to true to disable notifications when connecting to a network."
-
-#~ msgid "Disable disconnected notifications"
-#~ msgstr "Disable disconnected notifications"
-
-#~ msgid ""
-#~ "Set this to true to disable notifications when disconnecting from a "
-#~ "network."
-#~ msgstr ""
-#~ "Set this to true to disable notifications when disconnecting from a "
-#~ "network."
-
-#~ msgid "Disable VPN notifications"
-#~ msgstr "Disable VPN notifications"
-
-#~ msgid ""
-#~ "Set this to true to disable notifications when connecting to or "
-#~ "disconnecting from a VPN."
-#~ msgstr ""
-#~ "Set this to true to disable notifications when connecting to or "
-#~ "disconnecting from a VPN."
-
-#~ msgid "Suppress networks available notifications"
-#~ msgstr "Suppress networks available notifications"
-
-#~ msgid ""
-#~ "Set this to true to disable notifications when Wi-Fi networks are "
-#~ "available."
-#~ msgstr ""
-#~ "Set this to true to disable notifications when Wi-Fi networks are "
-#~ "available."
-
-#~ msgid "Stamp"
-#~ msgstr "Stamp"
-
-#~ msgid ""
-#~ "Used to determine whether settings should be migrated to a new version."
-#~ msgstr ""
-#~ "Used to determine whether settings should be migrated to a new version."
-
-#, fuzzy
-#~ msgid "Disable WiFi Create"
-#~ msgstr "Disable Wi-Fi Create"
-
-#~ msgid ""
-#~ "Set to true to disable creation of adhoc networks when using the applet."
-#~ msgstr ""
-#~ "Set to true to disable creation of adhoc networks when using the applet."
-
-#~ msgid "Show the applet in notification area"
-#~ msgstr "Show the applet in notification area"
-
-#~ msgid ""
-#~ "Set to FALSE to disable displaying the applet in the notification area."
-#~ msgstr ""
-#~ "Set to FALSE to disable displaying the applet in the notification area."
-
 #~ msgid "Ignore CA certificate"
 #~ msgstr "Ignore CA certificate"
 
@@ -4529,7 +4550,8 @@ msgstr "‏DER, ‏PEM או מפתחות פרטיים מסוג PKCS#12 ‏(‎*.
 #~ msgid ""
 #~ "This assistant helps you easily set up a mobile broadband connection to a "
 #~ "cellular (3G) network."
-#~ msgstr "אשף זה עוזר בהגדרה פשוטה חיבור פס נייד רחב לרשת סלולרית (דור שלישי)."
+#~ msgstr ""
+#~ "אשף זה עוזר בהגדרה פשוטה חיבור פס נייד רחב לרשת סלולרית (דור שלישי)."
 
 #~ msgid "You will need the following information:"
 #~ msgstr "המידע הבא יהיה דרוש לך:"
@@ -4542,7 +4564,8 @@ msgstr "‏DER, ‏PEM או מפתחות פרטיים מסוג PKCS#12 ‏(‎*.
 #~ msgstr "שם תכנית החיוב שלך"
 
 #~ msgid "(in some cases) Your broadband billing plan APN (Access Point Name)"
-#~ msgstr "(בחלק מהמקרים) שם נקודת הגישה (Access Point Name) של תכנית החיוב שלך"
+#~ msgstr ""
+#~ "(בחלק מהמקרים) שם נקודת הגישה (Access Point Name) של תכנית החיוב שלך"
 
 #~ msgid "Create a connection for _this mobile broadband device:"
 #~ msgstr "יצירת חיבור עבור התקן הפס הרחב הנייד ה_זה:"
@@ -4583,8 +4606,8 @@ msgstr "‏DER, ‏PEM או מפתחות פרטיים מסוג PKCS#12 ‏(‎*.
 
 #, fuzzy
 #~ msgid ""
-#~ "Warning: Selecting an incorrect plan may result in billing issues for your "
-#~ "broadband account or may prevent connectivity.\n"
+#~ "Warning: Selecting an incorrect plan may result in billing issues for "
+#~ "your broadband account or may prevent connectivity.\n"
 #~ "\n"
 #~ "If you are unsure of your plan please ask your provider for your plan’s "
 #~ "APN."
@@ -4598,7 +4621,8 @@ msgstr "‏DER, ‏PEM או מפתחות פרטיים מסוג PKCS#12 ‏(‎*.
 #~ msgstr "בחירת תכנית החיוב"
 
 #~ msgid ""
-#~ "Your mobile broadband connection is configured with the following settings:"
+#~ "Your mobile broadband connection is configured with the following "
+#~ "settings:"
 #~ msgstr "חיבור הפס הנייד הרחב שלך הוגדר עם האפשרויות הבאות:"
 
 #~ msgid "Your Device:"
@@ -4699,7 +4723,8 @@ msgstr "‏DER, ‏PEM או מפתחות פרטיים מסוג PKCS#12 ‏(‎*.
 
 #, fuzzy, c-format
 #~ msgid ""
-#~ "Passwords or encryption keys are required to access the Wi-Fi network “%s”."
+#~ "Passwords or encryption keys are required to access the Wi-Fi network "
+#~ "“%s”."
 #~ msgstr "נדרשים ססמאות או מפתחות הצפנה כדי לגשת לרשת האלחוטית '%s'."
 
 #~ msgid "Wi-Fi Network Authentication Required"
@@ -4899,8 +4924,8 @@ msgstr "‏DER, ‏PEM או מפתחות פרטיים מסוג PKCS#12 ‏(‎*.
 #~ "\n"
 #~ "(You can password-protect your private key with openssl)"
 #~ msgstr ""
-#~ "מסתבר כי המפתח הפרטי שנבחר אינו מוגן בססמה. מצב זה עלול לאפשר לתוקפים לנצל "
-#~ "לרעה את פרטי הזיהוי שלך. נא לבחור מפתח פרטי המוגן בססמה.\n"
+#~ "מסתבר כי המפתח הפרטי שנבחר אינו מוגן בססמה. מצב זה עלול לאפשר לתוקפים "
+#~ "לנצל לרעה את פרטי הזיהוי שלך. נא לבחור מפתח פרטי המוגן בססמה.\n"
 #~ "\n"
 #~ "(ניתן להגן על המפתח הפרטי שלך בססמה באמצעות openssl)"
 
@@ -5123,7 +5148,8 @@ msgstr "‏DER, ‏PEM או מפתחות פרטיים מסוג PKCS#12 ‏(‎*.
 #~ msgstr "כתובות אוטומטיות (PPP) בלבד"
 
 #~ msgid ""
-#~ "Bluetooth configuration not possible (failed to connect to D-Bus: (%s) %s)."
+#~ "Bluetooth configuration not possible (failed to connect to D-Bus: (%s) "
+#~ "%s)."
 #~ msgstr "הגדרת ה־Bluetooth אינה אפשרית (ההתחברות ל־D-Bus נכשלה: (%s)‏ %s)."
 
 #~ msgid ""
@@ -5184,8 +5210,8 @@ msgstr "‏DER, ‏PEM או מפתחות פרטיים מסוג PKCS#12 ‏(‎*.
 
 #~ msgid ""
 #~ "Not using a Certificate Authority (CA) certificate can result in "
-#~ "connections to insecure, rogue Wi-Fi networks.  Would you like to choose a "
-#~ "Certificate Authority certificate?"
+#~ "connections to insecure, rogue Wi-Fi networks.  Would you like to choose "
+#~ "a Certificate Authority certificate?"
 #~ msgstr ""
 #~ "אי שימוש באישור של רשות אישורים (CA) יכולה לגרום להתחברות לרשתות אלחוטיות "
 #~ "בלתי מאובטחות וזדוניות. האם ברצונך לבחור אישור של רשות אישורים?"
@@ -5286,11 +5312,12 @@ msgstr "‏DER, ‏PEM או מפתחות פרטיים מסוג PKCS#12 ‏(‎*.
 #~ msgid ""
 #~ "Could not find the authentication dialog for VPN connection type '%s'. "
 #~ "Contact your system administrator."
-#~ msgstr "אין אפשרות לאמת את חיבור ה־VPN מסוג '%s'. נא לפנות למנהל המערכת שלך."
+#~ msgstr ""
+#~ "אין אפשרות לאמת את חיבור ה־VPN מסוג '%s'. נא לפנות למנהל המערכת שלך."
 
 #~ msgid ""
-#~ "There was a problem launching the authentication dialog for VPN connection "
-#~ "type '%s'. Contact your system administrator."
+#~ "There was a problem launching the authentication dialog for VPN "
+#~ "connection type '%s'. Contact your system administrator."
 #~ msgstr ""
 #~ "שגיאה בהפעלת אימות חיבור ה־VPN מסוג '%s'. נא לפנות אל מנהל המערכת שלך."
 

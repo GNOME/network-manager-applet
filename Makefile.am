@@ -338,8 +338,8 @@ connection_editor_hc_real = \
 	src/connection-editor/page-proxy.c \
 	src/connection-editor/page-vpn.h \
 	src/connection-editor/page-vpn.c \
-	src/connection-editor/page-master.h \
-	src/connection-editor/page-master.c \
+	src/connection-editor/page-controller.h \
+	src/connection-editor/page-controller.c \
 	src/connection-editor/page-bond.h \
 	src/connection-editor/page-bond.c \
 	src/connection-editor/page-team.h \

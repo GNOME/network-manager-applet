@@ -94,7 +94,7 @@
       </row>
     </data>
   </object>
-  <object class="GtkListStore" id="master_connections_model">
+  <object class="GtkListStore" id="controller_connections_model">
     <columns>
       <!-- column-name connection -->
       <column type="NMConnection"/>
@@ -167,12 +167,12 @@
     <property name="row_spacing">8</property>
     <property name="column_spacing">6</property>
     <child>
-      <object class="GtkLabel" id="master_connections_label">
+      <object class="GtkLabel" id="controller_connections_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">start</property>
         <property name="label" translatable="yes">_Teamed connections</property>
-        <property name="mnemonic_widget">master_connections</property>
+        <property name="mnemonic_widget">controller_connections</property>
         <property name="use_underline">True</property>
         <property name="xalign">1</property>
       </object>
@@ -195,18 +195,18 @@
             <property name="can_focus">True</property>
             <property name="shadow_type">in</property>
             <child>
-              <object class="GtkTreeView" id="master_connections">
+              <object class="GtkTreeView" id="controller_connections">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="model">master_connections_model</property>
+                <property name="model">controller_connections_model</property>
                 <property name="headers_visible">False</property>
                 <child internal-child="selection">
                   <object class="GtkTreeSelection" id="treeview-selection1"/>
                 </child>
                 <child>
-                  <object class="GtkTreeViewColumn" id="master_connection_name">
+                  <object class="GtkTreeViewColumn" id="controller_connection_name">
                     <child>
-                      <object class="GtkCellRendererText" id="master_connection_renderer"/>
+                      <object class="GtkCellRendererText" id="controller_connection_renderer"/>
                       <attributes>
                         <attribute name="text">1</attribute>
                       </attributes>
@@ -230,7 +230,7 @@
             <property name="spacing">10</property>
             <property name="layout_style">start</property>
             <child>
-              <object class="GtkButton" id="master_connection_add">
+              <object class="GtkButton" id="controller_connection_add">
                 <property name="label" translatable="yes">_Add</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -244,7 +244,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="master_connection_edit">
+              <object class="GtkButton" id="controller_connection_edit">
                 <property name="label" translatable="yes">_Edit</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -258,7 +258,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="master_connection_delete">
+              <object class="GtkButton" id="controller_connection_delete">
                 <property name="label" translatable="yes">_Delete</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -286,13 +286,13 @@
       </packing>
     </child>
     <child>
-      <object class="GtkLabel" id="master_interface_label">
+      <object class="GtkLabel" id="controller_interface_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">start</property>
         <property name="label" translatable="yes">_Interface name</property>
         <property name="use_underline">True</property>
-        <property name="mnemonic_widget">master_interface</property>
+        <property name="mnemonic_widget">controller_interface</property>
         <property name="xalign">1</property>
       </object>
       <packing>
@@ -301,7 +301,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkEntry" id="master_interface">
+      <object class="GtkEntry" id="controller_interface">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="hexpand">True</property>
@@ -957,7 +957,7 @@
                   <object class="GtkSpinButton" id="minimum_ports">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Specifies the minimum number of ports that must be active before asserting carrier in the master interface, value can be 1 – 255.</property>
+                    <property name="tooltip_text" translatable="yes">Specifies the minimum number of ports that must be active before asserting carrier in the controller interface, value can be 1 – 255.</property>
                     <property name="adjustment">minimum_ports_adjustment</property>
                   </object>
                   <packing>

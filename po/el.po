@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
 "applet/\n"
-"POT-Creation-Date: 2022-05-30 11:43+0200\n"
+"POT-Creation-Date: 2023-08-03 11:40+0200\n"
 "PO-Revision-Date: 2014-07-21 12:37+0200\n"
 "Last-Translator: Tom Tryfonidis <tomtryf@gmail.com>\n"
 "Language-Team: team@lists.gnome.gr\n"
@@ -25,7 +25,7 @@ msgstr ""
 "X-Generator: Poedit 1.6.5\n"
 "X-Project-Style: gnome\n"
 
-#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3251
+#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3166
 msgid "Network"
 msgstr "Δίκτυο"
 
@@ -68,6 +68,82 @@ msgstr "_Χειροκίνητη σύνδεση"
 #: nm-connection-editor.desktop.in:4
 msgid "Manage and change your network connection settings"
 msgstr "Διαχείριση και αλλαγή ρυθμίσεων των συνδέσεων δικτύου"
+
+#: org.gnome.nm-applet.gschema.xml.in:6
+msgid "Disable connected notifications"
+msgstr "Απενεργοποίηση ειδοποιήσεων σύνδεσης"
+
+#: org.gnome.nm-applet.gschema.xml.in:7
+msgid "Set this to true to disable notifications when connecting to a network."
+msgstr ""
+"Ορίστε το ως αληθές για να απενεργοποιήσετε τις ειδοποιήσεις όποτε συνδέεστε "
+"σε δίκτυο."
+
+#: org.gnome.nm-applet.gschema.xml.in:11
+msgid "Disable disconnected notifications"
+msgstr "Απενεργοποίηση ειδοποιήσεων αποσύνδεσης"
+
+#: org.gnome.nm-applet.gschema.xml.in:12
+msgid ""
+"Set this to true to disable notifications when disconnecting from a network."
+msgstr ""
+"Ορίστε το ως αληθές για να απενεργοποιήσετε τις ειδοποιήσεις όποτε "
+"αποσυνδέεστε από ένα δίκτυο."
+
+#: org.gnome.nm-applet.gschema.xml.in:16
+msgid "Disable VPN notifications"
+msgstr "Απενεργοποίηση ειδοποιήσεων VPN"
+
+#: org.gnome.nm-applet.gschema.xml.in:17
+msgid ""
+"Set this to true to disable notifications when connecting to or "
+"disconnecting from a VPN."
+msgstr ""
+"Ορίστε το ως αληθές για να απενεργοποιήσετε τις ειδοποιήσεις όποτε "
+"αποσυνδέεστε από ένα δίκτυο VPN."
+
+#: org.gnome.nm-applet.gschema.xml.in:21
+msgid "Suppress networks available notifications"
+msgstr "Απενεργοποίηση ειδοποιήσεων διαθέσιμων δικτύων"
+
+#: org.gnome.nm-applet.gschema.xml.in:22
+msgid ""
+"Set this to true to disable notifications when Wi-Fi networks are available."
+msgstr ""
+"Ορίστε το ως αληθές για να απενεργοποιήσετε τις ειδοποιήσεις όποτε υπάρχουν "
+"διαθέσιμα δίκτυα Wi-Fi."
+
+#: org.gnome.nm-applet.gschema.xml.in:26
+msgid "Stamp"
+msgstr "Σφραγίδα"
+
+#: org.gnome.nm-applet.gschema.xml.in:27
+msgid "Used to determine whether settings should be migrated to a new version."
+msgstr ""
+"Χρησιμοποιείται για να καθορίζει αν οι ρυθμίσεις πρέπει να μεταφερθούν σε "
+"νέα έκδοση."
+
+#: org.gnome.nm-applet.gschema.xml.in:31
+#, fuzzy
+msgid "Disable WiFi Create"
+msgstr "Απενεργοποίηση δημιουργίας ασύρματου δικτύου"
+
+#: org.gnome.nm-applet.gschema.xml.in:32
+msgid ""
+"Set to true to disable creation of adhoc networks when using the applet."
+msgstr ""
+"Ορίστε το ως αληθές για να απενεργοποιήσετε την δημιουργία adhoc δικτύων "
+"κατά τη χρήση της μικροεφαρμογής."
+
+#: org.gnome.nm-applet.gschema.xml.in:36
+msgid "Show the applet in notification area"
+msgstr "Εμφάνιση της μικροεφαρμογής στην περιοχή ειδοποιήσεων"
+
+#: org.gnome.nm-applet.gschema.xml.in:37
+msgid "Set to FALSE to disable displaying the applet in the notification area."
+msgstr ""
+"Ορισμός σε ΨΕΥΔΕΣ για απενεργοποίηση εμφάνισης της μικροεφαρμογής στην "
+"περιοχή ειδοποιήσεων."
 
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
@@ -114,8 +190,8 @@ msgstr "Πιστοποίηση 802.1X"
 #: src/connection-editor/ce-page-dcb.ui:1019
 #: src/connection-editor/ce-page-wireguard.ui:41
 #: src/connection-editor/ce-ppp-auth-methods.ui:28
-#: src/connection-editor/connection-helpers.c:284
-#: src/connection-editor/connection-helpers.c:747
+#: src/connection-editor/connection-helpers.c:332
+#: src/connection-editor/connection-helpers.c:795
 #: src/connection-editor/nm-connection-editor.ui:197
 #: src/connection-editor/page-bluetooth.c:293
 #: src/connection-editor/page-mobile.c:530
@@ -186,7 +262,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "Νέα κινητή ευρυζωνική σύνδεση"
 
 #: src/applet-device-broadband.c:809 src/applet-device-bt.c:75
-#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1269
+#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1251
 msgid "Connection Established"
 msgstr "Η σύνδεση επιτεύχθηκε"
 
@@ -225,7 +301,7 @@ msgstr "Ρύθμιση της κινητής ευρυζωνικής σύνδεσ
 msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr "Απαιτείται πιστοποίηση για την κινητή ευρυζωνική σύνδεση '%s'..."
 
-#: src/applet-device-bt.c:113 src/applet.c:2595 src/mobile-helpers.c:593
+#: src/applet-device-bt.c:113 src/applet.c:2510 src/mobile-helpers.c:593
 #, fuzzy, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "Ζητείται διεύθυνση δικτύου για το '%s'..."
@@ -258,7 +334,7 @@ msgid "Ethernet Network"
 msgstr "Δίκτυο Ethernet"
 
 #. Notify user of unmanaged or unavailable device
-#: src/applet-device-ethernet.c:99 src/applet.c:1350
+#: src/applet-device-ethernet.c:99 src/applet.c:1265
 msgid "disconnected"
 msgstr "χωρίς σύνδεση"
 
@@ -321,7 +397,7 @@ msgstr "Δημιουργία νέου δικτύου Wi-Fi"
 msgid "(none)"
 msgstr "(κανένα)"
 
-#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1366
+#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1349
 msgid "Failed to add new connection"
 msgstr "Αποτυχία προσθήκης νέας σύνδεσης"
 
@@ -329,8 +405,8 @@ msgstr "Αποτυχία προσθήκης νέας σύνδεσης"
 msgid "Insufficient privileges."
 msgstr ""
 
-#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1349
-#: src/applet-device-wifi.c:1369 src/applet.c:415 src/applet.c:498
+#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1332
+#: src/applet-device-wifi.c:1352 src/applet.c:414 src/applet.c:497
 msgid "Connection failure"
 msgstr "Αποτυχία σύνδεσης"
 
@@ -363,60 +439,55 @@ msgstr "Το Wi-Fi είναι ανενεργό από τον διακόπτη"
 msgid "_Available networks"
 msgstr "Διαθέσιμη σε όλους τους χρήστες"
 
-#: src/applet-device-wifi.c:1083
+#: src/applet-device-wifi.c:1066
 msgid "Wi-Fi Networks Available"
 msgstr "Διαθέσιμα δίκτυα Wi-Fi"
 
-#: src/applet-device-wifi.c:1084
+#: src/applet-device-wifi.c:1067
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Χρησιμοποιήστε το μενού δικτύου για να συνδεθείτε σε δίκτυο Wi-Fi"
 
-#: src/applet-device-wifi.c:1087 src/applet.c:819
-#, fuzzy
-msgid "Don’t show this message again"
-msgstr "Να μην εμφανιστεί αυτό το μήνυμα ξανά"
-
-#: src/applet-device-wifi.c:1268
+#: src/applet-device-wifi.c:1249
 #, fuzzy, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "Συνδεθήκατε στο δίκτυο Wi-Fi '%s'."
 
-#: src/applet-device-wifi.c:1303
+#: src/applet-device-wifi.c:1286
 #, fuzzy, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "Προετοιμασία σύνδεσης δικτύου Wi-Fi '%s'..."
 
-#: src/applet-device-wifi.c:1306
+#: src/applet-device-wifi.c:1289
 #, fuzzy, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "Ρύθμιση της σύνδεσης δικτύου Wi-Fi '%s'..."
 
-#: src/applet-device-wifi.c:1309
+#: src/applet-device-wifi.c:1292
 #, fuzzy, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "Απαιτείται πιστοποίηση του χρήστη για το δίκτυο Wi-Fi '%s'..."
 
-#: src/applet-device-wifi.c:1312
+#: src/applet-device-wifi.c:1295
 #, fuzzy, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "Αιτείται διεύθυνση δικτύου Wi-Fi για το '%s'..."
 
-#: src/applet-device-wifi.c:1323
+#: src/applet-device-wifi.c:1306
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "Η σύνδεση δικτύου Wi-Fi '%s' είναι ενεργή: %s (%d%%)"
 
-#: src/applet-device-wifi.c:1327
+#: src/applet-device-wifi.c:1310
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "Η σύνδεση δικτύου Wi-Fi '%s' είναι ενεργή"
 
-#: src/applet-device-wifi.c:1346
+#: src/applet-device-wifi.c:1329
 msgid "Failed to activate connection"
 msgstr "Αποτυχία ενεργοποίησης της σύνδεσης"
 
-#: src/applet-device-wifi.c:1347 src/applet-device-wifi.c:1367 src/applet.c:413
-#: src/applet.c:464 src/applet.c:496
+#: src/applet-device-wifi.c:1330 src/applet-device-wifi.c:1350 src/applet.c:412
+#: src/applet.c:463 src/applet.c:495
 msgid "Unknown error"
 msgstr "Άγνωστο σφάλμα"
 
@@ -752,23 +823,28 @@ msgstr "Αδυναμία δημιουργίας σύνδεσης DUN: %s"
 msgid "Failed to write connection to VPN UI: incomplete write"
 msgstr ""
 
-#: src/applet.c:412
+#: src/applet.c:411
 msgid "Failed to add/activate connection"
 msgstr "Αποτυχία προσθήκης/ενεργοποίησης σύνδεσης"
 
-#: src/applet.c:463
+#: src/applet.c:462
 msgid "Device disconnect failed"
 msgstr "Αποτυχία αποσύνδεσης της συσκευής"
 
-#: src/applet.c:466
+#: src/applet.c:465
 msgid "Disconnect failure"
 msgstr "Αποτυχία αποσύνδεσης"
 
-#: src/applet.c:495
+#: src/applet.c:494
 msgid "Connection activation failed"
 msgstr "Απέτυχε η ενεργοποίηση της σύνδεσης"
 
-#: src/applet.c:916
+#: src/applet.c:731
+#, fuzzy
+msgid "Don’t show this message again"
+msgstr "Να μην εμφανιστεί αυτό το μήνυμα ξανά"
+
+#: src/applet.c:831
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -778,7 +854,7 @@ msgstr ""
 "\n"
 "Αποσυνδεθήκατε από το VPN '%s', γιατί διακόπηκε η σύνδεση δικτύου."
 
-#: src/applet.c:918
+#: src/applet.c:833
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -788,7 +864,7 @@ msgstr ""
 "\n"
 "Απέτυχε η σύνδεση VPN '%s', γιατί διακόπηκε η σύνδεση δικτύου."
 
-#: src/applet.c:920
+#: src/applet.c:835
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -797,7 +873,7 @@ msgstr ""
 "\n"
 "Απέτυχε η σύνδεση VPN '%s', γιατί η υπηρεσία VPN διακόπηκε ανεξήγητα."
 
-#: src/applet.c:922
+#: src/applet.c:837
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -807,7 +883,7 @@ msgstr ""
 "\n"
 "Απέτυχε η σύνδεση VPN '%s', γιατί η υπηρεσία VPN επέστρεψε άκυρες ρυθμίσεις."
 
-#: src/applet.c:924
+#: src/applet.c:839
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -816,7 +892,7 @@ msgstr ""
 "\n"
 "Απέτυχε η σύνδεση VPN '%s', γιατί έληξε το χρονικό όριο σύνδεσης."
 
-#: src/applet.c:926
+#: src/applet.c:841
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -826,7 +902,7 @@ msgstr ""
 "Απέτυχε η σύνδεση VPN '%s', γιατί δεν έγινε έγκαιρη εκκίνηση της υπηρεσίας "
 "VPN."
 
-#: src/applet.c:928
+#: src/applet.c:843
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -835,7 +911,7 @@ msgstr ""
 "\n"
 "Απέτυχε η σύνδεση VPN '%s', γιατί απέτυχε η εκκίνηση της υπηρεσίας VPN."
 
-#: src/applet.c:930
+#: src/applet.c:845
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -844,7 +920,7 @@ msgstr ""
 "\n"
 "Απέτυχε η σύνδεση VPN '%s', γιατί δεν βρέθηκαν έγκυρα VPN secrets."
 
-#: src/applet.c:932
+#: src/applet.c:847
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -853,7 +929,7 @@ msgstr ""
 "\n"
 "Απέτυχε η σύνδεση VPN '%s', γιατί τα VPN secrets ήταν άκυρα."
 
-#: src/applet.c:937
+#: src/applet.c:852
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -862,7 +938,7 @@ msgstr ""
 "\n"
 "Απέτυχε η σύνδεση VPN '%s'."
 
-#: src/applet.c:964
+#: src/applet.c:879
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -873,19 +949,19 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/applet.c:966
+#: src/applet.c:881
 msgid "VPN connection has been successfully established.\n"
 msgstr "Έχει πραγματοποιηθεί επιτυχώς η σύνδεση VPN.\n"
 
-#: src/applet.c:968
+#: src/applet.c:883
 msgid "VPN Login Message"
 msgstr "Μήνυμα εισόδου VPN"
 
-#: src/applet.c:976 src/applet.c:1016
+#: src/applet.c:891 src/applet.c:931
 msgid "VPN Connection Failed"
 msgstr "Απέτυχε η σύνδεση VPN"
 
-#: src/applet.c:1020
+#: src/applet.c:935
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -898,7 +974,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1023
+#: src/applet.c:938
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -911,137 +987,137 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1338
+#: src/applet.c:1253
 msgid "device not ready (firmware missing)"
 msgstr "η συσκευή δεν είναι έτοιμη (λείπει υλικολογισμικό)"
 
-#: src/applet.c:1340
+#: src/applet.c:1255
 msgid "device not ready"
 msgstr "η συσκευή δεν είναι έτοιμη"
 
-#: src/applet.c:1366
+#: src/applet.c:1281
 msgid "Disconnect"
 msgstr "Αποσύνδεση"
 
-#: src/applet.c:1380
+#: src/applet.c:1295
 msgid "device not managed"
 msgstr "δε γίνεται διαχείριση της συσκευής"
 
-#: src/applet.c:1454
+#: src/applet.c:1369
 msgid "No network devices available"
 msgstr "Δε βρέθηκαν συσκευές δικτύου"
 
-#: src/applet.c:1500
+#: src/applet.c:1415
 msgid "_VPN Connections"
 msgstr "Συνδέσεις _VPN"
 
-#: src/applet.c:1544
+#: src/applet.c:1459
 #, fuzzy
 msgid "_Configure VPN…"
 msgstr "_Ρύθμιση VPN..."
 
-#: src/applet.c:1547
+#: src/applet.c:1462
 #, fuzzy
 msgid "_Add a VPN connection…"
 msgstr "Προσθήκη μιας νέας σύνδεσης VPN"
 
-#: src/applet.c:1653
+#: src/applet.c:1568
 #, fuzzy
 msgid "NetworkManager is not running…"
 msgstr "Ο NetworkManager δεν εκτελείται..."
 
-#: src/applet.c:1658 src/applet.c:2726
+#: src/applet.c:1573 src/applet.c:2641
 msgid "Networking disabled"
 msgstr "Δικτύωση απενεργοποιημένη"
 
 #. 'Enable Networking' item
-#: src/applet.c:1868
+#: src/applet.c:1783
 msgid "Enable _Networking"
 msgstr "Ενεργοποίηση _δικτύωσης"
 
 #. 'Enable Wi-Fi' item
-#: src/applet.c:1877
+#: src/applet.c:1792
 msgid "Enable _Wi-Fi"
 msgstr "Ενεργοποίηση _Wi-Fi"
 
 #. 'Enable Mobile Broadband' item
-#: src/applet.c:1886
+#: src/applet.c:1801
 msgid "Enable _Mobile Broadband"
 msgstr "Ενεργοποίηση _κινητής ευρυζωνικής"
 
 #. Toggle notifications item
-#: src/applet.c:1898
+#: src/applet.c:1813
 msgid "Enable N_otifications"
 msgstr "Ενεργοποίηση ει_δοποιήσεων"
 
 #. 'Connection Information' item
-#: src/applet.c:1910
+#: src/applet.c:1825
 msgid "Connection _Information"
 msgstr "Π_ληροφορίες σύνδεσης"
 
 #. 'Edit Connections...' item
-#: src/applet.c:1918
+#: src/applet.c:1833
 #, fuzzy
 msgid "Edit Connections…"
 msgstr "Επεξεργασία συνδέσεων..."
 
-#: src/applet.c:1932
+#: src/applet.c:1847
 msgid "_About"
 msgstr "Πε_ρί"
 
-#: src/applet.c:2246
+#: src/applet.c:2161
 #, fuzzy, c-format
 msgid "You are now connected to “%s”."
 msgstr "Συνδεθήκατε στο '%s'."
 
-#: src/applet.c:2286
+#: src/applet.c:2201
 msgid "Disconnected"
 msgstr "Χωρίς σύνδεση"
 
-#: src/applet.c:2287
+#: src/applet.c:2202
 msgid "The network connection has been disconnected."
 msgstr "Αποσυνδεθήκατε από το δίκτυο."
 
-#: src/applet.c:2589
+#: src/applet.c:2504
 #, fuzzy, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "Προετοιμασία της σύνδεσης '%s'..."
 
-#: src/applet.c:2592
+#: src/applet.c:2507
 #, fuzzy, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "Απαιτείται πιστοποίηση του χρήστη για τη σύνδεση '%s'..."
 
-#: src/applet.c:2598
+#: src/applet.c:2513
 #, fuzzy, c-format
 msgid "Network connection “%s” active"
 msgstr "Η σύνδεση '%s' είναι ενεργή"
 
-#: src/applet.c:2671
+#: src/applet.c:2586
 #, fuzzy, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "Εκκίνηση της σύνδεσης VPN '%s'..."
 
-#: src/applet.c:2674
+#: src/applet.c:2589
 #, fuzzy, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "Απαιτείται πιστοποίηση του χρήστη για τη σύνδεση VPN '%s'..."
 
-#: src/applet.c:2677
+#: src/applet.c:2592
 #, fuzzy, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "Ζητείται διεύθυνση VPN για το '%s'..."
 
-#: src/applet.c:2680
+#: src/applet.c:2595
 #, fuzzy
 msgid "VPN connection active"
 msgstr "Η σύνδεση VPN '%s' είναι ενεργή"
 
-#: src/applet.c:2730
+#: src/applet.c:2645
 msgid "No network connection"
 msgstr "Δεν υπάρχει σύνδεση δικτύου"
 
-#: src/applet.c:3352
+#: src/applet.c:3280
 msgid "NetworkManager Applet"
 msgstr "Μικροεφαρμογή NetworkManager"
 
@@ -1075,7 +1151,7 @@ msgstr ""
 #: src/connection-editor/ce-page-ip6.ui:199
 #: src/connection-editor/ce-page-team.ui:262
 #: src/connection-editor/ce-page-wireguard.ui:617
-#: src/connection-editor/connection-helpers.c:748
+#: src/connection-editor/connection-helpers.c:796
 #: src/connection-editor/nm-connection-list.ui:101
 msgid "_Delete"
 msgstr "_Διαγραφή"
@@ -1173,7 +1249,7 @@ msgid "Bonded _connections"
 msgstr "Συζευγμένες _συνδέσεις:"
 
 #: src/connection-editor/ce-page-bond.ui:105
-#: src/connection-editor/ce-page-wifi.ui:400
+#: src/connection-editor/ce-page-wifi.ui:294
 #, fuzzy
 msgid "M_ode"
 msgstr "_Κατάσταση:"
@@ -2083,10 +2159,10 @@ msgstr "Επεκτάσεις α_πορρήτου IPv6:"
 msgid ""
 "If enabled, it makes the kernel generate a temporary IPv6 address in "
 "addition to the public one generated from MAC address. This enhances "
-"privacy, but could cause problems in some applications. If set to \"Default"
-"\", the value from NetworkManager global configuration is used. If that is "
-"also unset, use the kernel default value read from file \"/proc/sys/net/ipv6/"
-"conf/default/use_tempaddr\""
+"privacy, but could cause problems in some applications. If set to "
+"\"Default\", the value from NetworkManager global configuration is used. If "
+"that is also unset, use the kernel default value read from file \"/proc/sys/"
+"net/ipv6/conf/default/use_tempaddr\""
 msgstr ""
 
 #: src/connection-editor/ce-page-ip6.ui:323
@@ -2345,7 +2421,7 @@ msgid "Ad_vanced…"
 msgstr "Για προχωρημένους"
 
 #: src/connection-editor/ce-page-team-port.ui:108
-msgid "Set by master"
+msgid "Set by controller"
 msgstr ""
 
 #: src/connection-editor/ce-page-team-port.ui:112
@@ -2778,7 +2854,7 @@ msgstr ""
 #: src/connection-editor/ce-page-team.ui:960
 msgid ""
 "Specifies the minimum number of ports that must be active before asserting "
-"carrier in the master interface, value can be 1 – 255."
+"carrier in the controller interface, value can be 1 – 255."
 msgstr ""
 
 #: src/connection-editor/ce-page-team.ui:972
@@ -2888,40 +2964,22 @@ msgstr ""
 msgid "Ad-hoc"
 msgstr "Ad-hoc"
 
-#: src/connection-editor/ce-page-wifi.ui:203
-msgid "mW"
-msgstr "mW"
-
-#: src/connection-editor/ce-page-wifi.ui:222
-#, fuzzy
-msgid "Transmission po_wer"
-msgstr "Ισ_χύς μετάδοσης:"
-
-#: src/connection-editor/ce-page-wifi.ui:256
-msgid "Mb/s"
-msgstr "Mb/s"
-
-#: src/connection-editor/ce-page-wifi.ui:275
-#, fuzzy
-msgid "_Rate"
-msgstr "_Ρυθμός:"
-
-#: src/connection-editor/ce-page-wifi.ui:311
+#: src/connection-editor/ce-page-wifi.ui:205
 #, fuzzy
 msgid "_BSSID"
 msgstr "_BSSID:"
 
-#: src/connection-editor/ce-page-wifi.ui:336
+#: src/connection-editor/ce-page-wifi.ui:230
 #, fuzzy
 msgid "C_hannel"
 msgstr "Κα_νάλι:"
 
-#: src/connection-editor/ce-page-wifi.ui:368
+#: src/connection-editor/ce-page-wifi.ui:262
 #, fuzzy
 msgid "Ban_d"
 msgstr "_Ζώνη:"
 
-#: src/connection-editor/ce-page-wifi.ui:414
+#: src/connection-editor/ce-page-wifi.ui:308
 #, fuzzy
 msgid "SS_ID"
 msgstr "SS_ID:"
@@ -3285,16 +3343,21 @@ msgid "WireGuard"
 msgstr "Ενσύρματη"
 
 #: src/connection-editor/connection-helpers.c:112
-#: src/connection-editor/connection-helpers.c:374
+#: src/connection-editor/connection-helpers.c:422
 #: src/connection-editor/page-vpn.c:92
 msgid "VPN"
 msgstr "VPN"
 
-#: src/connection-editor/connection-helpers.c:192
+#: src/connection-editor/connection-helpers.c:202
+#, c-format
+msgid "VPN plugin “%s” not found"
+msgstr ""
+
+#: src/connection-editor/connection-helpers.c:227
 msgid "No VPN service type."
 msgstr ""
 
-#: src/connection-editor/connection-helpers.c:197
+#: src/connection-editor/connection-helpers.c:241
 #, fuzzy
 msgid "The VPN plugin failed to import the VPN connection correctly: "
 msgstr ""
@@ -3302,50 +3365,50 @@ msgstr ""
 "\n"
 "Σφάλμα: δεν υπάρχει τύπος υπηρεσίας VPN."
 
-#: src/connection-editor/connection-helpers.c:281
+#: src/connection-editor/connection-helpers.c:329
 #: src/connection-editor/page-proxy.c:104
 #: src/connection-editor/page-team-port.c:189
 #: src/connection-editor/page-team.c:327
 msgid "Select file to import"
 msgstr "Επιλέξτε το αρχείο που θέλετε να εισάγετε"
 
-#: src/connection-editor/connection-helpers.c:285
+#: src/connection-editor/connection-helpers.c:333
 #: src/connection-editor/page-proxy.c:108
 #: src/connection-editor/page-team-port.c:193
 #: src/connection-editor/page-team.c:331
 msgid "_Open"
 msgstr ""
 
-#: src/connection-editor/connection-helpers.c:316
+#: src/connection-editor/connection-helpers.c:364
 msgid "Hardware"
 msgstr "Υλικό"
 
-#: src/connection-editor/connection-helpers.c:343
+#: src/connection-editor/connection-helpers.c:391
 msgid "Virtual"
 msgstr "Εικονικό"
 
-#: src/connection-editor/connection-helpers.c:492
-#: src/connection-editor/connection-helpers.c:494
+#: src/connection-editor/connection-helpers.c:540
+#: src/connection-editor/connection-helpers.c:542
 #, fuzzy
 msgid "Import a saved VPN configuration…"
 msgstr "Εισαγωγή αποθηκευμένης διαμόρφωσης VPN..."
 
-#: src/connection-editor/connection-helpers.c:524
+#: src/connection-editor/connection-helpers.c:572
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
 msgstr ""
 "Απέτυχε η αρχικοποίηση του διαλόγου επεξεργασίας συνδέσεων για άγνωστο λόγο."
 
-#: src/connection-editor/connection-helpers.c:533
+#: src/connection-editor/connection-helpers.c:581
 msgid "Could not create new connection"
 msgstr "Αδύνατη η δημιουργία νέας σύνδεσης"
 
-#: src/connection-editor/connection-helpers.c:696
+#: src/connection-editor/connection-helpers.c:744
 msgid "Connection delete failed"
 msgstr "Απέτυχε η διαγραφή της σύνδεσης"
 
-#: src/connection-editor/connection-helpers.c:744
+#: src/connection-editor/connection-helpers.c:792
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "Είστε σίγουροι ότι θέλετε να διαγράψετε τη σύνδεση %s;"
@@ -3596,46 +3659,46 @@ msgstr "Διαγραφή της επιλεγμένης σύνδεσης"
 msgid "Authenticate to delete the selected connection"
 msgstr "Απαιτείται πιστοποίηση για τη διαγραφή της επιλεγμένης σύνδεσης"
 
-#: src/connection-editor/nm-connection-list.c:1053
+#: src/connection-editor/nm-connection-list.c:1051
 #, fuzzy
 msgid "Unrecognized connection type"
 msgstr "Μη υποστηριζόμενος τύπος κινητής ευρυζωνικής σύνδεσης."
 
-#: src/connection-editor/nm-connection-list.c:1058
+#: src/connection-editor/nm-connection-list.c:1057
 #, fuzzy, c-format
 msgid "Don’t know how to import “%s” connections"
 msgstr "Δε γνωρίζω πως μπορούν να πραγματοποιηθούν συνδέσεις τύπου '%s'"
 
-#: src/connection-editor/nm-connection-list.c:1062
+#: src/connection-editor/nm-connection-list.c:1061
 #, fuzzy
 msgid "Error importing connection"
 msgstr "Σφάλμα επεξεργασίας σύνδεσης"
 
-#: src/connection-editor/nm-connection-list.c:1069
-#: src/connection-editor/nm-connection-list.c:1084
-#: src/connection-editor/nm-connection-list.c:1087
+#: src/connection-editor/nm-connection-list.c:1077
+#: src/connection-editor/nm-connection-list.c:1092
+#: src/connection-editor/nm-connection-list.c:1095
 msgid "Error creating connection"
 msgstr "Σφάλμα δημιουργίας σύνδεσης"
 
-#: src/connection-editor/nm-connection-list.c:1069
+#: src/connection-editor/nm-connection-list.c:1077
 #, fuzzy
 msgid "Connection type not specified."
 msgstr "Απέτυχε η προσθήκη σύνδεσης"
 
-#: src/connection-editor/nm-connection-list.c:1085
+#: src/connection-editor/nm-connection-list.c:1093
 msgid "No VPN plugins are installed."
 msgstr "Δεν έχουν εγκατασταθεί πρόσθετα VPN."
 
-#: src/connection-editor/nm-connection-list.c:1088
+#: src/connection-editor/nm-connection-list.c:1096
 #, fuzzy, c-format
 msgid "Don’t know how to create “%s” connections"
 msgstr "Δε γνωρίζω πως μπορούν να πραγματοποιηθούν συνδέσεις τύπου '%s'"
 
-#: src/connection-editor/nm-connection-list.c:1122
+#: src/connection-editor/nm-connection-list.c:1130
 msgid "Error editing connection"
 msgstr "Σφάλμα επεξεργασίας σύνδεσης"
 
-#: src/connection-editor/nm-connection-list.c:1123
+#: src/connection-editor/nm-connection-list.c:1131
 #, fuzzy, c-format
 msgid "Did not find a connection with UUID “%s”"
 msgstr "Δε βρέθηκε σύνδεση με UUID '%s'"
@@ -3965,18 +4028,18 @@ msgstr "Αδυναμία φόρτωσης της διεπαφής χρήστη W
 msgid "MACSEC connection %d"
 msgstr "Σύνδεση WiMAX %d"
 
-#: src/connection-editor/page-master.c:221
-#: src/connection-editor/page-master.c:232
+#: src/connection-editor/page-controller.c:221
+#: src/connection-editor/page-controller.c:232
 #, fuzzy
 msgid "Duplicate ports"
 msgstr "Διπλασιασμός υποτελών"
 
-#: src/connection-editor/page-master.c:222
+#: src/connection-editor/page-controller.c:222
 #, fuzzy, c-format
 msgid "Ports “%s” and “%s” both apply to device “%s”"
 msgstr "Οι υποτελείς '%s' και '%s' εφαρμόζουν και οι δύο στη συσκευή '%s'"
 
-#: src/connection-editor/page-master.c:233
+#: src/connection-editor/page-controller.c:233
 #, fuzzy, c-format
 msgid ""
 "Ports “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
@@ -3985,7 +4048,7 @@ msgstr ""
 "Οι υποτελείς '%s' και '%s' εφαρμόζουν σε διαφορετικές εικονικές θύρες ('%s' "
 "και '%s') της ίδιας φυσικής συσκευής."
 
-#: src/connection-editor/page-master.c:357
+#: src/connection-editor/page-controller.c:357
 #, c-format
 msgid "%s port %d"
 msgstr ""
@@ -4469,6 +4532,20 @@ msgstr "Πιστοποιητικά DER ή PEM (*.der, *.pem, *.crt, *.cer)"
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "Ιδιωτικά κλειδιά DER, PEM ή PKCS#12 (*.der, *.pem, *.p12, *.key)"
 
+#~ msgid "mW"
+#~ msgstr "mW"
+
+#, fuzzy
+#~ msgid "Transmission po_wer"
+#~ msgstr "Ισ_χύς μετάδοσης:"
+
+#~ msgid "Mb/s"
+#~ msgstr "Mb/s"
+
+#, fuzzy
+#~ msgid "_Rate"
+#~ msgstr "_Ρυθμός:"
+
 #~ msgid "More networks"
 #~ msgstr "Περισσότερα δίκτυα"
 
@@ -4589,73 +4666,6 @@ msgstr "Ιδιωτικά κλειδιά DER, PEM ή PKCS#12 (*.der, *.pem, *.p12
 #, fuzzy
 #~ msgid "WEP inde_x"
 #~ msgstr "Δείκτης _WEP:"
-
-#~ msgid "Disable connected notifications"
-#~ msgstr "Απενεργοποίηση ειδοποιήσεων σύνδεσης"
-
-#~ msgid ""
-#~ "Set this to true to disable notifications when connecting to a network."
-#~ msgstr ""
-#~ "Ορίστε το ως αληθές για να απενεργοποιήσετε τις ειδοποιήσεις όποτε "
-#~ "συνδέεστε σε δίκτυο."
-
-#~ msgid "Disable disconnected notifications"
-#~ msgstr "Απενεργοποίηση ειδοποιήσεων αποσύνδεσης"
-
-#~ msgid ""
-#~ "Set this to true to disable notifications when disconnecting from a "
-#~ "network."
-#~ msgstr ""
-#~ "Ορίστε το ως αληθές για να απενεργοποιήσετε τις ειδοποιήσεις όποτε "
-#~ "αποσυνδέεστε από ένα δίκτυο."
-
-#~ msgid "Disable VPN notifications"
-#~ msgstr "Απενεργοποίηση ειδοποιήσεων VPN"
-
-#~ msgid ""
-#~ "Set this to true to disable notifications when connecting to or "
-#~ "disconnecting from a VPN."
-#~ msgstr ""
-#~ "Ορίστε το ως αληθές για να απενεργοποιήσετε τις ειδοποιήσεις όποτε "
-#~ "αποσυνδέεστε από ένα δίκτυο VPN."
-
-#~ msgid "Suppress networks available notifications"
-#~ msgstr "Απενεργοποίηση ειδοποιήσεων διαθέσιμων δικτύων"
-
-#~ msgid ""
-#~ "Set this to true to disable notifications when Wi-Fi networks are "
-#~ "available."
-#~ msgstr ""
-#~ "Ορίστε το ως αληθές για να απενεργοποιήσετε τις ειδοποιήσεις όποτε "
-#~ "υπάρχουν διαθέσιμα δίκτυα Wi-Fi."
-
-#~ msgid "Stamp"
-#~ msgstr "Σφραγίδα"
-
-#~ msgid ""
-#~ "Used to determine whether settings should be migrated to a new version."
-#~ msgstr ""
-#~ "Χρησιμοποιείται για να καθορίζει αν οι ρυθμίσεις πρέπει να μεταφερθούν σε "
-#~ "νέα έκδοση."
-
-#, fuzzy
-#~ msgid "Disable WiFi Create"
-#~ msgstr "Απενεργοποίηση δημιουργίας ασύρματου δικτύου"
-
-#~ msgid ""
-#~ "Set to true to disable creation of adhoc networks when using the applet."
-#~ msgstr ""
-#~ "Ορίστε το ως αληθές για να απενεργοποιήσετε την δημιουργία adhoc δικτύων "
-#~ "κατά τη χρήση της μικροεφαρμογής."
-
-#~ msgid "Show the applet in notification area"
-#~ msgstr "Εμφάνιση της μικροεφαρμογής στην περιοχή ειδοποιήσεων"
-
-#~ msgid ""
-#~ "Set to FALSE to disable displaying the applet in the notification area."
-#~ msgstr ""
-#~ "Ορισμός σε ΨΕΥΔΕΣ για απενεργοποίηση εμφάνισης της μικροεφαρμογής στην "
-#~ "περιοχή ειδοποιήσεων."
 
 #~ msgid "Ignore CA certificate"
 #~ msgstr "Παράβλεψη πιστοποιητικού CA"

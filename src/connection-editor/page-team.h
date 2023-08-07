@@ -10,7 +10,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include "page-master.h"
+#include "page-controller.h"
 
 #define CE_TYPE_PAGE_TEAM            (ce_page_team_get_type ())
 #define CE_PAGE_TEAM(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), CE_TYPE_PAGE_TEAM, CEPageTeam))
@@ -20,11 +20,11 @@
 #define CE_PAGE_TEAM_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), CE_TYPE_PAGE_TEAM, CEPageTeamClass))
 
 typedef struct {
-	CEPageMaster parent;
+	CEPageController parent;
 } CEPageTeam;
 
 typedef struct {
-	CEPageMasterClass parent;
+	CEPageControllerClass parent;
 } CEPageTeamClass;
 
 GType ce_page_team_get_type (void);

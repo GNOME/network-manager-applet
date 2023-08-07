@@ -606,26 +606,26 @@ nm_connection_editor_get (NMConnection *connection)
 
 /* Returns an editor for @port's controller, if any */
 NMConnectionEditor *
-nm_connection_editor_get_master (NMConnection *port)
+nm_connection_editor_get_controller (NMConnection *port)
 {
 	GHashTableIter iter;
 	gpointer connection, editor;
 	NMSettingConnection *s_con;
-	const char *master;
+	const char *controller;
 
 	if (!active_editors)
 		return NULL;
 
 	s_con = nm_connection_get_setting_connection (port);
-	master = nm_setting_connection_get_master (s_con);
-	if (!master)
+	controller = nm_setting_connection_get_master (s_con);
+	if (!controller)
 		return NULL;
 
 	g_hash_table_iter_init (&iter, active_editors);
 	while (g_hash_table_iter_next (&iter, &connection, &editor)) {
-		if (!g_strcmp0 (master, nm_connection_get_uuid (connection)))
+		if (!g_strcmp0 (controller, nm_connection_get_uuid (connection)))
 			return editor;
-		if (!g_strcmp0 (master, nm_connection_get_interface_name (connection)))
+		if (!g_strcmp0 (controller, nm_connection_get_interface_name (connection)))
 			return editor;
 	}
 
@@ -968,7 +968,7 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 {
 	NMSettingConnection *s_con;
 	const char *connection_type;
-	const char *slave_type;
+	const char *port_type;
 	gboolean success = FALSE;
 	GSList *iter, *copy;
 
@@ -1062,11 +1062,11 @@ nm_connection_editor_set_connection (NMConnectionEditor *editor,
 		g_warning ("Unhandled setting type '%s'", connection_type);
 	}
 
-	slave_type = nm_setting_connection_get_slave_type (s_con);
-	if (!g_strcmp0 (slave_type, NM_SETTING_TEAM_SETTING_NAME)) {
+	port_type = nm_setting_connection_get_slave_type (s_con);
+	if (!g_strcmp0 (port_type, NM_SETTING_TEAM_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_team_port_new, editor->connection, error))
 			goto out;
-	} else if (!g_strcmp0 (slave_type, NM_SETTING_BRIDGE_SETTING_NAME)) {
+	} else if (!g_strcmp0 (port_type, NM_SETTING_BRIDGE_SETTING_NAME)) {
 		if (!add_page (editor, ce_page_bridge_port_new, editor->connection, error))
 			goto out;
 	}

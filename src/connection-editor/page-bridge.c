@@ -12,7 +12,7 @@
 #include "nm-connection-editor.h"
 #include "connection-helpers.h"
 
-G_DEFINE_TYPE (CEPageBridge, ce_page_bridge, CE_TYPE_PAGE_MASTER)
+G_DEFINE_TYPE (CEPageBridge, ce_page_bridge, CE_TYPE_PAGE_CONTROLLER)
 
 #define CE_PAGE_BRIDGE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CE_TYPE_PAGE_BRIDGE, CEPageBridgePrivate))
 
@@ -157,7 +157,7 @@ populate_ui (CEPageBridge *self)
 }
 
 static void
-create_connection (CEPageMaster *master, NMConnection *connection)
+create_connection (CEPageController *controller, NMConnection *connection)
 {
 	NMSetting *s_port;
 
@@ -177,16 +177,16 @@ connection_type_filter (FUNC_TAG_NEW_CONNECTION_TYPE_FILTER_IMPL,
 }
 
 static void
-add_slave (CEPageMaster *master, NewConnectionResultFunc result_func)
+add_port (CEPageController *controller, NewConnectionResultFunc result_func)
 {
-	CEPageBridge *self = CE_PAGE_BRIDGE (master);
+	CEPageBridge *self = CE_PAGE_BRIDGE (controller);
 	CEPageBridgePrivate *priv = CE_PAGE_BRIDGE_GET_PRIVATE (self);
 
 	new_connection_dialog (priv->toplevel,
 	                       CE_PAGE (self)->client,
 	                       connection_type_filter,
 	                       result_func,
-	                       master);
+	                       controller);
 }
 
 static void
@@ -295,15 +295,15 @@ ce_page_bridge_class_init (CEPageBridgeClass *bridge_class)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (bridge_class);
 	CEPageClass *parent_class = CE_PAGE_CLASS (bridge_class);
-	CEPageMasterClass *master_class = CE_PAGE_MASTER_CLASS (bridge_class);
+	CEPageControllerClass *controller_class = CE_PAGE_CONTROLLER_CLASS (bridge_class);
 	GObjectClass *setting_class;
 
 	g_type_class_add_private (object_class, sizeof (CEPageBridgePrivate));
 
 	/* virtual methods */
 	parent_class->ce_page_validate_v = ce_page_validate_v;
-	master_class->create_connection = create_connection;
-	master_class->add_slave = add_slave;
+	controller_class->create_connection = create_connection;
+	controller_class->add_port = add_port;
 
 	/* check whether libnm supports the bridge.group-forward-mask property */
 	setting_class = g_type_class_ref (NM_TYPE_SETTING_BRIDGE);
