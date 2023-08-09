@@ -290,7 +290,6 @@ team_private_init (CEPageTeam *self)
 
 	ce_spin_default_val (priv->notify_peers_count, -1);
 	ce_spin_default_val (priv->notify_peers_interval, -1);
-	ce_spin_default_val (priv->notify_peers_interval, -1);
 	ce_spin_default_val (priv->mcast_rejoin_count, -1);
 	ce_spin_default_val (priv->mcast_rejoin_interval, -1);
 	ce_spin_default_val (priv->tx_balancing_interval, -1);
