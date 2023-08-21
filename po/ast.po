@@ -4,10 +4,10 @@
 # Xandru Armesto <xandru@softastur.org>, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: network-manager-applet main\n"
+"Project-Id-Version: network-manager-applet master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
 "applet/\n"
-"POT-Creation-Date: 2023-08-03 11:40+0200\n"
+"POT-Creation-Date: 2022-05-30 11:43+0200\n"
 "PO-Revision-Date: 2011-09-07 17:48+0200\n"
 "Last-Translator: Xandru Armesto <xandru@softastur.org>\n"
 "Language-Team: Softastur <alministradores@softastur.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "X-Poedit-Language: Asturian\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3166
+#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3251
 msgid "Network"
 msgstr "Rede"
 
@@ -63,79 +63,6 @@ msgstr "Conexones de rede actives"
 #: nm-connection-editor.desktop.in:4
 msgid "Manage and change your network connection settings"
 msgstr "Xestiona y camuda los axustes de conexón de rede"
-
-#: org.gnome.nm-applet.gschema.xml.in:6
-msgid "Disable connected notifications"
-msgstr "Desactivar los avisos de conexón"
-
-#: org.gnome.nm-applet.gschema.xml.in:7
-#, fuzzy
-msgid "Set this to true to disable notifications when connecting to a network."
-msgstr "Conseñar como braero pa desactivar los avisos al coneutase a una rede."
-
-#: org.gnome.nm-applet.gschema.xml.in:11
-msgid "Disable disconnected notifications"
-msgstr "Desactivar los avisos de desconexón"
-
-#: org.gnome.nm-applet.gschema.xml.in:12
-#, fuzzy
-msgid ""
-"Set this to true to disable notifications when disconnecting from a network."
-msgstr ""
-"Conseñar como braero pa desactivar los avisos al desconeutase d'una rede."
-
-#: org.gnome.nm-applet.gschema.xml.in:16
-#, fuzzy
-msgid "Disable VPN notifications"
-msgstr "Desactivar los avisos de conexón"
-
-#: org.gnome.nm-applet.gschema.xml.in:17
-#, fuzzy
-msgid ""
-"Set this to true to disable notifications when connecting to or "
-"disconnecting from a VPN."
-msgstr ""
-"Conseñar como braero pa desactivar los avisos al desconeutase d'una rede."
-
-#: org.gnome.nm-applet.gschema.xml.in:21
-msgid "Suppress networks available notifications"
-msgstr "Torgar avisos de redes afayadices"
-
-#: org.gnome.nm-applet.gschema.xml.in:22
-#, fuzzy
-msgid ""
-"Set this to true to disable notifications when Wi-Fi networks are available."
-msgstr ""
-"Conseñar como braero pa desactivar los avisos cuando hai redes inalámbriques "
-"afayadices."
-
-#: org.gnome.nm-applet.gschema.xml.in:26
-msgid "Stamp"
-msgstr "Cuñu"
-
-#: org.gnome.nm-applet.gschema.xml.in:27
-msgid "Used to determine whether settings should be migrated to a new version."
-msgstr "Usao p'afitar si hai que migrar los axustes a una versión nueva."
-
-#: org.gnome.nm-applet.gschema.xml.in:31
-#, fuzzy
-msgid "Disable WiFi Create"
-msgstr "Desactivar crear Wi-Fi"
-
-#: org.gnome.nm-applet.gschema.xml.in:32
-#, fuzzy
-msgid ""
-"Set to true to disable creation of adhoc networks when using the applet."
-msgstr ""
-"Conseñar braero pa desactivar la creación de redes adhoc al usar l'applet."
-
-#: org.gnome.nm-applet.gschema.xml.in:36
-msgid "Show the applet in notification area"
-msgstr ""
-
-#: org.gnome.nm-applet.gschema.xml.in:37
-msgid "Set to FALSE to disable displaying the applet in the notification area."
-msgstr ""
 
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
@@ -183,8 +110,8 @@ msgstr "Autenticación cableada 802.1X"
 #: src/connection-editor/ce-page-dcb.ui:1019
 #: src/connection-editor/ce-page-wireguard.ui:41
 #: src/connection-editor/ce-ppp-auth-methods.ui:28
-#: src/connection-editor/connection-helpers.c:332
-#: src/connection-editor/connection-helpers.c:795
+#: src/connection-editor/connection-helpers.c:284
+#: src/connection-editor/connection-helpers.c:747
 #: src/connection-editor/nm-connection-editor.ui:197
 #: src/connection-editor/page-bluetooth.c:293
 #: src/connection-editor/page-mobile.c:530
@@ -255,7 +182,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "Conexón de banda ancha móvil nueva"
 
 #: src/applet-device-broadband.c:809 src/applet-device-bt.c:75
-#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1251
+#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1269
 msgid "Connection Established"
 msgstr "Afitóse la conexón"
 
@@ -297,7 +224,7 @@ msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr ""
 "Necesítase autenticación d'usuariu pa la conexón móvil de banda ancha «%s»…"
 
-#: src/applet-device-bt.c:113 src/applet.c:2510 src/mobile-helpers.c:593
+#: src/applet-device-bt.c:113 src/applet.c:2595 src/mobile-helpers.c:593
 #, fuzzy, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "Solicitando una direición de rede pa «%s»…"
@@ -332,7 +259,7 @@ msgid "Ethernet Network"
 msgstr "Rede cableada"
 
 #. Notify user of unmanaged or unavailable device
-#: src/applet-device-ethernet.c:99 src/applet.c:1265
+#: src/applet-device-ethernet.c:99 src/applet.c:1350
 msgid "disconnected"
 msgstr "desconeutáu"
 
@@ -395,7 +322,7 @@ msgstr "Crear Nueva Rede Wifi"
 msgid "(none)"
 msgstr "(dengún)"
 
-#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1349
+#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1366
 #, fuzzy
 msgid "Failed to add new connection"
 msgstr "Nun pudo editase la conexón nueva"
@@ -404,8 +331,8 @@ msgstr "Nun pudo editase la conexón nueva"
 msgid "Insufficient privileges."
 msgstr ""
 
-#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1332
-#: src/applet-device-wifi.c:1352 src/applet.c:414 src/applet.c:497
+#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1349
+#: src/applet-device-wifi.c:1369 src/applet.c:415 src/applet.c:498
 #, fuzzy
 msgid "Connection failure"
 msgstr "Falló amestar conexón"
@@ -442,59 +369,64 @@ msgstr "WiMAX ta desactivada pol interruptor físicu"
 msgid "_Available networks"
 msgstr "Disponible pa tolos usuarios"
 
-#: src/applet-device-wifi.c:1066
+#: src/applet-device-wifi.c:1083
 #, fuzzy
 msgid "Wi-Fi Networks Available"
 msgstr "Redes Inalámbriques Disponibles"
 
-#: src/applet-device-wifi.c:1067
+#: src/applet-device-wifi.c:1084
 #, fuzzy
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Usar el menú de rede pa coneutase a una rede inalámbrica"
 
-#: src/applet-device-wifi.c:1249
+#: src/applet-device-wifi.c:1087 src/applet.c:819
+#, fuzzy
+msgid "Don’t show this message again"
+msgstr "Nun amosar esti mensax otra vegada"
+
+#: src/applet-device-wifi.c:1268
 #, fuzzy, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "Agora tas coneutáu a la rede inalámbrica «%s»."
 
-#: src/applet-device-wifi.c:1286
+#: src/applet-device-wifi.c:1303
 #, fuzzy, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "Tresnando la conexón de rede «%s»…"
 
-#: src/applet-device-wifi.c:1289
+#: src/applet-device-wifi.c:1306
 #, fuzzy, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "Configurando la conexón de rede cableada «%s»…"
 
-#: src/applet-device-wifi.c:1292
+#: src/applet-device-wifi.c:1309
 #, fuzzy, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr ""
 "Necesítase autenticación d'usuariu pa la conexón de rede inalámbrica «%s»…"
 
-#: src/applet-device-wifi.c:1295
+#: src/applet-device-wifi.c:1312
 #, fuzzy, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "Solicitando una direición de rede pa «%s»…"
 
-#: src/applet-device-wifi.c:1306
+#: src/applet-device-wifi.c:1323
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "La conexón de rede inalámbrica a «%s» ta activa: %s (%d%%)"
 
-#: src/applet-device-wifi.c:1310
+#: src/applet-device-wifi.c:1327
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "La conexón de rede cableada «%s» ta activa"
 
-#: src/applet-device-wifi.c:1329
+#: src/applet-device-wifi.c:1346
 #, fuzzy
 msgid "Failed to activate connection"
 msgstr "Fallu al crear la conexón PAN: %s"
 
-#: src/applet-device-wifi.c:1330 src/applet-device-wifi.c:1350 src/applet.c:412
-#: src/applet.c:463 src/applet.c:495
+#: src/applet-device-wifi.c:1347 src/applet-device-wifi.c:1367 src/applet.c:413
+#: src/applet.c:464 src/applet.c:496
 #, fuzzy
 msgid "Unknown error"
 msgstr "Desconocida"
@@ -829,32 +761,27 @@ msgstr "Fallu al crear la conexón DUN: %s"
 msgid "Failed to write connection to VPN UI: incomplete write"
 msgstr ""
 
-#: src/applet.c:411
+#: src/applet.c:412
 #, fuzzy
 msgid "Failed to add/activate connection"
 msgstr "Fallu al crear la conexón PAN: %s"
 
-#: src/applet.c:462
+#: src/applet.c:463
 #, fuzzy
 msgid "Device disconnect failed"
 msgstr "desconeutáu"
 
-#: src/applet.c:465
+#: src/applet.c:466
 #, fuzzy
 msgid "Disconnect failure"
 msgstr "Desconeutáu"
 
-#: src/applet.c:494
+#: src/applet.c:495
 #, fuzzy
 msgid "Connection activation failed"
 msgstr "Falló amestar conexón"
 
-#: src/applet.c:731
-#, fuzzy
-msgid "Don’t show this message again"
-msgstr "Nun amosar esti mensax otra vegada"
-
-#: src/applet.c:831
+#: src/applet.c:916
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -864,7 +791,7 @@ msgstr ""
 "\n"
 "La conexón VPN «%s» desconeutóse porque torgóse la conexón de rede."
 
-#: src/applet.c:833
+#: src/applet.c:918
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -874,7 +801,7 @@ msgstr ""
 "\n"
 "La conexón CPN «%s» falló porque torgóse la conexón de rede."
 
-#: src/applet.c:835
+#: src/applet.c:920
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -884,7 +811,7 @@ msgstr ""
 "la conexón de rede «%s» falló porque'l serviciu VPN  interrumpióse "
 "inesperadamente."
 
-#: src/applet.c:837
+#: src/applet.c:922
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -895,7 +822,7 @@ msgstr ""
 "La conexón VPN « %s » falló porque'l serviciu VPN devolvió una configuración "
 "inválida."
 
-#: src/applet.c:839
+#: src/applet.c:924
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -904,7 +831,7 @@ msgstr ""
 "\n"
 "La conexón VPN « %s » falló porque'l tiempu de conexón pasóse."
 
-#: src/applet.c:841
+#: src/applet.c:926
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -913,7 +840,7 @@ msgstr ""
 "\n"
 "La conexón VPN « %s » falló porque'l serviciu VPN nun arrancó a tiempu."
 
-#: src/applet.c:843
+#: src/applet.c:928
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -922,7 +849,7 @@ msgstr ""
 "\n"
 "La conexón VPN « %s » falló porque l'arranque del serviciu VPN falló."
 
-#: src/applet.c:845
+#: src/applet.c:930
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -931,7 +858,7 @@ msgstr ""
 "\n"
 "La conexón VPN « %s » falló porque nun había secretos VPN afayadizos."
 
-#: src/applet.c:847
+#: src/applet.c:932
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -940,7 +867,7 @@ msgstr ""
 "\n"
 "La conexón VPN « %s » falló por razones secretes VPN non afayadices."
 
-#: src/applet.c:852
+#: src/applet.c:937
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -949,7 +876,7 @@ msgstr ""
 "\n"
 "La conexón VPN «%s» falló."
 
-#: src/applet.c:879
+#: src/applet.c:964
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -957,19 +884,19 @@ msgid ""
 "%s\n"
 msgstr ""
 
-#: src/applet.c:881
+#: src/applet.c:966
 msgid "VPN connection has been successfully established.\n"
 msgstr ""
 
-#: src/applet.c:883
+#: src/applet.c:968
 msgid "VPN Login Message"
 msgstr "Mensaxe de Rexistru VPN"
 
-#: src/applet.c:891 src/applet.c:931
+#: src/applet.c:976 src/applet.c:1016
 msgid "VPN Connection Failed"
 msgstr "Falló la conexón VPN"
 
-#: src/applet.c:935
+#: src/applet.c:1020
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -982,7 +909,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:938
+#: src/applet.c:1023
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -995,138 +922,138 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1253
+#: src/applet.c:1338
 msgid "device not ready (firmware missing)"
 msgstr "el preséu nun ta llistu (falta'l firmware)"
 
-#: src/applet.c:1255
+#: src/applet.c:1340
 msgid "device not ready"
 msgstr "el preséu nun ta preparáu"
 
-#: src/applet.c:1281
+#: src/applet.c:1366
 msgid "Disconnect"
 msgstr "Desconeutar"
 
-#: src/applet.c:1295
+#: src/applet.c:1380
 msgid "device not managed"
 msgstr "el preséu nun ta remanáu"
 
-#: src/applet.c:1369
+#: src/applet.c:1454
 msgid "No network devices available"
 msgstr "Nun hai preseos de rede disponibles"
 
-#: src/applet.c:1415
+#: src/applet.c:1500
 msgid "_VPN Connections"
 msgstr "Conexones _VPN"
 
-#: src/applet.c:1459
+#: src/applet.c:1544
 #, fuzzy
 msgid "_Configure VPN…"
 msgstr "_Configurar VPN…"
 
-#: src/applet.c:1462
+#: src/applet.c:1547
 #, fuzzy
 msgid "_Add a VPN connection…"
 msgstr "Conexones _VPN"
 
-#: src/applet.c:1568
+#: src/applet.c:1653
 #, fuzzy
 msgid "NetworkManager is not running…"
 msgstr "NetworkManager nun ta executándose…"
 
-#: src/applet.c:1573 src/applet.c:2641
+#: src/applet.c:1658 src/applet.c:2726
 msgid "Networking disabled"
 msgstr "Redes deshabilitaes"
 
 #. 'Enable Networking' item
-#: src/applet.c:1783
+#: src/applet.c:1868
 msgid "Enable _Networking"
 msgstr "Activar _Rede"
 
 #. 'Enable Wi-Fi' item
-#: src/applet.c:1792
+#: src/applet.c:1877
 #, fuzzy
 msgid "Enable _Wi-Fi"
 msgstr "Activar _Inalámbrica"
 
 #. 'Enable Mobile Broadband' item
-#: src/applet.c:1801
+#: src/applet.c:1886
 msgid "Enable _Mobile Broadband"
 msgstr "Activar la banda ancha _móvil"
 
 #. Toggle notifications item
-#: src/applet.c:1813
+#: src/applet.c:1898
 msgid "Enable N_otifications"
 msgstr "Activar _notificaciones"
 
 #. 'Connection Information' item
-#: src/applet.c:1825
+#: src/applet.c:1910
 msgid "Connection _Information"
 msgstr "I_nformación de la Conexón"
 
 #. 'Edit Connections...' item
-#: src/applet.c:1833
+#: src/applet.c:1918
 #, fuzzy
 msgid "Edit Connections…"
 msgstr "Editar les conexones…"
 
-#: src/applet.c:1847
+#: src/applet.c:1932
 msgid "_About"
 msgstr "Tocante _a"
 
-#: src/applet.c:2161
+#: src/applet.c:2246
 #, fuzzy, c-format
 msgid "You are now connected to “%s”."
 msgstr "Agora ta coneutáu a «%s»."
 
-#: src/applet.c:2201
+#: src/applet.c:2286
 msgid "Disconnected"
 msgstr "Desconeutáu"
 
-#: src/applet.c:2202
+#: src/applet.c:2287
 msgid "The network connection has been disconnected."
 msgstr "Desconeutóse la conexón a la rede."
 
-#: src/applet.c:2504
+#: src/applet.c:2589
 #, fuzzy, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "Tresnando la conexón de rede «%s»…"
 
-#: src/applet.c:2507
+#: src/applet.c:2592
 #, fuzzy, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "Necesítase autenticación d'usuariu pa la conexón de rede «%s»…"
 
-#: src/applet.c:2513
+#: src/applet.c:2598
 #, fuzzy, c-format
 msgid "Network connection “%s” active"
 msgstr "Conexón de rede «%s» activa"
 
-#: src/applet.c:2586
+#: src/applet.c:2671
 #, fuzzy, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "Aniciando conexón VPN «%s»…"
 
-#: src/applet.c:2589
+#: src/applet.c:2674
 #, fuzzy, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "Necesítase autenticación d'usuariu pa la conexón VPN «%s»…"
 
-#: src/applet.c:2592
+#: src/applet.c:2677
 #, fuzzy, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "Solicitando una direición VPN pa «%s»…"
 
-#: src/applet.c:2595
+#: src/applet.c:2680
 #, fuzzy
 msgid "VPN connection active"
 msgstr "Conexón VPN «%s» activa"
 
-#: src/applet.c:2645
+#: src/applet.c:2730
 msgid "No network connection"
 msgstr "Nun hai conexón de rede"
 
-#: src/applet.c:3280
+#: src/applet.c:3352
 msgid "NetworkManager Applet"
 msgstr "Aplicación NetworkManager"
 
@@ -1160,7 +1087,7 @@ msgstr ""
 #: src/connection-editor/ce-page-ip6.ui:199
 #: src/connection-editor/ce-page-team.ui:262
 #: src/connection-editor/ce-page-wireguard.ui:617
-#: src/connection-editor/connection-helpers.c:796
+#: src/connection-editor/connection-helpers.c:748
 #: src/connection-editor/nm-connection-list.ui:101
 msgid "_Delete"
 msgstr "D_esaniciar"
@@ -1261,7 +1188,7 @@ msgid "Bonded _connections"
 msgstr "Co_nexón:"
 
 #: src/connection-editor/ce-page-bond.ui:105
-#: src/connection-editor/ce-page-wifi.ui:294
+#: src/connection-editor/ce-page-wifi.ui:400
 #, fuzzy
 msgid "M_ode"
 msgstr "M_ou:"
@@ -2136,10 +2063,10 @@ msgstr ""
 msgid ""
 "If enabled, it makes the kernel generate a temporary IPv6 address in "
 "addition to the public one generated from MAC address. This enhances "
-"privacy, but could cause problems in some applications. If set to "
-"\"Default\", the value from NetworkManager global configuration is used. If "
-"that is also unset, use the kernel default value read from file \"/proc/sys/"
-"net/ipv6/conf/default/use_tempaddr\""
+"privacy, but could cause problems in some applications. If set to \"Default"
+"\", the value from NetworkManager global configuration is used. If that is "
+"also unset, use the kernel default value read from file \"/proc/sys/net/ipv6/"
+"conf/default/use_tempaddr\""
 msgstr ""
 
 #: src/connection-editor/ce-page-ip6.ui:323
@@ -2396,7 +2323,7 @@ msgid "Ad_vanced…"
 msgstr "Avanzaes"
 
 #: src/connection-editor/ce-page-team-port.ui:108
-msgid "Set by controller"
+msgid "Set by master"
 msgstr ""
 
 #: src/connection-editor/ce-page-team-port.ui:112
@@ -2822,7 +2749,7 @@ msgstr ""
 #: src/connection-editor/ce-page-team.ui:960
 msgid ""
 "Specifies the minimum number of ports that must be active before asserting "
-"carrier in the controller interface, value can be 1 – 255."
+"carrier in the master interface, value can be 1 – 255."
 msgstr ""
 
 #: src/connection-editor/ce-page-team.ui:972
@@ -2931,22 +2858,40 @@ msgstr ""
 msgid "Ad-hoc"
 msgstr "Ad-hoc"
 
-#: src/connection-editor/ce-page-wifi.ui:205
+#: src/connection-editor/ce-page-wifi.ui:203
+msgid "mW"
+msgstr "mW"
+
+#: src/connection-editor/ce-page-wifi.ui:222
+#, fuzzy
+msgid "Transmission po_wer"
+msgstr "_Potencia de la tresmisión:"
+
+#: src/connection-editor/ce-page-wifi.ui:256
+msgid "Mb/s"
+msgstr "Mb/s"
+
+#: src/connection-editor/ce-page-wifi.ui:275
+#, fuzzy
+msgid "_Rate"
+msgstr "_Rate:"
+
+#: src/connection-editor/ce-page-wifi.ui:311
 #, fuzzy
 msgid "_BSSID"
 msgstr "_BSSID:"
 
-#: src/connection-editor/ce-page-wifi.ui:230
+#: src/connection-editor/ce-page-wifi.ui:336
 #, fuzzy
 msgid "C_hannel"
 msgstr "_Canal:"
 
-#: src/connection-editor/ce-page-wifi.ui:262
+#: src/connection-editor/ce-page-wifi.ui:368
 #, fuzzy
 msgid "Ban_d"
 msgstr "Ban_da:"
 
-#: src/connection-editor/ce-page-wifi.ui:308
+#: src/connection-editor/ce-page-wifi.ui:414
 msgid "SS_ID"
 msgstr ""
 
@@ -3304,21 +3249,16 @@ msgid "WireGuard"
 msgstr "Cableada"
 
 #: src/connection-editor/connection-helpers.c:112
-#: src/connection-editor/connection-helpers.c:422
+#: src/connection-editor/connection-helpers.c:374
 #: src/connection-editor/page-vpn.c:92
 msgid "VPN"
 msgstr "VPN"
 
-#: src/connection-editor/connection-helpers.c:202
-#, c-format
-msgid "VPN plugin “%s” not found"
-msgstr ""
-
-#: src/connection-editor/connection-helpers.c:227
+#: src/connection-editor/connection-helpers.c:192
 msgid "No VPN service type."
 msgstr ""
 
-#: src/connection-editor/connection-helpers.c:241
+#: src/connection-editor/connection-helpers.c:197
 #, fuzzy
 msgid "The VPN plugin failed to import the VPN connection correctly: "
 msgstr ""
@@ -3326,36 +3266,36 @@ msgstr ""
 "conexón vPN\n"
 "Fallu: nun hai dengún tipu de serviciu VPN."
 
-#: src/connection-editor/connection-helpers.c:329
+#: src/connection-editor/connection-helpers.c:281
 #: src/connection-editor/page-proxy.c:104
 #: src/connection-editor/page-team-port.c:189
 #: src/connection-editor/page-team.c:327
 msgid "Select file to import"
 msgstr "Esbilla'l ficheru pa importar"
 
-#: src/connection-editor/connection-helpers.c:333
+#: src/connection-editor/connection-helpers.c:285
 #: src/connection-editor/page-proxy.c:108
 #: src/connection-editor/page-team-port.c:193
 #: src/connection-editor/page-team.c:331
 msgid "_Open"
 msgstr ""
 
-#: src/connection-editor/connection-helpers.c:364
+#: src/connection-editor/connection-helpers.c:316
 #, fuzzy
 msgid "Hardware"
 msgstr "Señes de Hardware:"
 
-#: src/connection-editor/connection-helpers.c:391
+#: src/connection-editor/connection-helpers.c:343
 msgid "Virtual"
 msgstr ""
 
-#: src/connection-editor/connection-helpers.c:540
-#: src/connection-editor/connection-helpers.c:542
+#: src/connection-editor/connection-helpers.c:492
+#: src/connection-editor/connection-helpers.c:494
 #, fuzzy
 msgid "Import a saved VPN configuration…"
 msgstr "Exportar conexón VPN…"
 
-#: src/connection-editor/connection-helpers.c:572
+#: src/connection-editor/connection-helpers.c:524
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
@@ -3363,15 +3303,15 @@ msgstr ""
 "El diálogu de l'editor de conexones nun pudo inicializase por un error "
 "desconocíu."
 
-#: src/connection-editor/connection-helpers.c:581
+#: src/connection-editor/connection-helpers.c:533
 msgid "Could not create new connection"
 msgstr "Nun pudo crease la nueva conexón"
 
-#: src/connection-editor/connection-helpers.c:744
+#: src/connection-editor/connection-helpers.c:696
 msgid "Connection delete failed"
 msgstr "Falló desaniciar conexón"
 
-#: src/connection-editor/connection-helpers.c:792
+#: src/connection-editor/connection-helpers.c:744
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "¿De verdá quies quitar la conexón %s ?"
@@ -3619,46 +3559,46 @@ msgstr "Desaniciar la conexón seleicionada"
 msgid "Authenticate to delete the selected connection"
 msgstr "Autentíquese pa desaniciar la conexón seleicionada"
 
-#: src/connection-editor/nm-connection-list.c:1051
+#: src/connection-editor/nm-connection-list.c:1053
 #, fuzzy
 msgid "Unrecognized connection type"
 msgstr "Tipu de conexón de banda ancha móvil non sofitáu."
 
-#: src/connection-editor/nm-connection-list.c:1057
+#: src/connection-editor/nm-connection-list.c:1058
 #, fuzzy, c-format
 msgid "Don’t know how to import “%s” connections"
 msgstr "Desconozse cómo crear conexones «%s»"
 
-#: src/connection-editor/nm-connection-list.c:1061
+#: src/connection-editor/nm-connection-list.c:1062
 #, fuzzy
 msgid "Error importing connection"
 msgstr "Fallu al editar la conexón"
 
-#: src/connection-editor/nm-connection-list.c:1077
-#: src/connection-editor/nm-connection-list.c:1092
-#: src/connection-editor/nm-connection-list.c:1095
+#: src/connection-editor/nm-connection-list.c:1069
+#: src/connection-editor/nm-connection-list.c:1084
+#: src/connection-editor/nm-connection-list.c:1087
 msgid "Error creating connection"
 msgstr "Fallu al crear la conexón"
 
-#: src/connection-editor/nm-connection-list.c:1077
+#: src/connection-editor/nm-connection-list.c:1069
 #, fuzzy
 msgid "Connection type not specified."
 msgstr "Falló amestar conexón"
 
-#: src/connection-editor/nm-connection-list.c:1093
+#: src/connection-editor/nm-connection-list.c:1085
 msgid "No VPN plugins are installed."
 msgstr ""
 
-#: src/connection-editor/nm-connection-list.c:1096
+#: src/connection-editor/nm-connection-list.c:1088
 #, fuzzy, c-format
 msgid "Don’t know how to create “%s” connections"
 msgstr "Desconozse cómo crear conexones «%s»"
 
-#: src/connection-editor/nm-connection-list.c:1130
+#: src/connection-editor/nm-connection-list.c:1122
 msgid "Error editing connection"
 msgstr "Fallu al editar la conexón"
 
-#: src/connection-editor/nm-connection-list.c:1131
+#: src/connection-editor/nm-connection-list.c:1123
 #, fuzzy, c-format
 msgid "Did not find a connection with UUID “%s”"
 msgstr "Nun s'alcontró una conexón con UUID «%s»"
@@ -3992,24 +3932,24 @@ msgstr "Nun puede cargase l'interfaz d'usuariu DSL"
 msgid "MACSEC connection %d"
 msgstr "Conexón DSL %d"
 
-#: src/connection-editor/page-controller.c:221
-#: src/connection-editor/page-controller.c:232
+#: src/connection-editor/page-master.c:221
+#: src/connection-editor/page-master.c:232
 msgid "Duplicate ports"
 msgstr ""
 
-#: src/connection-editor/page-controller.c:222
+#: src/connection-editor/page-master.c:222
 #, c-format
 msgid "Ports “%s” and “%s” both apply to device “%s”"
 msgstr ""
 
-#: src/connection-editor/page-controller.c:233
+#: src/connection-editor/page-master.c:233
 #, c-format
 msgid ""
 "Ports “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
 "same physical device."
 msgstr ""
 
-#: src/connection-editor/page-controller.c:357
+#: src/connection-editor/page-master.c:357
 #, c-format
 msgid "%s port %d"
 msgstr ""
@@ -4501,20 +4441,6 @@ msgstr "Certificaos DER o PEM (*.der, *.pem, *.crt, *.cer)"
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "Certificaos DER o PEM (*.der, *.pem, *.crt, *.cer)"
 
-#~ msgid "mW"
-#~ msgstr "mW"
-
-#, fuzzy
-#~ msgid "Transmission po_wer"
-#~ msgstr "_Potencia de la tresmisión:"
-
-#~ msgid "Mb/s"
-#~ msgstr "Mb/s"
-
-#, fuzzy
-#~ msgid "_Rate"
-#~ msgstr "_Rate:"
-
 #~ msgid "More networks"
 #~ msgstr "Más redes"
 
@@ -4612,6 +4538,64 @@ msgstr "Certificaos DER o PEM (*.der, *.pem, *.crt, *.cer)"
 #, fuzzy
 #~ msgid "WEP inde_x"
 #~ msgstr "Índ_iz WEP:"
+
+#~ msgid "Disable connected notifications"
+#~ msgstr "Desactivar los avisos de conexón"
+
+#, fuzzy
+#~ msgid ""
+#~ "Set this to true to disable notifications when connecting to a network."
+#~ msgstr ""
+#~ "Conseñar como braero pa desactivar los avisos al coneutase a una rede."
+
+#~ msgid "Disable disconnected notifications"
+#~ msgstr "Desactivar los avisos de desconexón"
+
+#, fuzzy
+#~ msgid ""
+#~ "Set this to true to disable notifications when disconnecting from a "
+#~ "network."
+#~ msgstr ""
+#~ "Conseñar como braero pa desactivar los avisos al desconeutase d'una rede."
+
+#, fuzzy
+#~ msgid "Disable VPN notifications"
+#~ msgstr "Desactivar los avisos de conexón"
+
+#, fuzzy
+#~ msgid ""
+#~ "Set this to true to disable notifications when connecting to or "
+#~ "disconnecting from a VPN."
+#~ msgstr ""
+#~ "Conseñar como braero pa desactivar los avisos al desconeutase d'una rede."
+
+#~ msgid "Suppress networks available notifications"
+#~ msgstr "Torgar avisos de redes afayadices"
+
+#, fuzzy
+#~ msgid ""
+#~ "Set this to true to disable notifications when Wi-Fi networks are "
+#~ "available."
+#~ msgstr ""
+#~ "Conseñar como braero pa desactivar los avisos cuando hai redes "
+#~ "inalámbriques afayadices."
+
+#~ msgid "Stamp"
+#~ msgstr "Cuñu"
+
+#~ msgid ""
+#~ "Used to determine whether settings should be migrated to a new version."
+#~ msgstr "Usao p'afitar si hai que migrar los axustes a una versión nueva."
+
+#, fuzzy
+#~ msgid "Disable WiFi Create"
+#~ msgstr "Desactivar crear Wi-Fi"
+
+#, fuzzy
+#~ msgid ""
+#~ "Set to true to disable creation of adhoc networks when using the applet."
+#~ msgstr ""
+#~ "Conseñar braero pa desactivar la creación de redes adhoc al usar l'applet."
 
 #, fuzzy
 #~ msgid "Ignore CA certificate"

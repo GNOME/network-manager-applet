@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nm-applet\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
-"applet/\n"
-"POT-Creation-Date: 2023-08-03 11:40+0200\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
+"issues\n"
+"POT-Creation-Date: 2022-11-21 16:45+0000\n"
 "PO-Revision-Date: 2022-12-13 07:05+0700\n"
 "Last-Translator: OIS <mistresssilvara@hotmail.com>\n"
 "Language-Team: \n"
@@ -506,6 +506,7 @@ msgid "WEP"
 msgstr "WEP"
 
 #: src/applet-dialogs.c:228
+#| msgid "WPA/WPA2"
 msgid "WPA/WPA2/WPA3"
 msgstr "WPA/WPA2/WPA3"
 
@@ -785,6 +786,7 @@ msgstr ""
 
 #: src/applet-vpn-request.c:427
 #, fuzzy
+#| msgid "Connection Information"
 msgid "Connection had no VPN setting"
 msgstr "Desactivar connexion VPN"
 
@@ -820,6 +822,7 @@ msgstr "Activation"
 
 #: src/applet.c:731
 #, fuzzy
+#| msgid "Don't show this message again"
 msgid "Don’t show this message again"
 msgstr "Ne monstrar plu ti-ci avise"
 
@@ -1825,6 +1828,8 @@ msgid "Yes"
 msgstr "Yes"
 
 #: src/connection-editor/ce-page-general.ui:32
+#| msgctxt "Wi-Fi/Ethernet security"
+#| msgid "None"
 msgid "No"
 msgstr "No"
 
@@ -1924,6 +1929,7 @@ msgstr "Nómine de aparate"
 
 #: src/connection-editor/ce-page-ip-tunnel.ui:85
 #, fuzzy
+#| msgid "Ethernet device"
 msgid "Parent device"
 msgstr "_Superiore"
 
@@ -2004,6 +2010,7 @@ msgstr "Resultates de s_ercha"
 #: src/connection-editor/ce-page-ip6.ui:263
 #: src/connection-editor/page-ip4.c:350 src/connection-editor/page-ip6.c:339
 #, fuzzy
+#| msgid "DNS ser_vers:"
 msgid "DNS ser_vers"
 msgstr "Ser_vitores DNS"
 
@@ -2111,11 +2118,13 @@ msgstr "Reciver"
 
 #: src/connection-editor/ce-page-macsec.ui:38
 #, fuzzy
+#| msgid "Metric"
 msgid "Strict"
 msgstr "(strict rfc959)"
 
 #: src/connection-editor/ce-page-macsec.ui:58
 #, fuzzy
+#| msgid "_Device:"
 msgid "_Device name"
 msgstr "_Nómine de aparate:"
 
@@ -2126,6 +2135,7 @@ msgstr "MACsec"
 
 #: src/connection-editor/ce-page-macsec.ui:85
 #, fuzzy
+#| msgid "Ethernet device"
 msgid "_Parent device"
 msgstr "_Superiore"
 
@@ -2331,7 +2341,7 @@ msgstr "A_vancat…"
 
 #: src/connection-editor/ce-page-team-port.ui:108
 #, fuzzy
-msgid "Set by controller"
+msgid "Set by master"
 msgstr "Dissertation de magistro"
 
 #: src/connection-editor/ce-page-team-port.ui:112
@@ -2406,6 +2416,7 @@ msgstr "LACP"
 
 #: src/connection-editor/ce-page-team-port.ui:332
 #, fuzzy
+#| msgid "_Priority:"
 msgid "_LACP port priority"
 msgstr "LACP"
 
@@ -2621,11 +2632,13 @@ msgstr "Altissim evaluation"
 
 #: src/connection-editor/ce-page-team.ui:31
 #, fuzzy
+#| msgid "Priority"
 msgid "Port priority"
 msgstr "_Prioritá:"
 
 #: src/connection-editor/ce-page-team.ui:57
 #, fuzzy
+#| msgid "Ethernet device"
 msgid "From the team device"
 msgstr "Demande de acuplation recivet de un aparate"
 
@@ -2666,6 +2679,7 @@ msgid "VLAN"
 msgstr "VLAN"
 
 #: src/connection-editor/ce-page-team.ui:501
+#| msgid "FIP"
 msgid "IP"
 msgstr "IP"
 
@@ -2674,6 +2688,7 @@ msgid "Any L3 protocol"
 msgstr "Alquel protocol L3"
 
 #: src/connection-editor/ce-page-team.ui:509
+#| msgid "GTC"
 msgid "TCP"
 msgstr "TCP"
 
@@ -2762,6 +2777,7 @@ msgstr ""
 
 #: src/connection-editor/ce-page-team.ui:904
 #, fuzzy
+#| msgid "_Priority:"
 msgid "_System priority"
 msgstr "_Prioritá:"
 
@@ -2782,7 +2798,7 @@ msgstr ""
 #: src/connection-editor/ce-page-team.ui:960
 msgid ""
 "Specifies the minimum number of ports that must be active before asserting "
-"carrier in the controller interface, value can be 1 – 255."
+"carrier in the master interface, value can be 1 – 255."
 msgstr ""
 
 #: src/connection-editor/ce-page-team.ui:972
@@ -3140,6 +3156,7 @@ msgstr ""
 
 #: src/connection-editor/ce-page.h:104
 #, fuzzy
+#| msgid "Automatic, addresses only"
 msgid "Additional static addresses"
 msgstr "  --static          Generate static simboles\n"
 
@@ -3857,6 +3874,7 @@ msgstr "Solmen link-local"
 
 #: src/connection-editor/page-ip4.c:348 src/connection-editor/page-ip6.c:337
 #, fuzzy
+#| msgid "DNS ser_vers:"
 msgid "Additional DNS ser_vers"
 msgstr "Ser_vitores DNS"
 
@@ -3947,25 +3965,25 @@ msgstr "Ne successat cargar un file de GUI: %s"
 msgid "MACSEC connection %d"
 msgstr "Conexion MACsec %d"
 
-#: src/connection-editor/page-controller.c:221
-#: src/connection-editor/page-controller.c:232
+#: src/connection-editor/page-master.c:221
+#: src/connection-editor/page-master.c:232
 #, fuzzy
 msgid "Duplicate ports"
 msgstr "Portus: "
 
-#: src/connection-editor/page-controller.c:222
+#: src/connection-editor/page-master.c:222
 #, c-format
 msgid "Ports “%s” and “%s” both apply to device “%s”"
 msgstr ""
 
-#: src/connection-editor/page-controller.c:233
+#: src/connection-editor/page-master.c:233
 #, c-format
 msgid ""
 "Ports “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
 "same physical device."
 msgstr ""
 
-#: src/connection-editor/page-controller.c:357
+#: src/connection-editor/page-master.c:357
 #, c-format
 msgid "%s port %d"
 msgstr "Portu %s %d"
@@ -4117,6 +4135,7 @@ msgstr ""
 #
 #: src/connection-editor/page-vpn.c:51
 #, fuzzy
+#| msgid "Connection failure"
 msgid "unknown failure"
 msgstr "Dessuccesse"
 

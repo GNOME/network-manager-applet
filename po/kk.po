@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: network-manager-applet main\n"
+"Project-Id-Version: network-manager-applet master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
 "applet/\n"
-"POT-Creation-Date: 2023-08-03 11:40+0200\n"
+"POT-Creation-Date: 2022-05-30 11:43+0200\n"
 "PO-Revision-Date: 2020-06-26 17:23+0500\n"
 "Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh <kk_KZ@googlegroups.com>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 2.3.1\n"
 
-#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3166
+#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3251
 msgid "Network"
 msgstr "Желі"
 
@@ -62,77 +62,6 @@ msgstr "Кеңейтілген желі баптаулары"
 #: nm-connection-editor.desktop.in:4
 msgid "Manage and change your network connection settings"
 msgstr "Сіздің желілік байланысыңызды басқару мен түзету"
-
-#: org.gnome.nm-applet.gschema.xml.in:6
-msgid "Disable connected notifications"
-msgstr "Байланысты орнату хабарламаларын сөндіру"
-
-#: org.gnome.nm-applet.gschema.xml.in:7
-msgid "Set this to true to disable notifications when connecting to a network."
-msgstr ""
-"Желіге байланысты орнатқан кезде хабарламаларды сөндіру үшін бұны true етіп "
-"орнатыңыз."
-
-#: org.gnome.nm-applet.gschema.xml.in:11
-msgid "Disable disconnected notifications"
-msgstr "Байланысты ажырату хабарламаларын сөндіру"
-
-#: org.gnome.nm-applet.gschema.xml.in:12
-msgid ""
-"Set this to true to disable notifications when disconnecting from a network."
-msgstr ""
-"Желімен байланыс ажыратылған кезде хабарламаларды сөндіру үшін бұны true "
-"етіп орнатыңыз."
-
-#: org.gnome.nm-applet.gschema.xml.in:16
-msgid "Disable VPN notifications"
-msgstr "VPN хабарламаларын сөндіру"
-
-#: org.gnome.nm-applet.gschema.xml.in:17
-msgid ""
-"Set this to true to disable notifications when connecting to or "
-"disconnecting from a VPN."
-msgstr ""
-"VPN-ге байланыс орнатылған не ажыратылған кезде хабарламаларды сөндіру үшін "
-"бұны true етіп орнатыңыз."
-
-#: org.gnome.nm-applet.gschema.xml.in:21
-msgid "Suppress networks available notifications"
-msgstr "Қолжетерлік желілер туралы хабарламаларды басу"
-
-#: org.gnome.nm-applet.gschema.xml.in:22
-msgid ""
-"Set this to true to disable notifications when Wi-Fi networks are available."
-msgstr "Wi-Fi желілері қолжетерлік болу туралы хабарламаларды сөндіру."
-
-#: org.gnome.nm-applet.gschema.xml.in:26
-msgid "Stamp"
-msgstr ""
-
-#: org.gnome.nm-applet.gschema.xml.in:27
-msgid "Used to determine whether settings should be migrated to a new version."
-msgstr ""
-
-#: org.gnome.nm-applet.gschema.xml.in:31
-#, fuzzy
-msgid "Disable WiFi Create"
-msgstr "Wi-Fi жасауды сөндіру"
-
-#: org.gnome.nm-applet.gschema.xml.in:32
-msgid ""
-"Set to true to disable creation of adhoc networks when using the applet."
-msgstr ""
-"Апплетті қолданған кезде adhoc желілерін жасауды сөндіру үшін бұны true етіп "
-"орнатыңыз."
-
-#: org.gnome.nm-applet.gschema.xml.in:36
-msgid "Show the applet in notification area"
-msgstr "Хабарлау өрісінде апплетті көрсету"
-
-#: org.gnome.nm-applet.gschema.xml.in:37
-#, fuzzy
-msgid "Set to FALSE to disable displaying the applet in the notification area."
-msgstr "Хабарлау өрісінде апплетті көрсету"
 
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
@@ -179,8 +108,8 @@ msgstr "802.1X аутентификациясы"
 #: src/connection-editor/ce-page-dcb.ui:1019
 #: src/connection-editor/ce-page-wireguard.ui:41
 #: src/connection-editor/ce-ppp-auth-methods.ui:28
-#: src/connection-editor/connection-helpers.c:332
-#: src/connection-editor/connection-helpers.c:795
+#: src/connection-editor/connection-helpers.c:284
+#: src/connection-editor/connection-helpers.c:747
 #: src/connection-editor/nm-connection-editor.ui:197
 #: src/connection-editor/page-bluetooth.c:293
 #: src/connection-editor/page-mobile.c:530
@@ -248,7 +177,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "Жаңа мобильді кеңжолақты байланысы…"
 
 #: src/applet-device-broadband.c:809 src/applet-device-bt.c:75
-#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1251
+#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1269
 msgid "Connection Established"
 msgstr "Байланыс орнатылды"
 
@@ -288,7 +217,7 @@ msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr ""
 "\"%s\" мобильді кеңжолақты байланысы үшін пайдаланушы аутентификациясы керек…"
 
-#: src/applet-device-bt.c:113 src/applet.c:2510 src/mobile-helpers.c:593
+#: src/applet-device-bt.c:113 src/applet.c:2595 src/mobile-helpers.c:593
 #, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "\"%s\" үшін желілік адресті сұрау…"
@@ -321,7 +250,7 @@ msgid "Ethernet Network"
 msgstr "Ethernet желісі"
 
 #. Notify user of unmanaged or unavailable device
-#: src/applet-device-ethernet.c:99 src/applet.c:1265
+#: src/applet-device-ethernet.c:99 src/applet.c:1350
 msgid "disconnected"
 msgstr "байланыспаған"
 
@@ -382,7 +311,7 @@ msgstr "_Жаңа Wi-Fi желісін жасау…"
 msgid "(none)"
 msgstr "(ешнәрсе)"
 
-#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1349
+#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1366
 msgid "Failed to add new connection"
 msgstr "Жаңа байланысты қосу мүмкін емес"
 
@@ -390,8 +319,8 @@ msgstr "Жаңа байланысты қосу мүмкін емес"
 msgid "Insufficient privileges."
 msgstr "Рұқсаттар жеткіліксіз."
 
-#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1332
-#: src/applet-device-wifi.c:1352 src/applet.c:414 src/applet.c:497
+#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1349
+#: src/applet-device-wifi.c:1369 src/applet.c:415 src/applet.c:498
 msgid "Connection failure"
 msgstr "Байланысты орнату сәтсіз"
 
@@ -423,55 +352,59 @@ msgstr "Wi-Fi құрылғы қосқышымен сөндірілген"
 msgid "_Available networks"
 msgstr "Бар_лық пайдаланушыларға қолжетерлік"
 
-#: src/applet-device-wifi.c:1066
+#: src/applet-device-wifi.c:1083
 msgid "Wi-Fi Networks Available"
 msgstr "Wi-Fi желілері қолжетерлік"
 
-#: src/applet-device-wifi.c:1067
+#: src/applet-device-wifi.c:1084
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "Wi-Fi желісіне байланысты орнату үшін желі мәзірін қолданыңыз"
 
-#: src/applet-device-wifi.c:1249
+#: src/applet-device-wifi.c:1087 src/applet.c:819
+msgid "Don’t show this message again"
+msgstr "Бұл хабарламаны келесіде көрсетпеу"
+
+#: src/applet-device-wifi.c:1268
 #, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "\"%s\" Wi-Fi желісіне байланыс орнатылды."
 
-#: src/applet-device-wifi.c:1286
+#: src/applet-device-wifi.c:1303
 #, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "\"%s\" Wi-Fi желілік байланысын дайындау…"
 
-#: src/applet-device-wifi.c:1289
+#: src/applet-device-wifi.c:1306
 #, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "\"%s\" Wi-Fi желі байланысын баптау…"
 
-#: src/applet-device-wifi.c:1292
+#: src/applet-device-wifi.c:1309
 #, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "\"%s\" Wi-Fi желісі үшін пайдаланушы аутентификациясы керек…"
 
-#: src/applet-device-wifi.c:1295
+#: src/applet-device-wifi.c:1312
 #, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "\"%s\" үшін Wi-Fi желілік адресті сұрау…"
 
-#: src/applet-device-wifi.c:1306
+#: src/applet-device-wifi.c:1323
 #, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "\"%s\" Wi-Fi желілік байланысы белсенді: %s (%d%%)"
 
-#: src/applet-device-wifi.c:1310
+#: src/applet-device-wifi.c:1327
 #, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "\"%s\" Wi-Fi желілік байланысы белсенді"
 
-#: src/applet-device-wifi.c:1329
+#: src/applet-device-wifi.c:1346
 msgid "Failed to activate connection"
 msgstr "Байланысты белсендіру мүмкін емес"
 
-#: src/applet-device-wifi.c:1330 src/applet-device-wifi.c:1350 src/applet.c:412
-#: src/applet.c:463 src/applet.c:495
+#: src/applet-device-wifi.c:1347 src/applet-device-wifi.c:1367 src/applet.c:413
+#: src/applet.c:464 src/applet.c:496
 msgid "Unknown error"
 msgstr "Белгісіз қате"
 
@@ -791,27 +724,23 @@ msgstr "VPN UI ішіне байланысты жазу сәтсіз: %s (%d)"
 msgid "Failed to write connection to VPN UI: incomplete write"
 msgstr ""
 
-#: src/applet.c:411
+#: src/applet.c:412
 msgid "Failed to add/activate connection"
 msgstr "Байланысты қосу/белсендіру мүмкін емес"
 
-#: src/applet.c:462
+#: src/applet.c:463
 msgid "Device disconnect failed"
 msgstr "Құрылғыны ажырату сәтсіз"
 
-#: src/applet.c:465
+#: src/applet.c:466
 msgid "Disconnect failure"
 msgstr "Ажырату сәтсіз"
 
-#: src/applet.c:494
+#: src/applet.c:495
 msgid "Connection activation failed"
 msgstr "Байланысты іске қосу сәтсіз"
 
-#: src/applet.c:731
-msgid "Don’t show this message again"
-msgstr "Бұл хабарламаны келесіде көрсетпеу"
-
-#: src/applet.c:831
+#: src/applet.c:916
 #, c-format
 msgid ""
 "\n"
@@ -821,7 +750,7 @@ msgstr ""
 "\n"
 "\"%s\" VPN байланысы желілік байланыс үзілген соң ажыратылды."
 
-#: src/applet.c:833
+#: src/applet.c:918
 #, c-format
 msgid ""
 "\n"
@@ -831,7 +760,7 @@ msgstr ""
 "\n"
 "\"%s\" VPN байланысы сәтсіз, өйткені желілік байланыс үзілді."
 
-#: src/applet.c:835
+#: src/applet.c:920
 #, c-format
 msgid ""
 "\n"
@@ -840,7 +769,7 @@ msgstr ""
 "\n"
 "\"%s\" VPN байланысы сәтсіз, өйткені VPN қызметі күтпегенде тоқтады."
 
-#: src/applet.c:837
+#: src/applet.c:922
 #, c-format
 msgid ""
 "\n"
@@ -850,7 +779,7 @@ msgstr ""
 "\n"
 "\"%s\" VPN байланысы сәтсіз, өйткені VPN қызметі қате баптауларды қайтарды."
 
-#: src/applet.c:839
+#: src/applet.c:924
 #, c-format
 msgid ""
 "\n"
@@ -859,7 +788,7 @@ msgstr ""
 "\n"
 "\"%s\" VPN байланысы сәтсіз, өйткені байланысты орнатудың күту уақыты бітті."
 
-#: src/applet.c:841
+#: src/applet.c:926
 #, c-format
 msgid ""
 "\n"
@@ -868,7 +797,7 @@ msgstr ""
 "\n"
 "\"%s\" VPN байланысы сәтсіз, өйткені VPN қызметі уақытында іске қосылмады."
 
-#: src/applet.c:843
+#: src/applet.c:928
 #, c-format
 msgid ""
 "\n"
@@ -877,7 +806,7 @@ msgstr ""
 "\n"
 "\"%s\" VPN байланысы сәтсіз, өйткені VPN қызметі іске қосыла алмады."
 
-#: src/applet.c:845
+#: src/applet.c:930
 #, c-format
 msgid ""
 "\n"
@@ -886,7 +815,7 @@ msgstr ""
 "\n"
 "\"%s\" VPN байланысы сәтсіз, өйткені жарамды VPN парольдері табылмады."
 
-#: src/applet.c:847
+#: src/applet.c:932
 #, c-format
 msgid ""
 "\n"
@@ -895,7 +824,7 @@ msgstr ""
 "\n"
 "\"%s\" VPN байланысы сәтсіз, өйткені VPN парольдері жарамсыз."
 
-#: src/applet.c:852
+#: src/applet.c:937
 #, c-format
 msgid ""
 "\n"
@@ -904,7 +833,7 @@ msgstr ""
 "\n"
 "\"%s\" VPN байланысы сәтсіз."
 
-#: src/applet.c:879
+#: src/applet.c:964
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -915,19 +844,19 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/applet.c:881
+#: src/applet.c:966
 msgid "VPN connection has been successfully established.\n"
 msgstr "VPN байланысы сәтті орнатылды.\n"
 
-#: src/applet.c:883
+#: src/applet.c:968
 msgid "VPN Login Message"
 msgstr "VPN кіру хабарламасы"
 
-#: src/applet.c:891 src/applet.c:931
+#: src/applet.c:976 src/applet.c:1016
 msgid "VPN Connection Failed"
 msgstr "VPN байланысы сәтсіз"
 
-#: src/applet.c:935
+#: src/applet.c:1020
 #, c-format
 msgid ""
 "\n"
@@ -940,7 +869,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:938
+#: src/applet.c:1023
 #, c-format
 msgid ""
 "\n"
@@ -953,132 +882,132 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1253
+#: src/applet.c:1338
 msgid "device not ready (firmware missing)"
 msgstr "құрылғы дайын емес (firmware жоқ)"
 
-#: src/applet.c:1255
+#: src/applet.c:1340
 msgid "device not ready"
 msgstr "құрылғы дайын емес"
 
-#: src/applet.c:1281
+#: src/applet.c:1366
 msgid "Disconnect"
 msgstr "Байланысты үзу"
 
-#: src/applet.c:1295
+#: src/applet.c:1380
 msgid "device not managed"
 msgstr "құрылғы басқарылмайды"
 
-#: src/applet.c:1369
+#: src/applet.c:1454
 msgid "No network devices available"
 msgstr "Бірді-бір желілік құрылғы қолжетерсіз"
 
-#: src/applet.c:1415
+#: src/applet.c:1500
 msgid "_VPN Connections"
 msgstr "_VPN байланыстары"
 
-#: src/applet.c:1459
+#: src/applet.c:1544
 msgid "_Configure VPN…"
 msgstr "VPN ба_птау…"
 
-#: src/applet.c:1462
+#: src/applet.c:1547
 msgid "_Add a VPN connection…"
 msgstr "VPN байланысын қ_осу…"
 
-#: src/applet.c:1568
+#: src/applet.c:1653
 msgid "NetworkManager is not running…"
 msgstr "NetworkManager орындалып тұрған жоқ…"
 
-#: src/applet.c:1573 src/applet.c:2641
+#: src/applet.c:1658 src/applet.c:2726
 msgid "Networking disabled"
 msgstr "Желі сөндірілген"
 
 #. 'Enable Networking' item
-#: src/applet.c:1783
+#: src/applet.c:1868
 msgid "Enable _Networking"
 msgstr "Ж_еліні іске қосу"
 
 #. 'Enable Wi-Fi' item
-#: src/applet.c:1792
+#: src/applet.c:1877
 msgid "Enable _Wi-Fi"
 msgstr "Wi-Fi-ды і_ске қосу"
 
 #. 'Enable Mobile Broadband' item
-#: src/applet.c:1801
+#: src/applet.c:1886
 msgid "Enable _Mobile Broadband"
 msgstr "_Мобильді кеңжолақты желіні іске қосу"
 
 #. Toggle notifications item
-#: src/applet.c:1813
+#: src/applet.c:1898
 msgid "Enable N_otifications"
 msgstr "_Хабарламаларды іске қосу"
 
 #. 'Connection Information' item
-#: src/applet.c:1825
+#: src/applet.c:1910
 msgid "Connection _Information"
 msgstr "Байла_ныс ақпараты"
 
 #. 'Edit Connections...' item
-#: src/applet.c:1833
+#: src/applet.c:1918
 msgid "Edit Connections…"
 msgstr "Байланыстарды түзету…"
 
-#: src/applet.c:1847
+#: src/applet.c:1932
 msgid "_About"
 msgstr "Осы т_уралы"
 
-#: src/applet.c:2161
+#: src/applet.c:2246
 #, c-format
 msgid "You are now connected to “%s”."
 msgstr "\"%s\" желісіне байланыс орнатылды."
 
-#: src/applet.c:2201
+#: src/applet.c:2286
 msgid "Disconnected"
 msgstr "Ажыратылған"
 
-#: src/applet.c:2202
+#: src/applet.c:2287
 msgid "The network connection has been disconnected."
 msgstr "Желілік байланыс ажыратылды."
 
-#: src/applet.c:2504
+#: src/applet.c:2589
 #, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "\"%s\" желілік байланысын дайындау…"
 
-#: src/applet.c:2507
+#: src/applet.c:2592
 #, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "\"%s\" желілік байланысы үшін пайдаланушы аутентификациясы керек…"
 
-#: src/applet.c:2513
+#: src/applet.c:2598
 #, c-format
 msgid "Network connection “%s” active"
 msgstr "\"%s\" желілік байланысы белсенді"
 
-#: src/applet.c:2586
+#: src/applet.c:2671
 #, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "\"%s\" VPN байланысын іске қосу…"
 
-#: src/applet.c:2589
+#: src/applet.c:2674
 #, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "\"%s\" VPN байланысы үшін пайдаланушы аутентификациясы керек…"
 
-#: src/applet.c:2592
+#: src/applet.c:2677
 #, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "\"%s\" үшін VPN адресін сұрау…"
 
-#: src/applet.c:2595
+#: src/applet.c:2680
 msgid "VPN connection active"
 msgstr "VPN байланысы белсенді"
 
-#: src/applet.c:2645
+#: src/applet.c:2730
 msgid "No network connection"
 msgstr "Желілік байланыстар жоқ"
 
-#: src/applet.c:3280
+#: src/applet.c:3352
 msgid "NetworkManager Applet"
 msgstr "NetworkManager апплеті"
 
@@ -1088,8 +1017,8 @@ msgid ""
 "IP addresses identify your computer on the network. Click the “Add” button "
 "to add an IP address."
 msgstr ""
-"IP адрестері компьютеріңізді желіде сипаттайды. IP адресін қосу үшін, "
-"\"Қосу\" батырмасын басыңыз."
+"IP адрестері компьютеріңізді желіде сипаттайды. IP адресін қосу үшін, \"Қосу"
+"\" батырмасын басыңыз."
 
 #: src/connection-editor/ce-ip4-routes.ui:109
 #: src/connection-editor/ce-ip6-routes.ui:109
@@ -1111,7 +1040,7 @@ msgstr "Қо_су"
 #: src/connection-editor/ce-page-ip6.ui:199
 #: src/connection-editor/ce-page-team.ui:262
 #: src/connection-editor/ce-page-wireguard.ui:617
-#: src/connection-editor/connection-helpers.c:796
+#: src/connection-editor/connection-helpers.c:748
 #: src/connection-editor/nm-connection-list.ui:101
 msgid "_Delete"
 msgstr "Ө_шіру"
@@ -1202,7 +1131,7 @@ msgid "Bonded _connections"
 msgstr "А_грегацияланған (bond) байланыстары"
 
 #: src/connection-editor/ce-page-bond.ui:105
-#: src/connection-editor/ce-page-wifi.ui:294
+#: src/connection-editor/ce-page-wifi.ui:400
 msgid "M_ode"
 msgstr "Реж_имі"
 
@@ -2022,10 +1951,10 @@ msgstr ""
 msgid ""
 "If enabled, it makes the kernel generate a temporary IPv6 address in "
 "addition to the public one generated from MAC address. This enhances "
-"privacy, but could cause problems in some applications. If set to "
-"\"Default\", the value from NetworkManager global configuration is used. If "
-"that is also unset, use the kernel default value read from file \"/proc/sys/"
-"net/ipv6/conf/default/use_tempaddr\""
+"privacy, but could cause problems in some applications. If set to \"Default"
+"\", the value from NetworkManager global configuration is used. If that is "
+"also unset, use the kernel default value read from file \"/proc/sys/net/ipv6/"
+"conf/default/use_tempaddr\""
 msgstr ""
 
 #: src/connection-editor/ce-page-ip6.ui:323
@@ -2266,7 +2195,7 @@ msgid "Ad_vanced…"
 msgstr "Кеңе_йтілген…"
 
 #: src/connection-editor/ce-page-team-port.ui:108
-msgid "Set by controller"
+msgid "Set by master"
 msgstr ""
 
 #: src/connection-editor/ce-page-team-port.ui:112
@@ -2678,7 +2607,7 @@ msgstr "Жүйелік приоритеті, мәні 0 – 65535 болуы м�
 #: src/connection-editor/ce-page-team.ui:960
 msgid ""
 "Specifies the minimum number of ports that must be active before asserting "
-"carrier in the controller interface, value can be 1 – 255."
+"carrier in the master interface, value can be 1 – 255."
 msgstr ""
 
 #: src/connection-editor/ce-page-team.ui:972
@@ -2781,19 +2710,35 @@ msgstr "Клиент"
 msgid "Ad-hoc"
 msgstr "Ad-hoc"
 
-#: src/connection-editor/ce-page-wifi.ui:205
+#: src/connection-editor/ce-page-wifi.ui:203
+msgid "mW"
+msgstr "мВт"
+
+#: src/connection-editor/ce-page-wifi.ui:222
+msgid "Transmission po_wer"
+msgstr ""
+
+#: src/connection-editor/ce-page-wifi.ui:256
+msgid "Mb/s"
+msgstr "Мб/с"
+
+#: src/connection-editor/ce-page-wifi.ui:275
+msgid "_Rate"
+msgstr ""
+
+#: src/connection-editor/ce-page-wifi.ui:311
 msgid "_BSSID"
 msgstr "_BSSID"
 
-#: src/connection-editor/ce-page-wifi.ui:230
+#: src/connection-editor/ce-page-wifi.ui:336
 msgid "C_hannel"
 msgstr "Ар_на"
 
-#: src/connection-editor/ce-page-wifi.ui:262
+#: src/connection-editor/ce-page-wifi.ui:368
 msgid "Ban_d"
 msgstr ""
 
-#: src/connection-editor/ce-page-wifi.ui:308
+#: src/connection-editor/ce-page-wifi.ui:414
 msgid "SS_ID"
 msgstr "SS_ID"
 
@@ -3136,66 +3081,61 @@ msgid "WireGuard"
 msgstr "WireGuard"
 
 #: src/connection-editor/connection-helpers.c:112
-#: src/connection-editor/connection-helpers.c:422
+#: src/connection-editor/connection-helpers.c:374
 #: src/connection-editor/page-vpn.c:92
 msgid "VPN"
 msgstr "VPN"
 
-#: src/connection-editor/connection-helpers.c:202
-#, c-format
-msgid "VPN plugin “%s” not found"
-msgstr ""
-
-#: src/connection-editor/connection-helpers.c:227
+#: src/connection-editor/connection-helpers.c:192
 msgid "No VPN service type."
 msgstr ""
 
-#: src/connection-editor/connection-helpers.c:241
+#: src/connection-editor/connection-helpers.c:197
 msgid "The VPN plugin failed to import the VPN connection correctly: "
 msgstr "VPN плагині VPN байланысын дұрыс импорттай алмады: "
 
-#: src/connection-editor/connection-helpers.c:329
+#: src/connection-editor/connection-helpers.c:281
 #: src/connection-editor/page-proxy.c:104
 #: src/connection-editor/page-team-port.c:189
 #: src/connection-editor/page-team.c:327
 msgid "Select file to import"
 msgstr "Импорттау үшін файлды таңдаңыз"
 
-#: src/connection-editor/connection-helpers.c:333
+#: src/connection-editor/connection-helpers.c:285
 #: src/connection-editor/page-proxy.c:108
 #: src/connection-editor/page-team-port.c:193
 #: src/connection-editor/page-team.c:331
 msgid "_Open"
 msgstr "_Ашу"
 
-#: src/connection-editor/connection-helpers.c:364
+#: src/connection-editor/connection-helpers.c:316
 msgid "Hardware"
 msgstr "Құрылғы"
 
-#: src/connection-editor/connection-helpers.c:391
+#: src/connection-editor/connection-helpers.c:343
 msgid "Virtual"
 msgstr "Виртуалды"
 
-#: src/connection-editor/connection-helpers.c:540
-#: src/connection-editor/connection-helpers.c:542
+#: src/connection-editor/connection-helpers.c:492
+#: src/connection-editor/connection-helpers.c:494
 msgid "Import a saved VPN configuration…"
 msgstr "Сақталған VPN баптауын импорттау…"
 
-#: src/connection-editor/connection-helpers.c:572
+#: src/connection-editor/connection-helpers.c:524
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
 msgstr ""
 
-#: src/connection-editor/connection-helpers.c:581
+#: src/connection-editor/connection-helpers.c:533
 msgid "Could not create new connection"
 msgstr "Жаңа байланысты жасау мүмкін емес"
 
-#: src/connection-editor/connection-helpers.c:744
+#: src/connection-editor/connection-helpers.c:696
 msgid "Connection delete failed"
 msgstr "Байланысты өшіру мүмкін емес"
 
-#: src/connection-editor/connection-helpers.c:792
+#: src/connection-editor/connection-helpers.c:744
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "%s байланысын өшіруді шынымен қалайсыз ба?"
@@ -3424,43 +3364,43 @@ msgstr "Таңдалған байланысты өшіру"
 msgid "Authenticate to delete the selected connection"
 msgstr "Таңдалған байланысты өшіру үішн аутентификациядан өтіңіз"
 
-#: src/connection-editor/nm-connection-list.c:1051
+#: src/connection-editor/nm-connection-list.c:1053
 msgid "Unrecognized connection type"
 msgstr "Белгісіз байланыс түрі"
 
-#: src/connection-editor/nm-connection-list.c:1057
+#: src/connection-editor/nm-connection-list.c:1058
 #, c-format
 msgid "Don’t know how to import “%s” connections"
 msgstr "\"%s\" байланыстарын импорттау тәсілі белгісіз"
 
-#: src/connection-editor/nm-connection-list.c:1061
+#: src/connection-editor/nm-connection-list.c:1062
 msgid "Error importing connection"
 msgstr "Байланысты импорттау қатесі"
 
-#: src/connection-editor/nm-connection-list.c:1077
-#: src/connection-editor/nm-connection-list.c:1092
-#: src/connection-editor/nm-connection-list.c:1095
+#: src/connection-editor/nm-connection-list.c:1069
+#: src/connection-editor/nm-connection-list.c:1084
+#: src/connection-editor/nm-connection-list.c:1087
 msgid "Error creating connection"
 msgstr "Байланысты жасау қатесі"
 
-#: src/connection-editor/nm-connection-list.c:1077
+#: src/connection-editor/nm-connection-list.c:1069
 msgid "Connection type not specified."
 msgstr "Байланыс түрі көрсетілмеген."
 
-#: src/connection-editor/nm-connection-list.c:1093
+#: src/connection-editor/nm-connection-list.c:1085
 msgid "No VPN plugins are installed."
 msgstr "VPN плагиндері орнатылмаған."
 
-#: src/connection-editor/nm-connection-list.c:1096
+#: src/connection-editor/nm-connection-list.c:1088
 #, c-format
 msgid "Don’t know how to create “%s” connections"
 msgstr "\"%s\" байланыстарын жасау жолы белгісіз"
 
-#: src/connection-editor/nm-connection-list.c:1130
+#: src/connection-editor/nm-connection-list.c:1122
 msgid "Error editing connection"
 msgstr "Байланысты түзету қатесі"
 
-#: src/connection-editor/nm-connection-list.c:1131
+#: src/connection-editor/nm-connection-list.c:1123
 #, c-format
 msgid "Did not find a connection with UUID “%s”"
 msgstr "UUID \"%s\" байланысы табылмады"
@@ -3766,24 +3706,24 @@ msgstr "MACsec пайдаланушы интерфейсін жүктеу мүм
 msgid "MACSEC connection %d"
 msgstr "MACsec байланысы %d"
 
-#: src/connection-editor/page-controller.c:221
-#: src/connection-editor/page-controller.c:232
+#: src/connection-editor/page-master.c:221
+#: src/connection-editor/page-master.c:232
 msgid "Duplicate ports"
 msgstr ""
 
-#: src/connection-editor/page-controller.c:222
+#: src/connection-editor/page-master.c:222
 #, c-format
 msgid "Ports “%s” and “%s” both apply to device “%s”"
 msgstr ""
 
-#: src/connection-editor/page-controller.c:233
+#: src/connection-editor/page-master.c:233
 #, c-format
 msgid ""
 "Ports “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
 "same physical device."
 msgstr ""
 
-#: src/connection-editor/page-controller.c:357
+#: src/connection-editor/page-master.c:357
 #, c-format
 msgid "%s port %d"
 msgstr ""
@@ -4250,12 +4190,6 @@ msgstr "PEM сертификаттары (*.pem, *.crt, *.cer)"
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "DER, PEM, не PKCS#12 жеке кілттері (*.der, *.pem, *.p12, *.key)"
 
-#~ msgid "mW"
-#~ msgstr "мВт"
-
-#~ msgid "Mb/s"
-#~ msgstr "Мб/с"
-
 #~ msgid "More networks"
 #~ msgstr "Көбірек желілер"
 
@@ -4460,6 +4394,56 @@ msgstr "DER, PEM, не PKCS#12 жеке кілттері (*.der, *.pem, *.p12, *
 #~ msgstr ""
 #~ "жарамсыз wpa-psk: 64 байты бар кілтті он алтылық кілт ретінде талдау "
 #~ "мүмкін емес"
+
+#~ msgid "Disable connected notifications"
+#~ msgstr "Байланысты орнату хабарламаларын сөндіру"
+
+#~ msgid ""
+#~ "Set this to true to disable notifications when connecting to a network."
+#~ msgstr ""
+#~ "Желіге байланысты орнатқан кезде хабарламаларды сөндіру үшін бұны true "
+#~ "етіп орнатыңыз."
+
+#~ msgid "Disable disconnected notifications"
+#~ msgstr "Байланысты ажырату хабарламаларын сөндіру"
+
+#~ msgid ""
+#~ "Set this to true to disable notifications when disconnecting from a "
+#~ "network."
+#~ msgstr ""
+#~ "Желімен байланыс ажыратылған кезде хабарламаларды сөндіру үшін бұны true "
+#~ "етіп орнатыңыз."
+
+#~ msgid "Disable VPN notifications"
+#~ msgstr "VPN хабарламаларын сөндіру"
+
+#~ msgid ""
+#~ "Set this to true to disable notifications when connecting to or "
+#~ "disconnecting from a VPN."
+#~ msgstr ""
+#~ "VPN-ге байланыс орнатылған не ажыратылған кезде хабарламаларды сөндіру "
+#~ "үшін бұны true етіп орнатыңыз."
+
+#~ msgid "Suppress networks available notifications"
+#~ msgstr "Қолжетерлік желілер туралы хабарламаларды басу"
+
+#~ msgid ""
+#~ "Set this to true to disable notifications when Wi-Fi networks are "
+#~ "available."
+#~ msgstr "Wi-Fi желілері қолжетерлік болу туралы хабарламаларды сөндіру."
+
+#, fuzzy
+#~ msgid "Disable WiFi Create"
+#~ msgstr "Wi-Fi жасауды сөндіру"
+
+#~ msgid ""
+#~ "Set to true to disable creation of adhoc networks when using the applet."
+#~ msgstr ""
+#~ "Апплетті қолданған кезде adhoc желілерін жасауды сөндіру үшін бұны true "
+#~ "етіп орнатыңыз."
+
+#~ msgid "Show the applet in notification area"
+#~ msgstr "Хабарлау өрісінде апплетті көрсету"
 
 #~ msgid "Ignore CA certificate"
 #~ msgstr "CA сертификатын елемеу"

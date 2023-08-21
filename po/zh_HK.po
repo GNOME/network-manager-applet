@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: network-manager-applet 0.9.8\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-"
 "applet/\n"
-"POT-Creation-Date: 2023-08-03 11:40+0200\n"
+"POT-Creation-Date: 2022-05-30 11:43+0200\n"
 "PO-Revision-Date: 2014-08-30 18:45+0800\n"
 "Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
 "Language-Team: Chinese (Hong Kong) <community@linuxhall.org>\n"
@@ -25,7 +25,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 1.6.5\n"
 
-#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3166
+#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3251
 msgid "Network"
 msgstr "網絡"
 
@@ -68,68 +68,6 @@ msgstr "啟用網絡連線"
 #: nm-connection-editor.desktop.in:4
 msgid "Manage and change your network connection settings"
 msgstr "管理與更改你的連線設定值"
-
-#: org.gnome.nm-applet.gschema.xml.in:6
-msgid "Disable connected notifications"
-msgstr "停止已連線的通知"
-
-#: org.gnome.nm-applet.gschema.xml.in:7
-msgid "Set this to true to disable notifications when connecting to a network."
-msgstr "將這設為 True，以停用網絡連線時的通知。"
-
-#: org.gnome.nm-applet.gschema.xml.in:11
-msgid "Disable disconnected notifications"
-msgstr "停止已離線的通知"
-
-#: org.gnome.nm-applet.gschema.xml.in:12
-msgid ""
-"Set this to true to disable notifications when disconnecting from a network."
-msgstr "將這設為 True，以停用網絡離線時的通知。"
-
-#: org.gnome.nm-applet.gschema.xml.in:16
-msgid "Disable VPN notifications"
-msgstr "停用 VPN 的通知"
-
-#: org.gnome.nm-applet.gschema.xml.in:17
-msgid ""
-"Set this to true to disable notifications when connecting to or "
-"disconnecting from a VPN."
-msgstr "將這設為 True，以停用 VPN 線或離線時的通知。"
-
-#: org.gnome.nm-applet.gschema.xml.in:21
-msgid "Suppress networks available notifications"
-msgstr "停止可用網絡的通知"
-
-#: org.gnome.nm-applet.gschema.xml.in:22
-msgid ""
-"Set this to true to disable notifications when Wi-Fi networks are available."
-msgstr "將這設為 True，以停用有 Wi-Fi 無線網絡可用時的通知。"
-
-#: org.gnome.nm-applet.gschema.xml.in:26
-msgid "Stamp"
-msgstr "戳記"
-
-#: org.gnome.nm-applet.gschema.xml.in:27
-msgid "Used to determine whether settings should be migrated to a new version."
-msgstr "用來決定設定是不是要轉移到新版本上。"
-
-#: org.gnome.nm-applet.gschema.xml.in:31
-#, fuzzy
-msgid "Disable WiFi Create"
-msgstr "禁止建立 Wi-Fi"
-
-#: org.gnome.nm-applet.gschema.xml.in:32
-msgid ""
-"Set to true to disable creation of adhoc networks when using the applet."
-msgstr "將這設為 True，以停用使用面板程式建立 Ad hoc 網絡。"
-
-#: org.gnome.nm-applet.gschema.xml.in:36
-msgid "Show the applet in notification area"
-msgstr "在通知區域顯示面板程式"
-
-#: org.gnome.nm-applet.gschema.xml.in:37
-msgid "Set to FALSE to disable displaying the applet in the notification area."
-msgstr "設定為 FALSE 來停用在通知區域示顯示面板程式的功能。"
 
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
@@ -176,8 +114,8 @@ msgstr "802.1X 驗證"
 #: src/connection-editor/ce-page-dcb.ui:1019
 #: src/connection-editor/ce-page-wireguard.ui:41
 #: src/connection-editor/ce-ppp-auth-methods.ui:28
-#: src/connection-editor/connection-helpers.c:332
-#: src/connection-editor/connection-helpers.c:795
+#: src/connection-editor/connection-helpers.c:284
+#: src/connection-editor/connection-helpers.c:747
 #: src/connection-editor/nm-connection-editor.ui:197
 #: src/connection-editor/page-bluetooth.c:293
 #: src/connection-editor/page-mobile.c:530
@@ -248,7 +186,7 @@ msgid "New Mobile Broadband connection…"
 msgstr "新的流動寬頻連線"
 
 #: src/applet-device-broadband.c:809 src/applet-device-bt.c:75
-#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1251
+#: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1269
 msgid "Connection Established"
 msgstr "已建立連線"
 
@@ -287,7 +225,7 @@ msgstr "正在設定流動寬頻連線「%s」…"
 msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr "流動寬頻連線「%s」需要使用者驗證…"
 
-#: src/applet-device-bt.c:113 src/applet.c:2510 src/mobile-helpers.c:593
+#: src/applet-device-bt.c:113 src/applet.c:2595 src/mobile-helpers.c:593
 #, fuzzy, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "正在要求提供「%s」的網絡位址…"
@@ -320,7 +258,7 @@ msgid "Ethernet Network"
 msgstr "有線網絡"
 
 #. Notify user of unmanaged or unavailable device
-#: src/applet-device-ethernet.c:99 src/applet.c:1265
+#: src/applet-device-ethernet.c:99 src/applet.c:1350
 msgid "disconnected"
 msgstr "已斷線"
 
@@ -382,7 +320,7 @@ msgstr "建立新的 Wi-Fi 網絡"
 msgid "(none)"
 msgstr "(無)"
 
-#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1349
+#: src/applet-device-wifi.c:523 src/applet-device-wifi.c:1366
 msgid "Failed to add new connection"
 msgstr "無法加入新連線"
 
@@ -390,8 +328,8 @@ msgstr "無法加入新連線"
 msgid "Insufficient privileges."
 msgstr ""
 
-#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1332
-#: src/applet-device-wifi.c:1352 src/applet.c:414 src/applet.c:497
+#: src/applet-device-wifi.c:526 src/applet-device-wifi.c:1349
+#: src/applet-device-wifi.c:1369 src/applet.c:415 src/applet.c:498
 msgid "Connection failure"
 msgstr "連線失敗"
 
@@ -423,55 +361,60 @@ msgstr "Wi-Fi 已被硬件開關停用"
 msgid "_Available networks"
 msgstr "所有使用者皆可用"
 
-#: src/applet-device-wifi.c:1066
+#: src/applet-device-wifi.c:1083
 msgid "Wi-Fi Networks Available"
 msgstr "有 Wi-Fi 網絡可用"
 
-#: src/applet-device-wifi.c:1067
+#: src/applet-device-wifi.c:1084
 msgid "Use the network menu to connect to a Wi-Fi network"
 msgstr "使用網絡選單來連線到 Wi-Fi 網絡"
 
-#: src/applet-device-wifi.c:1249
+#: src/applet-device-wifi.c:1087 src/applet.c:819
+#, fuzzy
+msgid "Don’t show this message again"
+msgstr "不要再顯示這個訊息"
+
+#: src/applet-device-wifi.c:1268
 #, fuzzy, c-format
 msgid "You are now connected to the Wi-Fi network “%s”."
 msgstr "你現在已連線至 Wi-Fi 網絡「%s」。"
 
-#: src/applet-device-wifi.c:1286
+#: src/applet-device-wifi.c:1303
 #, fuzzy, c-format
 msgid "Preparing Wi-Fi network connection “%s”…"
 msgstr "正在準備 Wi-Fi 網絡連線「%s」…"
 
-#: src/applet-device-wifi.c:1289
+#: src/applet-device-wifi.c:1306
 #, fuzzy, c-format
 msgid "Configuring Wi-Fi network connection “%s”…"
 msgstr "正在設定 Wi-Fi 網絡連線「%s」…"
 
-#: src/applet-device-wifi.c:1292
+#: src/applet-device-wifi.c:1309
 #, fuzzy, c-format
 msgid "User authentication required for Wi-Fi network “%s”…"
 msgstr "Wi-Fi 網絡連線「%s」需要使用者驗證…"
 
-#: src/applet-device-wifi.c:1295
+#: src/applet-device-wifi.c:1312
 #, fuzzy, c-format
 msgid "Requesting a Wi-Fi network address for “%s”…"
 msgstr "正在要求提供「%s」的 Wi-Fi 網絡位址…"
 
-#: src/applet-device-wifi.c:1306
+#: src/applet-device-wifi.c:1323
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active: %s (%d%%)"
 msgstr "Wi-Fi 網絡連線「%s」在使用中： %s (%d%%)"
 
-#: src/applet-device-wifi.c:1310
+#: src/applet-device-wifi.c:1327
 #, fuzzy, c-format
 msgid "Wi-Fi network connection “%s” active"
 msgstr "Wi-Fi 網絡連線「%s」在使用中"
 
-#: src/applet-device-wifi.c:1329
+#: src/applet-device-wifi.c:1346
 msgid "Failed to activate connection"
 msgstr "無法使用連線"
 
-#: src/applet-device-wifi.c:1330 src/applet-device-wifi.c:1350 src/applet.c:412
-#: src/applet.c:463 src/applet.c:495
+#: src/applet-device-wifi.c:1347 src/applet-device-wifi.c:1367 src/applet.c:413
+#: src/applet.c:464 src/applet.c:496
 msgid "Unknown error"
 msgstr "不明的錯誤"
 
@@ -791,28 +734,23 @@ msgstr "無法建立 DUN 連線：%s"
 msgid "Failed to write connection to VPN UI: incomplete write"
 msgstr ""
 
-#: src/applet.c:411
+#: src/applet.c:412
 msgid "Failed to add/activate connection"
 msgstr "無法加入/使用連線"
 
-#: src/applet.c:462
+#: src/applet.c:463
 msgid "Device disconnect failed"
 msgstr "裝置斷線失敗"
 
-#: src/applet.c:465
+#: src/applet.c:466
 msgid "Disconnect failure"
 msgstr "斷線失敗"
 
-#: src/applet.c:494
+#: src/applet.c:495
 msgid "Connection activation failed"
 msgstr "連線生效失敗"
 
-#: src/applet.c:731
-#, fuzzy
-msgid "Don’t show this message again"
-msgstr "不要再顯示這個訊息"
-
-#: src/applet.c:831
+#: src/applet.c:916
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -822,7 +760,7 @@ msgstr ""
 "\n"
 "VPN 連線「%s」失敗，因為網絡連線中斷了。"
 
-#: src/applet.c:833
+#: src/applet.c:918
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -832,7 +770,7 @@ msgstr ""
 "\n"
 "VPN 連線「%s」失敗，因為網絡連線被中斷了。"
 
-#: src/applet.c:835
+#: src/applet.c:920
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -841,7 +779,7 @@ msgstr ""
 "\n"
 "VPN 連線「%s」失敗，因為 VPN 服務意外的停止了。"
 
-#: src/applet.c:837
+#: src/applet.c:922
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -851,7 +789,7 @@ msgstr ""
 "\n"
 "VPN 連線「%s」失敗，因為 VPN 服務傳回無效的組態。"
 
-#: src/applet.c:839
+#: src/applet.c:924
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -860,7 +798,7 @@ msgstr ""
 "\n"
 "VPN 連線「%s」失敗，因為連線的嘗試已逾時。"
 
-#: src/applet.c:841
+#: src/applet.c:926
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -869,7 +807,7 @@ msgstr ""
 "\n"
 "VPN 連線「%s」失敗，因為 VPN 服務沒有及時啟動。"
 
-#: src/applet.c:843
+#: src/applet.c:928
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -878,7 +816,7 @@ msgstr ""
 "\n"
 "VPN 連線「%s」失敗，因為 VPN 服務啟動失敗。"
 
-#: src/applet.c:845
+#: src/applet.c:930
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -887,7 +825,7 @@ msgstr ""
 "\n"
 "VPN 連線「%s」失敗，因為沒有有效的 VPN 服務。"
 
-#: src/applet.c:847
+#: src/applet.c:932
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -896,7 +834,7 @@ msgstr ""
 "\n"
 "VPN 連線「%s」失敗，因為無效的 VPN 機密。"
 
-#: src/applet.c:852
+#: src/applet.c:937
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -905,7 +843,7 @@ msgstr ""
 "\n"
 "VPN 連線「%s」失敗。"
 
-#: src/applet.c:879
+#: src/applet.c:964
 #, c-format
 msgid ""
 "VPN connection has been successfully established.\n"
@@ -915,19 +853,19 @@ msgstr ""
 "VPN 連線已成功的。\n"
 "%s\n"
 
-#: src/applet.c:881
+#: src/applet.c:966
 msgid "VPN connection has been successfully established.\n"
 msgstr "VPN 連線已成功的。\n"
 
-#: src/applet.c:883
+#: src/applet.c:968
 msgid "VPN Login Message"
 msgstr "VPN 登錄訊息"
 
-#: src/applet.c:891 src/applet.c:931
+#: src/applet.c:976 src/applet.c:1016
 msgid "VPN Connection Failed"
 msgstr "VPN 連線失敗"
 
-#: src/applet.c:935
+#: src/applet.c:1020
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -940,7 +878,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:938
+#: src/applet.c:1023
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -953,137 +891,137 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/applet.c:1253
+#: src/applet.c:1338
 msgid "device not ready (firmware missing)"
 msgstr "裝置尚未就緒 (缺少韌體)"
 
-#: src/applet.c:1255
+#: src/applet.c:1340
 msgid "device not ready"
 msgstr "裝置尚未就緒"
 
-#: src/applet.c:1281
+#: src/applet.c:1366
 msgid "Disconnect"
 msgstr "斷線"
 
-#: src/applet.c:1295
+#: src/applet.c:1380
 msgid "device not managed"
 msgstr "裝置無法管理"
 
-#: src/applet.c:1369
+#: src/applet.c:1454
 msgid "No network devices available"
 msgstr "沒有可用的網絡裝置"
 
-#: src/applet.c:1415
+#: src/applet.c:1500
 msgid "_VPN Connections"
 msgstr "_VPN 連線"
 
-#: src/applet.c:1459
+#: src/applet.c:1544
 #, fuzzy
 msgid "_Configure VPN…"
 msgstr "設置 VPN(_C)…"
 
-#: src/applet.c:1462
+#: src/applet.c:1547
 #, fuzzy
 msgid "_Add a VPN connection…"
 msgstr "_VPN 連線"
 
-#: src/applet.c:1568
+#: src/applet.c:1653
 #, fuzzy
 msgid "NetworkManager is not running…"
 msgstr "NetworkManager 沒有執行…."
 
-#: src/applet.c:1573 src/applet.c:2641
+#: src/applet.c:1658 src/applet.c:2726
 msgid "Networking disabled"
 msgstr "網絡已停用"
 
 #. 'Enable Networking' item
-#: src/applet.c:1783
+#: src/applet.c:1868
 msgid "Enable _Networking"
 msgstr "啟用網絡(_N)"
 
 #. 'Enable Wi-Fi' item
-#: src/applet.c:1792
+#: src/applet.c:1877
 msgid "Enable _Wi-Fi"
 msgstr "啟用 _Wi-Fi"
 
 #. 'Enable Mobile Broadband' item
-#: src/applet.c:1801
+#: src/applet.c:1886
 msgid "Enable _Mobile Broadband"
 msgstr "啟用流動寬頻(_M)"
 
 #. Toggle notifications item
-#: src/applet.c:1813
+#: src/applet.c:1898
 msgid "Enable N_otifications"
 msgstr "啟用通知功能(_O)"
 
 #. 'Connection Information' item
-#: src/applet.c:1825
+#: src/applet.c:1910
 msgid "Connection _Information"
 msgstr "連線資訊(_I)"
 
 #. 'Edit Connections...' item
-#: src/applet.c:1833
+#: src/applet.c:1918
 #, fuzzy
 msgid "Edit Connections…"
 msgstr "編輯連線…"
 
-#: src/applet.c:1847
+#: src/applet.c:1932
 msgid "_About"
 msgstr "關於(_A)"
 
-#: src/applet.c:2161
+#: src/applet.c:2246
 #, fuzzy, c-format
 msgid "You are now connected to “%s”."
 msgstr "你現在已連線至「%s」。"
 
-#: src/applet.c:2201
+#: src/applet.c:2286
 msgid "Disconnected"
 msgstr "已斷線"
 
-#: src/applet.c:2202
+#: src/applet.c:2287
 msgid "The network connection has been disconnected."
 msgstr "網絡連線已中斷。"
 
-#: src/applet.c:2504
+#: src/applet.c:2589
 #, fuzzy, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "正在準備網絡連線「%s」…"
 
-#: src/applet.c:2507
+#: src/applet.c:2592
 #, fuzzy, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "網絡連線「%s」需要使用者驗證…"
 
-#: src/applet.c:2513
+#: src/applet.c:2598
 #, fuzzy, c-format
 msgid "Network connection “%s” active"
 msgstr "網絡連線「%s」在使用中"
 
-#: src/applet.c:2586
+#: src/applet.c:2671
 #, fuzzy, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "正在啟動 VPN 連線「%s」…"
 
-#: src/applet.c:2589
+#: src/applet.c:2674
 #, fuzzy, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "VPN 連線「%s」需要使用者驗證…"
 
-#: src/applet.c:2592
+#: src/applet.c:2677
 #, fuzzy, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "正在要求 VPN 提供「%s」的網絡位址…"
 
-#: src/applet.c:2595
+#: src/applet.c:2680
 #, fuzzy
 msgid "VPN connection active"
 msgstr "VPN 連線「%s」在使用中"
 
-#: src/applet.c:2645
+#: src/applet.c:2730
 msgid "No network connection"
 msgstr "沒有網絡連接"
 
-#: src/applet.c:3280
+#: src/applet.c:3352
 msgid "NetworkManager Applet"
 msgstr "NetworkManager 面板程式"
 
@@ -1115,7 +1053,7 @@ msgstr ""
 #: src/connection-editor/ce-page-ip6.ui:199
 #: src/connection-editor/ce-page-team.ui:262
 #: src/connection-editor/ce-page-wireguard.ui:617
-#: src/connection-editor/connection-helpers.c:796
+#: src/connection-editor/connection-helpers.c:748
 #: src/connection-editor/nm-connection-list.ui:101
 msgid "_Delete"
 msgstr "刪除(_D)"
@@ -1211,7 +1149,7 @@ msgid "Bonded _connections"
 msgstr "繫結的連線(_C)："
 
 #: src/connection-editor/ce-page-bond.ui:105
-#: src/connection-editor/ce-page-wifi.ui:294
+#: src/connection-editor/ce-page-wifi.ui:400
 #, fuzzy
 msgid "M_ode"
 msgstr "模式(_O)："
@@ -2099,10 +2037,10 @@ msgstr "I_Pv6 私隱擴充功能："
 msgid ""
 "If enabled, it makes the kernel generate a temporary IPv6 address in "
 "addition to the public one generated from MAC address. This enhances "
-"privacy, but could cause problems in some applications. If set to "
-"\"Default\", the value from NetworkManager global configuration is used. If "
-"that is also unset, use the kernel default value read from file \"/proc/sys/"
-"net/ipv6/conf/default/use_tempaddr\""
+"privacy, but could cause problems in some applications. If set to \"Default"
+"\", the value from NetworkManager global configuration is used. If that is "
+"also unset, use the kernel default value read from file \"/proc/sys/net/ipv6/"
+"conf/default/use_tempaddr\""
 msgstr ""
 
 #: src/connection-editor/ce-page-ip6.ui:323
@@ -2360,7 +2298,7 @@ msgid "Ad_vanced…"
 msgstr "進階"
 
 #: src/connection-editor/ce-page-team-port.ui:108
-msgid "Set by controller"
+msgid "Set by master"
 msgstr ""
 
 #: src/connection-editor/ce-page-team-port.ui:112
@@ -2792,7 +2730,7 @@ msgstr ""
 #: src/connection-editor/ce-page-team.ui:960
 msgid ""
 "Specifies the minimum number of ports that must be active before asserting "
-"carrier in the controller interface, value can be 1 – 255."
+"carrier in the master interface, value can be 1 – 255."
 msgstr ""
 
 #: src/connection-editor/ce-page-team.ui:972
@@ -2902,22 +2840,40 @@ msgstr ""
 msgid "Ad-hoc"
 msgstr "Ad hoc"
 
-#: src/connection-editor/ce-page-wifi.ui:205
+#: src/connection-editor/ce-page-wifi.ui:203
+msgid "mW"
+msgstr "mW"
+
+#: src/connection-editor/ce-page-wifi.ui:222
+#, fuzzy
+msgid "Transmission po_wer"
+msgstr "傳輸耗能(_W)："
+
+#: src/connection-editor/ce-page-wifi.ui:256
+msgid "Mb/s"
+msgstr "Mb/s"
+
+#: src/connection-editor/ce-page-wifi.ui:275
+#, fuzzy
+msgid "_Rate"
+msgstr "速率(_R)："
+
+#: src/connection-editor/ce-page-wifi.ui:311
 #, fuzzy
 msgid "_BSSID"
 msgstr "_BSSID："
 
-#: src/connection-editor/ce-page-wifi.ui:230
+#: src/connection-editor/ce-page-wifi.ui:336
 #, fuzzy
 msgid "C_hannel"
 msgstr "頻道(_H)："
 
-#: src/connection-editor/ce-page-wifi.ui:262
+#: src/connection-editor/ce-page-wifi.ui:368
 #, fuzzy
 msgid "Ban_d"
 msgstr "波段(_D)："
 
-#: src/connection-editor/ce-page-wifi.ui:308
+#: src/connection-editor/ce-page-wifi.ui:414
 #, fuzzy
 msgid "SS_ID"
 msgstr "SS_ID："
@@ -3274,21 +3230,16 @@ msgid "WireGuard"
 msgstr "有線"
 
 #: src/connection-editor/connection-helpers.c:112
-#: src/connection-editor/connection-helpers.c:422
+#: src/connection-editor/connection-helpers.c:374
 #: src/connection-editor/page-vpn.c:92
 msgid "VPN"
 msgstr "VPN"
 
-#: src/connection-editor/connection-helpers.c:202
-#, c-format
-msgid "VPN plugin “%s” not found"
-msgstr ""
-
-#: src/connection-editor/connection-helpers.c:227
+#: src/connection-editor/connection-helpers.c:192
 msgid "No VPN service type."
 msgstr ""
 
-#: src/connection-editor/connection-helpers.c:241
+#: src/connection-editor/connection-helpers.c:197
 #, fuzzy
 msgid "The VPN plugin failed to import the VPN connection correctly: "
 msgstr ""
@@ -3296,49 +3247,49 @@ msgstr ""
 "\n"
 "錯誤：沒有 VPN 服務類型。"
 
-#: src/connection-editor/connection-helpers.c:329
+#: src/connection-editor/connection-helpers.c:281
 #: src/connection-editor/page-proxy.c:104
 #: src/connection-editor/page-team-port.c:189
 #: src/connection-editor/page-team.c:327
 msgid "Select file to import"
 msgstr "選擇要匯入的檔案"
 
-#: src/connection-editor/connection-helpers.c:333
+#: src/connection-editor/connection-helpers.c:285
 #: src/connection-editor/page-proxy.c:108
 #: src/connection-editor/page-team-port.c:193
 #: src/connection-editor/page-team.c:331
 msgid "_Open"
 msgstr ""
 
-#: src/connection-editor/connection-helpers.c:364
+#: src/connection-editor/connection-helpers.c:316
 msgid "Hardware"
 msgstr "硬件"
 
-#: src/connection-editor/connection-helpers.c:391
+#: src/connection-editor/connection-helpers.c:343
 msgid "Virtual"
 msgstr "虛擬"
 
-#: src/connection-editor/connection-helpers.c:540
-#: src/connection-editor/connection-helpers.c:542
+#: src/connection-editor/connection-helpers.c:492
+#: src/connection-editor/connection-helpers.c:494
 #, fuzzy
 msgid "Import a saved VPN configuration…"
 msgstr "匯入已儲存的 VPN 組態…"
 
-#: src/connection-editor/connection-helpers.c:572
+#: src/connection-editor/connection-helpers.c:524
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
 msgstr "由於不明的錯誤使連線編輯器對話盒無法初始化。"
 
-#: src/connection-editor/connection-helpers.c:581
+#: src/connection-editor/connection-helpers.c:533
 msgid "Could not create new connection"
 msgstr "無法建立新連線"
 
-#: src/connection-editor/connection-helpers.c:744
+#: src/connection-editor/connection-helpers.c:696
 msgid "Connection delete failed"
 msgstr "刪除連線失敗"
 
-#: src/connection-editor/connection-helpers.c:792
+#: src/connection-editor/connection-helpers.c:744
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "你確定要刪除連線 %s ？"
@@ -3576,46 +3527,46 @@ msgstr "刪除選取的連線"
 msgid "Authenticate to delete the selected connection"
 msgstr "驗證以刪除選取的連線"
 
-#: src/connection-editor/nm-connection-list.c:1051
+#: src/connection-editor/nm-connection-list.c:1053
 #, fuzzy
 msgid "Unrecognized connection type"
 msgstr "不支援的流動寬頻連線類型。"
 
-#: src/connection-editor/nm-connection-list.c:1057
+#: src/connection-editor/nm-connection-list.c:1058
 #, fuzzy, c-format
 msgid "Don’t know how to import “%s” connections"
 msgstr "不知道如何建立「%s」連線"
 
-#: src/connection-editor/nm-connection-list.c:1061
+#: src/connection-editor/nm-connection-list.c:1062
 #, fuzzy
 msgid "Error importing connection"
 msgstr "編輯連線時發生錯誤"
 
-#: src/connection-editor/nm-connection-list.c:1077
-#: src/connection-editor/nm-connection-list.c:1092
-#: src/connection-editor/nm-connection-list.c:1095
+#: src/connection-editor/nm-connection-list.c:1069
+#: src/connection-editor/nm-connection-list.c:1084
+#: src/connection-editor/nm-connection-list.c:1087
 msgid "Error creating connection"
 msgstr "建立連線時發生錯誤"
 
-#: src/connection-editor/nm-connection-list.c:1077
+#: src/connection-editor/nm-connection-list.c:1069
 #, fuzzy
 msgid "Connection type not specified."
 msgstr "新增連線失敗"
 
-#: src/connection-editor/nm-connection-list.c:1093
+#: src/connection-editor/nm-connection-list.c:1085
 msgid "No VPN plugins are installed."
 msgstr "尚未安裝任何 VPN 外掛程式。"
 
-#: src/connection-editor/nm-connection-list.c:1096
+#: src/connection-editor/nm-connection-list.c:1088
 #, fuzzy, c-format
 msgid "Don’t know how to create “%s” connections"
 msgstr "不知道如何建立「%s」連線"
 
-#: src/connection-editor/nm-connection-list.c:1130
+#: src/connection-editor/nm-connection-list.c:1122
 msgid "Error editing connection"
 msgstr "編輯連線時發生錯誤"
 
-#: src/connection-editor/nm-connection-list.c:1131
+#: src/connection-editor/nm-connection-list.c:1123
 #, fuzzy, c-format
 msgid "Did not find a connection with UUID “%s”"
 msgstr "找不到 UUID「%s」的連線"
@@ -3943,25 +3894,25 @@ msgstr "無法載入 WiMAX 使用者介面。"
 msgid "MACSEC connection %d"
 msgstr "WiMAX 連線 %d"
 
-#: src/connection-editor/page-controller.c:221
-#: src/connection-editor/page-controller.c:232
+#: src/connection-editor/page-master.c:221
+#: src/connection-editor/page-master.c:232
 #, fuzzy
 msgid "Duplicate ports"
 msgstr "重製從屬"
 
-#: src/connection-editor/page-controller.c:222
+#: src/connection-editor/page-master.c:222
 #, fuzzy, c-format
 msgid "Ports “%s” and “%s” both apply to device “%s”"
 msgstr "從屬「%s」與「%s」都套用到裝置「%s」"
 
-#: src/connection-editor/page-controller.c:233
+#: src/connection-editor/page-master.c:233
 #, fuzzy, c-format
 msgid ""
 "Ports “%s” and “%s” apply to different virtual ports (“%s” and “%s”) of the "
 "same physical device."
 msgstr "從屬「%s」與「%s」套用到同個實體裝置不同的虛擬連接埠(「%s」與「%s」)。"
 
-#: src/connection-editor/page-controller.c:357
+#: src/connection-editor/page-master.c:357
 #, c-format
 msgid "%s port %d"
 msgstr ""
@@ -4437,20 +4388,6 @@ msgstr "DER 或 PEM 證書 (*.der, *.pem, *.crt, *.cer)"
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "DER、PEM 或是 PKCS#12 私人密碼匙 (*.der, *.pem, *.p12, *.key)"
 
-#~ msgid "mW"
-#~ msgstr "mW"
-
-#, fuzzy
-#~ msgid "Transmission po_wer"
-#~ msgstr "傳輸耗能(_W)："
-
-#~ msgid "Mb/s"
-#~ msgstr "Mb/s"
-
-#, fuzzy
-#~ msgid "_Rate"
-#~ msgstr "速率(_R)："
-
 #~ msgid "More networks"
 #~ msgstr "更多網絡"
 
@@ -4571,6 +4508,59 @@ msgstr "DER、PEM 或是 PKCS#12 私人密碼匙 (*.der, *.pem, *.p12, *.key)"
 #, fuzzy
 #~ msgid "WEP inde_x"
 #~ msgstr "WEP 索引(_X)："
+
+#~ msgid "Disable connected notifications"
+#~ msgstr "停止已連線的通知"
+
+#~ msgid ""
+#~ "Set this to true to disable notifications when connecting to a network."
+#~ msgstr "將這設為 True，以停用網絡連線時的通知。"
+
+#~ msgid "Disable disconnected notifications"
+#~ msgstr "停止已離線的通知"
+
+#~ msgid ""
+#~ "Set this to true to disable notifications when disconnecting from a "
+#~ "network."
+#~ msgstr "將這設為 True，以停用網絡離線時的通知。"
+
+#~ msgid "Disable VPN notifications"
+#~ msgstr "停用 VPN 的通知"
+
+#~ msgid ""
+#~ "Set this to true to disable notifications when connecting to or "
+#~ "disconnecting from a VPN."
+#~ msgstr "將這設為 True，以停用 VPN 線或離線時的通知。"
+
+#~ msgid "Suppress networks available notifications"
+#~ msgstr "停止可用網絡的通知"
+
+#~ msgid ""
+#~ "Set this to true to disable notifications when Wi-Fi networks are "
+#~ "available."
+#~ msgstr "將這設為 True，以停用有 Wi-Fi 無線網絡可用時的通知。"
+
+#~ msgid "Stamp"
+#~ msgstr "戳記"
+
+#~ msgid ""
+#~ "Used to determine whether settings should be migrated to a new version."
+#~ msgstr "用來決定設定是不是要轉移到新版本上。"
+
+#, fuzzy
+#~ msgid "Disable WiFi Create"
+#~ msgstr "禁止建立 Wi-Fi"
+
+#~ msgid ""
+#~ "Set to true to disable creation of adhoc networks when using the applet."
+#~ msgstr "將這設為 True，以停用使用面板程式建立 Ad hoc 網絡。"
+
+#~ msgid "Show the applet in notification area"
+#~ msgstr "在通知區域顯示面板程式"
+
+#~ msgid ""
+#~ "Set to FALSE to disable displaying the applet in the notification area."
+#~ msgstr "設定為 FALSE 來停用在通知區域示顯示面板程式的功能。"
 
 #~ msgid "Ignore CA certificate"
 #~ msgstr "忽略 CA 證書"
