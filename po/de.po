@@ -18,6 +18,7 @@
 # Christian Kirbach <Christian.Kirbach@gmail.com>, 2009-2013, 2018.
 # Bernd Homuth <dev@hmt.im>, 2015.
 # lrintel <lrintel@redhat.com>, 2017. #zanata
+# Ingo Brückl, 2020-2023.
 # Philipp Kiemle <philipp.kiemle@gmail.com>, 2022.
 #
 msgid ""
@@ -25,9 +26,9 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
 "issues\n"
-"POT-Creation-Date: 2022-11-17 11:44+0000\n"
-"PO-Revision-Date: 2022-11-21 17:02+0100\n"
-"Last-Translator: Ingo Brückl <ib@wupperonline.de>\n"
+"POT-Creation-Date: 2023-08-21 21:52+0000\n"
+"PO-Revision-Date: 2023-08-22 09:35+0200\n"
+"Last-Translator: Ingo Brückl <ib@oddnet.de>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -146,10 +147,22 @@ msgstr ""
 "abgeschaltet ist."
 
 #: org.gnome.nm-applet.gschema.xml.in:36
+msgid "Suppress broadband device unlock prompt"
+msgstr "Eingabeaufforderung zum Entsperren des Breitbandgeräts unterdrücken"
+
+#: org.gnome.nm-applet.gschema.xml.in:37
+msgid ""
+"Set to true to not prompt for PIN/PUK when providing it is required to "
+"unlock a broadband device."
+msgstr ""
+"Legt fest, ob Sie nach der PIN/PUK gefragt werden, wenn diese zum Entsperren "
+"eines Breitbandgeräts erforderlich ist."
+
+#: org.gnome.nm-applet.gschema.xml.in:41
 msgid "Show the applet in notification area"
 msgstr "Applet im Benachrichtigungsbereich anzeigen"
 
-#: org.gnome.nm-applet.gschema.xml.in:37
+#: org.gnome.nm-applet.gschema.xml.in:42
 msgid "Set to FALSE to disable displaying the applet in the notification area."
 msgstr ""
 "Wählen Sie FALSCH, um die Anzeige des Applets im Benachrichtigungsbereich zu "
@@ -214,7 +227,7 @@ msgstr "802.1X-Legitimierung"
 #: src/connection-editor/page-mobile.c:530
 #: src/connection-editor/page-proxy.c:107
 #: src/connection-editor/page-team-port.c:192
-#: src/connection-editor/page-team.c:330
+#: src/connection-editor/page-team.c:329
 #: src/connection-editor/vpn-helpers.c:198 src/gsm-unlock.ui:28
 #: src/mobile-helpers.c:451
 msgid "_Cancel"
@@ -253,45 +266,45 @@ msgstr "Falscher PIN-Code. Bitte kontaktieren Sie Ihren Dienstanbieter."
 msgid "Sending unlock code…"
 msgstr "Code zum Entsperren wird gesendet …"
 
-#: src/applet-device-broadband.c:725 src/applet-dialogs.c:521
+#: src/applet-device-broadband.c:729 src/applet-dialogs.c:521
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "Mobiles Breitband (%s)"
 
-#: src/applet-device-broadband.c:727
+#: src/applet-device-broadband.c:731
 #: src/connection-editor/connection-helpers.c:95
 #: src/connection-editor/page-mobile.c:295
 msgid "Mobile Broadband"
 msgstr "Mobiles Breitband"
 
-#: src/applet-device-broadband.c:780 src/applet-device-bt.c:61
+#: src/applet-device-broadband.c:784 src/applet-device-bt.c:61
 #: src/applet-device-ethernet.c:107
 msgid "Available"
 msgstr "Verfügbar"
 
 #. Default connection item
-#: src/applet-device-broadband.c:793
+#: src/applet-device-broadband.c:797
 msgid "New Mobile Broadband connection…"
 msgstr "Neue mobile Breitbandverbindung …"
 
-#: src/applet-device-broadband.c:809 src/applet-device-bt.c:75
+#: src/applet-device-broadband.c:813 src/applet-device-bt.c:75
 #: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1251
 msgid "Connection Established"
 msgstr "Verbindung hergestellt"
 
-#: src/applet-device-broadband.c:810
+#: src/applet-device-broadband.c:814
 msgid "You are now connected to the Mobile Broadband network."
 msgstr "Sie sind nun mit dem mobilen Breitbandnetzwerk verbunden."
 
-#: src/applet-device-broadband.c:950 src/applet-device-broadband.c:956
+#: src/applet-device-broadband.c:954 src/applet-device-broadband.c:960
 msgid "Mobile Broadband network."
 msgstr "Mobiles Breitbandnetzwerk."
 
-#: src/applet-device-broadband.c:951
+#: src/applet-device-broadband.c:955
 msgid "You are now registered on the home network."
 msgstr "Sie sind nun im Heimnetzwerk angemeldet."
 
-#: src/applet-device-broadband.c:957
+#: src/applet-device-broadband.c:961
 msgid "You are now registered on a roaming network."
 msgstr "Sie sind nun in einem Roaming-Netzwerk angemeldet."
 
@@ -3327,7 +3340,7 @@ msgid "Bond"
 msgstr "Gebündelt"
 
 #: src/connection-editor/connection-helpers.c:105
-#: src/connection-editor/page-team.c:1014
+#: src/connection-editor/page-team.c:1013
 msgid "Team"
 msgstr "Team"
 
@@ -3373,14 +3386,14 @@ msgstr "Das VPN-Plugin konnte die VPN-Verbindung nicht richtig importieren: "
 #: src/connection-editor/connection-helpers.c:329
 #: src/connection-editor/page-proxy.c:104
 #: src/connection-editor/page-team-port.c:189
-#: src/connection-editor/page-team.c:327
+#: src/connection-editor/page-team.c:326
 msgid "Select file to import"
 msgstr "Datei zum Import auswählen"
 
 #: src/connection-editor/connection-helpers.c:333
 #: src/connection-editor/page-proxy.c:108
 #: src/connection-editor/page-team-port.c:193
-#: src/connection-editor/page-team.c:331
+#: src/connection-editor/page-team.c:330
 msgid "_Open"
 msgstr "_Öffnen"
 
@@ -4131,7 +4144,7 @@ msgid "Could not load proxy user interface."
 msgstr "Die Proxy-Benutzeroberfläche konnte nicht geladen werden."
 
 #: src/connection-editor/page-team-port.c:209
-#: src/connection-editor/page-team.c:347
+#: src/connection-editor/page-team.c:346
 msgid "Error: file doesn’t contain a valid JSON configuration"
 msgstr "Fehler: Datei enthält keine gültige JSON-Konfiguration"
 
@@ -4146,11 +4159,11 @@ msgstr "Team-Port"
 msgid "Could not load team port user interface."
 msgstr "Die Team-Port-Benutzeroberfläche konnte nicht geladen werden."
 
-#: src/connection-editor/page-team.c:1017
+#: src/connection-editor/page-team.c:1016
 msgid "Could not load team user interface."
 msgstr "Die Team-Benutzeroberfläche konnte nicht geladen werden."
 
-#: src/connection-editor/page-team.c:1114
+#: src/connection-editor/page-team.c:1113
 #, c-format
 msgid "Team connection %d"
 msgstr "Team-Verbindung %d"
