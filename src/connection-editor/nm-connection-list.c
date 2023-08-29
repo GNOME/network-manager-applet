@@ -222,7 +222,7 @@ update_connection_row (NMConnectionList *self,
 }
 
 static void
-delete_slaves_of_connection (NMConnectionList *list, NMConnection *connection)
+delete_ports_of_connection (NMConnectionList *list, NMConnection *connection)
 {
 	NMConnectionListPrivate *priv = NM_CONNECTION_LIST_GET_PRIVATE (list);
 	const char *uuid, *iface;
@@ -241,15 +241,15 @@ delete_slaves_of_connection (NMConnectionList *list, NMConnection *connection)
 		do {
 			NMRemoteConnection *candidate = NULL;
 			NMSettingConnection *s_con;
-			const char *master;
+			const char *controller;
 
 			gtk_tree_model_get (priv->model, &iter,
 			                    COL_CONNECTION, &candidate,
 			                    -1);
 			s_con = nm_connection_get_setting_connection (NM_CONNECTION (candidate));
-			master = nm_setting_connection_get_master (s_con);
-			if (master) {
-				if (!g_strcmp0 (master, uuid) || !g_strcmp0 (master, iface))
+			controller = nm_setting_connection_get_master (s_con);
+			if (controller) {
+				if (!g_strcmp0 (controller, uuid) || !g_strcmp0 (controller, iface))
 					nm_remote_connection_delete (candidate, NULL, NULL);
 			}
 
@@ -268,7 +268,7 @@ add_response_cb (NMConnectionEditor *editor, GtkResponseType response, gpointer 
 	NMConnectionList *list = user_data;
 
 	if (response == GTK_RESPONSE_CANCEL)
-		delete_slaves_of_connection (list, nm_connection_editor_get_connection (editor));
+		delete_ports_of_connection (list, nm_connection_editor_get_connection (editor));
 
 	g_object_unref (editor);
 }
@@ -416,7 +416,7 @@ delete_connection_cb (FUNC_TAG_DELETE_CONNECTION_RESULT_IMPL,
 	NMConnectionList *list = user_data;
 
 	if (deleted)
-		delete_slaves_of_connection (list, NM_CONNECTION (connection));
+		delete_ports_of_connection (list, NM_CONNECTION (connection));
 }
 
 static void
@@ -677,8 +677,8 @@ tree_model_visible_func (GtkTreeModel *model,
 	NMConnectionListPrivate *priv = NM_CONNECTION_LIST_GET_PRIVATE (self);
 	gs_unref_object NMConnection *connection = NULL;
 	NMSettingConnection *s_con;
-	const char *master;
-	const char *slave_type;
+	const char *controller;
+	const char *port_type;
 	gs_free char *id = NULL;
 
 	gtk_tree_model_get (model, iter,
@@ -702,21 +702,21 @@ tree_model_visible_func (GtkTreeModel *model,
 	    || !nm_remote_connection_get_visible (NM_REMOTE_CONNECTION (connection)))
 		return FALSE;
 
-	master = nm_setting_connection_get_master (s_con);
-	if (!master)
+	controller = nm_setting_connection_get_master (s_con);
+	if (!controller)
 		return TRUE;
-	slave_type = nm_setting_connection_get_slave_type (s_con);
-	if (   g_strcmp0 (slave_type, NM_SETTING_BOND_SETTING_NAME) != 0
-	    && g_strcmp0 (slave_type, NM_SETTING_TEAM_SETTING_NAME) != 0
-	    && g_strcmp0 (slave_type, NM_SETTING_BRIDGE_SETTING_NAME) != 0)
+	port_type = nm_setting_connection_get_slave_type (s_con);
+	if (   g_strcmp0 (port_type, NM_SETTING_BOND_SETTING_NAME) != 0
+	    && g_strcmp0 (port_type, NM_SETTING_TEAM_SETTING_NAME) != 0
+	    && g_strcmp0 (port_type, NM_SETTING_BRIDGE_SETTING_NAME) != 0)
 		return TRUE;
 
-	if (nm_client_get_connection_by_uuid (priv->client, master))
+	if (nm_client_get_connection_by_uuid (priv->client, controller))
 		return FALSE;
-	if (nm_connection_editor_get_master (connection))
+	if (nm_connection_editor_get_controller (connection))
 		return FALSE;
 
-	/* FIXME: what if master is an interface name */
+	/* FIXME: what if controller is an interface name */
 
 	return TRUE;
 }

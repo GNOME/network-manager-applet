@@ -344,16 +344,16 @@ get_ssid_utf8 (NMAccessPoint *ap)
 }
 
 /* List known trojan networks that should never be shown to the user */
-static const char *blacklisted_ssids[] = {
+static const char *denylisted_ssids[] = {
 	/* http://www.npr.org/templates/story/story.php?storyId=130451369 */
 	"Free Public Wi-Fi",
 	NULL
 };
 
 static gboolean
-is_blacklisted_ssid (GBytes *ssid)
+is_denylisted_ssid (GBytes *ssid)
 {
-	return is_ssid_in_list (ssid, blacklisted_ssids);
+	return is_ssid_in_list (ssid, denylisted_ssids);
 }
 
 static void
@@ -681,11 +681,11 @@ get_menu_item_for_ap (NMDeviceWifi *device,
 	GBytes *ssid;
 	struct dup_data dup_data = { NULL, NULL };
 
-	/* Don't add BSSs that hide their SSID or are blacklisted */
+	/* Don't add BSSs that hide their SSID or are denylisted */
 	ssid = nm_access_point_get_ssid (ap);
 	if (   !ssid
 	    || nm_utils_is_empty_ssid (g_bytes_get_data (ssid, NULL), g_bytes_get_size (ssid))
-	    || is_blacklisted_ssid (ssid))
+	    || is_denylisted_ssid (ssid))
 		return NULL;
 
 	/* Find out if this AP is a member of a larger network that all uses the

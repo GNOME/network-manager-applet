@@ -250,7 +250,7 @@ link_watcher_changed (GtkComboBox *combo, gpointer user_data)
 	gtk_widget_hide (GTK_WIDGET (priv->send_all));
 
 	name = get_combo_box (combo);
-	if (g_strcmp0 (name, "master") == 0) {
+	if (g_strcmp0 (name, "controller") == 0) {
 		/* Leave everything disabled. */
 	} else if (g_strcmp0 (name, "ethtool") == 0) {
 		gtk_widget_show (GTK_WIDGET (priv->delay_up));
@@ -473,7 +473,7 @@ dialog_to_json (CEPageTeamPort *self)
 
 	obj = json_object ();
 	tmp = get_combo_box (priv->link_watcher_name);
-	if (g_strcmp0 (tmp, "master") != 0) {
+	if (g_strcmp0 (tmp, "controller") != 0) {
 		maybe_set_str (obj, "name", tmp);
 		if (g_strcmp0 (tmp, "ethtool") == 0) {
 			maybe_set_int (obj, "delay_up", gtk_spin_button_get_value (priv->delay_up));

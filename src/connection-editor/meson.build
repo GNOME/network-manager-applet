@@ -23,7 +23,7 @@ sources = files(
   'page-ip4.c',
   'page-ip6.c',
   'page-macsec.c',
-  'page-master.c',
+  'page-controller.c',
   'page-mobile.c',
   'page-ppp.c',
   'page-proxy.c',

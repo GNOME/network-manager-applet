@@ -10,12 +10,12 @@
 
 #include <NetworkManager.h>
 
-#include "page-master.h"
+#include "page-controller.h"
 #include "nm-connection-editor.h"
 
-G_DEFINE_TYPE (CEPageMaster, ce_page_master, CE_TYPE_PAGE)
+G_DEFINE_TYPE (CEPageController, ce_page_controller, CE_TYPE_PAGE)
 
-#define CE_PAGE_MASTER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CE_TYPE_PAGE_MASTER, CEPageMasterPrivate))
+#define CE_PAGE_CONTROLLER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CE_TYPE_PAGE_CONTROLLER, CEPageControllerPrivate))
 
 typedef struct {
 	const char *uuid;
@@ -28,11 +28,11 @@ typedef struct {
 	GtkTreeModel *connections_model;
 	GtkButton *add, *edit, *delete;
 
-	GHashTable *new_slaves;  /* track whether some port(s) were added */
+	GHashTable *new_ports;  /* track whether some port(s) were added */
 
-} CEPageMasterPrivate;
+} CEPageControllerPrivate;
 
-static void finish_setup (CEPageMaster *self, gpointer user_data);
+static void finish_setup (CEPageController *self, gpointer user_data);
 
 enum {
 	COL_CONNECTION,
@@ -58,18 +58,18 @@ name_sort_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer us
 static void
 constructed (GObject *object)
 {
-	CEPageMaster *self = CE_PAGE_MASTER (object);
+	CEPageController *self = CE_PAGE_CONTROLLER (object);
 
 	g_signal_connect (self, CE_PAGE_INITIALIZED, G_CALLBACK (finish_setup), NULL);
 
-	G_OBJECT_CLASS (ce_page_master_parent_class)->constructed (object);
+	G_OBJECT_CLASS (ce_page_controller_parent_class)->constructed (object);
 }
 
 static void
 dispose (GObject *object)
 {
-	CEPageMaster *self = CE_PAGE_MASTER (object);
-	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
+	CEPageController *self = CE_PAGE_CONTROLLER (object);
+	CEPageControllerPrivate *priv = CE_PAGE_CONTROLLER_GET_PRIVATE (self);
 	GtkTreeIter iter;
 
 	g_signal_handlers_disconnect_matched (CE_PAGE (self)->client, G_SIGNAL_MATCH_DATA,
@@ -88,9 +88,9 @@ dispose (GObject *object)
 		} while (gtk_tree_model_iter_next (priv->connections_model, &iter));
 	}
 
-	g_hash_table_destroy (priv->new_slaves);
+	g_hash_table_destroy (priv->new_ports);
 
-	G_OBJECT_CLASS (ce_page_master_parent_class)->dispose (object);
+	G_OBJECT_CLASS (ce_page_controller_parent_class)->dispose (object);
 }
 
 static void
@@ -100,9 +100,9 @@ stuff_changed (GtkWidget *widget, gpointer user_data)
 }
 
 static gboolean
-find_connection (CEPageMaster *self, NMRemoteConnection *connection, GtkTreeIter *iter)
+find_connection (CEPageController *self, NMRemoteConnection *connection, GtkTreeIter *iter)
 {
-	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
+	CEPageControllerPrivate *priv = CE_PAGE_CONTROLLER_GET_PRIVATE (self);
 
 	if (!gtk_tree_model_get_iter_first (priv->connections_model, iter))
 		return FALSE;
@@ -125,8 +125,8 @@ connection_removed (NMClient *client,
                     NMRemoteConnection *connection,
                     gpointer user_data)
 {
-	CEPageMaster *self = CE_PAGE_MASTER (user_data);
-	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
+	CEPageController *self = CE_PAGE_CONTROLLER (user_data);
+	CEPageControllerPrivate *priv = CE_PAGE_CONTROLLER_GET_PRIVATE (self);
 	GtkTreeIter iter;
 
 	if (!find_connection (self, connection, &iter))
@@ -139,8 +139,8 @@ connection_removed (NMClient *client,
 static void
 connection_changed (NMRemoteConnection *connection, gpointer user_data)
 {
-	CEPageMaster *self = CE_PAGE_MASTER (user_data);
-	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
+	CEPageController *self = CE_PAGE_CONTROLLER (user_data);
+	CEPageControllerPrivate *priv = CE_PAGE_CONTROLLER_GET_PRIVATE (self);
 	GtkTreeIter iter;
 	NMSettingConnection *s_con;
 
@@ -193,9 +193,9 @@ get_device_for_connection (NMClient *client, NMConnection *conn)
 }
 
 static void
-check_new_slave_physical_port (CEPageMaster *self, NMConnection *conn)
+check_new_port_physical_port (CEPageController *self, NMConnection *conn)
 {
-	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
+	CEPageControllerPrivate *priv = CE_PAGE_CONTROLLER_GET_PRIVATE (self);
 	NMConnection *conn2;
 	NMDevice *dev, *dev2;
 	const char *id, *id2;
@@ -246,34 +246,34 @@ connection_added (NMClient *client,
                   NMRemoteConnection *connection,
                   gpointer user_data)
 {
-	CEPageMaster *self = CE_PAGE_MASTER (user_data);
-	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
+	CEPageController *self = CE_PAGE_CONTROLLER (user_data);
+	CEPageControllerPrivate *priv = CE_PAGE_CONTROLLER_GET_PRIVATE (self);
 	NMSettingConnection *s_con;
-	const char *master_type;
-	const char *slave_type, *master;
+	const char *controller_type;
+	const char *port_type, *controller;
 	const char *interface_name;
 	GtkTreeIter iter;
 
 	s_con = nm_connection_get_setting_connection (CE_PAGE (self)->connection);
-	master_type = nm_setting_connection_get_connection_type (s_con);
+	controller_type = nm_setting_connection_get_connection_type (s_con);
 
 	s_con = nm_connection_get_setting_connection (NM_CONNECTION (connection));
 	if (!s_con)
 		return;
 
-	slave_type = nm_setting_connection_get_slave_type (s_con);
-	if (g_strcmp0 (slave_type, master_type) != 0)
+	port_type = nm_setting_connection_get_slave_type (s_con);
+	if (g_strcmp0 (port_type, controller_type) != 0)
 		return;
 
-	master = nm_setting_connection_get_master (s_con);
-	if (!master)
+	controller = nm_setting_connection_get_master (s_con);
+	if (!controller)
 		return;
 
 	interface_name = nm_connection_get_interface_name (CE_PAGE (self)->connection);
-	if (g_strcmp0 (master, interface_name) != 0 && g_strcmp0 (master, priv->uuid) != 0)
+	if (g_strcmp0 (controller, interface_name) != 0 && g_strcmp0 (controller, priv->uuid) != 0)
 		return;
 
-	check_new_slave_physical_port (self, NM_CONNECTION (connection));
+	check_new_port_physical_port (self, NM_CONNECTION (connection));
 
 	gtk_list_store_append (GTK_LIST_STORE (priv->connections_model), &iter);
 	gtk_list_store_set (GTK_LIST_STORE (priv->connections_model), &iter,
@@ -291,8 +291,8 @@ connection_added (NMClient *client,
 static void
 connections_selection_changed_cb (GtkTreeSelection *selection, gpointer user_data)
 {
-	CEPageMaster *self = user_data;
-	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
+	CEPageController *self = user_data;
+	CEPageControllerPrivate *priv = CE_PAGE_CONTROLLER_GET_PRIVATE (self);
 	GtkTreeIter iter;
 	GtkTreeModel *model;
 	NMRemoteConnection *connection;
@@ -316,13 +316,13 @@ connections_selection_changed_cb (GtkTreeSelection *selection, gpointer user_dat
 static void
 add_response_cb (NMConnectionEditor *editor, GtkResponseType response, gpointer user_data)
 {
-	CEPageMaster *self = user_data;
-	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
+	CEPageController *self = user_data;
+	CEPageControllerPrivate *priv = CE_PAGE_CONTROLLER_GET_PRIVATE (self);
 	const char *uuid;
 
 	if (response == GTK_RESPONSE_OK) {
 		uuid = nm_connection_get_uuid (editor->connection);
-		g_hash_table_add (priv->new_slaves, g_strdup (uuid));
+		g_hash_table_add (priv->new_ports, g_strdup (uuid));
 	}
 	g_object_unref (editor);
 }
@@ -332,18 +332,18 @@ add_connection (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
                 NMConnection *connection,
                 gpointer user_data)
 {
-	CEPageMaster *self = user_data;
-	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
+	CEPageController *self = user_data;
+	CEPageControllerPrivate *priv = CE_PAGE_CONTROLLER_GET_PRIVATE (self);
 	NMSettingConnection *s_con;
 	NMConnectionEditor *editor;
-	const char *iface_name, *master_type;
+	const char *iface_name, *controller_type;
 	char *name;
 
 	if (!connection)
 		return;
 
 	s_con = nm_connection_get_setting_connection (CE_PAGE (self)->connection);
-	master_type = nm_setting_connection_get_connection_type (s_con);
+	controller_type = nm_setting_connection_get_connection_type (s_con);
 
 	/* Mark the connection as a port, and rename it. */
 	s_con = nm_connection_get_setting_connection (connection);
@@ -360,7 +360,7 @@ add_connection (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
 	g_object_set (G_OBJECT (s_con),
 	              NM_SETTING_CONNECTION_ID, name,
 	              NM_SETTING_CONNECTION_MASTER, priv->uuid,
-	              NM_SETTING_CONNECTION_SLAVE_TYPE, master_type,
+	              NM_SETTING_CONNECTION_SLAVE_TYPE, controller_type,
 	              NM_SETTING_CONNECTION_AUTOCONNECT, TRUE,
 	              NULL);
 	g_free (name);
@@ -376,15 +376,15 @@ add_connection (FUNC_TAG_NEW_CONNECTION_RESULT_IMPL,
 static void
 add_clicked (GtkButton *button, gpointer user_data)
 {
-	CEPageMaster *self = user_data;
+	CEPageController *self = user_data;
 
-	CE_PAGE_MASTER_GET_CLASS (self)->add_slave (self, add_connection);
+	CE_PAGE_CONTROLLER_GET_CLASS (self)->add_port (self, add_connection);
 }
 
 static NMRemoteConnection *
-get_selected_connection (CEPageMaster *self)
+get_selected_connection (CEPageController *self)
 {
-	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
+	CEPageControllerPrivate *priv = CE_PAGE_CONTROLLER_GET_PRIVATE (self);
 	GtkTreeSelection *selection;
 	GList *selected_rows;
 	GtkTreeModel *model = NULL;
@@ -413,8 +413,8 @@ edit_done_cb (NMConnectionEditor *editor, GtkResponseType response, gpointer use
 static void
 edit_clicked (GtkButton *button, gpointer user_data)
 {
-	CEPageMaster *self = user_data;
-	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
+	CEPageController *self = user_data;
+	CEPageControllerPrivate *priv = CE_PAGE_CONTROLLER_GET_PRIVATE (self);
 	NMConnectionEditor *editor;
 	NMRemoteConnection *connection;
 
@@ -451,11 +451,11 @@ delete_result_cb (FUNC_TAG_DELETE_CONNECTION_RESULT_IMPL,
                   gboolean deleted,
                   gpointer user_data)
 {
-	CEPageMaster *self = user_data;
-	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
+	CEPageController *self = user_data;
+	CEPageControllerPrivate *priv = CE_PAGE_CONTROLLER_GET_PRIVATE (self);
 
 	if (deleted) {
-		g_hash_table_remove (priv->new_slaves,
+		g_hash_table_remove (priv->new_ports,
 		                     nm_connection_get_uuid (NM_CONNECTION (connection)));
 	}
 }
@@ -463,8 +463,8 @@ delete_result_cb (FUNC_TAG_DELETE_CONNECTION_RESULT_IMPL,
 static void
 delete_clicked (GtkButton *button, gpointer user_data)
 {
-	CEPageMaster *self = user_data;
-	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
+	CEPageController *self = user_data;
+	CEPageControllerPrivate *priv = CE_PAGE_CONTROLLER_GET_PRIVATE (self);
 	NMRemoteConnection *connection;
 
 	connection = get_selected_connection (self);
@@ -475,9 +475,9 @@ delete_clicked (GtkButton *button, gpointer user_data)
 }
 
 static void
-populate_ui (CEPageMaster *self)
+populate_ui (CEPageController *self)
 {
-	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
+	CEPageControllerPrivate *priv = CE_PAGE_CONTROLLER_GET_PRIVATE (self);
 	NMSettingConnection *s_con;
 	const char *iface;
 	const GPtrArray *connections;
@@ -497,28 +497,28 @@ populate_ui (CEPageMaster *self)
 }
 
 static void
-finish_setup (CEPageMaster *self, gpointer user_data)
+finish_setup (CEPageController *self, gpointer user_data)
 {
-	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
+	CEPageControllerPrivate *priv = CE_PAGE_CONTROLLER_GET_PRIVATE (self);
 	GtkTreeSelection *selection;
 	GtkBuilder *builder;
 	NMSettingConnection *s_con;
 
 	builder = CE_PAGE (self)->builder;
 
-	priv->interface_name = GTK_ENTRY (gtk_builder_get_object (builder, "master_interface"));
+	priv->interface_name = GTK_ENTRY (gtk_builder_get_object (builder, "controller_interface"));
 
-	priv->connections = GTK_TREE_VIEW (gtk_builder_get_object (builder, "master_connections"));
-	priv->connections_model = GTK_TREE_MODEL (gtk_builder_get_object (builder, "master_connections_model"));
+	priv->connections = GTK_TREE_VIEW (gtk_builder_get_object (builder, "controller_connections"));
+	priv->connections_model = GTK_TREE_MODEL (gtk_builder_get_object (builder, "controller_connections_model"));
 	gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (priv->connections_model),
 	                                 COL_NAME, name_sort_func,
 	                                 NULL, NULL);
 	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (priv->connections_model),
 	                                      COL_NAME, GTK_SORT_ASCENDING);
 
-	priv->add = GTK_BUTTON (gtk_builder_get_object (builder, "master_connection_add"));
-	priv->edit = GTK_BUTTON (gtk_builder_get_object (builder, "master_connection_edit"));
-	priv->delete = GTK_BUTTON (gtk_builder_get_object (builder, "master_connection_delete"));
+	priv->add = GTK_BUTTON (gtk_builder_get_object (builder, "controller_connection_add"));
+	priv->edit = GTK_BUTTON (gtk_builder_get_object (builder, "controller_connection_edit"));
+	priv->delete = GTK_BUTTON (gtk_builder_get_object (builder, "controller_connection_delete"));
 
 	priv->toplevel = GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (priv->connections),
 	                                                      GTK_TYPE_WINDOW));
@@ -545,9 +545,9 @@ finish_setup (CEPageMaster *self, gpointer user_data)
 }
 
 static void
-ui_to_setting (CEPageMaster *self)
+ui_to_setting (CEPageController *self)
 {
-	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
+	CEPageControllerPrivate *priv = CE_PAGE_CONTROLLER_GET_PRIVATE (self);
 	NMSettingConnection *s_con;
 	const char *interface_name;
 
@@ -564,7 +564,7 @@ ui_to_setting (CEPageMaster *self)
 static gboolean
 ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 {
-	CEPageMaster *self = CE_PAGE_MASTER (page);
+	CEPageController *self = CE_PAGE_CONTROLLER (page);
 
 	/* We don't need to recursively check that the ports connections
 	 * are valid because they can't end up in the table if they're not.
@@ -579,14 +579,14 @@ ce_page_validate_v (CEPage *page, NMConnection *connection, GError **error)
 static gboolean
 last_update (CEPage *page, NMConnection *connection, GError **error)
 {
-	CEPageMaster *self = CE_PAGE_MASTER (page);
-	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
+	CEPageController *self = CE_PAGE_CONTROLLER (page);
+	CEPageControllerPrivate *priv = CE_PAGE_CONTROLLER_GET_PRIVATE (self);
 	const char *interface_name, *tmp, *uuid;
 	NMSettingConnection *s_con;
 	GtkTreeIter iter;
 
 	/* No new port added - leave master property as it is. */
-	if (g_hash_table_size (priv->new_slaves) == 0)
+	if (g_hash_table_size (priv->new_ports) == 0)
 		return TRUE;
 
 	/*
@@ -604,7 +604,7 @@ last_update (CEPage *page, NMConnection *connection, GError **error)
 			                    -1);
 			tmp = nm_connection_get_interface_name (NM_CONNECTION (rcon));
 			uuid = nm_connection_get_uuid (NM_CONNECTION (rcon));
-			if (   g_hash_table_contains (priv->new_slaves, uuid)
+			if (   g_hash_table_contains (priv->new_ports, uuid)
 			    && g_strcmp0 (interface_name, tmp) != 0) {
 				s_con = nm_connection_get_setting_connection (NM_CONNECTION (rcon));
 				g_object_set (s_con, NM_SETTING_CONNECTION_MASTER, interface_name, NULL);
@@ -617,20 +617,20 @@ last_update (CEPage *page, NMConnection *connection, GError **error)
 }
 
 static void
-ce_page_master_init (CEPageMaster *self)
+ce_page_controller_init (CEPageController *self)
 {
-	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
+	CEPageControllerPrivate *priv = CE_PAGE_CONTROLLER_GET_PRIVATE (self);
 
-	priv->new_slaves = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+	priv->new_ports = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 }
 
 static void
-ce_page_master_class_init (CEPageMasterClass *master_class)
+ce_page_controller_class_init (CEPageControllerClass *controller_class)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (master_class);
-	CEPageClass *parent_class = CE_PAGE_CLASS (master_class);
+	GObjectClass *object_class = G_OBJECT_CLASS (controller_class);
+	CEPageClass *parent_class = CE_PAGE_CLASS (controller_class);
 
-	g_type_class_add_private (object_class, sizeof (CEPageMasterPrivate));
+	g_type_class_add_private (object_class, sizeof (CEPageControllerPrivate));
 
 	/* virtual methods */
 	object_class->constructed = constructed;
@@ -641,9 +641,9 @@ ce_page_master_class_init (CEPageMasterClass *master_class)
 }
 
 gboolean
-ce_page_master_has_slaves (CEPageMaster *self)
+ce_page_controller_has_ports (CEPageController *self)
 {
-	CEPageMasterPrivate *priv = CE_PAGE_MASTER_GET_PRIVATE (self);
+	CEPageControllerPrivate *priv = CE_PAGE_CONTROLLER_GET_PRIVATE (self);
 	GtkTreeIter iter;
 
 	return gtk_tree_model_get_iter_first (priv->connections_model, &iter);
