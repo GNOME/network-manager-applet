@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: network-manager-applet master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
 "issues\n"
-"POT-Creation-Date: 2023-03-01 22:29+0000\n"
+"POT-Creation-Date: 2023-08-21 21:52+0000\n"
 "PO-Revision-Date: 2023-03-07 00:21+0300\n"
 "Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Turkish <gnometurk@gnome.org>\n"
@@ -136,10 +136,22 @@ msgstr ""
 "için true (doğru) olarak belirleyin."
 
 #: org.gnome.nm-applet.gschema.xml.in:36
+msgid "Suppress broadband device unlock prompt"
+msgstr "Geniş bant aygıtı kilit kaldırma sorgusunu baskıla"
+
+#: org.gnome.nm-applet.gschema.xml.in:37
+msgid ""
+"Set to true to not prompt for PIN/PUK when providing it is required to "
+"unlock a broadband device."
+msgstr ""
+"Geniş bant aygıtının kilidini kaldırmada gerekli PIN/PUK girme "
+"sorgusunun yapılmaması için doğru (true) olarak belirle."
+
+#: org.gnome.nm-applet.gschema.xml.in:41
 msgid "Show the applet in notification area"
 msgstr "Programcığı bildirim alanında göster"
 
-#: org.gnome.nm-applet.gschema.xml.in:37
+#: org.gnome.nm-applet.gschema.xml.in:42
 msgid "Set to FALSE to disable displaying the applet in the notification area."
 msgstr ""
 "Programcığın bildirim alanında gösterilmesini devre dışı bırmak için FALSE "
@@ -201,7 +213,7 @@ msgstr "802.1X kimlik doğrulaması"
 #: src/connection-editor/page-mobile.c:530
 #: src/connection-editor/page-proxy.c:107
 #: src/connection-editor/page-team-port.c:192
-#: src/connection-editor/page-team.c:330
+#: src/connection-editor/page-team.c:329
 #: src/connection-editor/vpn-helpers.c:198 src/gsm-unlock.ui:28
 #: src/mobile-helpers.c:451
 msgid "_Cancel"
@@ -240,45 +252,45 @@ msgstr "Yanlış PIN kodu; lütfen hizmet sağlayıcınızla görüşün."
 msgid "Sending unlock code…"
 msgstr "Kilit açma kodu gönderiliyor…"
 
-#: src/applet-device-broadband.c:725 src/applet-dialogs.c:521
+#: src/applet-device-broadband.c:729 src/applet-dialogs.c:521
 #, c-format
 msgid "Mobile Broadband (%s)"
 msgstr "Mobil Geniş Bant (%s)"
 
-#: src/applet-device-broadband.c:727
+#: src/applet-device-broadband.c:731
 #: src/connection-editor/connection-helpers.c:95
 #: src/connection-editor/page-mobile.c:295
 msgid "Mobile Broadband"
 msgstr "Mobil Geniş Bant"
 
-#: src/applet-device-broadband.c:780 src/applet-device-bt.c:61
+#: src/applet-device-broadband.c:784 src/applet-device-bt.c:61
 #: src/applet-device-ethernet.c:107
 msgid "Available"
 msgstr "Uygun"
 
 #. Default connection item
-#: src/applet-device-broadband.c:793
+#: src/applet-device-broadband.c:797
 msgid "New Mobile Broadband connection…"
 msgstr "Yeni Mobil Geniş Bant Bağlantı…"
 
-#: src/applet-device-broadband.c:809 src/applet-device-bt.c:75
+#: src/applet-device-broadband.c:813 src/applet-device-bt.c:75
 #: src/applet-device-ethernet.c:124 src/applet-device-wifi.c:1251
 msgid "Connection Established"
 msgstr "Bağlantı Kuruldu"
 
-#: src/applet-device-broadband.c:810
+#: src/applet-device-broadband.c:814
 msgid "You are now connected to the Mobile Broadband network."
 msgstr "Şimdi Mobil Geniş Bant ağına bağlandınız."
 
-#: src/applet-device-broadband.c:950 src/applet-device-broadband.c:956
+#: src/applet-device-broadband.c:954 src/applet-device-broadband.c:960
 msgid "Mobile Broadband network."
 msgstr "Mobil Geniş Bant ağı."
 
-#: src/applet-device-broadband.c:951
+#: src/applet-device-broadband.c:955
 msgid "You are now registered on the home network."
 msgstr "Şimdi ev ağına kaydoldunuz."
 
-#: src/applet-device-broadband.c:957
+#: src/applet-device-broadband.c:961
 msgid "You are now registered on a roaming network."
 msgstr "Şimdi bir dolaşım ağına kaydoldunuz."
 
@@ -3267,7 +3279,7 @@ msgid "Bond"
 msgstr "Bond"
 
 #: src/connection-editor/connection-helpers.c:105
-#: src/connection-editor/page-team.c:1014
+#: src/connection-editor/page-team.c:1013
 msgid "Team"
 msgstr "Takım"
 
@@ -3313,14 +3325,14 @@ msgstr "VPN eklentisi, VPN bağlantısını düzgün olarak içe aktaramadı: "
 #: src/connection-editor/connection-helpers.c:329
 #: src/connection-editor/page-proxy.c:104
 #: src/connection-editor/page-team-port.c:189
-#: src/connection-editor/page-team.c:327
+#: src/connection-editor/page-team.c:326
 msgid "Select file to import"
 msgstr "İçe aktarılacak dosyayı seç"
 
 #: src/connection-editor/connection-helpers.c:333
 #: src/connection-editor/page-proxy.c:108
 #: src/connection-editor/page-team-port.c:193
-#: src/connection-editor/page-team.c:331
+#: src/connection-editor/page-team.c:330
 msgid "_Open"
 msgstr "_Aç"
 
@@ -4052,7 +4064,7 @@ msgid "Could not load proxy user interface."
 msgstr "Vekil kullanıcı arayüzü yüklenemedi."
 
 #: src/connection-editor/page-team-port.c:209
-#: src/connection-editor/page-team.c:347
+#: src/connection-editor/page-team.c:346
 msgid "Error: file doesn’t contain a valid JSON configuration"
 msgstr "Hata: dosya geçerli bir JSON yapılandırması içermiyor"
 
@@ -4067,11 +4079,11 @@ msgstr "Takım Bağlantı Noktası"
 msgid "Could not load team port user interface."
 msgstr "Takım bağlantı noktası kullanıcı arayüzü yüklenemedi."
 
-#: src/connection-editor/page-team.c:1017
+#: src/connection-editor/page-team.c:1016
 msgid "Could not load team user interface."
 msgstr "Takım kullanıcı arayüzü yüklenemedi."
 
-#: src/connection-editor/page-team.c:1114
+#: src/connection-editor/page-team.c:1113
 #, c-format
 msgid "Team connection %d"
 msgstr "Takım bağlantısı %d"
