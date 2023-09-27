@@ -3262,7 +3262,7 @@ applet_enable_pref (GSimpleAction *action, GVariant *parameter, gpointer user_da
 
 static GActionEntry app_entries[] =
 {
-	{ "app.enable-pref", applet_enable_pref, "s" },
+	{ "enable-pref", applet_enable_pref, "s" },
 };
 
 static void
