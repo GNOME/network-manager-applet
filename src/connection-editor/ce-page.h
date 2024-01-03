@@ -119,7 +119,7 @@ void ce_page_setup_mac_combo (CEPage *self, GtkComboBox *combo,
                               const char *mac, char **mac_list);
 void ce_page_setup_data_combo (CEPage *self, GtkComboBox *combo,
                                const char *data, char **list);
-void ce_page_setup_cloned_mac_combo (GtkComboBoxText *combo, const char *current);
+void ce_page_setup_cloned_mac_combo (GtkComboBoxText *combo, const char *current, gboolean is_wifi);
 void ce_page_setup_device_combo (CEPage *self,
                                  GtkComboBox *combo,
                                  GType device_type,
