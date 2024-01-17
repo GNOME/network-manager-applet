@@ -269,7 +269,7 @@ parent_changed (GtkWidget *widget, gpointer user_data)
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->mtu), TRUE);
 	} else {
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->cloned_mac), FALSE);
-		ce_page_setup_cloned_mac_combo (priv->cloned_mac, NULL);
+		ce_page_setup_cloned_mac_combo (priv->cloned_mac, NULL, FALSE);
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->mtu), FALSE);
 		gtk_spin_button_set_value (priv->mtu, 1500);
 	}
@@ -516,9 +516,9 @@ populate_ui (CEPageVlan *self)
 	/* Cloned MAC address */
 	if (NM_IS_SETTING_WIRED (priv->s_hw)) {
 		const char *mac = nm_setting_wired_get_cloned_mac_address (NM_SETTING_WIRED (priv->s_hw));
-		ce_page_setup_cloned_mac_combo (priv->cloned_mac, mac);
+		ce_page_setup_cloned_mac_combo (priv->cloned_mac, mac, FALSE);
 	} else {
-		ce_page_setup_cloned_mac_combo (priv->cloned_mac, NULL);
+		ce_page_setup_cloned_mac_combo (priv->cloned_mac, NULL, FALSE);
 	}
 	g_signal_connect (priv->cloned_mac, "changed", G_CALLBACK (stuff_changed), self);
 

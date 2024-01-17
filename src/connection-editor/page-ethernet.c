@@ -235,7 +235,7 @@ populate_ui (CEPageEthernet *self)
 
 	/* Cloned MAC address */
 	s_mac = nm_setting_wired_get_cloned_mac_address (setting);
-	ce_page_setup_cloned_mac_combo (priv->cloned_mac, s_mac);
+	ce_page_setup_cloned_mac_combo (priv->cloned_mac, s_mac, FALSE);
 	g_signal_connect (priv->cloned_mac, "changed", G_CALLBACK (stuff_changed), self);
 
 	/* MTU */

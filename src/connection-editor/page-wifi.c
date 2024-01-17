@@ -354,7 +354,7 @@ populate_ui (CEPageWifi *self)
 
 	/* Cloned MAC address */
 	s_mac = nm_setting_wireless_get_cloned_mac_address (setting);
-	ce_page_setup_cloned_mac_combo (priv->cloned_mac, s_mac);
+	ce_page_setup_cloned_mac_combo (priv->cloned_mac, s_mac, TRUE);
 	g_signal_connect_swapped (priv->cloned_mac, "changed", G_CALLBACK (ce_page_changed), self);
 
 	gtk_spin_button_set_value (priv->mtu, (gdouble) nm_setting_wireless_get_mtu (setting));
