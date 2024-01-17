@@ -3,14 +3,14 @@
 # This file is distributed under the same license as the NetworkManager package.
 # Maxim Dziumanenko <dziumanenko@gmail.com>, 2005-2010.
 # Korostil Daniel <ted.korostiled@gmail.com>, 2011, 2012.
-# Yuri Chornoivan <yurchor@ukr.net>, 2020, 2021, 2022, 2023.
+# Yuri Chornoivan <yurchor@ukr.net>, 2020, 2021, 2022, 2023, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: NetworkManager\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/i"
 "ssues\n"
-"POT-Creation-Date: 2023-09-07 13:23+0000\n"
-"PO-Revision-Date: 2023-09-08 21:19+0300\n"
+"POT-Creation-Date: 2024-01-17 13:27+0000\n"
+"PO-Revision-Date: 2024-01-17 21:01+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -19,11 +19,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
 "%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Lokalize 20.12.0\n"
+"X-Generator: Lokalize 23.04.1\n"
 
-#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3166
-msgid "Network"
-msgstr "Мережа"
+#: nm-applet.desktop.in:3 src/applet.c:3280
+msgid "NetworkManager Applet"
+msgstr "Аплет NetworkManager"
 
 #: nm-applet.desktop.in:4
 msgid "Manage your network connections"
@@ -650,6 +650,10 @@ msgstr "IPv6"
 msgid "Hotspot"
 msgstr "Хот-спот"
 
+#: src/applet-dialogs.c:724 src/applet.c:3166
+msgid "Network"
+msgstr "Мережа"
+
 #: src/applet-dialogs.c:735
 msgid "Password"
 msgstr "Пароль"
@@ -1105,10 +1109,6 @@ msgstr "Задіяно з'єднання VPN"
 #: src/applet.c:2645
 msgid "No network connection"
 msgstr "Немає з'єднання з мережею"
-
-#: src/applet.c:3280
-msgid "NetworkManager Applet"
-msgstr "Аплет NetworkManager"
 
 #: src/connection-editor/ce-ip4-routes.ui:88
 #: src/connection-editor/ce-ip6-routes.ui:88 src/connection-editor/ce-page.h:97
@@ -2385,7 +2385,6 @@ msgid "Ad_vanced…"
 msgstr "Д_одатково…"
 
 #: src/connection-editor/ce-page-team-port.ui:108
-#| msgid "Set by master"
 msgid "Set by controller"
 msgstr "Встановлюється контролером"
 
@@ -2835,17 +2834,13 @@ msgid "System priority, value can be 0 – 65535."
 msgstr "Системна пріоритетність, значення від 0 до 65535."
 
 #: src/connection-editor/ce-page-team.ui:960
-#| msgid ""
-#| "Specifies the minimum number of ports that must be active before "
-#| "asserting carrier in the master interface, value can be 1 – 255."
 msgid ""
 "Specifies the minimum number of ports that must be active before asserting "
 "carrier in the controller interface, value can be 1 – 255."
 msgstr ""
 "Визначає мінімальну кількість портів, які мають бути активними, перш ніж "
-"буде оцінено рівень носія сигналу на інтерфейсі контролера. Значення від 1"
-" до "
-"255."
+"буде оцінено рівень носія сигналу на інтерфейсі контролера. Значення від 1 "
+"до 255."
 
 #: src/connection-editor/ce-page-team.ui:972
 msgid "This selects the policy of how the aggregators will be selected."
@@ -3115,23 +3110,28 @@ msgstr "вимкнено"
 msgid "unspecified error"
 msgstr "невизначена помилка"
 
-#: src/connection-editor/ce-page.c:268
+#: src/connection-editor/ce-page.c:267 src/connection-editor/ce-page.c:271
 msgid "Preserve"
 msgstr "Зберігати"
 
-#: src/connection-editor/ce-page.c:269
+#: src/connection-editor/ce-page.c:268 src/connection-editor/ce-page.c:272
 msgid "Permanent"
 msgstr "Постійна"
 
-#: src/connection-editor/ce-page.c:270
+#: src/connection-editor/ce-page.c:269 src/connection-editor/ce-page.c:273
 msgid "Random"
 msgstr "Випадкова"
 
-#: src/connection-editor/ce-page.c:271
+#: src/connection-editor/ce-page.c:270 src/connection-editor/ce-page.c:274
 msgid "Stable"
 msgstr "Стала"
 
 #: src/connection-editor/ce-page.c:275
+#| msgid "Stable privacy"
+msgid "Stable per SSID"
+msgstr "Стала для окремого SSID"
+
+#: src/connection-editor/ce-page.c:281
 msgid ""
 "The MAC address entered here will be used as hardware address for the "
 "network device this connection is activated on. This feature is known as MAC "
@@ -3141,52 +3141,52 @@ msgstr ""
 "пристрою, для якого активовано це з'єднання. Ця можливість відома як \n"
 "клонування MAC-адреси або спуфінґ. Приклад: 00:11:22:33:44:55"
 
-#: src/connection-editor/ce-page.c:315
+#: src/connection-editor/ce-page.c:321
 msgid "MAC address"
 msgstr "MAC-адреса"
 
-#: src/connection-editor/ce-page.c:315
+#: src/connection-editor/ce-page.c:321
 msgid "HW address"
 msgstr "Ап. адреса"
 
-#: src/connection-editor/ce-page.c:318
+#: src/connection-editor/ce-page.c:324
 #, c-format
 msgid "invalid %s for %s (%s)"
 msgstr "некоректне значення %s для %s (%s)"
 
-#: src/connection-editor/ce-page.c:322
+#: src/connection-editor/ce-page.c:328
 #, c-format
 msgid "invalid %s (%s)"
 msgstr "некоректне значення %s (%s)"
 
-#: src/connection-editor/ce-page.c:362
+#: src/connection-editor/ce-page.c:368
 #, c-format
 msgid "invalid interface-name for %s (%s): "
 msgstr "некоректне значення назви інтерфейсу %s (%s): "
 
-#: src/connection-editor/ce-page.c:366
+#: src/connection-editor/ce-page.c:372
 #, c-format
 msgid "invalid interface-name (%s): "
 msgstr "некоректна назва інтерфейсу (%s): "
 
-#: src/connection-editor/ce-page.c:545
+#: src/connection-editor/ce-page.c:551
 msgid "can’t parse device name"
 msgstr "не вдалося обробити запис назви пристрою"
 
-#: src/connection-editor/ce-page.c:563
+#: src/connection-editor/ce-page.c:569
 msgid "invalid hardware address"
 msgstr "некоректна апаратна адреса"
 
-#: src/connection-editor/ce-page.c:585
+#: src/connection-editor/ce-page.c:591
 #, c-format
 msgid "invalid %s (%s): "
 msgstr "некоректне значення %s (%s): "
 
-#: src/connection-editor/ce-page.c:586 src/connection-editor/ce-page.c:591
+#: src/connection-editor/ce-page.c:592 src/connection-editor/ce-page.c:597
 msgid "device"
 msgstr "пристрій"
 
-#: src/connection-editor/ce-page.c:590
+#: src/connection-editor/ce-page.c:596
 #, c-format
 msgid "invalid %s (%s) "
 msgstr "некоректне значення %s (%s) "
