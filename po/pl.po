@@ -1,19 +1,19 @@
 # Polish translation for network-manager-applet.
-# Copyright © 2006-2023 the network-manager-applet authors.
+# Copyright © 2006-2024 the network-manager-applet authors.
 # This file is distributed under the same license as the network-manager-applet package.
 # Wadim Dziedzic <wdziedzic@aviary.pl>, 2006-2008.
 # Tomasz Dominikowski <dominikowski@gmail.com>, 2007-2009.
 # Piotr Zaryk <pzaryk@aviary.pl>, 2008.
-# Piotr Drąg <piotrdrag@gmail.com>, 2009-2023.
-# Aviary.pl <community-poland@mozilla.org>, 2006-2023.
+# Piotr Drąg <piotrdrag@gmail.com>, 2009-2024.
+# Aviary.pl <community-poland@mozilla.org>, 2006-2024.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
 "issues\n"
-"POT-Creation-Date: 2023-08-09 12:34+0000\n"
-"PO-Revision-Date: 2023-08-10 15:33+0200\n"
+"POT-Creation-Date: 2024-01-17 13:27+0000\n"
+"PO-Revision-Date: 2024-03-03 16:45+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -23,9 +23,9 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
 
-#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3166
-msgid "Network"
-msgstr "Sieć"
+#: nm-applet.desktop.in:3 src/applet.c:3280
+msgid "NetworkManager Applet"
+msgstr "Aplet NetworkManager"
 
 #: nm-applet.desktop.in:4
 msgid "Manage your network connections"
@@ -205,7 +205,7 @@ msgstr "Uwierzytelnianie 802.1X"
 #: src/connection-editor/page-mobile.c:530
 #: src/connection-editor/page-proxy.c:107
 #: src/connection-editor/page-team-port.c:192
-#: src/connection-editor/page-team.c:330
+#: src/connection-editor/page-team.c:329
 #: src/connection-editor/vpn-helpers.c:198 src/gsm-unlock.ui:28
 #: src/mobile-helpers.c:451
 msgid "_Cancel"
@@ -646,6 +646,10 @@ msgstr "IPv6"
 msgid "Hotspot"
 msgstr "Hotspot"
 
+#: src/applet-dialogs.c:724 src/applet.c:3166
+msgid "Network"
+msgstr "Sieć"
+
 #: src/applet-dialogs.c:735
 msgid "Password"
 msgstr "Hasło"
@@ -706,8 +710,8 @@ msgstr ""
 "Wadim Dziedzic <wdziedzic@aviary.pl>, 2006-2008\n"
 "Tomasz Dominikowski <dominikowski@gmail.com>, 2007-2009\n"
 "Piotr Zaryk <pzaryk@aviary.pl>, 2008\n"
-"Piotr Drąg <piotrdrag@gmail.com>, 2009-2023\n"
-"Aviary.pl <community-poland@mozilla.org>, 2006-2023"
+"Piotr Drąg <piotrdrag@gmail.com>, 2009-2024\n"
+"Aviary.pl <community-poland@mozilla.org>, 2006-2024"
 
 #: src/applet-dialogs.c:1147
 msgid ""
@@ -1106,10 +1110,6 @@ msgstr "Nawiązano połączenie VPN"
 #: src/applet.c:2645
 msgid "No network connection"
 msgstr "Brak połączenia sieciowego"
-
-#: src/applet.c:3280
-msgid "NetworkManager Applet"
-msgstr "Aplet NetworkManager"
 
 #: src/connection-editor/ce-ip4-routes.ui:88
 #: src/connection-editor/ce-ip6-routes.ui:88 src/connection-editor/ce-page.h:97
@@ -3098,23 +3098,27 @@ msgstr "wyłączone"
 msgid "unspecified error"
 msgstr "nieokreślony błąd"
 
-#: src/connection-editor/ce-page.c:268
+#: src/connection-editor/ce-page.c:267 src/connection-editor/ce-page.c:271
 msgid "Preserve"
 msgstr "Zachowany"
 
-#: src/connection-editor/ce-page.c:269
+#: src/connection-editor/ce-page.c:268 src/connection-editor/ce-page.c:272
 msgid "Permanent"
 msgstr "Stały"
 
-#: src/connection-editor/ce-page.c:270
+#: src/connection-editor/ce-page.c:269 src/connection-editor/ce-page.c:273
 msgid "Random"
 msgstr "Losowy"
 
-#: src/connection-editor/ce-page.c:271
+#: src/connection-editor/ce-page.c:270 src/connection-editor/ce-page.c:274
 msgid "Stable"
 msgstr "Stabilny"
 
 #: src/connection-editor/ce-page.c:275
+msgid "Stable per SSID"
+msgstr "Stabilny na każdy SSID"
+
+#: src/connection-editor/ce-page.c:281
 msgid ""
 "The MAC address entered here will be used as hardware address for the "
 "network device this connection is activated on. This feature is known as MAC "
@@ -3124,52 +3128,52 @@ msgstr ""
 "sieciowego, dla którego zostało utworzone to połączenie. Ta funkcja jest "
 "znana jako klonowanie lub „spoofing” adresu MAC. Przykład: 00:11:22:33:44:55"
 
-#: src/connection-editor/ce-page.c:315
+#: src/connection-editor/ce-page.c:321
 msgid "MAC address"
 msgstr "Adres MAC"
 
-#: src/connection-editor/ce-page.c:315
+#: src/connection-editor/ce-page.c:321
 msgid "HW address"
 msgstr "Adres HW"
 
-#: src/connection-editor/ce-page.c:318
+#: src/connection-editor/ce-page.c:324
 #, c-format
 msgid "invalid %s for %s (%s)"
 msgstr "nieprawidłowe %s dla %s (%s)"
 
-#: src/connection-editor/ce-page.c:322
+#: src/connection-editor/ce-page.c:328
 #, c-format
 msgid "invalid %s (%s)"
 msgstr "nieprawidłowe %s (%s)"
 
-#: src/connection-editor/ce-page.c:362
+#: src/connection-editor/ce-page.c:368
 #, c-format
 msgid "invalid interface-name for %s (%s): "
 msgstr "nieprawidłowe „interface-name” dla %s (%s): "
 
-#: src/connection-editor/ce-page.c:366
+#: src/connection-editor/ce-page.c:372
 #, c-format
 msgid "invalid interface-name (%s): "
 msgstr "nieprawidłowe „interface-name” (%s): "
 
-#: src/connection-editor/ce-page.c:545
+#: src/connection-editor/ce-page.c:551
 msgid "can’t parse device name"
 msgstr "nie można przetworzyć nazwy urządzenia"
 
-#: src/connection-editor/ce-page.c:563
+#: src/connection-editor/ce-page.c:569
 msgid "invalid hardware address"
 msgstr "nieprawidłowy adres sprzętowy"
 
-#: src/connection-editor/ce-page.c:585
+#: src/connection-editor/ce-page.c:591
 #, c-format
 msgid "invalid %s (%s): "
 msgstr "nieprawidłowe %s (%s): "
 
-#: src/connection-editor/ce-page.c:586 src/connection-editor/ce-page.c:591
+#: src/connection-editor/ce-page.c:592 src/connection-editor/ce-page.c:597
 msgid "device"
 msgstr "urządzenie"
 
-#: src/connection-editor/ce-page.c:590
+#: src/connection-editor/ce-page.c:596
 #, c-format
 msgid "invalid %s (%s) "
 msgstr "nieprawidłowe %s (%s) "
@@ -3290,7 +3294,7 @@ msgid "Bond"
 msgstr "Łączenie"
 
 #: src/connection-editor/connection-helpers.c:105
-#: src/connection-editor/page-team.c:1014
+#: src/connection-editor/page-team.c:1013
 msgid "Team"
 msgstr "Zespołowe"
 
@@ -3336,14 +3340,14 @@ msgstr "Poprawne zaimportowanie połączenia VPN się nie powiodło: "
 #: src/connection-editor/connection-helpers.c:329
 #: src/connection-editor/page-proxy.c:104
 #: src/connection-editor/page-team-port.c:189
-#: src/connection-editor/page-team.c:327
+#: src/connection-editor/page-team.c:326
 msgid "Select file to import"
 msgstr "Wybór pliku do zaimportowania"
 
 #: src/connection-editor/connection-helpers.c:333
 #: src/connection-editor/page-proxy.c:108
 #: src/connection-editor/page-team-port.c:193
-#: src/connection-editor/page-team.c:331
+#: src/connection-editor/page-team.c:330
 msgid "_Open"
 msgstr "_Otwórz"
 
@@ -4086,7 +4090,7 @@ msgid "Could not load proxy user interface."
 msgstr "Nie można wczytać interfejsu użytkownika pośrednika."
 
 #: src/connection-editor/page-team-port.c:209
-#: src/connection-editor/page-team.c:347
+#: src/connection-editor/page-team.c:346
 msgid "Error: file doesn’t contain a valid JSON configuration"
 msgstr "Błąd: plik nie zawiera prawidłowej konfiguracji JSON"
 
@@ -4101,11 +4105,11 @@ msgstr "Port zespołowy"
 msgid "Could not load team port user interface."
 msgstr "Nie można wczytać interfejsu użytkownika portu zespołowego."
 
-#: src/connection-editor/page-team.c:1017
+#: src/connection-editor/page-team.c:1016
 msgid "Could not load team user interface."
 msgstr "Nie można wczytać interfejsu użytkownika zespołu."
 
-#: src/connection-editor/page-team.c:1114
+#: src/connection-editor/page-team.c:1113
 #, c-format
 msgid "Team connection %d"
 msgstr "Połączenie zespołowe %d"
