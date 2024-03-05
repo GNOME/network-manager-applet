@@ -2627,7 +2627,8 @@ applet_update_icon (gpointer user_data)
 
 #ifdef WITH_APPINDICATOR
 	if (INDICATOR_ENABLED (applet))
-		app_indicator_set_status (applet->app_indicator, nm_running ? APP_INDICATOR_STATUS_ACTIVE : APP_INDICATOR_STATUS_PASSIVE);
+		app_indicator_set_status (applet->app_indicator,
+	                            applet->visible && nm_running ? APP_INDICATOR_STATUS_ACTIVE : APP_INDICATOR_STATUS_PASSIVE);
 	else
 #endif  /* WITH_APPINDICATOR */
 	{
@@ -3246,8 +3247,17 @@ applet_gsettings_show_changed (GSettings *settings,
 
 	applet->visible = g_settings_get_boolean (settings, key);
 
-	if (applet->status_icon)
+#ifdef WITH_APPINDICATOR
+	if (INDICATOR_ENABLED (applet)) {
+		gboolean nm_running = nm_client_get_nm_running (applet->nm_client);
+		app_indicator_set_status (applet->app_indicator,
+		                          applet->visible && nm_running ? APP_INDICATOR_STATUS_ACTIVE : APP_INDICATOR_STATUS_PASSIVE);
+	}
+	else if (applet->status_icon)
+#endif  /* WITH_APPINDICATOR */
+	{
 		gtk_status_icon_set_visible (applet->status_icon, applet->visible);
+	}
 }
 
 /****************************************************************/
