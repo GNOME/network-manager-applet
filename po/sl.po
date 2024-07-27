@@ -5,15 +5,15 @@
 # Matic Žgur <mr.zgur@gmail.com>, 2007.
 # Andrej Žnidaršič <andrej.znidarsic@gmail.com>, 2009 - 2010.
 # Matej Urbančič <mateju@svn.gnome.org>, 2009-2014.
-# Martin Srebotnjak <miles@filmsi.net>, 2022.
+# Martin Srebotnjak <miles@filmsi.net>, 2022-2024.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
 "issues\n"
-"POT-Creation-Date: 2024-01-17 13:27+0000\n"
-"PO-Revision-Date: 2024-05-03 14:53+0200\n"
+"POT-Creation-Date: 2024-05-03 12:54+0000\n"
+"PO-Revision-Date: 2024-07-27 14:41+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl\n"
@@ -42,7 +42,6 @@ msgid "NetworkManager connection editor"
 msgstr "Urejevalnik povezave NetworkManager"
 
 #: nm-connection-editor.appdata.xml.in:11
-#, fuzzy
 msgid ""
 "NetworkManager is a system service for managing and configuring your network "
 "connections and devices."
@@ -51,7 +50,6 @@ msgstr ""
 "povezav in naprav."
 
 #: nm-connection-editor.appdata.xml.in:13
-#, fuzzy
 msgid ""
 "The nm-connection-editor program works with NetworkManager to create and "
 "edit existing connection profiles for NetworkManager."
@@ -78,6 +76,8 @@ msgstr "Onemogoči obvestila o vzpostavljeni povezavi"
 #: org.gnome.nm-applet.gschema.xml.in:7
 msgid "Set this to true to disable notifications when connecting to a network."
 msgstr ""
+"Nastavite to možnost na potrjeno (true), če želite onemogočiti obvestila pri "
+"vzpostavljanju povezave z omrežjem."
 
 #: org.gnome.nm-applet.gschema.xml.in:11
 msgid "Disable disconnected notifications"
@@ -87,6 +87,8 @@ msgstr "Onemogoči obvestila o prekinitvi povezave"
 msgid ""
 "Set this to true to disable notifications when disconnecting from a network."
 msgstr ""
+"To nastavite na potrjeno (true), če želite onemogočiti obvestila pri "
+"prekinitvi povezave z omrežjem."
 
 #: org.gnome.nm-applet.gschema.xml.in:16
 msgid "Disable VPN notifications"
@@ -97,42 +99,52 @@ msgid ""
 "Set this to true to disable notifications when connecting to or "
 "disconnecting from a VPN."
 msgstr ""
+"To nastavite na potrjeno (true(, če želite onemogočiti obvestila pri "
+"vzpostavljanju povezave z omrežjem VPN ali prekinitvi povezave z njim."
 
 #: org.gnome.nm-applet.gschema.xml.in:21
 msgid "Suppress networks available notifications"
-msgstr ""
+msgstr "Onemogoči obvestila, ki so na voljo v omrežjih"
 
 #: org.gnome.nm-applet.gschema.xml.in:22
 msgid ""
 "Set this to true to disable notifications when Wi-Fi networks are available."
 msgstr ""
+"To nastavite na potrjeno (true), če želite onemogočiti obvestila, ko so na "
+"voljo omrežja Wi-Fi."
 
 #: org.gnome.nm-applet.gschema.xml.in:26
 msgid "Stamp"
-msgstr ""
+msgstr "Ožigosaj"
 
 #: org.gnome.nm-applet.gschema.xml.in:27
 msgid "Used to determine whether settings should be migrated to a new version."
 msgstr ""
+"Uporablja se za določanje, ali je treba nastavitve preseliti v novo "
+"različico."
 
 #: org.gnome.nm-applet.gschema.xml.in:31
 msgid "Disable WiFi Create"
-msgstr ""
+msgstr "Onemogoči ustvarjanje WiFi"
 
 #: org.gnome.nm-applet.gschema.xml.in:32
 msgid ""
 "Set to true to disable creation of adhoc networks when using the applet."
 msgstr ""
+"Nastavite na potrjeno (true), da onemogočite ustvarjanje začasnih omrežij "
+"pri uporabi programčka."
 
 #: org.gnome.nm-applet.gschema.xml.in:36
 msgid "Suppress broadband device unlock prompt"
-msgstr ""
+msgstr "Prepreči poziv za odklepanje širokopasovne naprave"
 
 #: org.gnome.nm-applet.gschema.xml.in:37
 msgid ""
 "Set to true to not prompt for PIN/PUK when providing it is required to "
 "unlock a broadband device."
 msgstr ""
+"Nastavite na potrjeno (true), da onemogočite pozive k vnosu kode PIN/PUK, "
+"potrebne za odklepanje širokopasovne naprave."
 
 #: org.gnome.nm-applet.gschema.xml.in:41
 msgid "Show the applet in notification area"
@@ -141,6 +153,8 @@ msgstr "Pokaži programček v območju za obvestila"
 #: org.gnome.nm-applet.gschema.xml.in:42
 msgid "Set to FALSE to disable displaying the applet in the notification area."
 msgstr ""
+"Nastavite na nepotrjeno (FALSE), da onemogočite prikaz programčka v območju "
+"za obvestila."
 
 #: shared/nm-utils/nm-shared-utils.c:793
 #, c-format
@@ -1351,6 +1365,9 @@ msgid ""
 "snooping was automatically disabled due to hash collisions, the system may "
 "refuse to enable the feature until the collisions are resolved."
 msgstr ""
+"Nadzoruje, ali je za ta most omogočeno vohunjenje po IGMP. Če je bilo "
+"vohunjenje samodejno onemogočeno zaradi trkov razpršitve, lahko sistem "
+"zavrne omogočanje funkcije, dokler trki niso razrešeni."
 
 #: src/connection-editor/ce-page-bridge.ui:344
 msgid "Enable _STP (Spanning Tree Protocol)"
@@ -1360,12 +1377,15 @@ msgstr "Omogoči _STP (Spanning Tree Protocol)"
 msgid ""
 "Controls whether Spanning Tree Protocol (STP) is enabled for this bridge"
 msgstr ""
+"Nadzira, ali je za ta most omogočen protokol STP (Spanning Tree Protocol)"
 
 #: src/connection-editor/ce-page-bridge.ui:363
 msgid ""
 "STP priority for this bridge. Lower values are “better”; the lowest priority "
 "bridge will be elected the root bridge."
 msgstr ""
+"Prednostna naloga STP za ta most. Nižje vrednosti so »boljše«; most z "
+"najnižjo prednostnjo bo izbran za korenski most."
 
 #: src/connection-editor/ce-page-bridge.ui:378
 msgid "_Max age"
@@ -1385,7 +1405,7 @@ msgstr "Čas staranja naslova Ethernet MAC, v sekundah"
 
 #: src/connection-editor/ce-page-bridge.ui:490
 msgid "Group _forward mask"
-msgstr ""
+msgstr "Maska skupine za _posredovanje"
 
 #: src/connection-editor/ce-page-bridge.ui:504
 msgid ""
@@ -1394,6 +1414,10 @@ msgid ""
 "can’t have bits 0, 1 or 2 set because they are used for STP, MAC pause "
 "frames and LACP."
 msgstr ""
+"Maska s 16 biti, od katerih vsak ustreza naslovu skupine v obsegu od 01:80:"
+"C2:00:00:00 do 01:80:C2:00:00:0F, ki jo je treba posredovati. Maska ne more "
+"imeti nastavljenih bitov 0, 1 ali 2, ker se uporabljajo za okvirje za premor "
+"STP, MAC in LACP."
 
 #: src/connection-editor/ce-page-dcb.ui:16
 msgid "_Use Data Center Bridging (DCB) for this connection"
@@ -1642,9 +1666,8 @@ msgid "P_arent interface"
 msgstr "N_adrejeni vmesnik"
 
 #: src/connection-editor/ce-page-dsl.ui:144
-#, fuzzy
 msgid "An arbitrary name to assign to the newly created PPP interface."
-msgstr "Samovoljno ime, ki ga je treba dodeliti novo ustvarjenem vmesniku PPP."
+msgstr "Posebno ime, ki ga je treba dodeliti novo ustvarjenemu vmesniku PPP."
 
 #: src/connection-editor/ce-page-dsl.ui:160
 msgid "The interface on which the PPP connection will be established."
@@ -1661,6 +1684,10 @@ msgid ""
 "option can only be used for Ethernet interfaces. nm-applet is able to "
 "activate the connection only if this option is selected."
 msgstr ""
+"Če je ta možnost izbrana, bo povezava prevzela izključni nadzor nad "
+"vmesnikom in na njem ne bo mogoče aktivirati druge povezave. Upoštevajte, da "
+"se ta možnost lahko uporablja samo za vmesnike Ethernet. nm-applet lahko "
+"aktivira povezavo le, če je izbrana ta možnost."
 
 #: src/connection-editor/ce-page-ethernet.ui:17
 #: src/connection-editor/ce-page-ethernet.ui:77
@@ -1735,9 +1762,8 @@ msgid "C_loned MAC address"
 msgstr "_Kloniran naslov MAC"
 
 #: src/connection-editor/ce-page-ethernet.ui:242
-#, fuzzy
 msgid "Wake on LAN"
-msgstr "Wake-on-LAN"
+msgstr "Zbujanje preko LAN"
 
 #: src/connection-editor/ce-page-ethernet.ui:258
 msgid "De_fault"
@@ -1757,10 +1783,9 @@ msgstr "_Unicast"
 
 #: src/connection-editor/ce-page-ethernet.ui:320
 msgid "Mul_ticast"
-msgstr "Mul_ticast"
+msgstr "_Večvrstno oddajanje (multicast)"
 
 #: src/connection-editor/ce-page-ethernet.ui:335
-#, fuzzy
 msgid "_Broadcast"
 msgstr "_Oddajanje"
 
@@ -1773,14 +1798,15 @@ msgid "Ma_gic"
 msgstr "Ma_gic"
 
 #: src/connection-editor/ce-page-ethernet.ui:388
-#, fuzzy
 msgid "_Wake on LAN password"
-msgstr "_Geslo wake-on-LAN"
+msgstr "_Geslo za zbujanje preko LAN"
 
 #: src/connection-editor/ce-page-ethernet.ui:402
 msgid ""
 "Wake-on-LAN password (an Ethernet MAC). It is only valid for magic packets."
 msgstr ""
+"Geslo za zbujanje prek omrežja LAN (Ethernet MAC). Velja samo za čarobne "
+"pakete."
 
 #: src/connection-editor/ce-page-ethernet.ui:414
 msgid "Lin_k negotiation"
@@ -1792,6 +1818,10 @@ msgid ""
 "will be forced without checking the device compatibility. If unsure, leave "
 "here “Ignore” or pick “Automatic”."
 msgstr ""
+"Pogajanja o povezavah naprav. Če je izbrana možnost »Ročno«, bodo vrednosti "
+"»Hitrost« in »Obojestransko« vsiljene brez preverjanja združljivosti "
+"naprave. Če niste prepričani, pustite tukaj \"Prezri\" ali izberite "
+"\"Samodejno\"."
 
 #: src/connection-editor/ce-page-ethernet.ui:448
 msgid "_Speed"
@@ -1803,6 +1833,9 @@ msgid ""
 "“Automatic” options are not selected. Before specifying a speed value be "
 "sure your device supports it."
 msgstr ""
+"Vrednost hitrosti za statično pogajanje o povezavi, ki je potrebna le, če "
+"možnosti »Prezri« in »Samodejno« nista izbrani. Preden določite vrednost "
+"hitrosti, se prepričajte, da jo vaša naprava podpira."
 
 #: src/connection-editor/ce-page-ethernet.ui:482
 msgid "Duple_x"
@@ -1814,6 +1847,9 @@ msgid ""
 "“Automatic” options are not selected. Before specifying a duplex mode be "
 "sure your device supports it."
 msgstr ""
+"Obojestranska (dupleks) vrednost za statično pogajanje o povezavi, zahtevana "
+"le, če možnosti »Prezri« in »Samodejno« nista izbrani. Preden določite način "
+"obojestranskega delovanja, se prepričajte, da ga vaša naprava podpira."
 
 #: src/connection-editor/ce-page-general.ui:29
 msgid "Yes"
@@ -1846,6 +1882,11 @@ msgid ""
 "“No”) to indicate to applications, or “Automatic” to use a default value "
 "based on the connection type and other heuristics."
 msgstr ""
+"Upravitelj omrežja programom sporoči, ali je povezava omejena z omejenim "
+"prenosom podatkov, zaradi česar je treba posledično omejiti porabo podatkov. "
+"Izberite vrednost (»Da« ali »Ne«), ki jo želite podati programom, ali "
+"»Samodejno«, če želite uporabiti privzeto vrednost glede na vrsto povezave "
+"in drugo hevristiko."
 
 #: src/connection-editor/ce-page-general.ui:150
 msgid "Connect _automatically with priority"
@@ -1857,6 +1898,9 @@ msgid ""
 "numbers are preferred when selecting profiles for automatic activation. "
 "Default value is 0."
 msgstr ""
+"Prednost povezave za samodejno aktiviranje. Pri izbiri profilov za samodejno "
+"aktiviranje so prednostne povezave z višjimi številkami. Privzeta vrednost "
+"je 0."
 
 #. IP-over-InfiniBand "datagram mode"
 #: src/connection-editor/ce-page-infiniband.ui:17
@@ -2072,6 +2116,12 @@ msgid ""
 "also unset, use the kernel default value read from file \"/proc/sys/net/ipv6/"
 "conf/default/use_tempaddr\""
 msgstr ""
+"Če je ta možnost omogočena, jedro ustvari začasni naslov IPv6 poleg javnega, "
+"ustvarjenega iz naslova MAC. To izboljšuje zasebnost, vendar lahko v "
+"nekaterih programih povzroči težave. Če je nastavljena na »Privzeto«, se "
+"uporabi vrednost globalne prilagoditve upravitelja omrežja. Če tudi to ni "
+"nastavljeno, uporabite privzeto vrednost jedra, prebrano iz datoteke \"/proc/"
+"sys/net/ipv6/conf/default/use_tempaddr\""
 
 #: src/connection-editor/ce-page-ip6.ui:323
 msgid "IPv6 address _generation mode"
@@ -2123,12 +2173,16 @@ msgid ""
 "The parent interface name or parent connection UUID from which this MACSEC "
 "interface should be created."
 msgstr ""
+"Ime nadrejenega vmesnika ali UUID nadrejene povezave, iz katerega je treba "
+"ustvariti ta vmesnik MACSEC."
 
 #: src/connection-editor/ce-page-macsec.ui:104
 msgid ""
 "The parent interface name or parent connection UUID from which this MACsec "
 "interface should be created"
 msgstr ""
+"Ime nadrejenega vmesnika ali UUID nadrejene povezave, iz katerega je treba "
+"ustvariti ta vmesnik MACsec."
 
 #: src/connection-editor/ce-page-macsec.ui:117
 msgid "Keys"
@@ -2144,6 +2198,9 @@ msgid ""
 "Agreement) is obtained. For the EAP mode, fill the parameters in the 802.1X "
 "security page"
 msgstr ""
+"Določa, kako se pridobi ključ CAK (Connectivity Association Key) za MKA "
+"(MACsec Key Agreement). V načinu EAP izpolnite parametre na varnostni strani "
+"802.1X"
 
 #: src/connection-editor/ce-page-macsec.ui:168
 msgid "C_AK"
@@ -2151,7 +2208,7 @@ msgstr "C_AK"
 
 #: src/connection-editor/ce-page-macsec.ui:181
 msgid "The pre-shared Connectivity Association Key"
-msgstr ""
+msgstr "Ključ povezave za povezljivost v vnaprejšnji skupni rabi"
 
 #: src/connection-editor/ce-page-macsec.ui:193
 msgid "C_KN"
@@ -2159,7 +2216,7 @@ msgstr "C_KN"
 
 #: src/connection-editor/ce-page-macsec.ui:206
 msgid "The pre-shared Connectivity-association Key Name"
-msgstr ""
+msgstr "Ime ključa povezave za povezljivost v vnaprejšnji skupni rabi"
 
 #: src/connection-editor/ce-page-macsec.ui:217
 msgid "Parameters"
@@ -2170,9 +2227,8 @@ msgid "_Validation"
 msgstr "_Preverjanje veljavnosti"
 
 #: src/connection-editor/ce-page-macsec.ui:247
-#, fuzzy
 msgid "Specifies the validation mode for incoming frames"
-msgstr "Določa način preverjanja veljavnosti za dohodne okvirje/sličice"
+msgstr "Določa način preverjanja veljavnosti za dohodne okvirje"
 
 #: src/connection-editor/ce-page-macsec.ui:266
 msgid "_SCI port"
@@ -2180,7 +2236,7 @@ msgstr "Vrata _SCI"
 
 #: src/connection-editor/ce-page-macsec.ui:279
 msgid "The port component of the SCI (Secure Channel Identifier)"
-msgstr ""
+msgstr "Komponenta vrat SCI (identifikator varnega kanala)"
 
 #: src/connection-editor/ce-page-macsec.ui:291
 msgid "_Encrypt"
@@ -2188,7 +2244,7 @@ msgstr "_Šifriraj"
 
 #: src/connection-editor/ce-page-macsec.ui:296
 msgid "Whether the transmitted traffic must be encrypted"
-msgstr ""
+msgstr "Ali mora biti preneseni promet šifriran"
 
 #: src/connection-editor/ce-page-mobile.ui:25
 #: src/connection-editor/ce-page-team.ui:464
@@ -2287,6 +2343,8 @@ msgstr "Samo za brskalnik"
 #: src/connection-editor/ce-page-proxy.ui:38
 msgid "Use this proxy configuration for only browser clients/schemes."
 msgstr ""
+"To prilagoditev posredovalnega strežnika uporabljajte samo za odjemalce/"
+"sheme brskalnika."
 
 #: src/connection-editor/ce-page-proxy.ui:52
 msgid "PAC URL"
@@ -2315,7 +2373,7 @@ msgstr "Napre_dno …"
 
 #: src/connection-editor/ce-page-team-port.ui:108
 msgid "Set by controller"
-msgstr ""
+msgstr "Nastavlja krmilnik"
 
 #: src/connection-editor/ce-page-team-port.ui:112
 #: src/connection-editor/ce-page-team.ui:85
@@ -2335,7 +2393,7 @@ msgstr "NDP (IPv6)"
 #: src/connection-editor/ce-page-team-port.ui:151
 #: src/connection-editor/ce-page-team.ui:527
 msgid "Team Advanced Options"
-msgstr ""
+msgstr "Napredne možnosti skupine"
 
 #: src/connection-editor/ce-page-team-port.ui:225
 msgid "_Queue ID"
@@ -2347,14 +2405,16 @@ msgid ""
 "Number of bursts of unsolicited NAs and gratuitous ARP packets sent after "
 "port is enabled or disabled."
 msgstr ""
+"Število izbruhov neželenih NA in brezplačnih paketov ARP, poslanih potem, ko "
+"so vrata omogočena ali onemogočena."
 
 #: src/connection-editor/ce-page-team-port.ui:241
 msgid "ID of queue which this port should be mapped to."
-msgstr ""
+msgstr "ID čakalne vrste, v katero je treba preslikati ta vrata."
 
 #: src/connection-editor/ce-page-team-port.ui:255
 msgid "Active-Backup runner options"
-msgstr ""
+msgstr "Možnosti tekača za aktivno varnostno kopiranje"
 
 #: src/connection-editor/ce-page-team-port.ui:271
 msgid "_Port priority"
@@ -2366,14 +2426,16 @@ msgid ""
 "Value is positive number in milliseconds. Specifies an interval between "
 "bursts of notify-peer packets."
 msgstr ""
+"Vrednost je pozitivno število v milisekundah. Določa interval med izbruhi "
+"paketov z obvestili vrstnikov."
 
 #: src/connection-editor/ce-page-team-port.ui:286
 msgid "Port priority. The higher number means higher priority."
-msgstr ""
+msgstr "Prioriteta vrat. Večje število pomeni višjo prioriteto."
 
 #: src/connection-editor/ce-page-team-port.ui:297
 msgid "Port _sticky"
-msgstr ""
+msgstr "_Lepljiva vrata"
 
 #: src/connection-editor/ce-page-team-port.ui:301
 msgid "Do not unselect the port if a better one becomes available."
@@ -2381,7 +2443,7 @@ msgstr "Ne počistite vrat, če so na voljo boljša."
 
 #: src/connection-editor/ce-page-team-port.ui:316
 msgid "LACP runner options"
-msgstr ""
+msgstr "Možnosti tekača LACP"
 
 #: src/connection-editor/ce-page-team-port.ui:332
 msgid "_LACP port priority"
@@ -2397,12 +2459,17 @@ msgid ""
 "Number of bursts of multicast group rejoin requests sent after port is "
 "enabled or disabled."
 msgstr ""
+"Število izbruhov zahtev za vnovično pridružitev skupinam za večvrstno "
+"oddajanje (vnovično združevanje), poslanih po tem, ko so vrata omogočena ali "
+"onemogočena."
 
 #: src/connection-editor/ce-page-team-port.ui:361
 msgid ""
 "Port priority according to LACP standard. The lower number means higher "
 "priority."
 msgstr ""
+"Prioriteta vrat v skladu s standardom LACP. Nižje število pomeni večjo "
+"prioriteto."
 
 #: src/connection-editor/ce-page-team-port.ui:374
 #: src/connection-editor/ce-page-team.ui:726
@@ -2410,12 +2477,17 @@ msgid ""
 "Value is positive number in milliseconds. Specifies an interval between "
 "bursts of multicast group rejoin requests."
 msgstr ""
+"Vrednost je pozitivno število v milisekundah. Določa interval med izbruhi "
+"zahtev za vnovično združevanje skupine za večvrstno oddajanje (vnovično "
+"združevanje)."
 
 #: src/connection-editor/ce-page-team-port.ui:376
 msgid ""
 "Port key according to LACP standard. It is only possible to aggregate ports "
 "with the same key."
 msgstr ""
+"Ključ vrat v skladu s standardom LACP. Vrata je mogoče združiti samo z istim "
+"ključem."
 
 #: src/connection-editor/ce-page-team-port.ui:416
 #: src/connection-editor/ce-page-team.ui:1143
@@ -2495,6 +2567,8 @@ msgid ""
 "Validate received ARP packets on active ports. If this is not checked, all "
 "incoming ARP packets will be considered as a good reply."
 msgstr ""
+"Potrdite prejete pakete ARP na aktivnih vratih. Če to ni potrjeno, bodo vsi "
+"dohodni paketi ARP obravnavani kot dober odgovor."
 
 #: src/connection-editor/ce-page-team-port.ui:587
 #: src/connection-editor/ce-page-team.ui:1314
@@ -2507,6 +2581,8 @@ msgid ""
 "Validate received ARP packets on inactive ports. If this is not checked, all "
 "incoming ARP packets will be considered as a good reply."
 msgstr ""
+"Potrdite prejete pakete ARP na neaktivnih vratih. Če to ni potrjeno, bodo "
+"vsi dohodni paketi ARP obravnavani kot dober odgovor."
 
 #: src/connection-editor/ce-page-team-port.ui:604
 #: src/connection-editor/ce-page-team.ui:1331
@@ -2526,13 +2602,13 @@ msgstr ""
 #: src/connection-editor/ce-page-team.ui:1398
 msgid ""
 "The delay between the link coming up and the runner being notified about it."
-msgstr ""
+msgstr "Zakasnitev med vzpostavljajočo se povezavo in obvestilom za tekača."
 
 #: src/connection-editor/ce-page-team-port.ui:684
 #: src/connection-editor/ce-page-team.ui:1411
 msgid ""
 "The delay between the link going down and the runner being notified about it."
-msgstr ""
+msgstr "Zakasnitev med padlo povezavo in obvestilom za tekača."
 
 #: src/connection-editor/ce-page-team-port.ui:697
 #: src/connection-editor/ce-page-team.ui:1424
@@ -2544,16 +2620,17 @@ msgstr "Interval med poslanimi zahtevami."
 msgid ""
 "The delay between link watch initialization and the first request being sent."
 msgstr ""
+"Zakasnitev med inicializacijo opazovanja povezave in prvo poslano zahtevo."
 
 #: src/connection-editor/ce-page-team-port.ui:723
 #: src/connection-editor/ce-page-team.ui:1450
 msgid "The link watcher to be used."
-msgstr ""
+msgstr "Opazovalnik povezav, ki ga želite uporabiti."
 
 #: src/connection-editor/ce-page-team-port.ui:770
 #: src/connection-editor/ce-page-team.ui:1497
 msgid "Link Watcher"
-msgstr ""
+msgstr "Opazovalec povezav"
 
 #: src/connection-editor/ce-page-team-port.ui:790
 #: src/connection-editor/ce-page-team.ui:1517
@@ -2568,7 +2645,7 @@ msgstr "Uredi prilagoditev _JSON"
 #: src/connection-editor/ce-page-team-port.ui:845
 #: src/connection-editor/ce-page-team.ui:1572
 msgid "Raw Configuration"
-msgstr ""
+msgstr "Nastavitev neobdelanega"
 
 #: src/connection-editor/ce-page-team.ui:15
 msgid "Highest priority"
@@ -2600,16 +2677,15 @@ msgstr "Iz dejavnih vrat"
 
 #: src/connection-editor/ce-page-team.ui:65
 msgid "From active to team device"
-msgstr "Od dejavne do skupinske naprave"
+msgstr "Iz dejavne do skupinske naprave"
 
 #: src/connection-editor/ce-page-team.ui:174
 msgid "_Teamed connections"
 msgstr "Povezave _skupine"
 
 #: src/connection-editor/ce-page-team.ui:442
-#, fuzzy
 msgid "Load balance"
-msgstr "Uravnovešenost obremenitve"
+msgstr "Ravnotežje obremenitve"
 
 #: src/connection-editor/ce-page-team.ui:446
 msgid "LACP"
@@ -2653,19 +2729,19 @@ msgstr "Poljuben protokol L4"
 
 #: src/connection-editor/ce-page-team.ui:604
 msgid "_Peer notification count"
-msgstr ""
+msgstr "_Števec obvestil vrstnikov"
 
 #: src/connection-editor/ce-page-team.ui:619
 msgid "Peer _notification interval"
-msgstr ""
+msgstr "_Interval obvestil vrstnikov"
 
 #: src/connection-editor/ce-page-team.ui:634
 msgid "_Multicast rejoin count"
-msgstr ""
+msgstr "Števec vnovičnih združitev večvrstnega _oddajanja"
 
 #: src/connection-editor/ce-page-team.ui:649
 msgid "Multicast _rejoin interval"
-msgstr ""
+msgstr "Interval vnovičnih združitev _večvrstnega oddajanja"
 
 #: src/connection-editor/ce-page-team.ui:740
 msgid "_Hardware Address"
@@ -2676,9 +2752,10 @@ msgid ""
 "Desired hardware address of new team device. Usual MAC address format is "
 "accepted."
 msgstr ""
+"Želeni naslov strojne opreme nove naprave skupine. Sprejemljiva je običajna "
+"oblika naslova MAC."
 
 #: src/connection-editor/ce-page-team.ui:799
-#, fuzzy
 msgid "_Runner"
 msgstr "_Tekač"
 
@@ -2687,7 +2764,6 @@ msgid "_Hardware address policy"
 msgstr "_Politika naslovov strojne opreme"
 
 #: src/connection-editor/ce-page-team.ui:828
-#, fuzzy
 msgid "Name of runner to be used."
 msgstr "Ime tekača, ki bo uporabljen."
 
@@ -2696,20 +2772,24 @@ msgid ""
 "This defines the policy of how hardware addresses of team device and port "
 "devices should be set during the team lifetime."
 msgstr ""
+"S tem so opredeljena pravila, kako naj bodo naslovi strojne opreme naprav "
+"skupine in vrat nastavljeni v življenjski dobi ekipe."
 
 #: src/connection-editor/ce-page-team.ui:867
 msgid "Send LACPDU frames _periodically"
-msgstr ""
+msgstr "Pošiljaj okvirje LACPDU _periodično"
 
 #: src/connection-editor/ce-page-team.ui:871
 msgid ""
 "If checked, LACPDU frames are sent along the configured links periodically. "
 "If not, it acts as “speak when spoken to”."
 msgstr ""
+"Če je to potrjeno, se okvirji LACPDU občasno pošiljajo vzdolž nastavljenih "
+"povezav. Sicer deluje po principu »govori, ko si ogovorjen«."
 
 #: src/connection-editor/ce-page-team.ui:884
 msgid "Send a LACPDU frame _every second"
-msgstr ""
+msgstr "Pošlji okvir LACPDU _vsako sekundo"
 
 #: src/connection-editor/ce-page-team.ui:888
 msgid ""
@@ -2717,6 +2797,9 @@ msgid ""
 "LACPDU packets. If checked, packets will be sent once per second. Otherwise "
 "they will be sent every 30 seconds."
 msgstr ""
+"Možnost določa hitrost, s katero mora naš partner za povezavo prenesti "
+"pakete LACPDU. Če je ta možnost potrjena, bodo paketi poslani enkrat na "
+"sekundo. V nasprotnem primeru bodo poslani vsakih 30 sekund."
 
 #: src/connection-editor/ce-page-team.ui:904
 msgid "_System priority"
@@ -2728,17 +2811,13 @@ msgstr "_Najmanj vrat"
 
 #: src/connection-editor/ce-page-team.ui:934
 msgid "_Aggregator selection policy"
-msgstr ""
+msgstr "_Pravila izbora združevalnika"
 
 #: src/connection-editor/ce-page-team.ui:948
 msgid "System priority, value can be 0 – 65535."
 msgstr "Prednost v sistemu, vrednost je lahko v obsegu 0 – 65535."
 
 #: src/connection-editor/ce-page-team.ui:960
-#, fuzzy
-#| msgid ""
-#| "Specifies the minimum number of ports that must be active before "
-#| "asserting carrier in the master interface, value can be 1 – 255."
 msgid ""
 "Specifies the minimum number of ports that must be active before asserting "
 "carrier in the controller interface, value can be 1 – 255."
@@ -2748,7 +2827,7 @@ msgstr ""
 
 #: src/connection-editor/ce-page-team.ui:972
 msgid "This selects the policy of how the aggregators will be selected."
-msgstr ""
+msgstr "S tem izberete pravila o tem, kako bodo izbrani združevalniki."
 
 #: src/connection-editor/ce-page-team.ui:1007
 msgid ""
@@ -2760,31 +2839,27 @@ msgstr ""
 
 #: src/connection-editor/ce-page-team.ui:1036
 msgid "_Fields for transmission hash"
-msgstr ""
+msgstr "_Polja za kontrolno vsoto prenosa"
 
 #: src/connection-editor/ce-page-team.ui:1052
 msgid "In tenths of a second. Periodic interval between rebalancing."
 msgstr "V desetinkah sekunde. Periodični interval med ponovnim uravnoteženjem."
 
 #: src/connection-editor/ce-page-team.ui:1064
-#, fuzzy
 msgid "Name of active Tx balancer. Active Tx balancing is disabled by default."
 msgstr ""
-"Ime aktivnega balanserja Tx. Aktivno uravnoteženje Tx je privzeto "
+"Ime aktivnega uravnotežilnika Tx. Aktivno uravnoteženje Tx je privzeto "
 "onemogočeno."
 
 #: src/connection-editor/ce-page-team.ui:1086
-#, fuzzy
 msgid "Transmission _balancing interval"
 msgstr "Interval _uravnoteženja prenosov"
 
 #: src/connection-editor/ce-page-team.ui:1101
-#, fuzzy
 msgid "_Transmission balancer"
 msgstr "Uravnote_žilnik prenosa"
 
 #: src/connection-editor/ce-page-team.ui:1120
-#, fuzzy
 msgid "Runner"
 msgstr "Tekač"
 
@@ -2817,7 +2892,6 @@ msgid "_GVRP"
 msgstr "_GVRP"
 
 #: src/connection-editor/ce-page-vlan.ui:243
-#, fuzzy
 msgid "_Loose binding"
 msgstr "_Ohlapno povezano"
 
@@ -2872,9 +2946,8 @@ msgid "SS_ID"
 msgstr "SS_ID"
 
 #: src/connection-editor/ce-page-wireguard.ui:23
-#, fuzzy
 msgid "Edit WireGuard peer"
-msgstr "Urejanje vrstnika WireGuard"
+msgstr "Uredi vrstnika WireGuard"
 
 #: src/connection-editor/ce-page-wireguard.ui:55
 msgid "_Apply"
@@ -2897,9 +2970,8 @@ msgid "Pre_shared key"
 msgstr "_Vnaprej deljen ključ"
 
 #: src/connection-editor/ce-page-wireguard.ui:215
-#, fuzzy
 msgid "Persistent _keepalive"
-msgstr "Vztrajno _ohranjanje povezave"
+msgstr "Vztrajno _ohranjaj povezavo"
 
 #: src/connection-editor/ce-page-wireguard.ui:228
 msgid "A base64 public key calculated by 'wg pubkey' from a private key."
@@ -2981,17 +3053,15 @@ msgid "_Fwmark"
 msgstr "_Fwmark"
 
 #: src/connection-editor/ce-page-wireguard.ui:489
-#, fuzzy
 msgid "Add peer _routes"
-msgstr "_Dodaj soležne poti"
+msgstr "_Dodaj poti vrstnikov"
 
 #: src/connection-editor/ce-page-wireguard.ui:503
-#, fuzzy
 msgid ""
 "Whether to automatically add routes for the AllowedIPs ranges of the peers"
 msgstr ""
-"Ali želite samodejno dodati poti za obsege dovoljenih IP-jev enakovrednih "
-"strežnikov"
+"Ali želite samodejno dodati poti za obsege dovoljenih IP-jev strežnikov "
+"vrstnikov"
 
 #: src/connection-editor/ce-page-wireguard.ui:543
 msgid ""
@@ -3005,7 +3075,6 @@ msgid "_Show private key"
 msgstr "P_okaži osebni ključ"
 
 #: src/connection-editor/ce-page-wireguard.ui:641
-#, fuzzy
 msgid "<b>_Peers</b>"
 msgstr "<b>_Vrstniki</b>"
 
@@ -3056,7 +3125,6 @@ msgid "MAC address"
 msgstr "Naslov MAC"
 
 #: src/connection-editor/ce-page.c:321
-#, fuzzy
 msgid "HW address"
 msgstr "Naslov SO"
 
@@ -3117,6 +3185,9 @@ msgid ""
 "an IP address. If no address is provided, range will be determined "
 "automatically."
 msgstr ""
+"Naslov IP identificira vaš računalnik v omrežju in določa obseg naslovov, "
+"posredovan drugim računalnikom. Kliknite gumb »Dodaj«, da dodate naslov IP. "
+"Če naslov ni naveden, se obseg določi samodejno."
 
 #: src/connection-editor/ce-page.h:104
 msgid "Additional static addresses"
@@ -3133,7 +3204,7 @@ msgstr "Naslov (neobvezno)"
 #: src/connection-editor/ce-polkit-button.c:60
 #: src/connection-editor/ce-polkit.c:49
 msgid "No polkit authorization to perform the action"
-msgstr ""
+msgstr "Ni dovoljenja polkita za izvedbo dejanja"
 
 #: src/connection-editor/ce-ppp-auth-methods.ui:76
 msgid "Allowed Authentication Methods"
@@ -3246,7 +3317,7 @@ msgid "VPN"
 msgstr "VPN"
 
 #: src/connection-editor/connection-helpers.c:202
-#, fuzzy, c-format
+#, c-format
 msgid "VPN plugin “%s” not found"
 msgstr "Vstavka VPN »%s« ni mogoče najti"
 
@@ -3437,7 +3508,6 @@ msgid "_Export…"
 msgstr "_Izvozi ..."
 
 #: src/connection-editor/nm-connection-editor.ui:260
-#, fuzzy
 msgid "File Relabel"
 msgstr "Ponovno označi datoteko"
 
@@ -3640,7 +3710,6 @@ msgid "Select the type of the Bluetooth connection profile."
 msgstr "Izberite vrsto profila povezave Bluetooth."
 
 #: src/connection-editor/page-bluetooth.c:313
-#, fuzzy
 msgid "_Personal Area Network"
 msgstr "_Osebno omrežje"
 
@@ -3653,9 +3722,8 @@ msgid "Could not load bond user interface."
 msgstr "Uporabniškega vmesnika nastavitev vezi ni mogoče naložiti."
 
 #: src/connection-editor/page-bond.c:551
-#, fuzzy
 msgid "primary"
-msgstr "osnovno"
+msgstr "primarni"
 
 #: src/connection-editor/page-bond.c:606
 #, c-format
@@ -3722,7 +3790,6 @@ msgid "Could not load ethernet user interface."
 msgstr "Uporabniškega vmesnika za eternet ni mogoče naložiti."
 
 #: src/connection-editor/page-ethernet.c:498
-#, fuzzy
 msgid "Ethernet device"
 msgstr "Žična omrežna naprava"
 
@@ -3732,9 +3799,8 @@ msgid "cloned MAC"
 msgstr "kloniran naslov MAC"
 
 #: src/connection-editor/page-ethernet.c:506
-#, fuzzy
 msgid "Wake-on-LAN password"
-msgstr "Geslo Wake-on-LAN"
+msgstr "Geslo za zbujanje preko LAN"
 
 #: src/connection-editor/page-ethernet.c:546
 #, c-format
@@ -3928,7 +3994,7 @@ msgstr ""
 "na isti fizični napravi."
 
 #: src/connection-editor/page-controller.c:357
-#, fuzzy, c-format
+#, c-format
 msgid "%s port %d"
 msgstr "%s vrata %d"
 
@@ -4016,7 +4082,6 @@ msgid "Proxy"
 msgstr "Posredovalni strežnik"
 
 #: src/connection-editor/page-proxy.c:200
-#, fuzzy
 msgid "Could not load proxy user interface."
 msgstr ""
 "Uporabniškega vmesnika nastavitev posredovalnih strežnikov ni mogoče "
