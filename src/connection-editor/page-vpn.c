@@ -194,9 +194,6 @@ complete_vpn_connection (NMConnection *connection, NMClient *client)
 	                             client);
 }
 
-#define NEW_VPN_CONNECTION_PRIMARY_LABEL _("Choose a VPN Connection Type")
-#define NEW_VPN_CONNECTION_SECONDARY_LABEL _("Select the type of VPN you wish to use for the new connection. If the type of VPN connection you wish to create does not appear in the list, you may not have the correct VPN plugin installed.")
-
 static gboolean
 vpn_type_filter_func (FUNC_TAG_NEW_CONNECTION_TYPE_FILTER_IMPL,
                       GType type,
@@ -248,8 +245,10 @@ vpn_connection_new (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
 		info->result_func = result_func;
 		info->user_data = user_data;
 		new_connection_dialog_full (parent, client,
-		                            NEW_VPN_CONNECTION_PRIMARY_LABEL,
-		                            NEW_VPN_CONNECTION_SECONDARY_LABEL,
+		                            "Choose a VPN Connection Type",
+		                            "Select the type of VPN you wish to use for the new connection. "
+		                            "If the type of VPN connection you wish to create does not appear in the list, "
+		                            "you may not have the correct VPN plugin installed.",
 		                            vpn_type_filter_func,
 		                            vpn_type_result_func, info);
 		return;
