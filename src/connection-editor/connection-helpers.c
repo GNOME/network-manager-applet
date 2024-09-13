@@ -340,6 +340,10 @@ vpn_connection_import (FUNC_TAG_PAGE_NEW_CONNECTION_IMPL,
 	gtk_window_present (GTK_WINDOW (dialog));
 }
 
+#if !NM_CHECK_VERSION(1, 52, 0)
+#define NM_VPN_EDITOR_PLUGIN_CAPABILITY_NO_EDITOR 0x08
+#endif
+
 static void
 set_up_connection_type_combo (GtkComboBox *combo,
                               GtkLabel *description_label,
@@ -434,10 +438,20 @@ set_up_connection_type_combo (GtkComboBox *combo,
 		const char *const*aliases;
 		const char *service_type;
 		gboolean is_alias = FALSE;
+		uint32_t capabilities;
 
 		plugin = nm_vpn_plugin_info_get_editor_plugin (plugin_info);
 		if (!plugin)
 			continue;
+
+		capabilities = nm_vpn_editor_plugin_get_capabilities (plugin);
+		if (capabilities & NM_VPN_EDITOR_PLUGIN_CAPABILITY_NO_EDITOR) {
+			g_message ("vpn: (%s,%s) file \"%s\" not found. Did you install the client package?",
+			           nm_vpn_plugin_info_get_name (plugin_info),
+			           nm_vpn_plugin_info_get_filename (plugin_info),
+			           nm_vpn_plugin_info_get_plugin (plugin_info));
+			continue;
+		}
 
 		service_type = nm_vpn_plugin_info_get_service (plugin_info);
 		aliases = nm_vpn_plugin_info_get_aliases (plugin_info);
