@@ -61,11 +61,6 @@ vpn_get_plugin_infos (void)
 				g_message ("vpn: (%s,%s) cannot load legacy-only plugin",
 				           nm_vpn_plugin_info_get_name (plugin_info),
 				           nm_vpn_plugin_info_get_filename (plugin_info));
-			} else if (g_error_matches (error, G_FILE_ERROR, G_FILE_ERROR_NOENT)) {
-				g_message ("vpn: (%s,%s) file \"%s\" not found. Did you install the client package?",
-				           nm_vpn_plugin_info_get_name (plugin_info),
-				           nm_vpn_plugin_info_get_filename (plugin_info),
-				           nm_vpn_plugin_info_get_plugin (plugin_info));
 			} else {
 				g_warning ("vpn: (%s,%s) could not load plugin: %s",
 				           nm_vpn_plugin_info_get_name (plugin_info),
