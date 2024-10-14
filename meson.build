@@ -242,6 +242,7 @@ desktop_files = [
 ]
 
 desktop_file_validate = find_program('desktop-file-validate', required: false)
+desktop_file_install = find_program('desktop-file-install', required: false)
 
 foreach desktop: desktop_files
   i18n.merge_file(
@@ -253,7 +254,23 @@ foreach desktop: desktop_files
     type: 'desktop',
   )
 
-  if desktop_file_validate.found()
+  if desktop_file_install.found()
+    # desktop-file-install also does validation, post-editing.
+    # Used that to force tolerating COSMIC in NoShowIn.
+    #
+    # This can be removed once desktop-file-utils with support for COSMIC
+    # (desktop-file-utils.git commit 67d09f0c851c 'validate: add COSMIC')
+    # is released. Not the case as of Oct 14 2024 (Fedora 41).
+    test('validate-' + desktop + '-desktop',
+      desktop_file_install,
+      args: [
+        '--remove-not-show-in', 'COSMIC',
+        '--vendor', 'test',
+        '--dir',  meson.current_build_dir(),
+        desktop + '.desktop',
+      ],
+    )
+  elif desktop_file_validate.found()
     test('validate-' + desktop + '-desktop',
       desktop_file_validate,
       args: desktop + '.desktop',
