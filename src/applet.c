@@ -3301,9 +3301,14 @@ applet_startup (GApplication *app, gpointer user_data)
 	g_signal_connect (applet->gsettings, "changed::show-applet",
 	                  G_CALLBACK (applet_gsettings_show_changed), applet);
 
-	applet->nm_client = nm_client_new (NULL, NULL);
-	if (!applet->nm_client)
+	applet->nm_client = nm_client_new (NULL, &error);
+	if (!applet->nm_client) {
+		/* This happens if D-Bus is not running at all, therefore we can't even
+		 * wait for NetworkManager to appear. */
+		g_warning ("Could not connect create a NetworkManager client: %s", error->message);
+		g_application_quit (app);
 		return;
+	}
 
 	g_signal_connect (applet->nm_client, "notify::state",
 	                  G_CALLBACK (foo_client_state_changed_cb),
