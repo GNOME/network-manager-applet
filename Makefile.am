@@ -621,9 +621,9 @@ gsettings_SCHEMAS = org.gnome.nm-applet.gschema.xml
 
 appdatadir = $(datadir)/metainfo
 appdata_DATA = $(appdata_in_files:.xml.in=.xml)
-appdata_in_files = nm-connection-editor.appdata.xml.in
+appdata_in_files = org.gnome.nm-connection-editor.appdata.xml.in
 
-nm-connection-editor.appdata.xml: nm-connection-editor.appdata.xml.in
+org.gnome.nm-connection-editor.appdata.xml: org.gnome.nm-connection-editor.appdata.xml.in
 	$(AM_V_GEN)$(MSGFMT) --xml --template $< -d $(top_srcdir)/po -o $@
 
 convertdir=$(datadir)/GConf/gsettings

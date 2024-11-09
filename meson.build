@@ -262,7 +262,7 @@ foreach desktop: desktop_files
   endif
 endforeach
 
-appdata = 'nm-connection-editor.appdata.xml'
+appdata = 'org.gnome.nm-connection-editor.appdata.xml'
 
 i18n.merge_file(
   input: appdata + '.in',
