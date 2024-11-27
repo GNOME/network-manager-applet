@@ -16,41 +16,42 @@
 # Sphinx Jiang <yishanj@gmail.com>, 2014.
 # Bin Li <binli@gnome.org>, 2016.
 # Dingzhong Chen <wsxy162@gmail.com>, 2016-2020.
-# lumingzh <lumingzh@qq.com>, 2022.
+# lumingzh <lumingzh@qq.com>, 2022-2024.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: network-manager-applet main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/network-manager-applet/"
 "issues\n"
-"POT-Creation-Date: 2023-08-09 12:34+0000\n"
-"PO-Revision-Date: 2023-08-20 13:32-0400\n"
-"Last-Translator: Boyuan Yang <073plan@gmail.com>\n"
-"Language-Team: Chinese - China <i18n-zh@googlegroups.com>\n"
+"POT-Creation-Date: 2024-11-14 16:30+0000\n"
+"PO-Revision-Date: 2024-11-27 08:40+0800\n"
+"Last-Translator: lumingzh <lumingzh@qq.com>\n"
+"Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Gtranslator 47.0\n"
 
-#: nm-applet.desktop.in:3 src/applet-dialogs.c:724 src/applet.c:3166
-msgid "Network"
-msgstr "网络"
+#: nm-applet.desktop.in:3 src/applet.c:3334
+msgid "NetworkManager Applet"
+msgstr "网络管理器小程序"
 
 #: nm-applet.desktop.in:4
 msgid "Manage your network connections"
 msgstr "管理您的网络连接"
 
-#: nm-connection-editor.appdata.xml.in:7
-msgid "NetworkManager"
-msgstr "网络管理器"
+#: org.gnome.nm-connection-editor.appdata.xml.in:7
+#: nm-connection-editor.desktop.in:3
+msgid "Advanced Network Configuration"
+msgstr "高级网络配置"
 
-#: nm-connection-editor.appdata.xml.in:8
+#: org.gnome.nm-connection-editor.appdata.xml.in:8
 msgid "NetworkManager connection editor"
 msgstr "网络管理器连接编辑器"
 
-#: nm-connection-editor.appdata.xml.in:11
+#: org.gnome.nm-connection-editor.appdata.xml.in:11
 msgid ""
 "NetworkManager is a system service for managing and configuring your network "
 "connections and devices."
@@ -58,7 +59,7 @@ msgstr ""
 "网络管理器（NetworkManager）是一项系统服务，用于管理和配置您的网络连接和设"
 "备。"
 
-#: nm-connection-editor.appdata.xml.in:13
+#: org.gnome.nm-connection-editor.appdata.xml.in:13
 msgid ""
 "The nm-connection-editor program works with NetworkManager to create and "
 "edit existing connection profiles for NetworkManager."
@@ -66,13 +67,9 @@ msgstr ""
 "程序 nm-connection-editor 与网络管理器（NetworkManager）交互来为网络管理器创"
 "建和编辑已有的连接配置。"
 
-#: nm-connection-editor.appdata.xml.in:27
+#: org.gnome.nm-connection-editor.appdata.xml.in:29
 msgid "The NetworkManager Developers"
 msgstr "网络管理器开发者"
-
-#: nm-connection-editor.desktop.in:3
-msgid "Advanced Network Configuration"
-msgstr "高级网络配置"
 
 #: nm-connection-editor.desktop.in:4
 msgid "Manage and change your network connection settings"
@@ -195,14 +192,14 @@ msgstr "802.1X 身份验证"
 #: src/connection-editor/ce-page-wireguard.ui:41
 #: src/connection-editor/ce-ppp-auth-methods.ui:28
 #: src/connection-editor/connection-helpers.c:332
-#: src/connection-editor/connection-helpers.c:795
+#: src/connection-editor/connection-helpers.c:809
 #: src/connection-editor/nm-connection-editor.ui:197
 #: src/connection-editor/page-bluetooth.c:293
 #: src/connection-editor/page-mobile.c:530
 #: src/connection-editor/page-proxy.c:107
 #: src/connection-editor/page-team-port.c:192
-#: src/connection-editor/page-team.c:330
-#: src/connection-editor/vpn-helpers.c:198 src/gsm-unlock.ui:28
+#: src/connection-editor/page-team.c:329
+#: src/connection-editor/vpn-helpers.c:193 src/gsm-unlock.ui:28
 #: src/mobile-helpers.c:451
 msgid "_Cancel"
 msgstr "取消(_C)"
@@ -302,7 +299,7 @@ msgstr "正在配置移动宽带连接“%s”……"
 msgid "User authentication required for mobile broadband connection “%s”…"
 msgstr "移动宽带连接“%s”需要用户身份验证……"
 
-#: src/applet-device-bt.c:113 src/applet.c:2510 src/mobile-helpers.c:593
+#: src/applet-device-bt.c:113 src/applet.c:2554 src/mobile-helpers.c:593
 #, c-format
 msgid "Requesting a network address for “%s”…"
 msgstr "正在为“%s”请求网络地址……"
@@ -639,6 +636,10 @@ msgstr "IPv6"
 #: src/applet-dialogs.c:717 src/connection-editor/ce-page-wifi.ui:52
 msgid "Hotspot"
 msgstr "热点"
+
+#: src/applet-dialogs.c:724 src/applet.c:3211
+msgid "Network"
+msgstr "网络"
 
 #: src/applet-dialogs.c:735
 msgid "Password"
@@ -997,7 +998,7 @@ msgstr "添加 VPN 连接(_A)…"
 msgid "NetworkManager is not running…"
 msgstr "网络管理器未运行……"
 
-#: src/applet.c:1573 src/applet.c:2641
+#: src/applet.c:1573 src/applet.c:2686
 msgid "Networking disabled"
 msgstr "网络已禁用"
 
@@ -1048,47 +1049,43 @@ msgstr "已断开连接"
 msgid "The network connection has been disconnected."
 msgstr "网络连接已被断开。"
 
-#: src/applet.c:2504
+#: src/applet.c:2548
 #, c-format
 msgid "Preparing network connection “%s”…"
 msgstr "正在准备网络连接“%s”……"
 
-#: src/applet.c:2507
+#: src/applet.c:2551
 #, c-format
 msgid "User authentication required for network connection “%s”…"
 msgstr "网络连接“%s”需要用户身份验证……"
 
-#: src/applet.c:2513
+#: src/applet.c:2557
 #, c-format
 msgid "Network connection “%s” active"
 msgstr "网络连接“%s”已激活"
 
-#: src/applet.c:2586
+#: src/applet.c:2630
 #, c-format
 msgid "Starting VPN connection “%s”…"
 msgstr "正在启动 VPN 连接“%s”……"
 
-#: src/applet.c:2589
+#: src/applet.c:2633
 #, c-format
 msgid "User authentication required for VPN connection “%s”…"
 msgstr "VPN 连接“%s”需要用户身份验证……"
 
-#: src/applet.c:2592
+#: src/applet.c:2636
 #, c-format
 msgid "Requesting a VPN address for “%s”…"
 msgstr "正在为“%s”请求 VPN 地址……"
 
-#: src/applet.c:2595
+#: src/applet.c:2639
 msgid "VPN connection active"
 msgstr "VPN 连接已激活"
 
-#: src/applet.c:2645
+#: src/applet.c:2690
 msgid "No network connection"
 msgstr "没有网络连接"
-
-#: src/applet.c:3280
-msgid "NetworkManager Applet"
-msgstr "网络管理器小程序"
 
 #: src/connection-editor/ce-ip4-routes.ui:88
 #: src/connection-editor/ce-ip6-routes.ui:88 src/connection-editor/ce-page.h:97
@@ -1117,7 +1114,7 @@ msgstr "添加(_A)"
 #: src/connection-editor/ce-page-ip6.ui:199
 #: src/connection-editor/ce-page-team.ui:262
 #: src/connection-editor/ce-page-wireguard.ui:617
-#: src/connection-editor/connection-helpers.c:796
+#: src/connection-editor/connection-helpers.c:810
 #: src/connection-editor/nm-connection-list.ui:101
 msgid "_Delete"
 msgstr "删除(_D)"
@@ -2982,23 +2979,27 @@ msgstr "关"
 msgid "unspecified error"
 msgstr "未知错误"
 
-#: src/connection-editor/ce-page.c:268
+#: src/connection-editor/ce-page.c:267 src/connection-editor/ce-page.c:271
 msgid "Preserve"
 msgstr "保留"
 
-#: src/connection-editor/ce-page.c:269
+#: src/connection-editor/ce-page.c:268 src/connection-editor/ce-page.c:272
 msgid "Permanent"
 msgstr "永久"
 
-#: src/connection-editor/ce-page.c:270
+#: src/connection-editor/ce-page.c:269 src/connection-editor/ce-page.c:273
 msgid "Random"
 msgstr "随机"
 
-#: src/connection-editor/ce-page.c:271
+#: src/connection-editor/ce-page.c:270 src/connection-editor/ce-page.c:274
 msgid "Stable"
 msgstr "固定"
 
 #: src/connection-editor/ce-page.c:275
+msgid "Stable per SSID"
+msgstr "每个 SSID 固定"
+
+#: src/connection-editor/ce-page.c:281
 msgid ""
 "The MAC address entered here will be used as hardware address for the "
 "network device this connection is activated on. This feature is known as MAC "
@@ -3007,52 +3008,52 @@ msgstr ""
 "此处输入的 MAC 地址将用作此连接激活所在的网络设备的硬件地址。该特性被称为 "
 "MAC 克隆或欺骗。例如：00:11:22:33:44:55"
 
-#: src/connection-editor/ce-page.c:315
+#: src/connection-editor/ce-page.c:321
 msgid "MAC address"
 msgstr "MAC 地址"
 
-#: src/connection-editor/ce-page.c:315
+#: src/connection-editor/ce-page.c:321
 msgid "HW address"
 msgstr "固件地址"
 
-#: src/connection-editor/ce-page.c:318
+#: src/connection-editor/ce-page.c:324
 #, c-format
 msgid "invalid %s for %s (%s)"
 msgstr "%s 对 %s 无效（%s）"
 
-#: src/connection-editor/ce-page.c:322
+#: src/connection-editor/ce-page.c:328
 #, c-format
 msgid "invalid %s (%s)"
 msgstr "无效的 %s（%s）"
 
-#: src/connection-editor/ce-page.c:362
+#: src/connection-editor/ce-page.c:368
 #, c-format
 msgid "invalid interface-name for %s (%s): "
 msgstr "interface-name 对 %s 无效（%s）："
 
-#: src/connection-editor/ce-page.c:366
+#: src/connection-editor/ce-page.c:372
 #, c-format
 msgid "invalid interface-name (%s): "
 msgstr "无效的 interface-name（%s）："
 
-#: src/connection-editor/ce-page.c:545
+#: src/connection-editor/ce-page.c:551
 msgid "can’t parse device name"
 msgstr "无法分析设备名称"
 
-#: src/connection-editor/ce-page.c:563
+#: src/connection-editor/ce-page.c:569
 msgid "invalid hardware address"
 msgstr "无效的硬件地址"
 
-#: src/connection-editor/ce-page.c:585
+#: src/connection-editor/ce-page.c:591
 #, c-format
 msgid "invalid %s (%s): "
 msgstr "无效的 %s（%s）："
 
-#: src/connection-editor/ce-page.c:586 src/connection-editor/ce-page.c:591
+#: src/connection-editor/ce-page.c:592 src/connection-editor/ce-page.c:597
 msgid "device"
 msgstr "设备"
 
-#: src/connection-editor/ce-page.c:590
+#: src/connection-editor/ce-page.c:596
 #, c-format
 msgid "invalid %s (%s) "
 msgstr "无效的 %s（%s）"
@@ -3170,7 +3171,7 @@ msgid "Bond"
 msgstr "绑定"
 
 #: src/connection-editor/connection-helpers.c:105
-#: src/connection-editor/page-team.c:1014
+#: src/connection-editor/page-team.c:1013
 msgid "Team"
 msgstr "组合"
 
@@ -3195,7 +3196,7 @@ msgid "WireGuard"
 msgstr "WireGuard"
 
 #: src/connection-editor/connection-helpers.c:112
-#: src/connection-editor/connection-helpers.c:422
+#: src/connection-editor/connection-helpers.c:426
 #: src/connection-editor/page-vpn.c:92
 msgid "VPN"
 msgstr "VPN"
@@ -3216,45 +3217,45 @@ msgstr "VPN 插件未能正确导入 VPN 连接： "
 #: src/connection-editor/connection-helpers.c:329
 #: src/connection-editor/page-proxy.c:104
 #: src/connection-editor/page-team-port.c:189
-#: src/connection-editor/page-team.c:327
+#: src/connection-editor/page-team.c:326
 msgid "Select file to import"
 msgstr "选择要导入的文件"
 
 #: src/connection-editor/connection-helpers.c:333
 #: src/connection-editor/page-proxy.c:108
 #: src/connection-editor/page-team-port.c:193
-#: src/connection-editor/page-team.c:331
+#: src/connection-editor/page-team.c:330
 msgid "_Open"
 msgstr "打开(_O)"
 
-#: src/connection-editor/connection-helpers.c:364
+#: src/connection-editor/connection-helpers.c:368
 msgid "Hardware"
 msgstr "硬件"
 
-#: src/connection-editor/connection-helpers.c:391
+#: src/connection-editor/connection-helpers.c:395
 msgid "Virtual"
 msgstr "虚拟"
 
-#: src/connection-editor/connection-helpers.c:540
-#: src/connection-editor/connection-helpers.c:542
+#: src/connection-editor/connection-helpers.c:554
+#: src/connection-editor/connection-helpers.c:556
 msgid "Import a saved VPN configuration…"
 msgstr "导入已保存的 VPN 配置…"
 
-#: src/connection-editor/connection-helpers.c:572
+#: src/connection-editor/connection-helpers.c:586
 msgid ""
 "The connection editor dialog could not be initialized due to an unknown "
 "error."
 msgstr "由于一个未知错误，连接编辑器对话框无法初始化。"
 
-#: src/connection-editor/connection-helpers.c:581
+#: src/connection-editor/connection-helpers.c:595
 msgid "Could not create new connection"
 msgstr "无法建立新连接"
 
-#: src/connection-editor/connection-helpers.c:744
+#: src/connection-editor/connection-helpers.c:758
 msgid "Connection delete failed"
 msgstr "删除连接失败"
 
-#: src/connection-editor/connection-helpers.c:792
+#: src/connection-editor/connection-helpers.c:806
 #, c-format
 msgid "Are you sure you wish to delete the connection %s?"
 msgstr "是否确认删除连接 %s？"
@@ -3328,7 +3329,7 @@ msgid ""
 msgstr "连接编辑器找不到所需的一些资源（未找到 .ui 文件）。"
 
 #: src/connection-editor/nm-connection-editor.c:568
-#: src/connection-editor/vpn-helpers.c:199
+#: src/connection-editor/vpn-helpers.c:194
 msgid "_Save"
 msgstr "保存(_S)"
 
@@ -3935,7 +3936,7 @@ msgid "Could not load proxy user interface."
 msgstr "无法加载代理用户界面。"
 
 #: src/connection-editor/page-team-port.c:209
-#: src/connection-editor/page-team.c:347
+#: src/connection-editor/page-team.c:346
 msgid "Error: file doesn’t contain a valid JSON configuration"
 msgstr "错误：文件未包含有效的 JSON 配置"
 
@@ -3950,11 +3951,11 @@ msgstr "组合端口"
 msgid "Could not load team port user interface."
 msgstr "无法加载组合端口用户界面。"
 
-#: src/connection-editor/page-team.c:1017
+#: src/connection-editor/page-team.c:1016
 msgid "Could not load team user interface."
 msgstr "无法加载组合用户界面。"
 
-#: src/connection-editor/page-team.c:1114
+#: src/connection-editor/page-team.c:1113
 #, c-format
 msgid "Team connection %d"
 msgstr "组合连接 %d"
@@ -4125,25 +4126,25 @@ msgstr "无法加载 WireGuard 用户界面。"
 msgid "WireGuard connection %d"
 msgstr "WireGuard 连接 %d"
 
-#: src/connection-editor/vpn-helpers.c:118
+#: src/connection-editor/vpn-helpers.c:113
 #, c-format
 msgid "A file named “%s” already exists."
 msgstr "名为“%s”的文件已存在。"
 
-#: src/connection-editor/vpn-helpers.c:120
+#: src/connection-editor/vpn-helpers.c:115
 msgid "_Replace"
 msgstr "替换(_R)"
 
-#: src/connection-editor/vpn-helpers.c:122
+#: src/connection-editor/vpn-helpers.c:117
 #, c-format
 msgid "Do you want to replace %s with the VPN connection you are saving?"
 msgstr "是否要将 %s 替换为您正在保存的 VPN 连接？"
 
-#: src/connection-editor/vpn-helpers.c:158
+#: src/connection-editor/vpn-helpers.c:153
 msgid "Cannot export VPN connection"
 msgstr "无法导出 VPN 连接"
 
-#: src/connection-editor/vpn-helpers.c:160
+#: src/connection-editor/vpn-helpers.c:155
 #, c-format
 msgid ""
 "The VPN connection “%s” could not be exported to %s.\n"
@@ -4154,7 +4155,7 @@ msgstr ""
 "\n"
 "错误：%s。"
 
-#: src/connection-editor/vpn-helpers.c:195
+#: src/connection-editor/vpn-helpers.c:190
 msgid "Export VPN connection…"
 msgstr "导出 VPN 连接…"
 
@@ -4306,6 +4307,9 @@ msgstr "PEM 证书（*.pem、*.crt、*.cer）"
 #: src/utils/utils.c:546
 msgid "DER, PEM, or PKCS#12 private keys (*.der, *.pem, *.p12, *.key)"
 msgstr "DER、PEM 或 PKCS#12 私钥（*.der、*.pem、*.p12、*.key）"
+
+#~ msgid "NetworkManager"
+#~ msgstr "网络管理器"
 
 #~ msgid "mW"
 #~ msgstr "毫瓦"
