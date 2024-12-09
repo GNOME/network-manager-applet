@@ -4,33 +4,60 @@
 # If things don't seem to work, this can help:
 # https://gitlab.gnome.org/GNOME/network-manager-applet/-/ci/lint
 
-stages:
-  - build
-  - test
-  - triage
+.fedora_minimal: &fedora_minimal
+  before_script:
+    - dnf -y install
+      file
+      findutils
+      gcc
+      libtool
+      desktop-file-utils
+      gettext-devel
+      glib2-devel
+      gtk3-devel
+      libsecret-devel
+      NetworkManager-libnm-devel
+      pkgconfig
+      /usr/bin/autopoint
+      fedora-repos-rawhide
+    - dnf -y install --nogpgcheck --enablerepo=rawhide
+      libnma-devel
+
+.fedora_full: &fedora_full
+  before_script:
+    - dnf -y install
+      file
+      findutils
+      gcc
+      libtool
+      desktop-file-utils
+      gettext-devel
+      glib2-devel
+      gtk3-devel
+      libsecret-devel
+      NetworkManager-libnm-devel
+      pkgconfig
+      /usr/bin/autopoint
+      redhat-rpm-config
+      jansson-devel
+      ModemManager-glib-devel
+      libselinux-devel
+      libnma-devel
+      libappindicator-gtk3-devel
+      libdbusmenu-gtk3-devel
 
 .dist: &dist
   dependencies:
-    - fedora30_dist
+    - fedora32_dist
+  variables:
+    GIT_STRATEGY: none
 
-fedora30_dist:
-  image: fedora:30
-  stage: build
-  before_script:
-    - ./scripts/gitlab-ci.sh fedora_install_full autotools
-  script:
-    - sh autogen.sh
-    - make -j$(nproc) distcheck
-  artifacts:
-    paths:
-      - "*.xz"
-
-fedora_meson_minimal:
+.fedora_meson_minimal: &fedora_meson_minimal
+  <<: *fedora_minimal
   <<: *dist
-  before_script:
-    - ./scripts/gitlab-ci.sh fedora_install_minimal meson
   script:
     - tar xJf network-manager-applet-*.tar.xz
+    - dnf -y install meson
     - meson
       -Dwwan=false
       -Dselinux=false
@@ -43,15 +70,12 @@ fedora_meson_minimal:
     - ninja -v -C build test
     - ninja -v -C build install
     - ninja -v -C build uninstall
-  image: fedora:latest
-  stage: test
-  when: manual
 
-fedora_meson_full:
+.fedora_meson_full: &fedora_meson_full
+  <<: *fedora_full
   <<: *dist
-  before_script:
-    - ./scripts/gitlab-ci.sh fedora_install_full meson
   script:
+    - dnf -y install meson
     - tar xJf network-manager-applet-*.tar.xz
     - meson
       -Dwwan=true
@@ -65,14 +89,12 @@ fedora_meson_full:
     - ninja -v -C build test
     - ninja -v -C build install
     - ninja -v -C build uninstall
-  image: fedora:latest
-  stage: test
 
-fedora_autotools_minimal:
+.fedora_autotools_minimal: &fedora_autotools_minimal
+  <<: *fedora_minimal
   <<: *dist
-  before_script:
-    - ./scripts/gitlab-ci.sh fedora_install_minimal make
   script:
+    - dnf -y install make
     - tar xJf network-manager-applet-*.tar.xz
     - cd network-manager-applet-*/
     - ./configure
@@ -89,15 +111,12 @@ fedora_autotools_minimal:
     - make -j$(nproc) check
     - make -j$(nproc) install
     - make -j$(nproc) uninstall
-  image: fedora:latest
-  stage: test
-  when: manual
 
-fedora_autotools_full:
+.fedora_autotools_full: &fedora_autotools_full
+  <<: *fedora_full
   <<: *dist
-  before_script:
-    - ./scripts/gitlab-ci.sh fedora_install_full make
   script:
+    - dnf -y install make
     - tar xJf network-manager-applet-*.tar.xz
     - cd network-manager-applet-*/
     - ./configure
@@ -114,14 +133,36 @@ fedora_autotools_full:
     - make -j$(nproc) check
     - make -j$(nproc) install
     - make -j$(nproc) uninstall
+
+fedora32_dist:
+  <<: *fedora_full
+  image: fedora:32
+  stage: build
+  script:
+    - dnf -y install
+      autoconf automake make
+    - sh autogen.sh
+    - make -j$(nproc) distcheck
+  artifacts:
+    paths:
+      - "*.xz"
+
+fedora_meson_minimal:
+  <<: *fedora_meson_minimal
   image: fedora:latest
   stage: test
 
-triage:issues:
-  stage: triage
-  image: ruby:2.7
-  script:
-    - gem install gitlab-triage
-    - gitlab-triage -d --token $API_TOKEN --source-id $SOURCE_ID
-  only:
-    - schedules
+fedora_meson_full:
+  <<: *fedora_meson_full
+  image: fedora:latest
+  stage: test
+
+fedora_autotools_minimal:
+  <<: *fedora_autotools_minimal
+  image: fedora:latest
+  stage: test
+
+fedora_autotools_full:
+  <<: *fedora_autotools_full
+  image: fedora:latest
+  stage: test
