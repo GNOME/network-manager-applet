@@ -65,7 +65,6 @@ resource_data = files(
   'ce-page-wifi.ui',
   'ce-page-wireguard.ui',
   'ce-ppp-auth-methods.ui',
-  'gtk/menus.ui',
   'nm-connection-editor.ui',
   'nm-connection-list.ui'
 )
