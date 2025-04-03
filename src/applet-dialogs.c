@@ -1129,7 +1129,7 @@ applet_about_dialog_show (NMApplet *applet)
 	                                      "Copyright \xc2\xa9 2005-2008 Novell, Inc.\n"
 	                                      "and many other community contributors and translators"),
 	                       "comments", _("Notification area applet for managing your network devices and connections."),
-	                       "website", "http://www.gnome.org/projects/NetworkManager/",
+	                       "website", "https://gitlab.gnome.org/GNOME/network-manager-applet",
 	                       "website-label", _("NetworkManager Website"),
 	                       "logo-icon-name", "network-workgroup",
 	                       "license-type", GTK_LICENSE_GPL_2_0,
