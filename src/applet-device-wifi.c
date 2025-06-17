@@ -702,7 +702,6 @@ get_menu_item_for_ap (NMDeviceWifi *device,
 
 	if (dup_data.found) {
 		nm_network_menu_item_set_strength (dup_data.found, nm_access_point_get_strength (ap), applet);
-		nm_network_menu_item_add_dupe (dup_data.found, ap);
 		return NULL;
 	}
 
