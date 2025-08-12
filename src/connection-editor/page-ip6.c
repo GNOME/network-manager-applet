@@ -1268,6 +1268,7 @@ ui_to_setting (CEPageIP6 *self, GError **error)
 	nm_setting_ip_config_clear_addresses (priv->setting);
 	model = gtk_tree_view_get_model (priv->addr_list);
 	iter_valid = gtk_tree_model_get_iter_first (model, &tree_iter);
+
 	while (iter_valid) {
 		char *addr_str = NULL, *prefix_str = NULL, *addr_gw_str = NULL;
 		NMIPAddress *addr;

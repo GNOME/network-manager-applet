@@ -1205,12 +1205,6 @@ ce_page_ip4_new (NMConnectionEditor *editor,
 	return CE_PAGE (self);
 }
 
-static void
-free_one_addr (gpointer data)
-{
-	nm_ip_address_unref ((NMIPAddress *) data);
-}
-
 static gboolean
 ui_to_setting (CEPageIP4 *self, GError **error)
 {
@@ -1219,9 +1213,6 @@ ui_to_setting (CEPageIP4 *self, GError **error)
 	GtkTreeIter tree_iter;
 	int int_method = IP4_METHOD_AUTO;
 	const char *method;
-	GPtrArray *tmp_array = NULL;
-	char **search_domains = NULL;
-	GPtrArray *addresses = NULL;
 	char *gateway = NULL;
 	gboolean valid = FALSE, iter_valid;
 	const char *text;
@@ -1260,10 +1251,10 @@ ui_to_setting (CEPageIP4 *self, GError **error)
 	}
 
 	/* IP addresses */
+	nm_setting_ip_config_clear_addresses (priv->setting);
 	model = gtk_tree_view_get_model (priv->addr_list);
 	iter_valid = gtk_tree_model_get_iter_first (model, &tree_iter);
 
-	addresses = g_ptr_array_new_with_free_func (free_one_addr);
 	while (iter_valid) {
 		char *addr = NULL, *netmask = NULL, *addr_gw = NULL;
 		NMIPAddress *nm_addr;
@@ -1303,9 +1294,10 @@ ui_to_setting (CEPageIP4 *self, GError **error)
 		}
 
 		nm_addr = nm_ip_address_new (AF_INET, addr, prefix, NULL);
-		g_ptr_array_add (addresses, nm_addr);
+		nm_setting_ip_config_add_address (priv->setting, nm_addr);
+		nm_ip_address_unref (nm_addr);
 
-		if (addresses->len == 1 && addr_gw && *addr_gw) {
+		if (nm_setting_ip_config_get_num_addresses (priv->setting) == 1 && addr_gw && *addr_gw) {
 			gateway = addr_gw;
 			addr_gw = NULL;
 		}
@@ -1315,12 +1307,6 @@ ui_to_setting (CEPageIP4 *self, GError **error)
 		g_free (addr_gw);
 
 		iter_valid = gtk_tree_model_iter_next (model, &tree_iter);
-	}
-
-	/* Don't pass empty array to the setting */
-	if (!addresses->len) {
-		g_ptr_array_free (addresses, TRUE);
-		addresses = NULL;
 	}
 
 	/* DNS servers */
@@ -1337,20 +1323,17 @@ ui_to_setting (CEPageIP4 *self, GError **error)
 	}
 
 	/* Search domains */
-	tmp_array = g_ptr_array_new ();
+	nm_setting_ip_config_clear_dns_searches (priv->setting);
 	text = gtk_entry_get_text (GTK_ENTRY (priv->dns_searches));
 	if (text && strlen (text)) {
 		items = g_strsplit_set (text, ", ;:", 0);
 		for (iter = items; *iter; iter++) {
-			char *stripped = g_strstrip (*iter);
-
-			if (strlen (stripped))
-				g_ptr_array_add (tmp_array, g_strdup (stripped));
+			g_strstrip (*iter);
+			if (*iter[0] != '\0')
+				nm_setting_ip_config_add_dns_search (priv->setting, *iter);
 		}
 		g_strfreev (items);
 	}
-	g_ptr_array_add (tmp_array, NULL);
-	search_domains = (char **) g_ptr_array_free (tmp_array, FALSE);
 
 	/* DHCP client ID */
 	if (!strcmp (method, NM_SETTING_IP4_CONFIG_METHOD_AUTO)) {
@@ -1364,9 +1347,7 @@ ui_to_setting (CEPageIP4 *self, GError **error)
 	/* Update setting */
 	g_object_set (priv->setting,
 	              NM_SETTING_IP_CONFIG_METHOD, method,
-	              NM_SETTING_IP_CONFIG_ADDRESSES, addresses,
 	              NM_SETTING_IP_CONFIG_GATEWAY, gateway,
-	              NM_SETTING_IP_CONFIG_DNS_SEARCH, search_domains,
 	              NM_SETTING_IP_CONFIG_IGNORE_AUTO_DNS, ignore_auto_dns,
 	              NM_SETTING_IP4_CONFIG_DHCP_CLIENT_ID, dhcp_client_id,
 	              NM_SETTING_IP_CONFIG_MAY_FAIL, may_fail,
@@ -1375,11 +1356,6 @@ ui_to_setting (CEPageIP4 *self, GError **error)
 
 out:
 	g_object_thaw_notify (G_OBJECT (priv->setting));
-	if (addresses)
-		g_ptr_array_free (addresses, TRUE);
-	g_free (gateway);
-
-	g_strfreev (search_domains);
 
 	return valid;
 }
