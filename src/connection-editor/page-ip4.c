@@ -700,29 +700,6 @@ ip_address_filter_cb (GtkEditable *editable,
 	}
 }
 
-static gboolean
-_char_is_ascii_dns_servers (char character)
-{
-	return utils_char_is_ascii_ip4_address (character) ||
-	       character == ' ' ||
-	       character == ',' ||
-	       character == ':' ||
-	       character == ';';
-}
-
-static void
-dns_servers_filter_cb (GtkEditable *editable,
-                       gchar *text,
-                       gint length,
-                       gint *position,
-                       gpointer user_data)
-{
-	utils_filter_editable_on_insert_text (editable,
-	                                      text, length, position, user_data,
-	                                      _char_is_ascii_dns_servers,
-	                                      dns_servers_filter_cb);
-}
-
 static void
 delete_text_cb (GtkEditable *editable,
                     gint start_pos,
@@ -1174,7 +1151,6 @@ finish_setup (CEPageIP4 *self, gpointer user_data)
 	g_signal_connect (selection, "changed", G_CALLBACK (list_selection_changed), priv->addr_delete);
 
 	g_signal_connect_swapped (priv->dns_servers, "changed", G_CALLBACK (ce_page_changed), self);
-	g_signal_connect (priv->dns_servers, "insert-text", G_CALLBACK (dns_servers_filter_cb), self);
 	g_signal_connect_swapped (priv->dns_searches, "changed", G_CALLBACK (ce_page_changed), self);
 
 	method_changed (priv->method, self);
@@ -1244,7 +1220,6 @@ ui_to_setting (CEPageIP4 *self, GError **error)
 	int int_method = IP4_METHOD_AUTO;
 	const char *method;
 	GPtrArray *tmp_array = NULL;
-	char **dns_servers = NULL;
 	char **search_domains = NULL;
 	GPtrArray *addresses = NULL;
 	char *gateway = NULL;
@@ -1254,6 +1229,8 @@ ui_to_setting (CEPageIP4 *self, GError **error)
 	const char *dhcp_client_id = NULL;
 	char **items = NULL, **iter;
 	gboolean may_fail = FALSE;
+
+	g_object_freeze_notify (G_OBJECT (priv->setting));
 
 	/* Method */
 	if (gtk_combo_box_get_active_iter (priv->method, &tree_iter)) {
@@ -1347,30 +1324,17 @@ ui_to_setting (CEPageIP4 *self, GError **error)
 	}
 
 	/* DNS servers */
-	tmp_array = g_ptr_array_new ();
+	nm_setting_ip_config_clear_dns (priv->setting);
 	text = gtk_entry_get_text (GTK_ENTRY (priv->dns_servers));
 	if (text && strlen (text)) {
-		items = g_strsplit_set (text, ", ;:", 0);
+		items = g_strsplit_set (text, ", ;", 0);
 		for (iter = items; *iter; iter++) {
-			struct in_addr tmp_addr;
-			char *stripped = g_strstrip (*iter);
-
-			if (!*stripped)
-				continue;
-
-			if (inet_pton (AF_INET, stripped, &tmp_addr))
-				g_ptr_array_add (tmp_array, g_strdup (stripped));
-			else {
-				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv4 DNS server “%s” invalid"), stripped);
-				g_strfreev (items);
-				g_ptr_array_free (tmp_array, TRUE);
-				goto out;
-			}
+			g_strstrip (*iter);
+			if (*iter[0] != '\0')
+				nm_setting_ip_config_add_dns (priv->setting, *iter);
 		}
 		g_strfreev (items);
 	}
-	g_ptr_array_add (tmp_array, NULL);
-	dns_servers = (char **) g_ptr_array_free (tmp_array, FALSE);
 
 	/* Search domains */
 	tmp_array = g_ptr_array_new ();
@@ -1402,7 +1366,6 @@ ui_to_setting (CEPageIP4 *self, GError **error)
 	              NM_SETTING_IP_CONFIG_METHOD, method,
 	              NM_SETTING_IP_CONFIG_ADDRESSES, addresses,
 	              NM_SETTING_IP_CONFIG_GATEWAY, gateway,
-	              NM_SETTING_IP_CONFIG_DNS, dns_servers,
 	              NM_SETTING_IP_CONFIG_DNS_SEARCH, search_domains,
 	              NM_SETTING_IP_CONFIG_IGNORE_AUTO_DNS, ignore_auto_dns,
 	              NM_SETTING_IP4_CONFIG_DHCP_CLIENT_ID, dhcp_client_id,
@@ -1411,11 +1374,11 @@ ui_to_setting (CEPageIP4 *self, GError **error)
 	valid = TRUE;
 
 out:
+	g_object_thaw_notify (G_OBJECT (priv->setting));
 	if (addresses)
 		g_ptr_array_free (addresses, TRUE);
 	g_free (gateway);
 
-	g_strfreev (dns_servers);
 	g_strfreev (search_domains);
 
 	return valid;
