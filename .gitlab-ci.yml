@@ -11,10 +11,10 @@ stages:
 
 .dist: &dist
   dependencies:
-    - fedora30_dist
+    - fedora42_dist
 
-fedora30_dist:
-  image: fedora:30
+fedora42_dist:
+  image: fedora:42
   stage: build
   before_script:
     - ./scripts/gitlab-ci.sh fedora_install_full autotools
