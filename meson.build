@@ -279,11 +279,11 @@ foreach desktop: desktop_files
   endif
 endforeach
 
-appdata = 'org.gnome.nm-connection-editor.appdata.xml'
+metainfo = 'org.gnome.nm-connection-editor.metainfo.xml'
 
 i18n.merge_file(
-  input: appdata + '.in',
-  output: appdata,
+  input: metainfo + '.in',
+  output: metainfo,
   install: true,
   install_dir: join_paths(nma_datadir, 'metainfo'),
   po_dir: po_dir,
@@ -291,9 +291,9 @@ i18n.merge_file(
 
 appstreamcli = find_program('appstreamcli', required: false)
 if appstreamcli.found()
-  test('validate-appdata',
+  test('validate-metainfo',
     appstreamcli,
-    args: ['validate', '--no-net', '--explain', appdata],
+    args: ['validate', '--no-net', '--explain', metainfo],
     workdir: meson.current_build_dir(),
   )
 endif

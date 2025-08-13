@@ -619,11 +619,11 @@ nm-connection-editor.desktop: nm-connection-editor.desktop.in
 gsettings_SCHEMAS = org.gnome.nm-applet.gschema.xml
 @GSETTINGS_RULES@
 
-appdatadir = $(datadir)/metainfo
-appdata_DATA = $(appdata_in_files:.xml.in=.xml)
-appdata_in_files = org.gnome.nm-connection-editor.appdata.xml.in
+metainfodir = $(datadir)/metainfo
+metainfo_DATA = $(metainfo_in_files:.xml.in=.xml)
+metainfo_in_files = org.gnome.nm-connection-editor.metainfo.xml.in
 
-org.gnome.nm-connection-editor.appdata.xml: org.gnome.nm-connection-editor.appdata.xml.in
+org.gnome.nm-connection-editor.metainfo.xml: org.gnome.nm-connection-editor.metainfo.xml.in
 	$(AM_V_GEN)$(MSGFMT) --xml --template $< -d $(top_srcdir)/po -o $@
 
 convertdir=$(datadir)/GConf/gsettings
@@ -631,7 +631,7 @@ convert_DATA=nm-applet.convert
 
 EXTRA_DIST += \
 	$(convert_DATA) \
-	$(appdata_in_files) \
+	$(metainfo_in_files) \
 	$(autostart_in_files) \
 	$(desktop_in_files)
 
@@ -640,5 +640,5 @@ CLEANFILES += \
 	\
 	$(autostart_DATA) \
 	$(desktop_DATA) \
-	$(appdata_DATA) \
+	$(metainfo_DATA) \
 	$(BUILT_SOURCES)
