@@ -2319,56 +2319,6 @@ foo_set_initial_state (gpointer data)
 	return FALSE;
 }
 
-static void
-foo_client_setup (NMApplet *applet)
-{
-	NMClientPermission perm;
-
-	applet->nm_client = nm_client_new (NULL, NULL);
-	if (!applet->nm_client)
-		return;
-
-	g_signal_connect (applet->nm_client, "notify::state",
-	                  G_CALLBACK (foo_client_state_changed_cb),
-	                  applet);
-	g_signal_connect (applet->nm_client, "notify::active-connections",
-	                  G_CALLBACK (foo_active_connections_changed_cb),
-	                  applet);
-	g_signal_connect (applet->nm_client, "device-added",
-	                  G_CALLBACK (foo_device_added_cb),
-	                  applet);
-	if (INDICATOR_ENABLED (applet)) {
-		g_signal_connect (applet->nm_client, "device-removed",
-		                  G_CALLBACK (foo_device_removed_cb),
-		                  applet);
-	}
-	g_signal_connect (applet->nm_client, "notify::manager-running",
-	                  G_CALLBACK (foo_manager_running_cb),
-	                  applet);
-
-	g_signal_connect (applet->nm_client, "permission-changed",
-	                  G_CALLBACK (foo_manager_permission_changed),
-	                  applet);
-
-	g_signal_connect (applet->nm_client, "notify::wireless-enabled",
-	                  G_CALLBACK (foo_wireless_enabled_changed_cb),
-	                  applet);
-
-	g_signal_connect (applet->nm_client, "notify::wwan-enabled",
-	                  G_CALLBACK (foo_wireless_enabled_changed_cb),
-	                  applet);
-
-	/* Initialize permissions - the initial 'permission-changed' signal is emitted from NMClient constructor, and thus not caught */
-	for (perm = NM_CLIENT_PERMISSION_NONE + 1; perm <= NM_CLIENT_PERMISSION_LAST; perm++) {
-		applet->permissions[perm] = nm_client_get_permission_result (applet->nm_client, perm);
-	}
-
-	if (nm_client_get_nm_running (applet->nm_client))
-		g_idle_add (foo_set_initial_state, applet);
-
-	applet_schedule_update_icon (applet);
-}
-
 #if WITH_WWAN
 static void
 mm1_object_added_cb (GDBusObjectManagerClient *mm1,
@@ -3330,6 +3280,7 @@ applet_startup (GApplication *app, gpointer user_data)
 {
 	NMApplet *applet = NM_APPLET (app);
 	gs_free_error GError *error = NULL;
+	NMClientPermission perm;
 
 	g_set_application_name (_("NetworkManager Applet"));
 	gtk_window_set_default_icon_name ("network-workgroup");
@@ -3350,7 +3301,54 @@ applet_startup (GApplication *app, gpointer user_data)
 	g_signal_connect (applet->gsettings, "changed::show-applet",
 	                  G_CALLBACK (applet_gsettings_show_changed), applet);
 
-	foo_client_setup (applet);
+	applet->nm_client = nm_client_new (NULL, &error);
+	if (!applet->nm_client) {
+		/* This happens if D-Bus is not running at all, therefore we can't even
+		 * wait for NetworkManager to appear. */
+		g_warning ("Could not connect create a NetworkManager client: %s", error->message);
+		g_application_quit (app);
+		return;
+	}
+
+	g_signal_connect (applet->nm_client, "notify::state",
+	                  G_CALLBACK (foo_client_state_changed_cb),
+	                  applet);
+	g_signal_connect (applet->nm_client, "notify::active-connections",
+	                  G_CALLBACK (foo_active_connections_changed_cb),
+	                  applet);
+	g_signal_connect (applet->nm_client, "device-added",
+	                  G_CALLBACK (foo_device_added_cb),
+	                  applet);
+	if (INDICATOR_ENABLED (applet)) {
+		g_signal_connect (applet->nm_client, "device-removed",
+		                  G_CALLBACK (foo_device_removed_cb),
+		                  applet);
+	}
+	g_signal_connect (applet->nm_client, "notify::manager-running",
+	                  G_CALLBACK (foo_manager_running_cb),
+	                  applet);
+
+	g_signal_connect (applet->nm_client, "permission-changed",
+	                  G_CALLBACK (foo_manager_permission_changed),
+	                  applet);
+
+	g_signal_connect (applet->nm_client, "notify::wireless-enabled",
+	                  G_CALLBACK (foo_wireless_enabled_changed_cb),
+	                  applet);
+
+	g_signal_connect (applet->nm_client, "notify::wwan-enabled",
+	                  G_CALLBACK (foo_wireless_enabled_changed_cb),
+	                  applet);
+
+	/* Initialize permissions - the initial 'permission-changed' signal is emitted from NMClient constructor, and thus not caught */
+	for (perm = NM_CLIENT_PERMISSION_NONE + 1; perm <= NM_CLIENT_PERMISSION_LAST; perm++) {
+		applet->permissions[perm] = nm_client_get_permission_result (applet->nm_client, perm);
+	}
+
+	if (nm_client_get_nm_running (applet->nm_client))
+		g_idle_add (foo_set_initial_state, applet);
+
+	applet_schedule_update_icon (applet);
 
 	/* Load pixmaps and create applet widgets */
 	if (!setup_widgets (applet)) {
