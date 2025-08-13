@@ -18,6 +18,7 @@ fedora_pkg_minimal() {
     echo \
         /usr/bin/autopoint \
         NetworkManager-libnm-devel \
+        libnma-devel \
         desktop-file-utils \
         fedora-repos-rawhide \
         file \
@@ -63,23 +64,12 @@ fedora_pkg_build() {
     esac
 }
 
-fedora_install_libnma() {
-    pushd /etc/yum.repos.d
-        local URL='https://gitlab.gnome.org/thaller/network-manager-applet/-/raw/e9d885749b281e86fb92421e73e1564b233141b4/nm-applet-prebuilt-rpms.tgz'
-        $CMD curl "$URL" --output ./nm-applet-prebuilt-rpms.tgz
-        $CMD tar -xvzf ./nm-applet-prebuilt-rpms.tgz
-        $CMD dnf -y install --enablerepo=nm-applet-prebuilt-rpms libnma-devel
-    popd
-}
-
 fedora_install_minimal() {
     $CMD dnf -y install $(fedora_pkg_minimal) $(fedora_pkg_build "$1")
-    fedora_install_libnma
 }
 
 fedora_install_full() {
     $CMD dnf -y install $(fedora_pkg_full) $(fedora_pkg_build "$1")
-    fedora_install_libnma
 }
 
 
