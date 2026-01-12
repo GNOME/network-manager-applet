@@ -121,6 +121,7 @@ typedef struct {
 	GtkStatusIcon * status_icon;
 
 	GtkWidget *     menu;
+	gboolean        wifi_submenu_is_shown;
 	GtkWidget *     context_menu;
 
 	GtkWidget *     notifications_enabled_item;
