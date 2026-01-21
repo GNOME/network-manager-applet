@@ -63,8 +63,8 @@ finish_setup (CEPageVpn *self, gpointer user_data)
 
 	gtk_widget_set_margin_top (parent->page, 12);
 	gtk_widget_set_margin_bottom (parent->page, 12);
-	gtk_widget_set_margin_left (parent->page, 12);
-	gtk_widget_set_margin_right (parent->page, 12);
+	gtk_widget_set_margin_start (parent->page, 12);
+	gtk_widget_set_margin_end (parent->page, 12);
 
 	g_object_ref_sink (parent->page);
 	gtk_widget_show_all (parent->page);

@@ -155,6 +155,13 @@ editor_startup (GApplication *application, gpointer user_data)
 	g_action_map_add_action_entries (G_ACTION_MAP (app), app_entries,
 	                                 G_N_ELEMENTS (app_entries), app);
 
+	gtk_application_set_accels_for_action (GTK_APPLICATION (app),
+	                                       "app.create",
+	                                       (const gchar*[]) {"<Control>N", NULL});
+	gtk_application_set_accels_for_action (GTK_APPLICATION (app),
+	                                       "app.quit",
+	                                       (const gchar*[]) {"<Control>Q", NULL});
+
 	list = nm_connection_list_new ();
 	if (!list) {
 		g_warning ("Failed to initialize the UI, exiting...");
