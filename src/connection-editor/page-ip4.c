@@ -700,29 +700,6 @@ ip_address_filter_cb (GtkEditable *editable,
 	}
 }
 
-static gboolean
-_char_is_ascii_dns_servers (char character)
-{
-	return utils_char_is_ascii_ip4_address (character) ||
-	       character == ' ' ||
-	       character == ',' ||
-	       character == ':' ||
-	       character == ';';
-}
-
-static void
-dns_servers_filter_cb (GtkEditable *editable,
-                       gchar *text,
-                       gint length,
-                       gint *position,
-                       gpointer user_data)
-{
-	utils_filter_editable_on_insert_text (editable,
-	                                      text, length, position, user_data,
-	                                      _char_is_ascii_dns_servers,
-	                                      dns_servers_filter_cb);
-}
-
 static void
 delete_text_cb (GtkEditable *editable,
                     gint start_pos,
@@ -1174,7 +1151,6 @@ finish_setup (CEPageIP4 *self, gpointer user_data)
 	g_signal_connect (selection, "changed", G_CALLBACK (list_selection_changed), priv->addr_delete);
 
 	g_signal_connect_swapped (priv->dns_servers, "changed", G_CALLBACK (ce_page_changed), self);
-	g_signal_connect (priv->dns_servers, "insert-text", G_CALLBACK (dns_servers_filter_cb), self);
 	g_signal_connect_swapped (priv->dns_searches, "changed", G_CALLBACK (ce_page_changed), self);
 
 	method_changed (priv->method, self);
@@ -1229,12 +1205,6 @@ ce_page_ip4_new (NMConnectionEditor *editor,
 	return CE_PAGE (self);
 }
 
-static void
-free_one_addr (gpointer data)
-{
-	nm_ip_address_unref ((NMIPAddress *) data);
-}
-
 static gboolean
 ui_to_setting (CEPageIP4 *self, GError **error)
 {
@@ -1243,10 +1213,6 @@ ui_to_setting (CEPageIP4 *self, GError **error)
 	GtkTreeIter tree_iter;
 	int int_method = IP4_METHOD_AUTO;
 	const char *method;
-	GPtrArray *tmp_array = NULL;
-	char **dns_servers = NULL;
-	char **search_domains = NULL;
-	GPtrArray *addresses = NULL;
 	char *gateway = NULL;
 	gboolean valid = FALSE, iter_valid;
 	const char *text;
@@ -1254,6 +1220,8 @@ ui_to_setting (CEPageIP4 *self, GError **error)
 	const char *dhcp_client_id = NULL;
 	char **items = NULL, **iter;
 	gboolean may_fail = FALSE;
+
+	g_object_freeze_notify (G_OBJECT (priv->setting));
 
 	/* Method */
 	if (gtk_combo_box_get_active_iter (priv->method, &tree_iter)) {
@@ -1283,10 +1251,10 @@ ui_to_setting (CEPageIP4 *self, GError **error)
 	}
 
 	/* IP addresses */
+	nm_setting_ip_config_clear_addresses (priv->setting);
 	model = gtk_tree_view_get_model (priv->addr_list);
 	iter_valid = gtk_tree_model_get_iter_first (model, &tree_iter);
 
-	addresses = g_ptr_array_new_with_free_func (free_one_addr);
 	while (iter_valid) {
 		char *addr = NULL, *netmask = NULL, *addr_gw = NULL;
 		NMIPAddress *nm_addr;
@@ -1326,9 +1294,10 @@ ui_to_setting (CEPageIP4 *self, GError **error)
 		}
 
 		nm_addr = nm_ip_address_new (AF_INET, addr, prefix, NULL);
-		g_ptr_array_add (addresses, nm_addr);
+		nm_setting_ip_config_add_address (priv->setting, nm_addr);
+		nm_ip_address_unref (nm_addr);
 
-		if (addresses->len == 1 && addr_gw && *addr_gw) {
+		if (nm_setting_ip_config_get_num_addresses (priv->setting) == 1 && addr_gw && *addr_gw) {
 			gateway = addr_gw;
 			addr_gw = NULL;
 		}
@@ -1340,53 +1309,31 @@ ui_to_setting (CEPageIP4 *self, GError **error)
 		iter_valid = gtk_tree_model_iter_next (model, &tree_iter);
 	}
 
-	/* Don't pass empty array to the setting */
-	if (!addresses->len) {
-		g_ptr_array_free (addresses, TRUE);
-		addresses = NULL;
-	}
-
 	/* DNS servers */
-	tmp_array = g_ptr_array_new ();
+	nm_setting_ip_config_clear_dns (priv->setting);
 	text = gtk_entry_get_text (GTK_ENTRY (priv->dns_servers));
 	if (text && strlen (text)) {
-		items = g_strsplit_set (text, ", ;:", 0);
+		items = g_strsplit_set (text, ", ;", 0);
 		for (iter = items; *iter; iter++) {
-			struct in_addr tmp_addr;
-			char *stripped = g_strstrip (*iter);
-
-			if (!*stripped)
-				continue;
-
-			if (inet_pton (AF_INET, stripped, &tmp_addr))
-				g_ptr_array_add (tmp_array, g_strdup (stripped));
-			else {
-				g_set_error (error, NMA_ERROR, NMA_ERROR_GENERIC, _("IPv4 DNS server “%s” invalid"), stripped);
-				g_strfreev (items);
-				g_ptr_array_free (tmp_array, TRUE);
-				goto out;
-			}
+			g_strstrip (*iter);
+			if (*iter[0] != '\0')
+				nm_setting_ip_config_add_dns (priv->setting, *iter);
 		}
 		g_strfreev (items);
 	}
-	g_ptr_array_add (tmp_array, NULL);
-	dns_servers = (char **) g_ptr_array_free (tmp_array, FALSE);
 
 	/* Search domains */
-	tmp_array = g_ptr_array_new ();
+	nm_setting_ip_config_clear_dns_searches (priv->setting);
 	text = gtk_entry_get_text (GTK_ENTRY (priv->dns_searches));
 	if (text && strlen (text)) {
 		items = g_strsplit_set (text, ", ;:", 0);
 		for (iter = items; *iter; iter++) {
-			char *stripped = g_strstrip (*iter);
-
-			if (strlen (stripped))
-				g_ptr_array_add (tmp_array, g_strdup (stripped));
+			g_strstrip (*iter);
+			if (*iter[0] != '\0')
+				nm_setting_ip_config_add_dns_search (priv->setting, *iter);
 		}
 		g_strfreev (items);
 	}
-	g_ptr_array_add (tmp_array, NULL);
-	search_domains = (char **) g_ptr_array_free (tmp_array, FALSE);
 
 	/* DHCP client ID */
 	if (!strcmp (method, NM_SETTING_IP4_CONFIG_METHOD_AUTO)) {
@@ -1400,10 +1347,7 @@ ui_to_setting (CEPageIP4 *self, GError **error)
 	/* Update setting */
 	g_object_set (priv->setting,
 	              NM_SETTING_IP_CONFIG_METHOD, method,
-	              NM_SETTING_IP_CONFIG_ADDRESSES, addresses,
 	              NM_SETTING_IP_CONFIG_GATEWAY, gateway,
-	              NM_SETTING_IP_CONFIG_DNS, dns_servers,
-	              NM_SETTING_IP_CONFIG_DNS_SEARCH, search_domains,
 	              NM_SETTING_IP_CONFIG_IGNORE_AUTO_DNS, ignore_auto_dns,
 	              NM_SETTING_IP4_CONFIG_DHCP_CLIENT_ID, dhcp_client_id,
 	              NM_SETTING_IP_CONFIG_MAY_FAIL, may_fail,
@@ -1411,12 +1355,7 @@ ui_to_setting (CEPageIP4 *self, GError **error)
 	valid = TRUE;
 
 out:
-	if (addresses)
-		g_ptr_array_free (addresses, TRUE);
-	g_free (gateway);
-
-	g_strfreev (dns_servers);
-	g_strfreev (search_domains);
+	g_object_thaw_notify (G_OBJECT (priv->setting));
 
 	return valid;
 }
