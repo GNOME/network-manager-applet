@@ -290,6 +290,19 @@ wifi_menu_item_info_destroy (gpointer data, GClosure *closure)
 	g_slice_free (WifiMenuItemInfo, data);
 }
 
+static void
+nma_wifi_submenu_show_cb (NMApplet *applet)
+{
+	applet->wifi_submenu_is_shown = TRUE;
+}
+
+static void
+nma_wifi_submenu_hide_cb (NMApplet *applet)
+{
+	applet->wifi_submenu_is_shown = FALSE;
+	applet_schedule_update_menu (applet);
+}
+
 /*
  * NOTE: this list should *not* contain networks that you would like to
  * automatically roam to like "Starbucks" or "AT&T" or "T-Mobile HotSpot".
@@ -901,6 +914,12 @@ wifi_add_menu_item (NMDevice *device,
 		for (iter = sorted_subitems; iter; iter = g_slist_next (iter))
 			gtk_menu_shell_append (GTK_MENU_SHELL (submenu), GTK_WIDGET (iter->data));
 		g_slist_free (sorted_subitems);
+
+		/* Track submenu visibility to prevent updates while browsing */
+		g_signal_connect_swapped (submenu, "show",
+		                          G_CALLBACK (nma_wifi_submenu_show_cb), applet);
+		g_signal_connect_swapped (submenu, "hide",
+		                          G_CALLBACK (nma_wifi_submenu_hide_cb), applet);
 	} else
 		gtk_widget_set_sensitive (subitem, FALSE);
 

@@ -1956,6 +1956,14 @@ applet_update_menu (gpointer user_data)
 	GList *children, *elt;
 	GtkMenu *menu;
 
+	/* Skip update if WiFi submenu is currently shown.
+	 * We'll reschedule when the submenu is hidden.
+	 */
+	if (!INDICATOR_ENABLED (applet) && applet->wifi_submenu_is_shown) {
+		applet->update_menu_id = 0;
+		return G_SOURCE_REMOVE;
+	}
+
 	if (INDICATOR_ENABLED (applet)) {
 #ifdef WITH_APPINDICATOR
 		menu = app_indicator_get_menu (applet->app_indicator);
