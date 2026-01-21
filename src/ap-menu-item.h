@@ -52,12 +52,6 @@ void       nm_network_menu_item_set_strength (NMNetworkMenuItem *item,
                                               NMApplet *applet);
 const char *nm_network_menu_item_get_hash (NMNetworkMenuItem * item);
 
-gboolean   nm_network_menu_item_find_dupe (NMNetworkMenuItem *item,
-                                           NMAccessPoint *ap);
-
-void       nm_network_menu_item_add_dupe (NMNetworkMenuItem *item,
-                                          NMAccessPoint *ap);
-
 void       nm_network_menu_item_set_active (NMNetworkMenuItem * item,
                                             gboolean active);
 

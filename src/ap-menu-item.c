@@ -30,7 +30,6 @@ typedef struct {
 	char *      ssid_string;
 	guint32     int_strength;
 	gchar *     hash;
-	GSList *    dupes;
 	gboolean    has_connections;
 	gboolean    is_adhoc;
 	gboolean    is_encrypted;
@@ -169,26 +168,6 @@ nm_network_menu_item_get_hash (NMNetworkMenuItem *item)
 	return NM_NETWORK_MENU_ITEM_GET_PRIVATE (item)->hash;
 }
 
-gboolean
-nm_network_menu_item_find_dupe (NMNetworkMenuItem *item, NMAccessPoint *ap)
-{
-	NMNetworkMenuItemPrivate *priv;
-	const char *path;
-	GSList *iter;
-
-	g_return_val_if_fail (NM_IS_NETWORK_MENU_ITEM (item), FALSE);
-	g_return_val_if_fail (NM_IS_ACCESS_POINT (ap), FALSE);
-
-	priv = NM_NETWORK_MENU_ITEM_GET_PRIVATE (item);
-
-	path = nm_object_get_path (NM_OBJECT (ap));
-	for (iter = priv->dupes; iter; iter = g_slist_next (iter)) {
-		if (!strcmp (path, iter->data))
-			return TRUE;
-	}
-	return FALSE;
-}
-
 static void
 update_label (NMNetworkMenuItem *item, gboolean use_bold)
 {
@@ -211,20 +190,6 @@ nm_network_menu_item_set_active (NMNetworkMenuItem *item, gboolean active)
 	g_return_if_fail (NM_IS_NETWORK_MENU_ITEM (item));
 
 	update_label (item, active);
-}
-
-void
-nm_network_menu_item_add_dupe (NMNetworkMenuItem *item, NMAccessPoint *ap)
-{
-	NMNetworkMenuItemPrivate *priv;
-	const char *path;
-
-	g_return_if_fail (NM_IS_NETWORK_MENU_ITEM (item));
-	g_return_if_fail (NM_IS_ACCESS_POINT (ap));
-
-	priv = NM_NETWORK_MENU_ITEM_GET_PRIVATE (item);
-	path = nm_object_get_path (NM_OBJECT (ap));
-	priv->dupes = g_slist_prepend (priv->dupes, g_strdup (path));
 }
 
 gboolean
@@ -269,8 +234,6 @@ nm_network_menu_item_new (NMAccessPoint *ap,
 	g_assert (item);
 
 	priv = NM_NETWORK_MENU_ITEM_GET_PRIVATE (item);
-
-	nm_network_menu_item_add_dupe (item, ap);
 
 	ssid = nm_access_point_get_ssid (ap);
 	if (ssid) {
@@ -345,8 +308,6 @@ finalize (GObject *object)
 
 	g_free (priv->hash);
 	g_free (priv->ssid_string);
-
-	g_slist_free_full (priv->dupes, g_free);
 
 	G_OBJECT_CLASS (nm_network_menu_item_parent_class)->finalize (object);
 }
