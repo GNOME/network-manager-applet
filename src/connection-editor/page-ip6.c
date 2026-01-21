@@ -1133,15 +1133,17 @@ finish_setup (CEPageIP6 *self, gpointer user_data)
 	g_signal_connect (renderer, "editing-canceled", G_CALLBACK (cell_editing_canceled), self);
 	priv->addr_cells[COL_GATEWAY] = GTK_CELL_RENDERER (renderer);
 
-	offset = gtk_tree_view_insert_column_with_attributes (priv->addr_list,
-	                                                      -1, _("Gateway"), renderer,
-	                                                      "text", COL_GATEWAY,
-	                                                      NULL);
-	column = gtk_tree_view_get_column (GTK_TREE_VIEW (priv->addr_list), offset - 1);
-	gtk_tree_view_column_set_expand (GTK_TREE_VIEW_COLUMN (column), TRUE);
-	gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
-	gtk_tree_view_column_set_cell_data_func (column, renderer, cell_error_data_func,
-	                                         GUINT_TO_POINTER (COL_GATEWAY), NULL);
+	if (priv->connection_type != NM_TYPE_SETTING_WIREGUARD) {
+		offset = gtk_tree_view_insert_column_with_attributes (priv->addr_list,
+		                                                      -1, _("Gateway"), renderer,
+		                                                      "text", COL_GATEWAY,
+		                                                      NULL);
+		column = gtk_tree_view_get_column (GTK_TREE_VIEW (priv->addr_list), offset - 1);
+		gtk_tree_view_column_set_expand (GTK_TREE_VIEW_COLUMN (column), TRUE);
+		gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
+		gtk_tree_view_column_set_cell_data_func (column, renderer, cell_error_data_func,
+		                                         GUINT_TO_POINTER (COL_GATEWAY), NULL);
+	}
 
 	g_signal_connect (priv->addr_list, "button-press-event", G_CALLBACK (tree_view_button_pressed_cb), self);
 
